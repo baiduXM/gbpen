@@ -1,0 +1,68 @@
+{ 
+    "err": 0, 
+    "msg": "", 
+    "data": [
+        {
+            "id": 1, 
+            "name": "社会万象", 
+            "childmenu": [
+                {
+                    "id": 7, 
+                    "name": "风气", 
+                    "childmenu": null
+                }, 
+                {
+                    "id": 8, 
+                    "name": "道德", 
+                    "childmenu": null
+                }, 
+                {
+                    "id": 9, 
+                    "name": "环境", 
+                    "childmenu": null
+                }
+            ]
+        }, 
+        {
+            "id": 2, 
+            "name": "情感八卦", 
+            "childmenu": null
+        }, 
+        {
+            "id": 3, 
+            "name": "拍案说法", 
+            "childmenu": null
+        }, 
+        {
+            "id": 4, 
+            "name": "五花八门", 
+            "childmenu": [
+                {
+                    "id": 10, 
+                    "name": "搞笑", 
+                    "childmenu": null
+                }, 
+                {
+                    "id": 11, 
+                    "name": "幽默", 
+                    "childmenu": null
+                }, 
+                {
+                    "id": 12, 
+                    "name": "夸张", 
+                    "childmenu": null
+                }
+            ]
+        }, 
+        {
+            "id": 5, 
+            "name": "奇闻轶事", 
+            "childmenu": null
+        }, 
+        {
+            "id": 6, 
+            "name": "社会万象", 
+            "childmenu": null
+        }
+    ]
+}

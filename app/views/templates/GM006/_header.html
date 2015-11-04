@@ -1,0 +1,17 @@
+      <div class="heaer  public_bg1">
+        <div class="logo"><img src="{$logo}" width="100%"></div>
+      </div>
+      <div class="menu public_bg1">
+        <div class="nav"> <a class="arrow-left" href="#">&lt;</a> <a class="arrow-right" href="#">&gt;</a>
+          <div class="swiper-nav swiper-container">
+            <div class="swiper-wrapper">
+              <div class="swiper-slide"><span><a href="index.html" class=" public_color">网站首页<br>
+                <span class="en">home</span></a></span></div>
+                      {foreach name=navs item=nav from=$navs}
+                      <div class="swiper-slide"><span><a href="{$nav.link}" class=" public_color">{$nav.name}<br>
+                      <span class="en">{$nav.name}</span></a></span></div>
+                      {/foreach}
+                  </div>
+          </div>
+        </div>
+      </div>

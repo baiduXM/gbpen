@@ -1,0 +1,49 @@
+{
+    "about_image": {
+		"value": {
+			"title":"关于我们",
+			"image": "images/img.jpg",
+			"link": "http://www.baidu.com/"
+		},
+		"description": "关于我们图片",
+		"config": {
+			"width": 4,
+			"height": 0
+		},
+		"type": "image"
+	},
+    "page1": {
+		"value": {},
+		"description": "关于我们版块",
+		"type": "page"
+	},
+	"list1": {
+		"value": {
+		},
+		"config": {
+			"limit": 4,
+			"star_only": 0
+		},
+		"description": "第一个栏目列表",
+		"type": "list"
+	},
+    "list2": {
+		"value": {
+		},
+		"config": {
+			"limit": 4,
+			"star_only": 0
+		},
+		"description": "第二个栏目列表",
+		"type": "list"
+	},
+    "list3": {
+		"value": {},
+		"config": {
+			"limit": 4,
+			"star_only": 0
+		},
+		"description": "第三个栏目列表",
+		"type": "list"
+	}
+}

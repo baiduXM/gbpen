@@ -1,0 +1,145 @@
+<!DOCTYPE html> 
+<html>
+<head>
+
+<script type="text/javascript">
+    // 跳转PC页面
+    {if $site_another_url}
+      if (!navigator.userAgent.match(/AppleWebKit.*Mobile.*/)) {
+        location.href = '{$site_another_url}';
+      }
+    {/if}
+</script>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no,minimal-ui">
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta content="telephone=no" name="format-detection">
+<title>{$title}</title>
+<meta name="keywords" content="{$keywords}" />
+<meta name="description" content="{$description}" />
+<link rel="shortcut icon" href="{$favicon}" type="image/x-icon" />
+<link rel="stylesheet" rev="stylesheet" href="http://chanpin.xm12t.com.cn/css/global.css" type="text/css" />
+
+<link href="{$site_url}css/swipe.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="{$site_url}css/public.css" />
+<link href="{$site_url}css/css.css" rel="stylesheet" type="text/css" />
+<script src="{$site_url}js/TouchSlide.1.1.js"></script>
+<script src="{$site_url}js/jquery.min.js"></script>
+<script type="text/javascript" src="{$site_url}js/function.js"></script>
+<script type="text/javascript" src="{$site_url}js/share.js"></script>
+<script src="{$site_url}js/idangerous.swiper-2.0.min.js"></script>
+<script src="{$site_url}js/simple-app.js"></script>
+<script type="text/javascript">
+  window.addEventListener('load', function(){
+   setTimeout(function(){ window.scrollTo(0, 1); }, 100);
+});//safari浏览器可以通过此代码来隐藏地址栏
+</script>
+{$headscript}
+</head>
+<body>
+<div class="body">
+<!-- 隐藏导航 -->
+{include file="./_header_hidenav.html"}
+<!-- 隐藏导航End -->
+  <div class="wrap">
+<!-- 底部导航 -->
+{include file="./_footer.html"}
+<!-- 底部导航End -->
+    <div class="index-wrap">
+      {include file="./_header.html"}
+      <div class="baner">
+        <div id="slideBox" class="slideBox">
+          <div class="hd">
+            <ul>
+            </ul>
+          </div>
+          <div class="bd">
+            <ul>
+              {foreach name=slidepics item=slidepic from=$global.slidepics}
+              <li><a class="pic" href="{$slidepic.link}"><img src="{$slidepic.image}" /></a></li>
+              {/foreach}
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="main">
+        {foreach name=mIndexCats_list item=mIndexCat from=$mIndexCats}
+        {if $mIndexCat.type eq 4}
+        <div class="box-id">
+          <div class="box-about clearfix public_bg"><img src="{$mIndexCat.image}" width="147" height="97" title="147*97">
+            <dl class="nr public_color1">
+              {$mIndexCat.description}
+            </dl>
+            <div class="j j1"></div>
+          </div> 
+        </div>
+        {/if}
+        
+        {if $mIndexCat.type eq 2}
+        <div class="box-id">
+          <div class="box-pro">
+            <h1 class="box-top clearfix public_bor"><span class="more public_bg"><a href="#">更多+</a></span>
+              <div class="text public_color2">{$mIndexCat.name}
+                <div class="en public_color">{$mIndexCat.en_name}</div>
+              </div>
+            </h1>
+            <div class="about-m">
+              <ul class="picture2">
+                
+                 <li>
+                  <div class="public_bg"><a href="{$mIndexCat.link}">
+                    <p class="img public_bg"><img src="{$mIndexCat.image}" width="100%" title="170*94" /></p>
+                    <p class=" title public_color1"><b>{$mIndexCat.name}</b></p>
+                    </a></div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        {/if}
+        {/foreach}
+        <!--<div class="box-id">
+          <h1 class="box-top clearfix public_bor"><span class="more public_bg"><a href="#">更多+</a></span>
+            <div class="text public_color2">产品展示
+              <div class="en public_color">products</div>
+            </div>
+          </h1>
+          <div class="news about-m">
+            <ul class="news-list1">
+              <li onclick="javascript:window.location.href='news_detail.html'" class="public_bg1"> <a href="#">
+                <div class="news_title clearfix public_bg"><span>2014-07-02</span>
+                  <div class="No">No1:</div>
+                  <b> 夏季孩子扎堆玩耍容易染上细菌，如何预防？</b></div>
+                <div class="news_bottom clearfix">
+                  <div class="news_img public_bor"><img src="images/news_img.jpg" title="112*81"/></div>
+                  <div class="news_content"> 注意给孩子勤洗手，多喝水，饮食方面注意不可以吃这个生冷，不熟的实物啊！尽量不要带孩子去人多的场所去玩耍,，出去玩的时候出的汗多要及时的擦干，回来之后要洗手洗脸之后再吃东西..... </div>
+                </div>
+                </a></li>
+              <li onclick="javascript:window.location.href='news_detail.html'" class="public_bg1"> <a href="#">
+                <div class="news_title clearfix public_bg"><span>2014-07-02</span>
+                  <div class="No">No1:</div>
+                  <b> 夏季孩子扎堆玩耍容易染上细菌，如何预防？</b></div>
+                <div class="news_bottom clearfix">
+                  <div class="news_img public_bor"><img src="images/news_img.jpg" title="112*81"/></div>
+                  <div class="news_content"> 注意给孩子勤洗手，多喝水，饮食方面注意不可以吃这个生冷，不熟的实物啊！尽量不要带孩子去人多的场所去玩耍,，出去玩的时候出的汗多要及时的擦干，回来之后要洗手洗脸之后再吃东西..... </div>
+                </div>
+                </a></li>
+              <li onclick="javascript:window.location.href='news_detail.html'" class="public_bg1"> <a href="#">
+                <div class="news_title clearfix public_bg"><span>2014-07-02</span>
+                  <div class="No">No1:</div>
+                  <b> 夏季孩子扎堆玩耍容易染上细菌，如何预防？</b></div>
+                <div class="news_bottom clearfix">
+                  <div class="news_img public_bor"><img src="images/news_img.jpg" title="112*81"/></div>
+                  <div class="news_content"> 注意给孩子勤洗手，多喝水，饮食方面注意不可以吃这个生冷，不熟的实物啊！尽量不要带孩子去人多的场所去玩耍,，出去玩的时候出的汗多要及时的擦干，回来之后要洗手洗脸之后再吃东西..... </div>
+                </div>
+                </a></li>
+            </ul>
+          </div>
+        </div>-->
+      </div>
+      {include file="./_footprint.html"}
+    </div>
+  </div>
+</div>
+</body>
+</html>

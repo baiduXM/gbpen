@@ -1,0 +1,22 @@
+<header>
+	<div class="top">
+	<div class="header">
+	 <div class="logo"><img src="{$logo}" width="100%"></div>
+	</div> 
+	<div class="baner">
+		<div id="slideBox" class="slideBox">
+			<div class="hd">
+					<ul></ul>
+			</div>
+			<!-- 轮滚图 -->
+			<div class="bd">
+				<ul>
+					{foreach name=slidepics item=slidepic from=$global.slidepics}
+					<li><a class="pic" href="{$slidepic.link}" target="_blank"><img src="{$slidepic.image}" alt="{$slidepic.title}" /></a></li>
+					{/foreach}
+				</ul>
+			</div>
+		</div>
+	</div>                           	 
+	</div>
+</header>

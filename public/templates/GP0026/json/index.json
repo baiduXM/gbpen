@@ -1,0 +1,31 @@
+{
+    
+    "about_us": {
+		"description": "关于我们",
+		"value": {},
+		"type": "page"
+	},
+    "pro": {
+		"description": "首页右下角图片列表滚动图",
+		"value": {},
+		"type": "list"
+	},		
+	"left_nav":{
+		"value":{},
+		"type":"list",
+		"description":"首页侧边栏导航"
+	},
+	"show":{
+		"value":{},
+		"type":"list",
+		"description":"首页右侧滚图"		
+	},
+	"second_navs": {
+		"value": {},
+		"description": "第二导航（底部）",
+		"type": "navs",
+		"config": {
+			"limit": 4
+		}
+	}
+}

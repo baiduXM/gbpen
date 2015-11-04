@@ -1,0 +1,68 @@
+{
+	"slidepics": {
+		"value": [{
+			"title": "Gooseberry and Elderflower Tower Cakes",
+			"image": "images/slidepics/1.jpg",
+			"link": "detail/1.html",
+			"description": "Although it isn't gooseberry season anymore, I thought I would publish this recipe now because it wo..."
+		}, {
+			"title": "Corn and Turkey Burgers with Zatar Yoghurt",
+			"image": "images/slidepics/2.jpg",
+			"link": "detail/2.html",
+			"description": "Post-Christmas I find I just can't get enough of Turkey. I always think it is such a shame that I on..."
+		}, {
+			"title": "PS Cafe Singapore",
+			"image": "images/slidepics/3.jpg",
+			"link": "detail/3.html",
+			"description": "The PS Cafe chain in Singapore is a must visit when in town. I first visited the Paragon branch over..."
+		}, {
+			"title": "Leopard Wears",
+			"image": "images/slidepics/4.jpg",
+			"link": "detail/4.html",
+			"description": "A few days ago I began a wardrobe detox. In the new year I always try and start by clearing out my l..."
+		}],
+		"description": "大轮滚图",
+		"type": "images"
+	},
+	"lastest_title": {
+		"value": "最新产品",
+		"description": "自定义“最新产品”",
+		"type": "text"
+	},
+	"lastest": {
+		"value": {
+			"id": 1,
+			"total": 4,
+			"star_only": 0
+		},
+		"description": "最新产品",
+		"type": "list"
+	},
+	"hots": {
+		"value": {
+			"id": 1,
+			"total": 4,
+			"star_only": 1
+		},
+		"description": "热门产品",
+		"type": "list"
+	},
+	"list1": {
+		"value": {
+			"id": 1,
+			"total": 4,
+			"star_only": 0
+		},
+		"description": "第一个栏目列表",
+		"type": "list"
+	},
+	"list2": {
+		"value": {
+			"id": 1,
+			"total": 4,
+			"star_only": 0
+		},
+		"description": "第二个栏目列表",
+		"type": "list"
+	}
+}

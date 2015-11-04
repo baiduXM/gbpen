@@ -1,0 +1,2154 @@
+{
+	"site_url": "",
+	"site_another_url": "#此刻已跳转到与viewport相符的显示界面",
+	"search_action": "searchresult.html",
+	"title": "网站标题",
+	"keywords": "关键词A,关键词B,关键词C",
+	"description": "这是这个页面的描述，这是一大段的描述语句，里面有很多的内容，多写点 多写点...",
+	"logo": "images/logo.png",
+	"favicon": "images/favicon.ico",
+	"stylecolor": "white",
+	"footprint": "copyright 2014-2015",
+	"footscript": "<!-- 这里将会输出底部脚本代码 -->",
+	"headscript": "<!-- 这里将会输出头部脚本代码 -->",
+	"navs": [
+		{
+			"name": "新闻列表",
+			"en_name": "News",
+			"link": "list-text.html?id=1",
+			"image": "http://chanpin.xm12t.com.cn/images/cat_01.jpg",
+			"description": "这是栏目的一段描述...",
+			"current": 0,
+			"lastest": [
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				}
+			],
+			"type": 1,
+			"childmenu": null
+		},
+		{
+			"name": "产品列表",
+			"en_name": "Products",
+			"link": "list-imagetext.html?id=3",
+			"image": "http://chanpin.xm12t.com.cn/images/cat_01.jpg",
+			"description": "这是栏目的一段描述...",
+			"current": 0,
+			"lastest": [
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				}
+			],
+			"type": 3,
+			"childmenu": [
+				{
+					"name": "导航B1",
+					"en_name": "Nav B1",
+					"link": "list-imagetext.html",
+					"image": "http://chanpin.xm12t.com.cn/images/cat_01.jpg",
+					"description": "这是栏目的一段描述...",
+					"current": 0,
+					"type": 3,
+					"childmenu": null
+				},
+				{
+					"name": "导航B2",
+					"en_name": "Nav B2",
+					"link": "list-imagetext.html",
+					"image": "http://chanpin.xm12t.com.cn/images/cat_01.jpg",
+					"description": "这是栏目的一段描述...",
+					"current": 0,
+					"type": 3,
+					"childmenu": null
+				},
+				{
+					"name": "导航B3",
+					"en_name": "Nav B3",
+					"link": "list-imagetext.html",
+					"image": "http://chanpin.xm12t.com.cn/images/cat_01.jpg",
+					"description": "这是栏目的一段描述...",
+					"current": 0,
+					"type": 3,
+					"childmenu": null
+				},
+				{
+					"name": "导航B4",
+					"en_name": "Nav B4",
+					"link": "list-imagetext.html",
+					"image": "http://chanpin.xm12t.com.cn/images/cat_01.jpg",
+					"description": "这是栏目的一段描述...",
+					"current": 0,
+					"type": 3,
+					"childmenu": null
+				},
+				{
+					"name": "导航B5",
+					"en_name": "Nav B5",
+					"link": "list-imagetext.html",
+					"image": "http://chanpin.xm12t.com.cn/images/cat_01.jpg",
+					"description": "这是栏目的一段描述...",
+					"current": 0,
+					"type": 3,
+					"childmenu": null
+				}
+			]
+		},
+		{
+			"name": "最新产品",
+			"en_name": "Lastest Products",
+			"link": "list-image.html?id=4",
+			"image": "http://chanpin.xm12t.com.cn/images/cat_01.jpg",
+			"description": "这是栏目的一段描述...",
+			"current": 0,
+			"lastest": [
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				}
+			],
+			"type": 2,
+			"childmenu": null
+		},
+		{
+			"name": "关于我们",
+			"en_name": "About Us",
+			"link": "list-page.html?id=7",
+			"image": "http://chanpin.xm12t.com.cn/images/cat_01.jpg",
+			"description": "这是栏目的一段描述...",
+			"current": 0,
+			"lastest": null,
+			"type": 4,
+			"childmenu": null
+		},
+		{
+			"name": "留言板",
+			"en_name": "Guest Book",
+			"link": "guestbook.html",
+			"image": "http://chanpin.xm12t.com.cn/images/cat_01.jpg",
+			"description": "这是栏目的一段描述...",
+			"current": 0,
+			"lastest": null,
+			"type": 5,
+			"childmenu": null
+		},
+		{
+			"name": "企业动态",
+			"en_name": "Company News",
+			"link": "list-text.html?id=2",
+			"image": "http://chanpin.xm12t.com.cn/images/cat_01.jpg",
+			"description": "这是栏目的一段描述...",
+			"current": 0,
+			"lastest": null,
+			"type": 1,
+			"childmenu": [
+				{
+					"name": "导航F1",
+					"en_name": "Nav F1",
+					"link": "list-text.html",
+					"image": "http://chanpin.xm12t.com.cn/images/cat_01.jpg",
+					"description": "这是栏目的一段描述...",
+					"current": 0,
+					"type": 1,
+					"childmenu": null
+				},
+				{
+					"name": "导航F2",
+					"en_name": "Nav F2",
+					"link": "list-text.html",
+					"image": "http://chanpin.xm12t.com.cn/images/cat_01.jpg",
+					"description": "这是栏目的一段描述...",
+					"current": 0,
+					"type": 1,
+					"childmenu": null
+				},
+				{
+					"name": "导航F3",
+					"en_name": "Nav F3",
+					"link": "list-text.html",
+					"image": "http://chanpin.xm12t.com.cn/images/cat_01.jpg",
+					"description": "这是栏目的一段描述...",
+					"current": 0,
+					"type": 1,
+					"childmenu": [
+						{
+							"name": "导航F3a",
+							"en_name": "Nav F3a",
+							"link": "list-imagetext.html",
+							"image": "http://chanpin.xm12t.com.cn/images/cat_01.jpg",
+							"description": "这是栏目的一段描述...",
+							"current": 0,
+							"type": 3
+						},
+						{
+							"name": "导航F3b",
+							"en_name": "Nav F3b",
+							"link": "list-imagetext.html",
+							"image": "http://chanpin.xm12t.com.cn/images/cat_01.jpg",
+							"description": "这是栏目的一段描述...",
+							"current": 0,
+							"type": 3
+						}
+					]
+				}
+			]
+		}
+	],
+	"pagenavs": [
+		{
+			"name": "导航F1",
+			"en_name": "Nav F1",
+			"link": "list-text.html",
+			"image": "http://chanpin.xm12t.com.cn/images/cat_01.jpg",
+			"description": "这是栏目的一段描述...",
+			"current": 0
+		},
+		{
+			"name": "导航F2",
+			"en_name": "Nav F2",
+			"link": "list-text.html",
+			"image": "http://chanpin.xm12t.com.cn/images/cat_01.jpg",
+			"description": "这是栏目的一段描述...",
+			"current": 0
+		},
+		{
+			"name": "导航F3",
+			"en_name": "Nav F3",
+			"link": "list-text.html",
+			"image": "http://chanpin.xm12t.com.cn/images/cat_01.jpg",
+			"description": "这是栏目的一段描述...",
+			"current": 1,
+			"childmenu": [
+				{
+					"name": "导航F3a",
+					"en_name": "Nav F3a",
+					"link": "list-imagetext.html",
+					"image": "http://chanpin.xm12t.com.cn/images/cat_01.jpg",
+					"description": "这是栏目的一段描述...",
+					"current": 1
+				},
+				{
+					"name": "导航F3b",
+					"en_name": "Nav F3b",
+					"link": "list-imagetext.html",
+					"image": "http://chanpin.xm12t.com.cn/images/cat_01.jpg",
+					"description": "这是栏目的一段描述...",
+					"current": 0
+				}
+			]
+		}
+	],
+	"posnavs": [
+		{
+			"name": "导航F",
+			"en_name": "Nav F",
+			"link": "list-text.html"
+		},
+		{
+			"name": "导航F3",
+			"en_name": "Nav F3",
+			"link": "list-text.html"
+		},
+		{
+			"name": "导航F3a",
+			"en_name": "Nav F3a",
+			"link": "list-imagetext.html"
+		}
+	],
+	"contact": {
+		"company": "XXX有限公司",
+		"name": "X先生",
+		"mobile": 13489990000,
+		"telephone": "0592-23232232",
+		"fax": "0592-8686886",
+		"mail": "01@eexx.me",
+		"qq": 156568451,
+		"address": "厦门市思明区软件园..."
+	},
+	"article": {
+		"title": "文章标题",
+		"image": "http://chanpin.xm12t.com.cn/images/art_01.jpg",
+		"images": [
+			{
+				"title": "产品图1",
+				"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg"
+			},
+			{
+				"title": "产品图2",
+				"image": "http://chanpin.xm12t.com.cn/images/art_01.jpg"
+			}
+		],
+		"description": "今天天气不错，挺风和日丽的...",
+		"content": "&lt;p&gt;文章内容...&lt;/p&gt;&lt;p&gt;一大段文章内容...&lt;/p&gt;",
+		"pubdate": "2014-12-25",
+		"pubtimestamp": 1419487200,
+		"category": {
+			"name": "导航A",
+			"link": "list-imagetext.html"
+		},
+		"prev": {
+			"title": "上一篇文章标题",
+			"link": "content-news.html"
+		},
+		"next": {
+			"title": "下一篇文章标题",
+			"link": "content-product.html"
+		}
+	},
+	"related": [
+		{
+			"title": "这是一篇测试文章",
+			"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+			"link": "content-news.html",
+			"description": "今天天气不错，挺风和日丽的...",
+			"pubdate": "2014-12-25",
+			"pubtimestamp": 1419487200,
+			"category": {
+				"name": "导航A",
+				"link": "list-imagetext.html"
+			}
+		},
+		{
+			"title": "这是一篇测试文章",
+			"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+			"link": "content-news.html",
+			"description": "今天天气不错，挺风和日丽的...",
+			"pubdate": "2014-12-25",
+			"pubtimestamp": 1419487200,
+			"category": {
+				"name": "导航A",
+				"link": "list-imagetext.html"
+			}
+		},
+		{
+			"title": "这是一篇测试文章",
+			"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+			"link": "content-news.html",
+			"description": "今天天气不错，挺风和日丽的...",
+			"pubdate": "2014-12-25",
+			"pubtimestamp": 1419487200,
+			"category": {
+				"name": "导航A",
+				"link": "list-imagetext.html"
+			}
+		},
+		{
+			"title": "这是一篇测试文章",
+			"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+			"link": "content-news.html",
+			"description": "今天天气不错，挺风和日丽的...",
+			"pubdate": "2014-12-25",
+			"pubtimestamp": 1419487200,
+			"category": {
+				"name": "导航A",
+				"link": "list-imagetext.html"
+			}
+		},
+		{
+			"title": "这是一篇测试文章",
+			"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+			"link": "content-news.html",
+			"description": "今天天气不错，挺风和日丽的...",
+			"pubdate": "2014-12-25",
+			"pubtimestamp": 1419487200,
+			"category": {
+				"name": "导航A",
+				"link": "list-imagetext.html"
+			}
+		},
+		{
+			"title": "这是一篇测试文章",
+			"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+			"link": "content-news.html",
+			"description": "今天天气不错，挺风和日丽的...",
+			"pubdate": "2014-12-25",
+			"pubtimestamp": 1419487200,
+			"category": {
+				"name": "导航A",
+				"link": "list-imagetext.html"
+			}
+		},
+		{
+			"title": "这是一篇测试文章",
+			"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+			"link": "content-news.html",
+			"description": "今天天气不错，挺风和日丽的...",
+			"pubdate": "2014-12-25",
+			"pubtimestamp": 1419487200,
+			"category": {
+				"name": "导航A",
+				"link": "list-imagetext.html"
+			}
+		},
+		{
+			"title": "这是一篇测试文章",
+			"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+			"link": "content-news.html",
+			"description": "今天天气不错，挺风和日丽的...",
+			"pubdate": "2014-12-25",
+			"pubtimestamp": 1419487200,
+			"category": {
+				"name": "导航A",
+				"link": "list-imagetext.html"
+			}
+		},
+		{
+			"title": "这是一篇测试文章",
+			"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+			"link": "content-news.html",
+			"description": "今天天气不错，挺风和日丽的...",
+			"pubdate": "2014-12-25",
+			"pubtimestamp": 1419487200,
+			"category": {
+				"name": "导航A",
+				"link": "list-imagetext.html"
+			}
+		},
+		{
+			"title": "这是一篇测试文章",
+			"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+			"link": "content-news.html",
+			"description": "今天天气不错，挺风和日丽的...",
+			"pubdate": "2014-12-25",
+			"pubtimestamp": 1419487200,
+			"category": {
+				"name": "导航A",
+				"link": "list-imagetext.html"
+			}
+		},
+		{
+			"title": "这是一篇测试文章",
+			"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+			"link": "content-news.html",
+			"description": "今天天气不错，挺风和日丽的...",
+			"pubdate": "2014-12-25",
+			"pubtimestamp": 1419487200,
+			"category": {
+				"name": "导航A",
+				"link": "list-imagetext.html"
+			}
+		},
+		{
+			"title": "这是一篇测试文章",
+			"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+			"link": "content-news.html",
+			"description": "今天天气不错，挺风和日丽的...",
+			"pubdate": "2014-12-25",
+			"pubtimestamp": 1419487200,
+			"category": {
+				"name": "导航A",
+				"link": "list-imagetext.html"
+			}
+		}
+	],
+	"list": {
+		"name": "栏目A",
+		"en_name": "Nav A",
+		"image": "http://chanpin.xm12t.com.cn/images/cat_01.jpg",
+		"link": "list-text.html",
+		"description": "这是栏目A的一段描述...",
+		"content": "&lt;p&gt;这里是页面内容，可以使用html&lt;/p&gt;",
+		"data": [
+			{
+				"title": "这是一篇测试文章",
+				"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+				"link": "content-news.html",
+				"description": "今天天气不错，挺风和日丽的...",
+				"pubdate": "2014-12-25",
+				"pubtimestamp": 1419487200,
+				"category": {
+					"name": "导航A",
+					"link": "list-imagetext.html"
+				}
+			},
+			{
+				"title": "这是一篇测试文章",
+				"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+				"link": "content-news.html",
+				"description": "今天天气不错，挺风和日丽的...",
+				"pubdate": "2014-12-25",
+				"pubtimestamp": 1419487200,
+				"category": {
+					"name": "导航A",
+					"link": "list-imagetext.html"
+				}
+			},
+			{
+				"title": "这是一篇测试文章",
+				"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+				"link": "content-news.html",
+				"description": "今天天气不错，挺风和日丽的...",
+				"pubdate": "2014-12-25",
+				"pubtimestamp": 1419487200,
+				"category": {
+					"name": "导航A",
+					"link": "list-imagetext.html"
+				}
+			},
+			{
+				"title": "这是一篇测试文章",
+				"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+				"link": "content-news.html",
+				"description": "今天天气不错，挺风和日丽的...",
+				"pubdate": "2014-12-25",
+				"pubtimestamp": 1419487200,
+				"category": {
+					"name": "导航A",
+					"link": "list-imagetext.html"
+				}
+			},
+			{
+				"title": "这是一篇测试文章",
+				"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+				"link": "content-news.html",
+				"description": "今天天气不错，挺风和日丽的...",
+				"pubdate": "2014-12-25",
+				"pubtimestamp": 1419487200,
+				"category": {
+					"name": "导航A",
+					"link": "list-imagetext.html"
+				}
+			},
+			{
+				"title": "这是一篇测试文章",
+				"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+				"link": "content-news.html",
+				"description": "今天天气不错，挺风和日丽的...",
+				"pubdate": "2014-12-25",
+				"pubtimestamp": 1419487200,
+				"category": {
+					"name": "导航A",
+					"link": "list-imagetext.html"
+				}
+			},
+			{
+				"title": "这是一篇测试文章",
+				"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+				"link": "content-news.html",
+				"description": "今天天气不错，挺风和日丽的...",
+				"pubdate": "2014-12-25",
+				"pubtimestamp": 1419487200,
+				"category": {
+					"name": "导航A",
+					"link": "list-imagetext.html"
+				}
+			},
+			{
+				"title": "这是一篇测试文章",
+				"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+				"link": "content-news.html",
+				"description": "今天天气不错，挺风和日丽的...",
+				"pubdate": "2014-12-25",
+				"pubtimestamp": 1419487200,
+				"category": {
+					"name": "导航A",
+					"link": "list-imagetext.html"
+				}
+			},
+			{
+				"title": "这是一篇测试文章",
+				"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+				"link": "content-news.html",
+				"description": "今天天气不错，挺风和日丽的...",
+				"pubdate": "2014-12-25",
+				"pubtimestamp": 1419487200,
+				"category": {
+					"name": "导航A",
+					"link": "list-imagetext.html"
+				}
+			},
+			{
+				"title": "这是一篇测试文章",
+				"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+				"link": "content-news.html",
+				"description": "今天天气不错，挺风和日丽的...",
+				"pubdate": "2014-12-25",
+				"pubtimestamp": 1419487200,
+				"category": {
+					"name": "导航A",
+					"link": "list-imagetext.html"
+				}
+			},
+			{
+				"title": "这是一篇测试文章",
+				"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+				"link": "content-news.html",
+				"description": "今天天气不错，挺风和日丽的...",
+				"pubdate": "2014-12-25",
+				"pubtimestamp": 1419487200,
+				"category": {
+					"name": "导航A",
+					"link": "list-imagetext.html"
+				}
+			},
+			{
+				"title": "这是一篇测试文章",
+				"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+				"link": "content-news.html",
+				"description": "今天天气不错，挺风和日丽的...",
+				"pubdate": "2014-12-25",
+				"pubtimestamp": 1419487200,
+				"category": {
+					"name": "导航A",
+					"link": "list-imagetext.html"
+				}
+			}
+		],
+		"total": 999,
+		"type": 1
+	},
+	"search": {
+		"keyword": "最新",
+		"data": [
+			{
+				"title": "这是一篇测试文章",
+				"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+				"link": "content-news.html",
+				"description": "今天天气不错，挺风和日丽的...",
+				"pubdate": "2014-12-25",
+				"pubtimestamp": 1419487200,
+				"category": {
+					"name": "导航A",
+					"link": "list-imagetext.html"
+				}
+			},
+			{
+				"title": "这是一篇测试文章",
+				"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+				"link": "content-news.html",
+				"description": "今天天气不错，挺风和日丽的...",
+				"pubdate": "2014-12-25",
+				"pubtimestamp": 1419487200,
+				"category": {
+					"name": "导航A",
+					"link": "list-imagetext.html"
+				}
+			},
+			{
+				"title": "这是一篇测试文章",
+				"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+				"link": "content-news.html",
+				"description": "今天天气不错，挺风和日丽的...",
+				"pubdate": "2014-12-25",
+				"pubtimestamp": 1419487200,
+				"category": {
+					"name": "导航A",
+					"link": "list-imagetext.html"
+				}
+			},
+			{
+				"title": "这是一篇测试文章",
+				"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+				"link": "content-news.html",
+				"description": "今天天气不错，挺风和日丽的...",
+				"pubdate": "2014-12-25",
+				"pubtimestamp": 1419487200,
+				"category": {
+					"name": "导航A",
+					"link": "list-imagetext.html"
+				}
+			},
+			{
+				"title": "这是一篇测试文章",
+				"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+				"link": "content-news.html",
+				"description": "今天天气不错，挺风和日丽的...",
+				"pubdate": "2014-12-25",
+				"pubtimestamp": 1419487200,
+				"category": {
+					"name": "导航A",
+					"link": "list-imagetext.html"
+				}
+			},
+			{
+				"title": "这是一篇测试文章",
+				"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+				"link": "content-news.html",
+				"description": "今天天气不错，挺风和日丽的...",
+				"pubdate": "2014-12-25",
+				"pubtimestamp": 1419487200,
+				"category": {
+					"name": "导航A",
+					"link": "list-imagetext.html"
+				}
+			},
+			{
+				"title": "这是一篇测试文章",
+				"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+				"link": "content-news.html",
+				"description": "今天天气不错，挺风和日丽的...",
+				"pubdate": "2014-12-25",
+				"pubtimestamp": 1419487200,
+				"category": {
+					"name": "导航A",
+					"link": "list-imagetext.html"
+				}
+			},
+			{
+				"title": "这是一篇测试文章",
+				"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+				"link": "content-news.html",
+				"description": "今天天气不错，挺风和日丽的...",
+				"pubdate": "2014-12-25",
+				"pubtimestamp": 1419487200,
+				"category": {
+					"name": "导航A",
+					"link": "list-imagetext.html"
+				}
+			},
+			{
+				"title": "这是一篇测试文章",
+				"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+				"link": "content-news.html",
+				"description": "今天天气不错，挺风和日丽的...",
+				"pubdate": "2014-12-25",
+				"pubtimestamp": 1419487200,
+				"category": {
+					"name": "导航A",
+					"link": "list-imagetext.html"
+				}
+			},
+			{
+				"title": "这是一篇测试文章",
+				"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+				"link": "content-news.html",
+				"description": "今天天气不错，挺风和日丽的...",
+				"pubdate": "2014-12-25",
+				"pubtimestamp": 1419487200,
+				"category": {
+					"name": "导航A",
+					"link": "list-imagetext.html"
+				}
+			},
+			{
+				"title": "这是一篇测试文章",
+				"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+				"link": "content-news.html",
+				"description": "今天天气不错，挺风和日丽的...",
+				"pubdate": "2014-12-25",
+				"pubtimestamp": 1419487200,
+				"category": {
+					"name": "导航A",
+					"link": "list-imagetext.html"
+				}
+			},
+			{
+				"title": "这是一篇测试文章",
+				"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+				"link": "content-news.html",
+				"description": "今天天气不错，挺风和日丽的...",
+				"pubdate": "2014-12-25",
+				"pubtimestamp": 1419487200,
+				"category": {
+					"name": "导航A",
+					"link": "list-imagetext.html"
+				}
+			}
+		],
+		"total": 66
+	},
+	"page_links": {
+		"page_count": 99,
+		"per_page": 12,
+		"current_page": 1,
+		"first_link": "",
+		"prev_link": "",
+		"next_link": "list-image.html?p=2",
+		"last_link": "list-image.html?p=99",
+		"nears_link": {
+			"1": "",
+			"2": "list-imagetext.html?p=2",
+			"3": "list-imagetext.html?p=3",
+			"4": "list-imagetext.html?p=4",
+			"5": "list-imagetext.html?p=5"
+		}
+	},
+	"mIndexCats": [
+		{
+			"name": "新闻列表",
+			"en_name": "News",
+			"link": "list-text.html?id=1",
+			"image": "http://chanpin.xm12t.com.cn/images/cat_01.jpg",
+			"description": "这是栏目的一段描述...",
+			"data": [
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				}
+			],
+			"type": 1,
+			"showtype": 1
+		},
+		{
+			"name": "企业动态",
+			"en_name": "Company News",
+			"link": "list-text.html?id=2",
+			"image": "http://chanpin.xm12t.com.cn/images/cat_01.jpg",
+			"description": "这是栏目的一段描述...",
+			"data": [
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				}
+			],
+			"type": 1,
+			"showtype": 2
+		},
+		{
+			"name": "产品列表",
+			"en_name": "Products",
+			"link": "list-image.html?id=3",
+			"image": "http://chanpin.xm12t.com.cn/images/cat_01.jpg",
+			"description": "这是栏目的一段描述...",
+			"data": [
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				}
+			],
+			"type": 2,
+			"showtype": 1
+		},
+		{
+			"name": "最新产品",
+			"en_name": "Lastest Products",
+			"link": "list-image.html?id=4",
+			"image": "http://chanpin.xm12t.com.cn/images/cat_01.jpg",
+			"description": "这是栏目的一段描述...",
+			"data": [
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				}
+			],
+			"type": 2,
+			"showtype": 2
+		},
+		{
+			"name": "当期热卖",
+			"en_name": "Hot Products",
+			"link": "list-image.html?id=5",
+			"image": "http://chanpin.xm12t.com.cn/images/cat_01.jpg",
+			"description": "这是栏目的一段描述...",
+			"data": [
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				}
+			],
+			"type": 2,
+			"showtype": 3
+		},
+		{
+			"name": "企业风采",
+			"en_name": "Company Photos",
+			"link": "list-imagetext.html?id=6",
+			"image": "http://chanpin.xm12t.com.cn/images/cat_01.jpg",
+			"description": "这是栏目的一段描述...",
+			"data": [
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				},
+				{
+					"title": "这是一篇测试文章",
+					"image": "http://chanpin.xm12t.com.cn/images/art_02.jpg",
+					"link": "content-news.html",
+					"description": "今天天气不错，挺风和日丽的...",
+					"pubdate": "2014-12-25",
+					"pubtimestamp": 1419487200,
+					"category": {
+						"name": "导航A",
+						"link": "list-imagetext.html"
+					}
+				}
+			],
+			"type": 3,
+			"showtype": 1
+		},
+		{
+			"name": "关于我们",
+			"en_name": "About Us",
+			"link": "list-page.html?id=7",
+			"image": "http://chanpin.xm12t.com.cn/images/cat_01.jpg",
+			"description": "这是栏目的一段描述...",
+			"content": "&lt;p&gt;这里是页面内容，可以使用html&lt;/p&gt;",
+			"type": 4,
+			"showtype": 1
+		},
+		{
+			"name": "双十二活动",
+			"en_name": "Double 12 Act",
+			"link": "http://wx.dn160.com.cn/index.php?g=Wap&m=Guajiang&a=index&token=fwpmnq1407894165&type=2&wecha_id=ok6CKuN_fX__XeXCn&id=156",
+			"image": "http://chanpin.xm12t.com.cn/images/cat_01.jpg",
+			"description": "这是栏目的一段描述...",
+			"content": "&lt;p&gt;这里是页面内容，可以使用html&lt;/p&gt;",
+			"type": 7
+		},
+		{
+			"name": "留言板",
+			"en_name": "Guest Book",
+			"link": "guestbook.html",
+			"image": "http://chanpin.xm12t.com.cn/images/cat_01.jpg",
+			"description": "这是栏目的一段描述...",
+			"type": 5
+		},
+		{
+			"name": "友情链接",
+			"en_name": "Friends Links",
+			"link": "http://www.baidu.com",
+			"image": "http://chanpin.xm12t.com.cn/images/cat_01.jpg",
+			"description": "这是栏目的一段描述...",
+			"type": 6
+		}
+	]
+}

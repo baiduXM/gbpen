@@ -1,0 +1,38 @@
+<div class="fixed_nav">         
+    <div class="top_fix_wp">
+      <h1><a class="logo" href="{$site_url}"><img src="{$logo}" alt="{$title}"></a></h1>
+    </div>
+    <nav>
+      <ul id="nav">
+        <li><a href="{$site_url}">首页</a></li>
+        <li><a href="{$global.about.link}">{$global.about.name}</a></li>
+        <li><a href="{$global.news.link}">{$global.news.name}</a></li>
+        <li><a href="{$global.products.link}">{$global.products.name}</a></li>
+        <li><a href="{$global.case.link}">{$global.case.name}</a></li>
+        <li><a href="{$global.feedback.link}">{$global.feedback.name}</a></li>
+        <li><a href="{$global.contact_us.link}">{$global.contact_us.name}</a></li>
+
+
+        {foreach name=navs item=nav from=$global.fixed_navs}          
+          <li>
+            <a href="{$nav.link}">{$nav.name}</a>
+          </li>              
+        {/foreach}
+      </ul>
+    </nav>
+
+
+    <div class="search">
+      <form id="form" class="fm" action="{$search_action}" method="GET" name="fm">
+        <span class="s_ipt_wr">
+          <input type="text" id="kw" name="s" class="s_ipt" placeholder=""/>
+        </span>
+        <span class="s_btn_wr">
+          <input type="submit" class="s_btn" id="submit" value="">
+        </span>
+      </form>
+    </div>
+  
+    <p class="hot_phone">服务热线:<span>{$contact.telephone}</span></p>
+    <div class="copyright">{$footprint}</div>
+</div>

@@ -1,0 +1,41 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+
+<head>
+    <meta charset="UTF-8">
+    <title>ueditor demo</title>
+    <!-- 配置文件 -->
+    <script type="text/javascript" src="ueditor.config.js"></script>
+    <!-- 编辑器源码文件 -->
+    <script type="text/javascript" src="ueditor.all.js"></script>
+    <!-- 实例化编辑器 -->
+    
+</head>
+<body>
+<script type="text/javascript">
+    var editor = UE.getEditor('container',{  
+                //这里可以选择自己需要的工具按钮名称,此处仅选择如下五个  
+                music:false,
+                //focus时自动清空初始化时的内容  
+                autoClearinitialContent:true,  
+                //关闭字数统计  
+                wordCount:false,  
+                //关闭elementPath  
+                elementPathEnabled:false,  
+                //默认的编辑区域高度  
+                initialFrameHeight:300  
+                //更多其他参数，请参考ueditor.config.js中的配置项  
+            });  
+    </script>
+    
+<input type="text" id="image">
+<a href="javascript:void(0);" id="up" onclick="upImage();">..</a>
+    <div id="uploader-demo">
+    <!--用来存放item-->
+    <div id="fileList" class="uploader-list"></div>
+    <div id="filePicker">选择图片</div>
+</div>
+    
+</body>
+
+</html>

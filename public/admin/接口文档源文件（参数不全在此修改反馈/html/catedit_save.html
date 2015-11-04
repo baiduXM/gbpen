@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="zh-cn">
+    <head>
+        <meta charset="gbk">
+        <title>添加/编辑栏目</title>
+        <style>
+            body{font: 12px/24px arial,"Microsoft YaHei";}
+            body > h1{text-align: center; line-height:32px;}
+            body > h2{line-height:28px;}
+            body > p{width:85%;margin:0 auto;}
+            .description{width:85%;margin:0 auto;border:1px solid #fff;border-right:0;text-align: center;}
+			.description tr:nth-child(odd) {background:#8cd7c8;}
+			.description tr:nth-child(even) {background:#e7f4fc;}
+            .description td.title,th.title{background:#56d6bc;}
+            .description th{border-right:1px solid #fff;}
+            .description td{border-top:1px solid #fff;border-right:1px solid #fff;padding:2px;}
+			.testdata {width:85%;margin:0 auto;}
+        </style>
+    </head>
+    <body>
+        <h1>添加/编辑栏目</h1>
+        <p><br>
+    </p>
+        <h2>接口说明：</h2>
+        <table class="description" cellspacing="0px">
+            <thead>
+                <tr>
+                    <th colspan="3" class="title">添加/编辑栏目</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="1" class="title">地址</td>
+                    <td colspan="2">../classify-modify(修改)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;../classify-create(新增)</td>
+                </tr>
+                <tr>
+                    <td colspan="3" class="title">参数</td>
+                </tr>
+                <tr>
+                  <td class="title">id(int)</td>
+                  <td>栏目ID</td>
+                  <td>如果提交此参数则是修改操作，否则新增</td>
+                </tr>
+                <tr>
+                  <td class="title">name(int)*</td>
+                  <td>栏目名称</td>
+                  <td>&nbsp;</td>
+                </tr>
+                <tr>
+                  <td class="title">type(int)*</td>
+                  <td>栏目类型</td>
+                  <td>1-文字列表，2-图片列表，3-图文列表，<br>
+                  4-内容单页，5-功能，6-外链，7-微信功能，8-直达号功能</td>
+                </tr>
+
+                <tr>
+                  <td class="title">p_id(int)</td>
+                  <td>父级ID</td>
+                  <td>&nbsp;</td>
+                </tr>
+                <tr>
+                  <td class="title">is_show(array)</td>
+                  <td ><span class="title">站点展示位置</span><br>
+0,1,2...(array)</td>
+                  <td>值为 pc_show|mobile_show|wechat_show  分别对应PC、手机、微信下展示的栏目<br>
+如：<span class="title">is_show</span>[0]=mobile_show&amp;<span class="title">is_show</span>[1]=wechat_show</td>
+                </tr>
+                <tr>
+                  <td class="title">img(array)</td>
+                  <td>预览图</td>
+                  <td>可能是多张</td>
+                </tr>
+                <tr>
+                  <td class="title">keywords(string)</td>
+                  <td>关键词</td>
+                  <td>英文逗号分隔</td>
+                </tr>
+                <tr>
+                  <td class="title">description(string)</td>
+                  <td>描述</td>
+                  <td>&nbsp;</td>
+                </tr>
+                <tr>
+                  <td class="title">url(string)</td>
+                  <td>外链地址</td>
+                  <td>&nbsp;</td>
+                </tr>
+                <tr>
+                  <td class="title">module_key(string)</td>
+                  <td>功能标识符</td>
+                  <td>type==5,7,8必填（建议数据库无需实际存储，存储至url字段）</td>
+                </tr>
+                <tr>
+                  <td class="title">module_value(int)</td>
+                  <td>功能模块的值</td>
+                  <td>type==7,8必填</td>
+                </tr>
+                <tr>
+                    <td class="title">page_content(string)</td>
+                    <td>单页内容</td>
+                    <td>type==4必填，单页的HTML内容</td>
+                </tr>
+                <tr>
+                <td colspan="3" class="title">返回值</td>
+                </tr>
+                <tr>
+                    <td class="title">err(int)</td>
+                    <td colspan="2">0 - 创建成功；    其他 - 错误（具体参见错误代码表）</td>
+                </tr>
+                <tr>
+                    <td class="title">msg(string)</td>
+                    <td colspan="2">错误提示信息（err为0时 值为空）</td>
+                </tr>
+
+                <tr>
+                  <td class="title" rowspan="11">data(array)</td>
+                    <td>id(int)</td>
+                    <td>新增栏目id</td>
+                </tr>
+                <tr>
+                    <td>name(string)</td>
+                    <td>栏目名称</td>
+                </tr>
+                <tr>
+                    <td>img(string)</td>
+                    <td>首张预览图</td>
+                </tr>
+
+                <tr>
+                    <td>type(int)</td>
+                    <td>1-文字列表，2-图片列表，3-图文列表，<br>
+4-内容单页，5-功能，6-外链，7-微信功能，8-直达号功能</td>
+                </tr>
+
+                <tr>
+                  <td>module_key(string)</td>
+                  <td>功能标识符，type==5,7,8有值（建议数据库无需实际存储，存储至url字段）</td>
+                </tr>
+                <tr>
+                  <td>module_value(int)</td>
+                  <td>功能模块的值，type==7,8有值（建议数据库无需实际存储，存储至url字段）</td>
+                </tr>
+                <tr>
+                    <td>url(string)</td>
+                    <td>外链地址</td>
+                </tr>
+
+                <tr>
+                    <td>pc_show(int)</td>
+                    <td>是否在PC下展示</td>
+                </tr>
+                <tr>
+                    <td>mobile_show(int)</td>
+                    <td>是否在手机浏览器下展示</td>
+                </tr>
+                <tr>
+                  <td>wechat_show(int)</td>
+                  <td>是否在微信下展示</td>
+                </tr>
+
+                <tr>
+                  <td>p_id(int)</td>
+                  <td>父级ID</td>
+                </tr>
+            </tbody>
+        </table>
+		<h2>返回示例数据：</h2>
+		<pre class="testdata">
+{
+
+}
+		</pre>
+
+		<script type="text/javascript">
+		var nthChild = function (elem, num) {
+			var len = elem.length;
+			var ret = [];
+			var i = 0;
+
+			// :nth-child(num)
+			if (!isNaN(Number(num))) {
+				for (i = 0; i < len; i++) {
+					if (i === num - 1) return elem[i];
+				}
+			}
+
+			// :nth-child(numn+num)
+			if (num.indexOf('+') > 0) {
+				var parts = num.match(/\w/g);
+				for (i = parts[2] - 1; i < len; i += parts[0] << 0) {
+					if (elem[i]) ret.push(elem[i]);
+				}
+			}
+
+			// :nth-child(odd)
+			if (num === 'odd') {
+				for (i = 0; i < len; i += 2) {
+					ret.push(elem[i]);
+				}
+			}
+
+			// :nth-child(even)
+			if (num === 'even') {
+				for (i = 1; i < len; i += 2) {
+					ret.push(elem[i]);
+				}
+			}
+
+			return ret;
+		};
+
+		var rows = document.getElementsByTagName('tr');
+		var even = nthChild(rows, 'even');
+		var odd = nthChild(rows, 'odd');
+		for (i in even) {
+			even[i].style.backgroundColor = '#e7f4fc';
+		}
+		for (i in odd) {
+			odd[i].style.backgroundColor = '#8cd7c8';
+		}
+		</script>
+    </body>
+</html>

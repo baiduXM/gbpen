@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <script type="text/javascript">
+    // 跳转手机页面
+    {if $site_another_url}
+        if (!!navigator.userAgent.match(/AppleWebKit.*Mobile.*/)) {
+            location.href = '{$site_another_url}';
+        }
+    {/if}
+    </script>
+ 
+
+<meta name="keywords" content="{$keywords}"/>
+<meta name="description" content="{$description}"/>
+<link rel="shortcut icon" href="{$favicon}" type="image/x-icon" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Language" content="zh-CN">
+<link href="{$site_url}css/css.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$site_url}js/jquery-1.11.3.js"></script>
+<script type="text/javascript" src="{$site_url}js/jquery.SuperSlide.2.1.js"></script>
+<script type="text/javascript" src="http://common.mn.sina.com.cn/public/resource/lib/jquery.jcarousellite.js">
+</script>
+
+<script type="text/javascript" src="{$site_url}js/global.js"></script>
+<script type="text/javascript" src="{$site_url}js/index.js"></script>
+<title>{$title}</title>
+
+</head>
+
+<body>
+<div class="wrap">
+<!-- 导入头部文件 -->
+    {include file='./_header.html'}
+
+
+    <div class="content">       
+            <div class="ny-left fl">
+            <!-- 导入侧边栏 -->
+                {include file='./_pagenavs_sub3.html'}
+                <div class="sideitem nycontact">
+                  <dl>联系我们</dl>
+                  <dt>Contact Us</dt>
+                </div>
+                <div class="sideitem nyserve">
+                  <dl>服务项目</dl>
+                  <dt>Service Item</dt>                  
+                </div>
+
+
+              
+             
+            </div>
+            <div class="ny-right fr">
+              <h1>{$list.name}/<span>{$list.en_name}</span><div class="location"><a href="{$site_url}">首页</a> {foreach item=nav from=$pagenavs}<a href="{$nav.link}">{$nav.name}</a>{/foreach}</div></h1>
+
+              <div class="edit">
+                {$list.content|unescape:"html"}                
+              </div>
+            </div>                                     
+    </div>
+
+     <!-- 导入底部文件 -->
+     {include file='./_footer.html'}
+
+</div>
+</body>
+</html>

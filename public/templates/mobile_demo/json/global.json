@@ -1,0 +1,71 @@
+{
+	"slidepics": {
+		"value": [{
+			"title": "测试图1",
+			"image": "images/baner.jpg",
+			"link": "http://www.baidu.com"
+		}, {
+			"title": "测试图2",
+			"image": "images/baner.jpg",
+			"link": "http://www.baidu.com"
+		}],
+		"description": "大轮滚图",
+		"type": "images"
+	},
+	"bottomnavs": {
+		"value": [{
+			"name": "电话",
+			"image": "icon/2.png",
+			"data": "0592-2323232",
+			"type": "tel",
+			"enable": 1
+		}, {
+			"name": "短信",
+			"image": "icon/3.png",
+			"data": "13489990000",
+			"type": "sms",
+			"enable": 1
+		}, {
+			"name": "咨询",
+			"image": "icon/5.png",
+			"data": "0000001@53kf",
+			"type": "im",
+			"enable": 1
+		}, {
+			"name": "地图",
+			"image": "icon/4.png",
+			"data": "http://...",
+			"childmenu": null,
+			"type": "link",
+			"enable": 1
+		}, {
+			"name": "导航B",
+			"image": "icon/2.png",
+			"data": "http://...",
+			"childmenu": [{
+				"name": "导航B1",
+				"image": "icon/2.png",
+				"data": "http://...",
+				"type": "link",
+				"enable": 1
+			},
+			{
+				"name": "导航B2",
+				"image": "icon/2.png",
+				"data": "http://...",
+				"type": "link",
+				"enable": 1
+			}],
+			"type": "link",
+			"enable": 1
+		}, {
+			"name": "分享",
+			"image": "icon/8.png",
+			"data": "",
+			"type": "share",
+			"enable": 1
+		}],
+		"description": "底部导航",
+		"type": "navs"
+	}
+}

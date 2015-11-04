@@ -1,0 +1,15 @@
+
+
+<div class="headers"> 
+                 <span><a href="javascript:void(0);" onclick="SetHome(this, window.location);">设为首页</a> | <a href="javascript:void(0);" onclick="shoucang(document.title, window.location);">加入收藏</a> </span>
+      </div>
+     <div class="menu">
+              <ul class="nav">
+        <li><a href="index.html">首页</a></li> 
+                  {foreach name=key item=nav from=$navs} 
+                            <li><a href="{$nav.link}">{$nav.name}</a></li> 
+                          {/foreach}                                                         
+                  <!--<li style="background:none;" ><a href="#" >联系方式</a></li>-->                                                                  
+              </ul>
+          </div> 
+          <div class="banners"><img src="{$index.slidepics[0].image}" height="309" width="996" /></div> 

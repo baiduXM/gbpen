@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <script type="text/javascript">
+            // 跳转手机页面
+            {if $site_another_url}
+            if (!!navigator.userAgent.match(/AppleWebKit.*Mobile.*/)) {
+            location.href = '{$site_another_url}';
+            }
+            {/if}
+        </script>
+        <meta http-equiv="x-ua-compatible" content="ie=8" />
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <link href="{$site_url}css/style.css" rel="stylesheet" type="text/css" /><!--[if IE 6]>
+        <script type="text/javascript" src="js/dd_delatedpng.js" ></script>
+        <script type="text/javascript">//如果多个element使用PNG,则用','分隔
+        DD_belatedPNG.fix('div,ul,li,a,p,img');
+        </script>
+        <![endif]-->
+        <script type="text/javascript" src="{$site_url}js/jquery1.42.min.js"></script>
+        <script type="text/javascript" src="{$site_url}js/jquery.SuperSlide.2.1.js"></script>
+        
+        <meta name="keywords" content="{$keywords}" />
+        <meta name="description" content="{$description}" />
+        <link rel="shortcut icon" href="{$favicon}" type="image/x-icon" />
+        <link rel="stylesheet" rev="stylesheet" href="{$site_url}css/style_{$stylecolor}.css" type="text/css" />
+        <script type="text/javascript" src="{$site_url}js/index.js"></script>
+        
+        <title>{$title}</title>
+        {$headscript}
+    </head>
+
+    <body>
+        <div class="wappers"> 
+        {include file='./_header.html'} 
+            <div class="containers">
+                <div class="index">
+                    <div class="left">
+                        <div class="list" style="height:210px;">
+                            <div class="list_title">{$pagenavs[0].name}</div>
+                            <div class="listbg">
+                                <ul>
+                                    <!--<li ><a href="#" class="choose">产品中心</a></li>-->                          
+                                    {foreach name=pagenavs item=nav from=$pagenavs}
+                                    {if $nav.current}
+                                    <li class="choose"><a href="{$nav.link}">{$nav.name}</a></li>
+                                    {else}
+                                    <li><a href="{$nav.link}">{$nav.name}</a></li>
+                                    {/if}
+                                    {/foreach}               
+                                </ul>
+                            </div>             
+                        </div>                
+                    </div>
+                    <div class="aboiut">
+                        <div class="list_title2"><span><a href="{$index.about_image.link}"><img src="images/more.jpg" height="33" width="36" /></a></span>{$index.about_title}</div>
+                        <div class="border">
+                            <div class="anputt">
+                                {$index.about_description}
+                                <span><a href="{$index.about_image.link}">[了解更多]</a></span>
+                            </div>
+                        </div>               
+                    </div> 
+                    <div class="news">
+                        <div class="list_title2"><span><a href="{$index.list1.link}"><img src="images/more.jpg" height="33" width="36" /></a></span>{$index.list1.name}</div>
+                        <div class="news_deta3">
+                            <ul> 	
+                                {foreach item=article from=$index.list1.data}
+                                <li><a href="{$article.link}"><span>{$article.pubdate}</span>{$article.title}</a></li>
+                                {if $article@index+1 == 8}{break}{/if}
+                                {/foreach}      
+                            </ul>  
+                        </div>              
+                    </div>   
+
+                </div>
+                <div class="show_pic">
+                    <div class="rollBox">
+                        <div class="LeftBotton" onmousedown="ISL_GoUp()" onmouseup="ISL_StopUp()" onmouseout="ISL_StopUp()"></div>
+                        <div class="Cont" id="ISL_Cont">
+                            <div class="ScrCont">
+                                <div id="List1">
+                                    <!-- 图片列表 begin -->
+                                    {foreach item=article from=$index.list2.data} 
+                                    <div class="pic">
+                                        <a href="{$article.link}" target="_blank"><img src="{$article.image}" height="131" width="193"/><h1>{$article.title}</h1></a>
+                                    </div>       
+                                    {/foreach}         
+                                    <!-- 图片列表 end -->    
+                                </div>
+                                <div id="List2"></div>
+                            </div>
+                        </div>
+                        <div class="RightBotton" onmousedown="ISL_GoDown()" onmouseup="ISL_StopDown()" onmouseout="ISL_StopDown()"></div>
+                    </div>  
+
+                </div>
+            </div> 
+            {include file='./_footer.html'} 
+        </div>
+    </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

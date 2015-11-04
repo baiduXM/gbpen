@@ -1,0 +1,105 @@
+ 
+<link rel="stylesheet" href="css/themes.css">
+<link rel="stylesheet" href="css/laydate.css">
+<script src="js/colorpicker.min.js"></script>
+<script type="text/javascript">
+    ColorPicker(document.getElementById('color-picker'),
+        function(hex, hsv, rgb) {
+            // console.log(hsv.h, hsv.s, hsv.v);         // [0-359], [0-1], [0-1]
+            // console.log(rgb.r, rgb.g, rgb.b);         // [0-255], [0-255], [0-255]
+            $('#addarticle-con .art_tit').css('color',hex);
+    });
+</script>
+<div class="jumbotron text-center">
+    <div id="addarticle-con" class="whole article-con">
+        <div class="add-info fl">
+            <div class="btn-top clearfix">
+                <a class="inline-block fl addcancle all_button" href="#/article">返回</a>
+                <a class="inline-block fr addsave all_button" href="">保存</a>
+            </div>
+            <ul class="home-list">
+                <li class="f_column"><span class="fl mr5">栏目分类：</span>
+                    <!-- 栏目 --> 
+                </li>
+                <li><span class="fl">发布时间：</span><input type="text" class="laydate-icon creat_time" onClick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm'})" readonly="readonly" /></li>
+                <li><span class="fl">访问次数：</span><input type="text" class="visit"/></li>
+                <li class="is_show"><span class="fl">可见站点：</span>
+                	<span style="color:#333; display: inline ">
+                        <input type="checkbox" id="1" name="vehicle" value="pc_show" style=" display:none;"><label class="labe2"></label>PC
+                    </span>
+					<span style="color:#333; display: inline ">
+                        <input type="checkbox" id="2" name="vehicle" value="mobile_show" style=" display:none;"><label class="labe2"></label>手机
+                    </span>
+					<span style="color:#333; display: inline ">
+                        <input type="checkbox" id="3" name="vehicle" value="wechat_show" style=" display:none;"><label class="labe2"></label>微信
+                    </span>
+                </li>
+                <li class="article_pic"><span class="fl" style="position:relative;letter-spacing: 4px;">缩略图：</span>
+                    <div class="up_pic_feild">
+                        <div class="up_pic"></div>
+                    </div>
+                </li>
+                <li><span class="fl" style="letter-spacing: 4px;">关键字：</span><input type="text" style="margin-left: -4px" name="keyword" class="keyword"/></li>
+                <li><span class="fl" >内容简介：</span><textarea name="txts" class="txts" cols="30" rows="10"></textarea></li>
+            </ul>
+        </div>
+        <div class="add-r fl pr">
+            <p>文章标题</p>
+            <input type="text" name="art_tit" class="art_tit" style="width:380px;"><span class="set_blod">加粗</span><span class="set_color">修改颜色</span>
+            <div id="color-picker" class="cp-default"></div>
+            <p>文章内容</p>
+            <div id="editor-container" style="height:500px;"><textarea name="art_info" class="art_info" cols="30" rows="10" id="container"></textarea></div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+!function(){
+    laydate.skin('molv');//切换皮肤，请查看skins下面皮肤库
+    laydate({elem: '#demo'});//绑定元素
+}();
+
+//日期范围限制
+var start = {
+    elem: '#start',
+    format: 'YYYY-MM-DD',
+    min: laydate.now(), //设定最小日期为当前日期
+    max: '2099-06-16', //最大日期
+    istime: true,
+    istoday: false,
+    choose: function(datas){
+         end.min = datas; //开始日选好后，重置结束日的最小日期
+         end.start = datas //将结束日的初始值设定为开始日
+    }
+};
+
+var end = {
+    elem: '#end',
+    format: 'YYYY-MM-DD',
+    min: laydate.now(),
+    max: '2099-06-16',
+    istime: true,
+    istoday: false,
+    choose: function(datas){
+        start.max = datas; //结束日选好后，充值开始日的最大日期
+    }
+};
+laydate(start);
+laydate(end);
+
+//自定义日期格式
+laydate({
+    elem: '#test1',
+    format: 'YYYY年MM月DD日',
+    festival: true, //显示节日
+    choose: function(datas){ //选择日期完毕的回调
+        alert('得到：'+datas);
+    }
+});
+
+//日期范围限定在昨天到明天
+laydate({
+    elem: '#hello3',
+    min: laydate.now(-1), //-1代表昨天，-2代表前天，以此类推
+    max: laydate.now(+1) //+1代表明天，+2代表后天，以此类推
+});
+</script>

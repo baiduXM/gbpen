@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html manifest="huancun.manifest">
+<head>
+<script type="text/javascript">
+		// 跳转PC页面
+		{if $site_another_url}
+			if (!!navigator.userAgent.match(/AppleWebKit.*Mobile.*/)) {
+				location.href = '{$site_another_url}';
+			}
+		{/if}
+		</script>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<meta name="keywords" content="{$keywords}" />
+<meta name="description" content="{$description}" />
+<link rel="shortcut icon" href="{$favicon}" type="image/x-icon" />
+<meta name="viewport" content="width=device-width,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no,minimal-ui">
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta content="telephone=no, email=no" name="format-detection">
+<!-- 启用360浏览器的极速模式(webkit) -->
+<meta name="renderer" content="webkit">
+<!-- 避免IE使用兼容模式 -->
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<!-- 针对手持设备优化，主要是针对一些老的不识别viewport的浏览器，比如黑莓 -->
+<meta name="HandheldFriendly" content="true">
+<!-- 微软的老式浏览器 -->
+<meta name="MobileOptimized" content="320">
+<!-- uc强制竖屏 -->
+<meta name="screen-orientation" content="portrait">
+<!-- QQ强制竖屏 -->
+<meta name="x5-orientation" content="portrait">
+<title>{$title}</title>
+<link rel="stylesheet" href="{$site_url}css/reset.css" /> 
+<link rel="stylesheet" href="{$site_url}css/public.css" /> 
+<link href="{$site_url}css/css.css" rel="stylesheet" type="text/css" />
+<link href="{$site_url}css/swipe.css" rel="stylesheet" type="text/css" />
+
+<script src="{$site_url}js/TouchSlide.1.1.js"></script>
+<script type="text/javascript" src="{$site_url}js/jquery.min.js"></script>
+<script type="text/javascript" src="{$site_url}js/function.js"></script>
+<script type="text/javascript" src="{$site_url}js/share.js"></script>
+<script src="{$site_url}js/idangerous.swiper-2.0.min.js"></script>
+<script src="{$site_url}js/idangerous.swiper.3dflow-2.0.js"></script>
+<script src="{$site_url}js/simple-app.js"></script>
+<script type="text/javascript">
+	window.addEventListener('load', function(){
+   setTimeout(function(){ window.scrollTo(0, 1); }, 100);
+});//safari浏览器可以通过此代码来隐藏地址栏
+</script>
+
+</head>
+<body>
+<div class="body">
+{include file="./_nav1.html"}
+<div class="wrap page-active">
+<div class="opacity2"></div>
+{include file="./_footer.html"}
+<div class="index-wrap">
+	<header>
+    	<div class="top">
+        	<div class="heaer">
+            	<div class="logo"><img src="{$logo}" width="100%"></div>
+            </div>
+            <div class="baner">
+	<div id="slideBox" class="slideBox">
+    <div class="hd">
+            <ul></ul>
+              </div>
+	<div class="bd">
+		<ul>
+			{foreach name=slidepics item=slidepic from=$global.slidepics}
+			<li><a class="pic" href="{$slidepic.link}"><img src="{$slidepic.image}" /></a></li>
+			{/foreach}
+		</ul>
+	</div>
+	
+			</div>
+		
+        </div>
+        </div>
+        <div class="menu">
+            	<div class="nav">
+               <div class="swiper-nav swiper-container">
+                  <div class="swiper-wrapper">
+				  
+				   {foreach name=key item=nav from=$navs}
+                      <div class="swiper-slide">
+                      		<div class="menubox allcolor">
+                            <a href="{$nav.link}"><dd class="icon"><img src="{$nav.image}" width="100%"></dd>
+                      		<dt class=" title">{$nav.name}</dt></a>
+                            </div>
+                       </div>
+                       {/foreach}  
+                  </div>
+				</div>
+                </div>
+    </div>
+    </header>
+    <section>
+	 {foreach name=mIndexCats_list item=mIndexCat from=$mIndexCats}
+	  {if $mIndexCat.type eq 3}
+    	<div class="boxmain">
+        	<h1 class="boxmain-top allcolor"><span class="more"><a href="{$mIndexCat.link}">更多</a></span>{$mIndexCat.name}</h1>
+            <div class="boxmain-news">
+            	<ul class="newslist">
+				   {foreach name=mIndexCat_list item=mIndexCat_list from=$mIndexCat.list}
+                	<li onclick="javascript:window.location.href='{$mIndexCat_list.link}'">
+                    	<div class="date">
+                        	<dd class="year">{$mIndexCat_list.pubdatestamp|date_format:"%y"}</dd>
+                            <dd class="month">{$mIndexCat_list.pubdatestamp|date_format:"%m "}月</dd>
+                        </div>
+                        <dl class="img"><img src="{$mIndexCat_list.image}" width="100%" title="144*112"></dl>
+                        <dt class=" title">{$mIndexCat_list.title}</dt>
+                        <dd class="nr">{$mIndexCat_list.description}</dd>
+                        <dd class="date1"><img src="images/clock.jpg" width="18">{$mIndexCat_list.pubdate}</dd>
+                    </li>
+                    {if $mIndexCat_list@index+1 == 3}{break}{/if}
+					{/foreach}
+
+                </ul>
+            </div>
+        </div>
+		{elseif $mIndexCat.type eq 2}
+        <div class="boxmain">
+        	<h1 class="boxmain-top allcolor"><span class="more"><a href="{$mIndexCat.link}">更多</a></span>{$mIndexCat.name}</h1>
+            <div class="boxmain-pro">
+            	<ul class="picture2">
+              {foreach name=mIndexCat_list item=mIndexCat_list from=$mIndexCat.list}
+               <li><div><a href="{$mIndexCat_list.link}"><p class="img"><img src="{$mIndexCat_list.image}" width="100%" title="196*243" /></p><p class=" title1">{$mIndexCat_list.title}</p></a></div></li>
+			   {if $mIndexCat_list@index+1 == 6}{break}{/if}
+					{/foreach}
+          		</ul>
+            </div>
+        </div>
+		{/if}
+		{/foreach}
+    </section>
+</div>
+</div>
+</div>
+</body>
+</html>

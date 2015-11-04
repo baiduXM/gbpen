@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="Generator" content="EditPlus®">
+  <meta name="Author" content="">
+  <meta name="Keywords" content="">
+  <meta name="Description" content="">
+  <title>Document</title>
+  <script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+  <style>
+  	.filelist{width:18%;float:left;border-right:2px dotted #222;margin-right:10px;height:100%;}
+  	.filelist h3{color:#3878c0;}
+  	.filelist button{border:none;}
+  	.fileedit{width:75%;float:left;}		
+  </style>
+ </head>
+ <body>
+<div class="filelist">
+
+</div>
+<button class="btn btn-save">保存</button>
+<button class="btn btn-undo">取消</button>
+<div class="fileedit">
+</div>
+<script type="text/javascript">
+	$(document).ready(function(){
+		var vdata = '';
+		$.getJSON('template-filelist',function(data){
+			$.each(data,function(i,v){
+				vdata +='<h3>'+i+'</h3>';
+				$.each(v,function(key,value){
+					switch(value){
+						case 'index.tpl' : vdata += '<button class="btn-edit" value="'+value+'">'+value+'(首页)</button><br>';break;
+						case 'text-list.tpl' : vdata += '<button class="btn-edit" value="'+value+'">'+value+'(文字列表页)</button><br>';break;
+						case 'image-list.tpl' : vdata += '<button class="btn-edit" value="'+value+'">'+value+'(图片列表页)</button><br>';break;
+						case 'imagetext-list.tpl' : vdata += '<button class="btn-edit" value="'+value+'">'+value+'(图文列表页)</button><br>';break;
+						case 'content.tpl' : vdata += '<button class="btn-edit" value="'+value+'">'+value+'(纯文本页)</button><br>';break;
+						case 'title-content.tpl' : vdata += '<button class="btn-edit" value="'+value+'">'+value+'(标题文本页)</button><br>';break;
+						case 'image-content.tpl' : vdata += '<button class="btn-edit" value="'+value+'">'+value+'(图片文本页)</button><br>';break;
+						case 'header.tpl' : vdata += '<button class="btn-edit" value="'+value+'">'+value+'(公共头部)</button><br>';break;
+						case 'footer.tpl' : vdata += '<button class="btn-edit" value="'+value+'">'+value+'(公共底部)</button><br>';break;
+						default : vdata += '<button class="btn-edit" value="'+value+'">'+value+'</button><br>';
+					}
+				});
+				
+			});
+			$('.filelist').html(vdata);
+		});
+
+		$('.filelist').on('click','.btn-edit',function(){
+			$('.fileedit').html('');
+			var vfilename = $(this).attr('value');
+			$.get('template-fileget',{filename:vfilename},function(data){
+				$('.fileedit').append('<input type="hidden" name="filename" value="'+vfilename+'">');
+				$('.fileedit').append('<textarea name="filecontent" rows="40" cols="100">'+data+'</textarea>');
+				
+			});
+		});
+
+		$('.btn-save').click(function(){
+			var vfilename = $('input[name="filename"]').val();
+			var vcontent = $('textarea[name="filecontent"]').val();
+			$.post('template-fileeidt',{filename:vfilename,content:vcontent},function(data){
+				if(data.err==0){
+					alert('编辑成功');
+					$('.fileedit textarea').val(vcontent);
+				}
+				else{
+					alert(data.msg);
+					$('.fileedit textarea').val(vcontent);
+				}
+			});
+		});
+
+		$('.btn-undo').click(function(){
+			$('.fileedit input').remove();
+			$('.fileedit textarea').remove();
+		});
+	});
+</script>
+ </body>
+</html>

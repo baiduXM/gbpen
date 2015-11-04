@@ -1,0 +1,24 @@
+  <div class="nyfoot">
+      <div class="footer">
+        {$footprint} {$contact.address} 技术支持：<a href="#">厦门易尔通网络科技有限公司</a> 人才支持：<a href="#">厦门人才网</a> <a href="#">[网站地图]</a>
+        <div class="selectbox">
+          <select onchange="javascript:openLink(this)" value="--友情链接--">   
+            <option> 友情链接</option>  
+            {foreach item=flink from=$global.links} 
+            <option value="{$flink.link}">{$flink.title}</option>   
+        <!--     <option value="http://www.baidu.com">百度</option>   -->  
+            {/foreach}  
+          </select> 
+          <script type="text/javascript">
+             function openLink(obj) {
+                if (obj.selectedIndex != 0) {
+                  window.open(obj.options[obj.selectedIndex].value);
+                }
+              }
+          </script>  
+        </div>
+      </div>
+    </div>
+
+
+{$footscript}

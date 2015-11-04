@@ -1,0 +1,45 @@
+<header>
+	<section class="top"></section>
+	<section class="head">
+		<h1 class="ellipsis"><a href="{$site_url}">{$title}</a></h1>
+		<nav>
+			<ul class="clearfix">
+				{foreach name=navs item=nav from=$navs}
+				<li class="{if $nav@index > 2}fr{else}fl{/if}{if $nav.current} current{/if}">
+					<a href="{$nav.link}">{$nav.name}</a>
+					<!-- 鼠标经过出现菜单 -->
+					{if $nav.childmenu or $nav.lastest}
+					<div class="nav-dropdown clearfix tst-all{if !$nav.childmenu and $nav.lastest} onlylist{/if}{if $nav.childmenu and !$nav.lastest} onlycat{/if}">
+						<!-- 子栏目列表 -->
+						{if $nav.childmenu}
+						<div class="nav-dropdown-subnavs fl">
+							<ul class="clearfix">
+								{foreach key=key item=nav_list from=$nav.childmenu}
+								<li class="{if $nav_list.current}current{/if}"><a class="ellipsis" href="{$nav_list.link}">{$nav_list.name}</a></li>
+								{/foreach}
+							</ul>
+						</div>
+						{/if}
+						<!-- 栏目最新动态 -->
+						{if $nav.lastest}
+						<div class="nav-dropdown-lastest fl">
+							{foreach name=lastest item=article from=$nav.lastest}
+							<dl class="fl tst-all">
+								<dd class="cat"><a class="ellipsis" href="{$article.category.link}">{$article.category.name}</a></dd>
+								<dd><a class="img image-center" href="{$article.link}"><img src="{$article.image}" alt="{$article.title}" /></a></dd>
+								<dt><a href="{$article.link}">{$article.title}</a></dt>
+							</dl>
+							{if $nav.childmenu and $article@index+1 == 3}{break}
+							{elseif $article@index+1 == 5}{break}{/if}
+							{/foreach}
+						</div>
+						{/if}
+					</div>
+					{/if}
+				</li>
+				{if $nav@index+1 == 6}{break}{/if}
+				{/foreach}
+			</ul>
+		</nav>
+	</section>
+</header>

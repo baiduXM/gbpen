@@ -1,0 +1,34 @@
+{
+	announcement: {
+		value: '你看到的都是模板测试数据，需修改请登陆后台进入【页面内容】更新！\r\n第二行公告内容公告内容公告内容公告内容',
+		description: '网站公告',
+		type: 'text'
+	},
+	slidepics: {
+		value: [{
+			title: '测试图1',
+			src: 'http://tb2.bdstatic.com/tb/static-common/img/search_logo_big_282cef2.gif',
+			href: '{siteurl}/article/1.html',
+		}, {
+			title: '测试图2',
+			src: 'http://img0.bdstatic.com/static/common/widget/search_box_search/logo/logo_3b6de4c.png',
+			href: '{siteurl}/article/2.html',
+		}],
+		description: '大轮滚图',
+		type: 'images'
+	},
+	list1: {
+		value: {
+			id: 1,
+			total: 4,
+			star_only: 0
+		},
+		description: '第一个图文列表',
+		type: 'list'
+	},
+	contact: {
+		value: 'QQ：156568451\r\n（这其实是个文本区域）',
+		description: '联系我们',
+		type: 'text'
+	}
+}

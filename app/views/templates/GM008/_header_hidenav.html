@@ -1,0 +1,26 @@
+  <div class="opacity2"></div>
+  <div class="class public_bg">
+    <h1 class="class-top"><span class="class-close">×</span>快速导航</h1>
+    <div class="class-m">
+      <div class="swiper-container scroll-container">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide">
+            <ul class="class-list">
+              <li><a href="index.html">首 页</a></li>
+    {foreach name=navs item=nav from=$navs}
+        <li class="menu_head">
+          {if $nav.childmenu}<dl class="icon"><span class="icon1">-</span><span class="icon2">+</span></dl>{/if}
+          <a href="{$nav.link}">{$nav.name}</a>
+        </li>
+        {if $nav.childmenu}
+          <li class="menu_body">
+            {foreach key=key item=nav_list from=$nav.childmenu}
+            <dl><a href="{$nav_list.link}">{$nav_list.name}</a></dl>
+            {/foreach}
+          </li>
+        {/if}
+    {/foreach}
+    </ul>
+    </div></div></div>
+  </div>
+</div>

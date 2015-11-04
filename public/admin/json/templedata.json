@@ -1,0 +1,352 @@
+{   
+    "err": 0,
+    "msg": "",
+    "data":{
+		"pagelist": [{
+			"page": "index",
+			"title": "首页",
+			"url": "http://www.sina.com.cn"
+		}, {
+			"page": "list-text",
+			"title": "文字列表页",
+			"url": "http://www.baidu.com"
+		}],
+		"templedata": {
+			"image":{
+				"value": 
+					{
+						"title": "测试图一", 
+						"src": "http://gtms04.alicdn.com/tps/i4/TB1amJmGFXXXXX6aXXXXkNqIFXX-2000-450.jpg", 
+						"href": "/article/1.html"
+					}, 
+				"description": "大轮滚图", 
+				"type": "image"
+			},
+			"title": {
+				"value": "XXX企业", 
+				"description": "顶部大标题", 
+				"type": "text"
+			}, 
+			"gonggao": {
+				"value": "aaaaaaa", 
+				"description": "公告", 
+				"type": "text"
+			}, 
+			"slidepics": {
+				"value": [
+					{
+						"title": "测试图一", 
+						"src": "http://gtms04.alicdn.com/tps/i4/TB1amJmGFXXXXX6aXXXXkNqIFXX-2000-450.jpg", 
+						"href": "/article/1.html"
+					}, 
+					{
+						"title": "测试图二", 
+						"src": "http://gtms03.alicdn.com/tps/i3/TB1ryRGGVXXXXc_XpXXPldqIFXX-2000-450.png", 
+						"href": "article/2.html"
+					}, 
+					{
+						"title": "测试图三", 
+						"src": "http://gtms02.alicdn.com/tps/i2/TB1jPXoGFXXXXcTXVXXXkNqIFXX-2000-450.jpg", 
+						"href": "/article/3.html"
+					}
+				], 
+				"description": "大轮滚图", 
+				"type": "images"
+			}, 
+			"list1": {
+				"value": {
+					"list":[
+						{
+							"id": 1, 
+							"name": "社会万象", 
+							"p_id": 0, 
+							"selected": 0, 
+							"childmenu": [
+								{
+									"id": 7, 
+									"name": "风气", 
+									"p_id": 1, 
+									"selected": 0, 
+									"childmenu": null
+								}, 
+								{
+									"id": 8, 
+									"name": "道德", 
+									"p_id": 1, 
+									"selected": "selected", 
+									"childmenu": null
+								}, 
+								{
+									"id": 9, 
+									"name": "环境", 
+									"p_id": 1, 
+									"selected": 0, 
+									"childmenu": null
+								}
+							]
+						}, 
+						{
+							"id": 2, 
+							"name": "情感八卦", 
+							"p_id": 0, 
+							"selected": 0, 
+							"childmenu": null
+						}, 
+						{
+							"id": 3, 
+							"name": "拍案说法", 
+							"p_id": 0, 
+							"selected": 0, 
+							"childmenu": null
+						}, 
+						{
+							"id": 4, 
+							"name": "五花八门", 
+							"p_id": 0, 
+							"selected": 0, 
+							"childmenu": [
+								{
+									"id": 10, 
+									"name": "搞笑", 
+									"p_id": 4, 
+									"selected": 0, 
+									"childmenu": null
+								}, 
+								{
+									"id": 11, 
+									"name": "幽默", 
+									"p_id": 4, 
+									"selected": 0, 
+									"childmenu": null
+								}, 
+								{
+									"id": 12, 
+									"name": "夸张", 
+									"p_id": 4, 
+									"selected": 0, 
+									"childmenu": null
+								}
+							]
+						}, 
+						{
+							"id": 5, 
+							"name": "奇闻轶事", 
+							"p_id": 0, 
+							"selected": 0, 
+							"childmenu": null
+						}, 
+						{
+							"id": 6, 
+							"name": "民生百态", 
+							"p_id": 0, 
+							"selected": 0, 
+							"childmenu": null
+						}
+					],
+					"star_only": 1,
+					"total": 10
+				}, 
+				"description": "栅格列表", 
+				"type": "list"
+			}, 
+			"list2": {
+				"value": {
+					"list":[
+						{
+							"id": 1, 
+							"name": "社会万象", 
+							"p_id": 0, 
+							"selected": 0, 
+							"childmenu": [
+								{
+									"id": 7, 
+									"name": "风气", 
+									"p_id": 1, 
+									"selected": 0, 
+									"childmenu": null
+								}, 
+								{
+									"id": 8, 
+									"name": "道德", 
+									"p_id": 1, 
+									"selected": "selected", 
+									"childmenu": null
+								}, 
+								{
+									"id": 9, 
+									"name": "环境", 
+									"p_id": 1, 
+									"selected": 0, 
+									"childmenu": null
+								}
+							]
+						}, 
+						{
+							"id": 2, 
+							"name": "情感八卦", 
+							"p_id": 0, 
+							"selected": 0, 
+							"childmenu": null
+						}, 
+						{
+							"id": 3, 
+							"name": "拍案说法", 
+							"p_id": 0, 
+							"selected": 0, 
+							"childmenu": null
+						}, 
+						{
+							"id": 4, 
+							"name": "五花八门", 
+							"p_id": 0, 
+							"selected": 0, 
+							"childmenu": [
+								{
+									"id": 10, 
+									"name": "搞笑", 
+									"p_id": 4, 
+									"selected": 0, 
+									"childmenu": null
+								}, 
+								{
+									"id": 11, 
+									"name": "幽默", 
+									"p_id": 4, 
+									"selected": 0, 
+									"childmenu": null
+								}, 
+								{
+									"id": 12, 
+									"name": "夸张", 
+									"p_id": 4, 
+									"selected": 0, 
+									"childmenu": null
+								}
+							]
+						}, 
+						{
+							"id": 5, 
+							"name": "奇闻轶事", 
+							"p_id": 0, 
+							"selected": 0, 
+							"childmenu": null
+						}, 
+						{
+							"id": 6, 
+							"name": "民生百态", 
+							"p_id": 0, 
+							"selected": 0, 
+							"childmenu": null
+						}
+					],
+					"star_only": 0,
+					"total": 10
+				}, 
+				"description": "栅格列表", 
+				"type": "list"
+			}, 
+			"list3": {
+				"value": {
+					"list":[
+						{
+							"id": 1, 
+							"name": "社会万象", 
+							"p_id": 0, 
+							"selected": 0, 
+							"childmenu": [
+								{
+									"id": 7, 
+									"name": "风气", 
+									"p_id": 1, 
+									"selected": 0, 
+									"childmenu": null
+								}, 
+								{
+									"id": 8, 
+									"name": "道德", 
+									"p_id": 1, 
+									"selected": "selected", 
+									"childmenu": null
+								}, 
+								{
+									"id": 9, 
+									"name": "环境", 
+									"p_id": 1, 
+									"selected": 0, 
+									"childmenu": null
+								}
+							]
+						}, 
+						{
+							"id": 2, 
+							"name": "情感八卦", 
+							"p_id": 0, 
+							"selected": 0, 
+							"childmenu": null
+						}, 
+						{
+							"id": 3, 
+							"name": "拍案说法", 
+							"p_id": 0, 
+							"selected": 0, 
+							"childmenu": null
+						}, 
+						{
+							"id": 4, 
+							"name": "五花八门", 
+							"p_id": 0, 
+							"selected": 0, 
+							"childmenu": [
+								{
+									"id": 10, 
+									"name": "搞笑", 
+									"p_id": 4, 
+									"selected": 0, 
+									"childmenu": null
+								}, 
+								{
+									"id": 11, 
+									"name": "幽默", 
+									"p_id": 4, 
+									"selected": 0, 
+									"childmenu": null
+								}, 
+								{
+									"id": 12, 
+									"name": "夸张", 
+									"p_id": 4, 
+									"selected": 0, 
+									"childmenu": null
+								}
+							]
+						}, 
+						{
+							"id": 5, 
+							"name": "奇闻轶事", 
+							"p_id": 0, 
+							"selected": 0, 
+							"childmenu": null
+						}, 
+						{
+							"id": 6, 
+							"name": "民生百态", 
+							"p_id": 0, 
+							"selected": 0, 
+							"childmenu": null
+						}
+					],
+					"star_only": 0,
+					"total": 10
+				}, 
+				"description": "栅格列表", 
+				"type": "list"
+			}, 
+			"textarea": {
+				"value": "富士康旗下群创光电的公共关系代表SophiaChang日前向彭博社透露，他们在台湾的新工厂将会在下个月开始进行设备安装，但她不愿说明该厂的客户是否就是苹果。 Chang还提到，这间第六代高级显示屏工厂位于群创的高雄科学园区旁。该厂的建设期预计为2年，员工人数将达2300人。因此，即便这间工厂真的是用来为苹果生产蓝宝石屏幕的，距离我们看到配备这种显示屏的iPhone或iPad应该还有相当长的时间。 富士康是苹果的长期合作伙伴，主要负责设备的最后组装。在2012年，富士康和夏普达成了合作关系。此后便有传闻称，他们打算利用夏普的技术来为iPhone和iPad生产显示屏。 ", 
+				"description": "最新小道消息", 
+				"type": "textarea"
+			}  
+		}
+    }
+    
+}

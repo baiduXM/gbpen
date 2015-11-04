@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<script type="text/javascript">
+  // 跳转手机页面
+  {if $site_another_url}
+  if (!!navigator.userAgent.match(/AppleWebKit.*Mobile.*/)) {
+      location.href = '{$site_another_url}';
+  } {/if}
+</script>
+
+<title>{$title}</title>
+<meta name="keywords" content="{$keywords}" />
+<meta name="description" content="{$description}" />
+
+<link rel="stylesheet" rev="stylesheet" href="http://chanpin.xm12t.com.cn/css/global.css" type="text/css" />
+
+<link href="{$site_url}css/style.css" rel="stylesheet" type="text/css" />
+
+<script type="text/javascript" src="{$site_url}js/jquery.js"></script>
+<script type="text/javascript" src="{$site_url}js/jarallax-0.2.3b.js"></script>
+<style>
+  body{
+    height: 2000px;
+    background-color: #214760;
+  }
+  
+</style>
+
+{$headscript}
+</head>
+<body>
+  <!-- fixed_nav layer start -->
+  <div class="fixed_nav">         
+    <div class="top_fix_wp">
+      <h1><a class="logo" href="{$site_url}"><img src="{$logo}" alt="{$title}"></a></h1>
+    </div>
+    <nav>
+      <ul id="nav">
+        <li><a href="{$site_url}" onClick="jarallax.jumpToProgress( 0, 2000, 30);return false;">首页</a></li>
+        <li><a href="{$global.about.link}" onClick="jarallax.jumpToProgress( 10, 2000, 30);return false;">{$global.about.name}</a></li>
+        <li><a href="{$global.news.link}" onClick="jarallax.jumpToProgress( 20, 2000, 30);return false;">{$global.news.name}</a></li>
+        <li><a href="{$global.products.link}" onClick="jarallax.jumpToProgress( 30, 2000, 30);return false;">{$global.products.name}</a></li>
+        <li><a href="{$global.case.link}" onClick="jarallax.jumpToProgress( 40, 2000, 30);return false;">{$global.case.name}</a></li>
+        <li><a href="{$global.feedback.link}" onClick="jarallax.jumpToProgress( 50, 2000, 30);return false;">{$global.feedback.name}</a></li>
+        <li><a href="{$global.contact_us.link}" onClick="jarallax.jumpToProgress( 60, 2000, 30);return false;">{$global.contact_us.name}</a></li>
+
+
+        {foreach name=navs item=nav from=$global.fixed_navs}          
+          <li>
+            <a href="{$nav.link}">{$nav.name}</a>
+          </li>              
+        {/foreach}
+      </ul>
+    </nav>
+
+    <!--  -->
+
+    <div class="search">
+      <form id="form" class="fm" action="{$search_action}" method="GET" name="fm">
+        <span class="s_ipt_wr">
+          <input type="text" id="kw" name="s" class="s_ipt" placeholder=""/>
+        </span>
+        <span class="s_btn_wr">
+          <input type="submit" class="s_btn" id="submit" value="">
+        </span>
+      </form>
+    </div>
+
+    <p class="hot_phone">服务热线:<span>{$contact.telephone}</span></p>
+    <div class="copyright">{$footprint}</div>
+  </div>   
+  <!-- fixed layer end -->
+
+
+  <!-- home layer start -->
+  <div id="home" class="slide container">
+    <div class="hot_slider"> 
+      <div class="banner">
+      <ul>
+          {foreach item=slidepic from=$index.slidepics}
+          <li>
+            <input type="hidden" class="EditInfo" value="{$slidepic.description}">
+            <img src="{$slidepic.image}" height="736" width="1920" alt="{$slidepic.title|strip_tags}" />
+            <div class="box_inner ">
+              <div class="description">
+                <p class="yellow"></p>
+                <p class="sub_title">{$slidepic.title}</p>
+                <p class="p"></p>
+              </div>              
+              <div class="shap">
+                <div class="shap_inner"><span class="txt_b"></span><span class="txt_s">。</span></div>
+              </div>
+            </div>
+          </li>
+          {/foreach} 
+          </ul>     
+      </div> 
+    </div>
+  </div>
+  <!-- home layer end -->
+
+  
+  <!-- about layer start -->
+  <div class="container" id="slide1">
+    <div class="slide_inner">
+    <div class="inner_wrap clearfix">
+      <h2><span>{$global.about.en_name}</span>{$global.about.name}</h2>
+      <div class="c_l">
+        <div class="txt">
+          <p>{$global.about.description}</p>
+        </div>
+        <a href="{$global.about.link}" class="read_more">详情+</a>
+      </div>
+      <div class="c_r">
+        <img src="{$global.about.image}" height="344" width="459" alt="{$title}">
+      </div>
+    </div>
+    </div>
+  </div><!--#about-->
+  <!-- about layer end -->
+
+  <!-- news layer start -->
+  <div class="container" id="slide2">
+    <!-- <div class="slide_inner animate-build" data-animation="fly-in-right" data-build="1"> -->
+    <div class="slide_inner">
+    <div class="inner_wrap clearfix">
+      <div class="c_l">
+        <div class="img_wrap">
+          <img src="{$global.news.image}" height="305" width="244" alt="">
+        </div>
+      </div>
+      <div class="c_r">
+        <h2><span>{$global.news.en_name}</span>{$global.news.name}</h2>
+        <ul>
+          {$limit = 5}
+          {foreach name=new item=new from=$global.news.data}
+          <li><a class="clearfix" href="{$new.link}"><span class="title">{$new.title}</span><span class="date">（{$new.pubtimestamp|date_format:'%Y-%m-%d'}）</span></a></li>
+          {if $new@index+1 eq $limit}{break}{/if}
+          {/foreach}
+        </ul>
+        <a href="{$global.news.link}" class="read_more">详情+</a>
+      </div>
+      </div>
+    </div>
+  </div>
+  <!-- news layer end -->
+
+  <!-- product layer start -->
+  <div class="container" id="slide3">
+    <div class="slide_inner">
+    <div class="inner_wrap">
+      <h2><span>{$global.products.en_name}</span>{$global.products.name}</h2>
+      <ul class="clearfix">
+
+          {$limit = 4}
+          {foreach name=product item=product from=$global.products.data}
+          
+           <li>
+            <img src="{$product.image}" height="271" width="220" alt="{$product.title|strip_tags}">
+            <div class="smak">
+              <h5>{$product.title}</h5>
+              <p>{$product.description}</p>
+              <a href="{$product.link}" class="more">+</a>
+            </div>
+           </li>
+          
+          {if $product@index+1 eq $limit}{break}{/if}
+          {/foreach}
+        
+      </ul>
+      <a href="{$global.products.link}" class="read_more">详情+</a>
+    </div>
+    </div>
+  </div>
+  <!-- product layer end -->
+
+  <!-- case layer start -->
+  <div class="container" id="slide4">
+    <div class="slide_inner">
+    <div class="inner_wrap">
+      <h2><span>{$global.case.en_name}</span>{$global.case.name}</h2>
+      <div class="img_list">
+        <ul>
+          {$limit = 6}
+          {foreach name=case_list item=case_list from=$global.case.data}
+          <li>
+            <div class="inner mask">
+              <img src="{$case_list.image}" alt=""/>
+              <div class="mask_content"></div>
+              <div class="title">
+                <h5><a href="{$case_list.link}">{$case_list.title}</a></h5>
+              </div>                       
+            </div>
+          </li>
+          {if $case_list@index+1 eq $limit}{break}{/if}
+          {/foreach}
+            </ul>
+      </div>
+      <a href="{$global.case.link}" class="read_more">详情+</a>
+    </div>
+    </div>
+  </div>
+  <!-- case layer end -->
+
+  <!-- feedback layer start -->
+  <div class="container" id="slide5">
+    <div class="slide_inner">
+    <div class="inner_wrap clearfix">
+    <h2><span>{$global.feedback.en_name}</span>{$global.feedback.name}</h2>
+    <div class="c_l">
+      <form action="" id="f" class="form" onsubmit="return feedback();">
+        <div class="f_item">
+          <label for="username">姓名<span>NAME</span></label>
+          <input type="text" name="username" id="username" />
+        </div>
+        <div class="f_item">
+          <label for="phone">电话<span>PHONE</span></label>
+          <input type="text" name="phone" id="phone" />
+        </div>
+        <div class="f_item">
+          <label for="info">信息<span>Information</span></label>
+          <textarea name="info" id="info" cols="30" rows="13"></textarea>
+        </div>
+
+        <div class="f_submit">
+          <input type="submit" name="submit" id="feedback_smt"  value="提交留言" />
+        </div>
+
+      </form>
+    </div>
+    <div class="c_r">{$index.feedback_txt}</div>
+    </div>
+    </div>
+  </div>
+  <!-- feedback layer end -->
+
+  <!-- contactus layer start -->
+  <div class="container" id="slide6">
+    <div class="slide_inner">
+    
+    <div class="inner_wrap clearfix">
+    <h2><span>{$global.contact_us.en_name}</span>{$global.contact_us.name}</h2>
+    <div class="c_l">
+      <div class="follow_us_w clearfix">
+        <img class="follow_us" src="{$index.qrcode.image}" height="164" width="165" alt=""/>
+        <img class="arrow" src="{$site_url}images/arrow.png" height="78" width="155" alt=""/>
+        <span>{$index.qrcode.title}</span>
+      </div>
+    </div>
+    <div class="c_r">
+      <div class="contactus_w">
+      <div>
+        <h3>{$index.phone_title}</h3>
+        <p>业务专线：{$index.phone_1}</p>
+        <p>客服专线：{$index.phone_2}</p>
+        <p>客服传真：{$contact.fax}</p>
+        <p>客户邮件：{$contact.mail}</p>
+        <p>招聘热线：{$index.phone_5}</p>
+        <p>投诉中心：{$index.phone_6}</p>
+      </div>
+      </div>
+    </div>
+    </div>
+    </div>
+  </div>
+  {$footscript}
+  <!-- contactus layer end -->
+<script type="text/javascript" src="{$site_url}js/unslider.min.js"></script>
+<script src="{$site_url}js/demo.js" type="text/javascript"></script>
+
+</body>
+</html>

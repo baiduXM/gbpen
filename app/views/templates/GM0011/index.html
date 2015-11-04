@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<script type="text/javascript">
+    // 跳转PC页面
+    {if $site_another_url}
+      if (!navigator.userAgent.match(/AppleWebKit.*Mobile.*/)) {
+        location.href = '{$site_another_url}';
+      }
+    {/if}
+</script>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no,minimal-ui">
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta content="telephone=no" name="format-detection">
+<title>{$title}</title>
+<meta name="keywords" content="{$keywords}" />
+<meta name="description" content="{$description}" />
+<link rel="shortcut icon" href="{$favicon}" type="image/x-icon" />
+<link rel="stylesheet" rev="stylesheet" href="http://chanpin.xm12t.com.cn/css/global.css" type="text/css" />
+
+<link href="{$site_url}css/swipe.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="{$site_url}css/public.css" />
+<link href="{$site_url}css/css.css" rel="stylesheet" type="text/css" />
+<script src="{$site_url}js/TouchSlide.1.1.js"></script>
+<script src="{$site_url}js/jquery.min.js"></script>
+<script type="text/javascript" src="{$site_url}js/function.js"></script>
+<script type="text/javascript" src="{$site_url}js/share.js"></script>
+<script src="{$site_url}js/idangerous.swiper-2.0.min.js"></script>
+<script src="{$site_url}js/simple-app.js"></script>
+<script type="text/javascript">
+  window.addEventListener('load', function(){
+   setTimeout(function(){ window.scrollTo(0, 1); }, 100);
+});//safari浏览器可以通过此代码来隐藏地址栏
+</script>
+{$headscript}
+</head>
+<body>
+<div class="body">
+<!-- 隐藏导航 -->
+{include file="./_header_hidenav.html"}
+<!-- 隐藏导航End -->
+<div class="wrap  public_bg ">
+<!-- 底部导航 -->
+{include file="./_footer.html"}
+<!-- 底部导航End -->
+<div class="index-wrap">
+<!-- 顶部导航 -->
+{include file="./_header.html"}
+<!-- 顶部导航End -->
+	
+	
+	{foreach name=mIndexCats_list item=mIndexCat from=$mIndexCats}
+    {if $mIndexCat.type eq 4}
+    <div class="banner_bg clearfix">
+	<div class="about">
+	<div class="title">{$mIndexCat.name}</div>
+	<div class="inner">
+	{$mIndexCat.description}
+	<div class="button">点击查看详情>></div>
+	</div>
+	</div>
+	<div class="baner">
+	<div id="slideBox" class="slideBox">
+    <div class="hd">
+            <ul></ul>
+              </div>
+	<div class="bd">
+		<ul>
+			{foreach name=slidepics item=slidepic from=$global.slidepics}
+              <li><a class="pic" href="{$slidepic.link}"><img src="{$slidepic.image}" /></a></li>
+            {/foreach}
+		</ul>
+	</div>
+			</div>
+   </div>
+	</div>
+    {/if}
+	{if $mIndexCat.type eq 2}
+    <div class="box-id">
+      <div class="pro_box">
+      <ul class="pro_list clearfix">
+	              <li><a href="{$mIndexCat.link}"><img src="{$mIndexCat.image}" width="100%"><p>NO.{$mIndexCat@index+1}<br/>{$mIndexCat.name}</p></a></li>
+	            
+              </ul>
+			<div class="circle public_bg1">
+              <div class="ff f1"></div><div class="ff f1" style="background:none"></div><div class="ff f2"></div>
+			</div>   
+     </div>
+    </div>
+    {/if}
+    {/foreach}
+	
+			<!--<div class="box-id">
+					<h1 class="box-top public_bg public_border1"><div class="text">新闻中心</div></h1>
+					   <div class="about-m about-mb">
+						<ul class="news-list1">
+							<li onClick="javascript:window.location.href='news_detail.html'">
+							<a href="#">
+							  <div class="news_img "><img src="images/img6.jpg" title="165*104"/></div>
+							  <div class="news_content">
+							   <div class="news_title clearfix public_color"><span>2014-07-02</span><b>业之峰装饰打起"无环保 不装修"之战</b></div>
+							   <p> 业之峰装饰打起"无环保 不装修"之战
+		装修中，什么最重要？设计、工程、价格对消费者固然重要，但与消费者利益最相关的，仍然是健康。装修是否环保，这是不容回避的问题。</p>
+							  </div>
+							</a></li>
+							<li onClick="javascript:window.location.href='news_detail.html'">
+							<a href="#">
+							  <div class="news_img"><img src="images/img6.jpg" title="165*104"/></div>
+							  <div class="news_content">
+							   <div class="news_title clearfix public_color"><span>2014-07-02</span><b>业之峰装饰打起"无环保 不装修"之战</b></div>
+							   <p> 业之峰装饰打起"无环保 不装修"之战
+		装修中，什么最重要？设计、工程、价格对消费者固然重要，但与消费者利益最相关的，仍然是健康。装修是否环保，这是不容回避的问题。</p>
+							  </div>
+							</a></li>
+							<li onClick="javascript:window.location.href='news_detail.html'">
+							<a href="#">
+							  <div class="news_img"><img src="images/img6.jpg" title="165*104"/></div>
+							  <div class="news_content">
+							   <div class="news_title clearfix public_color"><span>2014-07-02</span><b>业之峰装饰打起"无环保 不装修"之战</b></div>
+							   <p> 业之峰装饰打起"无环保 不装修"之战
+		装修中，什么最重要？设计、工程、价格对消费者固然重要，但与消费者利益最相关的，仍然是健康。装修是否环保，这是不容回避的问题。</p>
+							  </div>                    
+							</a></li>
+							<li onClick="javascript:window.location.href='news_detail.html'">
+							<a href="#">
+							  <div class="news_img"><img src="images/img6.jpg" title="165*104"/></div>
+							  <div class="news_content">
+							   <div class="news_title clearfix public_color"><span>2014-07-02</span><b>业之峰装饰打起"无环保 不装修"之战</b></div>
+							   <p> 业之峰装饰打起"无环保 不装修"之战
+		装修中，什么最重要？设计、工程、价格对消费者固然重要，但与消费者利益最相关的，仍然是健康。装修是否环保，这是不容回避的问题。</p>
+							  </div>
+							</a></li>
+						</ul>
+						
+					</div>
+				</div>
+-->   
+{include file="./_footprint.html"}
+</div>
+</div>
+</div>
+</body>
+</html>

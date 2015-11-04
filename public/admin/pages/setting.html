@@ -1,0 +1,109 @@
+
+<div class="jumbotron text-center">
+	<section id="setting" class="whole">
+		<div class="setting-content">
+		<form id="setting_info">
+			<div class="setting-feild">
+				<div class="setting-name">PC基本设置：</div>
+				<div class="feild-content">
+					<div class="feild-item"><label for="">公司名称：</label><input type="text" name="company_name" /></div>
+					<div class="feild-item"><label for="">PC域名：</label><input type="text" name="domain_pc" /></div>
+					<div class="feild-item"><label class="vt" for="">网站关键字：</label><textarea name="keywords" id="" cols="30" rows="10"></textarea></div>
+					<div class="feild-item">
+						<label for="">网站favicon：</label>
+						<div class="set_pic1 set_pic inline-block" data-role="favicon"></div>
+						<button class="up_load"><span class="set_up_name" data-role="favicon">上传</span></button>
+					</div>
+					<div class="feild-item">
+						<label for="">网站Logo：</label>
+						<span class="red">PC_logo:</span>
+						<div class="set_pic2 set_pic inline-block" data-role="logo_large"></div>
+						<span class="red">手机logo:</span>
+						<div class="set_pic3 set_pic inline-block" data-role="logo_small"></div>
+						<button class="up_load"><span class="set_up_name" data-role="logo_large">PC_logo</span></button>
+						<button class="up_load"><span class="set_up_name" data-role="logo_small">手机logo</span></button>
+					</div>
+					<div class="feild-item"><label for="">网站标题：</label><input type="text" name="title" /></div>
+					<div class="switchfunc">
+						<span class="valign">pc列表页每页展示个数：</span><input type="text" class="switch_num" name="pc_num_per_page" />
+						<button class="add">+</button><button class="minus">-</button>
+						<!-- <input type="checkbox" id="checkbox1" name="share" class="none chk">
+    					<label for="checkbox1" class="valign"></label> -->
+    					<ul class="switch_list">
+    						<li class="switch_list_item">
+    							<input type="text" class="switch_num" disabled name="pc_imgtxt_per_page" value="0" />
+								<button disabled class="add">+</button><button disabled class="minus">-</button>
+								<span class="valign">(<em class="red">pc图文</em>列表页每页展示个数)</span>
+    						</li>
+    						<li class="switch_list_item">
+    							<input type="text" class="switch_num" disabled name="pc_txt_per_page" value="0" />
+								<button disabled class="add">+</button><button disabled class="minus">-</button>
+								<span class="valign">(<em class="red">pc文字</em>列表页每页展示个数)</span>
+    						</li>
+    						<li class="switch_list_item">
+    							<input type="text" class="switch_num" disabled name="pc_img_per_page" value="0" />
+								<button disabled class="add">+</button><button disabled class="minus">-</button>
+								<span class="valign">(<em class="red">pc图片</em>列表页每页展示个数)</span>
+    						</li>
+    					</ul>
+					</div>
+					<div class="feild-item"><label for="">pc分页链接显示个数：</label><input type="text" name="pc_num_pagenav" /></div>
+					<div class="switchfunc">
+						<span class="valign">手机每页个数：</span><input type="text" class="switch_num" name="m_num_per_page" />
+						<button class="add">+</button><button class="minus">-</button>
+						<!-- <input type="checkbox" id="checkbox2" name="share" class="none chk">
+    					<label for="checkbox2" class="valign"></label> -->
+    					<ul class="switch_list">
+    						<li class="switch_list_item">
+    							<input type="text" class="switch_num" disabled name="m_imgtxt_per_page" value="0" />
+								<button disabled class="add">+</button><button disabled class="minus">-</button>
+								<span class="valign">(<em class="red">手机图文</em>列表页每页展示个数)</span>
+    						</li>
+    						<li class="switch_list_item">
+    							<input type="text" class="switch_num" disabled name="m_txt_per_page" value="0" />
+								<button disabled class="add">+</button><button disabled class="minus">-</button>
+								<span class="valign">(<em class="red">手机文字</em>列表页每页展示个数)</span>
+    						</li>
+    						<li class="switch_list_item">
+    							<input type="text" class="switch_num" disabled name="m_img_per_page" value="0" />
+								<button disabled class="add">+</button><button disabled class="minus">-</button>
+								<span class="valign">(<em class="red">手机图片</em>列表页每页展示个数)</span>
+    						</li>
+    					</ul>
+					</div>
+					<div class="feild-item"><label for="">手机分页链接显示个数：</label><input type="text" name="m_num_pagenav" /></div>
+					<div class="feild-item"><label for="" style="vertical-align:top;">PC头部脚本：</label><textarea placeholder="只在首页面有效" name="pc_header_script" id="" cols="30" rows="10"></textarea></div>
+					<div class="feild-item"><label class="vt" for="">PC底部脚本：</label><textarea name="pc_footer_script" id="" cols="30" rows="10"></textarea></div>
+					<div class="feild-item"><label class="vt" for="">PC底部版权：</label><textarea name="footer" id="" cols="30" rows="10"></textarea></div>
+				</div>
+			</div>
+			<div class="setting-feild">
+				<div class="setting-name">手机基本设置：</div>
+				<div class="feild-content">
+					<div class="feild-item"><label for="">手机域名：</label><input type="text" name="domain_m" /></div>
+					<div class="feild-item"><label class="vt" for="">网站描述：</label><textarea name="description" id="" cols="30" rows="10"></textarea></div>
+					<div class="feild-item"><label for="" style="vertical-align:top;">手机头部脚本：</label><textarea placeholder="只在首页面有效" name="mobile_header_script" id="" cols="30" rows="10"></textarea></div>
+					<div class="feild-item"><label class="vt" for="">手机底部版权：</label><textarea name="mobile_footer" id="" cols="30" rows="10"></textarea></div>
+					<div class="feild-item"><label class="vt" for="">手机底部脚本：</label><textarea name="mobile_footer_script" id="" cols="30" rows="10"></textarea></div>
+				</div>
+			</div>
+			<div class="setting-feild">
+				<div class="setting-name">通用设置：</div>
+				<div class="feild-content">
+					<div class="feild-item"><label for="">联系人：</label><input type="text" name="contactor" /></div>
+					<div class="feild-item"><label for="">固话：</label><input type="text" name="telephone" /></div>
+					<div class="feild-item"><label for="">手机：</label><input type="text" name="mobile" /></div>
+					<div class="feild-item"><label for="">传真：</label><input type="text" name="fax" /></div>
+					<div class="feild-item"><label for="">邮箱：</label><input type="text" name="mail" /></div>
+					<div class="feild-item"><label for="">QQ：</label><input type="text" name="qq" /></div>
+					<div class="feild-item"><label for="">公司地址：</label><input type="text" name="address" /></div>
+				</div>
+			</div>
+			</form>
+			<div class="btn-top clearfix">
+                <a class="inline-block addcancle all_button" href="#/">取消</a>
+                <a class="inline-block addsave all_button" href="">保存</a>
+            </div>
+		</div>
+	</section>
+</div>

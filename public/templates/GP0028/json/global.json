@@ -1,0 +1,64 @@
+{
+	"slidepics": {
+		"value": [{
+			"title": "测试图1",
+			"image": "images/banne.jpg",
+			"link": "http://www.baidu.com"
+		}, {
+			"title": "测试图2",
+			"image": "images/banne.jpg",
+			"link": "http://www.baidu.com"
+		}],
+		"description": "大轮滚图",
+		"type": "images",
+		"config": {
+			"width": 1026,
+			"height": 418,
+			"limit": 3
+		}
+	},
+		"ftlogo": {
+		"value": "底部logo",
+		"description": "底部logo",
+		"type": "page",
+		"config": {
+			"width": 202,
+			"height": 91,
+			"limit": 1
+		}
+	},
+	"about": {
+		"value": "关于我们",
+		"description": "关于我们",
+		"type": "page"
+	},
+	"contact":{
+	"value":"地址：软件园二期观日路36号201号\r\n电话：0592-23232232\r\n传真：0592-23232232\r\nE-mail：01@eexx.me\r\n",
+	"description": "联系我们电话咨询",
+	"type": "textarea"
+			},
+			
+	"contacter": {
+		"value": "联系我们",
+		"description": "联系我们",
+		"type": "page"
+	},
+	"career": {
+		"value": "招贤纳士",
+		"description": "招贤纳士",
+		"type": "page"
+	},
+	"onlin": {
+		"value": {},
+		"description": "在线预约",
+		"type": "nav"
+	},
+	"second_navs": {
+		"value": {},
+		"description": "第二导航（底部）",
+		"type": "navs",
+		"config": {
+			"limit":4
+		}
+	}
+}

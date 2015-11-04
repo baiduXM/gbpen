@@ -1,0 +1,20 @@
+{
+	"links": {
+		"value": [{
+			"title": "百度贴吧",
+			"image": "",
+			"link": "http://tieba.baidu.com"
+		}, {
+			"title": "百度图片",
+			"image": "",
+			"link": "http://image.baidu.com"
+		}],
+		"description": "友情链接（图片随意传）",
+		"type": "images",
+		"config": {
+			"width": 305,
+			"height": 74,
+			"limit": 4
+			}
+	}
+}

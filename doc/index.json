@@ -1,0 +1,25 @@
+{
+	title: {
+		value: 'XXX企业',
+		description: '顶部大标题',
+		type: 'text'
+	},
+	slidepics: {
+		value: [{
+			title: '测试图1',
+			src: 'http://..../a.jpg',
+			href: '{siteurl}/article/1.html',
+		}, {
+			title: '测试图2',
+			src: 'http://..../b.jpg',
+			href: '{siteurl}/article/2.html',
+		}],
+		description: '大轮滚图',
+		type: 'images'
+	},
+	list1: {
+		value: 1,
+		description: '第一个图文列表',
+		type: 'column-image'
+	}
+}

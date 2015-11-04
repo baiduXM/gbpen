@@ -1,0 +1,45 @@
+<!-- 二级栏目列表（展示到三级子栏目） -->
+{if $pagenavs}
+<nav>
+<h4><strong>{$posnavs[0].name}</strong><br /><span>{$posnavs[0].en_name}</span><a href="{$posnavs[0].link}" class='more-btn'></a></h4>    
+	<ul class="list clearfix">
+{foreach name=pagenavs item=nav from=$pagenavs}
+		<li class="{if $nav.current}current{/if}">
+			<a href="javascript:;{$nav.link}">{$nav.name}</a>
+			{if $nav.childmenu}
+			<ul class="second clearfix">
+				{foreach key=key item=nav_list from=$nav.childmenu}
+				<li class="{if $nav_list.current}current{/if}"><a href="{$nav_list.link}">{$nav_list.name}</a></li>
+				{/foreach}
+			</ul>
+			{/if}
+		</li>
+		{/foreach} 
+        
+       
+	</ul>
+</nav>
+{else}	<!-- 让客服自己选择，如果当前无子栏目 展现的目标栏目 -->
+<nav>
+	<h4><strong>{$_pagenavs_sub3.pagenavs.name}</strong><br /><span>{$_pagenavs_sub3.pagenavs.en_name}</span><a href="{$posnavs[0].link}" class='more-btn'></a></h4>
+	<ul class="list clearfix">
+		{foreach name=pagenavs2 item=nav from=$_pagenavs_sub3.pagenavs.childmenu}
+		<li class="{if $nav.current}current{/if}">
+			<a href="{$nav.link}">{$nav.name}</a>
+			{if $nav.childmenu}
+			<ul class="second clearfix">
+				{foreach key=key item=nav_list from=$nav.childmenu}
+				<li class="{if $nav_list.current}current{/if}"><a href="{$nav_list.link}">{$nav_list.name}</a></li>
+				{/foreach}
+			</ul>
+			{/if}
+		</li>
+		{/foreach}
+	</ul>
+</nav>
+
+	
+<script type="text/javascript" src="{$site_url}js/function.js"></script>
+{/if}
+
+

@@ -1,0 +1,140 @@
+{
+	"slidepics": {
+		"value": [{
+			"title": "Gooseberry and Elderflower Tower Cakes",
+			"image": "images/baner1.jpg",
+			"link": "detail/1.html",
+			"description": "Although it isn't gooseberry season anymore, I thought I would publish this recipe now because it wo..."
+		}, {
+			"title": "Corn and Turkey Burgers with Zatar Yoghurt",
+			"image": "images/baner1.jpg",
+			"link": "detail/2.html",
+			"description": "Post-Christmas I find I just can't get enough of Turkey. I always think it is such a shame that I on..."
+		}, {
+			"title": "PS Cafe Singapore",
+			"image": "images/baner1.jpg",
+			"link": "detail/3.html",
+			"description": "The PS Cafe chain in Singapore is a must visit when in town. I first visited the Paragon branch over..."
+		}, {
+			"title": "Leopard Wears",
+			"image": "images/baner1.jpg",
+			"link": "detail/4.html",
+			"description": "A few days ago I began a wardrobe detox. In the new year I always try and start by clearing out my l..."
+		}],
+		"description": "大轮滚图",
+		"type": "images"
+	},
+	"lastest_title": {
+		"value": "最新产品",
+		"description": "自定义“最新产品”",
+		"type": "text"
+	},
+	"lastest": {
+		"value": {
+			"id": 1,
+			"total": 4,
+			"star_only": 0
+		},
+		"description": "最新产品",
+		"type": "list"
+	},
+	"hots": {
+		"value": {
+			"id": 1,
+			"total": 4,
+			"star_only": 1
+		},
+		"description": "热门产品",
+		"type": "list"
+	},
+	"list1": {
+		"value": {
+			"id": 1,
+			"total": 4,
+			"star_only": 0
+		},
+		"description": "第一个栏目列表",
+		"type": "list"
+	},
+	"list2": {
+		"value": {
+			"id": 1,
+			"total": 4,
+			"star_only": 0
+		},
+		"description": "第二个栏目列表",
+		"type": "list"
+	},
+	"Qzone":{
+		"value":{
+			"title": "Qzone",
+			"image": "icon/kongjian.gif",
+			"link": "http://tieba.baidu.com/"
+		},
+		"description": "分享到Qzone空间",
+		"type": "image"
+	},
+	"TCweibo":{
+		"value":{
+			"title": "腾讯微博",
+			"image": "icon/tengxun.gif",
+			"link": "http://tieba.baidu.com/"
+		},
+		"description": "分享到腾讯微博",
+		"type": "image"
+	},
+	"baidu":{
+		"value":{
+			"title": "百度收藏",
+			"image": "icon/baidu.gif",
+			"link": "http://tieba.baidu.com/"
+		},
+		"description": "分享到百度收藏",
+		"type": "image"
+	},
+	"sinaweibo":{
+		"value":{
+			"title": "新浪微博",
+			"image": "icon/xinlang.gif",
+			"link": "http://tieba.baidu.com/"
+		},
+		"description": "分享到新浪微博",
+		"type": "image"
+	},
+	"bottomnavs": {
+		"value": [
+		{
+			"name": "电话",
+			"image": "icon/2.png",
+			"data": "0592-2323232",
+			"type": "tel",
+			"enable": 1
+		}, {
+			"name": "短信",
+			"image": "icon/3.png",
+			"data": "13489990000",
+			"type": "sms",
+			"enable": 1
+		}, {
+			"name": "咨询",
+			"image": "icon/5.png",
+			"data": "0000001@53kf",
+			"type": "im",
+			"enable": 1
+		}, {
+			"name": "地图",
+			"image": "icon/5.png",
+			"data": "http://...",
+			"type": "link",
+			"enable": 1
+		}, {
+			"name": "分享",
+			"image": "icon/8.png",
+			"data": "",
+			"type": "share",
+			"enable": 1
+		}],
+		"description": "底部导航",
+		"type": "navs"
+	}
+}

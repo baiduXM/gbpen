@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="Generator" content="EditPlus®">
+  <meta name="Author" content="">
+  <meta name="Keywords" content="">
+  <meta name="Description" content="">
+  <title>Document</title>
+  <script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+  <style>
+	body{font-size:12px;}
+	h2 span{font-size:12px;color:#f01e1e;}
+  	.col {width:200px; float:left;margin:5px;padding:2px 0 5px;box-shadow: 0 0 10px #cdcdcd;text-align:center;position:relative;}
+	.icons{display:block;position:absolute;top:0;right:0;}
+	h3{margin: 2px;font-size:14px; color:#666666;}
+	.theme-img {margin:0 auto;text-align:center;}
+	.hadcol i,.defaultcol i {
+		color:green;
+	}
+	.clearer{clear:both;}
+  </style>
+ </head>
+ <body>
+<h2>我的模版库：<span>(定制模版以实际预览为准)</span></h2>
+<div class="themeslist">
+</div>
+<br class="clearer">
+<hr>
+<div class="themesforest">
+<input type="text" name="search" class="search_text" placeholder="请输入模版编号" />
+<button class="search_btn">搜索</button>
+<div class="searchlist">
+</div>
+</div>
+<script type="text/javascript">
+	$(document).ready(function(){
+		var templist=function(){
+			var show = '';
+			var cloclass = '';
+			var icon = '';
+			var button = '';
+			$.getJSON('template-list',function(data){
+				$.each(data,function(i,v){
+					if(v.had==1){
+						var is_had = '<i>已拥有</i><br>';
+						cloclass = 'hadcol col';
+						button = '<div class="col-button"><button class="use-btn" vid="'+v.id+'">使用</button><button class="delete-btn" vid="'+v.id+'">删除</button></div>';
+					}
+					else if(v.had==2){
+						var is_had = '<i>已拥有-正在使用</i><br>';
+						cloclass = 'defaultcol col';
+						button = '<div class="col-button"><button class="delete-btn" vid="'+v.id+'">删除</button></div>';
+					}
+					else{
+						cloclass = 'unchoose col';
+						var is_had = '';
+					}
+					if(v.icon==1){
+						icon = '<img class="icons" src="images/customer.png">';
+					}
+					else{
+						icon = '';
+					}
+
+					show += '<div class="'+cloclass+'">'+ icon +'<div class="theme-img"><img width="192px" height="288px" src="'+v.img+'"></div><h3>'+v.name+'</h3><div class="theme-info">'+is_had+'系统：'+v.system+'</div>'+button+'</div>';
+				});
+				return $('.themeslist').html(show);
+
+			});
+		}
+		templist();
+		$('.themeslist').on('click','.unchoose',function(){
+			$('.col').css({'border':'none'});
+			$(this).css({'border':'3px solid red'});
+		});
+
+		$('.search_btn').click(function(){
+			var search_show = '';
+			var vname = $('.search_text').val();
+			$.getJSON('template-query',{name:vname},function(data){
+				$.each(data,function(i,v){
+					if(v.had==1){
+						var is_had = '<i>已拥有</i><br>';
+						cloclass = 'hadcol col';
+						button = '';
+					}
+					else if(v.had==2){
+						var is_had = '<i>已拥有-正在使用</i><br>';
+						cloclass = 'defaultcol col';
+						button = '';
+					}
+					else{
+						cloclass = 'unchoose col';
+						button = '<div class="col-button"><button class="add-btn" vid="'+v.id+'">加入我的模版库</button></div>';
+						var is_had = '';
+					}
+					if(v.icon==1){
+						icon = '<img class="icons" src="images/customer.png">';
+					}
+					else{
+						icon = '';
+					}
+
+					search_show += '<div class="'+cloclass+'">'+ icon +'<div class="theme-img"><img width="192px" height="288px" src="'+v.img+'"></div><h3>'+v.name+'</h3><div class="theme-info">'+is_had+'系统：'+v.system+'</div>'+button+'</div>';
+				});
+
+				$('.searchlist').html(search_show);
+			});
+		});
+
+		$('.searchlist').on('click','.add-btn',function(){
+			var vid = $(this).attr('vid');
+			$.post('template-operate',{id:vid,operate:'add'},function(){
+				templist();
+			});
+		});
+		$('.themeslist').on('click','.use-btn',function(){
+			var vid = $(this).attr('vid');
+			$.post('template-operate',{id:vid,operate:'setdefault'},function(){
+
+			});
+		});
+	});
+</script>
+ </body>
+</html>

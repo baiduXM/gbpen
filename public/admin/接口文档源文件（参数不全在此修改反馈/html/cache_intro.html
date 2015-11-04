@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="zh-cn">
+    <head>
+        <meta charset="gbk">
+        <title>刷新缓存接口流程说明</title>
+        <style>
+            body{font: 12px/24px arial,"Microsoft YaHei";}
+            body > h1{text-align: center; line-height:32px;}
+            body > h2{line-height:28px;}
+            body > p{width:85%;margin:0 auto;}
+            .description{width:85%;margin:0 auto;border:1px solid #fff;border-right:0;text-align: center;}
+			.description tr:nth-child(odd) {background:#8cd7c8;}
+			.description tr:nth-child(even) {background:#e7f4fc;}
+            .description td.title,th.title{background:#56d6bc;}
+            .description th{border-right:1px solid #fff;}
+            .description td{border-top:1px solid #fff;border-right:1px solid #fff;padding:2px;}
+			.testdata {width:85%;margin:0 auto;}
+        </style>
+    </head>
+    <body>
+        <h1>刷新缓存接口流程说明</h1>
+        <h2>提示刷新缓存：</h2>
+        <p>后台已登陆状态，频繁（约每隔10s）访问“<a href="cache.html">是否需要刷新缓存</a>”接口：</p>
+        <p>获取到值&gt;0时，显示推送按钮，并在按钮上标记红圈小数字；</p>
+        <p>否则不显示推送按钮。</p>
+        <h2>压缩包推送模式（动态服务器）：</h2>
+        <p>等待刷新缓存推送文件时，MemCache如下存储：</p>
+        <table width="85%" border="1" align="center">
+          <tr>
+            <td>待刷新的缓存列表</td>
+            <td>已完成推送的缓存列表</td>
+          </tr>
+          <tr>
+            <td>cat/1.html</td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td>article/1_1.html</td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td>article/1_2.html</td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td>article/2_1.html</td>
+            <td>&nbsp;</td>
+          </tr>
+        </table>
+        <p>此时后台进入刷新缓存页面，调用“<a href="cachelist_todo.html">待刷新的缓存列表</a>”接口，获取列表展示，数据库存储不发生改变。</p>
+        <p>&nbsp;</p>
+        <p>再调用“<a href="cache_refresh.html">刷新缓存</a>”接口，假设T时刻已推送出2个文件，MemCache发生如下改变：</p>
+        <table width="85%" border="1" align="center">
+          <tr>
+            <td>待刷新的缓存列表</td>
+            <td>已完成推送的缓存列表</td>
+          </tr>
+          <tr>
+            <td>article/1_2.html</td>
+            <td>cat/1.html</td>
+          </tr>
+          <tr>
+            <td>article/2_1.html</td>
+            <td>article/1_1.html</td>
+          </tr>
+        </table>
+        <p>此时已经有两个文件完成静态服务器推送。</p>
+        <p>&nbsp;</p>
+        <p>再调用“<a href="cache_refresh.html">已完成推送的缓存列表</a>”接口，MemCache发生如下改变：</p>
+        <table width="85%" border="1" align="center">
+          <tr>
+            <td>待刷新的缓存列表</td>
+            <td>已完成推送的缓存列表</td>
+          </tr>
+          <tr>
+            <td>article/1_2.html</td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td>article/2_1.html</td>
+            <td>&nbsp;</td>
+          </tr>
+        </table>
+        <p>“已完成推送的缓存列表”数据被获取后及时清空。</p>
+        <p>&nbsp;</p>
+        <p>如此重复，直到“待刷新的缓存列表”全部被推送。</p>
+        <p>此刻再访问“<a href="cachelist_done.html">已完成推送的缓存列表</a>”时，返回<span style="color:red">错误代码100</span>，以示所有列表推送完成！</p>
+        <h2>单文件推送模式（静态服务器）：</h2>
+        <p>存储模式可以按照如上存储。</p>
+        <p>&nbsp;</p>
+        <p>后台进入刷新缓存页面，调用“<a href="cache_refresh.html">刷新缓存</a>”接口；</p>
+        <p>开始频繁（状态3之前每隔300ms，状态3开始之后每隔2s）访问“<a href="cache_zipmode.html">刷新缓存（ZIP）状态</a>”接口获取当前状态（以更新进度条），直到接口状态值返回-1，结束推送流程！</p>
+        <p>&nbsp;</p>
+        <p>“已完成推送的缓存列表”无需被访问。</p>
+    </body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="x-ua-compatible" content="ie=7" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link href="{$site_url}css/style.css" rel="stylesheet" type="text/css" /><!--[if IE 6]>
+<script type="text/javascript" src="js/dd_delatedpng.js" ></script>
+<script type="text/javascript">//如果多个element使用PNG,则用','分隔
+DD_belatedPNG.fix('div,ul,li,a,p,img');
+</script>
+<![endif]-->
+
+<meta name="keywords" content="{$keywords}" />
+<meta name="description" content="{$description}" />
+<link rel="shortcut icon" href="{$favicon}" type="image/x-icon" />
+<link rel="stylesheet" rev="stylesheet" href="http://chanpin.xm12t.com.cn/css/global.css" type="text/css" />
+<link rel="stylesheet" rev="stylesheet" href="{$site_url}css/style_{$stylecolor}.css" type="text/css" />
+<script type="text/javascript" src="{$site_url}js/index.js"></script>
+<title>{$title}</title>
+{$headscript}
+</head>
+
+<body>
+	<div class="line"><img src="images/wappers.jpg" height="10" width="1480" /></div>
+	<div class="wrapper">
+    	{include file='./_header.html'} 
+        <div class="container">
+<div class="left">
+        	<div class="list2">
+            	<h3>{$pagenavs[0].name}</h3>
+                    <div class="listbg" style="height:132px; padding-bottom:8px; overflow:hidden;">
+                	<ul>
+                    	{foreach name=pagenavs item=nav from=$pagenavs}    
+                        <li><a href="{$nav.link}">{$nav.name}</a></li>
+			{/foreach}                                                                                             
+                    </ul>
+                </div>
+            </div> 
+            <div class="img1"><a href="#"><img src="images/chengimg.jpg" height="78" width="227" /></a></div>   
+            <div class="contact">
+            	<h3><img src="images/lianxi.jpg" height="43" width="227" /></h3>
+                <div class="contactp">
+                    <div class="cont_edit">
+地址：{$contact.address}<br />
+电话：{$contact.telephone}<br />
+手机：{$contact.mobile}<br />
+联系人：{$contact.name}<br />
+E-mail：{$contact.mail}<br />
+                    </div>
+                </div>
+            </div> 
+        </div> 
+        <div class="right">        	
+            <div class="detal">
+                	<h3><span>您当前位置:<a href="index.html">首页</a>
+                  {foreach item=nav from=$pagenavs}
+                  >> <a href="{$nav.link}">{$nav.name}</a>
+                {/foreach}
+                  </span></h3>
+<div class="main_right_con" >
+                	<ul class="inner_pro">
+                 {foreach name=article item=article from=$list.data}
+                         <li><a href="{$article.link}"><img src="{$article.image}"  height="167" width="174"/><p class="photo_title">{$article.title}</p></a></li>                                                        
+                        {/foreach} 
+               </ul>
+  <div class="module_page"  >
+      第{$page_links.current_page}页/共{$page_links.page_count} 页
+                    <a href="{$page_links.first_link}">首页</a>
+                    <a href="{$page_links.prev_link}">上一页</a>
+                    {foreach name=nears_link item=near_link key=near_page from=$page_links.nears_link}
+                    {if $near_page == $page_links.current_page}
+                        <a>{$near_page}</a>
+                    {else}
+                        <a href="{$near_link}">{$near_page}</a>
+                    {/if}
+                    {/foreach}
+                    <a href="{$page_links.next_link}">下一页</a> 
+                    <a href="{$page_links.last_link}">尾页</a>
+                    
+					</div>        
+   			</div>                    
+        </div>
+            </div>            
+        </div>     
+{include file='./_footer.html'}  
+        </div> 
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

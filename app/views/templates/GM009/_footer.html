@@ -1,0 +1,26 @@
+<div class="opacity2"></div>
+<div class="newsclass">
+<div class="share-con">
+<div class="swiper-container thumbs-cotnainer">
+		<div class="swiper-wrapper">
+            <div class="swiper-slide"> <a title="分享到Qzone空间" href="javascript:void(0);" class="qqzone"><img src="icon/kongjian.gif" width="60" height="60"><dt class=" title">Qzone</dt></a></div> 
+            <div class="swiper-slide"><a title="分享到腾讯微博" href="javascript:void(0);"  onclick="postToWb();" class="qqweibo"><img src="icon/tengxun.gif" width="60" height="60"><dt class=" title">腾讯微博</dt></a></div> 
+            <div class="swiper-slide"> <a title="分享到百度收藏" href="javascript:void(0);" class="baidusoucang"><img src="icon/baidu.gif" width="60" height="60"><dt class=" title">百度收藏</dt></a></div>
+            <div class="swiper-slide"><a title="分享到新浪微博" href="javascript:void(0)" class="xinlang"><img src="icon/xinlang.gif" width="60" height="60"><dt class=" title">新浪微博</dt></a></div>  
+		</div>
+	</div>
+</div>  
+<div class="share-cance">取消</div>     
+</div>
+<div class="fixed public_bg">
+	<ul class=" box" id="box">
+    <li><a href="#" id="class" class="public_color1"><p class="fix_icon"><img src="{$site_url}icon/6.png" width="33" width="33"></p><p class="title">导航</p></a></li>
+    {foreach name=bot item=bot from=$global.bottomnavs}
+        {if $bot.type neq share}
+        <li><a href="#" class="public_color1"><p class="fix_icon"><img src="{$bot.image}" width="33" width="33"></p><p class="title">{$bot.name}</p></a></li>
+        {else}
+        <li><a href="#" id="share_btn" class="public_color1"><p class="fix_icon"><img src="{$bot.image}" width="33" width="33"></p><p class="title">{$bot.name}</p></a></li>
+        {/if}
+    {/foreach}
+    </ul>
+</div>

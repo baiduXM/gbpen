@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no,minimal-ui">
+
+<meta name="keywords" content="{$keywords}" />
+<meta name="description" content="{$description}" />
+<link rel="shortcut icon" href="{$favicon}" type="image/x-icon" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta content="telephone=no, email=no" name="format-detection">
+<!-- 启用360浏览器的极速模式(webkit) -->
+<meta name="renderer" content="webkit">
+<!-- 避免IE使用兼容模式 -->
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<!-- 针对手持设备优化，主要是针对一些老的不识别viewport的浏览器，比如黑莓 -->
+<meta name="HandheldFriendly" content="true">
+<!-- 微软的老式浏览器 -->
+<meta name="MobileOptimized" content="320">
+<!-- uc强制竖屏 -->
+<meta name="screen-orientation" content="portrait">
+<!-- QQ强制竖屏 --> 
+<meta name="x5-orientation" content="portrait">
+<title>{$title}</title>
+<link rel="stylesheet" href="{$site_url}css/reset.css" />
+<link rel="stylesheet" href="{$site_url}css/public.css" />
+<link href="{$site_url}css/css.css" rel="stylesheet" type="text/css" />
+<link href="{$site_url}css/swipe.css" rel="stylesheet" type="text/css" />
+<script src="{$site_url}js/TouchSlide.1.1.js"></script>
+<script type="text/javascript" src="{$site_url}js/jquery.min.js"></script>
+<script type="text/javascript" src="{$site_url}js/function.js"></script>
+<script type="text/javascript" src="{$site_url}js/share.js"></script>
+<script src="{$site_url}js/idangerous.swiper-2.0.min.js"></script>
+<script src="{$site_url}js/idangerous.swiper.3dflow-2.0.js"></script>
+<script src="{$site_url}js/simple-app.js"></script>
+<script type="text/javascript">
+	window.addEventListener('load', function(){
+   setTimeout(function(){ window.scrollTo(0, 1); }, 100);
+});//safari浏览器可以通过此代码来隐藏地址栏
+</script>
+</head>
+
+<body>
+<div class="body">
+{include file="./_nav1.html"}
+<div class="wrap page-active">
+<div class="opacity2"></div>
+    {include file="./_footer.html"}
+<div class="index-wrap">
+      <header>
+    <div class="baner-ny">
+          	<div class="logo logo-ny"><img src="{$logo}" width="100%"></div>
+	<div id="slideBox" class="slideBox1">
+    <div class="hd">
+            <ul></ul>
+      </div>
+      <span class="next public_color">&gt;</span>
+      <span class="prev public_color">&lt;</span>
+	<div class="bd">
+		<ul>
+			{foreach name=slidepics item=slidepic from=$global.slidepics}
+            <li><a class="pic" href="{$slidepic.link}"><img src="{$slidepic.image}" /></a></li>
+			 {/foreach}
+		</ul>
+	</div>
+	
+			</div>
+			
+   </div>
+   <div class="menu public_bg">
+            	<div class="nav">
+            	<a class="arrow-left" href="#">&lt;</a> 
+   				 <a class="arrow-right" href="#">&gt;</a>
+               <div class="swiper-nav swiper-container">
+                  <div class="swiper-wrapper">
+                      <div class="swiper-slide"><span><a href="index.html" class="public_color1">首页</a></span></div>
+                      {foreach name=key item=nav from=$navs}
+                      <div class="swiper-slide"><span><a href="{$nav.link}" class="public_color1">{$nav.name}</a></span></div>
+					  {/foreach}
+                  </div>
+				</div>
+                </div>
+    </div>
+      </header>  
+      <div class="mainbox">
+           <div class="aboutbox">
+           <div class="xx"></div><div class="dd"></div>
+            <div class="aa">
+            <div class="ribbon"></div>
+            <div class="hide-class public_bg2">
+              <div class="classbox">
+              {foreach name=pagenavs item=nav from=$pagenavs} 
+              <dl><a href="{$nav.link}" class="public_color1">{$nav.name}</a></dl>
+			  {/foreach}
+              </div>
+          </div>
+          <h2 class="clearfix public_color">{$list.name}<span class="more2" id="first">分类<span id="down"> &darr;</span><span id="up"> &uarr; </span></span></h2>
+          <ul class="prolist clearfix" style="padding:0">
+		   {foreach name=article item=article from=$list.data}
+              <li>
+                <div class="prolistb"  onclick="javascript:window.location.href='{$article.link}'"> <img src="{$article.image}" width="100%" title="265*265" class=" public_bor">
+                  <dd class="title1 public_color">{$article.title}</dd>
+                </div>
+              </li>
+              {/foreach} 
+            </ul>
+           <div class="next1"><a href="{$page_links.first_link}" class="public_bg2 public_color1" >首页</a><a href="{$page_links.prev_link}" class="public_bg2 public_color1">上一页</a><a href="{$page_links.next_link}" class="public_bg2 public_color1">下一页</a><a href="{$page_links.last_link}" class="public_bg2 public_color1">末页</a></div>
+          </div>
+      </div>
+      </div>
+      <footer class="foot public_bg">
+        <div class="back-top "><A href="#" class="public_color1 public_bg2">↑</A></div>
+        <div class="text">Copyright © 2014 技术支持：{$footscript}</div>
+      </footer>
+</div>
+</div>
+</div>
+
+</body>
+
+</html>

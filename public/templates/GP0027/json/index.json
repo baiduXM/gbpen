@@ -1,0 +1,58 @@
+{
+	
+    "about_us": {
+		"description": "关于我们",
+		"value": {},
+		"type": "page"
+	},
+	"news":{
+		"description": "左下方文字列表（如新闻中心）,此栏目显示最多子分类个数为4",
+		"value": {},
+		"type": "list",
+		"config":{
+			"showchilddata":"true"
+		}	
+
+	},
+	"contact_us": {
+		"value": "姓名：龚先生\r\n手机：13275050333 \r\n电话：0595-83068686 \r\n传真：0595-83068686 \r\n地址：石狮市濠江丽景小区1号楼D梯202室\r\n  ",
+		"description": "联系方式",
+		"type": "textarea"
+	},
+	"pro":{
+		"description":"中间图片列表滚图（如产品展示）",
+		"value":{},
+		"type":"list"
+	},
+	"net":{
+		"value":{},
+		"type":"list",
+		"description":"下方中间栏目（如网络营销）"
+	},
+	"slidepics": {
+		"value": [{
+			"title": "banner",
+			"image": "images/banner.jpg",
+			"link": "article/1.html",
+			"description": "banner1"
+		}, {
+			"title": "测试图2",
+			"image": "images/banner.jpg",
+			"link": "http://www.baidu.com"
+		},{
+			"title": "测试图3",
+			"image": "images/banner.jpg",
+			"link": "http://www.baidu.com"
+		}],
+		"description": "banner多图轮播",
+		"type": "images",
+		"config": {
+			"height": 432,
+			"limit": 3
+		}
+	}
+}
+               
+
+
+

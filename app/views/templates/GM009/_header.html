@@ -1,0 +1,34 @@
+      <header class="indextop">
+
+            <div class="baner">
+            <div class="bot"><div class="y"></div><div class="y"></div><div class="y"></div><div class="y"></div><div class="y"></div><div class="y"></div><div class="y"></div><div class="y"></div><div class="y"></div><div class="y"></div><div class="y"></div><div class="y"></div><div class="y"></div><div class="y"></div><div class="y"></div><div class="y"></div><div class="y"></div><div class="y"></div><div class="y"></div><div class="y"></div><div class="y"></div><div class="y"></div><div class="y"></div><div class="y"></div><div class="y"></div><div class="y"></div><div class="y"></div><div class="y"></div><div class="y"></div><div class="y"></div><div class="y"></div><div class="y"></div><div class="y"></div><div class="y"></div><div class="y"></div><div class="y"></div><div class="y"></div><div class="y"></div><div class="y"></div><div class="y"></div><div class="y"></div><div class="y"></div><div class="y"></div><div class="y"></div><div class="y"></div><div class="y"></div><div class="y"></div><div class="y"></div></div>
+        	<div class="indexlogo"><img src="{$logo}"></div>
+            <div class="indexmenu">
+            	<div class="swiper-container scroll-container">
+					<div class="swiper-wrapper">
+						<div class="swiper-slide">
+                        	<ul>
+                                <li class="public_bg"><a href="index.html" class="public_color">网站首页</a></li>
+                                {foreach name=navs item=nav from=$navs}
+                                <li class="public_bg"><a href="{$nav.link}" class="public_color">{$nav.name}</a></li>
+                                {/foreach}
+                            </ul>
+    					</div></div></div>
+            </div>
+	<div id="slideBox" class="slideBox">
+    <div class="hd">
+            <ul></ul>
+              </div>
+	<div class="bd">
+		<ul>
+			{foreach name=slidepics item=slidepic from=$global.slidepics}
+              <li><a class="pic" href="{$slidepic.link}"><img src="{$slidepic.image}" /></a></li>
+            {/foreach}
+		</ul>
+	</div>
+	
+			</div>
+            
+        </div>
+        
+      </header>

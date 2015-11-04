@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<script type="text/javascript">
+	// 跳转手机页面
+	{if $site_another_url}
+	if (!!navigator.userAgent.match(/AppleWebKit.*Mobile.*/)) {
+	    location.href = '{$site_another_url}';
+	} {/if}
+</script>
+
+<title>{$title}</title>
+<meta name="keywords" content="{$keywords}" />
+<meta name="description" content="{$description}" />
+
+<link rel="stylesheet" rev="stylesheet" href="http://chanpin.xm12t.com.cn/css/global.css" type="text/css" />
+
+<link href="{$site_url}css/style.css" rel="stylesheet" type="text/css" />
+
+<script type="text/javascript" src="{$site_url}js/jquery.js"></script>
+</head>
+<!-- 关于我们 -->
+<body>
+  <!-- fixed_nav layer start -->
+  {include file='./fixed_nav.html'}   
+  <!-- fixed layer end -->
+	<div class="wrap">
+		<div class="wrap_inner">
+		{include file='./_pagenavs_sub3.html'}
+
+		<div class="main">
+			<h2><span>{$list.en_name}</span>{$list.name}</h2>
+			<div class="con">
+				<div class="list_txt">
+					<ul class="list">
+						{foreach name=article item=article from=$list.data}
+						<li class="clearfix">
+							<h3><a  href="{$article.link}">{$article.title}</a></h3>
+							<p>{$article.description}</p>
+						</li>
+						{/foreach}										
+					</ul>
+					{include file='./_page_normal.html'}
+				</div>
+			</div>
+
+		</div>
+
+		</div>
+
+		<div class="top_blue"></div>
+		<div class="bottom_blue"></div>
+	</div>
+	{$footscript}
+
+<script src="{$site_url}js/fun.js" type="text/javascript"></script>	
+</body>
+</html>

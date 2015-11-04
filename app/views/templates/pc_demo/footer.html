@@ -1,0 +1,17 @@
+<footer>
+	<a class="up-btn" href="javascript:;">↑<em>返回顶部</em></a>
+	<nav>
+		<h1><a href="{$site_url}">{$title}</a></h1>
+		<ul class="clearfix">
+			{foreach name=navs item=nav from=$navs}
+			<li class="{if $nav@index > 2}fr{else}fl{/if}{if $nav.current} current{/if}">
+				<a href="{$nav.link}">{$nav.name}</a>
+			</li>
+			{/foreach}
+		</ul>
+	</nav>
+	<section class="copyright">
+		<p>{$footprint}</p>
+	</section>
+</footer>
+{$footscript}

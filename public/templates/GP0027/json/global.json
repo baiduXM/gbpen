@@ -1,0 +1,74 @@
+{
+	"nylogo":{
+		"value": {
+			"title": "XXX企业",
+			"image": "images/logo1.png",
+			"link": "http://www.baidu.com/"
+		},
+		"description": "网站内页LOGO",
+		"type": "image",
+		"config": {
+			"width":474,
+			"height": 126
+		}
+	},
+	"contactimg":{
+		"value": {
+			"title": "XXX企业",
+			"image": "images/recru.jpg",
+			"link": "http://www.baidu.com/"
+		},
+		"description": "联系我们栏目图片",
+		"type": "image",
+		"config": {
+			"widht":281,
+			"height": 95
+		}
+	},
+	"slidepics": {
+		"value": [{
+			"title": "banner",
+			"image": "images/nybanner.jpg",
+			"link": "article/1.html",
+			"description": "banner1"
+		}, {
+			"title": "测试图2",
+			"image": "images/nybanner.jpg",
+			"link": "http://www.baidu.com"
+		},{
+			"title": "测试图3",
+			"image": "images/nybanner.jpg",
+			"link": "http://www.baidu.com"
+		}],
+		"description": "内页大图多图轮播（banner）",
+		"type": "images",
+		"config": {
+			"height": 379,
+			"limit": 3
+		}
+	},
+	"links": {
+		"value": [{
+			"title": "厦门易尔通",
+			"image": "images/1.jpg",
+			"link": "http://www.12t.cn",
+			"description": "友情链接1"
+		}, {
+			"title": "百度",
+			"image": "images/2.jpg",
+			"link": "http://www.baidu.com"
+		},{
+			"title": "网易163",
+			"image": "images/3.jpg",
+			"link": "http://www.baidu.com"
+		}],
+		"description": "友情链接",
+		"type": "images",
+		"config": {
+			"width": 100,
+			"height": 100,
+			"limit": 5
+		}
+	}
+	
+}

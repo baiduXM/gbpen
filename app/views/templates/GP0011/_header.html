@@ -1,0 +1,27 @@
+    <div class="header">
+      <div class="logo"><a href="javascript:;"><img src="{$logo}" /></a></div>
+      <div class="tell"><img src="images/tell.png" /></div>
+      <div class="home"><a href="javascript:void(0);" onclick="SetHome(this, window.location);">设为首页</a><a href="javascript:void(0);" onclick="shoucang(document.title, window.location);">加入收藏</a></div>
+    </div>
+    <div class="baner">
+        <div id="myFocus"><!--焦点图盒子-->
+  <div class="pic"><!--图片列表-->
+    <ul>
+         {foreach name=slidepics item=slidepic from=$index.slidepics}
+  <li><a href="{$slidepic.link}"><img src="{$slidepic.image}" alt="{$slidepic.title}"  width="1001" height="236" thumb="" alt="" text="" /></a></li>
+  {/foreach}    
+    </ul>
+  </div>
+</div>
+        </div>
+  <div class="menu">
+      <ul class="nav"> 
+        {foreach name=key item=nav from=$navs}
+          {if $nav.current}
+          <li class="selected"><a href="{$nav.link}">{$nav.name}</a></li>
+          {else}
+          <li><a href="{$nav.link}">{$nav.name}</a></li>
+          {/if}
+        {/foreach}                                                                                      
+      </ul>           
+    </div>

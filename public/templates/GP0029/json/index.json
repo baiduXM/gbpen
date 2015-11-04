@@ -1,0 +1,70 @@
+{	 
+"slidepics": {
+		"value": [{
+			"title": "首页滚轮图1",
+			"image": "images/slid_1.jpg",
+			"link": "",
+			"description":"将时尚经典元素与时下流行元素大胆融合，于简约中彰显奢华魅力！流畅的线条将轮廓勾勒的清晰分明，辅以优美的弧形曲线，与人体最优美舒|简约|Perfect experience"
+		}, {
+			"title": "首页滚轮图2",
+			"image": "images/slid_1.jpg",
+			"link": "",
+			"description":"将时尚经典元素与时下流行元素大胆融合，于简约中彰显奢华魅力！流畅的线条将轮廓勾勒的清晰分明，辅以优美的弧形曲线，与人体最优美舒|精炼|Perfect experience"
+		}, {
+			"title": "首页滚轮图3",
+			"image": "images/slid_1.jpg",
+			"link": "",
+			"description":"将时尚经典元素与时下流行元素大胆融合，于简约中彰显奢华魅力！流畅的线条将轮廓勾勒的清晰分明，辅以优美的弧形曲线，与人体最优美舒|不凡|"
+		}],
+		"description": "大轮滚图",
+		"type": "images",
+		"config": {
+			"width": 1920,
+			"height": 736,
+			"limit": 3
+		}
+	},
+	"qrcode": {
+		"value": {
+			"title": "关注一下哦~",
+			"image": "images/follow_us.jpg",
+			"link": ""
+		},
+		"description": "首页底部二维码图片",
+		"type": "image",
+		"config": {
+			"width":165,
+			"height": 165
+		}
+	},
+	"phone_title": {
+		"value": "百度推广业务",
+		"description": "首页底部正方形框内的标题",
+		"type": "text"
+	},
+	"phone_1": {
+		"value": "0592-3503388 3503777",
+		"description": "业务专线",
+		"type": "text"
+	},
+	"phone_2": {
+		"value": "0592-3503388 3503777",
+		"description": "客服专线",
+		"type": "text"
+	},
+	"phone_5": {
+		"value": "0592-3503388 3503777",
+		"description": "招聘热线",
+		"type": "text"
+	},
+	"phone_6": {
+		"value": "0592-3503388 3503777",
+		"description": "投诉中心",
+		"type": "text"
+	},
+	"feedback_txt": {
+		"value": "<p>您好 HELLO<br/>感谢您来到厦门易尔通互动，若您有合作意向，请您为我们留言或使用以下方式联系我们，我们将尽快给你回复，并为您提</p>",
+		"description": "首页留言板块文字信息",
+		"type": "text"
+	}
+}

@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="zh-cn">
+    <head>
+        <meta charset="gbk">
+        <title>获取模板列表</title>
+        <style>
+            body{font: 12px/24px arial,"Microsoft YaHei";}
+            body > h1{text-align: center; line-height:32px;}
+            body > h2{line-height:28px;}
+            body > p{width:85%;margin:0 auto;}
+            .description{width:85%;margin:0 auto;border:1px solid #fff;border-right:0;text-align: center;}
+			.description tr:nth-child(odd) {background:#8cd7c8;}
+			.description tr:nth-child(even) {background:#e7f4fc;}
+            .description td.title,th.title{background:#56d6bc;}
+            .description th{border-right:1px solid #fff;}
+            .description td{border-top:1px solid #fff;border-right:1px solid #fff;padding:2px;}
+			.testdata {width:85%;margin:0 auto;}
+        </style>
+    </head>
+    <body>
+        <h1>获取模板列表</h1>
+        <p><br>
+    模板管理页获取接口</p>
+        <h2>接口说明：</h2>
+        <table class="description" cellspacing="0px">
+            <thead>
+                <tr>
+                    <th colspan="7" class="title">获取模板列表</th>
+                </tr>
+                <tr>
+                  <td colspan="1" class="title">地址</td>
+                  <td colspan="6">../template-list</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="1" class="title">模式</td>
+                    <td colspan="6">GET</td>
+                </tr>
+                <tr>
+                    <td colspan="7" class="title">参数</td>
+                </tr>
+                <tr>
+                  <td class="title">type(int)*</td>
+                  <td colspan="4">PC模板or手机模板</td>
+                  <td colspan="2">1-PC模板；2-手机模板</td>
+                </tr>
+                <tr>
+                  <td class="title">current_page(int)</td>
+                  <td colspan="4">页码</td>
+                  <td colspan="2">默认1</td>
+                </tr>
+                <tr>
+                  <td class="title">per_page(int)</td>
+                  <td colspan="4">每页数量</td>
+                  <td colspan="2">默认8</td>
+                </tr>
+                <tr>
+                  <td class="title">search(string)</td>
+                  <td colspan="4">搜索模板</td>
+                  <td colspan="2">默认空 不搜索，对模板名称、编号进行搜索 </td>
+                </tr>
+                <tr>
+                  <td class="title">classify_id(int)</td>
+                  <td colspan="4">行业分类筛选</td>
+                  <td colspan="2">默认空，不筛选</td>
+                </tr>
+                <tr>
+                    <td class="title">color(string,array)</td>
+                    <td colspan="4">颜色筛选</td>
+                    <td colspan="2">直接颜色标识符，或者标识符数组<span class="title">color</span>[0]=red&amp;<span class="title">color</span>[1]=orange</td>
+                </tr>
+                <tr>
+                <td colspan="7" class="title">返回值</td>
+                </tr>
+                <tr>
+                    <td class="title">err(int)</td>
+                    <td colspan="6">0 - 正常；    其他 - 错误（具体参见错误代码表）</td>
+                </tr>
+                <tr>
+                    <td class="title">msg(string)</td>
+                    <td colspan="6">错误提示信息（err为0时 值为空）</td>
+                </tr>
+                <tr>
+                    <td class="title" rowspan="17">data(array)</td>
+                    <td colspan="2">total(int)</td>
+                    <td colspan="4">总数</td>
+                </tr>
+                <tr>
+                    <td colspan="2">per_page(int)</td>
+                    <td colspan="4">当前页数量</td>
+                </tr>
+                <tr>
+                  <td colspan="2">current_page(int)</td>
+                  <td colspan="4">当前页码</td>
+                </tr>
+                <tr>
+                  <td colspan="2">last_page(int)</td>
+                  <td colspan="4">最后一页页码</td>
+                </tr>
+                <tr>
+                  <td colspan="2">from(int)</td>
+                  <td colspan="4">起始索引</td>
+                </tr>
+                <tr>
+                    <td colspan="2">to(int)</td>
+                    <td colspan="4">结束索引</td>
+                </tr>
+                <tr>
+                    <td rowspan="11">data(array)</td>
+                    <td rowspan="11">0,1,2...(array)</td>
+                    <td colspan="2">id(int)</td>
+                    <td colspan="2">模板id</td>
+                </tr>
+                <tr>
+                  <td colspan="2">serial(string)</td>
+                  <td colspan="2">模板编号</td>
+                </tr>
+                <tr>
+                    <td colspan="2">name(string)</td>
+                    <td colspan="2">模板名称（ini文件内定义）</td>
+                </tr>
+                <tr>
+                    <td colspan="2">img (string)</td>
+                    <td colspan="2">预览图</td>
+                </tr>
+                <tr>
+                  <td rowspan="3">colors(array)</td>
+                  <td rowspan="3">1,2..(array)</td>
+                  <td>id(str)</td>
+                  <td>颜色风格，如red，blue...</td>
+                </tr>
+                <tr>
+                  <td>value(str)</td>
+                  <td>颜色十六进制代码</td>
+                </tr>
+                <tr>
+                  <td>description(str)</td>
+                  <td>颜色中文名称</td>
+                </tr>
+                <tr>
+                    <td colspan="2">is_selected(int)</td>
+                    <td colspan="2">是否选中</td>
+                </tr>
+                
+                <tr>
+                    <td colspan="2">selected_style(int)</td>
+                    <td colspan="2">选中的颜色风格</td>
+                </tr>
+                
+                <tr>
+                  <td colspan="2">created_at(int)</td>
+                  <td colspan="2">记录创建时间戳，不可修改</td>
+                </tr>
+                <tr>
+                    <td colspan="2">updated_at(int)</td>
+                    <td colspan="2">记录更新时间戳，不可修改</td>
+                </tr>
+            </tbody>
+        </table>
+		<h2>返回示例数据：</h2>
+		<pre class="testdata">
+{
+
+}
+		</pre>
+		
+		<script type="text/javascript">
+		var nthChild = function (elem, num) {
+			var len = elem.length;
+			var ret = [];
+			var i = 0;
+
+			// :nth-child(num)
+			if (!isNaN(Number(num))) {
+				for (i = 0; i < len; i++) {
+					if (i === num - 1) return elem[i];
+				}
+			}
+
+			// :nth-child(numn+num)
+			if (num.indexOf('+') > 0) {
+				var parts = num.match(/\w/g);
+				for (i = parts[2] - 1; i < len; i += parts[0] << 0) {
+					if (elem[i]) ret.push(elem[i]);
+				}
+			}
+
+			// :nth-child(odd)
+			if (num === 'odd') {
+				for (i = 0; i < len; i += 2) {
+					ret.push(elem[i]);
+				}
+			}
+
+			// :nth-child(even)
+			if (num === 'even') {
+				for (i = 1; i < len; i += 2) {
+					ret.push(elem[i]);
+				}
+			}
+
+			return ret;
+		};
+		
+		var rows = document.getElementsByTagName('tr');
+		var even = nthChild(rows, 'even');
+		var odd = nthChild(rows, 'odd');
+		for (i in even) {
+			even[i].style.backgroundColor = '#e7f4fc';
+		}
+		for (i in odd) {
+			odd[i].style.backgroundColor = '#8cd7c8';
+		}
+		</script>
+    </body>
+</html>

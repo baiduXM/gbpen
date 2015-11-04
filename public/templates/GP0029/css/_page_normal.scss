@@ -1,0 +1,22 @@
+/*
+page
+ */
+.page_normal{
+	width: 380px;
+	text-align:center;
+	font-size:0;
+	padding : 70px 0;
+	margin: 0 auto;
+	clear: both;
+}
+.page_normal a,.page_normal span{
+	padding:4px 5px;
+	font-size:10px;
+	margin-left: 5px;
+	color:#fff;
+	background-color: #a38600;
+}
+.page_normal a{
+	text-decoration:none;
+}
+.page_normal li.cur a{background-color: #214760;cursor: pointer;}

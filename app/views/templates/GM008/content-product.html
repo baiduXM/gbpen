@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<script type="text/javascript">
+    // 跳转PC页面
+    {if $site_another_url}
+      if (!navigator.userAgent.match(/AppleWebKit.*Mobile.*/)) {
+        location.href = '{$site_another_url}';
+      }
+    {/if}
+</script>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no,minimal-ui">
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta content="telephone=no" name="format-detection">
+<title>{$title}</title>
+<meta name="keywords" content="{$keywords}" />
+<meta name="description" content="{$description}" />
+<link rel="shortcut icon" href="{$favicon}" type="image/x-icon" />
+<link rel="stylesheet" rev="stylesheet" href="http://chanpin.xm12t.com.cn/css/global.css" type="text/css" />
+<link href="css/swipe.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="css/public.css" />
+<link href="css/css.css" rel="stylesheet" type="text/css" />
+<script src="js/TouchSlide.1.1.js"></script>
+<script src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/function.js"></script>
+<script type="text/javascript" src="js/share.js"></script>
+<script src="js/idangerous.swiper-2.0.min.js"></script>
+<script src="js/simple-app.js"></script>
+</head>
+<body>
+<div class="body">
+<!-- 隐藏导航 -->
+{include file="./_header_hidenav.html"}
+<!-- 隐藏导航End -->
+<div class="wrap">
+<!-- 底部导航 -->
+{include file="./_footer.html"}
+<!-- 底部导航End -->
+<div class="index-wrap">
+<h1 class="box-top1 fixed-top public_bg"><span class="back"><a href="javascript:window.history.back()">返回</a></span><span class="more-ny" id="font">字+</span><div>{$article.category.name}</div></h1>
+        <div class="font fix-font">
+            	<dl class="big">大</dl>
+                <dl class="normal">中</dl>
+                <dl class="small">小</dl>
+            </div>
+
+    <div class="main ny-wrap">
+    	<div class="box-id">
+            <div class=" about-m public_color2">
+            <div class="bigimgbox">
+            	<div class=" bigimg">	
+                	<div id="slideBox" class="slideBox">
+    <div class="hd">
+            <ul></ul>
+              </div>
+	<div class="bd">
+		<ul>
+			{foreach name=image item=image from=$article.images}
+      <li><a class="pic" href="{$image.link}"><img src="{$image.image}" /></a></li>
+      {/foreach}
+		</ul>
+	</div>
+	
+			</div>
+                </div>
+            </div>
+            	<div class="edite">  
+                     {$article.content|unescape:"html"}
+                </div>
+            
+			
+            </div>
+        </div>
+    </div>
+{include file="./_footer.html"}
+</div>
+</div></div>
+</body>
+</html>

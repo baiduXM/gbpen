@@ -1,0 +1,30 @@
+<div class="headerbg">
+    <div class="logo"><a href="javascript:;"><img src="{$logo}" height="91" width="400" /></a></div>
+    <div id="menu" class="menu">
+        <ul>    
+            <li><a href="index.html">首页</a></li> 
+            {foreach name=key item=nav from=$navs} 
+            <li><a href="{$nav.link}">{$nav.name}</a></li> 
+            {/foreach}                                   
+        </ul>
+    </div>               
+</div>  
+<div class="banners">
+    <div class="focusBox" style="margin:0 auto">
+        <ul class="pic">
+             {foreach name=slidepics item=slidepic from=$index.slidepics}
+            <li><a href="{$slidepic.link}" target="_blank"><img src="{$slidepic.image}" alt="{$slidepic.title}"/></a></li>
+            {/foreach}
+        </ul>
+        <a class="prev" href="javascript:void(0)"></a>
+        <a class="next" href="javascript:void(0)"></a>
+        <ul class="hd">
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+        </ul>
+    </div>      
+
+</div> 

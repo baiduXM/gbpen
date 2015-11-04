@@ -1,0 +1,19 @@
+<!-- page[分页] -->
+<div class="page_normal">
+	 
+    <ul class="clearfix">
+		<li class="fl"><a href="{if $page_links.current_page gt 1}{$page_links.first_link}{else}javascript:;{/if}">&lt;&lt;&nbsp;首页</a></li>
+		<li class="fl"><a href="{if $page_links.current_page gt 1}{$page_links.prev_link}{else}javascript:;{/if}">上一页</a></li>
+		{foreach item=near_link key=near_page from=$page_links.nears_link}
+		{if $near_page == $page_links.current_page}
+			<li class="fl cur"><a href="javascript:;">{$near_page}</a></li>
+		{else}
+			<li class="fl"><a href="{$near_link}">{$near_page}</a></li>
+		{/if}
+		{/foreach}
+		
+		<li class="fl"><a href="{if $page_links.current_page lt $page_links.page_count}{$page_links.next_link}{else}javascript:;{/if}">下一页</a></li>
+		<li class="fl"><a href="{if $page_links.current_page lt $page_links.page_count}{$page_links.last_link}{else}javascript:;{/if}">末页&nbsp;&gt;&gt;</a></li>
+		
+	</ul>
+</div>

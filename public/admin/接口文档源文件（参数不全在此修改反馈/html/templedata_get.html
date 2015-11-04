@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="zh-cn">
+    <head>
+        <meta charset="gbk">
+        <title>页面可编辑区域 列表</title>
+        <style>
+            body{font: 12px/24px arial,"Microsoft YaHei";}
+            body > h1{text-align: center; line-height:32px;}
+            body > h2{line-height:28px;}
+            body > p{width:85%;margin:0 auto;}
+            .description{width:85%;margin:0 auto;border:1px solid #fff;border-right:0;text-align: center;}
+			.description tr:nth-child(odd) {background:#8cd7c8;}
+			.description tr:nth-child(even) {background:#e7f4fc;}
+            .description td.title,th.title{background:#56d6bc;}
+            .description th{border-right:1px solid #fff;}
+            .description td{border-top:1px solid #fff;border-right:1px solid #fff;padding:2px;}
+			.testdata {width:85%;margin:0 auto;}
+        </style>
+    </head>
+    <body>
+        <h1>页面可编辑区域列表</h1>
+        <p><img src="images/QQ截图20141201113859.png" width="285" height="437"><br>
+        此页面列表获取接口</p>
+        <h2>接口说明：</h2>
+        <table class="description" cellspacing="0px">
+            <thead>
+                <tr>
+                    <th colspan="8" class="title">获取页面可编辑区域列表</th>
+                </tr>
+                <tr>
+                  <td colspan="1" class="title">地址</td>
+                  <td colspan="7">../homepage-list</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="1" class="title">模式</td>
+                    <td colspan="7">GET</td>
+                </tr>
+                <tr>
+                    <td colspan="8" class="title">参数</td>
+                </tr>
+                <tr>
+                  <td class="title">type(int)*</td>
+                  <td colspan="2">PC模板or手机模板</td>
+                  <td colspan="5">1-PC模板；2-手机模板</td>
+                </tr>
+                <tr>
+                    <td class="title">page(string)*</td>
+                    <td colspan="2">页面标识符</td>
+                    <td colspan="5">index|list-text|content-news...（目前就只有index）</td>
+                </tr>
+                <tr>
+                <td colspan="8" class="title">返回值</td>
+                </tr>
+                <tr>
+                    <td class="title">err(int)</td>
+                    <td colspan="7">0 - 正常；    其他 - 错误（具体参见错误代码表）</td>
+                </tr>
+                <tr>
+                    <td class="title">msg(string)</td>
+                    <td colspan="7">错误提示信息（err为0时 值为空）</td>
+                </tr>
+                
+                <tr>
+                  <td class="title" rowspan="31">data(array)</td>
+                    <td rowspan="30"><p>title,slidepics...(array)</p>
+                    <p>变量名，保存提交时用<br>
+                      命名与个数各模板不同<br>
+                    </p></td>
+                    <td>description(string)*</td>
+                    <td colspan="5">?标题标签（对应上图列表左侧标签“轮滚图、大标题字...”）</td>
+                </tr>
+                <tr>
+                    <td>type (string)*</td>
+                  <td colspan="5"> text：单行文字<br>
+	textarea：多行文字区域<br>
+	image：单张图片<br>
+	images：多图，多个image类型的数组<br>
+	list：列表</td>
+                </tr>
+                <tr>
+                  <td rowspan="18">value(?)*</td>
+                  <td colspan="3">type==&quot;text&quot;<br>
+                  (string)</td>
+                  <td colspan="2">文本值，适用于标题文案等</td>
+                </tr>
+                <tr>
+                  <td colspan="3">type==&quot;textarea&quot;<br>
+                  (string)</td>
+                  <td colspan="2"><p>文本值，适用于公告等<br>
+                  &quot;\r\n&quot;需替换为&quot;&lt;br /&gt; &quot; </p></td>
+                </tr>
+                <tr>
+                  <td colspan="3" rowspan="4">type==&quot;image&quot;<br>
+                  (array)</td>
+                  <td>title(str)*</td>
+                  <td>图片标题</td>
+                </tr>
+                <tr>
+                  <td>image(str)*</td>
+                  <td>图片地址</td>
+                </tr>
+                <tr>
+                  <td>link(str)*</td>
+                  <td>图片链接</td>
+                </tr>
+                <tr>
+                  <td>description(str)</td>
+                  <td>图片描述</td>
+                </tr>
+                <tr>
+                  <td colspan="3">type==&quot;images&quot;<br>
+                  (array)</td>
+                  <td>0,1,2..(array)</td>
+                  <td><p>格式同type==&quot;image&quot;<br>
+                    多张图片格式的数组</p>                  </td>
+                </tr>
+                <tr>
+                  <td rowspan="6"><p>type==&quot;list&quot;<br>
+                  (array)</p>                  </td>
+                  <td rowspan="4">list<br>
+                  (arr)</td>
+                  <td rowspan="4">0,1,2..<br>
+                  (array)</td>
+                  <td>id(int)*</td>
+                  <td>栏目ID</td>
+                </tr>
+                <tr>
+                  <td>name(str)*</td>
+                  <td>栏目名称</td>
+                </tr>
+                <tr>
+                  <td>selected(bool)*</td>
+                  <td>是否选中（只能一个）</td>
+                </tr>
+                <tr>
+                  <td>children(array)</td>
+                  <td>子栏目。格式统一</td>
+                </tr>
+                <tr>
+                  <td colspan="2">star_only(int)</td>
+                  <td colspan="2">是否只读取推荐文章</td>
+                </tr>
+                <tr>
+                  <td colspan="2">total(int)</td>
+                  <td colspan="2">最多输出条数（此项暂不作后台编辑）</td>
+                </tr>
+                <tr>
+                  <td colspan="2" rowspan="5"> type==&quot;navs&quot;<br>
+(array)</td>
+                  <td rowspan="5">0,1,2..<br>
+(array)</td>
+                  <td>name(str)*</td>
+                  <td>导航名称</td>
+                </tr>
+                <tr>
+                  <td>image(str)*</td>
+                  <td>导航图标地址</td>
+                </tr>
+                <tr>
+                  <td>data(str)*</td>
+                  <td>导航数据<br>
+                  type==tel：值为电话号码<br>
+type==sms：值为手机号码<br>
+type==im：值例&quot;000@53kf&quot;，<br>
+@后为im类型标识符，@前为im的账号id<br>
+type==link：值为外链地址</td>
+                </tr>
+                <tr>
+                  <td>type(str)*</td>
+                  <td>导航类型<br>
+                    tel|sms|im|share|link</td>
+                </tr>
+                <tr>
+                  <td>enable(int)*</td>
+                  <td>导航是否启用</td>
+                </tr>
+            </tbody>
+        </table>
+		<h2>返回示例数据：</h2>
+		<pre class="testdata">
+PC（传参type=1&page=index）：
+{
+	title: {
+		value: 'XXX企业',
+		description: '顶部大标题',
+		type: 'text'
+	},
+	slidepics: {
+		value: [{
+			title: '测试图1',
+			image: 'http://..../a.jpg',
+			link: '{siteurl}/article/1.html',
+		}, {
+			title: '测试图2',
+			image: 'http://..../b.jpg',
+			link: '{siteurl}/article/2.html',
+		}],
+		description: '大轮滚图',
+		type: 'images'
+	},
+	list1: {
+		<span style="color:red">value: [{
+			id: 1,
+			name: "列表1",
+			selected: false
+		}, {
+			id: 2,
+			name: "列表2",
+			selected: false,
+			children: [{
+				id: 4,
+				name: "列表21",
+				selected: true
+			}, {
+				id: 5,
+				name: "列表22",
+				selected: false
+			}]
+		}, {
+			id: 3,
+			name: "列表3",
+			selected: false
+		}]</span>,
+		description: '第一个图文列表',
+		type: 'list'
+	}
+}
+无线站（传参type=2&page=index）：
+{
+	slidepics: {
+		value: [{
+			title: '测试图1',
+			image: 'http://..../a.jpg',
+			link: '{siteurl}/article/1.html',
+		}, {
+			title: '测试图2',
+			image: 'http://..../b.jpg',
+			link: '{siteurl}/article/2.html',
+		}],
+		description: '轮滚图',
+		type: 'images'
+	},
+	bottomnavs: {
+		value: [{
+			name: '电话',
+			image: 'http://..../a.png',
+			data: '0592-2323232',
+			type: 'tel',
+			enable: 1
+		}, {
+			name: '短信',
+			image: 'http://..../a.png',
+			data: '13489990000',
+			type: 'sms',
+			enable: 1
+		}, {
+			name: '咨询',
+			image: 'http://..../a.png',
+			data: '0000001@53kf',
+			type: 'im',
+			enable: 1
+		}, {
+			name: '短信',
+			image: 'http://..../a.png',
+			data: 'http://...',
+			children: [{
+				name: '导航B1',
+				image: 'http://..../a.png',
+				data: 'http://...',
+				type: 'link',
+				enable: 1
+			}, {
+				name: '导航B2',
+				image: 'http://..../a.png',
+				data: 'http://...',
+				type: 'link',
+				enable: 1
+			}],
+			type: 'link',
+			enable: 1
+		}, {
+			name: '分享',
+			image: 'http://..../a.png',
+			data: '',
+			type: 'share',
+			enable: 1
+		}],
+		description: '底部导航',
+		type: 'navs'
+	}
+}
+		</pre>
+		<h2>原始存储数据（后端）：</h2>
+		<pre class="testdata">
+PC：
+{
+	title: {
+		value: 'XXX企业',
+		description: '顶部大标题',
+		type: 'text'
+	},
+	slidepics: {
+		value: [{
+			title: '测试图1',
+			image: 'http://..../a.jpg',
+			link: '{siteurl}/article/1.html',
+		}, {
+			title: '测试图2',
+			image: 'http://..../b.jpg',
+			link: '{siteurl}/article/2.html',
+		}],
+		description: '大轮滚图',
+		type: 'images'
+	},
+	list1: {
+		<span style="color:red">value: 1</span>,
+		description: '第一个图文列表',
+		type: 'list'
+	}
+}
+		</pre>
+		
+		<script type="text/javascript">
+		var nthChild = function (elem, num) {
+			var len = elem.length;
+			var ret = [];
+			var i = 0;
+
+			// :nth-child(num)
+			if (!isNaN(Number(num))) {
+				for (i = 0; i < len; i++) {
+					if (i === num - 1) return elem[i];
+				}
+			}
+
+			// :nth-child(numn+num)
+			if (num.indexOf('+') > 0) {
+				var parts = num.match(/\w/g);
+				for (i = parts[2] - 1; i < len; i += parts[0] << 0) {
+					if (elem[i]) ret.push(elem[i]);
+				}
+			}
+
+			// :nth-child(odd)
+			if (num === 'odd') {
+				for (i = 0; i < len; i += 2) {
+					ret.push(elem[i]);
+				}
+			}
+
+			// :nth-child(even)
+			if (num === 'even') {
+				for (i = 1; i < len; i += 2) {
+					ret.push(elem[i]);
+				}
+			}
+
+			return ret;
+		};
+		
+		var rows = document.getElementsByTagName('tr');
+		var even = nthChild(rows, 'even');
+		var odd = nthChild(rows, 'odd');
+		for (i in even) {
+			even[i].style.backgroundColor = '#e7f4fc';
+		}
+		for (i in odd) {
+			odd[i].style.backgroundColor = '#8cd7c8';
+		}
+		</script>
+    </body>
+</html>

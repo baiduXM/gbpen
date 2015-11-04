@@ -1,0 +1,33 @@
+CACHE MANIFEST
+
+# VERSION 2.02
+
+# 直接缓存的文件
+CACHE:
+	css/reset.css
+	css/public.css
+	css/swipe.css
+	css/css.css
+	js/jquery.min.js
+	js/idangerous.swiper-2.0.min.js
+	js/share.js
+	js/function.js
+	js/idangerous.swiper.3dflow-2.0.js
+	js/simple-app.js
+	js/TouchSlide.1.1.js
+	images/casesty.png
+	images/headerbg.png
+	images/logo.png
+	images/sty.png
+	index.html
+	about.html
+	news.html
+	news_detail.html
+	pro.html
+	pro_detail.html
+# 需要在时间在线的文件
+NETWORK:
+	http://sjtest.xm12t.com.cn/chenxiaobin/September/xjf/
+
+# 替代方案
+FALLBACK:

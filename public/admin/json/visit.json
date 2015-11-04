@@ -1,0 +1,27 @@
+{
+    "err": 0, 
+    "msg": "", 
+    "data": {
+        "today_num": "233", 
+        "today_users": "235", 
+        "yesterday_num": "23", 
+        "yesterday_users": "22", 
+        "week_request": "110", 
+        "num": "1222", 
+        "users": "1234", 
+        "colum_count": "10", 
+        "wx_request": "222",
+        "Capacity":"254", 
+        "Capacity_use":"23", 
+        "flow":"54",
+        "flow_use":"23",
+        "article_count": "20", 
+        "member_num": 12, 
+        "lotter_num": 12,
+        "Qr_code": null, 
+        "Qr_count": null,  
+        "wx_user": null, 
+        "info_count": null,  
+        "exchange_num": null
+    }
+}

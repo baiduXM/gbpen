@@ -1,0 +1,105 @@
+@charset "utf-8";
+*{ margin:0px; padding:0px;}
+a{ text-decoration:none}
+li{list-style:none;}
+a:link, a:visited{text-decoration:none; }
+a img{ border:none;}
+img{ vertical-align:top; max-width:100%;}
+#clear{ clear:both;}
+body{font-size:14px; text-align:left;font-weight:normal; line-height:24px; font-family:"微软雅黑";  color:#333;  }
+.clearfix:after { content:'\20'; display:block; height:0; clear:both; }
+.clearfix { *zoom:1;}
+
+.public_body{ background:rgba(245,224,193,1)}
+.public_bg{ background:rgba(76,171,53,1)}
+.public_bg1{ background:rgba(255,255,255,1)}
+.public_color,body{color:rgba(85,85,85,1)}
+.public_color1{ color:rgba(255,255,255,1)}
+.public_color2{ color:rgba(123,124,119,1)}
+.pubiic_bor{  color:rgba(76,171,53,1)}
+.pubiic_bor1{ color:rgba(209,194,173,1)}
+
+
+html {position: relative;height: 100%; width:100%; min-width:320px; max-width:640px; margin:0px auto; position:relative; overflow:hidden}
+a{blr:expression(this.onFocus=this.blur())} /* */
+ /*a{ -webkit-tap-highlight-color:rgba(0,0,0,0);  }  去掉链接触摸高亮 */
+a{outline:none;} /*for Firefox*/
+ol,p,dl,li{margin:0;pading:0; list-style:none;}
+h1,h2,h3,h4,h5{font-size:14px;margin:0;padding:0; font-weight:normal;}
+
+.body{ position: absolute; width:100%; height:100%; overflow:hidden;}
+.wrap{ width:100%; height:100%;min-width:320px; max-width:640px;  position: absolute; top:0px; left:0px;-webkit-transition: all 0.5s ease-out; -moz-transition: all 0.5s ease-out; -o-transition: all 0.5s ease-out; transition: all 0.5s ease-out;  }
+.index-wrap{width:100%; height:100%; overflow:hidden;overflow-y : auto; -webkit-overflow-scrolling:touch;}
+.main{ width:100%; height:auto; overflow:hidden; animation:opacity 1.5s linear;-webkit-animation:opacity 1.5s linear;-moz-animation:opacity 1.5s linear;-o-animation:opacity 1.5s linear; }
+.heaer{ width:100%; height: auto; position:relative; padding-bottom:20px; margin-bottom:1px; }
+.logo{width:100%; height: auto; overflow:hidden; position:relative; z-index:1}
+.logo-ny{width:100%; position:relative;}
+.foot{ padding:8px; margin:15px 0px 0px; height:auto;text-align:left;   color:#fff; position:relative;}
+.foot:after{display:block; background:rgba(255,255,255,0.2);content:" "; position:absolute; top:0; left:0;width:100%; padding:8px; height:24px;  }
+.foot .text{ position:relative; z-index:1 }
+.back-top{ width:40px; height:24px; border-radius:15px; line-height:24px;  display:block; background:rgba(0,0,0,.3);  text-align:center;  color:#fff; font-size:1em; position:relative;z-index:22; margin:auto; position:absolute; right:7px; top:7px; overflow:hidden }
+.back-top a{ display:block; color:#fff;}
+.class{width:230px;  height:100%; z-index:9999;  position: absolute; top:0px; left:-240px; -webkit-transition: all 0.5s ease-out;
+    -moz-transition: all 0.5s ease-out;
+    -o-transition: all 0.5s ease-out;
+    transition: all 0.5s ease-out; box-shadow:0px 0px 2px 2px #3e2a21; opacity:0.9}
+.class-top{ height:40px; overflow:hidden; line-height:40px; font-size:1.3em; background:rgba(0,0,0,0.36); color:#fff;padding-left:10px;}
+.class-close{ width:40px; height:40px; float:right; display:inline; text-align:center; color:#fff; font-size:1.4em;}
+.class-m{ height: auto; overflow:hidden;}
+.opacity2{ width:100%; height:100%; position:fixed; top:0px; left:0px; background:rgba(0,0,0,0); z-index:2222; display:none;}
+.overflow{ height:100%; overflow:hidden;}
+ul.class-list{ padding:0px; margin:0px; height:auto; overflow:hidden;}
+ul.class-list li{ height: auto; line-height:35px; overflow:hidden; border-bottom:1px solid rgba(255,255,255,.7); font-size:1.15em; text-indent:20px;}
+ul.class-list li .icon{ width:35px; height:35px; text-align:center; float:right; display:inline;text-indent:0px; font-size:1.2em; color:rgba(255,255,255,.8);}
+ul.class-list li a{ color:#fff; display:block;}
+ul.class-list li .icon1{ display:none;}
+.menu_body{display:none;  padding:5px 0px; height:auto; overflow:hidden;}
+.menu_body dl{ height:27px; line-height:27px; overflow:hidden; font-size:0.9em;}
+ul.class-list li.cur{ background:rgba(0,0,0,0.1); }
+ul.class-list li.cur .icon1{ display:block;}
+ul.class-list li.cur .icon2{ display:none;} 
+.hover{transform: translate(240px,0px);
+-ms-transform: translate(240px,0px);
+-webkit-transform: translate(240px,0px);	
+-o-transform: translate(240px,0px);		
+-moz-transform: translate(240px,0px);}
+
+.hover1{transform: translate(230px,0px);
+-ms-transform: translate(230px,0px);
+-webkit-transform: translate(230px,0px);	
+-o-transform: translate(230px,0px);		
+-moz-transform: translate(230px,0px);}
+
+
+ /*分享*/
+.Share{ position: absolute; bottom:60px; right:0px; display:none;}
+.fixed{ width:100%; height:58px; overflow:hidden;  
+ position: absolute; left:0px; bottom:0px; z-index:999; -webkit-transition: all 0.5s ease-out;
+    -moz-transition: all 0.5s ease-out;
+    -o-transition: all 0.5s ease-out;
+    transition: all 0.5s ease-out; }
+.box{display:-webkit-box;display:-moz-box;display:-o-box;display:-ms-box;display:box; width:100%; height:auto; overflow: hidden;}
+#box li{ height:58px; overflow:hidden; text-align:center; color:#4c3736; }
+#box li{-webkit-box-flex:1;-moz-box-flex:1;-o-box-flex:1;-ms-box-flex:1;box-flex:1;}
+#box li a{ color:#fff; display:block; }
+#box li .title{ height:23px; overflow:hidden;  line-height:23px;}
+.fix_icon{ height:33px; overflow:hidden;}
+
+.share-con{ position:fixed; bottom:58px; padding:3px 0px; right:0px; display:none; height:30px; background:rgba(0,0,0,0.5); width:100%; z-index:999999}
+.share-con a,.share-con a span{height:25px;width:25px;display:block;float:right;overflow:hidden;}
+.share-con a{padding:2px;}
+.share-con a span{ background:url(../images/share-icon.png);background-repeat:no-repeat;cursor:pointer; background-size:25px auto; }
+.share-con a:hover{opacity:0.7;filter:alpha(opacity=70);}
+.share-con a span.copylink{background-position:0 0;}
+.share-con a span.tengxunweibo{background-position:0 -25px;}
+.share-con a span.xinlang{background-position:0 -50px;}
+.share-con a span.sohu{background-position:0 -75px;}
+.share-con a span.wangyi{background-position:0 -100px;}
+.share-con a span.qqzone{background-position:0 -125px;}
+.share-con a span.qqpengyou{background-position:0 -150px;}
+.share-con a span.renren{background-position:0 -175px;}
+.share-con a span.kaixin{background-position:0 -200px;}
+.share-con a span.taojianghu{background-position:0 -225px;}
+.share-con a span.douban{background-position:0 -250px;}
+.share-con a span.baidusoucang{background-position:0 -275px;margin-right:0px;}
+

@@ -1,0 +1,10 @@
+<select name="" size="1" class="select1">
+ 
+ <option>友情链接</option>	
+
+	{foreach key=key item=link from=$_links.links}
+	 <option data-link="{$link.link}">{$link.title}</option>	
+	{/foreach}
+
+ </select>
+

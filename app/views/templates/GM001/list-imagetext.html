@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no,minimal-ui">
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta content="telephone=no" name="format-detection">
+<title>{$title}</title>
+<meta name="keywords" content="{$keywords}" />
+<meta name="description" content="{$description}" />
+<link href="{$site_url}{$path}css/swipe.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="{$site_url}{$path}css/public.css" />
+<link href="{$site_url}{$path}css/css.css" rel="stylesheet" type="text/css" />
+<script src="{$site_url}{$path}js/TouchSlide.1.1.js"></script>
+<script src="{$site_url}{$path}js/jquery.min.js"></script>
+<script type="text/javascript" src="{$site_url}{$path}js/function.js"></script>
+<script type="text/javascript" src="{$site_url}{$path}js/share.js"></script>
+<script src="{$site_url}{$path}js/idangerous.swiper-2.0.min.js"></script>
+<script src="{$site_url}{$path}js/simple-app.js"></script>
+</head>
+<body>
+<div class="body">
+{include file="./_header.html"}
+    <div class="main">
+    	<div class="box-id">
+        	<h1 class="box-top"><span class="more" id="first">分类<span id="down"> &darr;</span><span id="up"> &uarr; </span></span>{$list.name}</h1>
+            <div class="hide-class">
+			  {foreach from=$pagenavs item=pagenav}
+				<dl><a href="{$pagenav.link}">{$pagenav.name}</a></dl>
+			  {/foreach}
+          </div>
+            <div class=" about-m">
+            	<ul class="picture2">
+					{foreach from=$list item=article}
+               		 <li><div><a href="{$article.link}"><p class="img"><img src="{$article.img}" width="100%" title="{$article.title}" /></p><p class=" title1">{$article.title}</p></a></div></li>
+					{/foreach}
+            	</ul>  
+                <div class="next1"><a href="{$page_links.prev_url}">上一页</a>{$page_links.current_page}/{$page_links.page_count}<a href="{$page_links.next_url}">下一页</a></div>
+            </div>
+        </div>
+    </div>
+	{include file="./_footer.html"}
+	</div>{$footscript}
+</body>
+</html>

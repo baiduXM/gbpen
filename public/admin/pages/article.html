@@ -1,0 +1,101 @@
+   
+<div class="jumbotron text-center">
+    <div class="article-tb whole">
+        <div class="info-top clearfix">
+            <a class="inline-block fl delarticle all_button buttoneffect" href="JavaScript:void(0);"><i class="iconfont icon-delete mr5"></i>批量删除</a>
+            <div class="fl mov">
+                <a class="inline-block fl movarticle all_button buttoneffect" href="JavaScript:void(0);">移动分类<i class="iconfont icon-iconfont57"></i></a>
+                <ul class="list_mov">
+                    
+                </ul>
+            </div>
+            <div class="fl set">
+                <a class="inline-block fl setarticle all_button buttoneffect" href="JavaScript:void(0);">设为<i class="iconfont icon-iconfont57"></i></a>
+                <ul class="list_set">
+                    <li><a name="set_pcshow" value="1">PC显示</a></li> 
+                    <li><a name="set_pcshow" value="0">PC隐藏</a></li>
+                    <li><a name="set_mobileshow" value="1">手机显示</a></li>
+                    <li><a name="set_mobileshow" value="0">手机隐藏</a></li>
+                    <li><a name="set_wechatshow" value="1">微信显示</a></li>
+                    <li><a name="set_wechatshow" value="0">微信隐藏</a></li>
+                    <li><a name="set_star" value="1">推荐</a></li> 
+                    <li><a name="set_star" value="0">取消推荐</a></li>
+                    <li><a name="set_top" value="1">置顶</a></li>
+                    <li><a name="set_top" value="0">取消置顶</a></li>
+                </ul>
+            </div>
+            <a class="inline-block fr addarticle all_button" href="#/addarticle"><i class="iconfont icon-jia mr5"></i><span>添加文章</span></a>
+            <a class="inline-block fr all_button buttoneffect batchedit" href="javascript:void(0);">批量编辑</a>
+            <a class="inline-block fr all_button buttoneffect batchadd" href="javascript:void(0);">批量添加</a>
+            <div class="fr new">
+                <a class="inline-block fr newarticle all_button buttoneffect" href="javascript:void(0);"><span>分类查找</span><i class="iconfont icon-iconfont57"></i></a>
+                <ul class="list_new">
+                    
+                </ul>
+            </div>
+            <a class="inline-block fr stararticle all_button buttoneffect" href="javascript:void(0);"><i class="iconfont icon-zhiding"></i>查看推荐</a>
+            <a class="inline-block fr stararticle all_button starback buttoneffect" href="javascript:void(0);">返回</a>
+        </div>
+        <table height="410px" class="a-table">
+            <!-- 文章内容 -->
+        </table>
+        <!-- 分页 -->
+        <div class="info-bottom"><dl class="fl checkclass"><input type="checkbox" name="vehicle" value="Bike1" style=" display:none;">
+<label class="label allcheck"></label></dl>全选
+        <div id="Pagination" class="clearfix"></div>
+        </div>  
+        <section id="bomb-box" style="display: none;">
+            <div class="box-up">添加栏目</div>
+            <nav class="box-down">
+                <ul>
+                    <li>父级栏目：
+                        <select>
+                            <option value="请选择菜单：">请选择菜单：</option>
+                        </select>
+                    </li>
+                    <li>栏目名称：<input value="" /></li>
+                    <li>栏目类型：
+                        <select id="lottery">
+                            <option selected="selected" value="选择">请选择</option>
+                            <option value="抽奖">抽奖</option>
+                            <option value="列表">列表</option>
+                            <option value="外链">外链</option>
+                        </select>
+                        <select id="lottery1" style="display: none;"><option value="刮刮卡">刮刮卡</option></select>
+                        <select id="lottery2" style="display: none;"><option value="中大奖">中大奖</option></select>
+                        <a  id="lottery_mg" style="display: none;"><span >*</span>刮刮卡管理</a>
+                        <a id="out_url" style="margin-left: 10px;display: none;">链接地址：<input type="text" width="200px"/></a>
+                    </li>
+                    <li class="sites">站点展示：
+                        <span style="color:#333"><input type="checkbox" id="1" name="vehicle" value="pc" style=" display:none;"><label class="labe2"></label>PC</span>
+						<span style="color:#333"><input type="checkbox" id="2" name="vehicle" value="mobile" style=" display:none;"><label class="labe2"></label>手机</span>
+						<span style="color:#333"><input type="checkbox" id="3" name="vehicle" value="wechat" style=" display:none;"><label class="labe2"></label>微信</span>
+                    </li>
+                    <li id="models" style="display: none;">选择版式：
+                        <div class="inline-block">
+                            <div style="background-color: red;height: 100px;width: 100px;"></div>
+                            <p style="margin-top:5px;text-align: center;">标题+日期</p>
+                        </div>
+                        <div class="inline-block">
+                            <div style="background-color: greenyellow;height: 100px;width: 100px;"></div>
+                            <p style="margin-top:5px;text-align: center;">图片+标题+说明</p>
+                        </div>
+                        <div class="inline-block">
+                            <div style="background-color: #ffff00;height: 100px;width: 100px;"></div>
+                            <p style="margin-top:5px;text-align: center;">图片+标题</p>
+                        </div>
+                    </li>
+                    <li>关键词：<input value="" style="margin-left: 22px;" /></li>
+                    <li>简介：<textarea value="" style="width: 630px;height: 165px;margin-left: 36px;resize: none;"></textarea></li>
+                </ul>
+            </nav>
+            <div class="button">
+                <input type="reset" class="cancel" value="取消" />
+                <input type="submit" class="save" value="保存" />
+            </div>
+            <div class="close">
+                <img src="images/close.png">
+            </div>
+        </section>
+    </div>
+</div>

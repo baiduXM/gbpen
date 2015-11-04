@@ -1,0 +1,13 @@
+<div class="footer"> 
+        	<div class="fotmenu">
+                     <a href="index.html">首页</a> 
+                   {foreach name=key item=nav from=$navs} 
+                    <a href="{$nav.link}">{$nav.name}</a> 
+                  {/foreach}   
+                </div>
+        
+                    <div class="fopts">
+                    {$footprint}
+                </div>
+        </div>
+          {$footscript}

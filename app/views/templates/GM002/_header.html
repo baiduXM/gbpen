@@ -1,0 +1,21 @@
+<header>
+	<div>LOGO：<img src="{$logo}" alt="{$title}" /></div>
+	<nav>
+		<ul class="clearfix">
+			{foreach name=navs item=nav from=$navs}
+			{if $nav.current}
+			<li class="fl" style="background-color:#C7DBFF">{else}
+			<li class="fl">{/if}
+				{$nav.name}
+				{if $nav.childmenu}
+					<ul class="clearfix">
+						{foreach key=key item=nav_list from=$nav.childmenu}
+						{if $nav_list.current}<li style="background-color:#B0CCFF">{else}<li>{/if}{$nav_list.name}</li>
+						{/foreach}
+					</ul>
+				{/if}
+			</li>
+			{/foreach}
+		</ul>
+	</nav>
+</header>

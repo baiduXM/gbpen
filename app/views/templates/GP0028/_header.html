@@ -1,0 +1,55 @@
+
+
+        <div class='header '>
+            <div class="public">
+                <h1 class='logo fl'><img src="{$logo}" width="241" height="162"></h1>
+                <div class="h_right fr">
+                        <div class="right_top">
+                            <span class="tel fl "><i>尊贵预约 / </i>{$contact.telephone}<a href="{$global.onlin.link}">{$global.onlin.description}</a></span>
+                             <div class='search fr'><form action="{$search_action}" method="GET"> <input name="" type="text" class='text_01' value="请输入产品关键字"><input name="" type="submit" class='submit_01' value=""></form>
+                             </div> 
+                        </div>
+                    <div class='mune'>
+                        <ul id="nav" class="nav" >
+                         {$litmit = 8}
+                            {if $navs|count lt $litmit}{$litmit = $navs|count}{/if}
+                            <li class="nLi li_bg" >
+                                 <a href="{$site_url}" >网站首页<em>HOME</em></a>    
+                            </li>
+                             {foreach item=nav from=$navs}
+                                <li class="nLi cur li_bg {if $nav.current}current{/if}">
+                                        <a href="{$nav.link}" >{$nav.name} <em>{$nav.en_name}</em></a>
+                                         {if $nav.childmenu}
+                                            <ul class="sub">
+                                                {foreach item=nav_list from=$nav.childmenu}
+                                                    <li class="{if $nav_list.current}current{/if}"><a href="{$nav_list.link}">{$nav_list.name}</a></li>
+                                                {/foreach}   
+                                            </ul>
+                                         {/if}
+                                </li>
+                            {/foreach}   
+                        </ul>  
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class='banner '>
+            <div id="slideBox" class="slideBox">
+            
+                <!-- <div class="hd">
+                    <ul><li></li><li></li><li></li></ul>
+                </div> -->
+                <div class="bd">
+                    <ul>
+                         {foreach item=slidepic from=$global.slidepics}
+                            <li><a href="{$slidepic.link}" target="_blank"><img src="{$slidepic.image}" /></a></li>
+                          {/foreach}
+                    </ul>
+                </div>
+                <!-- 下面是前/后按钮代码，如果不需要删除即可 -->
+                <a class="prev" href="javascript:void(0)"></a>
+                <a class="next" href="javascript:void(0)"></a>
+            </div>
+        </div>

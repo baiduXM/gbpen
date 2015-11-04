@@ -1,0 +1,113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="x-ua-compatible" content="ie=8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link href="{$site_url}css/style.css" rel="stylesheet" type="text/css" /><!--[if IE 6]>
+<script type="text/javascript" src="js/dd_delatedpng.js" ></script>
+<script type="text/javascript">//如果多个element使用PNG,则用','分隔
+DD_belatedPNG.fix('div,ul,li,a,p,img');
+</script>
+<![endif]-->
+<script type="text/javascript" src="{$site_url}js/jquery1.42.min.js"></script>
+<script type="text/javascript" src="{$site_url}js/jquery.SuperSlide.2.1.js"></script>
+
+<meta name="keywords" content="{$keywords}" />
+<meta name="description" content="{$description}" />
+<link rel="shortcut icon" href="{$favicon}" type="image/x-icon" />
+<link rel="stylesheet" rev="stylesheet" href="http://chanpin.xm12t.com.cn/css/global.css" type="text/css" />
+<link rel="stylesheet" rev="stylesheet" href="{$site_url}css/style_{$stylecolor}.css" type="text/css" />
+<title>{$title}</title>
+{$headscript}
+</head>
+
+<body>
+	<div class="wappers">
+        	{include file='./_header.html'}
+        <div class="containers">
+			<div class="left">
+<div class="list">
+                   <div class="list_title">{$pagenavs[0].name}</div>
+                    <div class="listbg">
+                         <ul>
+                             {foreach name=pagenavs item=nav from=$pagenavs}  
+                            <li>{if $nav.current}<a href="{$nav.link}" class="choose">{else}<a href="{$nav.link}">{/if}{$nav.name}</a>
+                           {if $cnav.current and $cnav.childmenu}     
+                           <ul class="second">
+                               {foreach name=pagenavs item=nav from=$cnav.childmenu}
+                               <li><a href="{$nav.link}">{$nav.name}</a></li> 
+                               {/foreach}
+                           </ul> 
+                            {/if}    
+                            </li>         
+                              {/foreach}
+                                       
+                        </ul>
+                      </div>             
+                </div>        
+<div class="contactb">
+             	<div class="tekla">
+地址：{$contact.address}<br />
+电话：{$contact.telephone}<br />
+手机：{$contact.mobile}<br />
+<!--传真：0592-*******      <br />-->          
+                </div>
+             </div>                    
+            </div> 
+<div class="rights">
+<div class="detal_s">
+                   <div class="list_title2"><span>当前位置:<a href="index.html">首页</a> 
+                    {foreach item=nav from=$pagenavs}
+                      >> <a href="{$nav.link}">{$nav.name}</a>
+                    {/foreach}
+                   </span>
+                   </div>		 
+<div class="deteo">
+          <div class="main_right_con" style="padding:8px 0px 10px">
+                	<ul class="inner_pro">
+                        {foreach name=article item=article from=$list.data}
+                           <li><a href="{$article.link}"><img src="{$article.image}"  height="173" width="205" title="{$article.title}"/><p class="photo_title">{$article.title}</p></a></li>                                                      
+                       {/foreach}   
+                        </ul>
+  <div class="module_page"  >
+                     
+                    <a href="{$page_links.first_link}">首页</a>
+                    <a href="{$page_links.prev_link}">上一页</a>
+                     {foreach name=nears_link item=near_link key=near_page from=$page_links.nears_link} 
+                    {if $near_page == $page_links.current_page}
+                    <a>{$near_page}</a>&nbsp;
+                    {else}
+                    <a href="{$near_link}">{$near_page}</a>&nbsp;
+                    {/if}
+                {/foreach}                                                                                                  
+                    <a href="{$page_links.next_link}">下一页</a> 
+                    <a href="{$page_links.last_link}">尾页</a>
+                    
+					</div>            			
+          </div>
+             
+                        </div>
+                    </div>                	
+                   
+                </div>                
+        </div> 
+        {include file='./_footer.html'}        
+   </div>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

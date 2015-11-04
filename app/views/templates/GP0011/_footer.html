@@ -1,0 +1,7 @@
+    <div class="link"><span style="color:#fff; font-family:'微软雅黑'; padding-right:14px;">友情链接：</span>
+         {foreach name=friend_link item=friend from=$index.friend_link}
+	   <a href="{$friend.link}">{$friend.title}</a>|
+	{/foreach}    
+     </div>
+    <div class="foot">{$footprint}</div> 
+            {$footscript}

@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>{$title}</title>
+<link href="{$site_url}css/css.css" rel="stylesheet" type="text/css" />
+<!--[if IE 6]>
+<script type="text/javascript" src="js/dd_delatedpng.js" ></script>
+<script type="text/javascript">//如果多个element使用PNG,则用','分隔
+DD_belatedPNG.fix('div,ul,li,p,img,h1,ul.nav li a:hover,.more,');
+</script>
+<![endif]-->
+<script type="text/javascript" src="{$site_url}js/jquery1.42.min.js"></script>
+<script type="text/javascript" src="{$site_url}js/jcarousellite.js"></script>
+<script type="text/javascript" src="{$site_url}js/jquery.SuperSlide.2.1.1.js"></script>
+<script type="text/javascript" src="{$site_url}js/myfocus-2.0.4.min.js"></script>
+<script type="text/javascript" src="{$site_url}js/index.js"></script>
+
+<meta name="keywords" content="{$keywords}" />
+<meta name="description" content="{$description}" />
+<link rel="shortcut icon" href="{$favicon}" type="image/x-icon" />
+<link rel="stylesheet" rev="stylesheet" href="http://chanpin.xm12t.com.cn/css/global.css" type="text/css" />
+<link rel="stylesheet" rev="stylesheet" href="{$site_url}css/style_{$stylecolor}.css" type="text/css" />
+{$headscript}
+</head>
+
+<body>
+<div class="main">
+	{include file='./_header.html'}
+    <div class="content ny_content">
+    	<div class="left">
+        	<div class=" class">
+            	<h1 class="class_top">{$pagenavs[0].name}</h1>
+                <div class="class_m">
+                	<div class="class_m1">
+                    <ul class="first">
+                    	{foreach name=pagenavs item=nav from=$pagenavs}    
+                        <li><a href="{$nav.link}">{$nav.name}</a></li>
+			{/foreach} 
+                    </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="class contact">
+            	<p><img src="{$site_url}images/contact.jpg" /></p>
+                <div class="contact_m">
+                {$global.contact_us}
+                </div>
+            </div>
+        </div>
+        <div class="right">
+        <h1 class="pro_top"><strong class="lujin">您现在的位置：<a href="index.html">首页</a>
+        {foreach item=nav from=$posnavs}
+          >> <a href="{$nav.link}">{$nav.name}</a>
+        {/foreach}
+        </strong></h1>
+        <div class="right_m" style="padding:10px 0px;">
+            	<ul class="right_pro">
+		    {foreach name=article item=article from=$list.data}
+                    <li><a href="{$article.link}"><img src="{$article.image}" width="159" height="123" title="img2" /><p class="title">{$article.title}</p></a></li>                                                         
+                    {/foreach}   
+		 </ul>
+                     <div class="next2">
+                <!--总: 10条信息--> 
+                第：{$page_links.current_page}页/共{$page_links.page_count} 页&nbsp;<a href="{$page_links.first_link}">首页</a>&nbsp;<a href="{$page_links.prev_link}">上一页</a>&nbsp;
+                {foreach name=nears_link item=near_link key=near_page from=$page_links.nears_link} 
+                    {if $near_page == $page_links.current_page}
+                    <a>{$near_page}</a>&nbsp;
+                    {else}
+                    <a href="{$near_link}">{$near_page}</a>&nbsp;
+                    {/if}
+                {/foreach}
+                <a href="{$page_links.next_link}">下一页</a></div>
+            </div>
+        </div>
+    </div>
+    {include file='./_footer.html'}
+</div>
+</body>
+</html>

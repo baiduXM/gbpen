@@ -1,0 +1,54 @@
+{
+    "err": 0, 
+    "msg": "", 
+    "data": {
+        "id": 1, 
+        "name": "sdf", 
+        "files": [
+            {
+                "title": "普通内容", 
+                "filename": "content.tpl"
+            }, 
+            {
+                "title": "底部", 
+                "filename": "footer.tpl"
+            }, 
+            {
+                "title": "头部", 
+                "filename": "header.tpl"
+            }, 
+            {
+                "title": "图片内容", 
+                "filename": "header.css"
+            }, 
+            {
+                "title": "样式表", 
+                "filename": "style.css"
+            }, 
+            {
+                "title": "首页", 
+                "filename": "index.tpl"
+            }, 
+            {
+                "title": "样式表", 
+                "filename": "style_blue.css"
+            }, 
+            {
+                "title": "首页数据编辑器", 
+                "filename": "index.json"
+            },  
+            {
+                "title": "文字列表", 
+                "filename": "header.tpl"
+            }, 
+            {
+                "title": "图片列表", 
+                "filename": "list.tpl"
+            }, 
+            {
+                "title": "标题内容", 
+                "filename": "list.imagetext.tpl"
+            }
+        ]
+    }
+}

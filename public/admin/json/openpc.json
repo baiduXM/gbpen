@@ -1,0 +1,267 @@
+{
+    "err": 0, 
+    "msg": "", 
+    "data": {
+        "mytemplelist": {
+            "1": {
+                "id": 25, 
+                "name": "GP002_1", 
+                "img": "GP002_1.jpg", 
+                "is_selected": 0, 
+                "created_at": "2014-12-24 07:50:51", 
+                "updated_at": "2014-12-24 07:50:51"
+            }, 
+            "2": {
+                "id": 26, 
+                "name": "GP005_1", 
+                "img": "GP005_1.jpg", 
+                "is_selected": 0, 
+                "created_at": "2014-12-24 07:50:51", 
+                "updated_at": "2014-12-24 07:50:51"
+            }
+        }, 
+        "templelist": {
+            "total": 14, 
+            "per_page": 8, 
+            "current_page": 1, 
+            "last_page": 2, 
+            "from": 1, 
+            "to": 8, 
+            "data": [
+                {
+                    "id": 1, 
+                    "img": "GP001.jpg", 
+                    "name": "GP001", 
+                    "colors": [
+                        {
+                            "id": "grey", 
+                            "value": "#CCCCCC", 
+                            "description": "灰色"
+                        }, 
+                        {
+                            "id": "black", 
+                            "value": "#000000", 
+                            "description": "黑色"
+                        }, 
+                        {
+                            "id": "blue", 
+                            "value": "#3399FF", 
+                            "description": "蓝色"
+                        }
+                    ], 
+                    "is_selected": 0, 
+                    "selected_style": null, 
+                    "created_at": "2014-12-24 07:50:51", 
+                    "updated_at": "2014-12-24 07:50:51"
+                }, 
+                {
+                    "id": 2, 
+                    "img": "GP002.jpg", 
+                    "name": "GP002", 
+                    "colors": [
+                        {
+                            "id": "grey", 
+                            "value": "#666666", 
+                            "description": "灰色"
+                        }, 
+                        {
+                            "id": "black", 
+                            "value": "#222222", 
+                            "description": "黑色"
+                        }, 
+                        {
+                            "id": "blue", 
+                            "value": "#006699", 
+                            "description": "蓝色"
+                        }
+                    ], 
+                    "is_selected": 0, 
+                    "selected_style": null, 
+                    "created_at": "2014-12-24 07:50:51", 
+                    "updated_at": "2014-12-24 07:50:51"
+                }, 
+                {
+                    "id": 3, 
+                    "img": "GP003.jpg", 
+                    "name": "GP003", 
+                    "colors": [
+                        {
+                            "id": "grey", 
+                            "value": "#666666", 
+                            "description": "灰色"
+                        }, 
+                        {
+                            "id": "blue", 
+                            "value": "#0099CC", 
+                            "description": "蓝色"
+                        }, 
+                        {
+                            "id": "green", 
+                            "value": "#009933", 
+                            "description": "绿色"
+                        }
+                    ], 
+                    "is_selected": 0, 
+                    "selected_style": null, 
+                    "created_at": "2014-12-24 07:50:51", 
+                    "updated_at": "2014-12-24 07:50:51"
+                }, 
+                {
+                    "id": 4, 
+                    "img": "GP004.jpg", 
+                    "name": "GP004", 
+                    "colors": [
+                        {
+                            "id": "green", 
+                            "value": "#00CC99", 
+                            "description": "绿色"
+                        }, 
+                        {
+                            "id": "yellow", 
+                            "value": "#FFFF33", 
+                            "description": "黄色"
+                        }, 
+                        {
+                            "id": "orange", 
+                            "value": "#FF6600", 
+                            "description": "橘色"
+                        }, 
+                        {
+                            "id": "pink", 
+                            "value": "#FF6666", 
+                            "description": "粉色"
+                        }
+                    ], 
+                    "is_selected": 0, 
+                    "selected_style": null, 
+                    "created_at": "2014-12-24 07:50:51", 
+                    "updated_at": "2014-12-24 07:50:51"
+                }, 
+                {
+                    "id": 5, 
+                    "img": "GP005.jpg", 
+                    "name": "GP005", 
+                    "colors": [
+                        {
+                            "id": "grey", 
+                            "value": "#999999", 
+                            "description": "灰色"
+                        }, 
+                        {
+                            "id": "black", 
+                            "value": "#333333", 
+                            "description": "黑色"
+                        }, 
+                        {
+                            "id": "orange", 
+                            "value": "#FF6600", 
+                            "description": "橘色"
+                        }, 
+                        {
+                            "id": "pink", 
+                            "value": "#FF6666", 
+                            "description": "粉色"
+                        }
+                    ], 
+                    "is_selected": 0, 
+                    "selected_style": null, 
+                    "created_at": "2014-12-24 07:50:51", 
+                    "updated_at": "2014-12-24 07:50:51"
+                }, 
+                {
+                    "id": 6, 
+                    "img": "GP006.jpg", 
+                    "name": "GP006", 
+                    "colors": [
+                        {
+                            "id": "black", 
+                            "value": "#000000", 
+                            "description": "黑色"
+                        }, 
+                        {
+                            "id": "blue", 
+                            "value": "#00CCFF", 
+                            "description": "蓝色"
+                        }, 
+                        {
+                            "id": "orange", 
+                            "value": "#FF9900", 
+                            "description": "橘色"
+                        }, 
+                        {
+                            "id": "pink", 
+                            "value": "#FF3333", 
+                            "description": "粉色"
+                        }
+                    ], 
+                    "is_selected": 1, 
+                    "selected_style": "黑色", 
+                    "created_at": "2014-12-24 07:50:51", 
+                    "updated_at": "2014-12-24 07:50:51"
+                }, 
+                {
+                    "id": 7, 
+                    "img": "GP007.jpg", 
+                    "name": "GP007", 
+                    "colors": [
+                        {
+                            "id": "black", 
+                            "value": "#000000", 
+                            "description": "黑色"
+                        }, 
+                        {
+                            "id": "green", 
+                            "value": "#33CC99", 
+                            "description": "绿色"
+                        }, 
+                        {
+                            "id": "orange", 
+                            "value": "#FF6600", 
+                            "description": "橘色"
+                        }, 
+                        {
+                            "id": "pink", 
+                            "value": "#FF6666", 
+                            "description": "粉色"
+                        }
+                    ], 
+                    "is_selected": 0, 
+                    "selected_style": null, 
+                    "created_at": "2014-12-24 07:50:51", 
+                    "updated_at": "2014-12-24 07:50:51"
+                }, 
+                {
+                    "id": 8, 
+                    "img": "GP008.jpg", 
+                    "name": "GP008", 
+                    "colors": [
+                        {
+                            "id": "pink", 
+                            "value": "#FF6666", 
+                            "description": "粉色"
+                        }, 
+                        {
+                            "id": "red", 
+                            "value": "#CC0000", 
+                            "description": "红色"
+                        }, 
+                        {
+                            "id": "purple", 
+                            "value": "#9900FF", 
+                            "description": "紫色"
+                        }, 
+                        {
+                            "id": "coffee", 
+                            "value": "#663333", 
+                            "description": "咖啡"
+                        }
+                    ], 
+                    "is_selected": 0, 
+                    "selected_style": null, 
+                    "created_at": "2014-12-24 07:50:51", 
+                    "updated_at": "2014-12-24 07:50:51"
+                }
+            ]
+        }
+    }
+}

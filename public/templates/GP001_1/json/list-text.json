@@ -1,0 +1,11 @@
+{
+	"asideAD": {
+		"value": {
+			"title": "测试图1",
+			"image": "http://tb2.bdstatic.com/tb/static-common/img/search_logo_big_282cef2.gif",
+			"link": "http://tieba.baidu.com/"
+		},
+		"description": "边栏广告",
+		"type": "image"
+	}
+}

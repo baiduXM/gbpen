@@ -1,0 +1,71 @@
+
+<!-- 二级栏目列表（展示到三级子栏目） -->
+{if $pagenavs}
+<nav>
+	 <h3 class="title">{$posnavs[0].name}<i>{$posnavs[0].en_name}</i></h3>   	<!-- 下表为0的面包屑导航正好是一级栏目的当前栏目 -->
+	<div class="class">
+	<ul class="first clearfix">
+		{foreach name=pagenavs item=nav from=$pagenavs}
+		<li class="{if $nav.current}current{/if}">
+			<a href="{if $nav.childmenu}javascript:;{else}{$nav.link}{/if}" class="choose">{$nav.name}</a>
+			{if $nav.childmenu}
+			 <ul class="second clearfix">
+				{foreach key=key item=nav_list from=$nav.childmenu}
+				<li class="{if $nav_list.current}current{/if}"><a href="{$nav_list.link}">{$nav_list.name}</a>
+					{if $nav_list.childmenu}
+                    <ul class="third clearfix">
+                        {foreach key=key item=nav_listsec from=$nav_list.childmenu}
+                        <li class="{if $nav_listsec.current}current{/if}"><a href="{$nav_listsec.link}">{$nav_listsec.name}</a></li>
+                        {/foreach}
+                    </ul>
+                    {/if} 
+				</li>
+				{/foreach}
+			</ul>
+			{/if}
+		</li>
+		{/foreach}
+	</ul>
+	 <ul class="contacts">
+                            
+                            <li><a href="{$global.about.link}">{$global.about.name}<i> {$global.about.en_name}</i><img src="{$global.about.image}"></a></li>
+                            <li><a href="{$global.career.link}">{$global.career.name}<i> {$global.career.en_name}</i><img src="{$global.career.image}"></a></li>
+                            <li><a href="{$global.contacter.link}">{$global.contacter.name}<i> {$global.contacter.en_name}</i><img src="{$global.contacter.image}"></a></li>
+    </ul> 
+	</div>  
+</nav>
+{else}	<!-- 让客服自己选择，如果当前无子栏目 展现的目标栏目 -->
+<nav>
+	<h3 class="title">{$posnavs[0].name}<i>{$posnavs[0].en_name}</i></h3> 
+	<div class="class">
+	<ul class="first clearfix">
+		{foreach name=pagenavs2 item=nav from=$_pagenavs_sub3.pagenavs.childmenu}
+		<li class="{if $nav.current}current{/if}">
+			<a href="{$nav.link}">{$nav.name}</a>
+			{if $nav.childmenu}
+			<ul class="second clearfix">
+				{foreach key=key item=nav_list from=$nav.childmenu}
+				<li class="{if $nav_list.current}current{/if}"><a href="{if $nav_list.childmenu}javascript:;{else}{$nav_list.link}{/if}">{$nav_list.name}</a>
+                    {if $nav_list.childmenu}
+                    <ul class="third clearfix">
+                        {foreach key=key item=nav_listsec from=$nav_list.childmenu}
+                        <li class="{if $nav_listsec.current}current{/if}"><a href="{$nav_listsec.link}">{$nav_listsec.name}</a></li>
+                        {/foreach}
+                    </ul>
+                    {/if} 
+                 </li>   
+				{/foreach}
+			</ul>
+			{/if}
+		</li>
+		{/foreach}
+	</ul>
+	 <ul class="contacts">
+                            
+                            <li><a href="">关于我们<i> About</i><img src="images/ar.png"></a></li>
+                            <li><a href="">招贤纳士<i> Career</i><img src="images/cr.png"></a></li>
+                            <li><a href="">联系我们<i> Contact</i><img src="images/ct.png"></a></li>
+    </ul> 
+	</div>
+</nav>
+{/if}

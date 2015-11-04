@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="zh-cn">
+    <head>
+        <meta charset="gbk">
+        <title>修改栏目排序</title>
+        <style>
+            body{font: 12px/24px arial,"Microsoft YaHei";}
+            body > h1{text-align: center; line-height:32px;}
+            body > h2{line-height:28px;}
+            body > p{width:85%;margin:0 auto;}
+            .description{width:85%;margin:0 auto;border:1px solid #fff;border-right:0;text-align: center;}
+			.description tr:nth-child(odd) {background:#8cd7c8;}
+			.description tr:nth-child(even) {background:#e7f4fc;}
+            .description td.title,th.title{background:#56d6bc;}
+            .description th{border-right:1px solid #fff;}
+            .description td{border-top:1px solid #fff;border-right:1px solid #fff;padding:2px;}
+			.testdata {width:85%;margin:0 auto;}
+        </style>
+    </head>
+    <body>
+        <h1>修改栏目排序</h1>
+        <p><br>
+    一次提交所有排序序列，此模式可兼容拖拽</p>
+        <h2>接口说明：</h2>
+        <table class="description" cellspacing="0px">
+            <thead>
+                <tr>
+                    <th colspan="4" class="title">修改栏目排序</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="1" class="title">地址</td>
+                    <td colspan="3">classify-sort</td>
+                </tr>
+                <tr>
+                    <td colspan="4" class="title">参数</td>
+                </tr>
+                <tr>
+                  <td rowspan="2" class="title">indexlist(array)*</td>
+                  <td rowspan="2">1,2,3...(array)<br>
+                    提交所有栏目的排序数据</td>
+                  <td>id(int)</td>
+                  <td>栏目ID</td>
+                </tr>
+                <tr>
+                  <td>index(int)</td>
+                  <td>排序，越大越靠前</td>
+                </tr>
+                
+                <tr>
+                <td colspan="4" class="title">返回值</td>
+                </tr>
+                <tr>
+                    <td class="title">err(int)</td>
+                    <td colspan="3"><p>0 - 全部操作成功；    其他 - 错误（具体参见错误代码表）</p>                    </td>
+                </tr>
+                <tr>
+                    <td class="title">msg(string)</td>
+                    <td colspan="3">错误提示信息（err为0时 值为空）</td>
+                </tr>
+                
+                <tr>
+                  <td class="title">data(array)</td>
+                    <td><p>err==3001时有值<br>
+                      1,2...(array)</p>                    </td>
+                    <td colspan="2">部分成功的id数组</td>
+                </tr>
+            </tbody>
+        </table>
+		<h2>参数示例数据：</h2>
+		<pre class="testdata">
+{
+	indexlist: [{
+		id: 23,
+		index: 1
+	}, {
+		id: 24,
+		index: 0
+	}, {
+		id: 25,
+		index: 0
+	}, {
+		id: 26,
+		index: 0
+	}]
+}
+		</pre>
+		
+		<script type="text/javascript">
+		var nthChild = function (elem, num) {
+			var len = elem.length;
+			var ret = [];
+			var i = 0;
+
+			// :nth-child(num)
+			if (!isNaN(Number(num))) {
+				for (i = 0; i < len; i++) {
+					if (i === num - 1) return elem[i];
+				}
+			}
+
+			// :nth-child(numn+num)
+			if (num.indexOf('+') > 0) {
+				var parts = num.match(/\w/g);
+				for (i = parts[2] - 1; i < len; i += parts[0] << 0) {
+					if (elem[i]) ret.push(elem[i]);
+				}
+			}
+
+			// :nth-child(odd)
+			if (num === 'odd') {
+				for (i = 0; i < len; i += 2) {
+					ret.push(elem[i]);
+				}
+			}
+
+			// :nth-child(even)
+			if (num === 'even') {
+				for (i = 1; i < len; i += 2) {
+					ret.push(elem[i]);
+				}
+			}
+
+			return ret;
+		};
+		
+		var rows = document.getElementsByTagName('tr');
+		var even = nthChild(rows, 'even');
+		var odd = nthChild(rows, 'odd');
+		for (i in even) {
+			even[i].style.backgroundColor = '#e7f4fc';
+		}
+		for (i in odd) {
+			odd[i].style.backgroundColor = '#8cd7c8';
+		}
+		</script>
+    </body>
+</html>
