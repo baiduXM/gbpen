@@ -82,10 +82,28 @@ function batcharticleController($scope, $http, $location) {
                     }
                     $('.f_column').append(_op);
                     // 下拉框模拟事件
-                    DropdownEvent(PageId);
+                    _this._checkjs();
                     $('.not-allowed').MoveBox({context:'此为含有子级的父级栏目或为单页内容页，不支持选择！'});
                 });
             });
+        },
+        _checkjs : function(){
+            $(".labe2").click(function () {
+                if (!$(this).hasClass("chirdchecked")) {// 1
+                    $(this).closest('.f_column').length ? DropdownEvent() : null;console.log($(this).closest('.add-r').length);
+                    $(this).closest('.add-r').length ? $(this).parent().siblings('#editor-container').children('textarea').removeAttr('disabled') : null;
+                    $(this).addClass("chirdchecked").parent().siblings('input,textarea').removeAttr('disabled');
+                    $(this).siblings("input[type=checkbox]").attr("checked", true);
+                    $(this).closest('.is_show').length && $(this).parent('.checkclass').length ? $('.is_show .mask').hide() : null;
+                } else {// 2
+                    $(".selectBox").unbind('click');
+                    $('.dropdown ul').hide();
+                    $(this).closest('.add-r').length ? $(this).parent().siblings('#editor-container').children('textarea').attr('disabled',true) : null;
+                    $(this).removeClass("chirdchecked").parent().siblings('input,textarea').attr('disabled',true);
+                    $(this).siblings("input[type=checkbox]").attr("checked", false);
+                    $(this).closest('.is_show').length && $(this).parent('.checkclass').length ? $('.is_show .mask').show() : null;
+                }
+            }); 
         },
         _AddarticleData : function(){
             var _this = this;
