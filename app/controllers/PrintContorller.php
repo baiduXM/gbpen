@@ -1387,7 +1387,7 @@ class PrintController extends BaseController{
                     $mIndexCat['name']=$nav->name;
                     $mIndexCat['en_name']=$nav->en_name;
                     $mIndexCat['icon'] = '<i class="iconfont">'.$nav->icon.'</i>';
-                    $mIndexCat['image']=$this->source_dir."category/".$nav->img;
+                    $mIndexCat['image']=$this->source_dir."/l/category/".$nav->img;
                     if($nav->url){
                         $mIndexCat['link']=$nav->url;
                     }else{
