@@ -5,10 +5,10 @@
 Thumbs.db
 nbproject/
 bootstrap/compiled.php
-app/views/templates/
-public/temp_templates/
-public/templates/
-app/storage/cache/
-app/storage/logs/
-app/storage/views/
-app/storage/sessions/
+app/views/templates/*
+public/temp_templates/*
+public/templates/*
+app/storage/cache/*
+app/storage/logs/*
+app/storage/views/*
+app/storage/sessions/*
