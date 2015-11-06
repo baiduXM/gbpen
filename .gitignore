@@ -1,9 +1,11 @@
 .env.*.php
 .env.php
+.env
 .DS_Store
 Thumbs.db
-nbproject/
-app/storage/logs/
+bootstrap/compiled.php
+app/storage/*
 app/views/templates/
 public/temp_templates/
 public/templates/
+nbproject/
