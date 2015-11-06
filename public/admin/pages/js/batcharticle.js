@@ -11,8 +11,7 @@ function batcharticleController($scope, $http, $location) {
     var editor = UE.getEditor('container',{ 
         initialFrameHeight:300,
         autoHeightEnabled: false
-    });
-    console.log(editor);   
+    });  
     editor.addListener( 'ready', function( ed ) {
         addarticleEditor = true;
         editor.setDisabled();
@@ -148,7 +147,7 @@ function batcharticleController($scope, $http, $location) {
             $('.addsave').click(function(){
                 var editor = UE.getEditor('container'),
                     art_info = editor.getContent(),
-                    id = (_this.G_id ? _this.G_id : ''),
+                    id =  _this.G_id || '',
                     f_c = $('.selectBox_val').val(),
                     c_t = $('.creat_time').val(),
                     vt = $('.visit').val(),
@@ -176,7 +175,7 @@ function batcharticleController($scope, $http, $location) {
                     upload_picname.push($(this).attr('src').split('/')[len-1]);
                 });
                 $http.post('../article-create', 
-                    {id       : id,
+                    {ids       : ids,
                     c_id      : f_c,  
                     pubdate   : c_t,
                     title_bold: title_bold,
