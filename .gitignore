@@ -12,3 +12,4 @@ app/storage/cache/*
 app/storage/logs/*
 app/storage/views/*
 app/storage/sessions/*
+app/config/database.php
