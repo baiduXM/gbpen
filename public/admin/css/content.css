@@ -114,7 +114,7 @@ transform: translate(0,0);}
 .box-down>ul>li{margin-top: 15px;color: #3d4455;vertical-align: top;}
 .box-down>ul>li input{margin-left: 4px;text-indent: 5px;}
 #bomb-box .cancel{background-color: #7c818d;}
-#bomb-box .cancel,.save{width: 80px;height: 30px;border-radius: 5px;border: 0px;text-align: center;color: #ffffff;cursor: pointer;}
+#bomb-box .cancel,.save{width: 80px;height: 30px;border-radius: 5px;border: 0px;text-align: center;color: #ffffff;cursor: pointer;line-height: 2;background-color:#3878c0;}
 #bomb-box .save{width: 80px;}
 #bomb-box .save{background-color: #3b7dc7;}
 #bomb-box .save:hover{ background:#2160a7}
@@ -160,6 +160,7 @@ i.fa-mobile{font-size: 25px;}
 .article-tb .starback{display: none;}
 .article-tb .info-top .iconfont{font-size:17px;margin-left:5px}
 .info-top .batchedit{display: none;}
+.is_show .mask{position: absolute;width: 15px;height: 15px;top: 4px;left: 4px;background-color: #000;opacity: 0.1;}
 /*Column、article栏目文章管理——end*/
 
 /*Home首页管理——begin*/
@@ -545,11 +546,11 @@ border-radius: 5px;}
 .phone_index_col{display: inline-block;width: 200px;border-left: 1px solid #ccc;border-right: 1px solid #ccc;box-sizing:border-box;padding: 5px;vertical-align: top;}
 .phone_index_col li{display: block;}
 /*底部导航*/
-#phone_index-bottomnavs{width: 70%;}
-#phone_index-bottomnavs .phone_service{margin-left: 20px;}
-#phone_index-bottomnavs .phone_service .title{font-size: 16px;font-weight: bold;}
-#phone_index-bottomnavs .phone_service .title:after{content:".";visibility:hidden;clear:both;display: block;}
-#phone_index-bottomnavs .phone_func_move{float: right;margin-top: -34px;color: #317EFF;display: none;cursor:move;}
+#phone_index-quickbar{width: 70%;}
+#phone_index-quickbar .phone_service{margin-left: 20px;}
+#phone_index-quickbar .phone_service .title{font-size: 16px;font-weight: bold;}
+#phone_index-quickbar .phone_service .title:after{content:".";visibility:hidden;clear:both;display: block;}
+#phone_index-quickbar .phone_func_move{float: right;margin-top: -34px;color: #317EFF;display: none;cursor:move;}
 .phone_service .phone_func li{margin: 10px auto;border:1px solid transparent;padding: 10px 10px;text-align: left;}
 .phone_service .phone_func .message-num{margin-left: 20px;width: 125px;height: 21px;padding: 2px 0 2px 5px;border:solid 1px #999;}
 .phone_service .phone_func .custom-menu-title{font-size: 14px;font-weight: bold;margin-right: 36px;}
@@ -561,6 +562,10 @@ border-radius: 5px;}
 .phone_service .custom-sub-ul div{margin-right: 5px;}
 .phone_service .custom-sub-ul .url-control .input{width: 270px;}
 .phone_service .custom-sub-btn{width: 80px;height: 30px;}
+#phone_index-other ul{float: left;width: 100%;}
+#phone_index-other dl{margin: auto 5px;display: inline-block;vertical-align: top;}
+#phone_index-other ul li{width: 100%;display: block;text-align: left;padding-left: 5%;margin: 10px auto;}
+#phone_index-other input{height: 24px;}
 /*栏目顺序*/
 #phone_index-index tr .show_num{width: 55px;height: 25px;text-align: center;margin-bottom: 5px;vertical-align: middle;}
 #phone_index-index .childrenlist{font-size: 12px;}

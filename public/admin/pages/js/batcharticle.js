@@ -1,7 +1,7 @@
 function batcharticleController($scope, $http, $location) {
     $scope.$parent.showbox = "main";
-	$scope.$parent.menu = [];
-	$_GET = $location.search(); 
+    $scope.$parent.menu = [];
+    $_GET = $location.search(); 
     $scope.G_id = $_GET['ids'];
     $scope.G_c_id = $_GET['c_id'];
 
@@ -12,19 +12,28 @@ function batcharticleController($scope, $http, $location) {
         initialFrameHeight:300,
         autoHeightEnabled: false
     });
-    editor.addListener( 'ready', function( editor ) {
+    console.log(editor);   
+    editor.addListener( 'ready', function( ed ) {
         addarticleEditor = true;
+        editor.setDisabled();
     } );
 
     $scope.BatchArticleInit = function(){
-        checkjs();
         this.G_id = $scope.G_id || '';
         this.G_c_id = $scope.G_c_id || '';
         this.init();
     };
     $scope.BatchArticleInit.prototype = {
         init : function(){
+            this._limit();
             this._AddarticleData();
+        },
+        _limit : function(){
+            if($('.f_column .checkclass .labe2').hasClass('chirdchecked')){
+                $(".selectBox").addClass('not-allowed');
+            }else{
+                $(".selectBox").addClass('not-allowed');
+            }
         },
         _column_show : function(){
             var _this = this;
@@ -81,94 +90,37 @@ function batcharticleController($scope, $http, $location) {
                                 <ul>'+option1+'</ul></div>';
                     }
                     $('.f_column').append(_op);
-                    // 下拉框模拟事件
                     _this._checkjs();
                     $('.not-allowed').MoveBox({context:'此为含有子级的父级栏目或为单页内容页，不支持选择！'});
                 });
             });
         },
         _checkjs : function(){
-            $(".labe2").click(function () {
+            $(".labe2").click(function () {  
+                $(this).closest('.add-r').length ? $(this).hasClass("chirdchecked") ? editor.setDisabled() : editor.setEnabled() : null;
                 if (!$(this).hasClass("chirdchecked")) {// 1
-                    $(this).closest('.f_column').length ? DropdownEvent() : null;console.log($(this).closest('.add-r').length);
+                    $(this).closest('.f_column').length ? DropdownEvent() : null;
                     $(this).closest('.add-r').length ? $(this).parent().siblings('#editor-container').children('textarea').removeAttr('disabled') : null;
-                    $(this).addClass("chirdchecked").parent().siblings('input,textarea').removeAttr('disabled');
-                    $(this).siblings("input[type=checkbox]").attr("checked", true);
+                    $(this).addClass("chirdchecked").closest('.is_show').find('input,textarea').removeAttr('disabled');
+                    $(this).siblings("input[type=checkbox]").attr("checked", true).end().parent().siblings('input').removeAttr('disabled');
                     $(this).closest('.is_show').length && $(this).parent('.checkclass').length ? $('.is_show .mask').hide() : null;
                 } else {// 2
                     $(".selectBox").unbind('click');
                     $('.dropdown ul').hide();
                     $(this).closest('.add-r').length ? $(this).parent().siblings('#editor-container').children('textarea').attr('disabled',true) : null;
-                    $(this).removeClass("chirdchecked").parent().siblings('input,textarea').attr('disabled',true);
-                    $(this).siblings("input[type=checkbox]").attr("checked", false);
+                    $(this).removeClass("chirdchecked").closest('.is_show').find('input,textarea').attr('disabled',true);
+                    $(this).siblings("input[type=checkbox]").attr("checked", false).end().parent().siblings('input').attr('disabled',true);
                     $(this).closest('.is_show').length && $(this).parent('.checkclass').length ? $('.is_show .mask').show() : null;
                 }
             }); 
         },
         _AddarticleData : function(){
-            var _this = this;
-            if(_this.G_id){
-                //文章编辑
-                $http.get('../article-info?id='+_this.G_id+'').success(function(json) {
-                    // 编辑内容填充
-                    checkJSON(json, function(json){
-                        // 实例化编辑器
-                        if (typeof addarticleEditor !== 'undefined') UE.getEditor('container').destroy();
-                        var editor = UE.getEditor('container',{ 
-                            initialFrameHeight:300,
-                            autoHeightEnabled: false
-                        });
-                        editor.addListener( 'ready', function( editor ) {
-                            addarticleEditor = true;
-                        } );
-                        var id = _this.G_id;
-                        var _newpic = '',
-                            d = json.data;
-                        $('.creat_time').val(d.updated_at);
-                        $('.visit').val(d.viewcount);
-                        if(d.pc_show == 1){
-                            $('.is_show input[value=pc_show]').attr('checked','true');
-                            $('.is_show input[value=pc_show]').next().addClass('chirdchecked');
-                        }
-                        if(d.mobile_show == 1){
-                            $('.is_show input[value=mobile_show]').attr('checked','true');
-                            $('.is_show input[value=mobile_show]').next().addClass('chirdchecked');
-                        }
-                        if(d.wechat_show == 1){
-                            $('.is_show input[value=wechat_show]').attr('checked','true');
-                            $('.is_show input[value=wechat_show]').next().addClass('chirdchecked');
-                        }
-                        $.each(d.img,function(k,v){
-                            _newpic += '<div class="template-download fade fr in">\n\
-                                    <div>\n\
-                                        <span class="preview">\n\
-                                        <div class="preview-close"><img src="images/preview-close.png" /></div>\n\
-                                            <img src="'+v+'" style="width:80px;height:64px;padding:5px;" data-preimg="preimg">\n\
-                                        </span>\n\
-                                    </div>\n\
-                                </div>';
-                        });
-                        $('.up_pic').before(_newpic);
-                        $('.keyword').val(d.keywords);
-                        $('.txts').val(d.introduction);
-                        $('.art_tit').val(d.title);
-                        if(d.title_bold){
-                            $('.art_tit').css('font-weight','bold');
-                            $('.add-r .set_blod').text('取消加粗');
-                        }
-                        $('.art_tit').css('color',d.title_color);
-                        editor.addListener("ready", function () {
-                                editor.setContent(d.content);
-                        });
-                    });// checkJSON结束
-                });// 文章保存结束
-            }// 判断是否是编辑操作
             // 栏目加载
-            _this._column_show(); 
+            this._column_show(); 
             // 编辑文章标题
-            _this._AddarticleTitleEditor();
+            this._AddarticleTitleEditor();
             // 保存
-            _this._AddarticleSave();
+            this._AddarticleSave();
         },
         _AddarticleTitleEditor : function(){
             //编辑文章标题

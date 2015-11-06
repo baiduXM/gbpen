@@ -20,7 +20,7 @@
             <ul class="home-list">
                 <li class="f_column">
                     <dl class="fl checkclass mr5">
-                        <input type="checkbox" name="checks" style=" display:none;">
+                        <input type="checkbox" name="checks" style=" display:none;" >
                         <label class="labe2"></label>
                     </dl>
                     <span class="fl mr5">栏目分类：</span>
@@ -32,14 +32,14 @@
                         <label class="labe2"></label>
                     </dl>
                     <span class="fl">发布时间：</span>
-                    <input type="text" class="laydate-icon creat_time" onClick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm'})" readonly="readonly" />
+                    <input type="text" class="laydate-icon creat_time" onClick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm'})" readonly="readonly" disabled />
                 </li>
                 <li>
                     <dl class="fl checkclass mr5">
                         <input type="checkbox" name="checks" style=" display:none;">
                         <label class="labe2"></label>
                     </dl>
-                    <span class="fl">访问次数：</span><input type="text" class="visit"/>
+                    <span class="fl">访问次数：</span><input type="text" class="visit" disabled/>
                 </li>
                 <li class="is_show">
                     <dl class="fl checkclass mr5">
@@ -47,14 +47,14 @@
                         <label class="labe2"></label>
                     </dl>
                     <span class="fl">可见站点：</span>
-                	<span style="color:#333; display: inline ">
-                        <input type="checkbox" id="1" name="vehicle" value="pc_show" style=" display:none;"><label class="labe2"></label>PC
+                    <span style="color:#333; display: inline;" class="pr">
+                        <input type="checkbox" id="1" name="vehicle" value="pc_show" style=" display:none;" disabled><label class="labe2"></label>PC<div class="mask"></div>
                     </span>
-					<span style="color:#333; display: inline ">
-                        <input type="checkbox" id="2" name="vehicle" value="mobile_show" style=" display:none;"><label class="labe2"></label>手机
+                    <span style="color:#333; display: inline;" class="pr">
+                        <input type="checkbox" id="2" name="vehicle" value="mobile_show" style=" display:none;" disabled><label class="labe2"></label>手机<div class="mask"></div>
                     </span>
-					<span style="color:#333; display: inline ">
-                        <input type="checkbox" id="3" name="vehicle" value="wechat_show" style=" display:none;"><label class="labe2"></label>微信
+                    <span style="color:#333; display: inline;" class="pr">
+                        <input type="checkbox" id="3" name="vehicle" value="wechat_show" style=" display:none;" disabled><label class="labe2"></label>微信<div class="mask"></div>
                     </span>
                 </li>
                 <li>
@@ -62,14 +62,14 @@
                         <input type="checkbox" name="checks" style=" display:none;">
                         <label class="labe2"></label>
                     </dl>
-                    <span class="fl" style="letter-spacing: 4px;">关键字：</span><input type="text" style="margin-left: -4px" name="keyword" class="keyword"/>
+                    <span class="fl" style="letter-spacing: 4px;">关键字：</span><input type="text" style="margin-left: -4px" name="keyword" class="keyword" disabled/>
                 </li>
                 <li>
                     <dl class="fl checkclass mr5">
                         <input type="checkbox" name="checks" style=" display:none;">
                         <label class="labe2"></label>
                     </dl>
-                    <span class="fl" >内容简介：</span><textarea name="txts" class="txts ml30" cols="30" rows="10"></textarea>
+                    <span class="fl" >内容简介：</span><textarea name="txts" class="txts ml30" cols="30" rows="10" disabled></textarea>
                 </li>
             </ul>
         </div>
@@ -79,10 +79,10 @@
                 <label class="labe2"></label>
             </dl>
             <p>文章标题</p>
-            <input type="text" name="art_tit" class="art_tit" style="width:380px;"><span class="set_blod">加粗</span><span class="set_color">修改颜色</span>
+            <input type="text" name="art_tit" class="art_tit" style="width:380px;" disabled/><span class="set_blod">加粗</span><span class="set_color">修改颜色</span>
             <div id="color-picker" class="cp-default"></div>
             <p>文章内容</p>
-            <div id="editor-container" style="height:500px;"><textarea name="art_info" class="art_info" cols="30" rows="10" id="container"></textarea></div>
+            <div id="editor-container" style="height:500px;"><textarea name="art_info" class="art_info" cols="30" rows="10" id="container" disabled></textarea></div>
         </div>
     </div>
 </div>
