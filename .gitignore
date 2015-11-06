@@ -3,9 +3,12 @@
 .env
 .DS_Store
 Thumbs.db
+nbproject/
 bootstrap/compiled.php
-app/storage/*
 app/views/templates/
 public/temp_templates/
 public/templates/
-nbproject/
+app/storage/cache/
+app/storage/logs/
+app/storage/views/
+app/storage/sessions/
