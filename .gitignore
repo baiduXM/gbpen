@@ -8,6 +8,7 @@ bootstrap/compiled.php
 app/views/templates/*
 public/temp_templates/*
 public/templates/*
+public/customers/*
 app/storage/cache/*
 app/storage/logs/*
 app/storage/views/*
