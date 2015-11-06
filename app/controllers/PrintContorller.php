@@ -1537,24 +1537,27 @@ class PrintController extends BaseController{
         }
     }
     
-    /*
+     /*
      * 获取当前包含的页面 
      * 
      *
      */
     private function getJsonKey($viewname,&$json_keys=[]){
         $content=file_get_contents(app_path('views/templates/'.$this->themename.'/').$viewname);
-        preg_match_all('/\{include\s+file=[\"|\'](.*\.html)\s*[\"|\']\}/i',$content,$i_arr);
-        if(count($i_arr)){
-            foreach($i_arr[1] as $i_c){              
-                $i_info=pathinfo($i_c);
-                $json_keys[]=$i_info['filename'];
-                $this->getJsonKey($i_info['filename'].'.html',$json_keys);
+        
+        if (preg_match_all('/\{include\s+file=[\"|\'](.*\.html)\s*[\"|\']\}/i',$content,$i_arr))
+        {
+            if(count($i_arr)){
+                foreach($i_arr[1] as $i_c){              
+                    $i_info=pathinfo($i_c);
+                    $json_keys[]=$i_info['filename'];
+                    $this->getJsonKey($i_info['filename'].'.html',$json_keys);
             }
         }
         return $json_keys;
+        }
+ else { dd('无法获取当前包含的页面 ');}
     }
-    
     /**
      * 显示文章页
      *
