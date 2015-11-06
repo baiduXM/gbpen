@@ -1409,7 +1409,7 @@ class PrintController extends BaseController{
                             $i=0;
                             foreach($articles as &$article){
                                 $art_arr[$i]['title']=$article->title;
-                                $art_arr[$i]['image']=$this->source_dir."/articles/".$article->img;
+                                $art_arr[$i]['image']=$this->source_dir."/s/articles/".$article->img;
                                 $art_arr[$i]['link']=$this->domain."/detail/".$article->id.".html";
                                 $art_arr[$i]['description']=$article->introduction;
                                 $art_arr[$i]['pubdate']=$article->created_at;
