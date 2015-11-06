@@ -4,3 +4,6 @@
 Thumbs.db
 nbproject/
 app/storage/logs/
+app/views/templates/
+public/temp_templates/
+public/templates/
