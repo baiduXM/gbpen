@@ -284,7 +284,7 @@ function homeController($scope, $http) {
 				$(this).siblings('input').val($(this).val());
 			});
 			// 图片上传
-			$('.new_add').on('click',function(event) {console.log($(this).prev().find('input') == 'undefined');
+			$('.new_add').on('click',function(event) {
 				var _this = $(this);
 				var limit = $(this).parent().siblings('.homeed-left').find('.pic_limit').text();
 				var ratio = $(this).parent().siblings('.homeed-left').find('.ratio').text().split('*');
