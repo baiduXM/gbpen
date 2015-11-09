@@ -523,7 +523,7 @@ WarningBox.prototype = {
         };
 	    $image.cropper(options);
 	    this._UpFunction($image,defaults.ajaxurl,defaults.oncallback);
-	    this._save($image,defaults.ajaxurl,defaults.IsShow,defaults.oncallback);
+	    this._save($image,defaults.ajaxurl,defaults.oncallback);
 	},
 	_UpFunction : function($image,ajaxurl,oncallback){
 		var _this = this;
