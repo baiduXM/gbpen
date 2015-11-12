@@ -15,8 +15,8 @@ function columnController($scope, $http) {
     } );
     $scope.ColumnInit = function(){
         checkjs(location.hash.match(/[a-z]+?$/));
-        // this.json_url = '../classify-list';
-        this.json_url = 'json/column.json';
+        this.json_url = '../classify-list';
+        // this.json_url = 'json/column.json';
         this.upload_picname = '';
         this.this_id = '';
         this.vlayout = '';
@@ -129,17 +129,17 @@ function columnController($scope, $http) {
                     <ul>'+option1+'</ul></div>';
             $('.f_column').html(_op1);
             // 页面展示
-            $.each(json.infos,function(idx, ele) {
-                $.each(ele.data,function(i, j) {
-                    option2 += '<li><a data-id="'+j.key+'" data-name="'+ele.ename+'" title="【'+ele.name+'】'+j.value+'">【'+ele.name+'】'+j.value+'</a></li>';
-                });
-            });
-            var _op2 = '<span>页面展示：</span><div class="dropdown">\
-                    <div class="selectBox" data-id="0" type="text">请选择</div><span class="arrow"></span>\
-                    <input class="selectBox_val" name="index_val" type="hidden" value=""/>\
-                    <input class="selectBox_name" name="index_name" type="hidden" value=""/>\
-                    <ul>'+option2+'</ul></div>';
-            $('.index_showtype').html(_op2);
+            // $.each(json.infos,function(idx, ele) {
+            //     $.each(ele.data,function(i, j) {
+            //         option2 += '<li><a data-id="'+j.key+'" data-name="'+ele.ename+'" title="【'+ele.name+'】'+j.value+'">【'+ele.name+'】'+j.value+'</a></li>';
+            //     });
+            // });
+            // var _op2 = '<span>页面展示：</span><div class="dropdown">\
+            //         <div class="selectBox" data-id="0" type="text">请选择</div><span class="arrow"></span>\
+            //         <input class="selectBox_val" name="index_val" type="hidden" value=""/>\
+            //         <input class="selectBox_name" name="index_name" type="hidden" value=""/>\
+            //         <ul>'+option2+'</ul></div>';
+            // $('.index_showtype').html(_op2);
             $('.a-table').html(_div);
             $('.icon-gantanhao').MoveBox({
                 context : '图片限制尺寸发生改变，请修改！'
@@ -242,8 +242,8 @@ function columnController($scope, $http) {
             $('.a-table').unbind('click').on('click','.column-edit',function(){
                 var proportion;
                 _this.this_id = $(this).parent().siblings('.delv').attr('name');
-                // $http.get('../classify-info?id='+_this.this_id+'').success(function(json) {
-                $http.get('json/classify-info.json').success(function(json) {
+                $http.get('../classify-info?id='+_this.this_id+'').success(function(json) {
+                // $http.get('json/classify-info.json').success(function(json) {
                     var d = json.data;
                     proportion = json.data.width/json.data.height;
                     // 对应父级栏目
