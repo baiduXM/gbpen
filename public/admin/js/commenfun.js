@@ -32,10 +32,10 @@ function tanchuang(Save_id){
 		});
         $('#bomb-box').addClass('in');
         clear_info();
+        Save_id(1);
     });
     //数据清除
     function clear_info(){
-        Save_id(1);
         $('.selectBox').text('');
         $('.column_name').val('');
         $('.en_name').val('');
