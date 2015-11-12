@@ -655,13 +655,15 @@ function DropdownEvent(PageId){
     }else{
     	$(".dropdown ul li a").click(function(){
     		if($(this).hasClass('not-allowed')){
-    			 return false;
+    			return false;
     		}
     		var ul = $(this).closest('ul');
 	        var value = $(this).data("id"); 
     		ul.siblings('.selectBox').text($(this).text()); 
+    		ul.siblings('.selectBox').attr('data-id',value); 
 	        ul.slideUp("fast"); 
 	        ul.siblings('.selectBox_val').val(value); 
+	        ul.siblings('.selectBox_name').length ? ul.siblings('.selectBox_name').val($(this).data("name")) : null;
 	        ul.siblings('.arrow').css({'border-color':'rgb(180,180,180) transparent transparent transparent','top':'7px'});
     	});
     }

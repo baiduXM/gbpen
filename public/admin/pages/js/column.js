@@ -15,7 +15,8 @@ function columnController($scope, $http) {
     } );
     $scope.ColumnInit = function(){
         checkjs(location.hash.match(/[a-z]+?$/));
-        this.json_url = '../classify-list';
+        // this.json_url = '../classify-list';
+        this.json_url = 'json/column.json';
         this.upload_picname = '';
         this.this_id = '';
         this.vlayout = '';
@@ -23,6 +24,9 @@ function columnController($scope, $http) {
     };
     $scope.ColumnInit.prototype = {
         _init : function(){
+            this.classifypicwidth = '';
+            this.classifypicheight = '';
+            this.classifypicforce = '';
             this._heightauto();
             this.getJson();
             this._SaveColumn();
@@ -71,7 +75,7 @@ function columnController($scope, $http) {
                     column_icon(ele.type);
                     _div +='<td><div class="tit_info">'+column_type(ele.type)+'</div>'+layout+'</td>';
                     _div += '<td style="text-align:center;"><span><i class="fa icon-pc iconfont btn btn-show btn-desktop '+(ele.pc_show?'blue':'grey')+'"></i></span><div class="pr size1"><i class="fa iconfont icon-snimicshouji btn btn-show btn-mobile '+(ele.mobile_show?'blue':'grey')+'"></i><i class="fa iconfont btn icon-phonehome none '+(ele.show == 1?'blue':'grey')+(ele.showtypetotal == 0?' not-allowed':'')+'"></i></div><span><i class="fa iconfont icon-weixin btn btn-show btn-wechat '+(ele.wechat_show?'blue':'grey')+'"></i></span></td>\n\
-                    <td><i class="fa iconfont icon-xiayi btn sort"></i><i class="fa iconfont icon-shangyi btn sort"></i><a style="margin:0 10px;" class="column-edit-box"><i class="fa iconfont icon-bianji column-edit"></i><div class="warning"><i class="iconfont'+(ele.issize?' icon-gantanhao':'')+'"></i></div></a><a class="delv" name="'+ele.id+'"><i class="fa iconfont icon-delete"></i></a></td>\n\
+                    <td><i class="fa iconfont icon-xiayi btn sort"></i><i class="fa iconfont icon-shangyi btn sort"></i><a style="margin:0 10px;" class="column-edit-box"><i class="fa iconfont icon-bianji column-edit"></i><div class="warning"><i class="iconfont'+(ele.difsize?' icon-gantanhao':'')+'"></i></div></a><a class="delv" name="'+ele.id+'"><i class="fa iconfont icon-delete"></i></a></td>\n\
                     </tr>';
                     var NextChild = ele,
                         num = 2;
@@ -83,7 +87,7 @@ function columnController($scope, $http) {
                                         column_icon(v.type);
                                         _div +='<td><div class="tit_info">'+column_type(v.type)+'</div>'+layout+'</td>';
                                     _div +='<td style="text-align:center;"><span><i class="fa iconfont icon-pc btn btn-show btn-desktop '+(v.pc_show?'blue':'grey')+'"></i></span><div class="pr size1"><i class="iconfont icon-snimicshouji fa btn btn-show btn-mobile '+(v.mobile_show?'blue':'grey')+'"></i><i class="fa iconfont btn icon-phonehome none '+(v.show?'blue':'grey')+(v.showtypetotal == 0?' not-allowed':'')+'"></i></div><span><i class="fa iconfont icon-weixin btn btn-show btn-wechat '+(v.wechat_show?'blue':'grey')+'"></i></span></td>\n\
-                                    <td><i class="fa iconfont icon-xiayi btn sort grey "></i><i class="fa iconfont icon-shangyi btn sort grey "></i><a style="margin:0 10px;" class="column-edit-box"><i class="fa iconfont icon-bianji grey column-edit"></i><div class="warning"><i class="iconfont'+(v.issize?' icon-gantanhao':'')+'"></i></div></a><a class="delv" name="'+v.id+'"><i class="fa iconfont icon-delete grey "></i></a></td></tr>';
+                                    <td><i class="fa iconfont icon-xiayi btn sort grey "></i><i class="fa iconfont icon-shangyi btn sort grey "></i><a style="margin:0 10px;" class="column-edit-box"><i class="fa iconfont icon-bianji grey column-edit"></i><div class="warning"><i class="iconfont'+(v.difsize?' icon-gantanhao':'')+'"></i></div></a><a class="delv" name="'+v.id+'"><i class="fa iconfont icon-delete grey "></i></a></td></tr>';
                                 if(v.childmenu != null){
                                     NextChild = v;
                                     num++;
@@ -97,7 +101,7 @@ function columnController($scope, $http) {
                 });
             }
             //父级栏目
-            var option1 = '<li><a data-id="0">顶级栏目</a></li>';
+            var option1 = '<li><a data-id="0">顶级栏目</a></li>',option2 = '<li><a data-id="0" data-name="">请选择</a></li>';
             $.each(d,function(k,v){
                 if(v.p_id == 0){
                     option1 += '<li><a class="parents" data-id="'+v.id+'">'+v.name+'</a></li>';
@@ -119,11 +123,23 @@ function columnController($scope, $http) {
                     LoopChlid(NextChild,num);
                 }
             });
-            var _op = '父级栏目：<div class="dropdown">\
-                    <div class="selectBox" data-id="1" type="text"></div><span class="arrow"></span>\
+            var _op1 = '<span>父级栏目：</span><div class="dropdown">\
+                    <div class="selectBox" data-id="0" type="text">请选择</div><span class="arrow"></span>\
                     <input class="selectBox_val" name="column_name" class="column_name" type="hidden" value=""/>\
                     <ul>'+option1+'</ul></div>';
-            $('.f_column').html(_op);
+            $('.f_column').html(_op1);
+            // 页面展示
+            $.each(json.infos,function(idx, ele) {
+                $.each(ele.data,function(i, j) {
+                    option2 += '<li><a data-id="'+j.key+'" data-name="'+ele.ename+'" title="【'+ele.name+'】'+j.value+'">【'+ele.name+'】'+j.value+'</a></li>';
+                });
+            });
+            var _op2 = '<span>页面展示：</span><div class="dropdown">\
+                    <div class="selectBox" data-id="0" type="text">请选择</div><span class="arrow"></span>\
+                    <input class="selectBox_val" name="index_val" type="hidden" value=""/>\
+                    <input class="selectBox_name" name="index_name" type="hidden" value=""/>\
+                    <ul>'+option2+'</ul></div>';
+            $('.index_showtype').html(_op2);
             $('.a-table').html(_div);
             $('.icon-gantanhao').MoveBox({
                 context : '图片限制尺寸发生改变，请修改！'
@@ -226,16 +242,24 @@ function columnController($scope, $http) {
             $('.a-table').unbind('click').on('click','.column-edit',function(){
                 var proportion;
                 _this.this_id = $(this).parent().siblings('.delv').attr('name');
-                $http.get('../classify-info?id='+_this.this_id+'').success(function(json) {
+                // $http.get('../classify-info?id='+_this.this_id+'').success(function(json) {
+                $http.get('json/classify-info.json').success(function(json) {
                     var d = json.data;
                     proportion = json.data.width/json.data.height;
                     // 对应父级栏目
-                    $('.dropdown li a').each(function() {
+                    $('.f_column .dropdown li a').each(function() {
                         if($(this).data('id') == d.p_id){
-                            $('.selectBox').attr('data-id',d.p_id).text($(this).text()).text($(this).text());
-                        }
+                            $('.f_column .selectBox').attr('data-id',d.p_id).text($(this).text());
+                            $('.f_column .selectBox_val').val(d.p_id);
+                        };
                     });
-                    $('.selectBox_val').val(d.p_id);
+                    $('.index_showtype .dropdown li a').each(function() {
+                        if($(this).data('id') == d.index_key){
+                            $('.index_showtype .selectBox').attr('data-id',d.index_key).text($(this).text());
+                            $('.index_showtype .selectBox_val').val(d.index_key);
+                            $('.index_showtype .selectBox_name').val($(this).data('name'));
+                        };
+                    });
                     $('.dropdown li a[data-id='+_this.this_id+']').parent().hide();
                     $('.column_name').val(d.name);
                     // 图标判断
@@ -283,7 +307,7 @@ function columnController($scope, $http) {
                     $('.txts').val(d.description);
                 });//GET请求结束
                 $('#bomb-box').fadeIn(function(){
-                    heightauto()
+                    _this._heightauto();
                 });
                 $('#bomb-box').addClass('in');
                 $('.box-up').text('编辑栏目');
@@ -292,6 +316,7 @@ function columnController($scope, $http) {
             });//点击结束
         },
         listType : function(){
+            var _this = this;
             //弹窗处理
             tanchuang(this._Save_id);
             //下拉列表
@@ -311,7 +336,7 @@ function columnController($scope, $http) {
                         $('#out_url').hide();
                         $('#page_editor').hide();
                         vlayout = $(this).val();
-                        heightauto();
+                        _this._heightauto();
                         break;
                     }
                     case '列表':{
@@ -320,7 +345,7 @@ function columnController($scope, $http) {
                         $('#lottery1,#lottery2,#lottery_mg').hide();
                         $('#out_url').hide();
                         $('#page_editor').hide();
-                        heightauto();
+                        _this._heightauto();
                         break;
                     }
                     case '外链':{
@@ -329,7 +354,7 @@ function columnController($scope, $http) {
                         $('#page_editor').hide();
                         $('#lottery1,#lottery2,#lottery_mg').hide();
                         vlayout = $(this).val();
-                        heightauto();
+                        _this._heightauto();
                         break;
                     }
                     case '内容单页':{
@@ -339,7 +364,7 @@ function columnController($scope, $http) {
                         $('#inside_model').addClass('none');
                         $('#lottery1,#lottery2,#lottery_mg').hide();
                         vlayout = $(this).val();
-                        heightauto();
+                        _this._heightauto();
                         break;
                     }
                     default:
@@ -349,7 +374,7 @@ function columnController($scope, $http) {
                         $('#page_editor').hide();
                         $('#lottery1,#lottery2,#lottery_mg').hide();
                         vlayout = $(this).val();
-                        heightauto();
+                        _this._heightauto();
                         break;
                 }
             });
@@ -712,6 +737,9 @@ function columnController($scope, $http) {
                     });
                 });
             });//移动点击结束
+        },
+        DiffPicSisze : function(){
+
         }
     };
     var init = new $scope.ColumnInit();
