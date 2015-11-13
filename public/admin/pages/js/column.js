@@ -284,12 +284,6 @@ function columnController($scope, $http) {
                     }else if($('#lottery').val() == 6){
                         _this.Model_DiffSize('link');
                     }
-                    var limitSize = $('.index_showtype .selectBox').data('size').split(',');
-                    if(limitSize[0] && limitSize[1]){
-                        $('.column_pic>label').append(''+(limitSize[2] ? '强制:' : '')+'<div>('+limitSize[0]+'*'+limitSize[1]+')</div>')
-                    }else{
-                        $('.column_pic>label').append('(建议'+(limitSize[0] == '' ? (limitSize[1] == '' ? '' : '高为:'+limitSize[1]) : '宽为:'+limitSize[0])+')')
-                    }
 
                     if(d.article_type == 1){
                         $('#inside_model i[name=1]').parent().addClass('cu');                                
@@ -772,10 +766,18 @@ function columnController($scope, $http) {
             });
         },
         Model_DiffSize : function(type){
-            $('.index_showtype li a').each(function(index, el) {
-                $(this).data('type') == type ? $(this).parent().show() : $(this).parent().hide();
-                $(this).data('id') == 0 ? $(this).parent().show() : null;
-            });
+            if(type){
+                $('.index_showtype li a').each(function(index, el) {
+                    $(this).data('type') == type ? $(this).parent().show() : $(this).parent().hide();
+                    $(this).data('id') == 0 ? $(this).parent().show() : null;
+                });
+            }
+            var limitSize = $('.index_showtype .selectBox').data('size').split(',');
+            if(limitSize[0] && limitSize[1]){
+                $('.column_pic>label').append(''+(limitSize[2] ? '强制:' : '')+'<div>('+limitSize[0]+'*'+limitSize[1]+')</div>')
+            }else{
+                $('.column_pic>label').append('(建议'+(limitSize[0] == '' ? (limitSize[1] == '' ? '' : '高为:'+limitSize[1]) : '宽为:'+limitSize[0])+')')
+            }
         }
     };
     var init = new $scope.ColumnInit();
