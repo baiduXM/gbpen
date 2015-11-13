@@ -25,12 +25,6 @@
         "updated_at": "2015-11-09 03:38:24",
         "url": "",
         "wechat_show": 0,
-        "img_forcesize":1,
-        "img_width":198,
-        "img_height":98,
-        "index_name":"首页",
-        "index_ename":"index",
-        "index_key":"about",
-        "index_value":"关于我们"
+        "index_key":"global,about"
     }
 }

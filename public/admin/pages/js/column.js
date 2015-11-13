@@ -131,11 +131,11 @@ function columnController($scope, $http) {
             // 页面展示
             $.each(json.infos,function(idx, ele) {
                 $.each(ele.data,function(i, j) {
-                    option2 += '<li><a data-id="'+j.key+'" data-name="'+ele.ename+'" data-type="'+j.type+'" title="【'+ele.name+'】'+j.value+'">【'+ele.name+'】'+j.value+'</a></li>';
+                    option2 += '<li><a data-id="'+ele.ename+','+j.key+'" data-name="'+ele.ename+'" data-size="'+j.img_width+','+j.img_height+','+j.img_forcesize+'" data-type="'+j.type+'" title="【'+ele.name+'】'+j.value+'">【'+ele.name+'】'+j.value+'</a></li>';
                 });
             });
             var _op2 = '<span>页面展示：</span><div class="dropdown">\
-                    <div class="selectBox" data-id="1"></div><span class="arrow"></span>\
+                    <div class="selectBox" data-id="1" data-size=""></div><span class="arrow"></span>\
                     <input class="selectBox_val" name="index_val" type="hidden" value=""/>\
                     <input class="selectBox_name" name="index_name" type="hidden" value=""/>\
                     <ul>'+option2+'</ul></div>';
@@ -257,7 +257,10 @@ function columnController($scope, $http) {
                     });
                     $('.index_showtype .dropdown li a').each(function() {
                         if($(this).data('id') == d.index_key){
-                            $('.index_showtype .selectBox').attr('data-id',d.index_key).text($(this).text());
+                            $('.index_showtype .selectBox').attr({
+                                'data-id':$(this).data('id'),
+                                'data-size':$(this).data('size')
+                            }).text($(this).text());
                             $('.index_showtype .selectBox_val').val(d.index_key);
                             $('.index_showtype .selectBox_name').val($(this).data('name'));
                         };
@@ -281,6 +284,13 @@ function columnController($scope, $http) {
                     }else if($('#lottery').val() == 6){
                         _this.Model_DiffSize('link');
                     }
+                    var limitSize = $('.index_showtype .selectBox').data('size').split(',');
+                    if(limitSize[0] && limitSize[1]){
+                        $('.column_pic>label').append(''+(limitSize[2] ? '强制:' : '')+'<div>('+limitSize[0]+'*'+limitSize[1]+')</div>')
+                    }else{
+                        $('.column_pic>label').append('(建议'+(limitSize[0] == '' ? (limitSize[1] == '' ? '' : '高为:'+limitSize[1]) : '宽为:'+limitSize[0])+')')
+                    }
+
                     if(d.article_type == 1){
                         $('#inside_model i[name=1]').parent().addClass('cu');                                
                     }else{
@@ -751,6 +761,7 @@ function columnController($scope, $http) {
         DiffPicSisze : function(){
             var _this = this;
             $('#lottery').change(function(event) {
+                $('.index_showtype .selectBox').attr('data-id', 0).text('请选择').siblings('input:hidden').val('');
                 if($(this).val() == '列表'){
                     _this.Model_DiffSize('list');
                 }else if($(this).val() == 4){
