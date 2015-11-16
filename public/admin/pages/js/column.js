@@ -425,7 +425,6 @@ function columnController($scope, $http) {
                 }else{
                     vlayout = $('#lottery').val();
                 }
-
                 var id = (_this._Save_id() == 1 ? '' : _this.this_id);
                 if(vlayout == null){
                     alert('保存失败，请选择类型！')
