@@ -15,8 +15,13 @@ function columnController($scope, $http) {
     } );
     $scope.ColumnInit = function(){
         checkjs(location.hash.match(/[a-z]+?$/));
+<<<<<<< HEAD
         // this.json_url = '../classify-list';
         this.json_url = 'json/column.json';
+=======
+        this.json_url = '../classify-list';
+        // this.json_url = 'json/column.json';
+>>>>>>> develop
         this.upload_picname = '';
         this.this_id = '';
         this.vlayout = '';
@@ -75,7 +80,11 @@ function columnController($scope, $http) {
                     column_icon(ele.type);
                     _div +='<td><div class="tit_info">'+column_type(ele.type)+'</div>'+layout+'</td>';
                     _div += '<td style="text-align:center;"><span><i class="fa icon-pc iconfont btn btn-show btn-desktop '+(ele.pc_show?'blue':'grey')+'"></i></span><div class="pr size1"><i class="fa iconfont icon-snimicshouji btn btn-show btn-mobile '+(ele.mobile_show?'blue':'grey')+'"></i><i class="fa iconfont btn icon-phonehome none '+(ele.show == 1?'blue':'grey')+(ele.showtypetotal == 0?' not-allowed':'')+'"></i></div><span><i class="fa iconfont icon-weixin btn btn-show btn-wechat '+(ele.wechat_show?'blue':'grey')+'"></i></span></td>\n\
+<<<<<<< HEAD
                     <td><i class="fa iconfont icon-xiayi btn sort"></i><i class="fa iconfont icon-shangyi btn sort"></i><a style="margin:0 10px;" class="column-edit-box"><i class="fa iconfont icon-bianji column-edit"></i><div class="warning"><i class="iconfont'+(ele.img_err?' icon-gantanhao':'')+'"></i></div></a><a class="delv" name="'+ele.id+'"><i class="fa iconfont icon-delete"></i></a></td>\n\
+=======
+                    <td><i class="fa iconfont icon-xiayi btn sort"></i><i class="fa iconfont icon-shangyi btn sort"></i><a style="margin:0 10px;" class="column-edit-box"><i class="fa iconfont icon-bianji column-edit"></i><div class="warning"><i class="iconfont'+(ele.difsize?' icon-gantanhao':'')+'"></i></div></a><a class="delv" name="'+ele.id+'"><i class="fa iconfont icon-delete"></i></a></td>\n\
+>>>>>>> develop
                     </tr>';
                     var NextChild = ele,
                         num = 2;
@@ -87,7 +96,11 @@ function columnController($scope, $http) {
                                         column_icon(v.type);
                                         _div +='<td><div class="tit_info">'+column_type(v.type)+'</div>'+layout+'</td>';
                                     _div +='<td style="text-align:center;"><span><i class="fa iconfont icon-pc btn btn-show btn-desktop '+(v.pc_show?'blue':'grey')+'"></i></span><div class="pr size1"><i class="iconfont icon-snimicshouji fa btn btn-show btn-mobile '+(v.mobile_show?'blue':'grey')+'"></i><i class="fa iconfont btn icon-phonehome none '+(v.show?'blue':'grey')+(v.showtypetotal == 0?' not-allowed':'')+'"></i></div><span><i class="fa iconfont icon-weixin btn btn-show btn-wechat '+(v.wechat_show?'blue':'grey')+'"></i></span></td>\n\
+<<<<<<< HEAD
                                     <td><i class="fa iconfont icon-xiayi btn sort grey "></i><i class="fa iconfont icon-shangyi btn sort grey "></i><a style="margin:0 10px;" class="column-edit-box"><i class="fa iconfont icon-bianji grey column-edit"></i><div class="warning"><i class="iconfont'+(v.img_err?' icon-gantanhao':'')+'"></i></div></a><a class="delv" name="'+v.id+'"><i class="fa iconfont icon-delete grey "></i></a></td></tr>';
+=======
+                                    <td><i class="fa iconfont icon-xiayi btn sort grey "></i><i class="fa iconfont icon-shangyi btn sort grey "></i><a style="margin:0 10px;" class="column-edit-box"><i class="fa iconfont icon-bianji grey column-edit"></i><div class="warning"><i class="iconfont'+(v.difsize?' icon-gantanhao':'')+'"></i></div></a><a class="delv" name="'+v.id+'"><i class="fa iconfont icon-delete grey "></i></a></td></tr>';
+>>>>>>> develop
                                 if(v.childmenu != null){
                                     NextChild = v;
                                     num++;
@@ -124,11 +137,16 @@ function columnController($scope, $http) {
                 }
             });
             var _op1 = '<span>父级栏目：</span><div class="dropdown">\
+<<<<<<< HEAD
                     <div class="selectBox" data-id="1" type="text"></div><span class="arrow"></span>\
+=======
+                    <div class="selectBox" data-id="0" type="text">请选择</div><span class="arrow"></span>\
+>>>>>>> develop
                     <input class="selectBox_val" name="column_name" class="column_name" type="hidden" value=""/>\
                     <ul>'+option1+'</ul></div>';
             $('.f_column').html(_op1);
             // 页面展示
+<<<<<<< HEAD
             $.each(json.infos,function(idx, ele) {
                 $.each(ele.data,function(i, j) {
                     option2 += '<li><a data-id="'+ele.ename+','+j.key+'" data-name="'+ele.ename+'" data-size="'+j.img_width+','+j.img_height+','+j.img_forcesize+'" data-type="'+j.type+'" title="【'+ele.name+'】'+j.value+'">【'+ele.name+'】'+j.value+'</a></li>';
@@ -147,6 +165,23 @@ function columnController($scope, $http) {
             });
             // 更改内容展示
             this.DiffPicSisze();
+=======
+            // $.each(json.infos,function(idx, ele) {
+            //     $.each(ele.data,function(i, j) {
+            //         option2 += '<li><a data-id="'+j.key+'" data-name="'+ele.ename+'" title="【'+ele.name+'】'+j.value+'">【'+ele.name+'】'+j.value+'</a></li>';
+            //     });
+            // });
+            // var _op2 = '<span>页面展示：</span><div class="dropdown">\
+            //         <div class="selectBox" data-id="0" type="text">请选择</div><span class="arrow"></span>\
+            //         <input class="selectBox_val" name="index_val" type="hidden" value=""/>\
+            //         <input class="selectBox_name" name="index_name" type="hidden" value=""/>\
+            //         <ul>'+option2+'</ul></div>';
+            // $('.index_showtype').html(_op2);
+            $('.a-table').html(_div);
+            $('.icon-gantanhao').MoveBox({
+                context : '图片限制尺寸发生改变，请修改！'
+            });
+>>>>>>> develop
             // 下拉框模拟事件
             DropdownEvent();
             // 站点展示
@@ -245,8 +280,13 @@ function columnController($scope, $http) {
             $('.a-table').unbind('click').on('click','.column-edit',function(){
                 var proportion;
                 _this.this_id = $(this).parent().siblings('.delv').attr('name');
+<<<<<<< HEAD
                 // $http.get('../classify-info?id='+_this.this_id+'').success(function(json) {
                 $http.get('json/classify-info.json').success(function(json) {
+=======
+                $http.get('../classify-info?id='+_this.this_id+'').success(function(json) {
+                // $http.get('json/classify-info.json').success(function(json) {
+>>>>>>> develop
                     var d = json.data;
                     proportion = json.data.width/json.data.height;
                     // 对应父级栏目
@@ -258,10 +298,14 @@ function columnController($scope, $http) {
                     });
                     $('.index_showtype .dropdown li a').each(function() {
                         if($(this).data('id') == d.index_key){
+<<<<<<< HEAD
                             $('.index_showtype .selectBox').attr({
                                 'data-id':$(this).data('id'),
                                 'data-size':$(this).data('size')
                             }).text($(this).text());
+=======
+                            $('.index_showtype .selectBox').attr('data-id',d.index_key).text($(this).text());
+>>>>>>> develop
                             $('.index_showtype .selectBox_val').val(d.index_key);
                             $('.index_showtype .selectBox_name').val($(this).data('name'));
                         };
@@ -277,6 +321,7 @@ function columnController($scope, $http) {
                     $('.en_name').val(d.en_name);
                     $('#out_url input').val(d.url);
                     _this.column_type_info(d.type);
+<<<<<<< HEAD
                     // 联动更改内容展示
                     if($('#lottery').val() == '列表'){
                         _this.Model_DiffSize('list');
@@ -289,6 +334,8 @@ function columnController($scope, $http) {
                         _this.Model_DiffSize(0,$(this).data('size').split(',')[2]);
                     });
 
+=======
+>>>>>>> develop
                     if(d.article_type == 1){
                         $('#inside_model i[name=1]').parent().addClass('cu');                                
                     }else{
@@ -331,12 +378,21 @@ function columnController($scope, $http) {
                 $('.box-up').text('编辑栏目');
                 // 图片上传
                 _this.Column_Upload(proportion);
+<<<<<<< HEAD
+=======
+                console.log('column_edit:'+_this.this_id);
+>>>>>>> develop
             });//点击结束
         },
         listType : function(){
             var _this = this;
+<<<<<<< HEAD
             //弹窗处理
             tanchuang(this._Save_id);
+=======
+            /*//弹窗处理
+            tanchuang(this);*/
+>>>>>>> develop
             //下拉列表
             $('#lottery').change(function(){
                 //清除数据
@@ -406,11 +462,19 @@ function columnController($scope, $http) {
             if(parame == 1){
                 this.this_id = 1
             }
+<<<<<<< HEAD
+=======
+            console.log('_Save_id:'+this.this_id);
+>>>>>>> develop
             return this.this_id;
         },
         _SaveColumn : function(){
             var article_type,_this = this;
             $('.save_column').click(function(){
+<<<<<<< HEAD
+=======
+            console.log('_SaveColumn:'+_this.this_id);
+>>>>>>> develop
                 if($('#lottery').val() == '列表'){
                     $('#models .tpl_info').each(function(){
                         if($(this).parent().hasClass('cu')){
@@ -425,7 +489,11 @@ function columnController($scope, $http) {
                 }else{
                     vlayout = $('#lottery').val();
                 }
+<<<<<<< HEAD
                 var id = (_this._Save_id() == 1 ? '' : _this.this_id);
+=======
+                var id = (_this.this_id == 1 ? '' : _this.this_id);
+>>>>>>> develop
                 if(vlayout == null){
                     alert('保存失败，请选择类型！')
                 }else{
@@ -496,8 +564,13 @@ function columnController($scope, $http) {
             });//click保存结束
         },
         all_id : function(){
+<<<<<<< HEAD
             var id_all = new Array(),
                 j = 0;
+=======
+            var id_all = new Array();
+            j = 0;
+>>>>>>> develop
             $('.label').each(function(i){
                if($(this).hasClass("nchecked")){
                    id_all[j] = $(this).parent().parent().siblings().find('.delv').attr('name');j++;
@@ -757,6 +830,7 @@ function columnController($scope, $http) {
             });//移动点击结束
         },
         DiffPicSisze : function(){
+<<<<<<< HEAD
             var _this = this;
             $('#lottery').change(function(event) {
                 $('.index_showtype .selectBox').attr('data-id', 0).text('请选择').siblings('input:hidden').val('');
@@ -785,4 +859,12 @@ function columnController($scope, $http) {
         }
     };
     var init = new $scope.ColumnInit();
+=======
+
+        }
+    };
+    var init = new $scope.ColumnInit();
+    //弹窗处理
+    tanchuang(init);
+>>>>>>> develop
 }
