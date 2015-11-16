@@ -496,8 +496,8 @@ function columnController($scope, $http) {
             });//click保存结束
         },
         all_id : function(){
-            var id_all = new Array();
-            j = 0;
+            var id_all = new Array(),
+                j = 0;
             $('.label').each(function(i){
                if($(this).hasClass("nchecked")){
                    id_all[j] = $(this).parent().parent().siblings().find('.delv').attr('name');j++;
@@ -581,6 +581,7 @@ function columnController($scope, $http) {
             });
         },
         column_del : function(){
+            var r_this = this;
             //栏目删除
             $('.a-table .delv').on('click',function(){
                 var id = $(this).attr('name');
@@ -623,7 +624,7 @@ function columnController($scope, $http) {
                         warningbox.ng_fuc();
                     }else{
                         if(del_num){
-                            $http.post('../classify-delete', {id: this.all_id}).success(function(json) {
+                            $http.post('../classify-delete', {id: r_this.all_id()}).success(function(json) {
                                 checkJSON(json,function(json){
                                     $('.a-table tr .nchecked').parents('tr').remove();
                                     $.each(json.data,function(i,v){
