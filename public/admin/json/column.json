@@ -221,5 +221,60 @@
             "p_id": 0, 
             "childmenu": null
         }
-    ]
+    ],
+    "infos":[{
+        "name":"首页",
+        "ename":"index",
+        "data":[{
+            "img_width":300,
+            "img_height" :200,
+            "img_forcesize": true,
+            "type": "list",
+            "key":"about", 
+            "value":"关于我们" 
+        },{ 
+            "img_width":300,
+            "img_height" :200,
+            "img_forcesize": false,
+            "type": "list",
+            "key":"news", 
+            "value":"新闻中心" 
+        },{ 
+            "img_width":300,
+            "img_height" :200,
+            "img_forcesize": false,
+            "type": "list",
+            "key":"product", 
+            "value":"产品中心" 
+        }]
+    },{
+        "name":"全局",
+        "ename":"global",
+        "data":[{
+            "img_width":300,
+            "img_height" :200,
+            "img_forcesize": false,
+            "type": "list",
+            "key":"about", 
+            "value":"关于我们"  
+        },{ 
+            "img_width":300,
+            "img_height" :200,
+            "img_forcesize": true,
+            "type": "list",
+            "key":"slidepic", 
+            "value":"大轮滚图"
+        }]
+    },{
+        "name":"侧边导航",
+        "ename":"side_nav",
+        "data":[{
+            "img_width":300,
+            "img_height" :200,
+            "img_forcesize": false,
+            "type": "list",
+            "key":"left_nav", 
+            "value":"左侧边导航" 
+        }]
+    }]    
 }

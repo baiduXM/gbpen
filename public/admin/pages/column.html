@@ -34,7 +34,7 @@
                             </select>
                             <select id="lottery1" style="display: none;"><option value="刮刮卡">刮刮卡</option></select>
                             <select id="lottery2" style="display: none;"><option value="中大奖">中大奖</option></select>
-                            <a  id="lottery_mg" style="display: none;"><span >*</span>刮刮卡管理</a>
+                            <a id="lottery_mg" style="display: none;"><span >*</span>刮刮卡管理</a>
                             <a id="out_url" style="margin-left: 10px;display: none;">链接地址：<input type="text" width="200px"/></a>
                         </li>
                         <li class="sites">站点展示：
@@ -45,7 +45,8 @@
 							<span style="color:#333"><input type="checkbox" id="3" name="vehicle" value="wechat_show" style=" display:none;">
                                 <label class="labe2 lb_wechat"></label>微信</span>
                         </li>
-                        <li id="models" style="display: none;">选择版式：
+                        <li id="models" style="display: none;">
+                            <div class="inline-block vat">选择版式：</div>
                             <div class="inline-block tpl">
                                 <div class="mod_border text"><i class="iconfont icon-liebiao grey tpl_info" name="1"></i></div>
                                 <p>文字列表</p>
@@ -59,7 +60,8 @@
                                 <p>图片列表</p>
                             </div>
                         </li>
-                        <li id="inside_model" class="none">内页版式：
+                        <li id="inside_model" class="none">
+                            <div class="inline-block vat">内页版式：</div>
                             <div class="inline-block tpl">
                                 <div class="mod_border"><i class="iconfont icon-page_news" name="1"></i></div>
                                 <p>新闻正文</p>
@@ -81,11 +83,17 @@
                                 </div>
                             </div>
                         </li>
-                        <li class="column_pic">
-                        <label class="fl" style="position:relative;">栏目图片：</label>
+                        <li class="index_showtype">
+                            <!-- 页面展示下拉框 -->
+                        </li>
+                        <li class="column_pic clearfix">
+                            <label class="fl pr">栏目图片：</label>
     						<div class="up_pic up_column"></div>
                         </li>
-                        <li>简介：<textarea name="txts" class="txts" style="width: 530px;height: 65px;margin-left: 36px;resize: none;"></textarea></li>
+                        <li class="colum_description">
+                            <div class="inline-block vat">栏目简介：</div>
+                            <textarea name="txts" class="txts" style="width: 530px;height: 65px;resize: none;"></textarea>
+                        </li>
                         <li id="page_editor">单页编辑：<textarea name="txts" class="page_content" id="container"></textarea></li>
                     </ul>
                 </nav>
