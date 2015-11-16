@@ -60,7 +60,7 @@
 .col_icon_box ul li i{font-size: 21px;}
 .col_icon_box ul li:hover{box-shadow: 0px 0px 8px #fff inset;cursor: pointer;}
 .column-edit-box{cursor: pointer;position: relative;}
-.column-edit-box .warning{position: absolute;right: -5px;bottom: -5px;color: rgb(255, 87, 87);}
+.column-edit-box .warning{position: absolute;right: -10px;bottom: -5px;color: rgb(255, 87, 87);}
 .list_mov,.list_set,.list_new{cursor: pointer;white-space: nowrap;text-overflow: ellipsis;}
 .list_mov li{height: 32px;}
 .list_mov li:hover,.list_set li:hover,.list_new li:hover{background-color: #7589a0;}

@@ -75,7 +75,7 @@ function columnController($scope, $http) {
                     column_icon(ele.type);
                     _div +='<td><div class="tit_info">'+column_type(ele.type)+'</div>'+layout+'</td>';
                     _div += '<td style="text-align:center;"><span><i class="fa icon-pc iconfont btn btn-show btn-desktop '+(ele.pc_show?'blue':'grey')+'"></i></span><div class="pr size1"><i class="fa iconfont icon-snimicshouji btn btn-show btn-mobile '+(ele.mobile_show?'blue':'grey')+'"></i><i class="fa iconfont btn icon-phonehome none '+(ele.show == 1?'blue':'grey')+(ele.showtypetotal == 0?' not-allowed':'')+'"></i></div><span><i class="fa iconfont icon-weixin btn btn-show btn-wechat '+(ele.wechat_show?'blue':'grey')+'"></i></span></td>\n\
-                    <td><i class="fa iconfont icon-xiayi btn sort"></i><i class="fa iconfont icon-shangyi btn sort"></i><a style="margin:0 10px;" class="column-edit-box"><i class="fa iconfont icon-bianji column-edit"></i><div class="warning"><i class="iconfont'+(ele.difsize?' icon-gantanhao':'')+'"></i></div></a><a class="delv" name="'+ele.id+'"><i class="fa iconfont icon-delete"></i></a></td>\n\
+                    <td><i class="fa iconfont icon-xiayi btn sort"></i><i class="fa iconfont icon-shangyi btn sort"></i><a style="margin:0 10px;" class="column-edit-box"><i class="fa iconfont icon-bianji column-edit"></i><div class="warning"><i class="iconfont'+(ele.img_err?' icon-gantanhao':'')+'"></i></div></a><a class="delv" name="'+ele.id+'"><i class="fa iconfont icon-delete"></i></a></td>\n\
                     </tr>';
                     var NextChild = ele,
                         num = 2;
@@ -87,7 +87,7 @@ function columnController($scope, $http) {
                                         column_icon(v.type);
                                         _div +='<td><div class="tit_info">'+column_type(v.type)+'</div>'+layout+'</td>';
                                     _div +='<td style="text-align:center;"><span><i class="fa iconfont icon-pc btn btn-show btn-desktop '+(v.pc_show?'blue':'grey')+'"></i></span><div class="pr size1"><i class="iconfont icon-snimicshouji fa btn btn-show btn-mobile '+(v.mobile_show?'blue':'grey')+'"></i><i class="fa iconfont btn icon-phonehome none '+(v.show?'blue':'grey')+(v.showtypetotal == 0?' not-allowed':'')+'"></i></div><span><i class="fa iconfont icon-weixin btn btn-show btn-wechat '+(v.wechat_show?'blue':'grey')+'"></i></span></td>\n\
-                                    <td><i class="fa iconfont icon-xiayi btn sort grey "></i><i class="fa iconfont icon-shangyi btn sort grey "></i><a style="margin:0 10px;" class="column-edit-box"><i class="fa iconfont icon-bianji grey column-edit"></i><div class="warning"><i class="iconfont'+(v.difsize?' icon-gantanhao':'')+'"></i></div></a><a class="delv" name="'+v.id+'"><i class="fa iconfont icon-delete grey "></i></a></td></tr>';
+                                    <td><i class="fa iconfont icon-xiayi btn sort grey "></i><i class="fa iconfont icon-shangyi btn sort grey "></i><a style="margin:0 10px;" class="column-edit-box"><i class="fa iconfont icon-bianji grey column-edit"></i><div class="warning"><i class="iconfont'+(v.img_err?' icon-gantanhao':'')+'"></i></div></a><a class="delv" name="'+v.id+'"><i class="fa iconfont icon-delete grey "></i></a></td></tr>';
                                 if(v.childmenu != null){
                                     NextChild = v;
                                     num++;
@@ -142,9 +142,10 @@ function columnController($scope, $http) {
             $('.index_showtype').html(_op2);
             $('.a-table').html(_div);
             $('.icon-gantanhao').MoveBox({
+                Trigger : 'mouseenter',
                 context : '图片限制尺寸发生改变，请修改！'
             });
-            // 
+            // 更改内容展示
             this.DiffPicSisze();
             // 下拉框模拟事件
             DropdownEvent();
@@ -777,9 +778,9 @@ function columnController($scope, $http) {
                 });
             }
             var limitSize = $('.index_showtype .selectBox').data('size').split(','),forces = bool || limitSize[2];
-            if(limitSize[0] && limitSize[1]){console.log(bool);
+            if(limitSize[0] && limitSize[1]){
                 $('.column_pic .colum_description_txt').html(''+(forces ? '强制:' : '')+'<div>('+limitSize[0]+'*'+limitSize[1]+')</div>')
-            }else{console.log('2');
+            }else{
                 $('.column_pic .colum_description_txt').html('(建议'+(limitSize[0] == '' ? (limitSize[1] == '' ? '' : '高为:'+limitSize[1]) : '宽为:'+limitSize[0])+')')
             }
         }
