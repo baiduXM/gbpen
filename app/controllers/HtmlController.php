@@ -308,8 +308,9 @@ class HtmlController extends BaseController{
             if($conn){
                 ftp_login($conn,$customerinfo->ftp_user,$customerinfo->ftp_pwd);
                 ftp_pasv($conn, 1);
-                ftp_put($conn,$this->customer."/site.zip",$path,FTP_BINARY);
                 dd($conn);
+                ftp_put($conn,$this->customer."/site.zip",$path,FTP_BINARY);
+                
                 ftp_put($conn,$this->customer."/unzip.php",public_path("packages/unzip.php"),FTP_ASCII);
                 ftp_put($conn,$this->customer."/quickbar.json",public_path('customers/'.$this->customer.'/quickbar.json'),FTP_ASCII);
                 ftp_put($conn,$this->customer."/mobile/quickbar.json",public_path('customers/'.$this->customer.'/quickbar.json'),FTP_ASCII);
