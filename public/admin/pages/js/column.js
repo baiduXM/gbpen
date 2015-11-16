@@ -313,12 +313,13 @@ function columnController($scope, $http) {
                 $('.box-up').text('编辑栏目');
                 // 图片上传
                 _this.Column_Upload(proportion);
+                console.log('column_edit:'+_this.this_id);
             });//点击结束
         },
         listType : function(){
             var _this = this;
-            //弹窗处理
-            tanchuang(this._Save_id);
+            /*//弹窗处理
+            tanchuang(this);*/
             //下拉列表
             $('#lottery').change(function(){
                 //清除数据
@@ -388,11 +389,13 @@ function columnController($scope, $http) {
             if(parame == 1){
                 this.this_id = 1
             }
+            console.log('_Save_id:'+this.this_id);
             return this.this_id;
         },
         _SaveColumn : function(){
             var article_type,_this = this;
             $('.save_column').click(function(){
+            console.log('_SaveColumn:'+_this.this_id);
                 if($('#lottery').val() == '列表'){
                     $('#models .tpl_info').each(function(){
                         if($(this).parent().hasClass('cu')){
@@ -407,8 +410,7 @@ function columnController($scope, $http) {
                 }else{
                     vlayout = $('#lottery').val();
                 }
-
-                var id = (_this._Save_id() == 1 ? '' : _this.this_id);
+                var id = (_this.this_id == 1 ? '' : _this.this_id);
                 if(vlayout == null){
                     alert('保存失败，请选择类型！')
                 }else{
@@ -744,4 +746,6 @@ function columnController($scope, $http) {
         }
     };
     var init = new $scope.ColumnInit();
+    //弹窗处理
+    tanchuang(init);
 }
