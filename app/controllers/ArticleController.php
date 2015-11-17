@@ -31,7 +31,6 @@ class ArticleController extends BaseController{
         if(strlen(Input::get('c_id'))!=0){
         $article->c_id=Input::get('c_id');}
         else{$article->c_id='0';}
-        dd($article);
         $article->viewcount=Input::get('viewcount')?Input::get('viewcount'):0;
         $article->title_bold=Input::get('title_bold');
         $article->title_color=Input::get('title_color');
@@ -62,6 +61,7 @@ class ArticleController extends BaseController{
         }     
         $article->cus_id=$cus_id;
         $result=$article->save();
+        dd($result);
         if($result){
             if($id){
                 MoreImg::where('a_id',$id)->delete();
