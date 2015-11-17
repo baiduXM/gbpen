@@ -1562,7 +1562,7 @@ class PrintController extends BaseController{
      */
     public function articlePreview($id){
         $article = Articles::find($id);
-        dd($article);
+        
         $a_moreimg = Moreimg::where('a_id',$id)->get()->toArray();
         array_unshift($a_moreimg,array('title'=>$article->title,'img'=>$article->img));
         $images=array();
@@ -1591,6 +1591,7 @@ class PrintController extends BaseController{
             }
         }
         $result = $this->pagePublic($article->c_id);
+        dd($result);
         foreach($result['navs'] as $nav){
             if($nav['current']==1){
                 $pagenavs = $nav['childmenu'];
