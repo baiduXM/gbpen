@@ -52,7 +52,7 @@ function addarticleController($scope, $http, $location) {
                 var option1 = '',pid,pname='',id;
                 var PageId = [];
                 if(json.err == 0){
-                    var option1 = '<li><a data-id="0">顶级栏目</a></li>';
+                    var option1 = '';
                     $.each(d,function(idx,ele){
                         if(ele.type < 5){
                             if(G_c_id == ele.id){
