@@ -255,11 +255,7 @@
             "img_width":300,
             "img_height" :200,
             "img_forcesize": false,
-<<<<<<< HEAD
             "type": "page",
-=======
-            "type": "list",
->>>>>>> develop
             "key":"about", 
             "value":"关于我们"  
         },{ 
@@ -277,11 +273,7 @@
             "img_width":300,
             "img_height" :200,
             "img_forcesize": false,
-<<<<<<< HEAD
             "type": "page",
-=======
-            "type": "list",
->>>>>>> develop
             "key":"left_nav", 
             "value":"左侧边导航" 
         }]

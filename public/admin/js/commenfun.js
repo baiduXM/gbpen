@@ -32,15 +32,7 @@ function tanchuang(ColumnInit){
 		});
         $('#bomb-box').addClass('in');
         clear_info();
-<<<<<<< HEAD
-        Save_id(1);
-=======
-<<<<<<< HEAD
-        Save_id(1);
-=======
         ColumnInit._Save_id(1);
->>>>>>> 07ec9de051c87377bce4ef8777ee9784a4333ca5
->>>>>>> develop
     });
     //数据清除
     function clear_info(){
