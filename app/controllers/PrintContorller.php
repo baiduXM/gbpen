@@ -1562,6 +1562,7 @@ class PrintController extends BaseController{
      */
     public function articlePreview($id){
         $article = Articles::find($id);
+        dd($article);
         $a_moreimg = Moreimg::where('a_id',$id)->get()->toArray();
         array_unshift($a_moreimg,array('title'=>$article->title,'img'=>$article->img));
         $images=array();
