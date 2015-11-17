@@ -602,6 +602,7 @@ class PrintController extends BaseController{
             $navs = Classify::where('cus_id',$this->cus_id)->where('mobile_show',1)->select('id','type','img','icon','name','url','p_id','en_name','meta_description as description')->OrderBy('sort','asc')->get()->toArray();
         }
         $navs=$this->toTree($navs,0,TRUE);
+        dd($navs);
         if($c_id){
             $current_arr=$this->currentCidArray($c_id);
             $navs= $this->addCurrent($navs,$current_arr);
@@ -1590,8 +1591,7 @@ class PrintController extends BaseController{
                 break;
             }
         }
-        $result = $this->pagePublic($article->c_id);
-        dd($result);
+        $result = $this->pagePublic($article->c_id);        
         foreach($result['navs'] as $nav){
             if($nav['current']==1){
                 $pagenavs = $nav['childmenu'];
