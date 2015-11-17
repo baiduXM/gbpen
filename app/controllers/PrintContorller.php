@@ -606,7 +606,6 @@ class PrintController extends BaseController{
         if($c_id){
             $current_arr=$this->currentCidArray($c_id);
             $navs= $this->addCurrent($navs,$current_arr);
-            dd($this);
         }
         $customer_info = CustomerInfo::where('cus_id',$this->cus_id)->first();
         if($this->type=='pc'){
