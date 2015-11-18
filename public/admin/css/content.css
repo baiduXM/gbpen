@@ -146,7 +146,7 @@ i.black{ color:#666666}
 .delv{cursor: pointer;}
 i.fa-mobile{font-size: 25px;}
 .list_set,.list_new,.list_mov{position: absolute;width: 105px;border-radius:0 5px 5px 5px;background-color: #8b9db1;top: 75px;display: none;}
-.list_new{right: 420px;}
+.list_new{right: 305px;}
 .list_set{left: 282px;}
 .list_set li a,.list_new li a,.list_mov li a{display: block;height: 32px; line-height: 32px;margin-left: 16px;color: #ffffff;text-indent: 10px;}
 .tit_info{word-break: break-all;white-space: nowrap;word-wrap: break-word;}
