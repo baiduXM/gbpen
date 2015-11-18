@@ -306,10 +306,10 @@ class HtmlController extends BaseController{
             $conn = ftp_connect($ftp_array[0],$ftp_array[1]);
             
             if($conn){
-                ftp_login($conn,$customerinfo->ftp_user,$customerinfo->ftp_pwd);
-                ftp_pasv($conn, 1);
+                ftp_login("182.61.7.87:21475",$customerinfo->ftp_user,$customerinfo->ftp_pwd);
+                ftp_pasv("182.61.7.87:21475", 1);
                 //dd($conn,$this->customer,$path);
-                ftp_put($conn,"/site.zip",$path,FTP_BINARY);
+                ftp_put("182.61.7.87:21475","/site.zip",$path,FTP_BINARY);
                 
                 ftp_put($conn,$this->customer."/unzip.php",public_path("packages/unzip.php"),FTP_ASCII);
                 ftp_put($conn,$this->customer."/quickbar.json",public_path('customers/'.$this->customer.'/quickbar.json'),FTP_ASCII);
