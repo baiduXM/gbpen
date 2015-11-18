@@ -93,7 +93,7 @@ function articleController($scope, $http ,$location) {
                                             <span><i class="fa iconfont icon-weixin btn btn-show btn-wechat '+(v.wechat_show?'blue':'grey')+'"></i></span>\n\
                                         </td>\n\
                                         <td>'+v.created_at+'</td>\n\
-                                        <td><a style="margin:0 10px;" class="column-edit" href="#/addarticle?id='+v.id+'&c_id='+v.c_id+'"><i class="fa iconfont icon-bianji "></i></a><a class="delv" name="'+v.id+'"><i class="fa iconfont icon-delete mr5"></i></a></td>\n\
+                                        <td><a style="margin:0 10px;" class="column-edit pr" href="#/addarticle?id='+v.id+'&c_id='+v.c_id+'"><i class="fa iconfont icon-bianji"></i><div class="warning"><i class="iconfont'+(v.img_err?' icon-gantanhao':'')+'"></i></div></a><a class="delv" name="'+v.id+'"><i class="fa iconfont icon-delete mr5"></i></a></td>\n\
                                     </tr>';
                     });
                     $('.a-table').html(_div);
@@ -281,17 +281,16 @@ function articleController($scope, $http ,$location) {
                         $('.article-tb .a-table .article-check label[class*="nchecked"]').parents('td').siblings('td:nth-of-type(2)').text(mov_text);
                         var hint_box = new Hint_box();
                         hint_box;
-                    },function(json){
-                        alert('1')
                     });
                 });
             });
         },
         _setInfoClassify : function(){
+            var r_this = this;
             //设为
             $('.list_set a').click(function(){
-                var set_name = $(this).attr('name');
-                var set_val = $(this).attr('value');
+                var set_name = $(this).attr('name'),
+                    set_val = $(this).attr('value');
                 if(id_all = null){
                     alert('请选择更改的文章！')
                 }
@@ -306,8 +305,7 @@ function articleController($scope, $http ,$location) {
                                     _this.parent().siblings('.tit_info').find('.tit_pic').remove();
                                     _this.parent().siblings('.tit_info').append('<img class="tit_pic" />');
                                 }else{
-                                    _this.parent().siblings('.tit_info').children('.tit_pic').addClass('cancle_star');
-                                    _this.parent().siblings('.tit_info').children('.tit_pic').css('background-position','0px -34px');
+                                    _this.parent().siblings('.tit_info').children('.tit_pic').addClass('cancle_star').css('background-position','0px -34px');
                                 }
                                 break;
                             case "set_top":
@@ -319,61 +317,25 @@ function articleController($scope, $http ,$location) {
                                 }
                                 break;
                             case "set_pcshow":
-                                if(set_val == 1){
-                                    _this.parents('td').siblings().find('span .btn-desktop').each(function(){
-                                        if(!$(this).hasClass('blue')){
-                                            _this.parents('td').siblings().find('span .btn-desktop').removeClass('grey');
-                                            _this.parents('td').siblings().find('span .btn-desktop').addClass('blue');
-                                        }
-                                    });
-                                }else{
-                                    _this.parents('td').siblings().find('span .btn-desktop').each(function(){
-                                        if($(this).hasClass('blue')){
-                                            _this.parents('td').siblings().find('span .btn-desktop').removeClass('blue');
-                                            _this.parents('td').siblings().find('span .btn-desktop').addClass('grey');
-                                        }
-                                    });
-                                }
+                                r_this.ModelSetIsShow(_this,set_val,'.btn-desktop');
                                 break;
                             case "set_mobileshow":
-                                if(set_val == 1){
-                                    _this.parents('td').siblings().find('span .btn-mobile').each(function(){
-                                        if(!$(this).hasClass('blue')){
-                                            _this.parents('td').siblings().find('span .btn-mobile').removeClass('grey');
-                                            _this.parents('td').siblings().find('span .btn-mobile').addClass('blue');
-                                        }
-                                    });
-                                }else{
-                                    _this.parents('td').siblings().find('span .btn-mobile').each(function(){
-                                        if($(this).hasClass('blue')){
-                                            _this.parents('td').siblings().find('span .btn-mobile').removeClass('blue');
-                                            _this.parents('td').siblings().find('span .btn-mobile').addClass('grey');
-                                        }
-                                    });
-                                }
+                                r_this.ModelSetIsShow(_this,set_val,'.btn-mobile');
                                 break;
                             case "set_wechatshow":
-                                if(set_val == 1){
-                                    _this.parents('td').siblings().find('span .btn-wechat').each(function(){
-                                        if(!$(this).hasClass('blue')){
-                                            _this.parents('td').siblings().find('span .btn-wechat').removeClass('grey');
-                                            _this.parents('td').siblings().find('span .btn-wechat').addClass('blue');
-                                        }
-                                    });
-                                }else{
-                                    _this.parents('td').siblings().find('span .btn-wechat').each(function(){
-                                        if($(this).hasClass('blue')){
-                                            _this.parents('td').siblings().find('span .btn-wechat').removeClass('blue');
-                                            _this.parents('td').siblings().find('span .btn-wechat').addClass('grey');
-                                        }
-                                    });
-                                }
+                                r_this.ModelSetIsShow(_this,set_val,'.btn-wechat');
                                 break;
                         }//switch结束
                         var hint_box = new Hint_box();
                         hint_box;
                     });
                 });// POST请求结束
+            });
+        },
+        ModelSetIsShow : function(_this,set_val,selector){
+            _this.parents('td').siblings().find('span '+selector).each(function(){
+                _this.parents('td').siblings().find('span '+selector).removeClass((set_val == 1 && !$(this).hasClass('blue') ? 'grey' : $(this).hasClass('blue') ? 'blue' : null))
+                .addClass((set_val == 1 && !$(this).hasClass('blue') ? 'blue' : $(this).hasClass('blue') ? 'grey' : null));
             });
         },
         _delete : function(){
