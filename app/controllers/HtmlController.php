@@ -306,7 +306,7 @@ class HtmlController extends BaseController{
             $conn = ftp_connect($ftp_array[0],$ftp_array[1]);
             
             if($conn){
-                ftp_login("$conn",$customerinfo->ftp_user,$customerinfo->ftp_pwd);
+                ftp_login($conn,$customerinfo->ftp_user,$customerinfo->ftp_pwd);
                 ftp_pasv($conn, 1);
                 //dd($conn,$this->customer,$path);
                 ftp_put($conn,"site.zip",$path,FTP_BINARY);
