@@ -282,6 +282,7 @@ function columnController($scope, $http) {
                     $('.index_showtype li a').click(function(){
                         _this.Model_DiffSize(0,$(this).data('size').split(',')[2]);
                     });
+                    // 内页版式
                     if(d.article_type == 1){
                         $('#inside_model i[name=1]').parent().addClass('cu');                                
                     }else{
@@ -302,7 +303,7 @@ function columnController($scope, $http) {
                     }
                     $('.box-down .keyword').val(d.keywords);
                     var _newpic = '';
-                    if(d.img){
+                    if(d.img && !d.img_err){
                         _newpic += '<div class="template-download fade fl in">\n\
                                     <div>\n\
                                         <span class="preview">\n\
@@ -312,9 +313,9 @@ function columnController($scope, $http) {
                                     </div>\n\
                                 </div>';
                         $('.up_pic').before(_newpic);
+                        var slt_arry = d.img.split('/');
+                        _this.upload_picname = slt_arry[(slt_arry.length-1)];
                     }
-                    var slt_arry = d.img.split('/');
-                    _this.upload_picname = slt_arry[(slt_arry.length-1)];
                     $('.txts').val(d.description);
                 });//GET请求结束
                 $('#bomb-box').fadeIn(function(){

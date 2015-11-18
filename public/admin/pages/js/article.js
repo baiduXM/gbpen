@@ -12,13 +12,13 @@ function articleController($scope, $http ,$location) {
     $scope.ser_name = $_GET['ser_name'] == undefined ? null : $_GET['ser_name'];
     // Model
     $scope.getArticleList = function(option){
-        var page = option.page || $scope.page; 
-        var cat_id = option.cat_id || $scope.cat_id;
-        var num_per_page = option.num_per_page || $scope.num_per_page;
-        var page_num = option.page_num || $scope.page_num;
-        var is_star = option.is_star || $scope.is_star;
-        var ser_active = option.ser_active;
-        var ser_name = option.ser_name || $scope.ser_name;
+        var page = option.page || $scope.page,
+            cat_id = option.cat_id || $scope.cat_id,
+            num_per_page = option.num_per_page || $scope.num_per_page,
+            page_num = option.page_num || $scope.page_num,
+            is_star = option.is_star || $scope.is_star,
+            ser_active = option.ser_active,
+            ser_name = option.ser_name || $scope.ser_name;
         option.back == undefined?'':option.back == 1? window.location.hash = '#/article':'';
         $http.get('../article-manage?per_page='+num_per_page+(cat_id == null ? '' : '&c_id='+cat_id+'')+(is_star == null ? '' : '&is_star='+is_star+'')+'&page='+page+'').success(function(json) {
             checkJSON(json, function(json){
