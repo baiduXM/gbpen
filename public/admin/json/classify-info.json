@@ -25,6 +25,7 @@
         "updated_at": "2015-11-09 03:38:24",
         "url": "",
         "wechat_show": 0,
-        "index_key":"global,about"
+        "index_key":"global,about",
+        "img_err": 1
     }
 }

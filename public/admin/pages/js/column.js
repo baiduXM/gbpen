@@ -145,8 +145,6 @@ function columnController($scope, $http) {
                 Trigger : 'mouseenter',
                 context : '图片限制尺寸发生改变，请修改！'
             });
-            // 更改内容展示
-            this.DiffPicSisze();
             // 下拉框模拟事件
             DropdownEvent();
             // 站点展示
@@ -160,8 +158,6 @@ function columnController($scope, $http) {
             this.column_del();
             // 栏目提交移动
             this.Column_Move();
-            // 图片上传
-            this.Column_Upload('');
             //列表展开
             $(".iconbtn").unbind('click').on('click',function(){      
                 $(this).parents('tr').nextUntil('.Level1').slideToggle();  
@@ -243,12 +239,10 @@ function columnController($scope, $http) {
             // 点击编辑
             var _this = this;
             $('.a-table').unbind('click').on('click','.column-edit',function(){
-                var proportion;
                 _this.this_id = $(this).parent().siblings('.delv').attr('name');
                 // $http.get('../classify-info?id='+_this.this_id+'').success(function(json) {
                 $http.get('json/classify-info.json').success(function(json) {
                     var d = json.data;
-                    proportion = json.data.width/json.data.height;
                     // 对应父级栏目
                     $('.f_column .dropdown li a').each(function() {
                         if($(this).data('id') == d.p_id){
@@ -328,8 +322,8 @@ function columnController($scope, $http) {
                 });
                 $('#bomb-box').addClass('in');
                 $('.box-up').text('编辑栏目');
-                // 图片上传
-                _this.Column_Upload(proportion);
+                // 更改内容展示
+                _this.DiffPicSisze();
             });//点击结束
         },
         listType : function(){
@@ -767,16 +761,24 @@ function columnController($scope, $http) {
             });
         },
         Model_DiffSize : function(type,bool){
+            var proportion;
             if(type){
                 $('.index_showtype li a').each(function(index, el) {
                     $(this).data('type') == type ? $(this).parent().show() : $(this).parent().hide();
                     $(this).data('id') == 0 ? $(this).parent().show() : null;
+                    // 默认select为请选择
                 });
             }
-            var limitSize = $('.index_showtype .selectBox').data('size').split(','),forces = bool || limitSize[2];
+            var limitSize = $('.index_showtype .selectBox').data('size').split(','),
+                forces = bool || limitSize[2],
+                imgErr;
             if(limitSize[0] && limitSize[1]){
-                $('.column_pic .colum_description_txt').html(''+(forces ? '强制:' : '')+'<div>('+limitSize[0]+'*'+limitSize[1]+')</div>')
+                $('.column_pic .colum_description_txt').html('<div '+(forces == 'true' ? 'class="fb"' : '')+'>('+limitSize[0]+'*'+limitSize[1]+')</div>'+(imgErr == "1" ? '<div class="warning"><i class="iconfont icon-gantanhao"></i></div>' : ''));
+                // 图片上传
+                proportion = limitSize[0]/limitSize[1];
+                this.Column_Upload(proportion);
             }else{
+                this.Column_Upload();
                 $('.column_pic .colum_description_txt').html('(建议'+(limitSize[0] == '' ? (limitSize[1] == '' ? '' : '高为:'+limitSize[1]) : '宽为:'+limitSize[0])+')')
             }
         }
