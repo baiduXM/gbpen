@@ -111,38 +111,38 @@ class ApiController extends BaseController{
                     mkdir(public_path('customers/'.$update['name']).'/mobile/images/l');
                     mkdir(public_path('customers/'.$update['name']).'/mobile/images/s');
                     mkdir(public_path('customers/'.$update['name']).'/mobile/images/ueditor');
-                    /*$ftp_array = explode(':',$update['ftp_address']);
+                    $ftp_array = explode(':',$update['ftp_address']);
                     $ftp_array[1] = isset($ftp_array[1])?$ftp_array[1]:'21';
                     $conn = ftp_connect($ftp_array[0],$ftp_array[1]);
                     if($conn){
                         ftp_login($conn,$update['ftp_user'],$update['ftp_pwd']);
-                        ftp_mkdir($conn,$this->customer);
-                        ftp_mkdir($conn,$this->customer.'/images');
-                        ftp_mkdir($conn,$this->customer.'/images/ueditor');
-                        ftp_mkdir($conn,$this->customer.'/images/l');
-                        ftp_mkdir($conn,$this->customer.'/images/l/category');
-                        ftp_mkdir($conn,$this->customer.'/images/l/articles');
-                        ftp_mkdir($conn,$this->customer.'/images/l/common');
-                        ftp_mkdir($conn,$this->customer.'/images/l/page_index');
-                        ftp_mkdir($conn,$this->customer.'/images/s');
-                        ftp_mkdir($conn,$this->customer.'/images/l/category');
-                        ftp_mkdir($conn,$this->customer.'/images/l/articles');
-                        ftp_mkdir($conn,$this->customer.'/images/l/common');
-                        ftp_mkdir($conn,$this->customer.'/images/l/page_index');
-                        ftp_mkdir($conn,$this->customer.'/mobile/images');
-                        ftp_mkdir($conn,$this->customer.'/mobile//images/ueditor');
-                        ftp_mkdir($conn,$this->customer.'/mobile//images/l');
-                        ftp_mkdir($conn,$this->customer.'/mobile//images/l/category');
-                        ftp_mkdir($conn,$this->customer.'/mobile//images/l/articles');
-                        ftp_mkdir($conn,$this->customer.'/mobile//images/l/common');
-                        ftp_mkdir($conn,$this->customer.'/mobile//images/l/page_index');
-                        ftp_mkdir($conn,$this->customer.'/mobile//images/s');
-                        ftp_mkdir($conn,$this->customer.'/mobile//images/l/category');
-                        ftp_mkdir($conn,$this->customer.'/mobile//images/l/articles');
-                        ftp_mkdir($conn,$this->customer.'/mobile//images/l/common');
-                        ftp_mkdir($conn,$this->customer.'/mobile//images/l/page_index');                        
+                        
+                        ftp_mkdir($conn,'/images');
+                        ftp_mkdir($conn,'/images/ueditor');
+                        ftp_mkdir($conn,'/images/l');
+                        ftp_mkdir($conn,'/images/l/category');
+                        ftp_mkdir($conn,'/images/l/articles');
+                        ftp_mkdir($conn,'/images/l/common');
+                        ftp_mkdir($conn,'/images/l/page_index');
+                        ftp_mkdir($conn,'/images/s');
+                        ftp_mkdir($conn,'/images/l/category');
+                        ftp_mkdir($conn,'/images/l/articles');
+                        ftp_mkdir($conn,'/images/l/common');
+                        ftp_mkdir($conn,'/images/l/page_index');
+                        ftp_mkdir($conn,'/mobile/images');
+                        ftp_mkdir($conn,'/mobile//images/ueditor');
+                        ftp_mkdir($conn,'/mobile//images/l');
+                        ftp_mkdir($conn,'/mobile//images/l/category');
+                        ftp_mkdir($conn,'/mobile//images/l/articles');
+                        ftp_mkdir($conn,'/mobile//images/l/common');
+                        ftp_mkdir($conn,'/mobile//images/l/page_index');
+                        ftp_mkdir($conn,'/mobile//images/s');
+                        ftp_mkdir($conn,'/mobile//images/l/category');
+                        ftp_mkdir($conn,'/mobile//images/l/articles');
+                        ftp_mkdir($conn,'/mobile//images/l/common');
+                        ftp_mkdir($conn,'/mobile//images/l/page_index');                        
                         ftp_close($conn);
-                    }*/
+                    }
 					$result = ['err'=>1000,'msg'=>'创建用户成功'];
 				}
 				else
