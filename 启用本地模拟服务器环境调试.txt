@@ -8,24 +8,25 @@ https://github.com/baiduXM/gbpen-data.git
 删除本地dev-init分支，develop分支不做推送。
 
 将主项目unify目录下以下所有全部剪切至unify-data项目目录覆盖！
+bootstrap/*
 app/views/templates/*
 public/temp_templates/*
 public/templates/*
 app/storage/cache/*
 app/storage/views/*
 app/storage/sessions/*
-app/config/database.php
 
+修改bootstrap/start.php文件中29行'your-machine-name'改为自己的电脑主机名（ipconfig /all命令查看主机名）
 到unify-data下提交所有本地模板文件到develop分支（以后本地模板目录数据有变更都需提交到这里
 
 到主项目unify目录下执行以下代码关联目录：
+mklink /j bootstrap ..\unify-data\bootstrap
 mklink /j public\templates ..\unify-data\public\templates
 mklink /j public\temp_templates ..\unify-data\public\temp_templates
 mklink /j app\views\templates ..\unify-data\app\views\templates
 mklink /j app\storage\cache ..\unify-data\app\storage\cache
 mklink /j app\storage\sessions ..\unify-data\app\storage\sessions
 mklink /j app\storage\views ..\unify-data\app\storage\views
-mklink /h app\config\database.php ..\unify-data\app\config\database.php
 
 
 ！！注意！！
