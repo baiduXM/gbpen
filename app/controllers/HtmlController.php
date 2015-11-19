@@ -316,7 +316,8 @@ class HtmlController extends BaseController{
                 ftp_put($conn,$this->customer."/quickbar.json",public_path('customers/'.$this->customer.'/quickbar.json'),FTP_ASCII);
                 ftp_chdir($conn,$this->customer);
                 ftp_mkdir($conn,"mobile");
-                ftp_put($conn,"/mobile/quickbar.json",public_path('customers/'.$this->customer.'/quickbar.json'),FTP_ASCII);
+                ftp_chdir($conn,"mobile");
+                ftp_put($conn,"/quickbar.json",public_path('customers/'.$this->customer.'/quickbar.json'),FTP_ASCII);
                 ftp_close($conn);
             }
             
