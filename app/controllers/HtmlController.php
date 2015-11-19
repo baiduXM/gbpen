@@ -317,7 +317,7 @@ class HtmlController extends BaseController{
                 ftp_put($conn,"/".$this->customer."/unzip.php",public_path("packages/unzip.php"),FTP_ASCII);
                 ftp_put($conn,"/".$this->customer."/quickbar.json",public_path('customers/'.$this->customer.'/quickbar.json'),FTP_ASCII);
                 //ftp_chdir($conn,$this->customer);
-                if(@ftp_chdir($conn,$this->customer."/mobile") == FALSE){
+                if(@ftp_chdir($conn,"/".$this->customer."/mobile") == FALSE){
                 ftp_mkdir($conn,"/".$this->customer."/mobile"); 
                 //ftp_cdup($conn);
                 }
