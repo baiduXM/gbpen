@@ -12,11 +12,8 @@ app/config/local/*
 app/views/templates/*
 public/temp_templates/*
 public/templates/*
-app/storage/cache/*
-app/storage/views/*
-app/storage/sessions/*
 
-修改bootstrap/start.php文件中29行'your-machine-name'改为自己的电脑主机名（ipconfig /all命令查看主机名）
+修改bootstrap/start.php文件中29行'homestead'改为自己的电脑主机名（ipconfig /all命令查看主机名）
 到unify-data下提交所有本地模板文件到develop分支（以后本地模板目录数据有变更都需提交到这里
 
 到主项目unify目录下执行以下代码关联目录：
@@ -24,9 +21,6 @@ mklink /j app\config\local ..\unify-data\app\config\local
 mklink /j public\templates ..\unify-data\public\templates
 mklink /j public\temp_templates ..\unify-data\public\temp_templates
 mklink /j app\views\templates ..\unify-data\app\views\templates
-mklink /j app\storage\cache ..\unify-data\app\storage\cache
-mklink /j app\storage\sessions ..\unify-data\app\storage\sessions
-mklink /j app\storage\views ..\unify-data\app\storage\views
 
 
 ！！注意！！
