@@ -1,5 +1,5 @@
 <?php
-//test
+
 return array(
 
 	/*
@@ -54,12 +54,12 @@ return array(
 
 		'mysql' => array(
 			'driver'    => 'mysql',
-			'host'      => '192.168.1.48',
-			'database'  => 'unify',
-			'username'  => 'admin',
-			'password'  => 'admin',
+			'host'      => '180.76.142.133',
+			'database'  => 'unify_db',
+			'username'  => 'dingchao',
+			'password'  => 'pengdingchao',
 			'charset'   => 'utf8',
-			'collation' => 'utf8_general_ci',
+			'collation' => 'utf8_unicode_ci',
 			'prefix'    => 'up_',
 		),
 

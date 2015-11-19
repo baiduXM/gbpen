@@ -5,6 +5,9 @@
 Thumbs.db
 nbproject/
 bootstrap/compiled.php
+bootstrap/start.php
+app/config/database.php
+app/config/local/*
 app/views/templates/*
 public/temp_templates/*
 public/templates/*
@@ -13,4 +16,3 @@ app/storage/cache/*
 app/storage/logs/*
 app/storage/views/*
 app/storage/sessions/*
-app/config/database.php
