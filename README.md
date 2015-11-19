@@ -1,4 +1,4 @@
-# G宝盆
+﻿# G宝盆
 
 克隆之后初始化工作：
 
@@ -12,4 +12,4 @@
  1. 复制`app/config/database.init.php`文件为`app/config/database.php`
  2. 复制`bootstrap/start.init.php`文件为`bootstrap/start.php`
  3. 修改`start.php`文件29行本地电脑主机名
- 4. 参照`启用本地模拟服务器环境调试.txt`
+ 4. 参照`doc/启用本地模拟服务器环境调试.txt`
