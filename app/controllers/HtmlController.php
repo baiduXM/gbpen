@@ -309,12 +309,17 @@ class HtmlController extends BaseController{
                 ftp_login($conn,$customerinfo->ftp_user,$customerinfo->ftp_pwd);
                 ftp_pasv($conn, 1);
                // dd($conn,$this->customer,$path);
-                ftp_mkdir($conn,$this->customer);
+                if(@ftp_chdir($conn,$this->customer) == FALSE){
+                ftp_mkdir($conn,$this->customer);                
+                }
                 ftp_put($conn,$this->customer."/site.zip",$path,FTP_BINARY);
                 ftp_put($conn,$this->customer."/unzip.php",public_path("packages/unzip.php"),FTP_ASCII);
                 ftp_put($conn,$this->customer."/quickbar.json",public_path('customers/'.$this->customer.'/quickbar.json'),FTP_ASCII);
                 //ftp_chdir($conn,$this->customer);
-                ftp_mkdir($conn,$this->customer."/mobile");
+                if(@ftp_chdir($conn,$this->customer."/mobile") == FALSE){
+                ftp_mkdir($conn,$this->customer."/mobile");               
+                }
+                
                 //ftp_chdir($conn,"mobile");
                 ftp_put($conn,$this->customer."/mobile/quickbar.json",public_path('customers/'.$this->customer.'/quickbar.json'),FTP_ASCII);
                 ftp_close($conn);
