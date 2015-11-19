@@ -2,7 +2,10 @@
 
 class ApiController extends BaseController{
     
-	
+	 function __construct(){
+        $this->cus_id = Auth::id();
+        $this->customer = Auth::user()->name;
+    }
 	//接口验证    authData
 	#参数    timemap	操作时间戳
 	#参数    taget    加密结果
