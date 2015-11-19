@@ -343,7 +343,7 @@ Route::post('api/createuser', [//创建用户
         'uses' => 'ApiController@createCustomer'
     ]);
 
-Route::get('api/modifyuser', [//修改用户
+Route::post('api/modifyuser', [//修改用户
         'as' => 'template-fileedit',
         'uses' => 'ApiController@modifyCustomer'
     ]);
