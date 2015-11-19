@@ -311,11 +311,11 @@ class HtmlController extends BaseController{
                // dd($conn,$this->customer,$path);
                 if(@ftp_chdir($conn,$this->customer) == FALSE){
                 ftp_mkdir($conn,$this->customer);  
-                ftp_cdup($conn);
+                //ftp_cdup($conn);
                 }
-                ftp_put($conn,$this->customer."/site.zip",$path,FTP_BINARY);
-                ftp_put($conn,$this->customer."/unzip.php",public_path("packages/unzip.php"),FTP_ASCII);
-                ftp_put($conn,$this->customer."/quickbar.json",public_path('customers/'.$this->customer.'/quickbar.json'),FTP_ASCII);
+                ftp_put($conn,"/".$this->customer."/site.zip",$path,FTP_BINARY);
+                ftp_put($conn,"/".$this->customer."/unzip.php",public_path("packages/unzip.php"),FTP_ASCII);
+                ftp_put($conn,"/".$this->customer."/quickbar.json",public_path('customers/'.$this->customer.'/quickbar.json'),FTP_ASCII);
                 //ftp_chdir($conn,$this->customer);
                 if(@ftp_chdir($conn,$this->customer."/mobile") == FALSE){
                 ftp_mkdir($conn,$this->customer."/mobile"); 
@@ -323,7 +323,7 @@ class HtmlController extends BaseController{
                 }
                 
                 //ftp_chdir($conn,"mobile");
-                ftp_put($conn,$this->customer."/mobile/quickbar.json",public_path('customers/'.$this->customer.'/quickbar.json'),FTP_ASCII);
+                ftp_put($conn,"/".$this->customer."/mobile/quickbar.json",public_path('customers/'.$this->customer.'/quickbar.json'),FTP_ASCII);
                 ftp_close($conn);
             }
             
