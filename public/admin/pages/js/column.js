@@ -99,35 +99,35 @@ function columnController($scope, $http) {
                     }
                     LoopChlid(NextChild,num);
                 });
-            }
-            //父级栏目
-            var option1 = '<li><a data-id="0">顶级栏目</a></li>',option2 = '<li><a data-id="0" data-name="">请选择</a></li>';
-            $.each(d,function(k,v){
-                if(v.p_id == 0){
-                    option1 += '<li><a class="parents" data-id="'+v.id+'">'+v.name+'</a></li>';
-                    var NextChild = v;
-                    var num = 2;
-                    var LoopChlid = function(NextChild,num){
-                       if(NextChild.childmenu != null){
-                            $.each(NextChild.childmenu, function(i,j) {
-                                option1 += '<li><a class="LevelChild'+num+'" data-pid="'+j.p_id+'" data-id="'+j.id+'">├'+j.name+'</a></li>';
-                                if(v.childmenu != null){
-                                    NextChild = j;
-                                    num++;
-                                    LoopChlid(NextChild,num);
-                                    num--;
-                                }
-                            });
-                        } 
+                //父级栏目
+                var option1 = '<li><a data-id="0">顶级栏目</a></li>',option2 = '<li><a data-id="0" data-name="">请选择</a></li>';
+                $.each(d,function(k,v){
+                    if(v.p_id == 0){
+                        option1 += '<li><a class="parents" data-id="'+v.id+'">'+v.name+'</a></li>';
+                        var NextChild = v;
+                        var num = 2;
+                        var LoopChlid = function(NextChild,num){
+                           if(NextChild.childmenu != null){
+                                $.each(NextChild.childmenu, function(i,j) {
+                                    option1 += '<li><a class="LevelChild'+num+'" data-pid="'+j.p_id+'" data-id="'+j.id+'">├'+j.name+'</a></li>';
+                                    if(v.childmenu != null){
+                                        NextChild = j;
+                                        num++;
+                                        LoopChlid(NextChild,num);
+                                        num--;
+                                    }
+                                });
+                            } 
+                        }
+                        LoopChlid(NextChild,num);
                     }
-                    LoopChlid(NextChild,num);
-                }
-            });
-            var _op1 = '<span>父级栏目：</span><div class="dropdown">\
-                    <div class="selectBox" data-id="0" type="text">请选择</div><span class="arrow"></span>\
-                    <input class="selectBox_val" name="column_name" class="column_name" type="hidden" value=""/>\
-                    <ul>'+option1+'</ul></div>';
-            $('.f_column').html(_op1);
+                });
+                var _op1 = '<span>父级栏目：</span><div class="dropdown">\
+                        <div class="selectBox" data-id="0" type="text">请选择</div><span class="arrow"></span>\
+                        <input class="selectBox_val" name="column_name" class="column_name" type="hidden" value=""/>\
+                        <ul>'+option1+'</ul></div>';
+                $('.f_column').html(_op1);
+            }
             // 页面展示
             // $.each(json.infos,function(idx, ele) {
             //     $.each(ele.data,function(i, j) {
