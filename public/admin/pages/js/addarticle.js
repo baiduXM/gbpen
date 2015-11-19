@@ -8,11 +8,11 @@ function addarticleController($scope, $http, $location) {
     G_c_id ? G_c_id : '';
 
     // 图片上传
-    function AddarticleUpload(){
+    function AddarticleUpload(proportion){
         $('.up_pic').on('click',function(event) {
             var warningbox = new WarningBox();
             warningbox._upImage({
-                aspectRatio: '',
+                aspectRatio: proportion,
                 ajaxurl    : '../file-upload?target=articles',
                 IsMultiple : true,
                 oncallback : function(json){
@@ -46,7 +46,8 @@ function addarticleController($scope, $http, $location) {
     // 栏目显示
     function column_show(){
         checkjs(location.hash.match(/[a-z]+?$/));
-        $http.get('../classify-list').success(function(json) {
+        // $http.get('../classify-list').success(function(json) {
+        $http.get('json/column.json').success(function(json) {
             checkJSON(json, function(json){
                 var d = json.data;
                 var option1 = '',pid,pname='',id;
@@ -63,7 +64,7 @@ function addarticleController($scope, $http, $location) {
                             if(ele.type == '4'){
                                 PageId.push(ele.id);
                             }
-                            option1 += '<li><a class="parents'+(ele.childmenu != null?' not-allowed':'')+'" data-id="'+ele.id+'">'+ele.name+'</a></li>';
+                            option1 += '<li><a class="parents'+(ele.childmenu != null?' not-allowed':'')+'" data-id="'+ele.id+'" data-size="'+ele.img_width+','+ele.img_height+','+ele.img_forcesize+'">'+ele.name+'</a></li>';
                             var NextChild = ele;
                             var num = 2;
                             var LoopChlid = function(NextChild,num){
@@ -78,7 +79,7 @@ function addarticleController($scope, $http, $location) {
                                             if(v.type == '4'){
                                                 PageId.push(v.id);
                                             }
-                                            option1 += '<li><a class="LevelChild'+num+(v.childmenu != null?' not-allowed':'')+'" data-pid="'+v.p_id+'" data-id="'+v.id+'">├'+v.name+'</a></li>'; 
+                                            option1 += '<li><a class="LevelChild'+num+(v.childmenu != null?' not-allowed':'')+'" data-pid="'+v.p_id+'" data-id="'+v.id+'" data-size="'+v.img_width+','+v.img_height+','+v.img_forcesize+'">├'+v.name+'</a></li>'; 
                                             if(v.childmenu != null){
                                                 NextChild = v;
                                                 num++;
@@ -100,6 +101,8 @@ function addarticleController($scope, $http, $location) {
                 $('.f_column').append(_op);
                 // 下拉框模拟事件
                 DropdownEvent(PageId);
+                // 图片限制
+                AddarticlePicLimit();
                 $('.not-allowed').MoveBox({context:'此为含有子级的父级栏目或为单页内容页，不支持选择！'});
             });
         });
@@ -198,6 +201,24 @@ function addarticleController($scope, $http, $location) {
                 $('#color-picker').hide();
                 $(this).text('修改颜色');
             } 
+        });
+    }
+    function AddarticlePicLimit(){
+        $('.f_column li a').on('click',function(event) {
+            if($(this).data('size') != null){
+                var limitSize = $(this).data('size').split(','),
+                    forces = limitSize[2],
+                    imgErr;
+                if(limitSize[0] && limitSize[1]){
+                    $('.article_description_txt').html('<div '+(forces == 'true' ? 'class="fb"' : '')+'>('+limitSize[0]+'*'+limitSize[1]+')</div>'+(imgErr == "1" ? '<div class="warning"><i class="iconfont icon-gantanhao"></i></div>' : ''));
+                    // 图片上传
+                    proportion = limitSize[0]/limitSize[1];
+                    AddarticleUpload(proportion);
+                }else{
+                    AddarticleUpload('');
+                    $('.colum_description_txt').html('(建议'+(limitSize[0] == '' ? (limitSize[1] == '' ? '' : '高为:'+limitSize[1]) : '宽为:'+limitSize[0])+')')
+                }
+            }
         });
     }
     function AddarticleSave(){

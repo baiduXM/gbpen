@@ -659,12 +659,15 @@ function DropdownEvent(PageId){
     		}
     		var ul = $(this).closest('ul');
 	        var value = $(this).data("id"); 
-    		ul.siblings('.selectBox').text($(this).text()); 
-    		ul.siblings('.selectBox').attr('data-id',value); 
+    		ul.siblings('.selectBox').attr('data-id',value).text($(this).text()); 
 	        ul.slideUp("fast"); 
 	        ul.siblings('.selectBox_val').val(value); 
-	        ul.siblings('.selectBox_name').length ? ul.siblings('.selectBox_name').val($(this).data("name")) : null;
 	        ul.siblings('.arrow').css({'border-color':'rgb(180,180,180) transparent transparent transparent','top':'7px'});
+	        // 页面展示下拉框
+	        if($(this).data('size') != undefined){
+	        	ul.siblings('.selectBox_name').val($(this).data("name"));
+	        	ul.siblings('.selectBox').attr('data-size',$(this).data("size"));
+	        }
     	});
     }
 }
