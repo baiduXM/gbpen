@@ -6,12 +6,15 @@ function phone_indexController($scope,$http ,$location) {
 
     $scope.phoneIndexInit = function(){
     	this.templePage = 'index';
-    	this.templeType = 2;
-    	this.maininfourl = '../mhomepage-data';
+    	// this.maininfourl = '../mhomepage-data';
+    	this.maininfourl = 'json/phone_index.json';
     	this.init();
     }
     $scope.phoneIndexInit.prototype = {
     	init : function(){
+    		this.imageType = [];
+    		this.quickbarType = [];
+    		this.otherType = [];
     		this._loading();
     		this._getInfo();
     	},
@@ -22,7 +25,7 @@ function phone_indexController($scope,$http ,$location) {
     	},
     	_getInfo : function(){
 		    var Area_name = $_GET['Area'] || 'index',_this = this;
-		    if(Area_name == 'bottomnavs'){
+		    if(Area_name == 'quickbar'){
 				$('.phone_index_btn .delcolumn,.phone_index-banner .navs').remove();
 				$('.phone_index_btn .save').show();
 				$('#phone_index .phone_index_btn').width(122)
@@ -30,16 +33,7 @@ function phone_indexController($scope,$http ,$location) {
     		// 获取手机切换标签
 		    $http.get(this.maininfourl).success(function(json){
 		    	checkJSON(json,function(json){ 
-		    		var _div = '',
-		    			data = json.data.pagelist,mpagetype;
-		    		$.each(data, function(k, v) {
-		    			if(v.type != 'navs' && 'quickbar'){
-		    				_div += '<li><a data-sub="phone_index-'+v.page+'" href="javascript:void(0);">'+v.title+'</a></li>';
-		    			}
-		    		});
-		    		if(Area_name != 'bottomnavs'){
-		    			$('.page_navs').append(_div)
-		    		}
+		    		var data = json.data.pagelist,mpagetype,type;
 		    		// 标签切换修改保存按钮类名
 				    $('.phone_index-banner .navs li a').on('click',function(){
 						var page = $(this).data('sub').split("-");
@@ -47,28 +41,41 @@ function phone_indexController($scope,$http ,$location) {
 				    });
 					if(Area_name != _this.templePage){
 						$.each(json.data.templatedata,function(idx, ele) {
-					    	if(idx == Area_name){
-					    		switch(ele.type){
-					    			case "image":
-						    		case "images":
-						    			mpagetype = 'image';
-						    			// 大滚动图
-						    			var init = new $scope.phoneIndexSlidepics(ele);
-						    			break;
-					    			case "quickbar":
-					    			case "navs":
-						    			mpagetype = 'bottomnavs';
-						    			// 底部导航
-						    			var init = new $scope.phoneIndexQuickbar(ele);
-						    			break;
-					    			case "text":
-						    			mpagetype = 'text';
-						    			// 文本编辑
-						    			var init = new $scope.phoneIndexText(ele);
-						    			break;
-						    	}
+				    		switch(ele.type){
+				    			case "image":
+					    		case "images":
+					    			_this.imageType.push(ele)
+					    			break;
+				    			case "quickbar":
+				    			case "navs":
+					    			_this.quickbarType.push(ele)
+					    			break;
+				    			case "text":
+				    			case "textarea":
+				    			case "navs":
+					    			_this.otherType.push(ele)
+					    			type = ele.type;
+					    			break;
 					    	}
 					    });
+					    if(Area_name == 'images'){
+					    	mpagetype = 'images';
+					    	$.each(_this.imageType,function(i, j) {
+					    		var SlidepicsInit = new $scope.phoneIndexSlidepics(j);
+					    	});
+					    }
+				    	if(Area_name == 'quickbar'){
+				    		mpagetype = 'quickbar';
+				    		$.each(_this.quickbarType,function(i, j) {
+					    		var QuickbarInit = new $scope.phoneIndexQuickbar(j);
+					    	});
+				    	}
+					    if(Area_name == 'other'){
+					    	mpagetype = 'other';
+					    	$.each(_this.otherType,function(i, j) {
+					    		var OtherInit = new $scope.phoneIndexOther(j);
+					    	});
+					    }
 					}else{
 					    // 栏目排序
 		    			var init = new $scope.phoneIndexPageList(json.data.m_catlist);
@@ -490,6 +497,50 @@ function phone_indexController($scope,$http ,$location) {
 			});
 		}
     };
+    // Other数据
+    $scope.phoneIndexOther = function(ele){
+    	this.jsonData = ele;
+    	this.init();
+    };
+    $scope.phoneIndexOther.prototype = {
+    	init : function(){
+    		this.GetOtherData();
+    	},
+    	GetOtherData : function(){
+    		var _div = '';
+    		$.each(this.jsonData,function(k, v) {
+    			switch(v.type){
+	    			case 'text':
+	    				_div += '<li>\
+									<dl class="leftblock">'+v.description+'</dl>\
+									<dl class="rightblock">\
+										<input type="text" name="" value="'+v.value+'"></input>\
+									</dl>\
+								</li>';
+						$('#phone_index_text ul').append(_div);
+	    				break;
+					case 'textarea':
+	    				_div += '<li>\
+									<dl class="leftblock">'+v.description+'</dl>\
+									<dl class="rightblock">\
+										<textarea name cols="52" rows="4">'+v.value+'</textarea>\
+									</dl>\
+								</li>';
+						$('#phone_index_textarea ul').append(_div);
+	    				break;
+					case 'navs':
+	    				_div += '<li>\
+									<dl class="leftblock">'+v.description+'</dl>\
+									<dl class="rightblock">\
+										<input type="text" name="" value="123"></input>\
+									</dl>\
+								</li>';
+						$('#phone_index_text ul').append(_div);
+	    				break;
+	    		}
+    		});
+    	},
+    }
     // 底部导航
     $scope.phoneIndexQuickbar = function(ele){
     	this.jsonData = ele;
@@ -538,7 +589,7 @@ function phone_indexController($scope,$http ,$location) {
     		$('#phone_index-bottomnavs li .icon-yidong').TreeList({
 				parentNode  : 'phone_func',
 				rootNode 	: 'move_feild',
-				'oncallback':function(indexlist){}
+				oncallback 	: function(indexlist){}
 	       	});
     	},
     	SaveData : function(){

@@ -122,7 +122,7 @@ function columnController($scope, $http) {
                         LoopChlid(NextChild,num);
                     }
                 });
-                var _op1 = '<span>父级栏目：</span><div class="dropdown">\
+                var _op1 = '<span>父级栏目：</span><div class="dropdown inline-block">\
                         <div class="selectBox" data-id="0" type="text">请选择</div><span class="arrow"></span>\
                         <input class="selectBox_val" name="column_name" class="column_name" type="hidden" value=""/>\
                         <ul>'+option1+'</ul></div>';
@@ -134,7 +134,7 @@ function columnController($scope, $http) {
                     option2 += '<li><a data-id="'+ele.ename+','+j.key+'" data-name="'+ele.ename+'" data-size="'+j.img_width+','+j.img_height+','+j.img_forcesize+'" data-type="'+j.type+'" title="【'+ele.name+'】'+j.value+'">【'+ele.name+'】'+j.value+'</a></li>';
                 });
             });
-            var _op2 = '<span>页面展示：</span><div class="dropdown">\
+            var _op2 = '<span>页面展示：</span><div class="dropdown inline-block">\
                     <div class="selectBox" data-id="1" data-size=""></div><span class="arrow"></span>\
                     <input class="selectBox_val" name="index_val" type="hidden" value=""/>\
                     <input class="selectBox_name" name="index_name" type="hidden" value=""/>\
