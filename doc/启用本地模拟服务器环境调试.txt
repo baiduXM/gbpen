@@ -25,7 +25,7 @@ mklink /j app\views\templates ..\unify-data\app\views\templates
 
 ！！注意！！
 
-本地开发都请切换unify-data至develop分支；
+本地开发都请切换unify-data至develop分支，本地模板如有更新 所有变化需在切换unify-data环境分支前提交至develop分支；
 需要调试5067服务器时，请切换分支至5067，此时所有模板文件包括数据库都连接到5067服务器。
 
 本地调试的代码修改还是在主项目unify下提交；
