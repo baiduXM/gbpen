@@ -228,7 +228,7 @@ function phone_indexController($scope,$http ,$location) {
 		    	var total = $(this).val();
 		    	var id = $(this).parent().parent().data('aid');
 		   		$http.post('../mhomepage-batchmodify',{id:id,total:total}).success(function(json){
-		   			checkJSON(json,function(json){phoneindexinit.Save_hint();;});
+		   			checkJSON(json,function(json){phoneindexinit.Save_hint();});
 		   		});
 		    });
     	},
@@ -238,7 +238,7 @@ function phone_indexController($scope,$http ,$location) {
 		    	var style = $(this).val();
 		    	var id = $(this).parents('tr').data('aid');
 		   		$http.post('../mhomepage-batchmodify',{id:id,showtype:style}).success(function(json){
-		   			checkJSON(json,function(json){phoneindexinit.Save_hint();;});
+		   			checkJSON(json,function(json){phoneindexinit.Save_hint();});
 		   		});
 		    });
 	       	$('#phone_index-index tr .icon-yidong').TreeList({
@@ -273,34 +273,16 @@ function phone_indexController($scope,$http ,$location) {
     };
     $scope.phoneIndexSlidepics.prototype = {
     	init : function(){
-    		this.slidepics_info();
-    		this.EditBtn();
-    	},
-    	slidepics_info : function(){
-    		// 幻灯片列表
-    		var data = this.jsonData.value,
-    			htmlColumn = '',
-    			oddColumnWidth = 315,									// 单列宽
-    			mainWidth = $('#phone_index').width(),					// 区域总宽
-    			ColumnNum = Math.floor(mainWidth/oddColumnWidth),		// 列数
-    			lastColumnNum = (data.length%ColumnNum);				// 记录最终添加完的是第几列
-			// 添加瀑布流列
-			for(var i = 1;i <= ColumnNum;i++){
-				$('#phone_index_info').append('<ul id="phone_index_col'+i+'" class="phone_index_col" style="width:'+oddColumnWidth+'px"></ul>');
-			}
-			$.each(data,function(k,v){
-				// 除余取列
-				var C_num = (k+1)%ColumnNum == 0 ? (k+1) : (k+1)%ColumnNum;
-				count = k;
-				var _div = '<li class="phone_index-field">\n\
+    		this.ModelSlidepicsInfo = function(parameter){
+    			var _div = '<'+(parameter.Tag || 'li')+' class="phone_index-field">\n\
 						<div class="materlist-first">\n\
-			            	<dt class="title">'+v.title+'</dt>\n\
+			            	<dt class="title">'+(parameter.title || '')+'</dt>\n\
 			                <dd class="msgimg">\n\
-			                <img src="'+v.image+'" alt="" width="100%">\n\
+			                <img src="'+parameter.image+'" alt="" width="100%">\n\
 			                </dd>\n\
 			                <div class="concrol">\n\
 			                	<dl><dd class="zz"></dd><dd class="concrol-edite"><i class="iconfont icon-bianji"></i></dd></dl>\n\
-			                	<dl class="i1"><dd class="zz"></dd><dd class="concrol-del" name="'+v.id+'"><i class="iconfont icon-delete"></i></dd></dl> \n\
+			                	<dl class="i1"><dd class="zz"></dd><dd class="concrol-del" name="'+(parameter.id || '')+'"><i class="iconfont icon-delete"></i></dd></dl> \n\
 			                </div>\n\
 			            </div>\n\
 			            <div class="del-box">\n\
@@ -311,9 +293,9 @@ function phone_indexController($scope,$http ,$location) {
 			            <span class="sanjiao"></span>\n\
 			            <div class="materlist-second">\n\
 			            	<dt class="title">编辑名称</dt>\n\
-			                <dd class="input"><input name="slidepics['+k+'][PC_name]" type="text" value="'+v.title+'" /></dd>\n\
+			                <dd class="input"><input name="slidepics'+(parameter.num == undefined ? '' : '['+parameter.num+']')+'[PC_name]" type="text" value="'+(parameter.title || '')+'" /></dd>\n\
 			                <dt class="title">编辑链接</dt>\n\
-			                <dd class="input"><input name="slidepics['+k+'][PC_link]" type="text" value="'+v.link+'" /></dd>\n\
+			                <dd class="input"><input name="slidepics'+(parameter.num == undefined ? '' : '['+parameter.num+']')+'[PC_link]" type="text" value="'+(parameter.link || '')+'" /></dd>\n\
 			                <dl class="btnbox">\n\
 			                	<dd class="surebtn">确定</dd>\n\
 			                    <dd class="cancebtn">取消</dd>\n\
@@ -329,15 +311,63 @@ function phone_indexController($scope,$http ,$location) {
 				                    <dd class="cancebtn">取消</dd>\n\
 			                	</dl>\n\
 			                </div>\n\
-			            </div><input type="hidden" name="slidepics['+k+'][phone_info_pic]" value="'+v.image+'" />\n\
-					</li>';
-				$('#phone_index_col'+C_num+'').append(_div);
-			});
-			// 添加按钮
-			var addButton = '<div class="phone_index-add">\
-								<div class="up_pic up_phone"></div>\
-							</div>';
-			$('#phone_index_col'+(lastColumnNum+1)+'').append(addButton);
+			            </div><input type="hidden" name="slidepics'+(parameter.num == undefined ? '' : '['+parameter.num+']')+'[phone_info_pic]" value="'+(parameter.subimage || '')+'" />\n\
+					</'+(parameter.Tag || 'li')+'>';
+				return _div;
+    		};
+    		this.slidepics_info();
+    		this.EditBtn();
+    	},
+    	slidepics_info : function(){
+    		// 幻灯片列表
+    		var htmlColumn = '',
+    			_this = this;
+			if(this.jsonData.type == 'images'){
+				var data = this.jsonData.value,
+					oddColumnWidth = 315,									// 单列宽
+	    			mainWidth = $('#phone_index').width(),					// 区域总宽
+	    			ColumnNum = Math.floor(mainWidth/oddColumnWidth),		// 列数
+	    			lastColumnNum = (data.length%ColumnNum);				// 记录最终添加完的是第几列
+				// 添加瀑布流列
+				$('#phone_index_images').append('<div class="pictitle">多图文</div>');
+				for(var i = 1;i < ColumnNum;i++){
+					$('#phone_index_images').append('<ul id="phone_index_col'+i+'" class="phone_index_col" style="width:'+oddColumnWidth+'px"></ul>');
+				}
+				$.each(data,function(k,v){
+					// 除余取列
+					var C_num = (k+1)%ColumnNum == 0 ? (k+1) : (k+1)%ColumnNum;
+					count = k;
+					var _div = _this.ModelSlidepicsInfo({
+						title	: v.title,
+						image	: v.image,
+						subimage: v.image,
+						id		: v.id,
+						link	: v.link,
+						num		: k
+					});
+					$('#phone_index_col'+C_num+'').append(_div);
+				});
+				// 添加按钮
+				var addButton = '<div class="phone_index-add">\
+									<div class="up_pic up_phone"></div>\
+								</div>';
+				$('#phone_index_col'+(lastColumnNum+1)+'').append(addButton);
+			}else{
+				var data = this.jsonData.value;
+				var _div = _this.ModelSlidepicsInfo({
+						title	: data.title,
+						image	: data.image,
+						subimage: data.image,
+						id		: data.id,
+						link	: data.link,
+						Tag 	: 'div'
+					});
+				var addButton = '<div class="phone_index-add">\
+									<div class="up_pic up_phone"></div>\
+								</div>';
+				$('#phone_index_image').append('<div class="pictitle">单图</div>');
+				$('#phone_index_image').append(_div+addButton);
+			}
 			this.IsDelete();
 			this.slidepics_upload(lastColumnNum,ColumnNum);
     	},
@@ -382,11 +412,12 @@ function phone_indexController($scope,$http ,$location) {
 							return html;	
 						}() + '</ul> ';	
 				}
-				$('#phone_index_info').html(htmlColumn);
+				$('#phone_index_images').html(htmlColumn);
 				this.slidepics_upload(lastColumnNum,newColumnNum);
 			}
     	},
     	slidepics_upload : function(lastColumnNum,ColumnNum){
+    		var _this = this;
 			// 添加图片弹框
     		$('.up_pic').on('click',function(event) {
 		        var warningbox = new WarningBox();
@@ -395,45 +426,11 @@ function phone_indexController($scope,$http ,$location) {
 		            oncallback : function(json){
 		            	count++;
 		                $('.column_pic .template-download').remove();
-		                _newpic = '<li class="phone_index-field new">\n\
-								<div class="materlist-first">\n\
-					            	<dt class="title"></dt>\n\
-					                <dd class="msgimg">\n\
-					                <img src="'+json.data.url+'" alt="" width="100%">\n\
-					                </dd>\n\
-					                <div class="concrol">\n\
-					                	<dl><dd class="zz"></dd><dd class="concrol-edite"><i class="iconfont icon-bianji"></i></dd></dl>\n\
-					                	<dl class="i1"><dd class="zz"></dd><dd class="concrol-del"><i class="iconfont icon-delete"></i></dd></dl> \n\
-					                </div>\n\
-					            </div>\n\
-					            <div class="del-box">\n\
-				                	<span class="del-sanjiao"></span>\n\
-				                    <dd class="del-btn">删除</dd>\n\
-					            </div>\n\
-					            <div class="materlist-secondbox" style="display:block">\n\
-					            <span class="sanjiao"></span>\n\
-					            <div class="materlist-second">\n\
-					            	<dt class="title">编辑名称</dt>\n\
-					                <dd class="input"><input name="slidepics['+count+'][PC_name]" type="text" value="" /></dd>\n\
-					                <dt class="title">编辑链接</dt>\n\
-					                <dd class="input"><input name="slidepics['+count+'][PC_link]" type="text" value="" /></dd>\n\
-					                <dl class="btnbox">\n\
-					                	<dd class="surebtn">确定</dd>\n\
-					                    <dd class="cancebtn">取消</dd>\n\
-					                </dl>\n\
-					            </div>\n\
-					            </div>\n\
-					            <div class="detailbox">\n\
-					            	<span class="sanjiao"></span>\n\
-					            	<div class="detailbox-main">\n\
-					                	<dt class="title">确定删除此素材？</dt>\n\
-					                    <dl class="btnbox">\n\
-						                	<dd class="surebtn">确定</dd>\n\
-						                    <dd class="cancebtn">取消</dd>\n\
-					                	</dl>\n\
-					                </div>\n\
-					            </div><input type="hidden" name="slidepics['+count+'][phone_info_pic]" value="'+json.data.name+'" />\n\
-							</li>';
+		                _newpic = _this.ModelSlidepicsInfo({
+							image	: json.data.url,
+							subimage: json.data.name,
+							num		: count
+						});
 						var addBtn = (lastColumnNum+1)%ColumnNum,
 							addpic = (lastColumnNum+2)%ColumnNum;
 		                $('#phone_index_col'+(addBtn == 0 ? (lastColumnNum+1) : addBtn)+'').append(_newpic);
@@ -446,33 +443,37 @@ function phone_indexController($scope,$http ,$location) {
 		IsDelete : function(ColumnNum){
 			var _this = this;
     		// 确定、取消按钮效果
-			$("#phone_index_info").on('mouseenter','.concrol-del',function(){
+			$(".concrol-del").hover(function(){
 				$(this).parents(".phone_index-field").find(".del-box").slideDown();
-			}).on('mouseleave','.concrol-del',function(){
+			},function(){
 				$(this).parents(".phone_index-field").find(".del-box").slideUp();
-			}).on('click','.concrol-del',function(){
+			}).click(function(){
 				$(this).parents(".phone_index-field").find(".detailbox").slideDown();
 				$(this).parents(".concrol").find(".zz").show();
-			}).on('click','.concrol-edite',function(){
+			})
+			$('.concrol-edite').click(function(){
 				$(this).parents(".phone_index-field").find(".materlist-secondbox").slideDown();
 				$(this).parents(".concrol").find(".zz").show();
-			}).on('click','.cancebtn',function(){
+			})
+			$('.cancebtn').click(function(){
 				$(this).parents(".phone_index-field").find(".materlist-secondbox,.detailbox").slideUp();
 				$(this).parents(".phone_index-field").find(".zz").hide();
-			}).on('click','.detailbox .surebtn',function(){
+			})
+			$('.detailbox .surebtn').click(function(){
 				$(this).parents('.phone_index-field').fadeOut('400', function() { 
 					$(this).remove();
 					_this.layoutChange();
 					//幻灯片删除
 					if(!$(this).hasClass('new')){
-						var data = $("#phone_index_info").serializeJson();
-						var data1 = ($("#phone_index_info").serializeArray().length > 0?data:{slidepics : ""});
+						var data = $("#phone_index_images").serializeJson();
+						var data1 = ($("#phone_index_images").serializeArray().length > 0?data:{slidepics : ""});
 						$http.post('../mhomepage-modify',data1).success(function(){
 							phoneindexinit.Save_hint();;
 						});
 					}
 				});
-			}).on('click','.surebtn',function(){
+			})
+			$('.materlist-secondbox .surebtn').click(function(){
 				var _this = $(this).closest('.phone_index-field');
 				$(this).parents(".phone_index-field").find(".materlist-secondbox,.detailbox").slideUp();
 				$(this).parents(".phone_index-field").find(".zz").hide();
@@ -482,7 +483,7 @@ function phone_indexController($scope,$http ,$location) {
 				var id = $(this).parents('.materlist-secondbox').siblings('.materlist-first').children('.concrol').find('.concrol-del').attr('id');
 				if($(this).parents('div').hasClass('materlist-secondbox')){
 					//幻灯片保存
-					var data = $("#phone_index_info").serializeJson();
+					var data = $("#phone_index_images").serializeJson();
 					$http.post('../mhomepage-modify',data).success(function(){
 						phoneindexinit.Save_hint();;
 						_this.removeClass('new');
@@ -492,7 +493,7 @@ function phone_indexController($scope,$http ,$location) {
 		},
 		EditBtn : function(){
 			// 编辑功能
-			$('#phone_index_info').on('keyup','.materlist-second .input:nth-of-type(1) input',function(event) {
+			$('#phone_index_images').on('keyup','.materlist-second .input:nth-of-type(1) input',function(event) {
 				$(this).parents('.materlist-secondbox').siblings('.materlist-first').children('.title').text($(this).val());
 			});
 		}

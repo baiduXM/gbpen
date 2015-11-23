@@ -47,17 +47,13 @@
                 "type": "quickbar"
             },
             "slidepics": {
-                "value": [{
+                "value": {
                     "title": "\u6d4b\u8bd5\u56fe11",
                     "image": "http:\/\/tpanel\/templates\/GM0013\/images\/baner.jpg",
                     "link": "http:\/\/www.baidu.com"
-                }, {
-                    "title": "\u6d4b\u8bd5\u56fe12",
-                    "image": "http:\/\/tpanel\/templates\/GM0013\/images\/baner.jpg",
-                    "link": "http:\/\/www.baidu.com"
-                }],
+                }, 
                 "description": "\u5927\u8f6e\u6eda\u56fe",
-                "type": "images",
+                "type": "image",
                 "config": {
                     "width": 640,
                     "height": 360
