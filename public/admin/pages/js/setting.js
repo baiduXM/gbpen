@@ -88,8 +88,8 @@
                 });
             });
         },
-        _settingUpload : function(pc_logo_size,m_logo_size){
-            $('.set_up_name').on('click',function(event) {
+        _settingUpload : function(pc_logo_size,m_logo_size){console.log('12');
+            $('.set_up_name').on('click',function(event) {alert(11)
                 var _this =  $(this);
                 var warningbox = new WarningBox(),
                     role = (pc_logo_size == undefined || m_logo_size == undefined ? '' :$(this).data('role') == 'favicon' ? 32/32 : $(this).data('role') == 'logo_large' ? eval(pc_logo_size) : $(this).data('role') == 'logo_small' ? eval(m_logo_size) : '');

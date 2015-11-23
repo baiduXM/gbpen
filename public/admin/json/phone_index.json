@@ -3,23 +3,6 @@
     "msg": "",
     "data": {
         "templatedata": {
-            "slidepics": {
-                "value": [{
-                    "title": "\u6d4b\u8bd5\u56fe1",
-                    "image": "http:\/\/tpanel\/templates\/GM0013\/images\/baner.jpg",
-                    "link": "http:\/\/www.baidu.com"
-                }, {
-                    "title": "\u6d4b\u8bd5\u56fe2",
-                    "image": "http:\/\/tpanel\/templates\/GM0013\/images\/baner.jpg",
-                    "link": "http:\/\/www.baidu.com"
-                }],
-                "description": "\u5927\u8f6e\u6eda\u56fe",
-                "type": "images",
-                "config": {
-                    "width": 640,
-                    "height": 360
-                }
-            },
             "bottom_navs": {
                 "value": [{
                     "name": "\u7535\u8bdd",
@@ -78,22 +61,68 @@
             },
             "announcement_title": {
                 "value": "这里是自动输出的公共内容！\r\n第二行公告内容",
-                "description": "\u5927\u8f6e\u6eda\u56fe",
+                "description": "公告标题",
                 "type": "text"
             },
             "announcement": {
                 "value": "这里是自动输出的公共内容！\r\n第二行公告内容",
-                "description": "\u5927\u8f6e\u6eda\u56fe",
+                "description": "公告内容",
                 "type": "textarea"
             },
             "second_navs": {
-                "value": {},
-                "description": "第二导航（底部）",
-                "type": "navs",
-                "config": {
-                    "limit": 8
-                }
-            }
+              "value": [],
+              "description": "\u7b2c\u4e8c\u5bfc\u822a\uff08\u5e95\u90e8\uff09",
+              "type": "navs",
+              "config": {
+                  "limit": 4,
+                  "filter": "ALL",
+                  "star_only": "0",
+                  "ids": [171, 171, 171, 171],
+                  "list": [ {
+                      "id": 171,
+                      "name": "\u5916\u94fe",
+                      "p_id": 0,
+                      "type": 6,
+                      "selected": 1,
+                      "childmenu": null
+                  }, {
+                      "id": 218,
+                      "name": "\u9999\u6e2f",
+                      "p_id": 0,
+                      "type": 1,
+                      "selected": 0,
+                      "childmenu": [{
+                          "id": 221,
+                          "name": "\u5916\u94fe",
+                          "p_id": 218,
+                          "type": 6,
+                          "selected": 0,
+                          "childmenu": null
+                      }]
+                  }, {
+                      "id": 224,
+                      "name": "\u65e0\u5b50\u680f\u76ee\u5185\u5bb9\u5355\u9875",
+                      "p_id": 0,
+                      "type": 4,
+                      "selected": 0,
+                      "childmenu": null
+                  }, {
+                      "id": 230,
+                      "name": "\u65e0\u5b50\u680f\u76ee",
+                      "p_id": 0,
+                      "type": 1,
+                      "selected": 0,
+                      "childmenu": null
+                  }, {
+                      "id": 252,
+                      "name": "\u65b0\u7248100\u5143\u7eb8\u5e01",
+                      "p_id": 0,
+                      "type": 4,
+                      "selected": 0,
+                      "childmenu": null
+                  }]
+              }
+          }
         },
         "pagelist": [{
             "page": "index",

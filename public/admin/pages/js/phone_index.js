@@ -44,37 +44,30 @@ function phone_indexController($scope,$http ,$location) {
 				    		switch(ele.type){
 				    			case "image":
 					    		case "images":
-					    			_this.imageType.push(ele)
+					    			_this.imageType.push(ele);
 					    			break;
 				    			case "quickbar":
-				    			case "navs":
-					    			_this.quickbarType.push(ele)
+					    			_this.quickbarType.push(ele);
 					    			break;
 				    			case "text":
 				    			case "textarea":
 				    			case "navs":
-					    			_this.otherType.push(ele)
-					    			type = ele.type;
+					    			_this.otherType.push(ele);
+					    			console.log(_this.otherType);
 					    			break;
 					    	}
 					    });
 					    if(Area_name == 'images'){
 					    	mpagetype = 'images';
-					    	$.each(_this.imageType,function(i, j) {
-					    		var SlidepicsInit = new $scope.phoneIndexSlidepics(j);
-					    	});
+					    	var SlidepicsInit = new $scope.phoneIndexSlidepics(_this.imageType);
 					    }
 				    	if(Area_name == 'quickbar'){
 				    		mpagetype = 'quickbar';
-				    		$.each(_this.quickbarType,function(i, j) {
-					    		var QuickbarInit = new $scope.phoneIndexQuickbar(j);
-					    	});
+				    		var QuickbarInit = new $scope.phoneIndexQuickbar(_this.quickbarType);
 				    	}
 					    if(Area_name == 'other'){
 					    	mpagetype = 'other';
-					    	$.each(_this.otherType,function(i, j) {
-					    		var OtherInit = new $scope.phoneIndexOther(j);
-					    	});
+				    		var OtherInit = new $scope.phoneIndexOther(_this.otherType);
 					    }
 					}else{
 					    // 栏目排序
@@ -322,54 +315,58 @@ function phone_indexController($scope,$http ,$location) {
     		// 幻灯片列表
     		var htmlColumn = '',
     			_this = this;
-			if(this.jsonData.type == 'images'){
-				var data = this.jsonData.value,
-					oddColumnWidth = 315,									// 单列宽
-	    			mainWidth = $('#phone_index').width(),					// 区域总宽
-	    			ColumnNum = Math.floor(mainWidth/oddColumnWidth),		// 列数
-	    			lastColumnNum = (data.length%ColumnNum);				// 记录最终添加完的是第几列
-				// 添加瀑布流列
-				$('#phone_index_images').append('<div class="pictitle">多图文</div>');
-				for(var i = 1;i < ColumnNum;i++){
-					$('#phone_index_images').append('<ul id="phone_index_col'+i+'" class="phone_index_col" style="width:'+oddColumnWidth+'px"></ul>');
-				}
-				$.each(data,function(k,v){
-					// 除余取列
-					var C_num = (k+1)%ColumnNum == 0 ? (k+1) : (k+1)%ColumnNum;
-					count = k;
+			$.each(this.jsonData,function(index, ele) {
+				if(ele.type == 'images'){
+					var data = ele.value,
+						oddColumnWidth = 315,									// 单列宽
+		    			mainWidth = $('#phone_index').width(),					// 区域总宽
+		    			ColumnNum = Math.floor(mainWidth/oddColumnWidth),		// 列数
+		    			lastColumnNum = (data.length%ColumnNum);				// 记录最终添加完的是第几列
+					// 添加瀑布流列
+					$('#phone_index_images').append('<div class="pictitle">多图文</div>');
+					for(var i = 1;i <= ColumnNum;i++){
+						$('#phone_index_images').append('<ul id="phone_index_col'+i+'" class="phone_index_col" style="width:'+oddColumnWidth+'px"></ul>');
+					}
+					$.each(data,function(k,v){
+						// 除余取列
+						var C_num = (k+1)%ColumnNum == 0 ? (k+1) : (k+1)%ColumnNum;
+						count = k;
+						var _div = _this.ModelSlidepicsInfo({
+							title	: v.title,
+							image	: v.image,
+							subimage: v.image,
+							id		: v.id,
+							link	: v.link,
+							num		: k
+						});
+						$('#phone_index_col'+C_num+'').append(_div);
+					});
+					// 添加按钮
+					var addButton = '<div class="phone_index-add">\
+										<div class="up_pic up_phone"></div>\
+									</div>';
+					$('#phone_index_col'+(lastColumnNum+1)+'').append(addButton);
+					_this.slidepics_upload(lastColumnNum,ColumnNum);
+				}else{
+					var data = ele.value;
 					var _div = _this.ModelSlidepicsInfo({
-						title	: v.title,
-						image	: v.image,
-						subimage: v.image,
-						id		: v.id,
-						link	: v.link,
-						num		: k
-					});
-					$('#phone_index_col'+C_num+'').append(_div);
-				});
-				// 添加按钮
-				var addButton = '<div class="phone_index-add">\
-									<div class="up_pic up_phone"></div>\
-								</div>';
-				$('#phone_index_col'+(lastColumnNum+1)+'').append(addButton);
-			}else{
-				var data = this.jsonData.value;
-				var _div = _this.ModelSlidepicsInfo({
-						title	: data.title,
-						image	: data.image,
-						subimage: data.image,
-						id		: data.id,
-						link	: data.link,
-						Tag 	: 'div'
-					});
-				var addButton = '<div class="phone_index-add">\
-									<div class="up_pic up_phone"></div>\
-								</div>';
-				$('#phone_index_image').append('<div class="pictitle">单图</div>');
-				$('#phone_index_image').append(_div+addButton);
-			}
+							title	: data.title,
+							image	: data.image,
+							subimage: data.image,
+							id		: data.id,
+							link	: data.link,
+							Tag 	: 'div'
+						});
+					var addButton = '<div class="phone_index-add">\
+										<div class="up_pic up_phone"></div>\
+									</div>';
+					$('#phone_index_image').append('<div class="pictitle">单图</div>');
+					$('#phone_index_image').append(_div+addButton);
+					_this.slidepics_upload();
+				}
+			});
+			
 			this.IsDelete();
-			this.slidepics_upload(lastColumnNum,ColumnNum);
     	},
     	layoutChange : function(){
     		// 改变列表布局
@@ -417,25 +414,36 @@ function phone_indexController($scope,$http ,$location) {
 			}
     	},
     	slidepics_upload : function(lastColumnNum,ColumnNum){
-    		var _this = this;
+    		var _this = this,count,_newpic;
 			// 添加图片弹框
     		$('.up_pic').on('click',function(event) {
-		        var warningbox = new WarningBox();
+		        var warningbox = new WarningBox(),
+		        	event_this = this;
 		        warningbox._upImage({
 		            ajaxurl    : '../file-upload?target=page_index',
 		            oncallback : function(json){
-		            	count++;
-		                $('.column_pic .template-download').remove();
-		                _newpic = _this.ModelSlidepicsInfo({
-							image	: json.data.url,
-							subimage: json.data.name,
-							num		: count
-						});
-						var addBtn = (lastColumnNum+1)%ColumnNum,
-							addpic = (lastColumnNum+2)%ColumnNum;
-		                $('#phone_index_col'+(addBtn == 0 ? (lastColumnNum+1) : addBtn)+'').append(_newpic);
-		                $('#phone_index_col'+(addpic == 0 ? (lastColumnNum+2) : addpic)+'').append($('.phone_index-add'));
-		                lastColumnNum++;
+		            	if($(event_this).closest('#phone_index_image').length){
+		            		$('#phone_index_image div.phone_index-field').remove();
+		            		_newpic = _this.ModelSlidepicsInfo({
+								image	: json.data.url,
+								subimage: json.data.name,
+								Tag 	: 'div'
+							});
+		            		$(event_this).parent().before(_newpic);
+		            	}else{
+		            		count++;
+			                _newpic = _this.ModelSlidepicsInfo({
+								image	: json.data.url,
+								subimage: json.data.name,
+								num		: count
+							});
+							var addBtn = (lastColumnNum+1)%ColumnNum,
+								addpic = (lastColumnNum+2)%ColumnNum;
+			                $('#phone_index_col'+(addBtn == 0 ? (lastColumnNum+1) : addBtn)+'').append(_newpic);
+			                $('#phone_index_col'+(addpic == 0 ? (lastColumnNum+2) : addpic)+'').append($(event_this).parent());
+			                lastColumnNum++;
+		            	}
+						_this.IsDelete();
 		            }
 		        });
 		    });
@@ -508,12 +516,12 @@ function phone_indexController($scope,$http ,$location) {
     		this.GetOtherData();
     	},
     	GetOtherData : function(){
-    		var _div = '';
     		$.each(this.jsonData,function(k, v) {
+    			var _div = '';
     			switch(v.type){
 	    			case 'text':
 	    				_div += '<li>\
-									<dl class="leftblock">'+v.description+'</dl>\
+									<dl class="leftblock">'+v.description+':</dl>\
 									<dl class="rightblock">\
 										<input type="text" name="" value="'+v.value+'"></input>\
 									</dl>\
@@ -522,7 +530,7 @@ function phone_indexController($scope,$http ,$location) {
 	    				break;
 					case 'textarea':
 	    				_div += '<li>\
-									<dl class="leftblock">'+v.description+'</dl>\
+									<dl class="leftblock">'+v.description+':</dl>\
 									<dl class="rightblock">\
 										<textarea name cols="52" rows="4">'+v.value+'</textarea>\
 									</dl>\
@@ -531,16 +539,77 @@ function phone_indexController($scope,$http ,$location) {
 	    				break;
 					case 'navs':
 	    				_div += '<li>\
-									<dl class="leftblock">'+v.description+'</dl>\
+									<dl class="leftblock">'+v.description+':</dl>\
 									<dl class="rightblock">\
-										<input type="text" name="" value="123"></input>\
+										<div id="move_navs">\
+										'+function(){
+											var html = '',_rel = '',list1 = '',pname = '',sign = [];
+											$.each(v.config.ids,function(idx, ele) {
+												$.each(v.config.list,function(i,vlist){
+													var _this = $(this);
+													if(vlist.p_id == 0){
+														if(vlist.id == ele) {sign = '<input class="selectBox_val" type="hidden" value="'+vlist.id+'" name="data['+k+'][ids]['+idx+']" />';pname = vlist.name}
+														list1 += '<li><a class="'+(vlist.childmenu == null ? 'lastchild ' : '')+'parents'+((v.config.filter.toLowerCase() == 'all' || v.config.filter == 'list,page') ? '' : v.config.filter == 'page' ? '' : vlist.type == 4 ? ' not-allowed' : '')+'" data-id="'+vlist.id+'">'+vlist.name+'</a></li>';
+										                var NextChild = vlist;
+										                var num = 2;
+														var LoopChlid = function(NextChild,num){
+					                                        if(NextChild.childmenu != null){
+					                                            $.each(NextChild.childmenu,function(kk,vv){
+					                                            	if(vv.id == ele) {sign = '<input class="selectBox_val" type="hidden" value="'+vv.id+'" name="data['+rootNodeName+'][ids]['+idx+']" />';pname = vv.name}
+					                                            	list1 += '<li><a class="'+(vv.childmenu == null ? 'lastchild ' : '')+'LevelChild'+num+((vv.type == 4) && (v.config.filter == 'list')?' not-allowed':'')+'" data-pid="'+vv.p_id+'" data-id="'+vv.id+'">├ '+vv.name+'</a></li>';
+					                                                NextChild = vv;
+					                                                num++;
+					                                                LoopChlid(NextChild,num);
+					                                                num--;
+					                                            });
+					                                        }
+					                                    }
+					                                    v.config.filter == 'page' ? '' : LoopChlid(NextChild,num);
+													}
+												});
+												_rel += '<div class="dropdown" style="margin-bottom:10px;">\
+					                            <div class="selectBox" type="text">'+pname+'</div><span class="arrow"></span>'+sign+'\
+					                            <ul>'+list1+'</ul><span class="move_icon"><i class="iconfont icon-liebiao"></i><i class="iconfont icon-guanbi"></i></span></div>'+(idx == (v.config.ids.length-1) ? '<div class="add_icon"><i class="iconfont icon-add" data-limit="'+v.config.limit+'"></i></div>' : '')+'';
+											});
+											return _rel;
+										}()+'</div>\
 									</dl>\
 								</li>';
-						$('#phone_index_text ul').append(_div);
+						$('#phone_index_navs ul').append(_div);
 	    				break;
 	    		}
     		});
+			//下拉框更改
+			DropdownEvent();
+			// 提示移动框
+			$('.not-allowed').MoveBox({context:'此为单页类型或者父级分类下带有子级，不支持选择！'});
+    		$scope.phoneIndexQuickbar.prototype.InputStyle();// 拖拽效果
+			$('.dropdown .icon-liebiao').TreeList({
+				parentNode  : 'move_navs',
+				rootNode 	: 'dropdown'
+	       	});
+	       	this.DeleteDropList();
+	       	this.AddDropList();
     	},
+    	DeleteDropList : function(){
+    		$('#move_navs .icon-guanbi').on('click',function(){
+	       		$(this).closest('.dropdown').remove();
+	       	});
+    	},
+    	AddDropList : function(){
+    		// 添加拖拽栏目
+			$('.add_icon i').on('click', function(event) {
+	       		if($(this).parent().siblings('.dropdown').length >= $(this).data('limit')){
+	       			alert('超出数量！')
+	       		}else{
+	       			var clone_cell = $('#move_navs .dropdown').first().clone(true);
+					$('#move_navs .add_icon').before(clone_cell);
+					clone_cell.find('.selectBox').text('空').end().find('.selectBox_val').val('');
+					var word = clone_cell.find('.selectBox_val').attr('name').replace(/data\[(.*)\]\[(.*)\]\[(\d*)\]/,'data[$1][$2]['+($('#move_navs .dropdown').length-1)+']');
+					clone_cell.find('.selectBox_val').attr('name',word);
+	       		}
+			});
+    	}
     }
     // 底部导航
     $scope.phoneIndexQuickbar = function(ele){
@@ -552,21 +621,23 @@ function phone_indexController($scope,$http ,$location) {
     		this.bottomnavs_info();
     	},
     	bottomnavs_info : function(){
-    		var data = this.jsonData.value,
+    		var data = (this.jsonData == undefined ? null : this.jsonData.value),
 				_div1 = '',num,info;
-			$.each(data,function(k,v){
-				info = (v.type == 'share' ? '<span class="shareicon ml5">\
-						<i class="iconfont icon-tengxunweibo '+($.inArray('txweibo', v.data) == -1 ? 'grey' : 'blue')+'" data-name="'+($.inArray('txweibo', v.data) == -1 ? 'txweibo' : '')+'"></i>\
-						<i class="iconfont icon-baidu '+($.inArray('baidu', v.data) == -1 ? 'grey' : 'blue')+'"  data-name="'+($.inArray('baidu', v.data) == -1 ? 'baidu' : '')+'"></i>\
-						<i class="iconfont icon-qqkongjian '+($.inArray('qqzone', v.data) == -1 ? 'grey' : 'blue')+'"  data-name="'+($.inArray('qqzone', v.data) == -1 ? 'qqzone' : '')+'"></i>\
-						<i class="iconfont icon-2 '+($.inArray('weibo', v.data) == -1 ? 'grey' : 'blue')+'"  data-name="'+($.inArray('weibo', v.data) == -1 ? 'weibo' : '')+'"></i></span>' : '<input type="text" value="'+v.data+'" class="message-num" />');
-				_div1 += '<li class="move_feild">\n\
-							<i class="fa iconfont icon-yidong"></i>\n\
-							<span><i class="fa icon-pc iconfont btn btn-show btn-desktop '+(v.pc_show?'blue':'grey')+'"></i><i class="fa iconfont icon-snimicshouji btn btn-show btn-mobile '+(v.mobile_show?'blue':'grey')+'"></i></span>\n\
-							<label class="message-name">'+v.name+'</label>'+info+'\n\
-						</li>';
-			});
-			$('.phone_service .phone_func').append(_div1);
+			if(data){
+				$.each(data,function(k,v){
+					info = (v.type == 'share' ? '<span class="shareicon ml5">\
+							<i class="iconfont icon-tengxunweibo '+($.inArray('txweibo', v.data) == -1 ? 'grey' : 'blue')+'" data-name="'+($.inArray('txweibo', v.data) == -1 ? 'txweibo' : '')+'"></i>\
+							<i class="iconfont icon-baidu '+($.inArray('baidu', v.data) == -1 ? 'grey' : 'blue')+'"  data-name="'+($.inArray('baidu', v.data) == -1 ? 'baidu' : '')+'"></i>\
+							<i class="iconfont icon-qqkongjian '+($.inArray('qqzone', v.data) == -1 ? 'grey' : 'blue')+'"  data-name="'+($.inArray('qqzone', v.data) == -1 ? 'qqzone' : '')+'"></i>\
+							<i class="iconfont icon-2 '+($.inArray('weibo', v.data) == -1 ? 'grey' : 'blue')+'"  data-name="'+($.inArray('weibo', v.data) == -1 ? 'weibo' : '')+'"></i></span>' : '<input type="text" value="'+v.data+'" class="message-num" />');
+					_div1 += '<li class="move_feild">\n\
+								<i class="fa iconfont icon-yidong"></i>\n\
+								<span><i class="fa icon-pc iconfont btn btn-show btn-desktop '+(v.pc_show?'blue':'grey')+'"></i><i class="fa iconfont icon-snimicshouji btn btn-show btn-mobile '+(v.mobile_show?'blue':'grey')+'"></i></span>\n\
+								<label class="message-name">'+v.name+'</label>'+info+'\n\
+							</li>';
+				});
+				$('.phone_service .phone_func').append(_div1);
+			}
 			this.InputStyle();
 			this.ShowPos();
 			this.DragBlock();
