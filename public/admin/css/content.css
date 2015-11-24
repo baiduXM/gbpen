@@ -574,7 +574,7 @@ border-radius: 5px;}
 #phone_index-other ul li{width: 100%;display: block;text-align: left;}
 #phone_index-other input{height: 24px;}
 #phone_index-other .leftblock{width: 120px;text-align: right;}
-#phone_index-other .rightblock input{width: 380px;}
+#phone_index-other .rightblock input{width: 380px;border: 1px solid rgb(169,169,169);}
 /*栏目顺序*/
 #phone_index-index tr .show_num{width: 55px;height: 25px;text-align: center;margin-bottom: 5px;vertical-align: middle;}
 #phone_index-index .childrenlist{font-size: 12px;}

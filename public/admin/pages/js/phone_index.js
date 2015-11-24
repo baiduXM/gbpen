@@ -12,9 +12,9 @@ function phone_indexController($scope,$http ,$location) {
     }
     $scope.phoneIndexInit.prototype = {
     	init : function(){
-    		this.imageType = [];
-    		this.quickbarType = [];
-    		this.otherType = [];
+    		this.imageType = {};
+    		this.quickbarType = {};
+    		this.otherType = {};
     		this._loading();
     		this._getInfo();
     	},
@@ -44,16 +44,15 @@ function phone_indexController($scope,$http ,$location) {
 				    		switch(ele.type){
 				    			case "image":
 					    		case "images":
-					    			_this.imageType.push(ele);
+					    			_this.imageType[idx] = ele;
 					    			break;
 				    			case "quickbar":
-					    			_this.quickbarType.push(ele);
+					    			_this.quickbarType[idx] = ele;
 					    			break;
 				    			case "text":
 				    			case "textarea":
 				    			case "navs":
-					    			_this.otherType.push(ele);
-					    			console.log(_this.otherType);
+					    			_this.otherType[idx] = ele;
 					    			break;
 					    	}
 					    });
