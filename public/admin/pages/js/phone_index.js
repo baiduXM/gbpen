@@ -239,7 +239,7 @@ function phone_indexController($scope,$http ,$location) {
 	       		'oncallback':function(indexlist){
 	       			$http.post('../mhomepage-sortmodify', {indexlist:indexlist}).success(function(json) {
 		                checkJSON(json, function(json){
-		                    phoneindexinit.Save_hint();;
+		                    phoneindexinit.Save_hint();
 		                });
 		            });
 	       		}
@@ -475,7 +475,7 @@ function phone_indexController($scope,$http ,$location) {
 						var data = $("#phone_index_images").serializeJson();
 						var data1 = ($("#phone_index_images").serializeArray().length > 0?data:{slidepics : ""});
 						$http.post('../mhomepage-modify',data1).success(function(){
-							phoneindexinit.Save_hint();;
+							phoneindexinit.Save_hint();
 						});
 					}
 				});
@@ -492,7 +492,7 @@ function phone_indexController($scope,$http ,$location) {
 					//幻灯片保存
 					var data = $("#phone_index_images").serializeJson();
 					$http.post('../mhomepage-modify',data).success(function(){
-						phoneindexinit.Save_hint();;
+						phoneindexinit.Save_hint();
 						_this.removeClass('new');
 					});
 				}
@@ -513,6 +513,7 @@ function phone_indexController($scope,$http ,$location) {
     $scope.phoneIndexOther.prototype = {
     	init : function(){
     		this.GetOtherData();
+    		this.SaveOtherDataUrl = '';
     	},
     	GetOtherData : function(){
     		$.each(this.jsonData,function(k, v) {
@@ -522,7 +523,7 @@ function phone_indexController($scope,$http ,$location) {
 	    				_div += '<li>\
 									<dl class="leftblock">'+v.description+':</dl>\
 									<dl class="rightblock">\
-										<input type="text" name="" value="'+v.value+'"></input>\
+										<input type="text" name="'+k+'" value="'+v.value+'"></input>\
 									</dl>\
 								</li>';
 						$('#phone_index_text ul').append(_div);
@@ -531,7 +532,7 @@ function phone_indexController($scope,$http ,$location) {
 	    				_div += '<li>\
 									<dl class="leftblock">'+v.description+':</dl>\
 									<dl class="rightblock">\
-										<textarea name cols="52" rows="4">'+v.value+'</textarea>\
+										<textarea name="'+k+'" cols="52" rows="4">'+v.value+'</textarea>\
 									</dl>\
 								</li>';
 						$('#phone_index_textarea ul').append(_div);
@@ -589,6 +590,7 @@ function phone_indexController($scope,$http ,$location) {
 	       	});
 	       	this.DeleteDropList();
 	       	this.AddDropList();
+	       	this.SaveOtherData();
     	},
     	DeleteDropList : function(){
     		$('#move_navs .icon-guanbi').on('click',function(){
@@ -601,13 +603,24 @@ function phone_indexController($scope,$http ,$location) {
 	       		if($(this).parent().siblings('.dropdown').length >= $(this).data('limit')){
 	       			alert('超出数量！')
 	       		}else{
-	       			var clone_cell = $('#move_navs .dropdown').first().clone(true);
+	       			var clone_cell = $('#move_navs .dropdown').last().clone(true);
 					$('#move_navs .add_icon').before(clone_cell);
 					clone_cell.find('.selectBox').text('空').end().find('.selectBox_val').val('');
 					var word = clone_cell.find('.selectBox_val').attr('name').replace(/data\[(.*)\]\[(.*)\]\[(\d*)\]/,'data[$1][$2]['+($('#move_navs .dropdown').length-1)+']');
+					console.log(word);
 					clone_cell.find('.selectBox_val').attr('name',word);
 	       		}
 			});
+    	},
+    	SaveOtherData : function(){
+    		$('.save').click(function(){
+    			var data = $(this).closest('form').serializeJson();
+    			$http.post(this.SaveOtherDataUrl,data).success(function(){
+		    		checkJSON(json,function(json){
+		    			phoneindexinit.Save_hint();
+		    		});
+		    	});
+    		})
     	}
     }
     // 底部导航
@@ -684,7 +697,7 @@ function phone_indexController($scope,$http ,$location) {
 				});
 		    	$http.post('../mhomepage-modify',{bottomnavs: navsArray}).success(function(){
 		    		checkJSON(json,function(json){
-		    			phoneindexinit.Save_hint();;
+		    			phoneindexinit.Save_hint();
 		    		});
 		    	});
 		    });
