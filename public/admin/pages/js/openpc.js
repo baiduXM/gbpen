@@ -27,7 +27,7 @@ function openpcController($scope, $http ,$location) {
 						var d = json.data.mytemplelist;
 						$.each(d, function(i) {
 							_div1 += '<li '+(d[i].is_selected==0?'':'data-li="chose"')+' name="'+d[i].id+'">\n\
-							          <dl class="title">'+d[i].name+'</dl>\n\
+							          <dl class="title">('+d[i].classify+')'+d[i].name+'</dl>\n\
 				                      <div class="showbox '+(d[i].is_selected?'cu':'')+'">\n\
 				                        	<dl class="img"><img src="'+d[i].img+'" width="249" height="185" /></dl>\n\
 				                            <dl class="zz hidden"></dl>\n\
@@ -53,7 +53,7 @@ function openpcController($scope, $http ,$location) {
 						_div1 = '';
 						$.each(d, function(i) {
 							_div1 += '<li '+(d[i].is_selected==0?'':'data-li="chose"')+' name="'+d[i].id+'">\n\
-							          <dl class="title">'+d[i].name+'</dl>\n\
+							          <dl class="title">('+d[i].classify+')'+d[i].name+'</dl>\n\
 				                      <div class="showbox '+(d[i].is_selected?'cu':'')+'">\n\
 				                        	<dl class="img"><img src="'+d[i].img+'" width="194" height="291" /></dl>\n\
 				                            <dl class="zz hidden"></dl>\n\
@@ -95,7 +95,7 @@ function openpcController($scope, $http ,$location) {
 		//模板选择 
 		$.each(d_temp.data, function(i) {
 			_div2 += '<li '+(d_temp.data[i].is_selected==0?'':'data-li="chose"')+' name="'+d_temp.data[i].id+'">\n\
-			            <dl class="title">'+d_temp.data[i].name+'</dl>\n\
+			            <dl class="title">('+d_temp.data[i].classify+')'+d_temp.data[i].name+'</dl>\n\
 	                	<div class="showbox">\n\
 	                    	<dl class="img"><img src="'+d_temp.data[i].img+'" width="249" height="185" /></dl>\n\
 	                        <dl class="zz hidden"></dl>\n\
@@ -126,7 +126,7 @@ function openpcController($scope, $http ,$location) {
 		//模板选择 
 		$.each(d_temp.data, function(i) {
 			_div2 += '<li '+(d_temp.data[i].is_selected==0?'':'data-li="chose"')+' name="'+d_temp.data[i].id+'">\n\
-			            <dl class="title">'+d_temp.data[i].name+'</dl>\n\
+			            <dl class="title">('+d_temp.data[i].classify+')'+d_temp.data[i].name+'</dl>\n\
 	                	<div class="showbox">\n\
 	                    	<dl class="img"><img src="'+d_temp.data[i].img+'" width="194" height="291" /></dl>\n\
 	                        <dl class="zz hidden"></dl>\n\
@@ -177,7 +177,7 @@ function openpcController($scope, $http ,$location) {
                         $.each(d_temp.data.data, function(i,j) {
                             if(key == j.serial){
                                 _serv += '<li '+(j.is_selected==0?'':'data-li="chose"')+' name="'+j.id+'">\n\
-                                        <dl class="title">'+j.name+'</dl>\n\
+                                        <dl class="title">('+j.classify+')'+j.name+'</dl>\n\
                                         <div class="showbox">\n\
                                             <dl class="img"><img src="'+j.img+'" width="249" height="185" /></dl>\n\
                                              <dl class="zz hidden"></dl>\n\
@@ -208,7 +208,7 @@ function openpcController($scope, $http ,$location) {
                         $.each(d_temp.data.data, function(i,j) {
                             if(key == j.serial){
                                 _serv += '<li '+(j.is_selected==0?'':'data-li="chose"')+' name="'+j.id+'">\n\
-                                        <dl class="title">'+j.name+'</dl>\n\
+                                        <dl class="title">('+j.classify+')'+j.name+'</dl>\n\
                                         <div class="showbox">\n\
                                             <dl class="img"><img src="'+j.img+'" width="194" height="291" /></dl>\n\
                                              <dl class="zz hidden"></dl>\n\
