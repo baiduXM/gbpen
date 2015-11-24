@@ -13,7 +13,7 @@ function phone_indexController($scope,$http ,$location) {
     $scope.phoneIndexInit.prototype = {
     	init : function(){
     		this.imageType = {};
-    		this.quickbarType = {};
+    		this.quickbarType = [];
     		this.otherType = {};
     		this._loading();
     		this._getInfo();
@@ -47,7 +47,7 @@ function phone_indexController($scope,$http ,$location) {
 					    			_this.imageType[idx] = ele;
 					    			break;
 				    			case "quickbar":
-					    			_this.quickbarType[idx] = ele;
+					    			_this.quickbarType = ele;
 					    			break;
 				    			case "text":
 				    			case "textarea":
@@ -603,11 +603,11 @@ function phone_indexController($scope,$http ,$location) {
 	       		if($(this).parent().siblings('.dropdown').length >= $(this).data('limit')){
 	       			alert('超出数量！')
 	       		}else{
-					console.log($('#move_navs .dropdown').last().find('.selectBox_val').attr('name').match(/data\[(.*)\]\[(.*)\]\[(\d*)\]/));
-	       			var clone_cell = $('#move_navs .dropdown').last().clone(true);
+					var lastNum = parseInt($('#move_navs .dropdown').last().find('.selectBox_val').attr('name').match(/\[(\d*)\]/)[1])+1,
+	       				clone_cell = $('#move_navs .dropdown').last().clone(true);
 					$('#move_navs .add_icon').before(clone_cell);
 					clone_cell.find('.selectBox').text('空').end().find('.selectBox_val').val('');
-					var word = clone_cell.find('.selectBox_val').attr('name').replace(/data\[(.*)\]\[(.*)\]\[(\d*)\]/,'data[$1][$2]['+($('#move_navs .dropdown').length-1)+']');
+					var word = clone_cell.find('.selectBox_val').attr('name').replace(/data\[(.*)\]\[(.*)\]\[(\d*)\]/,'data[$1][$2]['+lastNum+']');
 					clone_cell.find('.selectBox_val').attr('name',word);
 	       		}
 			});
@@ -635,21 +635,19 @@ function phone_indexController($scope,$http ,$location) {
     	bottomnavs_info : function(){
     		var data = (this.jsonData == undefined ? null : this.jsonData.value),
 				_div1 = '',num,info;
-			if(data){
-				$.each(data,function(k,v){
-					info = (v.type == 'share' ? '<span class="shareicon ml5">\
-							<i class="iconfont icon-tengxunweibo '+($.inArray('txweibo', v.data) == -1 ? 'grey' : 'blue')+'" data-name="'+($.inArray('txweibo', v.data) == -1 ? 'txweibo' : '')+'"></i>\
-							<i class="iconfont icon-baidu '+($.inArray('baidu', v.data) == -1 ? 'grey' : 'blue')+'"  data-name="'+($.inArray('baidu', v.data) == -1 ? 'baidu' : '')+'"></i>\
-							<i class="iconfont icon-qqkongjian '+($.inArray('qqzone', v.data) == -1 ? 'grey' : 'blue')+'"  data-name="'+($.inArray('qqzone', v.data) == -1 ? 'qqzone' : '')+'"></i>\
-							<i class="iconfont icon-2 '+($.inArray('weibo', v.data) == -1 ? 'grey' : 'blue')+'"  data-name="'+($.inArray('weibo', v.data) == -1 ? 'weibo' : '')+'"></i></span>' : '<input type="text" value="'+v.data+'" class="message-num" />');
-					_div1 += '<li class="move_feild">\n\
-								<i class="fa iconfont icon-yidong"></i>\n\
-								<span><i class="fa icon-pc iconfont btn btn-show btn-desktop '+(v.pc_show?'blue':'grey')+'"></i><i class="fa iconfont icon-snimicshouji btn btn-show btn-mobile '+(v.mobile_show?'blue':'grey')+'"></i></span>\n\
-								<label class="message-name">'+v.name+'</label>'+info+'\n\
-							</li>';
-				});
-				$('.phone_service .phone_func').append(_div1);
-			}
+			$.each(this.jsonData,function(k,v){
+				info = (v.type == 'share' ? '<span class="shareicon ml5">\
+						<i class="iconfont icon-tengxunweibo '+($.inArray('txweibo', v.data) == -1 ? 'grey' : 'blue')+'" data-name="'+($.inArray('txweibo', v.data) == -1 ? 'txweibo' : '')+'"></i>\
+						<i class="iconfont icon-baidu '+($.inArray('baidu', v.data) == -1 ? 'grey' : 'blue')+'"  data-name="'+($.inArray('baidu', v.data) == -1 ? 'baidu' : '')+'"></i>\
+						<i class="iconfont icon-qqkongjian '+($.inArray('qqzone', v.data) == -1 ? 'grey' : 'blue')+'"  data-name="'+($.inArray('qqzone', v.data) == -1 ? 'qqzone' : '')+'"></i>\
+						<i class="iconfont icon-2 '+($.inArray('weibo', v.data) == -1 ? 'grey' : 'blue')+'"  data-name="'+($.inArray('weibo', v.data) == -1 ? 'weibo' : '')+'"></i></span>' : '<input type="text" value="'+v.data+'" class="message-num" />');
+				_div1 += '<li class="move_feild">\n\
+							<i class="fa iconfont icon-yidong"></i>\n\
+							<span><i class="fa icon-pc iconfont btn btn-show btn-desktop '+(v.pc_show?'blue':'grey')+'"></i><i class="fa iconfont icon-snimicshouji btn btn-show btn-mobile '+(v.mobile_show?'blue':'grey')+'"></i></span>\n\
+							<label class="message-name">'+v.name+'</label>'+info+'\n\
+						</li>';
+			});
+			$('.phone_service .phone_func').append(_div1);
 			this.InputStyle();
 			this.ShowPos();
 			this.DragBlock();
