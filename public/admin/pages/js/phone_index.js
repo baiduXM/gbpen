@@ -603,11 +603,11 @@ function phone_indexController($scope,$http ,$location) {
 	       		if($(this).parent().siblings('.dropdown').length >= $(this).data('limit')){
 	       			alert('超出数量！')
 	       		}else{
+					console.log($('#move_navs .dropdown').last().find('.selectBox_val').attr('name').match(/data\[(.*)\]\[(.*)\]\[(\d*)\]/));
 	       			var clone_cell = $('#move_navs .dropdown').last().clone(true);
 					$('#move_navs .add_icon').before(clone_cell);
 					clone_cell.find('.selectBox').text('空').end().find('.selectBox_val').val('');
 					var word = clone_cell.find('.selectBox_val').attr('name').replace(/data\[(.*)\]\[(.*)\]\[(\d*)\]/,'data[$1][$2]['+($('#move_navs .dropdown').length-1)+']');
-					console.log(word);
 					clone_cell.find('.selectBox_val').attr('name',word);
 	       		}
 			});
