@@ -140,10 +140,10 @@ function phone_indexController($scope,$http ,$location) {
 		            	<td>\n\
 	            			<i class="fa iconfont icon-phonehome btn '+(v.index_show == 1?'blue':'grey')+'"></i>\n\
 	            			<div class="style_choose"><select>\n\
-								<option '+(v.showtype == 1?'selected' : '')+' '+(v.showtypetotal >= 1?'' : 'class="none"')+' value="1">'+(v.showtypetotal >= 1?'样式一' : '')+'</option>\n\
-								<option '+(v.showtype == 2?'selected' : '')+' '+(v.showtypetotal >= 2?'' : 'class="none"')+' value="2">'+(v.showtypetotal >= 2?'样式二' : '')+'</option>\n\
-								<option '+(v.showtype == 3?'selected' : '')+' '+(v.showtypetotal >= 3?'' : 'class="none"')+' value="3">'+(v.showtypetotal >= 3?'样式三' : '')+'</option>\n\
-								<option '+(v.showtype == 4?'selected' : '')+' '+(v.showtypetotal >= 4?'' : 'class="none"')+' value="4">'+(v.showtypetotal >= 4?'样式四' : '')+'</option>\n\
+								<option '+(v.showtype == 1 ? 'selected' : '')+' '+(v.showtypetotal >= 1?'' : 'class="none"')+' value="1">'+(v.showtypetotal >= 1?'样式一' : '')+'</option>\n\
+								<option '+(v.showtype == 2 ? 'selected' : '')+' '+(v.showtypetotal >= 2?'' : 'class="none"')+' value="2">'+(v.showtypetotal >= 2?'样式二' : '')+'</option>\n\
+								<option '+(v.showtype == 3 ? 'selected' : '')+' '+(v.showtypetotal >= 3?'' : 'class="none"')+' value="3">'+(v.showtypetotal >= 3?'样式三' : '')+'</option>\n\
+								<option '+(v.showtype == 4 ? 'selected' : '')+' '+(v.showtypetotal >= 4?'' : 'class="none"')+' value="4">'+(v.showtypetotal >= 4?'样式四' : '')+'</option>\n\
 	    					</select></div>\n\
 		            	</td>\n\
 		            	<td><div class="tit_info">'+v.name+'</div>'+layout+'</td>\n\
