@@ -244,7 +244,7 @@ function columnController($scope, $http) {
                 _this.this_id = $(this).parent().siblings('.delv').attr('name');
                 $http.get('../classify-info?id='+_this.this_id+'').success(function(json) {
                 // $http.get('json/classify-info.json').success(function(json) {
-                    // var d = json.data;
+                    var d = json.data;
                     // proportion = json.data.width/json.data.height;
                     // 对应父级栏目
                     $('.f_column .dropdown li a').each(function() {
