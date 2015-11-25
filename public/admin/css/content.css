@@ -570,7 +570,7 @@ border-radius: 5px;}
 /*其他*/
 #phone_index-other{margin: 0 auto;width: 50%;}
 #phone_index-other ul{float: left;width: 100%;}
-#phone_index-other dl{margin: auto 5px;display: inline-block;vertical-align: top;}
+#phone_index-other dl{margin: auto 5px;display: inline-block;vertical-align: top;padding: 2px 0;}
 #phone_index-other ul li{width: 100%;display: block;text-align: left;}
 #phone_index-other input{height: 24px;}
 #phone_index-other .leftblock{width: 120px;text-align: right;}

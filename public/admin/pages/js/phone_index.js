@@ -217,8 +217,8 @@ function phone_indexController($scope,$http ,$location) {
     	ShowNum : function(){
     		// 显示数量
 		    $('#phone_index-index tr td .show_num').change(function(){
-		    	var total = $(this).val();
-		    	var id = $(this).parent().parent().data('aid');
+		    	var total = $(this).val(),
+		    		id = $(this).parent().parent().data('aid');
 		   		$http.post('../mhomepage-batchmodify',{id:id,total:total}).success(function(json){
 		   			checkJSON(json,function(json){phoneindexinit.Save_hint();});
 		   		});
@@ -227,8 +227,8 @@ function phone_indexController($scope,$http ,$location) {
     	ChangeStyle : function(){
     		// 更改样式
 		    $('.firsttab .style_choose select').change(function(){
-		    	var style = $(this).val();
-		    	var id = $(this).parents('tr').data('aid');
+		    	var style = $(this).val(),
+		    		id = $(this).parents('tr').data('aid');
 		   		$http.post('../mhomepage-batchmodify',{id:id,showtype:style}).success(function(json){
 		   			checkJSON(json,function(json){phoneindexinit.Save_hint();});
 		   		});
