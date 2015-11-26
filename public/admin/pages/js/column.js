@@ -672,7 +672,7 @@ function columnController($scope, $http) {
                             }
                         });
                         $('tr[data-aid="'+this_tr.data('aid')+'"]').after(UpNewNode);
-                    }else if( (this_tr.data('parent')==this_tr.prev().data('parent')) && !this_tr.next().data('parent')){
+                    }else if(this_tr.data('parent') && (this_tr.data('parent')==this_tr.prev().data('parent')) && !this_tr.next().data('parent')){
                         //点击的只是父级且上下级只是父级
                         this_tr.prev().before(this_tr);
                     }
