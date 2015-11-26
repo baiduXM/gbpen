@@ -2,28 +2,24 @@
 
 class ApiController extends BaseController{
     
-	 function __construct(){
-        $this->cus_id = Auth::id();
-        $this->customer = Auth::user()->name;
-    }
+	
 	//接口验证    authData
 	#参数    timemap	操作时间戳
 	#参数    taget    加密结果
 	#返回值   boole    TURE/FALSE
-    public function authData(){
-    	$token = 'adsafsaf';
-		
-    	$timemap = Input::get('timemap');
+   public function authData(){
+        $timemap = Input::get('timemap');
+        $data=md5(md5($timemap));
+    	$token = file_get_contents('http://dl.5067.org/?module=ApiModel&action=GetHandShake&num='.$data);
     	$taget = Input::get('taget');
-    	$string = $token.$timemap;
+    	$string = $token.$data;
     	if(md5($string)==$taget){
-    		return TRUE;
+    		return true;
     	}
     	else{
-    		return FALSE;
+    		return false;
     	}
     }
-
     //用户登录    login
 	#参数    id    用户id
 	#返回值   无    跳转至管理页(标识为通过代理平台登录)
@@ -67,12 +63,16 @@ class ApiController extends BaseController{
 		if($this->authData()){
 			$update['name'] = trim(Input::get('name'));
 			$update['email'] = trim(Input::get('email'));
+                        $update['weburl'] = trim(Input::get('weburl'));
+                        $update['ftp_port'] = trim(Input::get('ftp_port'));
+                        $update['ftp_dir'] = trim(Input::get('ftp_dir'));
 			$update['ftp_address'] = trim(Input::get('ftp_address'));
 			$update['ftp_user'] = trim(Input::get('ftp_user'));
 			$update['ftp_pwd'] = trim(Input::get('ftp_pwd'));
 			$update['ended_at'] = trim(Input::get('ended_at'));
 			$update['status'] = Input::get('status');
-			$cus_id = Customer::where('name',$update['name'])->pluck('id');		
+			$cus_id = Customer::where('name',$update['name'])->pluck('id');
+                        
 			if($cus_id)
 			{
 				//修改操作
@@ -88,59 +88,85 @@ class ApiController extends BaseController{
 			}
 			else
 			{
+                            
 				//print_r($_POST);exit;
 				//增加操作
 				$update['password'] = Hash::make($update['name']);
                 $insert_id = Customer::insertGetId($update);
+                
 				if($insert_id)
 				{
                     WebsiteInfo::insert(['cus_id'=>$insert_id]);
                     CustomerInfo::insert(['cus_id'=>$insert_id]);
+                    
                     //创建客户目录
                     mkdir(public_path('customers/'.$update['name']));
-                    mkdir(public_path('customers/'.$update['name']).'/datail');
+                    mkdir(public_path('customers/'.$update['name']).'/detail');
                     mkdir(public_path('customers/'.$update['name']).'/category');
                     mkdir(public_path('customers/'.$update['name']).'/images');
                     mkdir(public_path('customers/'.$update['name']).'/images/l');
+                    mkdir(public_path('customers/'.$update['name']).'/images/l/category');
+                    mkdir(public_path('customers/'.$update['name']).'/images/l/articles');
+                    mkdir(public_path('customers/'.$update['name']).'/images/l/common');
+                    mkdir(public_path('customers/'.$update['name']).'/images/l/page_index');
                     mkdir(public_path('customers/'.$update['name']).'/images/s');
+                    mkdir(public_path('customers/'.$update['name']).'/images/s/category');
+                    mkdir(public_path('customers/'.$update['name']).'/images/s/articles');
+                    mkdir(public_path('customers/'.$update['name']).'/images/s/common');
+                    mkdir(public_path('customers/'.$update['name']).'/images/s/page_index');
                     mkdir(public_path('customers/'.$update['name']).'/images/ueditor');
                     mkdir(public_path('customers/'.$update['name']).'/mobile');
-                    mkdir(public_path('customers/'.$update['name']).'/mobile/datail');
+                    mkdir(public_path('customers/'.$update['name']).'/mobile/detail');
                     mkdir(public_path('customers/'.$update['name']).'/mobile/category');
                     mkdir(public_path('customers/'.$update['name']).'/mobile/images');
                     mkdir(public_path('customers/'.$update['name']).'/mobile/images/l');
+                    mkdir(public_path('customers/'.$update['name']).'/mobile/images/l/category');
+                    mkdir(public_path('customers/'.$update['name']).'/mobile/images/l/articles');
+                    mkdir(public_path('customers/'.$update['name']).'/mobile/images/l/common');
+                    mkdir(public_path('customers/'.$update['name']).'/mobile/images/l/page_index');
                     mkdir(public_path('customers/'.$update['name']).'/mobile/images/s');
+                    mkdir(public_path('customers/'.$update['name']).'/mobile/images/s/category');
+                    mkdir(public_path('customers/'.$update['name']).'/mobile/images/s/articles');
+                    mkdir(public_path('customers/'.$update['name']).'/mobile/images/s/common');
+                    mkdir(public_path('customers/'.$update['name']).'/mobile/images/s/page_index');
                     mkdir(public_path('customers/'.$update['name']).'/mobile/images/ueditor');
+                    
                     $ftp_array = explode(':',$update['ftp_address']);
-                    $ftp_array[1] = isset($ftp_array[1])?$ftp_array[1]:'21';
+                    $ftp_array[1] = isset($ftp_array[1])?$ftp_array[1]:$update['ftp_port'];
                     $conn = ftp_connect($ftp_array[0],$ftp_array[1]);
                     if($conn){
                         ftp_login($conn,$update['ftp_user'],$update['ftp_pwd']);
-                        ftp_mkdir($conn,$this->customer);
-                        ftp_mkdir($conn,$this->customer.'/images');
-                        ftp_mkdir($conn,$this->customer.'/images/ueditor');
-                        ftp_mkdir($conn,$this->customer.'/images/l');
-                        ftp_mkdir($conn,$this->customer.'/images/l/category');
-                        ftp_mkdir($conn,$this->customer.'/images/l/articles');
-                        ftp_mkdir($conn,$this->customer.'/images/l/common');
-                        ftp_mkdir($conn,$this->customer.'/images/l/page_index');
-                        ftp_mkdir($conn,$this->customer.'/images/s');
-                        ftp_mkdir($conn,$this->customer.'/images/l/category');
-                        ftp_mkdir($conn,$this->customer.'/images/l/articles');
-                        ftp_mkdir($conn,$this->customer.'/images/l/common');
-                        ftp_mkdir($conn,$this->customer.'/images/l/page_index');
-                        ftp_mkdir($conn,$this->customer.'/mobile/images');
-                        ftp_mkdir($conn,$this->customer.'/mobile//images/ueditor');
-                        ftp_mkdir($conn,$this->customer.'/mobile//images/l');
-                        ftp_mkdir($conn,$this->customer.'/mobile//images/l/category');
-                        ftp_mkdir($conn,$this->customer.'/mobile//images/l/articles');
-                        ftp_mkdir($conn,$this->customer.'/mobile//images/l/common');
-                        ftp_mkdir($conn,$this->customer.'/mobile//images/l/page_index');
-                        ftp_mkdir($conn,$this->customer.'/mobile//images/s');
-                        ftp_mkdir($conn,$this->customer.'/mobile//images/l/category');
-                        ftp_mkdir($conn,$this->customer.'/mobile//images/l/articles');
-                        ftp_mkdir($conn,$this->customer.'/mobile//images/l/common');
-                        ftp_mkdir($conn,$this->customer.'/mobile//images/l/page_index');                        
+                        ftp_mkdir($conn,$update['name']);
+                        ftp_mkdir($conn,$update['name'].'/images');
+                        ftp_mkdir($conn,$update['name'].'/detail');
+                        ftp_mkdir($conn,$update['name'].'/category');
+                        ftp_mkdir($conn,$update['name'].'/images/ueditor');
+                        ftp_mkdir($conn,$update['name'].'/images/l');
+                        ftp_mkdir($conn,$update['name'].'/images/l/category');
+                        ftp_mkdir($conn,$update['name'].'/images/l/articles');
+                        ftp_mkdir($conn,$update['name'].'/images/l/common');
+                        ftp_mkdir($conn,$update['name'].'/images/l/page_index');
+                        ftp_mkdir($conn,$update['name'].'/images/s');
+                        ftp_mkdir($conn,$update['name'].'/images/s/category');
+                        ftp_mkdir($conn,$update['name'].'/images/s/articles');
+                        ftp_mkdir($conn,$update['name'].'/images/s/common');
+                        ftp_mkdir($conn,$update['name'].'/images/s/page_index');
+                        ftp_mkdir($conn,$update['name'].'/mobile');
+                        ftp_mkdir($conn,$update['name'].'/mobile/images');
+                        ftp_mkdir($conn,$update['name'].'/mobile/detail');
+                        ftp_mkdir($conn,$update['name'].'/mobile/category');
+                        ftp_mkdir($conn,$update['name'].'/mobile/images/ueditor');
+                        ftp_mkdir($conn,$update['name'].'/mobile/images/l');
+                        ftp_mkdir($conn,$update['name'].'/mobile/images/l/category');
+                        ftp_mkdir($conn,$update['name'].'/mobile/images/l/articles');
+                        ftp_mkdir($conn,$update['name'].'/mobile/images/l/common');
+                        ftp_mkdir($conn,$update['name'].'/mobile/images/l/page_index');
+                        ftp_mkdir($conn,$update['name'].'/mobile/images/s');
+                        ftp_mkdir($conn,$update['name'].'/mobile/images/s/category');
+                        ftp_mkdir($conn,$update['name'].'/mobile/images/s/articles');
+                        ftp_mkdir($conn,$update['name'].'/mobile/images/s/common');
+                        ftp_mkdir($conn,$update['name'].'/mobile/images/s/page_index'); 
+                       
                         ftp_close($conn);
                     }
 					$result = ['err'=>1000,'msg'=>'创建用户成功'];
@@ -152,7 +178,7 @@ class ApiController extends BaseController{
 			}
 		}
 		else{
-			$result = ['err'=>1003,'msg'=>'验证不通过'];
+			$result = ['err'=>1003,'msg'=>'验证信息不正确'];
 		}
 		return Response::json($result);
 	}

@@ -433,23 +433,26 @@ class WebsiteController extends BaseController{
             $truth_name=date('ymd').mt_rand(100,999).'.'.$type;
             if($type=="zip"){
                 if(file_exists(public_path("temp_templates/$truth_name"))){
-                    echo "上传失败，已有同名模板存在";
+                   $result = ['err'=>1000,'msg'=>'模板上传成功'];
                 }else{
                     $up_result=$file->move(public_path("temp_templates/"),$truth_name);
                     if($up_result){
-                        $tpl_name = trim(Input::get('tpl_name'));
+                        $tpl=  explode('.', $file->getClientOriginalName());
+                        $tpl_name = $tpl[0];
                         if(!empty($tpl_name)){
                             $this->_remove_Dir(public_path("templates/$tpl_name"));
                             $this->_remove_Dir(app_path("views/templates/$tpl_name"));
                         }
-                        echo $this->saveTemplate($truth_name,$tpl_name);
+                       
+                        $result = $this->saveTemplate($truth_name,$tpl_name);
                     }else{
-                        echo "上传失败";
+                        $result = ['err'=>1001,'msg'=>'模板上传失败'];
                     }
                 }
             }else{
-                echo "模板上传失败，请上传正确的文件类型";
+               $result = ['err'=>1002,'msg'=>'模板上传失败，请上传正确的文件类型']; 
             }
+            return Response::json($result);
         }
     }
     
@@ -458,12 +461,13 @@ class WebsiteController extends BaseController{
         if($tpl_name!=''){
             $tpl_exists=Template::where('name',$tpl_name)->first();
             if($tpl_exists){
-                $unpack_resuslt=$this->unpack($truth_name,$tpl_name,true);
-            }
-        }else{
+                $unpack_resuslt=$this->unpack($truth_name,$tpl_name,FALSE);
+            }else{
             $tpl_exists=false;
-            $unpack_resuslt=$this->unpack($truth_name,$tpl_name,false);
+            $unpack_resuslt=$this->unpack($truth_name,$tpl_name,TRUE);
+            }
         }
+        
         if($unpack_resuslt){
             $tpl_info=$unpack_resuslt['config'];
             if($tpl_exists){
@@ -499,11 +503,11 @@ class WebsiteController extends BaseController{
                     TemplateToColor::insert($tpl_color);
                 }
             }
-            $result = ['err' => 0, 'msg' => '上传模板成功'];
+            $result = ['err' => 1000, 'msg' => '上传模板成功'];
         }else{
-            $result = ['err' => 1001, 'msg' => '解压文件失败'];
+            $result = ['err' => 1003, 'msg' => '解压文件失败'];
         }
-        return Response::json($result);
+        return $result;
     } 
     
     //解包并分配模板文件
