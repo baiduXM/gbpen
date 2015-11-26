@@ -245,7 +245,7 @@ function columnController($scope, $http) {
                 $http.get('../classify-info?id='+_this.this_id+'').success(function(json) {
                 // $http.get('json/classify-info.json').success(function(json) {
                     var d = json.data;
-                    proportion = json.data.width/json.data.height;
+                    // proportion = json.data.width/json.data.height;
                     // 对应父级栏目
                     $('.f_column .dropdown li a').each(function() {
                         if($(this).data('id') == d.p_id){
@@ -312,8 +312,7 @@ function columnController($scope, $http) {
                 $('#bomb-box').addClass('in');
                 $('.box-up').text('编辑栏目');
                 // 图片上传
-                _this.Column_Upload(proportion);
-                console.log('column_edit:'+_this.this_id);
+                _this.Column_Upload('');
             });//点击结束
         },
         listType : function(){
