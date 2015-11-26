@@ -132,7 +132,7 @@ class ApiController extends BaseController{
                     mkdir(public_path('customers/'.$update['name']).'/mobile/images/ueditor');
                     
                     $ftp_array = explode(':',$update['ftp_address']);
-                    $ftp_array[1] = isset($ftp_array[1])?$ftp_array[1]:$update['ftp_port'];
+                    $ftp_array[1] = isset($ftp_array[1])?$ftp_array[1]:'21';
                     $conn = ftp_connect($ftp_array[0],$ftp_array[1]);
                     if($conn){
                         ftp_login($conn,$update['ftp_user'],$update['ftp_pwd']);
