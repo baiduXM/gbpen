@@ -10,7 +10,7 @@ class ApiController extends BaseController{
    public function authData(){
         $timemap = Input::get('timemap');
         $data=md5(md5($timemap));
-    	$token = file_get_contents('http://my.kehuxitong.com/?module=ApiModel&action=GetHandShake&num='.$data);
+    	$token = file_get_contents('http://dl.5067.org/?module=ApiModel&action=GetHandShake&num='.$data);
     	$taget = Input::get('taget');
     	$string = $token.$data;
     	if(md5($string)==$taget){
