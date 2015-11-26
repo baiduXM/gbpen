@@ -222,7 +222,7 @@ function articleController($scope, $http ,$location) {
             this._delete();
             this._batchdel();
             this._showPlatform();
-            // this._batchAdd();
+            this._batchAdd();
             // this._batchEdit();
         },
         _checkstar : function(){
@@ -422,24 +422,11 @@ function articleController($scope, $http ,$location) {
             $('.info-top .batchadd').click(function(){
                 var warningbox = new WarningBox();
                 warningbox._upImage({
-                    aspectRatio: '',
+                    IsBaseShow : true,
                     ajaxurl    : '../file-upload?target=articles',
                     IsMultiple : true,
                     oncallback : function(json){
-                        var addpic = function(idx, ele){
-                            var _newpic = '<div class="template-download fade fr in">\n\
-                                            <div>\n\
-                                                <span class="preview">\n\
-                                                <div class="preview-close"><img src="images/preview-close.png" /></div>\n\
-                                                    <img src="'+ele.url+'" style="width:80px;height:64px;padding:5px;" data-preimg="preimg">\n\
-                                                </span>\n\
-                                            </div>\n\
-                                        </div>';
-                            $('.up_pic').before(_newpic);
-                        }
-                        $.each(json.data,function(idx, ele) {
-                            addpic(idx, ele);
-                        });  
+                        console.log('success');
                     }
                 });
             });

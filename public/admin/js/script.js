@@ -446,15 +446,18 @@ function checkJSON(json, callback, fail_callback) {
 }
 // 弹框警告
 var WarningBox = function(del,warning_context){
-	this.context = $.extend(true,{warning_context : '∑(っ°Д ° )っ你确定删除吗？'},warning_context);
+	this.context = $.extend(true,{
+		warning_context : '∑(っ°Д ° )っ你确定删除吗？',
+		IsBaseShow : false
+	},warning_context);
     this.init = function(){
     	this.div = '<div class="tpl_mask" style="display: block;"></div>\n\
         <div class="warning_box box_info pos">\n\
-        <div class="boxs" style="overflow-y: auto;">\n\
+        <div class="boxs" style="overflow-y: hidden">\n\
             <div class="box-up tc">'+this.context.warning_context+'</div>\n\
-            <div class="button tc">\n\
+            <div class="button pr">\n\
                 <input type="button" class="cancel" value="取消" />\n\
-                <input type="button" class="save save_column" value="确定" />\n\
+                <input type="button" class="save save_column" '+(this.context.IsBaseShow ? 'style="cursor:not-allowed"' : '')+' value="确定" />\n\
             </div>\n\
         </div>\n\
         </div>';
@@ -495,41 +498,46 @@ var WarningBox = function(del,warning_context){
 WarningBox.prototype = {
 	_upImage : function(defaults){
 		var defaults = $.extend(true, {
-			aspectRatio : 16/9,
+			selector 	: null,
+			aspectRatio : '',
 			ajaxurl		: '',
 			IsMultiple	: false,
-			IsShow		: false,
+			IsBaseShow	: false,
 			oncallback  : function(){}
 		}, defaults);
+		this.context.IsBaseShow = defaults.IsBaseShow;
 		this.context.warning_context = '\
 		<div>\n\
 			<div class="img-container" style="width:'+document.body.clientWidth*0.4+'px;height:'+document.body.clientWidth*0.2+'px">\n\
-	        	<img src="" alt="请上传要修改的图片！">\n\
+	        	'+(defaults.IsBaseShow ? '' : '<img src="" alt="请点左下角上传要修改的图片！">')+'\n\
 	        </div>\n\
 	    </div>\
-	    <div class="btn-upload">\
+	    <div class="btn-upload" '+(!defaults.IsBaseShow || 'style="position:inherit"')+'>\
 			<input type="file" class="sr-only" id="inputImage" name="file" accept="image/*" '+(defaults.IsMultiple ? 'multiple' : '')+'>\
-	    	<div class="up_pic_btn">上传</div>\
+	    	'+(defaults.IsBaseShow ? '' : '<div class="up_pic_btn">添加</div>')+'\n\
 	    </div><label class="cutsize fr w100"></labei>';
 	    this.init();
-    	this.fileType = '';
-	    $image = $('.img-container > img');
-	    var options = {
-        	aspectRatio: defaults.aspectRatio,
-        	preview: '.img-preview',
-        	crop: function (e) {
-	            $('.cutsize').text(Math.round(e.width)+' * '+Math.round(e.height));
-        	}
-        };
-	    $image.cropper(options);
-	    this._UpFunction($image,defaults.ajaxurl,defaults.oncallback);
-	    this._save($image,defaults.ajaxurl,defaults.oncallback);
+	    if(!defaults.IsBaseShow){
+	    	this.fileType = '';
+		    $image = $('.img-container > img');
+		    var options = {
+	        	aspectRatio: defaults.aspectRatio,
+	        	preview: '.img-preview',
+	        	crop: function (e) {
+		            $('.cutsize').text(Math.round(e.width)+' * '+Math.round(e.height));
+	        	}
+	        };
+		    $image.cropper(options);
+	    	this._UpFunction($image,defaults.ajaxurl,defaults.IsBaseShow,defaults.oncallback);
+	    }else{
+	    	this._Schedule();	// 带进度条
+	    }
 	},
-	_UpFunction : function($image,ajaxurl,oncallback){
-		var _this = this;
-		var $inputImage = $('#inputImage');
-		var URL = window.URL || window.webkitURL;
-		var blobURL;
+	_UpFunction : function($image,ajaxurl,IsBaseShow,oncallback){
+		var _this = this,
+			$inputImage = $('#inputImage'),
+			URL = window.URL || window.webkitURL,
+			blobURL;
 		if (URL) {
 		    $inputImage.change(function() {
 		        var files = this.files;
@@ -550,11 +558,12 @@ WarningBox.prototype = {
 		                    URL.revokeObjectURL(blobURL); // Revoke when load complete
 		                }).cropper('reset').cropper('replace', blobURL);
 		                $inputImage.val('');
+	    				_this._save($image,ajaxurl,oncallback);
 		            } else {
 		                $body.tooltip('请上传图片！', 'warning');
 		            }
 		        }else{
-		        	if(confirm('这是多图上传！请确认好图片已经达到所需要求！')){
+	        		if(confirm('这是多图上传！请确认好图片已经达到所需要求！')){
 		        		_this._filter($('#inputImage')[0].files,ajaxurl,oncallback);
 		        	}else{
 		        		return false;
@@ -565,7 +574,7 @@ WarningBox.prototype = {
 		    $inputImage.parent().remove();
 		}
 	},
-	_filter: function(files,ajaxurl,isshow,oncallback) {// 多图上传
+	_filter: function(files,ajaxurl,oncallback) {// 多图上传
         var data = new FormData();
         //为FormData对象添加数据
         $.each(files, function(i, file) {
@@ -579,7 +588,6 @@ WarningBox.prototype = {
 				alert('文件"' + file.name + '"不是图片。');	
 			}
         });
-    	isshow ? null : $('.warning_box ').hide().prev().hide();
     	$.ajax({
             url : ajaxurl, 
 	        type: 'POST',
@@ -592,6 +600,23 @@ WarningBox.prototype = {
 	        },
 	        error: function (XMLHttpRequest, textStatus, errorThrown) {
 	        	alert(textStatus || errorThrown);
+	        }
+        });
+	},
+	_Schedule : function(){
+		var ids = [];
+        $('#inputImage').uploadify({
+            'swf'      : 'images/uploadify.swf',
+            'uploader' : '../file-upload?target=articles',
+            removeCompleted : false,
+            buttonText : "添加",
+            'onUploadSuccess' : function(file, data, response){
+                ids.push(data.id);
+            },
+            'onQueueComplete' : function(queueData) {
+	            console.log(queueData.uploadsSuccessful + ' files were successfully uploaded.');
+	            $('.save_column').css('cursor','pointer');
+	            $('#inputImage-queue').append('111')
 	        }
         });
 	},
