@@ -457,7 +457,7 @@ var WarningBox = function(del,warning_context){
             <div class="box-up tc">'+this.context.warning_context+'</div>\n\
             <div class="button pr">\n\
                 <input type="button" class="cancel" value="取消" />\n\
-                <input type="button" class="save save_column" '+(this.context.IsBaseShow ? 'style="cursor:not-allowed"' : '')+' value="确定" />\n\
+                <input type="button" class="save save_column" value="确定" />\n\
             </div>\n\
         </div>\n\
         </div>';
@@ -509,12 +509,12 @@ WarningBox.prototype = {
 		this.context.warning_context = '\
 		<div>\n\
 			<div class="img-container" style="width:'+document.body.clientWidth*0.4+'px;height:'+document.body.clientWidth*0.2+'px">\n\
-	        	'+(defaults.IsBaseShow ? '' : '<img src="" alt="请点左下角上传要修改的图片！">')+'\n\
+	        	<img src="" alt="请点左下角上传要修改的图片！">\n\
 	        </div>\n\
 	    </div>\
-	    <div class="btn-upload" '+(!defaults.IsBaseShow || 'style="position:inherit"')+'>\
+	    <div class="btn-upload">\
 			<input type="file" class="sr-only" id="inputImage" name="file" accept="image/*" '+(defaults.IsMultiple ? 'multiple' : '')+'>\
-	    	'+(defaults.IsBaseShow ? '' : '<div class="up_pic_btn">添加</div>')+'\n\
+	    	<div class="up_pic_btn">添加</div>\n\
 	    </div><label class="cutsize fr w100"></labei>';
 	    this.init();
 	    if(!defaults.IsBaseShow){
@@ -605,18 +605,42 @@ WarningBox.prototype = {
 	},
 	_Schedule : function(){
 		var ids = [];
+		// 改变弹框样式
+		$('.warning_box .button').addClass('batchbtn');
+		$('.batchbtn .save').val('批量编辑').css('cursor','not-allowed');
+		$('.img-container>img').remove();
+		$('.btn-upload .up_pic_btn').remove();
+		$('.btn-upload').css('position','inherit');
+        $('.batchbtn .cancel').click(function(){
+        	$('.warning_box ').hide().prev().hide();
+        })
+		// 添加多图生成文章
         $('#inputImage').uploadify({
             'swf'      : 'images/uploadify.swf',
             'uploader' : '../file-upload?target=articles',
             removeCompleted : false,
             buttonText : "添加",
+            'onUploadStart' : function(file) {
+                $('.batchbtn .cancel').unbind().val('生成完成').css('cursor','not-allowed');
+	            $('.tpl_mask').unbind();
+	        },
             'onUploadSuccess' : function(file, data, response){
                 ids.push(data.id);
             },
             'onQueueComplete' : function(queueData) {
-	            console.log(queueData.uploadsSuccessful + ' files were successfully uploaded.');
-	            $('.save_column').css('cursor','pointer');
-	            $('#inputImage-queue').append('111')
+	            $('.save_column,.batchbtn .cancel').css('cursor','pointer');
+	            $('#inputImage-queue').append('全部完成！');
+	            $('.batchbtn .cancel').unbind().click(function(){
+	            	if(confirm('是否确定，并且批量生成文章？')){
+	            		$('.warning_box ').hide().prev().hide();
+	            	}else{
+	            		return false;
+	            	}
+	            });
+	            $('.batchbtn .save').click(function(event) {
+	            	window.location.hash = '#/batcharticle?ids='+ids+'';
+	            });
+	            $('.inputImage-queue .uploadify-queue-item').append();
 	        }
         });
 	},

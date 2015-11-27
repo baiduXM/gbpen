@@ -69,7 +69,7 @@ class CustomerController extends BaseController{
 	 */
 	public function customerSetting(){
 		$cus_id = Auth::id();
-		$data['company'] = Input::get('company_name');
+		$data['company'] = strtolower(Input::get('company_name'));
 		$pc_domain = Input::get('domain_pc');
 		$data['pc_domain'] = strstr($pc_domain,'http') ? $pc_domain : 'http://'.$pc_domain;
 		$mobile_domain = Input::get('domain_m');
