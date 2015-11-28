@@ -488,6 +488,7 @@ class PrintController extends BaseController{
         $search="/QuickBar=(.*)/i";
         $result=preg_match($search,$config_str,$config_arr);
         if($result!=0){
+            dd($config_arr[1]);
             if ($config_arr[1]!='custom') {
                 $quickbar_arr=explode('|',$config_arr[1]);
                 $tmpStyleConfigQuickbar = explode(',',$quickbar_arr[0]);  
