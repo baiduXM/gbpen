@@ -461,11 +461,14 @@ class WebsiteController extends BaseController{
         if($tpl_name!=''){
             $tpl_exists=Template::where('name',$tpl_name)->first();
             if($tpl_exists){
-                $unpack_resuslt=$this->unpack($truth_name,$tpl_name,FALSE);
+                $unpack_resuslt=$this->unpack($truth_name,$tpl_name,true);
             }else{
-            $tpl_exists=false;
-            $unpack_resuslt=$this->unpack($truth_name,$tpl_name,TRUE);
+                $tpl_exists=false;
+                $unpack_resuslt=$this->unpack($truth_name,$tpl_name,true);
             }
+        }else{
+            $tpl_exists=false;
+            $unpack_resuslt=$this->unpack($truth_name,$tpl_name,false);
         }
         
         if($unpack_resuslt){
