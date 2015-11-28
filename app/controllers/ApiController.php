@@ -169,6 +169,8 @@ class ApiController extends BaseController{
                        
                         ftp_close($conn);
                     }
+                        $common= new CommonController();
+                        @$common->postsend(trim($update['weburl'],'/')."/urlbind.php",array('cus_name'=>$update['name']));
 					$result = ['err'=>1000,'msg'=>'创建用户成功'];
 				}
 				else
