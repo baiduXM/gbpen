@@ -60,7 +60,7 @@ function tanchuang(ColumnInit){
         $('#models').hide();
         $('.col_icon_box,.col_icon .arrow').fadeOut();
         $('.col_icon_box').siblings('i').removeClass('in');
-        $('#models .mod_border').each(function(){
+        $('.box-down .mod_border').each(function(){
             $(this).hasClass('cu')?$(this).removeClass('cu'):'';
         });
     }
