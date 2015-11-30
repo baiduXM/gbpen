@@ -488,7 +488,7 @@ class PrintController extends BaseController{
         $search="/QuickBar=(.*)/i";
         $result=preg_match($search,$config_str,$config_arr);
         if($result!=0){
-            if ($config_arr[1] != 'custom') {
+            if (trim($config_arr[1])!="custom") {
                 $quickbar_arr=explode('|',$config_arr[1]);
                 $tmpStyleConfigQuickbar = explode(',',$quickbar_arr[0]);  
                 //config
@@ -502,7 +502,7 @@ class PrintController extends BaseController{
                        $config['style'][$keys[$key]]=$arr[0];
                    }
                    if(!key_exists('iconColor',$config['style'])){
-                       $config['style']['iconColor']=$config['style']['textColor'];
+                       $config['style']['iconColor']=$config['style']['textColor']?$config['style']['textColor']:'';
                    }
                }
                 
