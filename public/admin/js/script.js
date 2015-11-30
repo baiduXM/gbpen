@@ -510,6 +510,9 @@ WarningBox.prototype = {
 		<div>\n\
 			<div class="img-container" style="width:'+document.body.clientWidth*0.4+'px;height:'+document.body.clientWidth*0.2+'px">\n\
 	        	<img src="" alt="请点左下角上传要修改的图片！">\n\
+	        	<ul class="batch_title">\n\
+					<li><input type="text" value="" data-id="" /></li>\n\
+	        	</ul>\n\
 	        </div>\n\
 	    </div>\
 	    <div class="btn-upload">\
@@ -604,7 +607,7 @@ WarningBox.prototype = {
         });
 	},
 	_Schedule : function(){
-		var ids = [];
+		var callbackdata = [];
 		// 改变弹框样式
 		$('.warning_box .button').addClass('batchbtn');
 		$('.batchbtn .save').val('批量编辑').css('cursor','not-allowed');
@@ -618,16 +621,17 @@ WarningBox.prototype = {
         $('#inputImage').uploadify({
             'swf'      : 'images/uploadify.swf',
             'uploader' : '../file-upload?target=articles',
-            removeCompleted : false,
-            buttonText : "添加",
+            'removeCompleted' : false,
+            'buttonText' : "添加",
             'onUploadStart' : function(file) {
                 $('.batchbtn .cancel').unbind().val('生成完成').css('cursor','not-allowed');
 	            $('.tpl_mask').unbind();
 	        },
             'onUploadSuccess' : function(file, data, response){
-                ids.push(data.id);
+            	callbackdata.push(eval("("+data+")"));
             },
             'onQueueComplete' : function(queueData) {
+            	var html = '';
 	            $('.save_column,.batchbtn .cancel').css('cursor','pointer');
 	            $('#inputImage-queue').append('全部完成！');
 	            $('.batchbtn .cancel').unbind().click(function(){
@@ -640,7 +644,11 @@ WarningBox.prototype = {
 	            $('.batchbtn .save').click(function(event) {
 	            	window.location.hash = '#/batcharticle?ids='+ids+'';
 	            });
-	            $('.inputImage-queue .uploadify-queue-item').append();
+	            console.log(callbackdata);
+	            $.each(callbackdata.data,function(idx, ele) {
+	            	html += ''
+	            });
+	            $('.inputImage-queue .uploadify-queue-item').append(html);
 	        }
         });
 	},
