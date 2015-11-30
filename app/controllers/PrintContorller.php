@@ -614,7 +614,7 @@ class PrintController extends BaseController{
             $headscript=$customer_info->pc_header_script;
             $footprint=$customer_info->footer.'<p>技术支持：<a href="http://www.12t.cn/">厦门易尔通网络科技有限公司</a> 人才支持：<a href="http://www.xgzrc.com/">厦门人才网</a></p>';
             $footscript=$customer_info->pc_footer_script;
-            $footscript .= '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/quickbar-1.js"></script>'; 
+            $footscript .= '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/quickbar1.js"></script>'; 
             $site_another_url=$this->showtype=='preview' ?'':$customer_info->mobile_domain;
         }else{
             $logo = $this->showtype=='preview' ? asset('customers/'.$this->customer.'/images/l/common/'.$customer_info->logo_small) : $this->domain.'/images/l/common/'.$customer_info->logo_small; 
