@@ -486,7 +486,8 @@ class PrintController extends BaseController{
     public function quickBarJson(){
         $config_str=file_get_contents(public_path('/templates/'.$this->themename).'/config.ini');
         $search="/QuickBar=(.*)/i";
-        dd($config_str);
+        $searchtype="/Type=(.*)/i";
+        dd($searchtype);
         $result=preg_match($search,$config_str,$config_arr);
         if($result!=0){
             if (trim($config_arr[1])!="custom") {
