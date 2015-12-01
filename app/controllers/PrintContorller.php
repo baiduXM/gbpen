@@ -493,12 +493,7 @@ class PrintController extends BaseController{
                 $tmpStyleConfigQuickbar = explode(',',$quickbar_arr[0]);  
                 //config
                 $config['enable']=true;
-                 if($this->type=='pc'){ 
-                      $config['type']='p1';
-                }
-                 else{
-                      $config['type']='m1';
-                }
+                $config['type']='p1';
                 $config['style']=array();
                if(count($tmpStyleConfigQuickbar)){
                    $keys=array('barColor','navtopColor','textColor','iconColor');
