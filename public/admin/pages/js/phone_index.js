@@ -174,9 +174,9 @@ function phone_indexController($scope,$http ,$location) {
     	IsShow : function(){
 			// 是否展示
     		$('#phone_index-index .icon-phonehome').click(function(){
-		    	var btn = $(this);
-		    	var vid = $(this).parents('tr').attr('data-aid');
-		    	var isshow = ($(this).hasClass('blue') ? 0 : 1);
+		    	var btn = $(this),
+		    		vid = $(this).parents('tr').attr('data-aid'),
+		    		isshow = ($(this).hasClass('blue') ? 0 : 1);
 		    	if(!btn.hasClass('not-allowed')){
 		    		$http.post('../mhomepage-batchmodify',{id:vid,show:isshow}).success(function(json){
 		                checkJSON(json,function(json){
@@ -348,16 +348,16 @@ function phone_indexController($scope,$http ,$location) {
 					$('#phone_index_col'+(lastColumnNum+1)+'').append(addButton);
 					_this.slidepics_upload(lastColumnNum,ColumnNum,this.aspectRatio);
 				}else{
-					var data = ele.value;
-					var _div = _this.ModelSlidepicsInfo({
+					var data = ele.value,
+						_div = _this.ModelSlidepicsInfo({
 							title	: data.title,
 							image	: data.image,
 							subimage: data.image,
 							id		: data.id,
 							link	: data.link,
 							Tag 	: 'div'
-						});
-					var addButton = '<div class="phone_index-add">\
+						}),
+						addButton = '<div class="phone_index-add">\
 										<div class="up_pic up_phone"></div>\
 									</div>';
 					$('#phone_index_image').append('<div class="pictitle">单图</div>');
@@ -486,10 +486,10 @@ function phone_indexController($scope,$http ,$location) {
 				var _this = $(this).closest('.phone_index-field');
 				$(this).parents(".phone_index-field").find(".materlist-secondbox,.detailbox").slideUp();
 				$(this).parents(".phone_index-field").find(".zz").hide();
-				var PC_name = $(this).parents('.materlist-secondbox').find('input[name=PC_name]').val();
-				var PC_link = $(this).parents('.materlist-secondbox').find('input[name=PC_link]').val();
-				var phone_info_pic = $(this).parents('.materlist-secondbox').siblings('input[name=phone_info_pic]').val();
-				var id = $(this).parents('.materlist-secondbox').siblings('.materlist-first').children('.concrol').find('.concrol-del').attr('id');
+				var PC_name = $(this).parents('.materlist-secondbox').find('input[name=PC_name]').val(),
+					PC_link = $(this).parents('.materlist-secondbox').find('input[name=PC_link]').val(),
+					phone_info_pic = $(this).parents('.materlist-secondbox').siblings('input[name=phone_info_pic]').val(),
+					id = $(this).parents('.materlist-secondbox').siblings('.materlist-first').children('.concrol').find('.concrol-del').attr('id');
 				if($(this).parents('div').hasClass('materlist-secondbox')){
 					//幻灯片保存
 					var data = $("#phone_index_images").serializeJson();
