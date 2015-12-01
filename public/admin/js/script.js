@@ -510,15 +510,12 @@ WarningBox.prototype = {
 		<div>\n\
 			<div class="img-container" style="width:'+document.body.clientWidth*0.4+'px;height:'+document.body.clientWidth*0.2+'px">\n\
 	        	<img src="" alt="请点左下角上传要修改的图片！">\n\
-	        	<ul class="batch_title">\n\
-					<li><input type="text" value="" data-id="" /></li>\n\
-	        	</ul>\n\
 	        </div>\n\
 	    </div>\
 	    <div class="btn-upload">\
 			<input type="file" class="sr-only" id="inputImage" name="file" accept="image/*" '+(defaults.IsMultiple ? 'multiple' : '')+'>\
 	    	<div class="up_pic_btn">添加</div>\n\
-	    </div><label class="cutsize fr w100"></labei>';
+	    </div><label class="cutsize fr w100"></label>';
 	    this.init();
 	    if(!defaults.IsBaseShow){
 	    	this.fileType = '';
@@ -533,7 +530,7 @@ WarningBox.prototype = {
 		    $image.cropper(options);
 	    	this._UpFunction($image,defaults.ajaxurl,defaults.IsBaseShow,defaults.oncallback);
 	    }else{
-	    	this._Schedule();	// 带进度条
+	    	this._Schedule(defaults.oncallback);	// 带进度条
 	    }
 	},
 	_UpFunction : function($image,ajaxurl,IsBaseShow,oncallback){
@@ -606,7 +603,7 @@ WarningBox.prototype = {
 	        }
         });
 	},
-	_Schedule : function(){
+	_Schedule : function(oncallback){
 		var callbackdata = [];
 		// 改变弹框样式
 		$('.warning_box .button').addClass('batchbtn');
@@ -624,31 +621,18 @@ WarningBox.prototype = {
             'removeCompleted' : false,
             'buttonText' : "添加",
             'onUploadStart' : function(file) {
+                $('.uploadify-queue .finish').remove();
                 $('.batchbtn .cancel').unbind().val('生成完成').css('cursor','not-allowed');
 	            $('.tpl_mask').unbind();
 	        },
             'onUploadSuccess' : function(file, data, response){
-            	callbackdata.push(eval("("+data+")"));
+            	var data = eval("("+data+")");
+            	data.data[0].filename = file.name
+            	$('.uploadify-queue-item').attr('data-id',data.data[0].name);
+            	callbackdata.push(data);
             },
             'onQueueComplete' : function(queueData) {
-            	var html = '';
-	            $('.save_column,.batchbtn .cancel').css('cursor','pointer');
-	            $('#inputImage-queue').append('全部完成！');
-	            $('.batchbtn .cancel').unbind().click(function(){
-	            	if(confirm('是否确定，并且批量生成文章？')){
-	            		$('.warning_box ').hide().prev().hide();
-	            	}else{
-	            		return false;
-	            	}
-	            });
-	            $('.batchbtn .save').click(function(event) {
-	            	window.location.hash = '#/batcharticle?ids='+ids+'';
-	            });
-	            console.log(callbackdata);
-	            $.each(callbackdata.data,function(idx, ele) {
-	            	html += ''
-	            });
-	            $('.inputImage-queue .uploadify-queue-item').append(html);
+	            oncallback(callbackdata);
 	        }
         });
 	},

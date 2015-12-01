@@ -418,17 +418,66 @@ function articleController($scope, $http ,$location) {
             });
         },
         _batchAdd : function(){
+            var _this = this;
             // 批量添加文章
-            $('.info-top .batchadd').click(function(){
+            $('.info-top .batchadd').unbind('click').click(function(){
                 var warningbox = new WarningBox();
                 warningbox._upImage({
                     IsBaseShow : true,
                     ajaxurl    : '../file-upload?target=articles',
                     IsMultiple : true,
                     oncallback : function(json){
-                        console.log('success');
+                        var html = '',ids = [];
+                        $('.save_column,.batchbtn .cancel').css('cursor','pointer');
+                        $('#inputImage-queue').append('<span class="finish">全部完成！</span>');
+                        $('.batchbtn .cancel').unbind().click(function(){
+                            if(confirm('是否确定，并且批量生成文章？')){
+                                $('.warning_box ').hide().prev().hide();
+                            }else{
+                                return false;
+                            }
+                        });
+                        $.each(json,function(idx, ele) {
+                            ids[idx] = ele.data[0].id;
+                            html += '<li data-id="'+ele.data[0].id+'">\
+                                        <input type="hidden" name="id['+idx+']" value="'+ele.data[0].id+'" />\
+                                        <input type="text" name="title['+idx+']" value="'+ele.data[0].filename.split('.')[0]+'" />\
+                                    </li>'
+                        });
+                        $('.btn-upload').append('<form class="batch_title_edit"><ul class="batch_title">'+html+'</ul></form>');
+                        $('.uploadify-queue').css({
+                            left: '18%'
+                        });
+                        // 生成按钮操作
+                        $('.batchbtn .save,.batchbtn .cancel').click(function(event) {
+                            var datapost = function(){
+                                var data = $('.batch_title_edit').serializeJson();
+                                $http.post('../article-batch-modify',data).success(function(json){
+                                    checkJSON(json, function(json){
+                                        window.location.hash = '#/batcharticle?ids='+ids+'';
+                                    });
+                                });
+                            }
+                            if($(this).hasClass('.cancel')){
+                                if(confirm('是否确定，并且批量生成文章？')){
+                                    datapost();
+                                    $('.warning_box ').hide().prev().hide();
+                                }else{
+                                    return false;
+                                }
+                            }else{
+                                datapost();
+                            }
+                        });
+                        _this.batchDelPic();
                     }
                 });
+            });
+        },
+        batchDelPic : function(){
+            $('.uploadify-queue .cancel a').click(function(){
+                var id = $(this).closest('.uploadify-queue-item').data('id');
+                $('.batch_title li[data-id='+id+']').remove(); 
             });
         },
         batchEdit : function(){
