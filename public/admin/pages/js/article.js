@@ -436,7 +436,7 @@ function articleController($scope, $http ,$location) {
                             }else{
                                 return false;
                             }
-                        });
+                        });console.log(json);
                         $.each(json,function(idx, ele) {
                             ids[idx] = ele.data[0].id;
                             html += '<li data-id="'+ele.data[0].id+'">\
@@ -444,7 +444,11 @@ function articleController($scope, $http ,$location) {
                                         <input type="text" name="title['+idx+']" value="'+ele.data[0].filename.split('.')[0]+'" />\
                                     </li>'
                         });
-                        $('.btn-upload').append('<form class="batch_title_edit"><ul class="batch_title">'+html+'</ul></form>');
+                        if($('.batch_title_edit').length){
+                            $('.batch_title').html(html);
+                        }else{
+                            $('.btn-upload').append('<form class="batch_title_edit"><ul class="batch_title">'+html+'</ul></form>');
+                        }
                         $('.uploadify-queue').css({
                             left: '18%'
                         });
@@ -478,6 +482,9 @@ function articleController($scope, $http ,$location) {
             $('.uploadify-queue .cancel a').click(function(){
                 var id = $(this).closest('.uploadify-queue-item').data('id');
                 $('.batch_title li[data-id='+id+']').remove(); 
+                $http.post('../article-delete',{id:id}).success(function(json){
+                    checkJSON(json, function(json){});
+                });
             });
         },
         batchEdit : function(){
