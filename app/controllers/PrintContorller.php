@@ -487,15 +487,19 @@ class PrintController extends BaseController{
         $config_str=file_get_contents(public_path('/templates/'.$this->themename).'/config.ini');
         $search="/QuickBar=(.*)/i";
         $searchtype="/Type=(.*)/i";
-        $result=preg_match($searchtype,$config_str,$config_array);
-        dd($config_array[1]);
+        $result=preg_match($search,$config_str,$config_arr);
+        $typeresult=preg_match($searchtype,$config_str,$config_array);
         if($result!=0){
             if (trim($config_arr[1])!="custom") {
                 $quickbar_arr=explode('|',$config_arr[1]);
                 $tmpStyleConfigQuickbar = explode(',',$quickbar_arr[0]);  
                 //config
                 $config['enable']=true;
-                $config['type']='p1';
+                if (strpos(strtoupper($config_array[1]), 'PC')) {
+                  $config['type']='p1';
+                }else  {    
+                  $config['type']='m1';
+                }
                 $config['style']=array();
                if(count($tmpStyleConfigQuickbar)){
                    $keys=array('barColor','navtopColor','textColor','iconColor');
