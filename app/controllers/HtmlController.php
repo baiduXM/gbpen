@@ -221,6 +221,7 @@ class HtmlController extends BaseController{
             ob_start();
         }
         $indexhtml = $this->homgepagehtml('pc');
+        $quickbar_json=$template->quickBarJson();
         $customer_data_get = CustomerPushfile::where('cus_id',$this->cus_id)->pluck('files');
         if($customer_data_get){
             $new_data = 0;
@@ -323,7 +324,7 @@ class HtmlController extends BaseController{
                 }
                 
                 //ftp_chdir($conn,"mobile");
-                ftp_put($conn,"/".$this->customer."/mobile/quickbar.json",public_path('customers/'.$this->customer.'/quickbar.json'),FTP_ASCII);
+                ftp_put($conn,"/".$this->customer."/mobile/quickbar.json",public_path('customers/'.$this->customer.'/mobile/quickbar.json'),FTP_ASCII);
                 ftp_close($conn);
             }
             
