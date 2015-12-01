@@ -487,8 +487,8 @@ class PrintController extends BaseController{
         $config_str=file_get_contents(public_path('/templates/'.$this->themename).'/config.ini');
         $search="/QuickBar=(.*)/i";
         $searchtype="/Type=(.*)/i";
-        dd($searchtype);
-        $result=preg_match($search,$config_str,$config_arr);
+        $result=preg_match($searchtype,$config_str,$config_array);
+        dd($config_array[1]);
         if($result!=0){
             if (trim($config_arr[1])!="custom") {
                 $quickbar_arr=explode('|',$config_arr[1]);
