@@ -403,7 +403,7 @@ class PrintController extends BaseController{
 					$slimming[$k]['config']['star_only'] = array_key_exists('star_only', $slimming[$k]['config']) && $slimming[$k]['config']['star_only'] ? 1 : 0;
 				 	break;
                 case 'quickbar':
-                    if ($this->type == 'pc') dd('PC模板的json文件中没有type为【quickbar】的变量！\r\n如果你现在制作的是手机模板，请修改config.ini文件对应参数。详情参见：http://pme.eexx.me/doku.php?id=ued:template:config#config_%E6%A8%A1%E6%9D%BF%E9%85%8D%E7%BD%AE%E9%83%A8%E5%88%86');
+                    //if ($this->type == 'pc') dd('PC模板的json文件中没有type为【quickbar】的变量！\r\n如果你现在制作的是手机模板，请修改config.ini文件对应参数。详情参见：http://pme.eexx.me/doku.php?id=ued:template:config#config_%E6%A8%A1%E6%9D%BF%E9%85%8D%E7%BD%AE%E9%83%A8%E5%88%86');
 					if (!is_string($slimming[$k]) || !count($slimming[$k])) dd('json文件中type为【navs】格式不正确！\r\n详情参见：http://pme/wiki/doku.php?id=ued:template:mindex#%E5%BA%95%E9%83%A8%E5%AF%BC%E8%88%AA%E5%AE%9A%E4%B9%89%E6%96%B9%E6%B3%95');
 					foreach ($slimming[$k] as $i => $v) {
 						if (!array_key_exists('name',$v) ||
@@ -493,13 +493,12 @@ class PrintController extends BaseController{
             $config_arr=array();
             $config_arr[1] = '#AAA,#BBB,#FFF|tel';
         }
-        $typeresult=preg_match($searchtype,$config_str,$config_array);
         if($result!=0){
             if (trim($config_arr[1])!="custom") {
                 $quickbar_arr=explode('|',$config_arr[1]);
                 $tmpStyleConfigQuickbar = explode(',',$quickbar_arr[0]);  
                 $config['enable']=true;
-                if (strstr(strtoupper($config_array[1]), 'PC')) {
+                if ($this->type=='pc') {
                   $config['type']='p1';
                 }else  {    
                   $config['type']='m1';
@@ -592,7 +591,7 @@ class PrintController extends BaseController{
                 if($this->showtype=='preview'){
                     echo "quickbarCallback(".json_encode($quickbarCallback).")";
                 }else{
-                    file_put_contents(public_path("customers/".$this->customer.'/quickbar.json'),"quickbarCallback(".json_encode($quickbarCallback).")");
+                    file_put_contents(public_path("customers/".$this->customer.($this->type!='pc'?'/mobile':'').'/quickbar.json'),"quickbarCallback(".json_encode($quickbarCallback).")");
                 }
             }
         }
@@ -624,7 +623,7 @@ class PrintController extends BaseController{
             $headscript=$customer_info->pc_header_script;
             $footprint=$customer_info->footer.'<p>技术支持：<a href="http://www.12t.cn/">厦门易尔通网络科技有限公司</a> 人才支持：<a href="http://www.xgzrc.com/">厦门人才网</a></p>';
             $footscript=$customer_info->pc_footer_script;
-            $footscript .= '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/quickbar-p1.js"></script>'; 
+            $footscript .= '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/quickbar.js"></script>'; 
             $site_another_url=$this->showtype=='preview' ?'':$customer_info->mobile_domain;
         }else{
             $logo = $this->showtype=='preview' ? asset('customers/'.$this->customer.'/images/l/common/'.$customer_info->logo_small) : $this->domain.'/images/l/common/'.$customer_info->logo_small; 
@@ -632,7 +631,7 @@ class PrintController extends BaseController{
             $headscript=$customer_info->mobile_header_script;
             $footprint=$customer_info->mobile_footer;
             $footscript=$customer_info->mobile_footer_script;
-            $footscript .= '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/quickbar-m1.js'.$this->cus_id.'"></script>';  
+            $footscript .= '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/quickbar.js"></script>';  
             $site_another_url=$this->showtype=='preview' ?'':$customer_info->pc_domain;
             $config_arr=parse_ini_file(public_path('/templates/'.$this->themename).'/config.ini',true);
             if(!is_array($config_arr)) dd('【config.ini】文件不存在！文件格式说明详见：http://pme/wiki/doku.php?id=ued:template:config');
