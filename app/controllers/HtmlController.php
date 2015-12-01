@@ -77,6 +77,7 @@ class HtmlController extends BaseController{
         }
         file_put_contents($path, ob_get_contents());
         ob_end_clean();
+        $quickbar_json=$template->quickBarJson();
         return $path;
     }
     
@@ -221,7 +222,6 @@ class HtmlController extends BaseController{
             ob_start();
         }
         $indexhtml = $this->homgepagehtml('pc');
-        $quickbar_json=$template->quickBarJson();
         $customer_data_get = CustomerPushfile::where('cus_id',$this->cus_id)->pluck('files');
         if($customer_data_get){
             $new_data = 0;
@@ -244,8 +244,6 @@ class HtmlController extends BaseController{
         $marticlehtml = $this->articlehtml($mobile_article_ids,'mobile');
         $this->percent = 20/$count;
         $path = public_path('customers/'.$this->customer.'/'.$this->customer.'.zip');
-        $template = new PrintController('online','mobile');
-        $quickbar_json=$template->quickBarJson();
         $zip = new ZipArchive;
         if ($zip->open($path, ZipArchive::CREATE) === TRUE) {
             $zip->addFile($indexhtml,'index.html');
