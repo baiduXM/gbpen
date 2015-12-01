@@ -261,6 +261,7 @@ function phone_indexController($scope,$http ,$location) {
     // 幻灯片
     $scope.phoneIndexSlidepics = function(ele){
     	this.jsonData = ele;
+    	this.aspectRatio = this.jsonData.config.width/this.jsonData.config.height || '',
     	this.init();
     };
     $scope.phoneIndexSlidepics.prototype = {
@@ -345,7 +346,7 @@ function phone_indexController($scope,$http ,$location) {
 										<div class="up_pic up_phone"></div>\
 									</div>';
 					$('#phone_index_col'+(lastColumnNum+1)+'').append(addButton);
-					_this.slidepics_upload(lastColumnNum,ColumnNum);
+					_this.slidepics_upload(lastColumnNum,ColumnNum,this.aspectRatio);
 				}else{
 					var data = ele.value;
 					var _div = _this.ModelSlidepicsInfo({
@@ -409,16 +410,17 @@ function phone_indexController($scope,$http ,$location) {
 						}() + '</ul> ';	
 				}
 				$('#phone_index_images').html(htmlColumn);
-				this.slidepics_upload(lastColumnNum,newColumnNum);
+				this.slidepics_upload(lastColumnNum,newColumnNum,this.aspectRatio);
 			}
     	},
-    	slidepics_upload : function(lastColumnNum,ColumnNum){
+    	slidepics_upload : function(lastColumnNum,ColumnNum,aspectRatio){
     		var _this = this,count,_newpic;
 			// 添加图片弹框
     		$('.up_pic').on('click',function(event) {
 		        var warningbox = new WarningBox(),
 		        	event_this = this;
 		        warningbox._upImage({
+		        	aspectRatio: aspectRatio,
 		            ajaxurl    : '../file-upload?target=page_index',
 		            oncallback : function(json){
 		            	if($(event_this).closest('#phone_index_image').length){
