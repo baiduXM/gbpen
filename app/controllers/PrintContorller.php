@@ -624,7 +624,7 @@ class PrintController extends BaseController{
             $headscript=$customer_info->pc_header_script;
             $footprint=$customer_info->footer.'<p>技术支持：<a href="http://www.12t.cn/">厦门易尔通网络科技有限公司</a> 人才支持：<a href="http://www.xgzrc.com/">厦门人才网</a></p>';
             $footscript=$customer_info->pc_footer_script;
-            $footscript .= '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/quickbar.js"></script>'; 
+            $footscript .= '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/quickbar-p1.js"></script>'; 
             $site_another_url=$this->showtype=='preview' ?'':$customer_info->mobile_domain;
         }else{
             $logo = $this->showtype=='preview' ? asset('customers/'.$this->customer.'/images/l/common/'.$customer_info->logo_small) : $this->domain.'/images/l/common/'.$customer_info->logo_small; 
@@ -632,7 +632,7 @@ class PrintController extends BaseController{
             $headscript=$customer_info->mobile_header_script;
             $footprint=$customer_info->mobile_footer;
             $footscript=$customer_info->mobile_footer_script;
-            $footscript .= '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/quickbar.js'.$this->cus_id.'"></script>';  
+            $footscript .= '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/quickbar-m1.js'.$this->cus_id.'"></script>';  
             $site_another_url=$this->showtype=='preview' ?'':$customer_info->pc_domain;
             $config_arr=parse_ini_file(public_path('/templates/'.$this->themename).'/config.ini',true);
             if(!is_array($config_arr)) dd('【config.ini】文件不存在！文件格式说明详见：http://pme/wiki/doku.php?id=ued:template:config');
