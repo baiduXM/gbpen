@@ -488,14 +488,18 @@ class PrintController extends BaseController{
         $search="/QuickBar=(.*)/i";
         $searchtype="/Type=(.*)/i";
         $result=preg_match($search,$config_str,$config_arr);
+        if (!$result) {
+            $result=1;
+            $config_arr=array();
+            $config_arr[1] = '#AAA,#BBB,#FFF|tel';
+        }
         $typeresult=preg_match($searchtype,$config_str,$config_array);
         if($result!=0){
             if (trim($config_arr[1])!="custom") {
                 $quickbar_arr=explode('|',$config_arr[1]);
                 $tmpStyleConfigQuickbar = explode(',',$quickbar_arr[0]);  
-                //config
                 $config['enable']=true;
-                if (strpos(strtoupper($config_array[1]), 'PC')) {
+                if (strstr(strtoupper($config_array[1]), 'PC')) {
                   $config['type']='p1';
                 }else  {    
                   $config['type']='m1';
@@ -628,7 +632,7 @@ class PrintController extends BaseController{
             $headscript=$customer_info->mobile_header_script;
             $footprint=$customer_info->mobile_footer;
             $footscript=$customer_info->mobile_footer_script;
-            $footscript .= '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/quickbar.js?'.$this->cus_id.'"></script>';  
+            $footscript .= '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/quickbar.js'.$this->cus_id.'"></script>';  
             $site_another_url=$this->showtype=='preview' ?'':$customer_info->pc_domain;
             $config_arr=parse_ini_file(public_path('/templates/'.$this->themename).'/config.ini',true);
             if(!is_array($config_arr)) dd('【config.ini】文件不存在！文件格式说明详见：http://pme/wiki/doku.php?id=ued:template:config');
