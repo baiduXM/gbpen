@@ -6,8 +6,8 @@ function phone_indexController($scope,$http ,$location) {
 
     $scope.phoneIndexInit = function(){
     	this.templePage = 'index';
-    	// this.maininfourl = '../mhomepage-data';
-    	this.maininfourl = 'json/phone_index.json';
+    	this.maininfourl = '../mhomepage-data';
+    	// this.maininfourl = 'json/phone_index.json';
     	this.init();
     }
     $scope.phoneIndexInit.prototype = {
@@ -637,7 +637,7 @@ function phone_indexController($scope,$http ,$location) {
     	bottomnavs_info : function(){
     		var data = (this.jsonData == undefined ? null : this.jsonData.value),
 				_div1 = '',num,info;
-			$.each(this.jsonData,function(k,v){
+			$.each(this.jsonData.value,function(k,v){
 				info = (v.type == 'share' ? '<span class="shareicon ml5">\
 						<i class="iconfont icon-tengxunweibo '+($.inArray('txweibo', v.data) == -1 ? 'grey' : 'blue')+'" data-name="'+($.inArray('txweibo', v.data) == -1 ? 'txweibo' : '')+'"></i>\
 						<i class="iconfont icon-baidu '+($.inArray('baidu', v.data) == -1 ? 'grey' : 'blue')+'"  data-name="'+($.inArray('baidu', v.data) == -1 ? 'baidu' : '')+'"></i>\
@@ -670,7 +670,7 @@ function phone_indexController($scope,$http ,$location) {
 			});
     	},
     	DragBlock : function(){
-    		$('#phone_index-bottomnavs li .icon-yidong').TreeList({
+    		$('#phone_index-quickbar li .icon-yidong').TreeList({
 				parentNode  : 'phone_func',
 				rootNode 	: 'move_feild',
 				oncallback 	: function(indexlist){}
