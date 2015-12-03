@@ -124,11 +124,12 @@ class PrintController extends BaseController{
      * @return array 合并后的数组
      */
     public function pagedata($pagename){
+        
         if($this->type=='pc'){ 
-            $tpl_id = websiteInfo::where('id',$this->cus_id)->pluck('pc_tpl_id');
+            $tpl_id = websiteInfo::where('cus_id',$this->cus_id)->pluck('pc_tpl_id');
         }
         else{
-            $tpl_id = websiteInfo::where('id',$this->cus_id)->pluck('mobile_tpl_id');
+            $tpl_id = websiteInfo::where('cus_id',$this->cus_id)->pluck('mobile_tpl_id');
         }
         $website_confige = WebsiteConfig::where('cus_id',$this->cus_id)->where('key',$pagename)->where('type',1)->where('template_id',$tpl_id)->pluck('value');
         $website_confige_value = unserialize($website_confige);
