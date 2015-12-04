@@ -547,7 +547,6 @@ border-radius: 5px;}
 .phone_index_col{display: inline-block;width: 200px;border-left: 1px solid #ccc;border-right: 1px solid #ccc;box-sizing:border-box;padding: 5px;vertical-align: top;}
 .phone_index_col li{display: block;}
 /*底部导航*/
-#phone_index-quickbar{width: 70%;}
 #phone_index-quickbar .phone_quickbar_item{margin-left: 20px;width: 60%;}
 #phone_index-quickbar .phone_quickbar_item .title{font-size: 16px;font-weight: bold;}
 #phone_index-quickbar .phone_quickbar_item .title:after{content:".";visibility:hidden;clear:both;display: block;}
@@ -563,6 +562,7 @@ border-radius: 5px;}
 .phone_quickbar_item .custom-sub-ul div{margin-right: 5px;}
 .phone_quickbar_item .custom-sub-ul .url-control .input{width: 270px;}
 .phone_quickbar_item .custom-sub-btn{width: 80px;height: 30px;}
+.phone_quickbar_style div{margin: 0 5px;}
 .phone_quickbar_style .all_button{background-color: #7589a0;margin: 15px auto;padding: 0 5px;cursor: pointer;display: block;}
 .nsvshowtype-title{text-align: left;padding: 5px;margin-bottom: 5px;border-bottom: 1px solid #ccc;}
 .nsvshowtype-info-box li{display: inline-block;padding: 5px 10px;cursor: pointer;margin: 10px auto;}

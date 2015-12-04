@@ -6,8 +6,8 @@ function phone_indexController($scope,$http ,$location) {
 
     $scope.phoneIndexInit = function(){
     	this.templePage = 'index';
-    	this.maininfourl = '../mhomepage-data';
-    	// this.maininfourl = 'json/phone_index.json';
+    	// this.maininfourl = '../mhomepage-data';
+    	this.maininfourl = 'json/phone_index.json';
     	this.init();
     }
     $scope.phoneIndexInit.prototype = {
@@ -416,7 +416,7 @@ function phone_indexController($scope,$http ,$location) {
     	slidepics_upload : function(lastColumnNum,ColumnNum,aspectRatio){
     		var _this = this,count,_newpic;
 			// 添加图片弹框
-    		$('.up_pic').on('click',function(event) {console.log('11');
+    		$('.up_pic').on('click',function(event) {
 		        var warningbox = new WarningBox(),
 		        	event_this = this;
 		        warningbox._upImage({
