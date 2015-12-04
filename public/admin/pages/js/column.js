@@ -62,6 +62,7 @@ function columnController($scope, $http) {
                     case 3: layout = '<i class="fa iconfont icon-list"></i>';break;
                     case 2: layout = '<i class="fa iconfont icon-graph"></i>';break;
                     case 4: layout = '<i class="fa iconfont icon-wenjian"></i>';break;
+                    case 5: layout = '<i class="fa iconfont icon-liuyanban"></i>';break;
                     case 6: layout = '<i class="fa iconfont icon-lianjie"></i>';break;
                     case 7: layout = '<i class="fa iconfont icon-weixin"></i>';break;
                     case 8: layout = '<i class="fa iconfont icon-dingwei"></i>';break;
@@ -454,8 +455,6 @@ function columnController($scope, $http) {
                             description  : vdescription,
                             img          : _this.upload_picname,
                             icon         : icons,
-                            module_key   : module_key,
-                            module_value : module_value,
                             force        : (first ? 0 : 1),
                             article_type : article_type,
                             page_content : editor.getContent()}).success(function(json) {
