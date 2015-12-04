@@ -586,7 +586,11 @@ class PrintController extends BaseController{
                     }
                 }
                 $classify=new Classify();
+
                 $catlist=$classify->toTree($navs);
+                if(!is_array($catlist)){
+                    $catlist=array();
+                }
                 array_unshift($catlist,array('id'=>null,'name'=>'首页','en_name'=>'Home','url'=>$this->site_url,'childmenu'=>null));
                 $quickbarCallback=array('config'=>$config,'quickbar'=>$quickbar,'catlist'=>$catlist);
                 if($this->showtype=='preview'){
