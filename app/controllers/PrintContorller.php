@@ -592,7 +592,11 @@ class PrintController extends BaseController{
                 if($this->showtype=='preview'){
                     echo "quickbarCallback(".json_encode($quickbarCallback).")";
                 }else{
-                    file_put_contents(public_path("customers/".$this->customer.($this->type!='pc'?'/mobile':'').'/quickbar.json'),"quickbarCallback(".json_encode($quickbarCallback).")");
+                    if ($this->type=='pc') {
+                  file_put_contents(public_path("customers/".$this->customer.'/quickbar.json'),"quickbarCallback(".json_encode($quickbarCallback).")");
+                }else  {    
+                  file_put_contents(public_path("customers/".$this->customer.'/mobile'.'/quickbar.json'),"quickbarCallback(".json_encode($quickbarCallback).")");
+                }
                 }
             }
         }
