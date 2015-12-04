@@ -590,13 +590,11 @@ class PrintController extends BaseController{
                 array_unshift($catlist,array('id'=>null,'name'=>'首页','en_name'=>'Home','url'=>$this->site_url,'childmenu'=>null));
                 $quickbarCallback=array('config'=>$config,'quickbar'=>$quickbar,'catlist'=>$catlist);
                 if($this->showtype=='preview'){
-                    dd($quickbarCallback);
                     echo "quickbarCallback(".json_encode($quickbarCallback).")";
                 }else{
                     if($this->type='pc'){
-                        dd($quickbarCallback);
+                       file_put_contents(public_path("customers/".$this->customer.'/quickbar.json'),"quickbarCallback(".json_encode($quickbarCallback).")");
                     }
-                  file_put_contents(public_path("customers/".$this->customer.'/quickbar.json'),"quickbarCallback(".json_encode($quickbarCallback).")");
                   file_put_contents(public_path("customers/".$this->customer.'/mobile'.'/quickbar.json'),"quickbarCallback(".json_encode($quickbarCallback).")");
                 }
             }
