@@ -628,11 +628,13 @@ function phone_indexController($scope,$http ,$location) {
     // 底部导航
     $scope.phoneIndexQuickbar = function(ele){
     	this.jsonData = ele;
+    	this.bottomnavsTypeUrl = 'json/bottomnavsType.json';
     	this.init();
     };
     $scope.phoneIndexQuickbar.prototype = {
     	init : function(){
     		this.bottomnavs_info();
+    		this.bottomnavsType();
     	},
     	bottomnavs_info : function(){
     		var data = (this.jsonData == undefined ? null : this.jsonData.value),
@@ -649,7 +651,7 @@ function phone_indexController($scope,$http ,$location) {
 							<label class="message-name">'+v.name+'</label>'+info+'\n\
 						</li>';
 			});
-			$('.phone_service .phone_func').append(_div1);
+			$('.phone_quickbar_item .phone_func').append(_div1);
 			this.InputStyle();
 			this.ShowPos();
 			this.DragBlock();
@@ -676,11 +678,47 @@ function phone_indexController($scope,$http ,$location) {
 				oncallback 	: function(indexlist){}
 	       	});
     	},
+    	bottomnavsType : function(){
+    		var _this = this;
+    		$('.phone_quickbar_style .all_button').click(function(event) {
+    			var html = '';
+		    	var ModelGetBottomnavs = function(platform){
+		    		$http.post(_this.bottomnavsTypeUrl,{platform: platform}).success(function(json){
+			    		checkJSON(json,function(json){
+			    			var _div = '';
+			    			$.each(json.data,function(k, v) {
+			    				_div += '<li><div class="nsvshowtype-item-border"><img src="'+v.url+'" alt="" /><span'+(v.selected ? ' class="red"' : '')+'>'+v.name+'</span></div></li>';
+			    			});
+			    			html = '<div class="nsvshowtype">\
+										<div class="nsvshowtype-title"><span>'+(platform ? 'PC导航风格' : '手机导航风格')+'</span></div>\
+										<div class="nsvshowtype-content">\
+											<ul class="nsvshowtype-info-box">'+_div+'</ul>\
+										</div>\
+				    				</div>';
+							var warningbox = new WarningBox('',{warning_context : html});
+							warningbox.ng_fuc();
+    						_this.mousewheelXs();
+			    		});
+			    	});
+		    	}
+    			if($(this).closest('.pc_check_btn').length){
+    				ModelGetBottomnavs(1);
+    			}else if($(this).closest('.mob_check_btn').length){
+    				ModelGetBottomnavs(0);
+    			}
+    		});
+    	},
+    	mousewheelXs : function(){
+    		$('.nsvshowtype-info-box').width($('.nsvshowtype-info-box li').length*$('.nsvshowtype-info-box li').width())
+    		var left=$(window). scrollLeft(); 
+		   	$(window). scrollLeft(left-100) 
+		   	event.preventDefault(); 
+    	},
     	SaveData : function(){
     		$('.phone_index_btn .bottomnavs_save').click(function(){
 	    		var navsArray = new Array(),
 	    			show = [],data = [];
-		    	$('#phone_index-bottomnavs .phone_service .phone_func .move_feild').each(function() {
+		    	$('#phone_index-bottomnavs .phone_quickbar_item .phone_func .move_feild').each(function() {
 		    		$(this).find('span:eq(0) i').eq(0).hasClass('blue') ? show.push('pc_show') : '';
 		    		$(this).find('span:eq(0) i').eq(1).hasClass('blue') ? show.push('mobile_show') : '';
 		    		if($(this).find('span:eq(1) i').length != 0){
@@ -695,7 +733,7 @@ function phone_indexController($scope,$http ,$location) {
 						type  : $(this).find('.btn_type').val()
 		    		});				
 				});
-		    	$http.post('../mhomepage-modify',{bottomnavs: navsArray}).success(function(){
+		    	$http.post('../mhomepage-modify',{bottomnavs: navsArray}).success(function(json){
 		    		checkJSON(json,function(json){
 		    			phoneindexinit.Save_hint();
 		    		});

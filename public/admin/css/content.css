@@ -80,10 +80,10 @@
 /*弹框*/
 #bomb-box{position: fixed;margin: 0 auto;top:0px;left: 0px;right: 0px;bottom: 0px;z-index: 999;opacity: 1;}
 #bomb-box .mask{opacity: 0.6;background-color: #000;width: 100%;height: 100%;position: absolute;filter:alpha(opacity=60);cursor: pointer;}
-.boxs{max-height: 600px;overflow-y:scroll; margin:18px;background-color: #fff;padding: 20px;border: 1px solid rgba(0,0,0,0.5);background-clip: padding-box;box-shadow: 0px 4px 20px #000;border-radius: 5px;}
+.boxs{max-height: 600px;overflow-y:scroll; margin:18px;background-color: #fff;padding: 20px;border: 1px solid rgba(0,0,0,0.5);background-clip: padding-box;box-shadow: 0px 4px 20px #000;border-radius: 5px;max-width: 850px;}
 .boxs .button input{background-color: #6c717c;top: 0;left: 35%;}
 #bomb-box .box_info{margin-left: -400px;}
-.box_info{height: auto; overflow:hidden; position: fixed; left:50%; top:50%; z-index: 9999;border-right: 5px;outline: 0;
+.box_info{height: auto;min-width: 35%; overflow:hidden; position: fixed; left:50%; top:50%; z-index: 9999;border-right: 5px;outline: 0;
 -webkit-transition:all .3s ease-out;
 -moz-transition:all .3s ease-out;
 -o-transition:all .3s ease-out;
@@ -548,21 +548,28 @@ border-radius: 5px;}
 .phone_index_col li{display: block;}
 /*底部导航*/
 #phone_index-quickbar{width: 70%;}
-#phone_index-quickbar .phone_service{margin-left: 20px;}
-#phone_index-quickbar .phone_service .title{font-size: 16px;font-weight: bold;}
-#phone_index-quickbar .phone_service .title:after{content:".";visibility:hidden;clear:both;display: block;}
+#phone_index-quickbar .phone_quickbar_item{margin-left: 20px;width: 60%;}
+#phone_index-quickbar .phone_quickbar_item .title{font-size: 16px;font-weight: bold;}
+#phone_index-quickbar .phone_quickbar_item .title:after{content:".";visibility:hidden;clear:both;display: block;}
 #phone_index-quickbar .phone_func_move{float: right;margin-top: -34px;color: #317EFF;display: none;cursor:move;}
-.phone_service .phone_func li{margin: 10px auto;border:1px solid transparent;padding: 10px 10px;text-align: left;}
-.phone_service .phone_func .message-num{margin-left: 20px;width: 125px;height: 21px;padding: 2px 0 2px 5px;border:solid 1px #999;}
-.phone_service .phone_func .custom-menu-title{font-size: 14px;font-weight: bold;margin-right: 36px;}
+.phone_quickbar_item .phone_func li{margin: 10px auto;border:1px solid transparent;padding: 10px 10px;text-align: left;}
+.phone_quickbar_item .phone_func .message-num{margin-left: 20px;width: 125px;height: 21px;padding: 2px 0 2px 5px;border:solid 1px #999;}
+.phone_quickbar_item .phone_func .custom-menu-title{font-size: 14px;font-weight: bold;margin-right: 36px;}
 .phone_func .shareicon>i{margin: auto 10px;font-size: 24px;cursor: pointer;}
-.phone_service .custom-menu-ul>li{padding: 10px;border:1px solid transparent;margin-bottom: 10px;}
+.phone_quickbar_item .custom-menu-ul>li{padding: 10px;border:1px solid transparent;margin-bottom: 10px;}
 .custom-sub-ul .input,.menu-control .input{width: 100px;height: 14px;padding: 5px;border:solid 1px #999;}
-.phone_service .custom-sub-ul{margin-left: 97px;}
-.phone_service .custom-sub-ul li{margin: 10px 0;}
-.phone_service .custom-sub-ul div{margin-right: 5px;}
-.phone_service .custom-sub-ul .url-control .input{width: 270px;}
-.phone_service .custom-sub-btn{width: 80px;height: 30px;}
+.phone_quickbar_item .custom-sub-ul{margin-left: 97px;}
+.phone_quickbar_item .custom-sub-ul li{margin: 10px 0;}
+.phone_quickbar_item .custom-sub-ul div{margin-right: 5px;}
+.phone_quickbar_item .custom-sub-ul .url-control .input{width: 270px;}
+.phone_quickbar_item .custom-sub-btn{width: 80px;height: 30px;}
+.phone_quickbar_style .all_button{background-color: #7589a0;margin: 15px auto;padding: 0 5px;cursor: pointer;display: block;}
+.nsvshowtype-title{text-align: left;padding: 5px;margin-bottom: 5px;border-bottom: 1px solid #ccc;}
+.nsvshowtype-info-box li{display: inline-block;padding: 5px 10px;cursor: pointer;margin: 10px auto;}
+.nsvshowtype-info-box li:hover{background-color:rebeccapurple;}
+.nsvshowtype-info-box li:hover span{color: #fff}
+.nsvshowtype-info-box img{width: 300px;height: 200px;display: block;}
+.nsvshowtype-content{overflow-x: scroll;}
 /*其他*/
 #phone_index-other{margin: 0 auto;width: 50%;}
 #phone_index-other ul{float: left;width: 100%;}
