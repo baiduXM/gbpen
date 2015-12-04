@@ -261,7 +261,6 @@ function phone_indexController($scope,$http ,$location) {
     // 幻灯片
     $scope.phoneIndexSlidepics = function(ele){
     	this.jsonData = ele;
-    	this.aspectRatio = this.jsonData.config.width/this.jsonData.config.height || '',
     	this.init();
     };
     $scope.phoneIndexSlidepics.prototype = {
@@ -316,6 +315,7 @@ function phone_indexController($scope,$http ,$location) {
     		var htmlColumn = '',
     			_this = this;
 			$.each(this.jsonData,function(index, ele) {
+				this.aspectRatio = ele.config.width/ele.config.height || '';
 				if(ele.type == 'images'){
 					var data = ele.value,
 						oddColumnWidth = 315,									// 单列宽
@@ -416,7 +416,7 @@ function phone_indexController($scope,$http ,$location) {
     	slidepics_upload : function(lastColumnNum,ColumnNum,aspectRatio){
     		var _this = this,count,_newpic;
 			// 添加图片弹框
-    		$('.up_pic').on('click',function(event) {
+    		$('.up_pic').on('click',function(event) {console.log('11');
 		        var warningbox = new WarningBox(),
 		        	event_this = this;
 		        warningbox._upImage({
