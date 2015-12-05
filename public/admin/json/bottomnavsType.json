@@ -1,0 +1,31 @@
+{
+    "err": 0, 
+    "msg": "", 
+    "data": [
+        {
+            "url":"http://tpanel/templates/GP001/screenshot.jpg",
+            "name":"PC风格一",
+            "selected":0
+        },
+        {
+            "url":"http://tpanel/templates/GP001/screenshot.jpg",
+            "name":"PC风格二", 
+            "selected":1
+        },
+        {
+            "url":"http://tpanel/templates/GP001/screenshot.jpg",
+            "name":"PC风格三", 
+            "selected":0
+        },
+        {
+            "url":"http://tpanel/templates/GP001/screenshot.jpg",
+            "name":"PC风格四", 
+            "selected":0
+        },
+        {
+            "url":"http://tpanel/templates/GP001/screenshot.jpg",
+            "name":"PC风格五", 
+            "selected":0
+        }
+    ]
+}
