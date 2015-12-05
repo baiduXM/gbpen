@@ -626,7 +626,7 @@ function phone_indexController($scope,$http ,$location) {
     	}
     }
     // 底部导航
-    $scope.phoneIndexQuickbar = function(ele){
+    $scope.phoneIndexQuickbar = function(ele){console.log(ele);
     	this.jsonData = ele;
     	this.bottomnavsTypeUrl = 'json/bottomnavsType.json';
     	this.init();
