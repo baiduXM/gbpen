@@ -22,25 +22,16 @@
 			<div class="navs fr">
 				<ul class="page_navs">
 					<!-- 切换标签 -->
+					<li><a data-sub="phone_index-index" href="javascript:void(0);">栏目编辑</a></li>
+					<li><a data-sub="phone_index-images" href="javascript:void(0);">图片处理</a></li>
+					<li><a data-sub="phone_index-other" href="javascript:void(0);">其它</a></li>
 				</ul>
 			</div>
 		</div>
 		<div class="tpl_mask"></div>
         <div class="text_tishi"><i class="icon-spin4 animate-spin"></i></div>
 		<div class="phone_index-content">
-			<div id="phone_index-image" class="none">
-				<form id="phone_index_info">
-				<!-- 滚轮图数据 -->
-				</form>
-			</div>
-			<div id="phone_index-bottomnavs" class="none">
-				<div class="phone_service">
-					<ul class="phone_func">
-						
-					</ul>
-				</div>
-			</div>
-			<div id="phone_index-index" class="none">
+			<div id="phone_index-index">
 				<table width="305px" height="410px" class="a-table phone_table">
 		            <tr>
 		                <th>是否展示<div class="fr">|</div></th>
@@ -57,7 +48,48 @@
                             <div class="explain">当前手机模板无以下栏目的首页样式</div>
                         </td>
                     </tr>
+                    <!-- 手机栏目 -->
                 </table>
+			</div>
+			<div id="phone_index-images">
+				<form id="phone_index_images">
+				<!-- 滚轮图数据 -->
+				</form>
+				<form id="phone_index_image">
+				<!-- 滚轮图数据 -->
+				</form>
+			</div>
+			<div id="phone_index-other">
+				<form id="phone_index_text">
+					<ul>
+						<!-- text类型 -->
+					</ul>
+					<a class="inline-block fr save" href="">保存</a>
+				</form>
+				<form id="phone_index_textarea">
+					<ul>
+						<!-- textarea类型 -->
+					</ul>
+					<a class="inline-block fr save" href="">保存</a>
+				</form>
+				<form id="phone_index_navs">
+					<ul>
+						
+					</ul>
+				</form>
+				<a class="inline-block fr save" href="">保存</a>
+				<!-- other数据 -->
+			</div>
+			<div id="phone_index-quickbar">
+				<div class="phone_quickbar_item fl">
+					<ul class="phone_func">
+						<!-- quickbar列表 -->
+					</ul>
+				</div>
+				<div class="phone_quickbar_style fr">
+					<div class="pc_check_btn inline-block"><a class="all_button">PC快捷导航样式</a><label>请选择</label></div>
+					<div class="mob_check_btn inline-block"><a class="all_button">手机快捷导航样式</a><label>请选择</label></div>
+				</div>
 			</div>
 		</div>
 	</section>
