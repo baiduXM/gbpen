@@ -194,7 +194,7 @@
         this.each(function() {
             var _this = $(this),
                 MoveNode = (options.MoveNode != null ? $('.'+options.MoveNode) : '') || _this,
-                Trigger = (options.Trigger != null ? options.Trigger : 'clcik');
+                Trigger = (options.Trigger != null ? options.Trigger : 'click');
             MoveNode.on(Trigger,function(event) {
                 $('body').append(_BoxDiv);
                 _BoxDiv.css({
@@ -216,5 +216,13 @@
     }
 })( jQuery, window, document );
 
+// serializeArray()转化
+$.fn.serializeJson=function(){
+    var serializeObj=[];
+    $(this.serializeArray()).each(function(){
+        serializeObj[this.name]=this.value;
+    });
+    return serializeObj;
+};
 
 
