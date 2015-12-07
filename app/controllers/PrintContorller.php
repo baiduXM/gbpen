@@ -683,11 +683,29 @@ class PrintController extends BaseController{
             }
         }
         $contact= CustomerInfo::where('cus_id',$this->cus_id)->select('company','contact_name as name','mobile','telephone','fax','email as mail','qq','address')->first()->toArray();
-        $pc_domain=CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_domain');
-        if(!empty($pc_domain)){
-            $domain_arr=parse_url($pc_domain);
-            $pc_domain=$domain_arr['host'];     
-            $pc_domain="http://wwvv.".ltrim($pc_domain,'www.');
+        if($this->showtype=='preview'){
+            $name=  Customer::where('cus_id',$this->cus_id)->pluck('name');
+            if($this->type=='pc'){
+                $pc_domain=$name.'s.5.67.org';
+            }else{
+                $pc_domain=$name.'m.s.5.67.org';
+            }
+        }else{
+            if($this->type=='pc'){
+                $pc_domain=CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_domain');
+                if(!empty($pc_domain)){
+                    $domain_arr=parse_url($pc_domain);
+                    $pc_domain=$domain_arr['host'];
+                    $pc_domain="http://wwvv.".ltrim($pc_domain,'www.');
+                }
+            }else{
+                $pc_domain=CustomerInfo::where('cus_id',$this->cus_id)->pluck('mobile_domain');
+                if(!empty($pc_domain)){
+                    $domain_arr=parse_url($pc_domain);
+                    $pc_domain=$domain_arr['host'];
+                    $pc_domain="http://wwvv.m.".ltrim($pc_domain,'www.');
+                }
+            }
         }
         $result = [
             'stylecolor'=>$stylecolor,
@@ -1532,7 +1550,7 @@ class PrintController extends BaseController{
                     $result['list']['content'] =preg_replace('/\/customers\/'.$this->customer.'/i','',Page::where('id',$classify->page_id)->pluck('content'));                   
                 }   
             }elseif($classify->type==5){
-                $result['list']['content'] ='<form action="" method="post" class="elegant-aero">
+                $result['list']['content'] ='<form action="http://swap.5067.org/admin/add.php" method="post" name="messageboard" onsubmit="return CheckPost();" class="elegant-aero">
                     <h1>留言板
                     <span>请填写您的留言。</span>
                     </h1>
@@ -1542,11 +1560,11 @@ class PrintController extends BaseController{
                     </label>
                     <label>
                     <span>标题 :</span>
-                    <input id="title" type="email" name="title" placeholder="标题" />
+                    <input id="title" type="text" name="title" placeholder="标题" />
                     </label>
                     <label>
                     <span>描述 :</span>
-                    <input id="descript" type="email" name="descript" placeholder="描述" />
+                    <input id="descript" type="text" name="descript" placeholder="描述" />
                     </label>
                     <label>
                     <span>Email :</span>
@@ -1554,16 +1572,16 @@ class PrintController extends BaseController{
                     </label>
                     <label>
                     <span>联系电话 :</span>
-                    <input id="phone" type="text" name="phone" placeholder="您的联系方式" />
+                    <input id="telephone" type="text" name="telephone" placeholder="您的联系方式" />
                     </label>
                     <label>
                     <label>
                     <span>内容 :</span>
-                    <textarea id="message" name="message" placeholder="您的想法...."></textarea>
+                    <textarea id="content" name="content" placeholder="您的想法...."></textarea>
                     </label>
                     <label>
                     <span>&nbsp;</span>
-                    <input type="button" class="button" name="submit" value="提交" />
+                    <input type="submit" class="button" name="submit" value="提交" />
                     </label>
                     </form>';
             }else{
@@ -1665,7 +1683,29 @@ class PrintController extends BaseController{
                 background: #C5CFD2;
                 color: #6B6262;
                 }--> 
-                </STYLE>';
+                </STYLE><SCRIPT language=javascript>
+                function CheckPost()
+                {
+                        if (messageboard.name.value=="")
+                        {
+                                alert("请填写用户名");
+                                messageboard.name.focus();
+                                return false;
+                        }
+                        if (messageboard.title.value.length=="")
+                        {
+                                alert("请填写标题!");
+                                messageboard.title.focus();
+                                return false;
+                        }
+                        if (messageboard.content.value=="")
+                        {
+                                alert("必须要填写留言内容");
+                                messageboard.content.focus();
+                                return false;
+                        }
+                }
+                </SCRIPT>';
             }
             $smarty->assign($result);
             $smarty->display($viewname.'.html');
