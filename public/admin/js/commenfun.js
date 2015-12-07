@@ -154,6 +154,9 @@ var WarningBox = function(del,warning_context){
             $(this).hide();
             $(this).next().hide();
         });
+        $('.warning_box .cancel').click(function(){
+            $('.warning_box ').hide().prev().hide();
+        });
     };
     this.ng_fuc =  function(){
         this.init();
@@ -339,9 +342,6 @@ WarningBox.prototype = {
                     alert(textStatus || errorThrown);
                 }
             });
-            $('.warning_box ').hide().prev().hide();
-        });
-        $('.warning_box .cancel').click(function(){
             $('.warning_box ').hide().prev().hide();
         });
     }
