@@ -6,8 +6,8 @@ function phone_indexController($scope,$http ,$location) {
 
     $scope.phoneIndexInit = function(){
     	this.templePage = 'index';
-    	// this.maininfourl = '../mhomepage-data';
-    	this.maininfourl = 'json/phone_index.json';
+    	this.maininfourl = '../mhomepage-data';
+    	// this.maininfourl = 'json/phone_index.json';
     	this.init();
     }
     $scope.phoneIndexInit.prototype = {
