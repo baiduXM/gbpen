@@ -60,7 +60,10 @@ class CommonController extends BaseController{
     public function quickBarJsonModify(){
         $Mobile = new PrintController('preview','mobile');
         $QuickBar = serialize(Input::get('QuickBar'));
+<<<<<<< HEAD
         dd($QuickBar);
+=======
+>>>>>>> 4dfedd853866212426be785031f1fffcb6ea708c
         $id=WebsiteConfig::where('cus_id',$Mobile->cus_id)->where('type',2)->where('template_id','0')->where('key','quickbar')->pluck('id');
         if($id){
             $QuickData=WebsiteConfig::find($id);
