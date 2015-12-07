@@ -52,7 +52,7 @@ class CommonController extends BaseController{
         if(!$QuickBar){
             $QuickBar = ['err' => 0, 'msg' => '获取成功！','data' =>$DefaultQuickBar];
         }else{
-            $QuickBar = ['err' => 0, 'msg' => '获取成功！','data' =>$QuickBar];
+            $QuickBar = ['err' => 0, 'msg' => '获取成功！','data' =>$MobileQuickBar];
         }
         return Response::Json($QuickBar);
     }
@@ -77,6 +77,7 @@ class CommonController extends BaseController{
         }else{
             $json_result = ['err' => 1001, 'msg' => '该栏目存在文章，需转移才能创建子栏目','data'=>[]];
         }
+        return Response::Json($json_result);
     }
 }
 

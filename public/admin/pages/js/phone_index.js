@@ -44,6 +44,7 @@ function phone_indexController($scope,$http ,$location) {
 				    		switch(ele.type){
 				    			case "image":
 					    		case "images":
+					    			$('.page_navs a[data-sub="phone_index-images"]').removeClass('not-allowed');
 					    			_this.imageType[idx] = ele;
 					    			break;
 				    			case "quickbar":
@@ -52,6 +53,7 @@ function phone_indexController($scope,$http ,$location) {
 				    			case "text":
 				    			case "textarea":
 				    			case "navs":
+				    				$('.page_navs a[data-sub="phone_index-other"]').removeClass('not-allowed');
 					    			_this.otherType[idx] = ele;
 					    			break;
 					    	}
@@ -270,7 +272,7 @@ function phone_indexController($scope,$http ,$location) {
     };
     $scope.phoneIndexSlidepics.prototype = {
     	init : function(){
-    		this.ModelSlidepicsInfo = function(parameter){console.log('parameter_num:'+parameter.num);
+    		this.ModelSlidepicsInfo = function(parameter){
     			var _div = '<'+(parameter.Tag || 'li')+' class="phone_index-field new">\n\
 						<div class="materlist-first">\n\
 			            	<dt class="title">'+(parameter.title || '')+'</dt>\n\
@@ -642,7 +644,7 @@ function phone_indexController($scope,$http ,$location) {
     	},
     	bottomnavs_info : function(){
     		var data = (this.jsonData == undefined ? null : this.jsonData.value),
-				_div1 = '',num,info;console.log(this.jsonData);
+				_div1 = '',num,info;
 			$.each(this.jsonData,function(k,v){
 				info = (v.type == 'share' ? '<span class="shareicon ml5">\
 						<i class="iconfont icon-tengxunweibo '+($.inArray('txweibo', v.data) == -1 ? 'grey' : 'blue')+'" data-name="'+($.inArray('txweibo', v.data) == -1 ? 'txweibo' : '')+'"></i>\
