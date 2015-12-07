@@ -515,57 +515,60 @@ class PrintController extends BaseController{
                        $config['style']['iconColor']=$config['style']['textColor']?$config['style']['textColor']:'';
                    }
                }
-                
+               
+               $CommonCont = new CommonController();
+               $quickbar=$CommonCont->quickBarJsonInit();
+               $quickbar=json_decode($quickbar,true);
                 //quickbar按钮
-                $global_data=WebsiteConfig::where('cus_id',$this->cus_id)->where('type',2)->where('template_id',$this->tpl_id)->pluck('value');
-                if($global_data){
-                    $global_data = unserialize($global_data);
-                    $global_data=$this->detailList($global_data);
-                }else{
-                    $global_data=$this->mobilePageList('global',true);
-                    $global_data=$this->detailList($global_data);
-                }
-                $this->replaceUrl($global_data);
-                $quickbar="";
-                if(isset($global_data['bottomnavs']) && is_array($global_data['bottomnavs'])){
-                    foreach($global_data['bottomnavs'] as &$val){
-                        $val['id']=isset($val['id'])?$val['id']:'';                 
-                        switch($val['type']){
-                            case "tel" :
-                                $val['icon']=isset($val['icon'])?$val['icon']:'&#xe602;';
-                                $val['link']="tel:".$val['data'];
-                                break;
-                            case "sms" :
-                                $val['icon']=isset($val['icon'])?$val['icon']:'&#xe604;';
-                                $val['link']="sms:".$val['data'];
-                                break;
-                            case "im"  :
-                                $val['icon']=isset($val['icon'])?$val['icon']:'&#xe606;';
-                                $val['link']=$val['data'];
-                                $val['enable']=0;
-                                break;
-                            case "share" :
-                                $val['icon']=isset($val['icon'])?$val['icon']:'&#xe600;';
-                                $val['link']='javascript:void(0);';
-                                break;
-                            case "link" :                 
-                                $val['icon']=isset($val['icon'])?$val['icon']:'&#xe605;';
-                                $address=CustomerInfo::where('cus_id',$this->cus_id)->pluck('address');
-                                $val['link']='http://map.baidu.com/mobile/webapp/search/search/qt=s&wd='.$address.'/vt=map/?fromhash=1';
-                                break;
-                            }
-                    }
-                    $quickbar=$global_data['bottomnavs'];
-                }else{
-                    $quickbar=[
-                        ['name'=>'电话','icon'=>'&#xe602;','image'=>'icon/2.png','data'=>'','link'=>'tel://','type'=>'tel','enable'=>1],
-                        ['name'=>'短信','icon'=>'&#xe604;','image'=>'icon/3.png','data'=>'','link'=>'sms://','type'=>'sms','enable'=>1],
-                        ['name'=>'咨询','icon'=>'&#xe606;','image'=>'icon/5.png','data'=>'10000@QQ','link'=>'javascript:void(0);','type'=>'im','enable'=>0],
-                        ['name'=>'地图','icon'=>'&#xe605;','image'=>'icon/4.png','data'=>'','link'=>'http://map.baidu.com','type'=>'link','enable'=>1],
-                        ['name'=>'分享','icon'=>'&#xe600;','image'=>'icon/8.png','data'=>'','link'=>'javascript:void(0);','type'=>'share','enable'=>1],
-                        ['name'=>'搜索','icon'=>'&#xe636;','image'=>'icon/8.png','data'=>'','link'=>'javascript:void(0);','type'=>'search','enable'=>0],
-                    ];  
-                }
+//                $global_data=WebsiteConfig::where('cus_id',$this->cus_id)->where('type',2)->where('template_id',$this->tpl_id)->pluck('value');
+//                if($global_data){
+//                    $global_data = unserialize($global_data);
+//                    $global_data=$this->detailList($global_data);
+//                }else{
+//                    $global_data=$this->mobilePageList('global',true);
+//                    $global_data=$this->detailList($global_data);
+//                }
+//                $this->replaceUrl($global_data);
+//                $quickbar="";
+//                if(isset($global_data['bottomnavs']) && is_array($global_data['bottomnavs'])){
+//                    foreach($global_data['bottomnavs'] as &$val){
+//                        $val['id']=isset($val['id'])?$val['id']:'';                 
+//                        switch($val['type']){
+//                            case "tel" :
+//                                $val['icon']=isset($val['icon'])?$val['icon']:'&#xe602;';
+//                                $val['link']="tel:".$val['data'];
+//                                break;
+//                            case "sms" :
+//                                $val['icon']=isset($val['icon'])?$val['icon']:'&#xe604;';
+//                                $val['link']="sms:".$val['data'];
+//                                break;
+//                            case "im"  :
+//                                $val['icon']=isset($val['icon'])?$val['icon']:'&#xe606;';
+//                                $val['link']=$val['data'];
+//                                $val['enable']=0;
+//                                break;
+//                            case "share" :
+//                                $val['icon']=isset($val['icon'])?$val['icon']:'&#xe600;';
+//                                $val['link']='javascript:void(0);';
+//                                break;
+//                            case "link" :                 
+//                                $val['icon']=isset($val['icon'])?$val['icon']:'&#xe605;';
+//                                $address=CustomerInfo::where('cus_id',$this->cus_id)->pluck('address');
+//                                $val['link']='http://map.baidu.com/mobile/webapp/search/search/qt=s&wd='.$address.'/vt=map/?fromhash=1';
+//                                break;
+//                            }
+//                    }
+//                    $quickbar=$global_data['bottomnavs'];
+//                }else{
+//                    $quickbar=[
+//                        ['name'=>'电话','icon'=>'&#xe602;','image'=>'icon/2.png','data'=>'','link'=>'tel://','type'=>'tel','enable'=>1],
+//                        ['name'=>'短信','icon'=>'&#xe604;','image'=>'icon/3.png','data'=>'','link'=>'sms://','type'=>'sms','enable'=>1],
+//                        ['name'=>'咨询','icon'=>'&#xe606;','image'=>'icon/5.png','data'=>'10000@QQ','link'=>'javascript:void(0);','type'=>'im','enable'=>0],
+//                        ['name'=>'地图','icon'=>'&#xe605;','image'=>'icon/4.png','data'=>'','link'=>'http://map.baidu.com','type'=>'link','enable'=>1],
+//                        ['name'=>'分享','icon'=>'&#xe600;','image'=>'icon/8.png','data'=>'','link'=>'javascript:void(0);','type'=>'share','enable'=>1],
+//                        ['name'=>'搜索','icon'=>'&#xe636;','image'=>'icon/8.png','data'=>'','link'=>'javascript:void(0);','type'=>'search','enable'=>0],
+//                    ];  
+//                }
                 //快捷导航
                 $navs = Classify::where('cus_id',$this->cus_id)->where('mobile_show',1)->select('id','type','name','en_name','icon','url','p_id','en_name')->OrderBy('sort','asc')->get()->toArray();
                 if(count($navs)){
