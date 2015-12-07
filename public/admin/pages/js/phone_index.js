@@ -637,6 +637,11 @@ function phone_indexController($scope,$http ,$location) {
     		this.bottomnavsType();
     	},
     	bottomnavs_info : function(){
+    		$http.get('../quickbar.jsoninit').success(function(json){
+		    		checkJSON(json,function(json){console.log('12');
+		    			console.log(json);
+		    		});
+		    	});
     		var data = (this.jsonData == undefined ? null : this.jsonData.value),
 				_div1 = '',num,info;
 			$.each(this.jsonData.value,function(k,v){
