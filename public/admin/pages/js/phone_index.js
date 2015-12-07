@@ -62,7 +62,11 @@ function phone_indexController($scope,$http ,$location) {
 					    }
 				    	if(Area_name == 'quickbar'){
 				    		mpagetype = 'quickbar';
-				    		var QuickbarInit = new $scope.phoneIndexQuickbar(_this.quickbarType);
+				    		$http.get('../quickbar.jsoninit').success(function(json){
+					    		checkJSON(json,function(json){
+					    			var QuickbarInit = new $scope.phoneIndexQuickbar(json.data);
+					    		});
+					    	});
 				    	}
 					    if(Area_name == 'other'){
 					    	mpagetype = 'other';
@@ -637,14 +641,9 @@ function phone_indexController($scope,$http ,$location) {
     		this.bottomnavsType();
     	},
     	bottomnavs_info : function(){
-    		$http.get('../quickbar.jsoninit').success(function(json){
-		    		checkJSON(json,function(json){console.log('12');
-		    			console.log(json);
-		    		});
-		    	});
     		var data = (this.jsonData == undefined ? null : this.jsonData.value),
-				_div1 = '',num,info;
-			$.each(this.jsonData.value,function(k,v){
+				_div1 = '',num,info;console.log(this.jsonData);
+			$.each(this.jsonData,function(k,v){
 				info = (v.type == 'share' ? '<span class="shareicon ml5">\
 						<i class="iconfont icon-tengxunweibo '+($.inArray('txweibo', v.data) == -1 ? 'grey' : 'blue')+'" data-name="'+($.inArray('txweibo', v.data) == -1 ? 'txweibo' : '')+'"></i>\
 						<i class="iconfont icon-baidu '+($.inArray('baidu', v.data) == -1 ? 'grey' : 'blue')+'"  data-name="'+($.inArray('baidu', v.data) == -1 ? 'baidu' : '')+'"></i>\
@@ -722,7 +721,7 @@ function phone_indexController($scope,$http ,$location) {
     		});
     	},
     	SaveData : function(){
-    		$('.phone_index_btn .bottomnavs_save').click(function(){
+    		$('.phone_index-banner .save').click(function(){
 	    		var navsArray = new Array();
 		    	$('.phone_quickbar_item .phone_func .move_feild').each(function() {
 		    		var show = [],data = [];
@@ -742,7 +741,7 @@ function phone_indexController($scope,$http ,$location) {
 						type  : $(this).find('.message-name').data('type')
 		    		});				
 				});
-		    	$http.post('../mhomepage-modify',{bottomnavs: navsArray}).success(function(json){
+		    	$http.post('../quickbar.jsonmodify',{QuickBar: navsArray}).success(function(json){
 		    		checkJSON(json,function(json){
 		    			phoneindexinit.Save_hint();
 		    		});

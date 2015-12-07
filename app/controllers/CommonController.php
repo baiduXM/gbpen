@@ -39,7 +39,7 @@ class CommonController extends BaseController{
     
     public function quickBarJsonInit(){
         $Mobile = new PrintController('preview','mobile');
-        $QuickBar=WebsiteConfig::where('cus_id',$Mobile->cus_id)->where('type',2)->where->('template_id'=>'0')->where('key','quickbar')->pluck('value');
+        $QuickBar=WebsiteConfig::where('cus_id',$Mobile->cus_id)->where('type',2)->where('template_id','0')->where('key','quickbar')->pluck('value');
         if($QuickBar) $MobileQuickBar=unserialize($QuickBar);
         $DefaultQuickBar=[
                 ['pc'=>0,'mobile'=>0,'name'=>'电话','icon'=>'&#xe602;','image'=>'icon/2.png','data'=>'','link'=>'tel://','type'=>'tel','enable'=>1],
@@ -50,7 +50,9 @@ class CommonController extends BaseController{
                 ['pc'=>0,'mobile'=>0,'name'=>'搜索','icon'=>'&#xe636;','image'=>'icon/8.png','data'=>'','link'=>'javascript:void(0);','type'=>'search','enable'=>1],
             ];  
         if(!$QuickBar){
-            $QuickBar=$DefaultQuickBar;
+            $QuickBar = ['err' => 0, 'msg' => '获取成功！','data' =>$DefaultQuickBar];
+        }else{
+            $QuickBar = ['err' => 0, 'msg' => '获取成功！','data' =>$QuickBar];
         }
         return Response::Json($QuickBar);
     }
@@ -58,7 +60,8 @@ class CommonController extends BaseController{
     public function quickBarJsonModify(){
         $Mobile = new PrintController('preview','mobile');
         $QuickBar = serialize(Input::get('QuickBar'));
-        $id=WebsiteConfig::where('cus_id',$Mobile->cus_id)->where('type',2)->where->('template_id'=>'0')->where('key','quickbar')->pluck('id');
+        dd($QuickBar);
+        $id=WebsiteConfig::where('cus_id',$Mobile->cus_id)->where('type',2)->where('template_id','0')->where('key','quickbar')->pluck('id');
         if($id){
             $QuickData=WebsiteConfig::find($id);
         }else{
