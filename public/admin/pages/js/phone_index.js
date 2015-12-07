@@ -6,8 +6,8 @@ function phone_indexController($scope,$http ,$location) {
 
     $scope.phoneIndexInit = function(){
     	this.templePage = 'index';
-    	// this.maininfourl = '../mhomepage-data';
-    	this.maininfourl = 'json/phone_index.json';
+    	this.maininfourl = '../mhomepage-data';
+    	// this.maininfourl = 'json/phone_index.json';
     	this.init();
     }
     $scope.phoneIndexInit.prototype = {
@@ -281,7 +281,7 @@ function phone_indexController($scope,$http ,$location) {
 		                	<span class="del-sanjiao"></span>\n\
 		                    <dd class="del-btn">删除</dd>\n\
 			            </div>\n\
-			            <div class="materlist-secondbox">\n\
+			            <div class="materlist-secondbox" style="dispaly:block;">\n\
 			            <span class="sanjiao"></span>\n\
 			            <div class="materlist-second">\n\
 			            	<dt class="title">编辑名称</dt>\n\
