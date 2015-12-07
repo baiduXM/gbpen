@@ -265,12 +265,13 @@ function phone_indexController($scope,$http ,$location) {
     // 幻灯片
     $scope.phoneIndexSlidepics = function(ele){
     	this.jsonData = ele;
+    	this.count = 0;
     	this.init();
     };
     $scope.phoneIndexSlidepics.prototype = {
     	init : function(){
-    		this.ModelSlidepicsInfo = function(parameter){
-    			var _div = '<'+(parameter.Tag || 'li')+' class="phone_index-field">\n\
+    		this.ModelSlidepicsInfo = function(parameter){console.log('parameter_num:'+parameter.num);
+    			var _div = '<'+(parameter.Tag || 'li')+' class="phone_index-field new">\n\
 						<div class="materlist-first">\n\
 			            	<dt class="title">'+(parameter.title || '')+'</dt>\n\
 			                <dd class="msgimg">\n\
@@ -285,7 +286,7 @@ function phone_indexController($scope,$http ,$location) {
 		                	<span class="del-sanjiao"></span>\n\
 		                    <dd class="del-btn">删除</dd>\n\
 			            </div>\n\
-			            <div class="materlist-secondbox">\n\
+			            <div class="materlist-secondbox" style="display:block;">\n\
 			            <span class="sanjiao"></span>\n\
 			            <div class="materlist-second">\n\
 			            	<dt class="title">编辑名称</dt>\n\
@@ -316,7 +317,7 @@ function phone_indexController($scope,$http ,$location) {
     	},
     	slidepics_info : function(){
     		// 幻灯片列表
-    		var htmlColumn = '',
+    		var htmlColumn = '',count,
     			_this = this;
 			$.each(this.jsonData,function(index, ele) {
 				this.aspectRatio = ele.config.width/ele.config.height || '';
@@ -332,9 +333,9 @@ function phone_indexController($scope,$http ,$location) {
 						$('#phone_index_images').append('<ul id="phone_index_col'+i+'" class="phone_index_col" style="width:'+oddColumnWidth+'px"></ul>');
 					}
 					$.each(data,function(k,v){
+						_this.count = k;
 						// 除余取列
 						var C_num = (k+1)%ColumnNum == 0 ? (k+1) : (k+1)%ColumnNum;
-						count = k;
 						var _div = _this.ModelSlidepicsInfo({
 							title	: v.title,
 							image	: v.image,
@@ -418,7 +419,7 @@ function phone_indexController($scope,$http ,$location) {
 			}
     	},
     	slidepics_upload : function(lastColumnNum,ColumnNum,aspectRatio){
-    		var _this = this,count,_newpic;
+    		var _this = this,_newpic;
 			// 添加图片弹框
     		$('.up_pic').on('click',function(event) {
 		        var warningbox = new WarningBox(),
@@ -436,11 +437,10 @@ function phone_indexController($scope,$http ,$location) {
 							});
 		            		$(event_this).parent().before(_newpic);
 		            	}else{
-		            		count++;
 			                _newpic = _this.ModelSlidepicsInfo({
 								image	: json.data.url,
 								subimage: json.data.name,
-								num		: count
+								num		: ++(_this.count)
 							});
 							var addBtn = (lastColumnNum+1)%ColumnNum,
 								addpic = (lastColumnNum+2)%ColumnNum;
