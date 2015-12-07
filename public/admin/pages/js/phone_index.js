@@ -626,7 +626,7 @@ function phone_indexController($scope,$http ,$location) {
     	}
     }
     // 底部导航
-    $scope.phoneIndexQuickbar = function(ele){console.log(ele);
+    $scope.phoneIndexQuickbar = function(ele){
     	this.jsonData = ele;
     	this.bottomnavsTypeUrl = 'json/bottomnavsType.json';
     	this.init();
@@ -648,7 +648,7 @@ function phone_indexController($scope,$http ,$location) {
 				_div1 += '<li class="move_feild">\n\
 							<i class="fa iconfont icon-yidong"></i>\n\
 							<span><i class="fa icon-pc iconfont btn btn-show btn-desktop '+(v.pc_show?'blue':'grey')+'"></i><i class="fa iconfont icon-snimicshouji btn btn-show btn-mobile '+(v.mobile_show?'blue':'grey')+'"></i></span>\n\
-							<label class="message-name">'+v.name+'</label>'+info+'\n\
+							<label class="message-name" data-type="'+v.type+'">'+v.name+'</label>'+info+'\n\
 						</li>';
 			});
 			$('.phone_quickbar_item .phone_func').append(_div1);
@@ -694,10 +694,18 @@ function phone_indexController($scope,$http ,$location) {
 										<div class="nsvshowtype-content">\
 											<ul class="nsvshowtype-info-box">'+_div+'</ul>\
 										</div>\
+										<input type="hidden" name="" value="" />\
 				    				</div>';
 							var warningbox = new WarningBox('',{warning_context : html});
 							warningbox.ng_fuc();
-    						_this.mousewheelXs();
+			    			$('.nsvshowtype-info-box li').click(function(event) {
+			    				$(this).addClass('cu').siblings().removeClass('cu')
+			    			});
+			    			// $('.button .save').click(function({
+			    			// 	$http.post('',{bottomnavs: navsArray}).success(function(json){
+						    // 		checkJSON(json);
+						    // 	});
+			    			// })
 			    		});
 			    	});
 		    	}
@@ -708,29 +716,25 @@ function phone_indexController($scope,$http ,$location) {
     			}
     		});
     	},
-    	mousewheelXs : function(){
-    		$('.nsvshowtype-info-box').width($('.nsvshowtype-info-box li').length*$('.nsvshowtype-info-box li').width())
-    		var left=$(window). scrollLeft(); 
-		   	$(window). scrollLeft(left-100) 
-		   	event.preventDefault(); 
-    	},
     	SaveData : function(){
     		$('.phone_index_btn .bottomnavs_save').click(function(){
-	    		var navsArray = new Array(),
-	    			show = [],data = [];
-		    	$('#phone_index-bottomnavs .phone_quickbar_item .phone_func .move_feild').each(function() {
-		    		$(this).find('span:eq(0) i').eq(0).hasClass('blue') ? show.push('pc_show') : '';
-		    		$(this).find('span:eq(0) i').eq(1).hasClass('blue') ? show.push('mobile_show') : '';
+	    		var navsArray = new Array();
+		    	$('.phone_quickbar_item .phone_func .move_feild').each(function() {
+		    		var show = [],data = [];
+		    		$(this).find('span:eq(0) i').eq(0).hasClass('blue') ? show.push('pc') : '';
+		    		$(this).find('span:eq(0) i').eq(1).hasClass('blue') ? show.push('mobile') : '';
 		    		if($(this).find('span:eq(1) i').length != 0){
 		    			$.each($(this).find('span:eq(1) i'),function(index, ele) {
 		    				$(ele).hasClass('blue') ? data.push($(ele).data('name')) : '';
 		    			});
+		    		}else{
+		    			data.push($(this).find('input').val())
 		    		}
 	    			navsArray.push({
 		    			name  : $(this).find('.message-name').text(),
 						data  : data,
-						isshow: show,
-						type  : $(this).find('.btn_type').val()
+						enable: show,
+						type  : $(this).find('.message-name').data('type')
 		    		});				
 				});
 		    	$http.post('../mhomepage-modify',{bottomnavs: navsArray}).success(function(json){

@@ -16,7 +16,7 @@
                     "icon": "&#xe604;",
                     "image": "http:\/\/tpanel\/templates\/GM0013\/images\/con\/f_i4.png",
                     "data": "13489990000",
-                    "type": "sms",
+                    "type": "share",
                     "enable": 1
                 }, {
                     "name": "\u54a8\u8be2",

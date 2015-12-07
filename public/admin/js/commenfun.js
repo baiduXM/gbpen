@@ -131,7 +131,7 @@ var ercodeDrop = {
 ercodeDrop._init('.phone-content .notice');
 
 // 弹框警告
-var WarningBox = function(del,warning_context){console.log('12');
+var WarningBox = function(del,warning_context){
     this.context = $.extend(true,{
         warning_context : '∑(っ°Д ° )っ你确定删除吗？',
         IsBaseShow : false
@@ -153,6 +153,9 @@ var WarningBox = function(del,warning_context){console.log('12');
         $('.tpl_mask').click(function(){
             $(this).hide();
             $(this).next().hide();
+        });
+        $('.warning_box .cancel').click(function(){
+            $('.warning_box ').hide().prev().hide();
         });
     };
     this.ng_fuc =  function(){
@@ -212,7 +215,7 @@ WarningBox.prototype = {
                 crop: function (e) {
                     $('.cutsize').text(Math.round(e.width)+' * '+Math.round(e.height));
                 }
-            };console.log($image.cropper());
+            };
             $image.cropper(options);
             this._UpFunction($image,defaults.ajaxurl,defaults.IsBaseShow,defaults.oncallback);
         }else{
@@ -339,9 +342,6 @@ WarningBox.prototype = {
                     alert(textStatus || errorThrown);
                 }
             });
-            $('.warning_box ').hide().prev().hide();
-        });
-        $('.warning_box .cancel').click(function(){
             $('.warning_box ').hide().prev().hide();
         });
     }

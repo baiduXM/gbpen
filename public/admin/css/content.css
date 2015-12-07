@@ -547,7 +547,7 @@ border-radius: 5px;}
 .phone_index_col{display: inline-block;width: 200px;border-left: 1px solid #ccc;border-right: 1px solid #ccc;box-sizing:border-box;padding: 5px;vertical-align: top;}
 .phone_index_col li{display: block;}
 /*底部导航*/
-#phone_index-quickbar .phone_quickbar_item{margin-left: 20px;width: 60%;}
+#phone_index-quickbar .phone_quickbar_item{margin-left: 80px;width: 60%;}
 #phone_index-quickbar .phone_quickbar_item .title{font-size: 16px;font-weight: bold;}
 #phone_index-quickbar .phone_quickbar_item .title:after{content:".";visibility:hidden;clear:both;display: block;}
 #phone_index-quickbar .phone_func_move{float: right;margin-top: -34px;color: #317EFF;display: none;cursor:move;}
@@ -565,11 +565,14 @@ border-radius: 5px;}
 .phone_quickbar_style div{margin: 0 5px;}
 .phone_quickbar_style .all_button{background-color: #7589a0;margin: 15px auto;padding: 0 5px;cursor: pointer;display: block;}
 .nsvshowtype-title{text-align: left;padding: 5px;margin-bottom: 5px;border-bottom: 1px solid #ccc;}
+.nsvshowtype-info-box{height: 500px;}
 .nsvshowtype-info-box li{display: inline-block;padding: 5px 10px;cursor: pointer;margin: 10px auto;}
 .nsvshowtype-info-box li:hover{background-color:rebeccapurple;}
 .nsvshowtype-info-box li:hover span{color: #fff}
+.nsvshowtype-info-box li.cu{background-color:rebeccapurple;}
+.nsvshowtype-info-box li.cu span{color: #fff}
 .nsvshowtype-info-box img{width: 300px;height: 200px;display: block;}
-.nsvshowtype-content{overflow-x: scroll;}
+.nsvshowtype-content{overflow-y: scroll;}
 /*其他*/
 #phone_index-other{margin: 0 auto;width: 50%;}
 #phone_index-other ul{float: left;width: 100%;}
