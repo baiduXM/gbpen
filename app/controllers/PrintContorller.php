@@ -694,7 +694,7 @@ class PrintController extends BaseController{
         }
         $contact= CustomerInfo::where('cus_id',$this->cus_id)->select('company','contact_name as name','mobile','telephone','fax','email as mail','qq','address')->first()->toArray();
         if($this->showtype=='preview'){
-            $name=  Customer::where('cus_id',$this->cus_id)->pluck('name');
+            $name=  Customer::where('id',$this->cus_id)->pluck('name');
             if($this->type=='pc'){
                 $pc_domain=$name.'s.5.67.org';
             }else{
