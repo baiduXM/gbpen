@@ -673,10 +673,10 @@ function phone_indexController($scope,$http ,$location) {
 					case 'share':
 						info = '<div class="quicklist-r inline-block">\
 								<span class="shareicon ml5">\
-									<i class="iconfont icon-tengxunweibo '+($.inArray('txweibo', v.data) == -1 ? 'grey' : 'blue')+'" data-name="'+($.inArray('txweibo', v.data) == -1 ? '' : 'txweibo')+'"></i>\
-									<i class="iconfont icon-baidu '+($.inArray('baidu', v.data) == -1 ? 'grey' : 'blue')+'"  data-name="'+($.inArray('baidu', v.data) == -1 ? '' : 'baidu')+'"></i>\
-									<i class="iconfont icon-qqkongjian '+($.inArray('qqzone', v.data) == -1 ? 'grey' : 'blue')+'"  data-name="'+($.inArray('qqzone', v.data) == -1 ? '' : 'qqzone')+'"></i>\
-									<i class="iconfont icon-2 '+($.inArray('weibo', v.data) == -1 ? 'grey' : 'blue')+'"  data-name="'+($.inArray('weibo', v.data) == -1 ? '' : 'weibo')+'"></i>\
+									<i class="iconfont icon-tengxunweibo '+($.inArray('txweibo', v.data) == -1 ? 'grey' : 'blue')+'" data-name="txweibo"></i>\
+									<i class="iconfont icon-baidu '+($.inArray('baidu', v.data) == -1 ? 'grey' : 'blue')+'"  data-name="baidu"></i>\
+									<i class="iconfont icon-qqkongjian '+($.inArray('qqzone', v.data) == -1 ? 'grey' : 'blue')+'"  data-name="qqzone"></i>\
+									<i class="iconfont icon-2 '+($.inArray('weibo', v.data) == -1 ? 'grey' : 'blue')+'"  data-name="weibo"></i>\
 								</span></div>';
 						break;
 					case 'link':
@@ -695,7 +695,7 @@ function phone_indexController($scope,$http ,$location) {
 				_div1 += '<li class="move_feild">\n\
 							<div class="quicklist-l inline-block">\
 							<i class="fa iconfont icon-yidong"></i>\n\
-							<span><i class="fa icon-pc iconfont btn btn-show btn-desktop '+(v.pc_show?'blue':'grey')+'"></i><i class="fa iconfont icon-snimicshouji btn btn-show btn-mobile '+(v.mobile_show?'blue':'grey')+'"></i></span>\n\
+							<span><i class="fa icon-pc iconfont btn btn-show btn-desktop '+(v.enable_pc == 1?'blue':'grey')+'"></i><i class="fa iconfont icon-snimicshouji btn btn-show btn-mobile '+(v.enable_mobile == 1?'blue':'grey')+'"></i></span>\n\
 							<label class="message-name" data-type="'+v.type+'">'+v.name+'</label>\
 							<span class="icon_box pr">\
 								<i class="iconfont '+(v.icon ? '' : 'icon-dengpao')+'">'+(v.icon || '')+'</i>\

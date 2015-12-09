@@ -42,12 +42,12 @@ class CommonController extends BaseController{
         $QuickBar=WebsiteConfig::where('cus_id',$Mobile->cus_id)->where('type',2)->where('template_id','0')->where('key','quickbar')->pluck('value');
         if($QuickBar) $MobileQuickBar=unserialize($QuickBar);
         $DefaultQuickBar=[
-                ['pc'=>0,'mobile'=>0,'name'=>'电话','icon'=>'&#xe602;','image'=>'icon/2.png','data'=>'18459276266','link'=>'tel://','type'=>'tel','enable'=>1],
-                ['pc'=>0,'mobile'=>0,'name'=>'短信','icon'=>'&#xe604;','image'=>'icon/3.png','data'=>'18459276267','link'=>'sms://','type'=>'sms','enable'=>1],
-                ['pc'=>0,'mobile'=>0,'name'=>'咨询','icon'=>'&#xe606;','image'=>'icon/5.png','data'=>'小E:156568451@QQ|客服-XX:10000@QQ|客服-YY:10000@53kf','link'=>'javascript:void(0);','type'=>'im','enable'=>1],
-                ['pc'=>0,'mobile'=>0,'name'=>'地图','icon'=>'&#xe605;','image'=>'icon/4.png','data'=>'厦门市思明区观日路30号|118.17342,24.493927','link'=>'http://map.baidu.com','type'=>'link','enable'=>1],
-                ['pc'=>0,'mobile'=>0,'name'=>'分享','icon'=>'&#xe600;','image'=>'icon/8.png','data'=>['qqzone','txweibo','weibo','baidu'],'link'=>'javascript:void(0);','type'=>'share','enable'=>1],
-                ['pc'=>0,'mobile'=>0,'name'=>'搜索','icon'=>'&#xe636;','image'=>'icon/8.png','data'=>'','link'=>'javascript:void(0);','type'=>'search','enable'=>1],
+                ['pc'=>0,'mobile'=>0,'name'=>'电话','icon'=>'&#xe602;','image'=>'icon/2.png','data'=>'18459276266','link'=>'tel://','type'=>'tel','enable_pc'=>1,'enable_mobile'=>1],
+                ['pc'=>0,'mobile'=>0,'name'=>'短信','icon'=>'&#xe604;','image'=>'icon/3.png','data'=>'18459276267','link'=>'sms://','type'=>'sms','enable_pc'=>1,'enable_mobile'=>1],
+                ['pc'=>0,'mobile'=>0,'name'=>'咨询','icon'=>'&#xe606;','image'=>'icon/5.png','data'=>'小E:156568451@QQ|客服-XX:10000@QQ|客服-YY:10000@53kf','type'=>'im','enable_pc'=>1,'enable_mobile'=>1],
+                ['pc'=>0,'mobile'=>0,'name'=>'地图','icon'=>'&#xe605;','image'=>'icon/4.png','data'=>'厦门市思明区观日路30号|118.17342,24.493927','type'=>'link','enable_pc'=>1,'enable_mobile'=>1],
+                ['pc'=>0,'mobile'=>0,'name'=>'分享','icon'=>'&#xe600;','image'=>'icon/8.png','data'=>['qqzone','txweibo','weibo','baidu'],'type'=>'share','enable_pc'=>1,'enable_mobile'=>1],
+                ['pc'=>0,'mobile'=>0,'name'=>'搜索','icon'=>'&#xe636;','image'=>'icon/8.png','data'=>'','type'=>'search','enable_pc'=>1,'enable_mobile'=>1],
             ];  
         if(!$QuickBar){
             $QuickBar = ['err' => 0, 'msg' => '获取成功！','data' =>$DefaultQuickBar];
