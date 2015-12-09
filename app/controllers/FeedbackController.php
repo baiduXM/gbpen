@@ -33,7 +33,7 @@ class FeedbackController extends BaseController{
 		$message['page']=Input::get('page');
 		$message['per_page']=Input::get('per_page');
 		$postFun=new CommonController;
-		echo $postFun->postsend("http://www.message.com/message/list.php",$message);
+		echo $postFun->postsend("http://swap.5067.org/admin/list.php",$message);
 	}
 }
 
