@@ -53,12 +53,14 @@
 .column_pic>label{width: 10%;}
 .box-down #page_editor{display: none;}
 .box-down .col_keyword_word{letter-spacing: 5px}
-.col_icon i{font-size: 21px;cursor: pointer;margin: 0 5px;}
-.col_icon_box{position: absolute;width: 83%;height: 155px;background: rgba(0,0,0,0.7);left: 70px;top: 30px;border-radius: 5px;z-index: 2;display: none;overflow-y: scroll;}
-.col_icon .arrow{border: 6px solid red;border-color: transparent transparent rgba(0,0,0,0.7) transparent;top: 18px;left: 80px;position: absolute;display: none;}
-.col_icon_box ul li{float: left;padding: 5px;margin: 5px;color: #fff;}
-.col_icon_box ul li i{font-size: 21px;}
-.col_icon_box ul li:hover{box-shadow: 0px 0px 8px #fff inset;cursor: pointer;}
+.icon_box{box-shadow: 0px 0px 5px #808080;padding: 5px 0;margin: 0 5px;}
+.icon_box.in{box-shadow: 0px 0px 8px #808080 inset;}
+.icon_box i{font-size: 21px;cursor: pointer;margin: 0 5px;}
+.icon_ousidebox{position: absolute;min-width: 560px;height: 155px;background: rgba(0,0,0,0.7);left: 0;top: 30px;border-radius: 5px;z-index: 2;display: none;overflow-y: scroll;}
+.icon_box .arrow{border: 6px solid red;border-color: transparent transparent rgba(0,0,0,0.7) transparent;top: 18px;left: 10px;position: absolute;display: none;}
+.icon_ousidebox ul li{float: left;padding: 5px;margin: 5px;color: #fff;}
+.icon_ousidebox ul li i{font-size: 21px;}
+.icon_ousidebox ul li:hover{box-shadow: 0px 0px 8px #fff inset;cursor: pointer;}
 .column-edit-box{cursor: pointer;position: relative;}
 .warning{position: absolute;right: 35px;bottom: -5px;color: rgb(255, 87, 87);}
 .list_mov,.list_set,.list_new{cursor: pointer;white-space: nowrap;text-overflow: ellipsis;}
@@ -199,7 +201,7 @@ i.fa-mobile{font-size: 25px;}
 .dropdown ~ label{display: block;margin-top: 5px;}
 span.move_icon{position: absolute;top: 0;right: -45px;height: 25px;line-height: 1.5;}
 .move_icon>i{margin: 5px;font-size: 12px;color: #5c5c5c;}
-.home-edite .add_icon{margin-left: 5px;color: #5c5c5c;}
+.home-edite .crl_icon{margin-left: 5px;color: #5c5c5c;}
 .homeed-right i:hover{color: #005AFF;}
 /*Home首页管理——end*/
 
@@ -551,8 +553,8 @@ border-radius: 5px;}
 #phone_index-quickbar .phone_quickbar_item .title{font-size: 16px;font-weight: bold;}
 #phone_index-quickbar .phone_quickbar_item .title:after{content:".";visibility:hidden;clear:both;display: block;}
 #phone_index-quickbar .phone_func_move{float: right;margin-top: -34px;color: #317EFF;display: none;cursor:move;}
-.phone_quickbar_item .phone_func li{margin: 10px auto;border:1px solid transparent;padding: 10px 10px;text-align: left;}
-.phone_quickbar_item .phone_func .message-num{margin-left: 20px;width: 125px;height: 21px;padding: 2px 0 2px 5px;border:solid 1px #999;}
+.phone_quickbar_item .phone_func>li{margin: 10px auto;border:1px solid transparent;padding: 10px 10px;text-align: left;}
+.phone_quickbar_item .phone_func .message-num{width: 125px;height: 21px;padding: 2px 0 2px 5px;border:solid 1px #999;}
 .phone_quickbar_item .phone_func .custom-menu-title{font-size: 14px;font-weight: bold;margin-right: 36px;}
 .phone_func .shareicon>i{margin: auto 10px;font-size: 24px;cursor: pointer;}
 .phone_quickbar_item .custom-menu-ul>li{padding: 10px;border:1px solid transparent;margin-bottom: 10px;}
@@ -573,6 +575,13 @@ border-radius: 5px;}
 .nsvshowtype-info-box li.cu span{color: #fff}
 .nsvshowtype-info-box img{width: 300px;height: 200px;display: block;}
 .nsvshowtype-content{overflow-y: scroll;}
+.quicklist-r{vertical-align: top;}
+.quicklist-r .linktop{margin-bottom: 10px;}
+.quicklist-r .linktop .message-num{margin:0 5px 10px 5px;width: 35%;}
+.quicklist-r .linktop .search{cursor: pointer;}
+.quicklist-r select{height: 27px;}
+.quicklist-r .crl_icon{height: 27px;line-height: 27px;margin-left: 5px;cursor: pointer;color:#505050;}
+.quicklist-r .consultation-item{margin-bottom: 5px;}
 /*其他*/
 #phone_index-other{margin: 0 auto;width: 50%;}
 #phone_index-other ul{float: left;width: 100%;}

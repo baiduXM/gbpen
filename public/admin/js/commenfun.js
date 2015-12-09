@@ -58,8 +58,8 @@ function tanchuang(ColumnInit){
         $('#page_editor').hide();
         $('#inside_model').addClass('none');
         $('#models').hide();
-        $('.col_icon_box,.col_icon .arrow').fadeOut();
-        $('.col_icon_box').siblings('i').removeClass('in');
+        $('.icon_ousidebox,.icon_box .arrow').fadeOut();
+        $('.icon_ousidebox').siblings('i').removeClass('in');
         $('.box-down .mod_border').each(function(){
             $(this).hasClass('cu')?$(this).removeClass('cu'):'';
         });
@@ -508,4 +508,40 @@ function checkjs(parame){
         }
     });     
 }
-    
+// 图标选择
+function icon_choose(){
+    this.clicks = function(){
+        var _this = this;
+        $('.icon_box>i').unbind('click').on('click',function(event) {
+            var event_this = $(this);
+            if($(this).parent().hasClass('in')){
+                $(this).siblings('.icon_ousidebox,.arrow').fadeOut();
+                $(this).parent().removeClass('in')
+            }else{
+                $(this).siblings('.icon_ousidebox,.arrow').fadeIn();
+                $(this).parent().addClass('in')
+            }
+            $.get('../icon-list',function(json){
+                checkJSON(json, function(json){
+                    var _div = '';
+                    $.each(json.icons,function(index, el) {
+                        _div += '<li name="'+el.replace('&', '&amp;')+'"><i class="iconfonts">'+el+'</i></li>';
+                    });
+                    event_this.siblings('.icon_ousidebox').find('ul').html(_div);
+                    _this._clickhide();
+                });
+            });
+        })  
+    },
+    this._clickhide = function(){
+        var _this = this;
+        $('.icon_ousidebox ul li').unbind('click').click(function(event) {
+            var _Pthis = $(this).closest('.icon_box');
+            _Pthis.children('i').before('<i class="iconfonts">'+$(this).attr('name')+'</i></li>').remove();
+            _Pthis.children('.icon_input').val($(this).attr('name'));
+            $('.icon_ousidebox,.icon_box .arrow').fadeOut();
+            _Pthis.removeClass('in')
+            _this.clicks();
+        });
+    }
+}

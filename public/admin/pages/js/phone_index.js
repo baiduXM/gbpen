@@ -634,46 +634,135 @@ function phone_indexController($scope,$http ,$location) {
     // 底部导航
     $scope.phoneIndexQuickbar = function(ele){
     	this.jsonData = ele;
-    	this.bottomnavsTypeUrl = 'json/bottomnavsType.json';
+    	this.QuickBarTypeUrl = 'json/bottomnavsType.json';
     	this.init();
     };
     $scope.phoneIndexQuickbar.prototype = {
     	init : function(){
-    		this.bottomnavs_info();
-    		this.bottomnavsType();
+    		this.QuickBarInfo();
+    		this.QuickBarType();
     	},
-    	bottomnavs_info : function(){
-    		var data = (this.jsonData == undefined ? null : this.jsonData.value),
+    	QuickBarInfo : function(){
+    		var data = (this.jsonData == undefined ? null : this.jsonData.value),_this = this,
 				_div1 = '',num,info;
 			$.each(this.jsonData,function(k,v){
-				info = (v.type == 'share' ? '<span class="shareicon ml5">\
-						<i class="iconfont icon-tengxunweibo '+($.inArray('txweibo', v.data) == -1 ? 'grey' : 'blue')+'" data-name="'+($.inArray('txweibo', v.data) == -1 ? 'txweibo' : '')+'"></i>\
-						<i class="iconfont icon-baidu '+($.inArray('baidu', v.data) == -1 ? 'grey' : 'blue')+'"  data-name="'+($.inArray('baidu', v.data) == -1 ? 'baidu' : '')+'"></i>\
-						<i class="iconfont icon-qqkongjian '+($.inArray('qqzone', v.data) == -1 ? 'grey' : 'blue')+'"  data-name="'+($.inArray('qqzone', v.data) == -1 ? 'qqzone' : '')+'"></i>\
-						<i class="iconfont icon-2 '+($.inArray('weibo', v.data) == -1 ? 'grey' : 'blue')+'"  data-name="'+($.inArray('weibo', v.data) == -1 ? 'weibo' : '')+'"></i></span>' : '<input type="text" value="'+v.data+'" class="message-num" />');
+				switch(v.type){
+					case 'tel':
+					case 'sms':
+						info = '<div class="quicklist-r inline-block"><span class="contact ml5"><input type="text" value="'+v.data+'" class="message-num" /></span></div>';
+						break;
+					case 'im':
+						info = '<div class="quicklist-r inline-block">\
+									<div class="consultation ml5">\
+									<ul class="fl">'
+									+function(){
+										var newArr = v.data.split('|'),_li = '';
+							    		for(var x in newArr){
+							    			var fg = newArr[x].split('@'),
+												kfname = fg[0].split(':')[0],kfnum = fg[0].split(':')[1];
+							    			_li += '<li class="consultation-item">\
+														<select><option value="qq"'+(fg[1] == 'qq' ? 'selected' : '')+'>QQ</option><option value="53kf"'+(fg[1] == '53kf' ? 'selected' : '')+'>53客服</option></select>\
+														<span><input class="consultation-name message-num" value="'+(kfname||'')+'" />-<input class="consultation-num message-num" value="'+(kfnum||'')+'" /></span>\
+														<div class="crl_icon fr"><i class="iconfont icon-guanbi"></i></div>\
+													</li>';
+							    		} 
+							    		return _li;
+									}()+'</ul><div class="crl_icon"><i class="iconfont icon-add"></i></div>\
+								</div></div>';
+						break;
+					case 'share':
+						info = '<div class="quicklist-r inline-block">\
+								<span class="shareicon ml5">\
+									<i class="iconfont icon-tengxunweibo '+($.inArray('txweibo', v.data) == -1 ? 'grey' : 'blue')+'" data-name="'+($.inArray('txweibo', v.data) == -1 ? '' : 'txweibo')+'"></i>\
+									<i class="iconfont icon-baidu '+($.inArray('baidu', v.data) == -1 ? 'grey' : 'blue')+'"  data-name="'+($.inArray('baidu', v.data) == -1 ? '' : 'baidu')+'"></i>\
+									<i class="iconfont icon-qqkongjian '+($.inArray('qqzone', v.data) == -1 ? 'grey' : 'blue')+'"  data-name="'+($.inArray('qqzone', v.data) == -1 ? '' : 'qqzone')+'"></i>\
+									<i class="iconfont icon-2 '+($.inArray('weibo', v.data) == -1 ? 'grey' : 'blue')+'"  data-name="'+($.inArray('weibo', v.data) == -1 ? '' : 'weibo')+'"></i>\
+								</span></div>';
+						break;
+					case 'link':
+						var point = v.data.split('|')[1] || '';
+						_this.pointX = point.split(',')[0] || '';
+						_this.pointY = point.split(',')[1] || '';
+						info = '<div class="quicklist-r inline-block">\
+									<div class="linktop"><input class="message-num" value="'+v.data.split('|')[0]+'" data-point="'+_this.pointX+','+_this.pointY+'" /><a class="search">搜索</a></div>\
+									<div id="bdmap"></div>\
+								</div>';
+						break;
+					case 'search':
+						info = '<div class="quicklist-r inline-block"></div>';
+						break;
+				}
 				_div1 += '<li class="move_feild">\n\
+							<div class="quicklist-l inline-block">\
 							<i class="fa iconfont icon-yidong"></i>\n\
 							<span><i class="fa icon-pc iconfont btn btn-show btn-desktop '+(v.pc_show?'blue':'grey')+'"></i><i class="fa iconfont icon-snimicshouji btn btn-show btn-mobile '+(v.mobile_show?'blue':'grey')+'"></i></span>\n\
-							<label class="message-name" data-type="'+v.type+'">'+v.name+'</label>'+info+'\n\
+							<label class="message-name" data-type="'+v.type+'">'+v.name+'</label>\
+							<span class="icon_box pr">\
+								<i class="iconfont '+(v.icon ? '' : 'icon-dengpao')+'">'+(v.icon || '')+'</i>\
+								<input type="hidden" name="'+v.type+'_icons" value="'+v.icon.replace('&', '&amp;')+'" class="icon_input" />\
+	                            <span class="arrow"></span>\
+	                            <div class="icon_ousidebox">\
+	                                <div class="box_content">\
+	                                    <ul></ul>\
+	                                </div>\
+	                            </div>\
+                            </span></div>'+info+'\n\
 						</li>';
 			});
 			$('.phone_quickbar_item .phone_func').append(_div1);
+			// 栏目图标
+            var columnicon = new icon_choose();
+            columnicon.clicks();
+
 			this.InputStyle();
 			this.ShowPos();
 			this.DragBlock();
 			this.SaveData();
+			this.QuickBarListFuc();
+    	},
+    	QuickBarListFuc : function(){
+    		// 咨询  
+    		$('.icon-add').click(function(){
+    			var clone_cell = $(this).closest('.consultation').find('.consultation-item').last().clone(true);
+    			$('.consultation ul').append(clone_cell);
+    		});
+    		// 百度地图
+    		this.BdMap();
+    	},
+    	BdMap : function(){
+    		// 百度地图API功能
+    		var pointX = this.pointX || null,pointY = this.pointY || null,
+				map = new BMap.Map("bdmap");          
+			map.centerAndZoom(new BMap.Point(116.404, 39.915), 15);
+			var local = new BMap.LocalSearch(map, {
+				renderOptions:{map: map}
+			});
+    		if(pointX){
+    			map.clearOverlays(); 
+    			var new_point = new BMap.Point(pointX, pointY);
+    			var marker = new BMap.Marker(new_point);  // 创建标注
+				map.addOverlay(marker);              // 将标注添加到地图中
+				map.panTo(new_point);
+    		}
+    		var keyword,points;
+    		$('.linktop .search').click(function(){
+    			keyword = $(this).siblings('.message-num').val();
+				local.search(keyword);
+				map.addEventListener("click", function (e) { 
+					pointX = e.point.lng;
+					pointY = e.point.lat;
+				});
+    		});
     	},
     	InputStyle : function(){
     		$('input').focus(function(){
-				$(this).addClass('input_border');
-				$(this).css('border','solid 1px #639cfb');
+				$(this).addClass('input_border').css('border','solid 1px #639cfb');
 			}).blur(function(){
-				$(this).removeClass('input_border')
-				$(this).css('border','solid 1px #999');
+				$(this).removeClass('input_border').css('border','solid 1px #999');
 			});
     	},
     	ShowPos : function(){
-    		$('.phone_func span i').click(function(){
+    		$('.phone_func span').not('.icon_box').find('i').click(function(){
 				$(this).hasClass('blue') ? $(this).removeClass('blue').addClass('grey') : $(this).removeClass('grey').addClass('blue');
 			});
     	},
@@ -684,12 +773,12 @@ function phone_indexController($scope,$http ,$location) {
 				oncallback 	: function(indexlist){}
 	       	});
     	},
-    	bottomnavsType : function(){
+    	QuickBarType : function(){
     		var _this = this;
     		$('.phone_quickbar_style .all_button').click(function(event) {
     			var html = '';
-		    	var ModelGetBottomnavs = function(platform){
-		    		$http.post(_this.bottomnavsTypeUrl,{platform: platform}).success(function(json){
+		    	var ModelGetQuickBar = function(platform){
+		    		$http.post(_this.QuickBarTypeUrl,{platform: platform}).success(function(json){
 			    		checkJSON(json,function(json){
 			    			var _div = '';
 			    			$.each(json.data,function(k, v) {
@@ -716,9 +805,9 @@ function phone_indexController($scope,$http ,$location) {
 			    	});
 		    	}
     			if($(this).closest('.pc_check_btn').length){
-    				ModelGetBottomnavs(1);
+    				ModelGetQuickBar(1);
     			}else if($(this).closest('.mob_check_btn').length){
-    				ModelGetBottomnavs(0);
+    				ModelGetQuickBar(0);
     			}
     		});
     	},
@@ -726,21 +815,41 @@ function phone_indexController($scope,$http ,$location) {
     		$('.phone_index-banner .save').click(function(){
 	    		var navsArray = new Array();
 		    	$('.phone_quickbar_item .phone_func .move_feild').each(function() {
-		    		var show = [],data = [];
-		    		$(this).find('span:eq(0) i').eq(0).hasClass('blue') ? show.push('pc') : '';
-		    		$(this).find('span:eq(0) i').eq(1).hasClass('blue') ? show.push('mobile') : '';
-		    		if($(this).find('span:eq(1) i').length != 0){
-		    			$.each($(this).find('span:eq(1) i'),function(index, ele) {
-		    				$(ele).hasClass('blue') ? data.push($(ele).data('name')) : '';
-		    			});
-		    		}else{
-		    			data.push($(this).find('input').val())
+		    		var show = [],data = [],icons,
+		    			type = $(this).find('.quicklist-l>.message-name').data('type');
+		    		icons = $(this).find('.icon_input').val();
+		    		switch(type){
+		    			case 'tel':
+	    				case 'sms':
+		    				data = $(this).find('.quicklist-r .message-num').val();
+		    				break;
+		    			case 'im':
+		    				var info = '',name,num,fs,
+		    					count = $(this).find('.consultation li').length;
+		    				$(this).find('.consultation li').each(function(i, j) {
+		    					name = $(this).find('.consultation-name').val();
+		    					num = $(this).find('.consultation-num').val();
+		    					fs = $(this).find('select').val();
+		    					info += (name+':'+num+'@'+fs+(count == 0 ? null : i == count-1 ? null : '|'));
+		    				});
+		    				data = info;
+		    				break;
+	    				case 'link':
+		    				data = $(this).find('.quicklist-r .linktop .message-num').val()+'|'+$(this).find('.quicklist-r .linktop .message-num').data('point')
+		    				break;
+	    				case 'share':
+		    				$(this).find('.quicklist-r .shareicon i').each(function(index, el) {
+		    					$(this).hasClass('blue') ? data.push($(this).data('name')) : null;
+		    				});
+		    				break;
 		    		}
 	    			navsArray.push({
-		    			name  : $(this).find('.message-name').text(),
+		    			name  : $(this).find('.quicklist-l>.message-name').text(),
+		    			icon  : icons,
 						data  : data,
-						enable: show,
-						type  : $(this).find('.message-name').data('type')
+						enable_pc: $(this).find('.quicklist-l span:eq(0) i').eq(0).hasClass('blue') ? 1 : 0,
+						enable_mobile: $(this).find('.quicklist-l span:eq(0) i').eq(1).hasClass('blue') ? 1 : 0,
+						type  : type
 		    		});				
 				});
 		    	$http.post('../quickbar.jsonmodify',{QuickBar: navsArray}).success(function(json){
