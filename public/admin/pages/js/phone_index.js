@@ -711,7 +711,7 @@ function phone_indexController($scope,$http ,$location) {
 			});
 			$('.phone_quickbar_item .phone_func').append(_div1);
 			// 栏目图标
-            var columnicon = new icon_choose();
+            var columnicon = new icon_choose(780);
             columnicon.clicks();
 
 			this.InputStyle();

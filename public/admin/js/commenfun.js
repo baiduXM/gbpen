@@ -509,10 +509,14 @@ function checkjs(parame){
     });     
 }
 // 图标选择
-function icon_choose(){
+function icon_choose(limintHeight){
     this.clicks = function(){
         var _this = this;
         $('.icon_box>i').unbind('click').on('click',function(event) {
+            if($(this).offset().top > limintHeight){
+                $(this).siblings('.icon_ousidebox').css({'top':'auto','bottom':'30px'}).end()
+                .siblings('.arrow').css({'border-color':'rgba(0,0,0,0.7) transparent transparent transparent','bottom':'18px','top':'auto'});
+            }
             var event_this = $(this);
             if($(this).parent().hasClass('in')){
                 $(this).siblings('.icon_ousidebox,.arrow').fadeOut();
