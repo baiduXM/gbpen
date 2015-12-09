@@ -53,7 +53,8 @@ function messageController($scope, $http ,$location) {
     		// 审核是否通过
     		$('.message-status').click(function(){
     			$(this).closest('.message-item').hasClass('gray') ? IsStatus = 1 : IsStatus = 0;
-    			$http.post('',{status:IsStatus}).success(function(json){
+                id = $(this).siblings('.message-del').data('id');
+    			$http.post('',{id:id,status:IsStatus}).success(function(json){
 	    			checkJSON(json,function(json){
 	    				IsStatus ? $(this).closest('.message-item').removeClass('gray') : $(this).closest('.message-item').addClass('gray');
 	    			})
