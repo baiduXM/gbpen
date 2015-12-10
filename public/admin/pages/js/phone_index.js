@@ -273,7 +273,7 @@ function phone_indexController($scope,$http ,$location) {
     $scope.phoneIndexSlidepics.prototype = {
     	init : function(){
     		this.ModelSlidepicsInfo = function(parameter){
-    			var _div = '<'+(parameter.Tag || 'li')+' class="phone_index-field new">\n\
+    			var _div = '<'+(parameter.Tag || 'li')+' class="phone_index-field'+(parameter.IsNew ? ' new' : '')+'">\n\
 						<div class="materlist-first">\n\
 			            	<dt class="title">'+(parameter.title || '')+'</dt>\n\
 			                <dd class="msgimg">\n\
@@ -375,7 +375,7 @@ function phone_indexController($scope,$http ,$location) {
 			
 			this.IsDelete();
     	},
-    	layoutChange : function(){
+    	layoutChange : function(){console.log('12');
     		// 改变列表布局
     		// 创建数组记录总个数
 			var arrTemp = [],arrHtml = [],maxLength = 0,changeNum = 0,newColumnNum;
@@ -418,6 +418,7 @@ function phone_indexController($scope,$http ,$location) {
 				}
 				$('#phone_index_images').html(htmlColumn);
 				this.slidepics_upload(lastColumnNum,newColumnNum,this.aspectRatio);
+				this.IsDelete();
 			}
     	},
     	slidepics_upload : function(lastColumnNum,ColumnNum,aspectRatio){
@@ -435,14 +436,16 @@ function phone_indexController($scope,$http ,$location) {
 		            		_newpic = _this.ModelSlidepicsInfo({
 								image	: json.data.url,
 								subimage: json.data.name,
-								Tag 	: 'div'
+								Tag 	: 'div',
+								IsNew   : true
 							});
 		            		$(event_this).parent().before(_newpic);
 		            	}else{
 			                _newpic = _this.ModelSlidepicsInfo({
 								image	: json.data.url,
 								subimage: json.data.name,
-								num		: ++(_this.count)
+								num		: ++(_this.count),
+								IsNew   : true
 							});
 							var addBtn = (lastColumnNum+1)%ColumnNum,
 								addpic = (lastColumnNum+2)%ColumnNum;
