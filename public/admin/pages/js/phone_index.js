@@ -673,10 +673,10 @@ function phone_indexController($scope,$http ,$location) {
 					case 'share':
 						info = '<div class="quicklist-r inline-block">\
 								<span class="shareicon ml5">\
-									<i class="iconfont icon-tengxunweibo '+($.inArray('tsina', v.data) == -1 ? 'grey' : 'blue')+'" data-name="tsina"></i>\
-									<i class="iconfont icon-baidu '+($.inArray('ibaidu', v.data) == -1 ? 'grey' : 'blue')+'"  data-name="ibaidu"></i>\
-									<i class="iconfont icon-qqkongjian '+($.inArray('qzone', v.data) == -1 ? 'grey' : 'blue')+'"  data-name="qzone"></i>\
-									<i class="iconfont icon-2 '+($.inArray('tqq', v.data) == -1 ? 'grey' : 'blue')+'"  data-name="tqq"></i>\
+									<i class="iconfonts '+($.inArray('tsina', v.data) == -1 ? 'grey' : 'blue')+'" data-name="tsina">&#xe653;</i>\
+									<i class="iconfonts '+($.inArray('ibaidu', v.data) == -1 ? 'grey' : 'blue')+'"  data-name="ibaidu">&#xe651;</i>\
+									<i class="iconfonts '+($.inArray('qzone', v.data) == -1 ? 'grey' : 'blue')+'"  data-name="qzone">&#xe652;</i>\
+									<i class="iconfonts '+($.inArray('tqq', v.data) == -1 ? 'grey' : 'blue')+'"  data-name="tqq">&#xe650;</i>\
 								</span></div>';
 						break;
 					case 'link':
