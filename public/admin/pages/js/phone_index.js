@@ -727,7 +727,7 @@ function phone_indexController($scope,$http ,$location) {
     			$('.consultation ul').append(clone_cell);
     		});
     		$('.icon-guanbi').on('click',function(){
-	       		$(this).closest('.consultation-item').remove();
+    			$('.consultation .consultation-item').length == 1 ? alert('请至少保留一个！') : $(this).closest('.consultation-item').remove();
 	       	});
     		// 百度地图
     		this.BdMap();
@@ -761,7 +761,7 @@ function phone_indexController($scope,$http ,$location) {
     			map.clearOverlays(); 
 				dragMarker(pointX,pointY);
     		}
-    		var keyword,points;
+    		var keyword;
     		$('.linktop .search').click(function(){
     			keyword = $(this).siblings('.message-num').val();
 				local.search(keyword);
