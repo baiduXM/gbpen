@@ -673,10 +673,10 @@ function phone_indexController($scope,$http ,$location) {
 					case 'share':
 						info = '<div class="quicklist-r inline-block">\
 								<span class="shareicon ml5">\
-									<i class="iconfont icon-tengxunweibo '+($.inArray('txweibo', v.data) == -1 ? 'grey' : 'blue')+'" data-name="txweibo"></i>\
-									<i class="iconfont icon-baidu '+($.inArray('baidu', v.data) == -1 ? 'grey' : 'blue')+'"  data-name="baidu"></i>\
-									<i class="iconfont icon-qqkongjian '+($.inArray('qqzone', v.data) == -1 ? 'grey' : 'blue')+'"  data-name="qqzone"></i>\
-									<i class="iconfont icon-2 '+($.inArray('weibo', v.data) == -1 ? 'grey' : 'blue')+'"  data-name="weibo"></i>\
+									<i class="iconfont icon-tengxunweibo '+($.inArray('tsina', v.data) == -1 ? 'grey' : 'blue')+'" data-name="tsina"></i>\
+									<i class="iconfont icon-baidu '+($.inArray('ibaidu', v.data) == -1 ? 'grey' : 'blue')+'"  data-name="ibaidu"></i>\
+									<i class="iconfont icon-qqkongjian '+($.inArray('qzone', v.data) == -1 ? 'grey' : 'blue')+'"  data-name="qzone"></i>\
+									<i class="iconfont icon-2 '+($.inArray('tqq', v.data) == -1 ? 'grey' : 'blue')+'"  data-name="tqq"></i>\
 								</span></div>';
 						break;
 					case 'link':
@@ -698,7 +698,7 @@ function phone_indexController($scope,$http ,$location) {
 							<span><i class="fa icon-pc iconfont btn btn-show btn-desktop '+(v.enable_pc == 1?'blue':'grey')+'"></i><i class="fa iconfont icon-snimicshouji btn btn-show btn-mobile '+(v.enable_mobile == 1?'blue':'grey')+'"></i></span>\n\
 							<label class="message-name" data-type="'+v.type+'">'+v.name+'</label>\
 							<span class="icon_box pr">\
-								<i class="iconfont '+(v.icon ? '' : 'icon-dengpao')+'">'+(v.icon || '')+'</i>\
+								<i class="iconfonts'+(v.icon ? '' : ' icon-dengpao')+'">'+(v.icon || '')+'</i>\
 								<input type="hidden" name="'+v.type+'_icons" value="'+v.icon.replace('&', '&amp;')+'" class="icon_input" />\
 	                            <span class="arrow"></span>\
 	                            <div class="icon_ousidebox">\
@@ -726,6 +726,9 @@ function phone_indexController($scope,$http ,$location) {
     			var clone_cell = $(this).closest('.consultation').find('.consultation-item').last().clone(true);
     			$('.consultation ul').append(clone_cell);
     		});
+    		$('.icon-guanbi').on('click',function(){
+	       		$(this).closest('.consultation-item').remove();
+	       	});
     		// 百度地图
     		this.BdMap();
     	},
@@ -737,22 +740,32 @@ function phone_indexController($scope,$http ,$location) {
 			var local = new BMap.LocalSearch(map, {
 				renderOptions:{map: map}
 			});
-    		if(pointX){
-    			map.clearOverlays(); 
+			var dragMarker = function(pointX,pointY){
     			var new_point = new BMap.Point(pointX, pointY);
+				map.panTo(new_point);
+				// 拖拽坐标
     			var marker = new BMap.Marker(new_point);  // 创建标注
 				map.addOverlay(marker);              // 将标注添加到地图中
-				map.panTo(new_point);
+				var label = new BMap.Label("拖拽坐标确定位置",{offset:new BMap.Size(20,-10)});
+				marker.setLabel(label);
+				map.addOverlay(marker); 
+				marker.setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画 
+				marker.enableDragging();    //可拖拽
+				marker.addEventListener("dragend", function(e){//将结果进行拼接并显示到对应的容器内
+					pointX = e.point.lng;
+					pointY = e.point.lat;
+					$('.quicklist-r .linktop .message-num').attr('data-point',pointX+','+pointY)
+				});
+			}
+    		if(pointX){
+    			map.clearOverlays(); 
+				dragMarker(pointX,pointY);
     		}
     		var keyword,points;
     		$('.linktop .search').click(function(){
     			keyword = $(this).siblings('.message-num').val();
 				local.search(keyword);
-				map.addEventListener("click", function (e) { 
-					pointX = e.point.lng;
-					pointY = e.point.lat;
-				});
-    		});
+    		}); 
     	},
     	InputStyle : function(){
     		$('input').focus(function(){
