@@ -314,8 +314,8 @@ class PrintController extends BaseController{
                 }
             }
         }
-		
-        return $result;
+        
+        return $result; 
     }
 
     /**

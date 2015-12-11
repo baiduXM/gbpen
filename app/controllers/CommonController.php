@@ -54,7 +54,7 @@ class CommonController extends BaseController{
         }else{
             $QuickBar = ['err' => 0, 'msg' => '获取成功！','data' =>$MobileQuickBar];
         }
-        return Response::Json($QuickBar);
+        return json_encode($QuickBar);
     }
     
     public function quickBarJsonModify(){
