@@ -461,7 +461,7 @@ function phone_indexController($scope,$http ,$location) {
 		        });
 		    });
 		},
-		IsDelete : function(ColumnNum){
+		IsDelete : function(){
 			var _this = this;
     		// 确定、取消按钮效果
 			$(".concrol-del").hover(function(){
@@ -487,8 +487,8 @@ function phone_indexController($scope,$http ,$location) {
 					_this.layoutChange(itemIdNum);
 					//幻灯片删除
 					if(!$(this).hasClass('new')){
-						var data = $(this).closest('form').serializeJson();
-						var data1 = ($(this).closest('form').serializeArray().length > 0?data:{slidepics : ""});
+						var data = $('#phone_index_images_'+itemIdNum).serializeJson();
+						var data1 = ($('#phone_index_images_'+itemIdNum).serializeArray().length > 0?data:{slidepics : ""});
 						$http.post('../mhomepage-modify',data1).success(function(){
 							phoneindexinit.Save_hint();
 						});
@@ -511,7 +511,7 @@ function phone_indexController($scope,$http ,$location) {
 		},
 		EditBtn : function(){
 			// 编辑功能
-			$('#phone_index_images').on('keyup','.materlist-second .input:nth-of-type(1) input',function(event) {
+			$('.materlist-second .input:nth-of-type(1) input').on('keyup',function(event) {
 				$(this).parents('.materlist-secondbox').siblings('.materlist-first').children('.title').text($(this).val());
 			});
 		}
