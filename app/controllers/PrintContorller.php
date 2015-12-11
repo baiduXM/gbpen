@@ -522,10 +522,10 @@ class PrintController extends BaseController{
                $quickbar=$quickbar['data'];
                foreach ($quickbar as $key=>$val){
                    if($this->type=='pc'){
-                      $quickbar[$key]['enable']=$quickbar[$key]['enable_pc'] ;
+                      $quickbar[$key]['enable']=intval($quickbar[$key]['enable_pc']);
                    }
                    else{
-                       $quickbar[$key]['enable']=$quickbar[$key]['enable_mobile'] ;
+                       $quickbar[$key]['enable']=intval($quickbar[$key]['enable_mobile']);
                    }
                    //TODO:删除enable_pc/enable_mobile键值
                    unset ($quickbar[$key]['enable_pc']);
