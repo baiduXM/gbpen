@@ -319,10 +319,10 @@ function phone_indexController($scope,$http ,$location) {
     	},
     	slidepics_info : function(){
     		// 幻灯片列表
-    		var htmlColumn = '',count,
+    		var htmlColumn = '',num = 1,
     			_this = this;
 			$.each(this.jsonData,function(index, ele) {
-				this.aspectRatio = ele.config.width/ele.config.height || '';
+				var aspectRatio = ele.config.width/ele.config.height || '';
 				if(ele.type == 'images'){
 					var data = ele.value,
 						oddColumnWidth = 315,									// 单列宽
@@ -330,9 +330,10 @@ function phone_indexController($scope,$http ,$location) {
 		    			ColumnNum = Math.floor(mainWidth/oddColumnWidth),		// 列数
 		    			lastColumnNum = (data.length%ColumnNum);				// 记录最终添加完的是第几列
 					// 添加瀑布流列
-					$('#phone_index_images').append('<div class="pictitle">多图文</div>');
+					$('#phone_index_image').before('<form id="phone_index_images_'+num+'"></form>');
+					$('#phone_index_images_'+num).append('<div class="pictitle">多图文'+num+'</div>').data({'lastColumnNum':lastColumnNum,'ColumnNum':ColumnNum,'aspectRatio':aspectRatio});
 					for(var i = 1;i <= ColumnNum;i++){
-						$('#phone_index_images').append('<ul id="phone_index_col'+i+'" class="phone_index_col" style="width:'+oddColumnWidth+'px"></ul>');
+						$('#phone_index_images_'+num).append('<ul id="phone_index_col_'+num+'_'+i+'" class="phone_index_col" style="width:'+oddColumnWidth+'px"></ul>');
 					}
 					$.each(data,function(k,v){
 						_this.count = k;
@@ -346,16 +347,16 @@ function phone_indexController($scope,$http ,$location) {
 							link	: v.link,
 							num		: k
 						});
-						$('#phone_index_col'+C_num+'').append(_div);
+						$('#phone_index_col_'+num+'_'+C_num+'').append(_div);
 					});
 					// 添加按钮
 					var addButton = '<div class="phone_index-add">\
 										<div class="up_pic up_phone"></div>\
 									</div>';
-					$('#phone_index_col'+(lastColumnNum+1)+'').append(addButton);
-					_this.slidepics_upload(lastColumnNum,ColumnNum,this.aspectRatio);
+					$('#phone_index_col_'+num+'_'+(lastColumnNum+1)+'').append(addButton);
+					num++;
 				}else{
-					var data = ele.value,
+					var data = ele.value,aspectRatio = ele.config.width/ele.config.height || '',
 						_div = _this.ModelSlidepicsInfo({
 							title	: data.title,
 							image	: data.image,
@@ -368,21 +369,20 @@ function phone_indexController($scope,$http ,$location) {
 										<div class="up_pic up_phone"></div>\
 									</div>';
 					$('#phone_index_image').append('<div class="pictitle">单图</div>');
-					$('#phone_index_image').append(_div+addButton);
-					_this.slidepics_upload();
+					$('#phone_index_image').append(_div+addButton).data('aspectRatio', aspectRatio);
 				}
 			});
-			
+			_this.slidepics_upload();
 			this.IsDelete();
     	},
-    	layoutChange : function(){console.log('12');
+    	layoutChange : function(itemIdNum){
     		// 改变列表布局
     		// 创建数组记录总个数
 			var arrTemp = [],arrHtml = [],maxLength = 0,changeNum = 0,newColumnNum;
 			// 新栏个数		
 			newColumnNum = Math.floor($('#phone_index').width() / 315);
 			for (var start = 1; start <= newColumnNum; start++) {
-				var arrColumn = $("#phone_index_col"+start).html().match(/<li(?:.|\n|\r|\s)*?li>/gi);
+				var arrColumn = $("#phone_index_col_"+itemIdNum+'_'+start).html().match(/<li(?:.|\n|\r|\s)*?li>/gi);
 				if (arrColumn) {
 					maxLength = Math.max(maxLength, arrColumn.length);
 					arrTemp.push(arrColumn);
@@ -407,7 +407,7 @@ function phone_indexController($scope,$http ,$location) {
 				// 重组HTML
 				var newStart = 0, htmlColumn = '';
 				for (newStart; newStart < newColumnNum; newStart++) {
-					htmlColumn = htmlColumn + '<ul id="phone_index_col'+ (newStart+1) +'" class="phone_index_col" style="width:315px">'+ 
+					htmlColumn = htmlColumn + '<ul id="phone_index_col_'+itemIdNum+'_'+(newStart+1) +'" class="phone_index_col" style="width:315px">'+ 
 						function() {
 							var html = '';
 							for (var i=0; i<line; i++) {
@@ -416,16 +416,19 @@ function phone_indexController($scope,$http ,$location) {
 							return html;	
 						}() + '</ul> ';	
 				}
-				$('#phone_index_images').html(htmlColumn);
-				this.slidepics_upload(lastColumnNum,newColumnNum,this.aspectRatio);
+				$('#phone_index_images_'+itemIdNum).html(htmlColumn).prepend('<div class="pictitle">多图文'+itemIdNum+'</div>');
+				this.slidepics_upload();
 				this.IsDelete();
 			}
     	},
-    	slidepics_upload : function(lastColumnNum,ColumnNum,aspectRatio){
-    		var _this = this,_newpic;
+    	slidepics_upload : function(){
+    		var _this = this,_newpic,i = 1;
 			// 添加图片弹框
     		$('.up_pic').on('click',function(event) {
-		        var warningbox = new WarningBox(),
+		        var warningbox = new WarningBox(),eventitemnum = $(this).closest('form').attr('id').split('_')[3],
+		        	lastColumnNum = $(this).closest('form').data('lastColumnNum'),
+		        	aspectRatio = $(this).closest('form').data('aspectRatio'),
+		        	ColumnNum = $(this).closest('form').data('ColumnNum'),
 		        	event_this = this;
 		        warningbox._upImage({
 		        	aspectRatio: aspectRatio,
@@ -449,8 +452,8 @@ function phone_indexController($scope,$http ,$location) {
 							});
 							var addBtn = (lastColumnNum+1)%ColumnNum,
 								addpic = (lastColumnNum+2)%ColumnNum;
-			                $('#phone_index_col'+(addBtn == 0 ? (lastColumnNum+1) : addBtn)+'').append(_newpic);
-			                $('#phone_index_col'+(addpic == 0 ? (lastColumnNum+2) : addpic)+'').append($(event_this).parent());
+			                $('#phone_index_col_'+eventitemnum+'_'+(addBtn == 0 ? (lastColumnNum+1) : addBtn)+'').append(_newpic);
+			                $('#phone_index_col_'+eventitemnum+'_'+(addpic == 0 ? (lastColumnNum+2) : addpic)+'').append($(event_this).parent());
 			                lastColumnNum++;
 		            	}
 						_this.IsDelete();
@@ -478,13 +481,14 @@ function phone_indexController($scope,$http ,$location) {
 				$(this).parents(".phone_index-field").find(".zz").hide();
 			})
 			$('.detailbox .surebtn').click(function(){
+				var itemIdNum = $(this).closest('.phone_index_col').attr('id').split('_')[3];
 				$(this).parents('.phone_index-field').fadeOut('400', function() { 
 					$(this).remove();
-					_this.layoutChange();
+					_this.layoutChange(itemIdNum);
 					//幻灯片删除
 					if(!$(this).hasClass('new')){
-						var data = $("#phone_index_images").serializeJson();
-						var data1 = ($("#phone_index_images").serializeArray().length > 0?data:{slidepics : ""});
+						var data = $(this).closest('form').serializeJson();
+						var data1 = ($(this).closest('form').serializeArray().length > 0?data:{slidepics : ""});
 						$http.post('../mhomepage-modify',data1).success(function(){
 							phoneindexinit.Save_hint();
 						});
@@ -495,13 +499,9 @@ function phone_indexController($scope,$http ,$location) {
 				var _this = $(this).closest('.phone_index-field');
 				$(this).parents(".phone_index-field").find(".materlist-secondbox,.detailbox").slideUp();
 				$(this).parents(".phone_index-field").find(".zz").hide();
-				var PC_name = $(this).parents('.materlist-secondbox').find('input[name=PC_name]').val(),
-					PC_link = $(this).parents('.materlist-secondbox').find('input[name=PC_link]').val(),
-					phone_info_pic = $(this).parents('.materlist-secondbox').siblings('input[name=phone_info_pic]').val(),
-					id = $(this).parents('.materlist-secondbox').siblings('.materlist-first').children('.concrol').find('.concrol-del').attr('id');
 				if($(this).parents('div').hasClass('materlist-secondbox')){
 					//幻灯片保存
-					var data = $("#phone_index_images").serializeJson();
+					var data = $(this).closest('form').serializeJson();
 					$http.post('../mhomepage-modify',data).success(function(){
 						phoneindexinit.Save_hint();
 						_this.removeClass('new');
