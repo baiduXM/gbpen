@@ -519,6 +519,19 @@ class PrintController extends BaseController{
                $CommonCont = new CommonController();
                $quickbar=$CommonCont->quickBarJsonInit();
                $quickbar=json_decode($quickbar,true);
+               $quickbar=$quickbar['data'];
+               foreach ($quickbar as $key=>$val){
+                   if($this->type=='pc'){
+                      $quickbar[$key]['enable']=$quickbar[$key]['enable_pc'] ;
+                   }
+                   else{
+                       $quickbar[$key]['enable']=$quickbar[$key]['enable_mobile'] ;
+                   }
+                   //TODO:删除enable_pc/enable_mobile键值
+                   unset ($quickbar[$key]['enable_pc']);
+                   unset ($quickbar[$key]['enable_mobile']);
+               }
+               //print_r($quickbar);exit;
                 //quickbar按钮
 //                $global_data=WebsiteConfig::where('cus_id',$this->cus_id)->where('type',2)->where('template_id',$this->tpl_id)->pluck('value');
 //                if($global_data){
