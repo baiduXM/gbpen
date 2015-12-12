@@ -1790,6 +1790,7 @@ class PrintController extends BaseController{
             }
         }
         $result = $this->pagePublic($article->c_id); 
+        
         if(!is_array($result['navs'])){
             $result['navs']=array();
         }
@@ -1802,6 +1803,7 @@ class PrintController extends BaseController{
                 $pagenavs = [];
             }
         }
+        dd($pagenavs);
         $result['pagenavs']=$pagenavs;
         $result['posnavs']=$this->getPosNavs($article->c_id);
         $result['title'] = $article->title;
