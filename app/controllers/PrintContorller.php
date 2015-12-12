@@ -1790,9 +1790,7 @@ class PrintController extends BaseController{
             }
         }
         $result = $this->pagePublic($article->c_id); 
-        if(!is_array($result)){
-            $result=array();
-        }
+        dd($result);
         foreach($result['navs'] as $nav){
             if($nav['current']==1){
                 $pagenavs = $nav['childmenu'];
