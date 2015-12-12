@@ -1800,10 +1800,10 @@ class PrintController extends BaseController{
                 break;
             }
             else{
+                dd('121515');
                 $pagenavs = [];
             }
         }
-        dd($pagenavs);
         $result['pagenavs']=$pagenavs;
         $result['posnavs']=$this->getPosNavs($article->c_id);
         $result['title'] = $article->title;
