@@ -1802,6 +1802,7 @@ class PrintController extends BaseController{
                 $pagenavs = [];
             }
         }
+        dd($result['pagenavs']);
         $result['pagenavs']=$pagenavs;
         $result['posnavs']=$this->getPosNavs($article->c_id);
         $result['title'] = $article->title;
