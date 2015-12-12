@@ -515,57 +515,60 @@ class PrintController extends BaseController{
                        $config['style']['iconColor']=$config['style']['textColor']?$config['style']['textColor']:'';
                    }
                }
-                
+               
+               $CommonCont = new CommonController();
+               $quickbar=$CommonCont->quickBarJsonInit();
+               $quickbar=json_decode($quickbar,true);
                 //quickbar按钮
-                $global_data=WebsiteConfig::where('cus_id',$this->cus_id)->where('type',2)->where('template_id',$this->tpl_id)->pluck('value');
-                if($global_data){
-                    $global_data = unserialize($global_data);
-                    $global_data=$this->detailList($global_data);
-                }else{
-                    $global_data=$this->mobilePageList('global',true);
-                    $global_data=$this->detailList($global_data);
-                }
-                $this->replaceUrl($global_data);
-                $quickbar="";
-                if(isset($global_data['bottomnavs']) && is_array($global_data['bottomnavs'])){
-                    foreach($global_data['bottomnavs'] as &$val){
-                        $val['id']=isset($val['id'])?$val['id']:'';                 
-                        switch($val['type']){
-                            case "tel" :
-                                $val['icon']=isset($val['icon'])?$val['icon']:'&#xe602;';
-                                $val['link']="tel:".$val['data'];
-                                break;
-                            case "sms" :
-                                $val['icon']=isset($val['icon'])?$val['icon']:'&#xe604;';
-                                $val['link']="sms:".$val['data'];
-                                break;
-                            case "im"  :
-                                $val['icon']=isset($val['icon'])?$val['icon']:'&#xe606;';
-                                $val['link']=$val['data'];
-                                $val['enable']=0;
-                                break;
-                            case "share" :
-                                $val['icon']=isset($val['icon'])?$val['icon']:'&#xe600;';
-                                $val['link']='javascript:void(0);';
-                                break;
-                            case "link" :                 
-                                $val['icon']=isset($val['icon'])?$val['icon']:'&#xe605;';
-                                $address=CustomerInfo::where('cus_id',$this->cus_id)->pluck('address');
-                                $val['link']='http://map.baidu.com/mobile/webapp/search/search/qt=s&wd='.$address.'/vt=map/?fromhash=1';
-                                break;
-                            }
-                    }
-                    $quickbar=$global_data['bottomnavs'];
-                }else{
-                    $quickbar=[
-                        ['name'=>'电话','icon'=>'&#xe602;','image'=>'icon/2.png','data'=>'','link'=>'tel://','type'=>'tel','enable'=>1],
-                        ['name'=>'短信','icon'=>'&#xe604;','image'=>'icon/3.png','data'=>'','link'=>'sms://','type'=>'sms','enable'=>1],
-                        ['name'=>'咨询','icon'=>'&#xe606;','image'=>'icon/5.png','data'=>'10000@QQ','link'=>'javascript:void(0);','type'=>'im','enable'=>0],
-                        ['name'=>'地图','icon'=>'&#xe605;','image'=>'icon/4.png','data'=>'','link'=>'http://map.baidu.com','type'=>'link','enable'=>1],
-                        ['name'=>'分享','icon'=>'&#xe600;','image'=>'icon/8.png','data'=>'','link'=>'javascript:void(0);','type'=>'share','enable'=>1],
-                        ['name'=>'搜索','icon'=>'&#xe636;','image'=>'icon/8.png','data'=>'','link'=>'javascript:void(0);','type'=>'search','enable'=>0],
-                    ];  
-                }
+//                $global_data=WebsiteConfig::where('cus_id',$this->cus_id)->where('type',2)->where('template_id',$this->tpl_id)->pluck('value');
+//                if($global_data){
+//                    $global_data = unserialize($global_data);
+//                    $global_data=$this->detailList($global_data);
+//                }else{
+//                    $global_data=$this->mobilePageList('global',true);
+//                    $global_data=$this->detailList($global_data);
+//                }
+//                $this->replaceUrl($global_data);
+//                $quickbar="";
+//                if(isset($global_data['bottomnavs']) && is_array($global_data['bottomnavs'])){
+//                    foreach($global_data['bottomnavs'] as &$val){
+//                        $val['id']=isset($val['id'])?$val['id']:'';                 
+//                        switch($val['type']){
+//                            case "tel" :
+//                                $val['icon']=isset($val['icon'])?$val['icon']:'&#xe602;';
+//                                $val['link']="tel:".$val['data'];
+//                                break;
+//                            case "sms" :
+//                                $val['icon']=isset($val['icon'])?$val['icon']:'&#xe604;';
+//                                $val['link']="sms:".$val['data'];
+//                                break;
+//                            case "im"  :
+//                                $val['icon']=isset($val['icon'])?$val['icon']:'&#xe606;';
+//                                $val['link']=$val['data'];
+//                                $val['enable']=0;
+//                                break;
+//                            case "share" :
+//                                $val['icon']=isset($val['icon'])?$val['icon']:'&#xe600;';
+//                                $val['link']='javascript:void(0);';
+//                                break;
+//                            case "link" :                 
+//                                $val['icon']=isset($val['icon'])?$val['icon']:'&#xe605;';
+//                                $address=CustomerInfo::where('cus_id',$this->cus_id)->pluck('address');
+//                                $val['link']='http://map.baidu.com/mobile/webapp/search/search/qt=s&wd='.$address.'/vt=map/?fromhash=1';
+//                                break;
+//                            }
+//                    }
+//                    $quickbar=$global_data['bottomnavs'];
+//                }else{
+//                    $quickbar=[
+//                        ['name'=>'电话','icon'=>'&#xe602;','image'=>'icon/2.png','data'=>'','link'=>'tel://','type'=>'tel','enable'=>1],
+//                        ['name'=>'短信','icon'=>'&#xe604;','image'=>'icon/3.png','data'=>'','link'=>'sms://','type'=>'sms','enable'=>1],
+//                        ['name'=>'咨询','icon'=>'&#xe606;','image'=>'icon/5.png','data'=>'10000@QQ','link'=>'javascript:void(0);','type'=>'im','enable'=>0],
+//                        ['name'=>'地图','icon'=>'&#xe605;','image'=>'icon/4.png','data'=>'','link'=>'http://map.baidu.com','type'=>'link','enable'=>1],
+//                        ['name'=>'分享','icon'=>'&#xe600;','image'=>'icon/8.png','data'=>'','link'=>'javascript:void(0);','type'=>'share','enable'=>1],
+//                        ['name'=>'搜索','icon'=>'&#xe636;','image'=>'icon/8.png','data'=>'','link'=>'javascript:void(0);','type'=>'search','enable'=>0],
+//                    ];  
+//                }
                 //快捷导航
                 $navs = Classify::where('cus_id',$this->cus_id)->where('mobile_show',1)->select('id','type','name','en_name','icon','url','p_id','en_name')->OrderBy('sort','asc')->get()->toArray();
                 if(count($navs)){
@@ -586,13 +589,20 @@ class PrintController extends BaseController{
                     }
                 }
                 $classify=new Classify();
+
                 $catlist=$classify->toTree($navs);
+                if(!is_array($catlist)){
+                    $catlist=array();
+                }
                 array_unshift($catlist,array('id'=>null,'name'=>'首页','en_name'=>'Home','url'=>$this->site_url,'childmenu'=>null));
                 $quickbarCallback=array('config'=>$config,'quickbar'=>$quickbar,'catlist'=>$catlist);
                 if($this->showtype=='preview'){
                     echo "quickbarCallback(".json_encode($quickbarCallback).")";
                 }else{
-                    file_put_contents(public_path("customers/".$this->customer.($this->type!='pc'?'/mobile':'').'/quickbar.json'),"quickbarCallback(".json_encode($quickbarCallback).")");
+                    if($this->type=='pc'){
+                       file_put_contents(public_path("customers/".$this->customer.'/quickbar.json'),"quickbarCallback(".json_encode($quickbarCallback).")");
+                    }
+                  file_put_contents(public_path("customers/".$this->customer.'/mobile'.'/quickbar.json'),"quickbarCallback(".json_encode($quickbarCallback).")");
                 }
             }
         }
@@ -686,9 +696,11 @@ class PrintController extends BaseController{
         if($this->showtype=='preview'){
             $name=  Customer::where('id',$this->cus_id)->pluck('name');
             if($this->type=='pc'){
-                $pc_domain=$name.'s.5.67.org';
+                $pc_domain=$name.'.s.5067.org';
+                $search_url = 'http://'.$pc_domain.'/search.html?id='.$this->cus_id.'&type=pc';
             }else{
-                $pc_domain=$name.'m.s.5.67.org';
+                $pc_domain=$name.'.m.s.5067.org';
+                $search_url = 'http://'.$pc_domain.'/search.html?id='.$this->cus_id.'&type=mobile';
             }
         }else{
             if($this->type=='pc'){
@@ -697,6 +709,7 @@ class PrintController extends BaseController{
                     $domain_arr=parse_url($pc_domain);
                     $pc_domain=$domain_arr['host'];
                     $pc_domain="http://wwvv.".ltrim($pc_domain,'www.');
+                    $search_url = $pc_domain.'/search.html?id='.$this->cus_id.'&type=pc';
                 }
             }else{
                 $pc_domain=CustomerInfo::where('cus_id',$this->cus_id)->pluck('mobile_domain');
@@ -704,6 +717,7 @@ class PrintController extends BaseController{
                     $domain_arr=parse_url($pc_domain);
                     $pc_domain=$domain_arr['host'];
                     $pc_domain="http://wwvv.m.".ltrim($pc_domain,'www.');
+                    $search_url = $pc_domain.'/search.html?id='.$this->cus_id.'&type=mobile';
                 }
             }
         }
@@ -1550,34 +1564,34 @@ class PrintController extends BaseController{
                     $result['list']['content'] =preg_replace('/\/customers\/'.$this->customer.'/i','',Page::where('id',$classify->page_id)->pluck('content'));                   
                 }   
             }elseif($classify->type==5){
-                $result['list']['content'] ='<form action="http://swap.5067.org/admin/add.php" method="post" name="messageboard" onsubmit="return CheckPost();" class="elegant-aero">
+                $result['list']['content'] ='<form action="http://swap.5067.org/message/'.$this->cus_id.'" method="post" name="messageboard" onsubmit="return CheckPost();" class="elegant-aero">
                     <h1>留言板
-                    <span>请填写您的留言。</span>
+                    <span>message board</span>
                     </h1>
                     <label>
                     <span>姓名 :</span>
-                    <input id="name" type="text" name="name" placeholder="您的姓名" />
+                    <input id="name" type="text" name="name" placeholder="Name" />
                     </label>
                     <label>
                     <span>标题 :</span>
-                    <input id="title" type="text" name="title" placeholder="标题" />
+                    <input id="title" type="text" name="title" placeholder="Title" />
                     </label>
                     <label>
                     <span>描述 :</span>
-                    <input id="descript" type="text" name="descript" placeholder="描述" />
+                    <input id="descript" type="text" name="descript" placeholder="Descript" />
                     </label>
                     <label>
                     <span>Email :</span>
-                    <input id="email" type="email" name="email" placeholder="Email地址" />
+                    <input id="email" type="email" name="email" placeholder="Email Address" />
                     </label>
                     <label>
                     <span>联系电话 :</span>
-                    <input id="telephone" type="text" name="telephone" placeholder="您的联系方式" />
+                    <input id="telephone" type="tel" name="telephone" placeholder="Telephone" />
                     </label>
                     <label>
                     <label>
                     <span>内容 :</span>
-                    <textarea id="content" name="content" placeholder="您的想法...."></textarea>
+                    <textarea id="content" name="content" placeholder="You mind ...."></textarea>
                     </label>
                     <label>
                     <span>&nbsp;</span>
@@ -1605,12 +1619,14 @@ class PrintController extends BaseController{
                 .elegant-aero {
                 margin-left:auto;
                 margin-right:auto;
+                width: 100%;
                 max-width: 500px;
                 /*background: #D2E9FF;*/
                 padding: 20px 20px 20px 20px;
                 font: 12px Arial, Helvetica, sans-serif;
                 color: #666;
                 }
+                .input[placeholder]{color:#5c5c5c;}
                 .elegant-aero h1 {
                 font: 24px "Trebuchet MS", Arial, Helvetica, sans-serif;
                 padding: 10px 10px 10px 20px;
@@ -1640,7 +1656,7 @@ class PrintController extends BaseController{
                 margin-top: 10px;
                 font-weight: bold;
                 }
-                .elegant-aero input[type="text"], .elegant-aero input[type="email"], .elegant-aero textarea, .elegant-aero select {
+                .elegant-aero input[type="text"], .elegant-aero input[type="tel"], .elegant-aero input[type="email"], .elegant-aero textarea, .elegant-aero select {
                 color: #888;
                 width: 70%;
                 padding: 0px 0px 0px 5px;
@@ -1703,6 +1719,14 @@ class PrintController extends BaseController{
                                 alert("必须要填写留言内容");
                                 messageboard.content.focus();
                                 return false;
+                        }
+                        if (messageboard.telephone.value!="")
+                        {
+                                if(isNaN(messageboard.telephone.value)){
+                                    alert("电话号码请填写数字");
+                                    messageboard.telephone.focus();
+                                    return false;
+                                }
                         }
                 }
                 </SCRIPT>';
