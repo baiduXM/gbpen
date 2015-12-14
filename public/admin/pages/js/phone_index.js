@@ -70,7 +70,6 @@ function phone_indexController($scope,$http ,$location) {
 					    			var QuickbarInit = new $scope.phoneIndexQuickbar(json.data);
 					    		});
 					    	});
-				    		var QuickbarInit = new $scope.phoneIndexQuickbar(_this.quickbarType);
 				    	}
 					    if(Area_name == 'other'){
 					    	mpagetype = 'other';
@@ -630,13 +629,13 @@ function phone_indexController($scope,$http ,$location) {
     // 底部导航
     $scope.phoneIndexQuickbar = function(ele){
     	this.jsonData = ele;
-    	this.QuickBarTypeUrl = '../quickbar.jsoninit';
+    	this.QuickBarShowTypeUrl = '../quickbar.jsoninit';
     	this.init();
     };
     $scope.phoneIndexQuickbar.prototype = {
     	init : function(){
     		this.QuickBarInfo();
-    		this.QuickBarType();
+    		this.QuickBarShowType();
     	},
     	QuickBarInfo : function(){
     		var data = (this.jsonData == undefined ? null : this.jsonData.value),_this = this,
@@ -781,12 +780,12 @@ function phone_indexController($scope,$http ,$location) {
 				oncallback 	: function(indexlist){}
 	       	});
     	},
-    	QuickBarType : function(){
+    	QuickBarShowType : function(){
     		var _this = this;
     		$('.phone_quickbar_style .all_button').click(function(event) {
     			var html = '';
 		    	var ModelGetQuickBar = function(platform){
-		    		$http.post(_this.QuickBarTypeUrl,{platform: platform}).success(function(json){
+		    		$http.post(_this.QuickBarShowTypeUrl,{platform: platform}).success(function(json){
 			    		checkJSON(json,function(json){
 			    			var _div = '';
 			    			$.each(json.data,function(k, v) {
