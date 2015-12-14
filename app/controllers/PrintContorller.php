@@ -1811,7 +1811,6 @@ class PrintController extends BaseController{
                 break;
             }
             else{
-                dd('121515');
                 $pagenavs = [];
             }
         }
