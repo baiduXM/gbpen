@@ -15,8 +15,8 @@ function columnController($scope, $http) {
     } );
     $scope.ColumnInit = function(){
         checkjs(location.hash.match(/[a-z]+?$/));
-        this.json_url = '../classify-list';
-        // this.json_url = 'json/column.json';
+        // this.json_url = '../classify-list';
+        this.json_url = 'json/column.json';
         this.upload_picname = '';
         this.this_id = '';
         this.vlayout = '';
@@ -76,7 +76,7 @@ function columnController($scope, $http) {
                     column_icon(ele.type);
                     _div +='<td><div class="tit_info">'+column_type(ele.type)+'</div>'+layout+'</td>';
                     _div += '<td style="text-align:center;"><span><i class="fa icon-pc iconfont btn btn-show btn-desktop '+(ele.pc_show?'blue':'grey')+'"></i></span><div class="pr size1"><i class="fa iconfont icon-snimicshouji btn btn-show btn-mobile '+(ele.mobile_show?'blue':'grey')+'"></i><i class="fa iconfont btn icon-phonehome none '+(ele.show == 1?'blue':'grey')+(ele.showtypetotal == 0?' not-allowed':'')+'"></i></div><span><i class="fa iconfont icon-weixin btn btn-show btn-wechat '+(ele.wechat_show?'blue':'grey')+'"></i></span></td>\n\
-                    <td><i class="fa iconfont icon-xiayi btn sort"></i><i class="fa iconfont icon-shangyi btn sort"></i><a style="margin:0 10px;" class="column-edit-box"><i class="fa iconfont icon-bianji column-edit"></i><div class="warning"><i class="iconfont'+(ele.difsize?' icon-gantanhao':'')+'"></i></div></a><a class="delv" name="'+ele.id+'"><i class="fa iconfont icon-delete"></i></a></td>\n\
+                    <td><i class="fa iconfont icon-xiayi btn sort"></i><i class="fa iconfont icon-shangyi btn sort"></i><a style="margin:0 10px;" class="column-edit-box"><i class="fa iconfont icon-bianji column-edit"></i><div class="warning"><i class="iconfont'+(ele.img_err?' icon-gantanhao':'')+'"></i></div></a><a class="delv" name="'+ele.id+'"><i class="fa iconfont icon-delete"></i></a></td>\n\
                     </tr>';
                     var NextChild = ele,
                         num = 2;
@@ -88,7 +88,7 @@ function columnController($scope, $http) {
                                         column_icon(v.type);
                                         _div +='<td><div class="tit_info">'+column_type(v.type)+'</div>'+layout+'</td>';
                                     _div +='<td style="text-align:center;"><span><i class="fa iconfont icon-pc btn btn-show btn-desktop '+(v.pc_show?'blue':'grey')+'"></i></span><div class="pr size1"><i class="iconfont icon-snimicshouji fa btn btn-show btn-mobile '+(v.mobile_show?'blue':'grey')+'"></i><i class="fa iconfont btn icon-phonehome none '+(v.show?'blue':'grey')+(v.showtypetotal == 0?' not-allowed':'')+'"></i></div><span><i class="fa iconfont icon-weixin btn btn-show btn-wechat '+(v.wechat_show?'blue':'grey')+'"></i></span></td>\n\
-                                    <td><i class="fa iconfont icon-xiayi btn sort grey "></i><i class="fa iconfont icon-shangyi btn sort grey "></i><a style="margin:0 10px;" class="column-edit-box"><i class="fa iconfont icon-bianji grey column-edit"></i><div class="warning"><i class="iconfont'+(v.difsize?' icon-gantanhao':'')+'"></i></div></a><a class="delv" name="'+v.id+'"><i class="fa iconfont icon-delete grey "></i></a></td></tr>';
+                                    <td><i class="fa iconfont icon-xiayi btn sort grey "></i><i class="fa iconfont icon-shangyi btn sort grey "></i><a style="margin:0 10px;" class="column-edit-box"><i class="fa iconfont icon-bianji grey column-edit"></i><div class="warning"><i class="iconfont'+(v.img_err?' icon-gantanhao':'')+'"></i></div></a><a class="delv" name="'+v.id+'"><i class="fa iconfont icon-delete grey "></i></a></td></tr>';
                                 if(v.childmenu != null){
                                     NextChild = v;
                                     num++;
@@ -123,26 +123,27 @@ function columnController($scope, $http) {
                         LoopChlid(NextChild,num);
                     }
                 });
-                var _op1 = '<span>父级栏目：</span><div class="dropdown">\
+                var _op1 = '<span>父级栏目：</span><div class="dropdown inline-block">\
                         <div class="selectBox" data-id="0" type="text">请选择</div><span class="arrow"></span>\
                         <input class="selectBox_val" name="column_name" class="column_name" type="hidden" value=""/>\
                         <ul>'+option1+'</ul></div>';
                 $('.f_column').html(_op1);
             }
             // 页面展示
-            // $.each(json.infos,function(idx, ele) {
-            //     $.each(ele.data,function(i, j) {
-            //         option2 += '<li><a data-id="'+j.key+'" data-name="'+ele.ename+'" title="【'+ele.name+'】'+j.value+'">【'+ele.name+'】'+j.value+'</a></li>';
-            //     });
-            // });
-            // var _op2 = '<span>页面展示：</span><div class="dropdown">\
-            //         <div class="selectBox" data-id="0" type="text">请选择</div><span class="arrow"></span>\
-            //         <input class="selectBox_val" name="index_val" type="hidden" value=""/>\
-            //         <input class="selectBox_name" name="index_name" type="hidden" value=""/>\
-            //         <ul>'+option2+'</ul></div>';
-            // $('.index_showtype').html(_op2);
+            $.each(json.infos,function(idx, ele) {
+                $.each(ele.data,function(i, j) {
+                    option2 += '<li><a data-id="'+ele.ename+','+j.key+'" data-name="'+ele.ename+'" data-size="'+j.img_width+','+j.img_height+','+j.img_forcesize+'" data-type="'+j.type+'" title="【'+ele.name+'】'+j.value+'">【'+ele.name+'】'+j.value+'</a></li>';
+                });
+            });
+            var _op2 = '<span>页面展示：</span><div class="dropdown inline-block">\
+                    <div class="selectBox" data-id="1" data-size=""></div><span class="arrow"></span>\
+                    <input class="selectBox_val" name="index_val" type="hidden" value=""/>\
+                    <input class="selectBox_name" name="index_name" type="hidden" value=""/>\
+                    <ul>'+option2+'</ul></div>';
+            $('.index_showtype').html(_op2);
             $('.a-table').html(_div);
             $('.icon-gantanhao').MoveBox({
+                Trigger : 'mouseenter',
                 context : '图片限制尺寸发生改变，请修改！'
             });
             // 下拉框模拟事件
@@ -150,7 +151,7 @@ function columnController($scope, $http) {
             // 站点展示
             this.column_show();
             // 栏目图标
-            var columnicon = new this.column_icon_choose();
+            var columnicon = new icon_choose();
             columnicon.clicks();
             // 栏目编辑提交
             this.column_edit(editor);
@@ -158,47 +159,11 @@ function columnController($scope, $http) {
             this.column_del();
             // 栏目提交移动
             this.Column_Move();
-            // 图片上传
-            this.Column_Upload('');
             //列表展开
             $(".iconbtn").unbind('click').on('click',function(){      
                 $(this).parents('tr').nextUntil('.Level1').slideToggle();  
                 $(this).children().toggleClass("disnone");      
             });
-        },
-        column_icon_choose : function(){
-            this.clicks = function(){
-                var _this = this;
-                $('.col_icon>i').unbind('click').on('click',function(event) {
-                    if($(this).hasClass('in')){
-                        $('.col_icon_box,.col_icon .arrow').fadeOut();
-                        $(this).removeClass('in')
-                    }else{
-                        $('.col_icon_box,.col_icon .arrow').fadeIn();
-                        $(this).addClass('in')
-                    }
-                    $http.get('../icon-list').success(function(json){
-                        checkJSON(json, function(json){
-                            var _div = '';
-                            $.each(json.icons,function(index, el) {
-                                _div += '<li name="'+el.replace('&', '&amp;')+'"><i class="iconfonts">'+el+'</i></li>';
-                            });
-                            $('.col_icon_box ul').html(_div);
-                            _this._clickhide();
-                        });
-                    });
-                })  
-            },
-            this._clickhide = function(){
-                var _this = this;
-                $('.col_icon_box ul li').unbind('click').click(function(event) {
-                    var _Pthis = $(this).closest('.col_icon');
-                    _Pthis.children('i').before('<i class="iconfonts">'+$(this).attr('name')+'</i></li>').remove();
-                    _Pthis.children('.icon_input').val($(this).attr('name'));
-                    $('.col_icon_box,.col_icon .arrow').fadeOut();
-                    _this.clicks();
-                });
-            } 
         },
         column_type_info : function(type){
             // 转化弹框栏目类型
@@ -241,12 +206,14 @@ function columnController($scope, $http) {
             // 点击编辑
             var _this = this;
             $('.a-table').unbind('click').on('click','.column-edit',function(){
-                var proportion;
                 _this.this_id = $(this).parent().siblings('.delv').attr('name');
-                $http.get('../classify-info?id='+_this.this_id+'').success(function(json) {
-                // $http.get('json/classify-info.json').success(function(json) {
+                // $http.get('../classify-info?id='+_this.this_id+'').success(function(json) {
+                $http.get('json/classify-info.json').success(function(json) {
                     var d = json.data;
+<<<<<<< HEAD
                     // proportion = json.data.width/json.data.height;
+=======
+>>>>>>> feature/phonetype
                     // 对应父级栏目
                     $('.f_column .dropdown li a').each(function() {
                         if($(this).data('id') == d.p_id){
@@ -256,7 +223,10 @@ function columnController($scope, $http) {
                     });
                     $('.index_showtype .dropdown li a').each(function() {
                         if($(this).data('id') == d.index_key){
-                            $('.index_showtype .selectBox').attr('data-id',d.index_key).text($(this).text());
+                            $('.index_showtype .selectBox').attr({
+                                'data-id':$(this).data('id'),
+                                'data-size':$(this).data('size')
+                            }).text($(this).text());
                             $('.index_showtype .selectBox_val').val(d.index_key);
                             $('.index_showtype .selectBox_name').val($(this).data('name'));
                         };
@@ -267,11 +237,23 @@ function columnController($scope, $http) {
                     $('.icon_input').val(d.icon);
                     d.icon ? $('.col_icon>i').before('<i class="iconfonts">'+d.icon+'</i>').remove() : $('.col_icon>i').before('<i class="iconfont icon-dengpao"></i>').remove();
                     // 栏目图标
-                    var columnicon = new _this.column_icon_choose();
+                    var columnicon = new icon_choose();
                     columnicon.clicks();
                     $('.en_name').val(d.en_name);
                     $('#out_url input').val(d.url);
                     _this.column_type_info(d.type);
+                    // 联动更改内容展示
+                    if($('#lottery').val() == '列表'){
+                        _this.Model_DiffSize('list');
+                    }else if($('#lottery').val() == 4){
+                        _this.Model_DiffSize('page');
+                    }else if($('#lottery').val() == 6){
+                        _this.Model_DiffSize('link');
+                    }
+                    $('.index_showtype li a').click(function(){
+                        _this.Model_DiffSize(0,$(this).data('size').split(',')[2]);
+                    });
+                    // 内页版式
                     if(d.article_type == 1){
                         $('#inside_model i[name=1]').parent().addClass('cu');                                
                     }else{
@@ -292,7 +274,7 @@ function columnController($scope, $http) {
                     }
                     $('.box-down .keyword').val(d.keywords);
                     var _newpic = '';
-                    if(d.img){
+                    if(d.img && !d.img_err){
                         _newpic += '<div class="template-download fade fl in">\n\
                                     <div>\n\
                                         <span class="preview">\n\
@@ -302,9 +284,9 @@ function columnController($scope, $http) {
                                     </div>\n\
                                 </div>';
                         $('.up_pic').before(_newpic);
+                        var slt_arry = d.img.split('/');
+                        _this.upload_picname = slt_arry[(slt_arry.length-1)];
                     }
-                    var slt_arry = d.img.split('/');
-                    _this.upload_picname = slt_arry[(slt_arry.length-1)];
                     $('.txts').val(d.description);
                 });//GET请求结束
                 $('#bomb-box').fadeIn(function(){
@@ -312,14 +294,17 @@ function columnController($scope, $http) {
                 });
                 $('#bomb-box').addClass('in');
                 $('.box-up').text('编辑栏目');
+<<<<<<< HEAD
                 // 图片上传
                 _this.Column_Upload('');
+=======
+                // 更改内容展示
+                _this.DiffPicSisze();
+>>>>>>> feature/phonetype
             });//点击结束
         },
         listType : function(){
             var _this = this;
-            /*//弹窗处理
-            tanchuang(this);*/
             //下拉列表
             $('#lottery').change(function(){
                 //清除数据
@@ -389,13 +374,11 @@ function columnController($scope, $http) {
             if(parame == 1){
                 this.this_id = 1
             }
-            console.log('_Save_id:'+this.this_id);
             return this.this_id;
         },
         _SaveColumn : function(){
             var article_type,_this = this;
             $('.save_column').click(function(){
-            console.log('_SaveColumn:'+_this.this_id);
                 if($('#lottery').val() == '列表'){
                     $('#models .tpl_info').each(function(){
                         if($(this).parent().hasClass('cu')){
@@ -479,8 +462,8 @@ function columnController($scope, $http) {
             });//click保存结束
         },
         all_id : function(){
-            var id_all = new Array();
-            j = 0;
+            var id_all = new Array(),
+                j = 0;
             $('.label').each(function(i){
                if($(this).hasClass("nchecked")){
                    id_all[j] = $(this).parent().parent().siblings().find('.delv').attr('name');j++;
@@ -740,7 +723,39 @@ function columnController($scope, $http) {
             });//移动点击结束
         },
         DiffPicSisze : function(){
-
+            var _this = this;
+            $('#lottery').change(function(event) {
+                $('.index_showtype .selectBox').attr('data-id', 0).text('请选择').siblings('input:hidden').val('');
+                if($(this).val() == '列表'){
+                    _this.Model_DiffSize('list');
+                }else if($(this).val() == 4){
+                    _this.Model_DiffSize('page');
+                }else if($(this).val() == 6){
+                    _this.Model_DiffSize('link');
+                }
+            });
+        },
+        Model_DiffSize : function(type,bool){
+            var proportion;
+            if(type){
+                $('.index_showtype li a').each(function(index, el) {
+                    $(this).data('type') == type ? $(this).parent().show() : $(this).parent().hide();
+                    $(this).data('id') == 0 ? $(this).parent().show() : null;
+                    // 默认select为请选择
+                });
+            }
+            var limitSize = $('.index_showtype .selectBox').data('size').split(','),
+                forces = bool || limitSize[2],
+                imgErr;
+            if(limitSize[0] && limitSize[1]){
+                $('.column_pic .colum_description_txt').html('<div '+(forces == 'true' ? 'class="fb"' : '')+'>('+limitSize[0]+'*'+limitSize[1]+')</div>'+(imgErr == "1" ? '<div class="warning"><i class="iconfont icon-gantanhao"></i></div>' : ''));
+                // 图片上传
+                proportion = limitSize[0]/limitSize[1];
+                this.Column_Upload(proportion);
+            }else{
+                this.Column_Upload();
+                $('.column_pic .colum_description_txt').html('(建议'+(limitSize[0] == '' ? (limitSize[1] == '' ? '' : '高为:'+limitSize[1]) : '宽为:'+limitSize[0])+')')
+            }
         }
     };
     var init = new $scope.ColumnInit();

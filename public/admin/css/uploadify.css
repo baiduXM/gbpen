@@ -17,7 +17,10 @@ Released under the MIT License <http://www.opensource.org/licenses/mit-license.p
 	position: absolute;
 	top: 10%;
 	left: 28%;
+	width: 40%;
 }
+.batch_title{position: absolute;margin-bottom: 1em;position: absolute;top: 14%;left: 60%;}
+.batch_title li{margin: 25px auto;}
 .uploadify-queue-item {
 	background-color: #F5F5F5;
 	-webkit-border-radius: 3px;

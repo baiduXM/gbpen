@@ -314,8 +314,8 @@ class PrintController extends BaseController{
                 }
             }
         }
-		
-        return $result;
+        
+        return $result; 
     }
 
     /**
@@ -519,6 +519,19 @@ class PrintController extends BaseController{
                $CommonCont = new CommonController();
                $quickbar=$CommonCont->quickBarJsonInit();
                $quickbar=json_decode($quickbar,true);
+               $quickbar=$quickbar['data'];
+               foreach ($quickbar as $key=>$val){
+                   if($this->type=='pc'){
+                      $quickbar[$key]['enable']=intval($quickbar[$key]['enable_pc']);
+                   }
+                   else{
+                       $quickbar[$key]['enable']=intval($quickbar[$key]['enable_mobile']);
+                   }
+                   //TODO:删除enable_pc/enable_mobile键值
+                   unset ($quickbar[$key]['enable_pc']);
+                   unset ($quickbar[$key]['enable_mobile']);
+               }
+               //print_r($quickbar);exit;
                 //quickbar按钮
 //                $global_data=WebsiteConfig::where('cus_id',$this->cus_id)->where('type',2)->where('template_id',$this->tpl_id)->pluck('value');
 //                if($global_data){
@@ -696,11 +709,9 @@ class PrintController extends BaseController{
         if($this->showtype=='preview'){
             $name=  Customer::where('id',$this->cus_id)->pluck('name');
             if($this->type=='pc'){
-                $pc_domain=$name.'.s.5067.org';
-                $search_url = 'http://'.$pc_domain.'/search.html?id='.$this->cus_id.'&type=pc';
+                $pc_domain=$name.'s.5.67.org';
             }else{
-                $pc_domain=$name.'.m.s.5067.org';
-                $search_url = 'http://'.$pc_domain.'/search.html?id='.$this->cus_id.'&type=mobile';
+                $pc_domain=$name.'m.s.5.67.org';
             }
         }else{
             if($this->type=='pc'){
@@ -709,7 +720,6 @@ class PrintController extends BaseController{
                     $domain_arr=parse_url($pc_domain);
                     $pc_domain=$domain_arr['host'];
                     $pc_domain="http://wwvv.".ltrim($pc_domain,'www.');
-                    $search_url = $pc_domain.'/search.html?id='.$this->cus_id.'&type=pc';
                 }
             }else{
                 $pc_domain=CustomerInfo::where('cus_id',$this->cus_id)->pluck('mobile_domain');
@@ -717,7 +727,6 @@ class PrintController extends BaseController{
                     $domain_arr=parse_url($pc_domain);
                     $pc_domain=$domain_arr['host'];
                     $pc_domain="http://wwvv.m.".ltrim($pc_domain,'www.');
-                    $search_url = $pc_domain.'/search.html?id='.$this->cus_id.'&type=mobile';
                 }
             }
         }
@@ -1564,34 +1573,34 @@ class PrintController extends BaseController{
                     $result['list']['content'] =preg_replace('/\/customers\/'.$this->customer.'/i','',Page::where('id',$classify->page_id)->pluck('content'));                   
                 }   
             }elseif($classify->type==5){
-                $result['list']['content'] ='<form action="http://swap.5067.org/message/'.$this->cus_id.'" method="post" name="messageboard" onsubmit="return CheckPost();" class="elegant-aero">
+                $result['list']['content'] ='<form action="http://swap.5067.org/admin/add.php" method="post" name="messageboard" onsubmit="return CheckPost();" class="elegant-aero">
                     <h1>留言板
-                    <span>message board</span>
+                    <span>请填写您的留言。</span>
                     </h1>
                     <label>
                     <span>姓名 :</span>
-                    <input id="name" type="text" name="name" placeholder="Name" />
+                    <input id="name" type="text" name="name" placeholder="您的姓名" />
                     </label>
                     <label>
                     <span>标题 :</span>
-                    <input id="title" type="text" name="title" placeholder="Title" />
+                    <input id="title" type="text" name="title" placeholder="标题" />
                     </label>
                     <label>
                     <span>描述 :</span>
-                    <input id="descript" type="text" name="descript" placeholder="Descript" />
+                    <input id="descript" type="text" name="descript" placeholder="描述" />
                     </label>
                     <label>
                     <span>Email :</span>
-                    <input id="email" type="email" name="email" placeholder="Email Address" />
+                    <input id="email" type="email" name="email" placeholder="Email地址" />
                     </label>
                     <label>
                     <span>联系电话 :</span>
-                    <input id="telephone" type="tel" name="telephone" placeholder="Telephone" />
+                    <input id="telephone" type="text" name="telephone" placeholder="您的联系方式" />
                     </label>
                     <label>
                     <label>
                     <span>内容 :</span>
-                    <textarea id="content" name="content" placeholder="You mind ...."></textarea>
+                    <textarea id="content" name="content" placeholder="您的想法...."></textarea>
                     </label>
                     <label>
                     <span>&nbsp;</span>
@@ -1619,14 +1628,12 @@ class PrintController extends BaseController{
                 .elegant-aero {
                 margin-left:auto;
                 margin-right:auto;
-                width: 100%;
                 max-width: 500px;
                 /*background: #D2E9FF;*/
                 padding: 20px 20px 20px 20px;
                 font: 12px Arial, Helvetica, sans-serif;
                 color: #666;
                 }
-                .input[placeholder]{color:#5c5c5c;}
                 .elegant-aero h1 {
                 font: 24px "Trebuchet MS", Arial, Helvetica, sans-serif;
                 padding: 10px 10px 10px 20px;
@@ -1656,7 +1663,7 @@ class PrintController extends BaseController{
                 margin-top: 10px;
                 font-weight: bold;
                 }
-                .elegant-aero input[type="text"], .elegant-aero input[type="tel"], .elegant-aero input[type="email"], .elegant-aero textarea, .elegant-aero select {
+                .elegant-aero input[type="text"], .elegant-aero input[type="email"], .elegant-aero textarea, .elegant-aero select {
                 color: #888;
                 width: 70%;
                 padding: 0px 0px 0px 5px;
@@ -1720,14 +1727,6 @@ class PrintController extends BaseController{
                                 messageboard.content.focus();
                                 return false;
                         }
-                        if (messageboard.telephone.value!="")
-                        {
-                                if(isNaN(messageboard.telephone.value)){
-                                    alert("电话号码请填写数字");
-                                    messageboard.telephone.focus();
-                                    return false;
-                                }
-                        }
                 }
                 </SCRIPT>';
             }
@@ -1790,7 +1789,11 @@ class PrintController extends BaseController{
                 break;
             }
         }
-        $result = $this->pagePublic($article->c_id);        
+        $result = $this->pagePublic($article->c_id); 
+        
+        if(!is_array($result['navs'])){
+            $result['navs']=array();
+        }
         foreach($result['navs'] as $nav){
             if($nav['current']==1){
                 $pagenavs = $nav['childmenu'];

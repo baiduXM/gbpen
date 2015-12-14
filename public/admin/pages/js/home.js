@@ -186,7 +186,7 @@ function homeController($scope, $http) {
 								});
 								_rel += '<div class="dropdown" style="margin-bottom:10px;">\
 	                            <div class="selectBox" type="text">'+pname+'</div><span class="arrow"></span>'+sign+'\
-	                            <ul>'+list1+'</ul><span class="move_icon"><i class="iconfont icon-liebiao"></i><i class="iconfont icon-guanbi"></i></span></div>'+(idx == (v.config.ids.length-1) ? '<div class="add_icon"><i class="iconfont icon-add" data-limit="'+v.config.limit+'"></i></div>' : '')+'';
+	                            <ul>'+list1+'</ul><span class="move_icon"><i class="iconfont icon-liebiao"></i><i class="iconfont icon-guanbi"></i></span></div>'+(idx == (v.config.ids.length-1) ? '<div class="crl_icon"><i class="iconfont icon-add" data-limit="'+v.config.limit+'"></i></div>' : '')+'';
 							});
 						}else{
 							list1 += '<li><a >暂无内容！</a></li>'
@@ -213,14 +213,20 @@ function homeController($scope, $http) {
 	       		$(this).closest('.dropdown').remove();
 	       	});
 	       	// 添加拖拽栏目
-			$('.add_icon i').on('click', function(event) {
+			$('.crl_icon i').on('click', function(event) {
 	       		if($(this).parent().siblings('.dropdown').length >= $(this).data('limit')){
 	       			alert('超出数量！')
 	       		}else{
+<<<<<<< HEAD
 	       			var clone_cell = $('#move_navs .dropdown').first().clone(true);
+					$('#move_navs .crl_icon').before(clone_cell);
+=======
+	       			var lastNum = parseInt($('#move_navs .dropdown').last().find('.selectBox_val').attr('name').match(/\[(\d*)\]/)[1])+1,
+	       				clone_cell = $('#move_navs .dropdown').last().clone(true);
 					$('#move_navs .add_icon').before(clone_cell);
+>>>>>>> feature/phonetype
 					clone_cell.find('.selectBox').text('空').end().find('.selectBox_val').val('');
-					var word = clone_cell.find('.selectBox_val').attr('name').replace(/data\[(.*)\]\[(.*)\]\[(\d*)\]/,'data[$1][$2]['+($('#move_navs .dropdown').length-1)+']');
+					var word = clone_cell.find('.selectBox_val').attr('name').replace(/data\[(.*)\]\[(.*)\]\[(\d*)\]/,'data[$1][$2]['+lastNum+']');
 					clone_cell.find('.selectBox_val').attr('name',word);
 	       		}
 			});
