@@ -30,6 +30,7 @@ function phone_indexController($scope,$http ,$location) {
 				$('.phone_index_btn .save').show();
 				$('#phone_index .phone_index_btn').width(122)
 			}
+			$('#phone_index-'+Area_name).show();
     		// 获取手机切换标签
 		    $http.get(this.maininfourl).success(function(json){
 		    	checkJSON(json,function(json){ 
@@ -115,14 +116,6 @@ function phone_indexController($scope,$http ,$location) {
 					$(this).addClass('border_red').siblings().removeClass('border_red');
 	    		}
 	    	});
-	    	// 内容页显隐
-	    	$('.phone_index-content>div').each(function(){
-				var page = $(this).attr('id').split("-");
-				if(mpagetype == page[1]){
-					$(this).show();
-					$(this).siblings().hide();
-	    		}
-	    	}); 
     	}
     };
     var phoneindexinit = new $scope.phoneIndexInit();
@@ -637,7 +630,7 @@ function phone_indexController($scope,$http ,$location) {
     // 底部导航
     $scope.phoneIndexQuickbar = function(ele){
     	this.jsonData = ele;
-    	this.QuickBarTypeUrl = 'json/bottomnavsType.json';
+    	this.QuickBarTypeUrl = '../quickbar.jsoninit';
     	this.init();
     };
     $scope.phoneIndexQuickbar.prototype = {
@@ -648,7 +641,7 @@ function phone_indexController($scope,$http ,$location) {
     	QuickBarInfo : function(){
     		var data = (this.jsonData == undefined ? null : this.jsonData.value),_this = this,
 				_div1 = '',num,info;
-			$.each(this.jsonData,function(k,v){
+			$.each(this.jsonData,function(k,v){console.log(v);
 				switch(v.type){
 					case 'tel':
 					case 'sms':
