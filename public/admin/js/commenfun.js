@@ -131,11 +131,7 @@ var ercodeDrop = {
 ercodeDrop._init('.phone-content .notice');
 
 // 弹框警告
-<<<<<<< HEAD
 var WarningBox = function(del,warning_context){
-=======
-var WarningBox = function(del,warning_context){console.log('12');
->>>>>>> feature/phonetype
     this.context = $.extend(true,{
         warning_context : '∑(っ°Д ° )っ你确定删除吗？',
         IsBaseShow : false
@@ -158,12 +154,9 @@ var WarningBox = function(del,warning_context){console.log('12');
             $(this).hide();
             $(this).next().hide();
         });
-<<<<<<< HEAD
         $('.warning_box .cancel').click(function(){
             $('.warning_box ').hide().prev().hide();
         });
-=======
->>>>>>> feature/phonetype
     };
     this.ng_fuc =  function(){
         this.init();
@@ -222,11 +215,7 @@ WarningBox.prototype = {
                 crop: function (e) {
                     $('.cutsize').text(Math.round(e.width)+' * '+Math.round(e.height));
                 }
-<<<<<<< HEAD
             };
-=======
-            };console.log($image.cropper());
->>>>>>> feature/phonetype
             $image.cropper(options);
             this._UpFunction($image,defaults.ajaxurl,defaults.IsBaseShow,defaults.oncallback);
         }else{
@@ -355,12 +344,9 @@ WarningBox.prototype = {
             });
             $('.warning_box ').hide().prev().hide();
         });
-<<<<<<< HEAD
-=======
         $('.warning_box .cancel').click(function(){
             $('.warning_box ').hide().prev().hide();
         });
->>>>>>> feature/phonetype
     }
 }
 // 模拟下拉框事件
@@ -525,7 +511,6 @@ function checkjs(parame){
         }
     });     
 }
-<<<<<<< HEAD
 // 图标选择
 function icon_choose(limintHeight){
     this.clicks = function(){
@@ -567,6 +552,3 @@ function icon_choose(limintHeight){
         });
     }
 }
-=======
-    
->>>>>>> feature/phonetype
