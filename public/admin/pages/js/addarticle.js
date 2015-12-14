@@ -46,8 +46,8 @@ function addarticleController($scope, $http, $location) {
     // 栏目显示
     function column_show(){
         checkjs(location.hash.match(/[a-z]+?$/));
-        // $http.get('../classify-list').success(function(json) {
-        $http.get('json/column.json').success(function(json) {
+        $http.get('../classify-list').success(function(json) {
+        // $http.get('json/column.json').success(function(json) {
             checkJSON(json, function(json){
                 var d = json.data;
                 var option1 = '',pid,pname='',id;
