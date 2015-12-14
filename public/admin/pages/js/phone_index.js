@@ -399,7 +399,7 @@ function phone_indexController($scope,$http ,$location) {
 				// 计算每列的行数
 				var line = Math.ceil(arrHtml.length / newColumnNum);
 				// 重组HTML
-				var newStart = 0, htmlColumn = '';
+				var newStart = 0, htmlColumn = '<div class="pictitle">多图文'+itemIdNum+'</div>';
 				for (newStart; newStart < newColumnNum; newStart++) {
 					htmlColumn = htmlColumn + '<ul id="phone_index_col_'+itemIdNum+'_'+(newStart+1) +'" class="phone_index_col" style="width:315px">'+ 
 						function() {
@@ -410,8 +410,8 @@ function phone_indexController($scope,$http ,$location) {
 							return html;	
 						}() + '</ul> ';	
 				}
-				$('#phone_index_images').html(htmlColumn);
-				this.slidepics_upload(lastColumnNum,newColumnNum,this.aspectRatio);
+				$('#phone_index_images_'+itemIdNum).html(htmlColumn);
+				this.slidepics_upload();
 			}
     	},
     	slidepics_upload : function(){
