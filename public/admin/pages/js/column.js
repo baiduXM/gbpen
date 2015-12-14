@@ -240,16 +240,16 @@ function columnController($scope, $http) {
                     $('#out_url input').val(d.url);
                     _this.column_type_info(d.type);
                     // 联动更改内容展示
-                    if($('#lottery').val() == '列表'){
-                        _this.Model_DiffSize('list');
-                    }else if($('#lottery').val() == 4){
-                        _this.Model_DiffSize('page');
-                    }else if($('#lottery').val() == 6){
-                        _this.Model_DiffSize('link');
-                    }
-                    $('.index_showtype li a').click(function(){
-                        _this.Model_DiffSize(0,$(this).data('size').split(',')[2]);
-                    });
+                    // if($('#lottery').val() == '列表'){
+                    //     _this.Model_DiffSize('list');
+                    // }else if($('#lottery').val() == 4){
+                    //     _this.Model_DiffSize('page');
+                    // }else if($('#lottery').val() == 6){
+                    //     _this.Model_DiffSize('link');
+                    // }
+                    // $('.index_showtype li a').click(function(){
+                    //     _this.Model_DiffSize(0,$(this).data('size').split(',')[2]);
+                    // });
                     // 内页版式
                     if(d.article_type == 1){
                         $('#inside_model i[name=1]').parent().addClass('cu');                                
