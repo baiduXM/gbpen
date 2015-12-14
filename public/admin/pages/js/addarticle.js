@@ -101,8 +101,8 @@ function addarticleController($scope, $http, $location) {
                 $('.f_column').append(_op);
                 // 下拉框模拟事件
                 DropdownEvent(PageId);
-                // 图片限制
-                AddarticlePicLimit();
+                // 图片尺寸限制
+                // AddarticlePicLimit();
                 $('.not-allowed').MoveBox({context:'此为含有子级的父级栏目或为单页内容页，不支持选择！'});
             });
         });
