@@ -344,6 +344,9 @@ WarningBox.prototype = {
             });
             $('.warning_box ').hide().prev().hide();
         });
+        $('.warning_box .cancel').click(function(){
+            $('.warning_box ').hide().prev().hide();
+        });
     }
 }
 // 模拟下拉框事件

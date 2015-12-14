@@ -12,13 +12,13 @@ function articleController($scope, $http ,$location) {
     $scope.ser_name = $_GET['ser_name'] == undefined ? null : $_GET['ser_name'];
     // Model
     $scope.getArticleList = function(option){
-        var page = option.page || $scope.page; 
-        var cat_id = option.cat_id || $scope.cat_id;
-        var num_per_page = option.num_per_page || $scope.num_per_page;
-        var page_num = option.page_num || $scope.page_num;
-        var is_star = option.is_star || $scope.is_star;
-        var ser_active = option.ser_active;
-        var ser_name = option.ser_name || $scope.ser_name;
+        var page = option.page || $scope.page,
+            cat_id = option.cat_id || $scope.cat_id,
+            num_per_page = option.num_per_page || $scope.num_per_page,
+            page_num = option.page_num || $scope.page_num,
+            is_star = option.is_star || $scope.is_star,
+            ser_active = option.ser_active,
+            ser_name = option.ser_name || $scope.ser_name;
         option.back == undefined?'':option.back == 1? window.location.hash = '#/article':'';
         $http.get('../article-manage?per_page='+num_per_page+(cat_id == null ? '' : '&c_id='+cat_id+'')+(is_star == null ? '' : '&is_star='+is_star+'')+'&page='+page+'').success(function(json) {
             checkJSON(json, function(json){
@@ -93,7 +93,7 @@ function articleController($scope, $http ,$location) {
                                             <span><i class="fa iconfont icon-weixin btn btn-show btn-wechat '+(v.wechat_show?'blue':'grey')+'"></i></span>\n\
                                         </td>\n\
                                         <td>'+v.created_at+'</td>\n\
-                                        <td><a style="margin:0 10px;" class="column-edit" href="#/addarticle?id='+v.id+'&c_id='+v.c_id+'"><i class="fa iconfont icon-bianji "></i></a><a class="delv" name="'+v.id+'"><i class="fa iconfont icon-delete mr5"></i></a></td>\n\
+                                        <td><a style="margin:0 10px;" class="column-edit pr" href="#/addarticle?id='+v.id+'&c_id='+v.c_id+'"><i class="fa iconfont icon-bianji"></i><div class="warning"><i class="iconfont'+(v.img_err?' icon-gantanhao':'')+'"></i></div></a><a class="delv" name="'+v.id+'"><i class="fa iconfont icon-delete mr5"></i></a></td>\n\
                                     </tr>';
                     });
                     $('.a-table').html(_div);
@@ -222,7 +222,7 @@ function articleController($scope, $http ,$location) {
             this._delete();
             this._batchdel();
             this._showPlatform();
-            // this._batchAdd();
+            this._batchAdd();
             // this._batchEdit();
         },
         _checkstar : function(){
@@ -281,17 +281,16 @@ function articleController($scope, $http ,$location) {
                         $('.article-tb .a-table .article-check label[class*="nchecked"]').parents('td').siblings('td:nth-of-type(2)').text(mov_text);
                         var hint_box = new Hint_box();
                         hint_box;
-                    },function(json){
-                        alert('1')
                     });
                 });
             });
         },
         _setInfoClassify : function(){
+            var r_this = this;
             //设为
             $('.list_set a').click(function(){
-                var set_name = $(this).attr('name');
-                var set_val = $(this).attr('value');
+                var set_name = $(this).attr('name'),
+                    set_val = $(this).attr('value');
                 if(id_all = null){
                     alert('请选择更改的文章！')
                 }
@@ -306,8 +305,7 @@ function articleController($scope, $http ,$location) {
                                     _this.parent().siblings('.tit_info').find('.tit_pic').remove();
                                     _this.parent().siblings('.tit_info').append('<img class="tit_pic" />');
                                 }else{
-                                    _this.parent().siblings('.tit_info').children('.tit_pic').addClass('cancle_star');
-                                    _this.parent().siblings('.tit_info').children('.tit_pic').css('background-position','0px -34px');
+                                    _this.parent().siblings('.tit_info').children('.tit_pic').addClass('cancle_star').css('background-position','0px -34px');
                                 }
                                 break;
                             case "set_top":
@@ -319,61 +317,25 @@ function articleController($scope, $http ,$location) {
                                 }
                                 break;
                             case "set_pcshow":
-                                if(set_val == 1){
-                                    _this.parents('td').siblings().find('span .btn-desktop').each(function(){
-                                        if(!$(this).hasClass('blue')){
-                                            _this.parents('td').siblings().find('span .btn-desktop').removeClass('grey');
-                                            _this.parents('td').siblings().find('span .btn-desktop').addClass('blue');
-                                        }
-                                    });
-                                }else{
-                                    _this.parents('td').siblings().find('span .btn-desktop').each(function(){
-                                        if($(this).hasClass('blue')){
-                                            _this.parents('td').siblings().find('span .btn-desktop').removeClass('blue');
-                                            _this.parents('td').siblings().find('span .btn-desktop').addClass('grey');
-                                        }
-                                    });
-                                }
+                                r_this.ModelSetIsShow(_this,set_val,'.btn-desktop');
                                 break;
                             case "set_mobileshow":
-                                if(set_val == 1){
-                                    _this.parents('td').siblings().find('span .btn-mobile').each(function(){
-                                        if(!$(this).hasClass('blue')){
-                                            _this.parents('td').siblings().find('span .btn-mobile').removeClass('grey');
-                                            _this.parents('td').siblings().find('span .btn-mobile').addClass('blue');
-                                        }
-                                    });
-                                }else{
-                                    _this.parents('td').siblings().find('span .btn-mobile').each(function(){
-                                        if($(this).hasClass('blue')){
-                                            _this.parents('td').siblings().find('span .btn-mobile').removeClass('blue');
-                                            _this.parents('td').siblings().find('span .btn-mobile').addClass('grey');
-                                        }
-                                    });
-                                }
+                                r_this.ModelSetIsShow(_this,set_val,'.btn-mobile');
                                 break;
                             case "set_wechatshow":
-                                if(set_val == 1){
-                                    _this.parents('td').siblings().find('span .btn-wechat').each(function(){
-                                        if(!$(this).hasClass('blue')){
-                                            _this.parents('td').siblings().find('span .btn-wechat').removeClass('grey');
-                                            _this.parents('td').siblings().find('span .btn-wechat').addClass('blue');
-                                        }
-                                    });
-                                }else{
-                                    _this.parents('td').siblings().find('span .btn-wechat').each(function(){
-                                        if($(this).hasClass('blue')){
-                                            _this.parents('td').siblings().find('span .btn-wechat').removeClass('blue');
-                                            _this.parents('td').siblings().find('span .btn-wechat').addClass('grey');
-                                        }
-                                    });
-                                }
+                                r_this.ModelSetIsShow(_this,set_val,'.btn-wechat');
                                 break;
                         }//switch结束
                         var hint_box = new Hint_box();
                         hint_box;
                     });
                 });// POST请求结束
+            });
+        },
+        ModelSetIsShow : function(_this,set_val,selector){
+            _this.parents('td').siblings().find('span '+selector).each(function(){
+                _this.parents('td').siblings().find('span '+selector).removeClass((set_val == 1 && !$(this).hasClass('blue') ? 'grey' : $(this).hasClass('blue') ? 'blue' : null))
+                .addClass((set_val == 1 && !$(this).hasClass('blue') ? 'blue' : $(this).hasClass('blue') ? 'grey' : null));
             });
         },
         _delete : function(){
@@ -456,29 +418,72 @@ function articleController($scope, $http ,$location) {
             });
         },
         _batchAdd : function(){
+            var _this = this;
             // 批量添加文章
-            $('.info-top .batchadd').click(function(){
+            $('.info-top .batchadd').unbind('click').click(function(){
                 var warningbox = new WarningBox();
                 warningbox._upImage({
-                    aspectRatio: '',
+                    IsBaseShow : true,
                     ajaxurl    : '../file-upload?target=articles',
                     IsMultiple : true,
                     oncallback : function(json){
-                        var addpic = function(idx, ele){
-                            var _newpic = '<div class="template-download fade fr in">\n\
-                                            <div>\n\
-                                                <span class="preview">\n\
-                                                <div class="preview-close"><img src="images/preview-close.png" /></div>\n\
-                                                    <img src="'+ele.url+'" style="width:80px;height:64px;padding:5px;" data-preimg="preimg">\n\
-                                                </span>\n\
-                                            </div>\n\
-                                        </div>';
-                            $('.up_pic').before(_newpic);
+                        var html = '',ids = [];
+                        $('.save_column,.batchbtn .cancel').css('cursor','pointer');
+                        $('#inputImage-queue').append('<span class="finish">全部完成！</span>');
+                        $('.batchbtn .cancel').unbind().click(function(){
+                            if(confirm('是否确定，并且批量生成文章？')){
+                                $('.warning_box ').hide().prev().hide();
+                            }else{
+                                return false;
+                            }
+                        });console.log(json);
+                        $.each(json,function(idx, ele) {
+                            ids[idx] = ele.data[0].id;
+                            html += '<li data-id="'+ele.data[0].id+'">\
+                                        <input type="hidden" name="id['+idx+']" value="'+ele.data[0].id+'" />\
+                                        <input type="text" name="title['+idx+']" value="'+ele.data[0].filename.split('.')[0]+'" />\
+                                    </li>'
+                        });
+                        if($('.batch_title_edit').length){
+                            $('.batch_title').html(html);
+                        }else{
+                            $('.btn-upload').append('<form class="batch_title_edit"><ul class="batch_title">'+html+'</ul></form>');
                         }
-                        $.each(json.data,function(idx, ele) {
-                            addpic(idx, ele);
-                        });  
+                        $('.uploadify-queue').css({
+                            left: '18%'
+                        });
+                        // 生成按钮操作
+                        $('.batchbtn .save,.batchbtn .cancel').click(function(event) {
+                            var datapost = function(){
+                                var data = $('.batch_title_edit').serializeJson();
+                                $http.post('../article-batch-modify',data).success(function(json){
+                                    checkJSON(json, function(json){
+                                        window.location.hash = '#/batcharticle?ids='+ids+'';
+                                    });
+                                });
+                            }
+                            if($(this).hasClass('.cancel')){
+                                if(confirm('是否确定，并且批量生成文章？')){
+                                    datapost();
+                                    $('.warning_box ').hide().prev().hide();
+                                }else{
+                                    return false;
+                                }
+                            }else{
+                                datapost();
+                            }
+                        });
+                        _this.batchDelPic();
                     }
+                });
+            });
+        },
+        batchDelPic : function(){
+            $('.uploadify-queue .cancel a').click(function(){
+                var id = $(this).closest('.uploadify-queue-item').data('id');
+                $('.batch_title li[data-id='+id+']').remove(); 
+                $http.post('../article-delete',{id:id}).success(function(json){
+                    checkJSON(json, function(json){});
                 });
             });
         },

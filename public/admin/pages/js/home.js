@@ -217,10 +217,11 @@ function homeController($scope, $http) {
 	       		if($(this).parent().siblings('.dropdown').length >= $(this).data('limit')){
 	       			alert('超出数量！')
 	       		}else{
-	       			var clone_cell = $('#move_navs .dropdown').first().clone(true);
-					$('#move_navs .crl_icon').before(clone_cell);
+	       			var lastNum = parseInt($('#move_navs .dropdown').last().find('.selectBox_val').attr('name').match(/\[(\d*)\]/)[1])+1,
+	       				clone_cell = $('#move_navs .dropdown').last().clone(true);
+					$('#move_navs .add_icon').before(clone_cell);
 					clone_cell.find('.selectBox').text('空').end().find('.selectBox_val').val('');
-					var word = clone_cell.find('.selectBox_val').attr('name').replace(/data\[(.*)\]\[(.*)\]\[(\d*)\]/,'data[$1][$2]['+($('#move_navs .dropdown').length-1)+']');
+					var word = clone_cell.find('.selectBox_val').attr('name').replace(/data\[(.*)\]\[(.*)\]\[(\d*)\]/,'data[$1][$2]['+lastNum+']');
 					clone_cell.find('.selectBox_val').attr('name',word);
 	       		}
 			});

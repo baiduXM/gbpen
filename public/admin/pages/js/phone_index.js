@@ -30,6 +30,7 @@ function phone_indexController($scope,$http ,$location) {
 				$('.phone_index_btn .save').show();
 				$('#phone_index .phone_index_btn').width(122)
 			}
+			$('#phone_index-'+Area_name).show();
     		// 获取手机切换标签
 		    $http.get(this.maininfourl).success(function(json){
 		    	checkJSON(json,function(json){ 
@@ -69,6 +70,7 @@ function phone_indexController($scope,$http ,$location) {
 					    			var QuickbarInit = new $scope.phoneIndexQuickbar(json.data);
 					    		});
 					    	});
+				    		var QuickbarInit = new $scope.phoneIndexQuickbar(_this.quickbarType);
 				    	}
 					    if(Area_name == 'other'){
 					    	mpagetype = 'other';
@@ -114,14 +116,6 @@ function phone_indexController($scope,$http ,$location) {
 					$(this).addClass('border_red').siblings().removeClass('border_red');
 	    		}
 	    	});
-	    	// 内容页显隐
-	    	$('.phone_index-content>div').each(function(){
-				var page = $(this).attr('id').split("-");
-				if(mpagetype == page[1]){
-					$(this).show();
-					$(this).siblings().hide();
-	    		}
-	    	}); 
     	}
     };
     var phoneindexinit = new $scope.phoneIndexInit();
@@ -288,7 +282,7 @@ function phone_indexController($scope,$http ,$location) {
 		                	<span class="del-sanjiao"></span>\n\
 		                    <dd class="del-btn">删除</dd>\n\
 			            </div>\n\
-			            <div class="materlist-secondbox" style="display:block;">\n\
+			            <div class="materlist-secondbox" style="dispaly:block;">\n\
 			            <span class="sanjiao"></span>\n\
 			            <div class="materlist-second">\n\
 			            	<dt class="title">编辑名称</dt>\n\
@@ -405,7 +399,7 @@ function phone_indexController($scope,$http ,$location) {
 				// 计算每列的行数
 				var line = Math.ceil(arrHtml.length / newColumnNum);
 				// 重组HTML
-				var newStart = 0, htmlColumn = '';
+				var newStart = 0, htmlColumn = '<div class="pictitle">多图文'+itemIdNum+'</div>';
 				for (newStart; newStart < newColumnNum; newStart++) {
 					htmlColumn = htmlColumn + '<ul id="phone_index_col_'+itemIdNum+'_'+(newStart+1) +'" class="phone_index_col" style="width:315px">'+ 
 						function() {
@@ -416,9 +410,8 @@ function phone_indexController($scope,$http ,$location) {
 							return html;	
 						}() + '</ul> ';	
 				}
-				$('#phone_index_images_'+itemIdNum).html(htmlColumn).prepend('<div class="pictitle">多图文'+itemIdNum+'</div>');
+				$('#phone_index_images_'+itemIdNum).html(htmlColumn);
 				this.slidepics_upload();
-				this.IsDelete();
 			}
     	},
     	slidepics_upload : function(){
@@ -637,7 +630,7 @@ function phone_indexController($scope,$http ,$location) {
     // 底部导航
     $scope.phoneIndexQuickbar = function(ele){
     	this.jsonData = ele;
-    	this.QuickBarTypeUrl = 'json/bottomnavsType.json';
+    	this.QuickBarTypeUrl = '../quickbar.jsoninit';
     	this.init();
     };
     $scope.phoneIndexQuickbar.prototype = {
@@ -648,7 +641,7 @@ function phone_indexController($scope,$http ,$location) {
     	QuickBarInfo : function(){
     		var data = (this.jsonData == undefined ? null : this.jsonData.value),_this = this,
 				_div1 = '',num,info;
-			$.each(this.jsonData,function(k,v){
+			$.each(this.jsonData,function(k,v){console.log(v);
 				switch(v.type){
 					case 'tel':
 					case 'sms':
@@ -716,7 +709,6 @@ function phone_indexController($scope,$http ,$location) {
 			// 栏目图标
             var columnicon = new icon_choose(780);
             columnicon.clicks();
-
 			this.InputStyle();
 			this.ShowPos();
 			this.DragBlock();
@@ -805,13 +797,10 @@ function phone_indexController($scope,$http ,$location) {
 										<div class="nsvshowtype-content">\
 											<ul class="nsvshowtype-info-box">'+_div+'</ul>\
 										</div>\
-										<input type="hidden" name="" value="" />\
 				    				</div>';
 							var warningbox = new WarningBox('',{warning_context : html});
 							warningbox.ng_fuc();
-			    			$('.nsvshowtype-info-box li').click(function(event) {
-			    				$(this).addClass('cu').siblings().removeClass('cu')
-			    			});
+    						_this.mousewheelXs();
 			    			// $('.button .save').click(function({
 			    			// 	$http.post('',{bottomnavs: navsArray}).success(function(json){
 						    // 		checkJSON(json);
@@ -821,11 +810,17 @@ function phone_indexController($scope,$http ,$location) {
 			    	});
 		    	}
     			if($(this).closest('.pc_check_btn').length){
-    				ModelGetQuickBar(1);
+    				ModelGetBottomnavs(1);
     			}else if($(this).closest('.mob_check_btn').length){
-    				ModelGetQuickBar(0);
+    				ModelGetBottomnavs(0);
     			}
     		});
+    	},
+    	mousewheelXs : function(){
+    		$('.nsvshowtype-info-box').width($('.nsvshowtype-info-box li').length*$('.nsvshowtype-info-box li').width())
+    		var left=$(window). scrollLeft(); 
+		   	$(window). scrollLeft(left-100) 
+		   	event.preventDefault(); 
     	},
     	SaveData : function(){
     		$('.phone_index-banner .save').click(function(){
