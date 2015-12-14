@@ -15,8 +15,8 @@ function columnController($scope, $http) {
     } );
     $scope.ColumnInit = function(){
         checkjs(location.hash.match(/[a-z]+?$/));
-        // this.json_url = '../classify-list';
-        this.json_url = 'json/column.json';
+        this.json_url = '../classify-list';
+        // this.json_url = 'json/column.json';
         this.upload_picname = '';
         this.this_id = '';
         this.vlayout = '';
