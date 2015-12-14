@@ -332,6 +332,7 @@ class HtmlController extends BaseController{
             $search_data=new TemplatesController;
             $search_data->sendData();
             $pc_domain = CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_domain');
+            dd('$pc_domain');
             @file_get_contents("$pc_domain/unzip.php");
         } 
         else {
