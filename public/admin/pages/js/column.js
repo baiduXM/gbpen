@@ -130,17 +130,17 @@ function columnController($scope, $http) {
                 $('.f_column').html(_op1);
             }
             // 页面展示
-            $.each(json.infos,function(idx, ele) {
-                $.each(ele.data,function(i, j) {
-                    option2 += '<li><a data-id="'+ele.ename+','+j.key+'" data-name="'+ele.ename+'" data-size="'+j.img_width+','+j.img_height+','+j.img_forcesize+'" data-type="'+j.type+'" title="【'+ele.name+'】'+j.value+'">【'+ele.name+'】'+j.value+'</a></li>';
-                });
-            });
-            var _op2 = '<span>页面展示：</span><div class="dropdown inline-block">\
-                    <div class="selectBox" data-id="1" data-size=""></div><span class="arrow"></span>\
-                    <input class="selectBox_val" name="index_val" type="hidden" value=""/>\
-                    <input class="selectBox_name" name="index_name" type="hidden" value=""/>\
-                    <ul>'+option2+'</ul></div>';
-            $('.index_showtype').html(_op2);
+            // $.each(json.infos,function(idx, ele) {
+            //     $.each(ele.data,function(i, j) {
+            //         option2 += '<li><a data-id="'+ele.ename+','+j.key+'" data-name="'+ele.ename+'" data-size="'+j.img_width+','+j.img_height+','+j.img_forcesize+'" data-type="'+j.type+'" title="【'+ele.name+'】'+j.value+'">【'+ele.name+'】'+j.value+'</a></li>';
+            //     });
+            // });
+            // var _op2 = '<span>页面展示：</span><div class="dropdown inline-block">\
+            //         <div class="selectBox" data-id="1" data-size=""></div><span class="arrow"></span>\
+            //         <input class="selectBox_val" name="index_val" type="hidden" value=""/>\
+            //         <input class="selectBox_name" name="index_name" type="hidden" value=""/>\
+            //         <ul>'+option2+'</ul></div>';
+            // $('.index_showtype').html(_op2);
             $('.a-table').html(_div);
             $('.icon-gantanhao').MoveBox({
                 Trigger : 'mouseenter',
