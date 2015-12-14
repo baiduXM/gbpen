@@ -93,7 +93,7 @@ function addarticleController($scope, $http, $location) {
                             LoopChlid(NextChild,num);
                         }
                     });
-                    _op = '<div class="dropdown">\
+                    _op = '<div class="dropdown fl">\
                             <div class="selectBox" type="text">'+pname+'</div><span class="arrow"></span>\
                             <input class="selectBox_val" name="column_name" type="hidden" value="'+id+'"/>\
                             <ul>'+option1+'</ul></div>';

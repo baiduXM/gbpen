@@ -26,11 +26,14 @@
                         <li>栏目类型：
                             <select id="lottery">
                                 <option selected="selected" value="选择">请选择</option>
-                                <option value="7">抽奖</option>
                                 <option value="列表">列表</option>
                                 <option value="4">内容单页</option>
                                 <option value="5">留言板</option>
                                 <option value="6">外链</option>
+<<<<<<< HEAD
+                                <option value="7">抽奖</option>
+=======
+>>>>>>> feature/phonetype
                                 <option value="8">直达号功能</option>
                             </select>
                             <select id="lottery1" style="display: none;"><option value="刮刮卡">刮刮卡</option></select>
@@ -73,16 +76,19 @@
                             </div>
                         </li>
                         <li><span  class="col_keyword_word">关键词</span>：<input name="keyword" class="keyword" /></li>
-                        <li class="col_icon pr">
-                            <span>栏目图标：</span><i class="iconfont icon-dengpao"></i><span>(点击图标更改)</span><input type="hidden" name="icons" class="icon_input" />
-                            <span class="arrow"></span>
-                            <div class="col_icon_box">
-                                <div class="box_content">
-                                    <ul>
-                                    <!-- 图标编码 -->
-                                    </ul>
+                        <li class="col_icon icon_box">
+                            <span>栏目图标：</span>
+                            <span class="icon_box pr">
+                                <i class="iconfont icon-dengpao"></i>
+                                <input type="hidden" name="icons" class="icon_input" />
+                                <span class="arrow"></span>
+                                <div class="col_icon_box icon_ousidebox">
+                                    <div class="box_content">
+                                        <ul><!-- 图标编码 --></ul>
+                                    </div>
                                 </div>
-                            </div>
+                            </span>
+                            <span>(点击图标更改)</span>
                         </li>
                         <li class="index_showtype">
                             <!-- 页面展示下拉框 -->

@@ -44,6 +44,7 @@ function phone_indexController($scope,$http ,$location) {
 				    		switch(ele.type){
 				    			case "image":
 					    		case "images":
+					    			$('.page_navs a[data-sub="phone_index-images"]').removeClass('not-allowed');
 					    			_this.imageType[idx] = ele;
 					    			break;
 				    			case "quickbar":
@@ -52,6 +53,7 @@ function phone_indexController($scope,$http ,$location) {
 				    			case "text":
 				    			case "textarea":
 				    			case "navs":
+				    				$('.page_navs a[data-sub="phone_index-other"]').removeClass('not-allowed');
 					    			_this.otherType[idx] = ele;
 					    			break;
 					    	}
@@ -62,6 +64,11 @@ function phone_indexController($scope,$http ,$location) {
 					    }
 				    	if(Area_name == 'quickbar'){
 				    		mpagetype = 'quickbar';
+				    		$http.get('../quickbar.jsoninit').success(function(json){
+					    		checkJSON(json,function(json){
+					    			var QuickbarInit = new $scope.phoneIndexQuickbar(json.data);
+					    		});
+					    	});
 				    		var QuickbarInit = new $scope.phoneIndexQuickbar(_this.quickbarType);
 				    	}
 					    if(Area_name == 'other'){
@@ -261,13 +268,13 @@ function phone_indexController($scope,$http ,$location) {
     // 幻灯片
     $scope.phoneIndexSlidepics = function(ele){
     	this.jsonData = ele;
-    	this.aspectRatio = this.jsonData.config.width/this.jsonData.config.height || '',
+    	this.count = 0;
     	this.init();
     };
     $scope.phoneIndexSlidepics.prototype = {
     	init : function(){
     		this.ModelSlidepicsInfo = function(parameter){
-    			var _div = '<'+(parameter.Tag || 'li')+' class="phone_index-field">\n\
+    			var _div = '<'+(parameter.Tag || 'li')+' class="phone_index-field'+(parameter.IsNew ? ' new' : '')+'">\n\
 						<div class="materlist-first">\n\
 			            	<dt class="title">'+(parameter.title || '')+'</dt>\n\
 			                <dd class="msgimg">\n\
@@ -313,10 +320,10 @@ function phone_indexController($scope,$http ,$location) {
     	},
     	slidepics_info : function(){
     		// 幻灯片列表
-    		var htmlColumn = '',
+    		var htmlColumn = '',num = 1,
     			_this = this;
 			$.each(this.jsonData,function(index, ele) {
-				this.aspectRatio = ele.config.width/ele.config.height || '';
+				var aspectRatio = ele.config.width/ele.config.height || '';
 				if(ele.type == 'images'){
 					var data = ele.value,
 						oddColumnWidth = 315,									// 单列宽
@@ -324,14 +331,15 @@ function phone_indexController($scope,$http ,$location) {
 		    			ColumnNum = Math.floor(mainWidth/oddColumnWidth),		// 列数
 		    			lastColumnNum = (data.length%ColumnNum);				// 记录最终添加完的是第几列
 					// 添加瀑布流列
-					$('#phone_index_images').append('<div class="pictitle">多图文</div>');
+					$('#phone_index_image').before('<form id="phone_index_images_'+num+'"></form>');
+					$('#phone_index_images_'+num).append('<div class="pictitle">多图文'+num+'</div>').data({'lastColumnNum':lastColumnNum,'ColumnNum':ColumnNum,'aspectRatio':aspectRatio});
 					for(var i = 1;i <= ColumnNum;i++){
-						$('#phone_index_images').append('<ul id="phone_index_col'+i+'" class="phone_index_col" style="width:'+oddColumnWidth+'px"></ul>');
+						$('#phone_index_images_'+num).append('<ul id="phone_index_col_'+num+'_'+i+'" class="phone_index_col" style="width:'+oddColumnWidth+'px"></ul>');
 					}
 					$.each(data,function(k,v){
+						_this.count = k;
 						// 除余取列
 						var C_num = (k+1)%ColumnNum == 0 ? (k+1) : (k+1)%ColumnNum;
-						count = k;
 						var _div = _this.ModelSlidepicsInfo({
 							title	: v.title,
 							image	: v.image,
@@ -340,16 +348,16 @@ function phone_indexController($scope,$http ,$location) {
 							link	: v.link,
 							num		: k
 						});
-						$('#phone_index_col'+C_num+'').append(_div);
+						$('#phone_index_col_'+num+'_'+C_num+'').append(_div);
 					});
 					// 添加按钮
 					var addButton = '<div class="phone_index-add">\
 										<div class="up_pic up_phone"></div>\
 									</div>';
-					$('#phone_index_col'+(lastColumnNum+1)+'').append(addButton);
-					_this.slidepics_upload(lastColumnNum,ColumnNum,this.aspectRatio);
+					$('#phone_index_col_'+num+'_'+(lastColumnNum+1)+'').append(addButton);
+					num++;
 				}else{
-					var data = ele.value,
+					var data = ele.value,aspectRatio = ele.config.width/ele.config.height || '',
 						_div = _this.ModelSlidepicsInfo({
 							title	: data.title,
 							image	: data.image,
@@ -362,21 +370,20 @@ function phone_indexController($scope,$http ,$location) {
 										<div class="up_pic up_phone"></div>\
 									</div>';
 					$('#phone_index_image').append('<div class="pictitle">单图</div>');
-					$('#phone_index_image').append(_div+addButton);
-					_this.slidepics_upload();
+					$('#phone_index_image').append(_div+addButton).data('aspectRatio', aspectRatio);
 				}
 			});
-			
+			_this.slidepics_upload();
 			this.IsDelete();
     	},
-    	layoutChange : function(){
+    	layoutChange : function(itemIdNum){
     		// 改变列表布局
     		// 创建数组记录总个数
 			var arrTemp = [],arrHtml = [],maxLength = 0,changeNum = 0,newColumnNum;
 			// 新栏个数		
 			newColumnNum = Math.floor($('#phone_index').width() / 315);
 			for (var start = 1; start <= newColumnNum; start++) {
-				var arrColumn = $("#phone_index_col"+start).html().match(/<li(?:.|\n|\r|\s)*?li>/gi);
+				var arrColumn = $("#phone_index_col_"+itemIdNum+'_'+start).html().match(/<li(?:.|\n|\r|\s)*?li>/gi);
 				if (arrColumn) {
 					maxLength = Math.max(maxLength, arrColumn.length);
 					arrTemp.push(arrColumn);
@@ -401,7 +408,7 @@ function phone_indexController($scope,$http ,$location) {
 				// 重组HTML
 				var newStart = 0, htmlColumn = '';
 				for (newStart; newStart < newColumnNum; newStart++) {
-					htmlColumn = htmlColumn + '<ul id="phone_index_col'+ (newStart+1) +'" class="phone_index_col" style="width:315px">'+ 
+					htmlColumn = htmlColumn + '<ul id="phone_index_col_'+itemIdNum+'_'+(newStart+1) +'" class="phone_index_col" style="width:315px">'+ 
 						function() {
 							var html = '';
 							for (var i=0; i<line; i++) {
@@ -410,29 +417,21 @@ function phone_indexController($scope,$http ,$location) {
 							return html;	
 						}() + '</ul> ';	
 				}
-<<<<<<< HEAD
-				$('#phone_index_info').html(htmlColumn);
-=======
 				$('#phone_index_images').html(htmlColumn);
->>>>>>> feature/phonetype
 				this.slidepics_upload(lastColumnNum,newColumnNum,this.aspectRatio);
 			}
     	},
-    	slidepics_upload : function(lastColumnNum,ColumnNum,aspectRatio){
-<<<<<<< HEAD
-=======
-    		var _this = this,count,_newpic;
->>>>>>> feature/phonetype
+    	slidepics_upload : function(){
+    		var _this = this,_newpic,i = 1;
 			// 添加图片弹框
     		$('.up_pic').on('click',function(event) {
-		        var warningbox = new WarningBox(),
+		        var warningbox = new WarningBox(),eventitemnum = $(this).closest('form').attr('id').split('_')[3],
+		        	lastColumnNum = $(this).closest('form').data('lastColumnNum'),
+		        	aspectRatio = $(this).closest('form').data('aspectRatio'),
+		        	ColumnNum = $(this).closest('form').data('ColumnNum'),
 		        	event_this = this;
 		        warningbox._upImage({
-<<<<<<< HEAD
-		        	aspectRatio : aspectRatio,
-=======
 		        	aspectRatio: aspectRatio,
->>>>>>> feature/phonetype
 		            ajaxurl    : '../file-upload?target=page_index',
 		            oncallback : function(json){
 		            	if($(event_this).closest('#phone_index_image').length){
@@ -440,20 +439,21 @@ function phone_indexController($scope,$http ,$location) {
 		            		_newpic = _this.ModelSlidepicsInfo({
 								image	: json.data.url,
 								subimage: json.data.name,
-								Tag 	: 'div'
+								Tag 	: 'div',
+								IsNew   : true
 							});
 		            		$(event_this).parent().before(_newpic);
 		            	}else{
-		            		count++;
 			                _newpic = _this.ModelSlidepicsInfo({
 								image	: json.data.url,
 								subimage: json.data.name,
-								num		: count
+								num		: ++(_this.count),
+								IsNew   : true
 							});
 							var addBtn = (lastColumnNum+1)%ColumnNum,
 								addpic = (lastColumnNum+2)%ColumnNum;
-			                $('#phone_index_col'+(addBtn == 0 ? (lastColumnNum+1) : addBtn)+'').append(_newpic);
-			                $('#phone_index_col'+(addpic == 0 ? (lastColumnNum+2) : addpic)+'').append($(event_this).parent());
+			                $('#phone_index_col_'+eventitemnum+'_'+(addBtn == 0 ? (lastColumnNum+1) : addBtn)+'').append(_newpic);
+			                $('#phone_index_col_'+eventitemnum+'_'+(addpic == 0 ? (lastColumnNum+2) : addpic)+'').append($(event_this).parent());
 			                lastColumnNum++;
 		            	}
 						_this.IsDelete();
@@ -461,7 +461,7 @@ function phone_indexController($scope,$http ,$location) {
 		        });
 		    });
 		},
-		IsDelete : function(ColumnNum){
+		IsDelete : function(){
 			var _this = this;
     		// 确定、取消按钮效果
 			$(".concrol-del").hover(function(){
@@ -481,13 +481,14 @@ function phone_indexController($scope,$http ,$location) {
 				$(this).parents(".phone_index-field").find(".zz").hide();
 			})
 			$('.detailbox .surebtn').click(function(){
+				var itemIdNum = $(this).closest('.phone_index_col').attr('id').split('_')[3];
 				$(this).parents('.phone_index-field').fadeOut('400', function() { 
 					$(this).remove();
-					_this.layoutChange();
+					_this.layoutChange(itemIdNum);
 					//幻灯片删除
 					if(!$(this).hasClass('new')){
-						var data = $("#phone_index_images").serializeJson();
-						var data1 = ($("#phone_index_images").serializeArray().length > 0?data:{slidepics : ""});
+						var data = $('#phone_index_images_'+itemIdNum).serializeJson();
+						var data1 = ($('#phone_index_images_'+itemIdNum).serializeArray().length > 0?data:{slidepics : ""});
 						$http.post('../mhomepage-modify',data1).success(function(){
 							phoneindexinit.Save_hint();
 						});
@@ -498,13 +499,9 @@ function phone_indexController($scope,$http ,$location) {
 				var _this = $(this).closest('.phone_index-field');
 				$(this).parents(".phone_index-field").find(".materlist-secondbox,.detailbox").slideUp();
 				$(this).parents(".phone_index-field").find(".zz").hide();
-				var PC_name = $(this).parents('.materlist-secondbox').find('input[name=PC_name]').val(),
-					PC_link = $(this).parents('.materlist-secondbox').find('input[name=PC_link]').val(),
-					phone_info_pic = $(this).parents('.materlist-secondbox').siblings('input[name=phone_info_pic]').val(),
-					id = $(this).parents('.materlist-secondbox').siblings('.materlist-first').children('.concrol').find('.concrol-del').attr('id');
 				if($(this).parents('div').hasClass('materlist-secondbox')){
 					//幻灯片保存
-					var data = $("#phone_index_images").serializeJson();
+					var data = $(this).closest('form').serializeJson();
 					$http.post('../mhomepage-modify',data).success(function(){
 						phoneindexinit.Save_hint();
 						_this.removeClass('new');
@@ -514,7 +511,7 @@ function phone_indexController($scope,$http ,$location) {
 		},
 		EditBtn : function(){
 			// 编辑功能
-			$('#phone_index_images').on('keyup','.materlist-second .input:nth-of-type(1) input',function(event) {
+			$('.materlist-second .input:nth-of-type(1) input').on('keyup',function(event) {
 				$(this).parents('.materlist-secondbox').siblings('.materlist-first').children('.title').text($(this).val());
 			});
 		}
@@ -640,46 +637,147 @@ function phone_indexController($scope,$http ,$location) {
     // 底部导航
     $scope.phoneIndexQuickbar = function(ele){
     	this.jsonData = ele;
-    	this.bottomnavsTypeUrl = 'json/bottomnavsType.json';
+    	this.QuickBarTypeUrl = 'json/bottomnavsType.json';
     	this.init();
     };
     $scope.phoneIndexQuickbar.prototype = {
     	init : function(){
-    		this.bottomnavs_info();
-    		this.bottomnavsType();
+    		this.QuickBarInfo();
+    		this.QuickBarType();
     	},
-    	bottomnavs_info : function(){
-    		var data = (this.jsonData == undefined ? null : this.jsonData.value),
+    	QuickBarInfo : function(){
+    		var data = (this.jsonData == undefined ? null : this.jsonData.value),_this = this,
 				_div1 = '',num,info;
-			$.each(this.jsonData.value,function(k,v){
-				info = (v.type == 'share' ? '<span class="shareicon ml5">\
-						<i class="iconfont icon-tengxunweibo '+($.inArray('txweibo', v.data) == -1 ? 'grey' : 'blue')+'" data-name="'+($.inArray('txweibo', v.data) == -1 ? 'txweibo' : '')+'"></i>\
-						<i class="iconfont icon-baidu '+($.inArray('baidu', v.data) == -1 ? 'grey' : 'blue')+'"  data-name="'+($.inArray('baidu', v.data) == -1 ? 'baidu' : '')+'"></i>\
-						<i class="iconfont icon-qqkongjian '+($.inArray('qqzone', v.data) == -1 ? 'grey' : 'blue')+'"  data-name="'+($.inArray('qqzone', v.data) == -1 ? 'qqzone' : '')+'"></i>\
-						<i class="iconfont icon-2 '+($.inArray('weibo', v.data) == -1 ? 'grey' : 'blue')+'"  data-name="'+($.inArray('weibo', v.data) == -1 ? 'weibo' : '')+'"></i></span>' : '<input type="text" value="'+v.data+'" class="message-num" />');
+			$.each(this.jsonData,function(k,v){
+				switch(v.type){
+					case 'tel':
+					case 'sms':
+						info = '<div class="quicklist-r inline-block"><span class="contact ml5"><input type="text" value="'+v.data+'" class="message-num" /></span></div>';
+						break;
+					case 'im':
+						info = '<div class="quicklist-r inline-block">\
+									<div class="consultation ml5">\
+									<ul class="fl">'
+									+function(){
+										var newArr = v.data.split('|'),_li = '';
+							    		for(var x in newArr){
+							    			var fg = newArr[x].split('@'),
+												kfname = fg[0].split(':')[0],kfnum = fg[0].split(':')[1];
+							    			_li += '<li class="consultation-item">\
+														<select><option value="qq"'+(fg[1] == 'qq' ? 'selected' : '')+'>QQ</option><option value="53kf"'+(fg[1] == '53kf' ? 'selected' : '')+'>53客服</option></select>\
+														<span><input class="consultation-name message-num" value="'+(kfname||'')+'" />-<input class="consultation-num message-num" value="'+(kfnum||'')+'" /></span>\
+														<div class="crl_icon fr"><i class="iconfont icon-guanbi"></i></div>\
+													</li>';
+							    		} 
+							    		return _li;
+									}()+'</ul><div class="crl_icon"><i class="iconfont icon-add"></i></div>\
+								</div></div>';
+						break;
+					case 'share':
+						info = '<div class="quicklist-r inline-block">\
+								<span class="shareicon ml5">\
+									<i class="iconfonts '+($.inArray('tsina', v.data) == -1 ? 'grey' : 'blue')+'" data-name="tsina">&#xe653;</i>\
+									<i class="iconfonts '+($.inArray('ibaidu', v.data) == -1 ? 'grey' : 'blue')+'"  data-name="ibaidu">&#xe651;</i>\
+									<i class="iconfonts '+($.inArray('qzone', v.data) == -1 ? 'grey' : 'blue')+'"  data-name="qzone">&#xe652;</i>\
+									<i class="iconfonts '+($.inArray('tqq', v.data) == -1 ? 'grey' : 'blue')+'"  data-name="tqq">&#xe650;</i>\
+								</span></div>';
+						break;
+					case 'link':
+						var point = v.data.split('|')[1] || '';
+						_this.pointX = point.split(',')[0] || '';
+						_this.pointY = point.split(',')[1] || '';
+						info = '<div class="quicklist-r inline-block">\
+									<div class="linktop"><input class="message-num" value="'+v.data.split('|')[0]+'" data-point="'+_this.pointX+','+_this.pointY+'" /><a class="search">搜索</a></div>\
+									<div id="bdmap"></div>\
+								</div>';
+						break;
+					case 'search':
+						info = '<div class="quicklist-r inline-block"></div>';
+						break;
+				}
 				_div1 += '<li class="move_feild">\n\
+							<div class="quicklist-l inline-block">\
 							<i class="fa iconfont icon-yidong"></i>\n\
-							<span><i class="fa icon-pc iconfont btn btn-show btn-desktop '+(v.pc_show?'blue':'grey')+'"></i><i class="fa iconfont icon-snimicshouji btn btn-show btn-mobile '+(v.mobile_show?'blue':'grey')+'"></i></span>\n\
-							<label class="message-name">'+v.name+'</label>'+info+'\n\
+							<span><i class="fa icon-pc iconfont btn btn-show btn-desktop '+(v.enable_pc == 1?'blue':'grey')+'"></i><i class="fa iconfont icon-snimicshouji btn btn-show btn-mobile '+(v.enable_mobile == 1?'blue':'grey')+'"></i></span>\n\
+							<label class="message-name" data-type="'+v.type+'">'+v.name+'</label>\
+							<span class="icon_box pr">\
+								<i class="iconfonts'+(v.icon ? '' : ' icon-dengpao')+'">'+(v.icon || '')+'</i>\
+								<input type="hidden" name="'+v.type+'_icons" value="'+v.icon.replace('&', '&amp;')+'" class="icon_input" />\
+	                            <span class="arrow"></span>\
+	                            <div class="icon_ousidebox">\
+	                                <div class="box_content">\
+	                                    <ul></ul>\
+	                                </div>\
+	                            </div>\
+                            </span></div>'+info+'\n\
 						</li>';
 			});
 			$('.phone_quickbar_item .phone_func').append(_div1);
+			// 栏目图标
+            var columnicon = new icon_choose(780);
+            columnicon.clicks();
 			this.InputStyle();
 			this.ShowPos();
 			this.DragBlock();
 			this.SaveData();
+			this.QuickBarListFuc();
+    	},
+    	QuickBarListFuc : function(){
+    		// 咨询  
+    		$('.icon-add').click(function(){
+    			var clone_cell = $(this).closest('.consultation').find('.consultation-item').last().clone(true);
+    			$('.consultation ul').append(clone_cell);
+    		});
+    		$('.icon-guanbi').on('click',function(){
+    			$('.consultation .consultation-item').length == 1 ? alert('请至少保留一个！') : $(this).closest('.consultation-item').remove();
+	       	});
+    		// 百度地图
+    		this.BdMap();
+    	},
+    	BdMap : function(){
+    		// 百度地图API功能
+    		var pointX = this.pointX || null,pointY = this.pointY || null,
+				map = new BMap.Map("bdmap");          
+			map.centerAndZoom(new BMap.Point(116.404, 39.915), 15);
+			var local = new BMap.LocalSearch(map, {
+				renderOptions:{map: map}
+			});
+			var dragMarker = function(pointX,pointY){
+    			var new_point = new BMap.Point(pointX, pointY);
+				map.panTo(new_point);
+				// 拖拽坐标
+    			var marker = new BMap.Marker(new_point);  // 创建标注
+				map.addOverlay(marker);              // 将标注添加到地图中
+				var label = new BMap.Label("拖拽坐标确定位置",{offset:new BMap.Size(20,-10)});
+				marker.setLabel(label);
+				map.addOverlay(marker); 
+				marker.setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画 
+				marker.enableDragging();    //可拖拽
+				marker.addEventListener("dragend", function(e){//将结果进行拼接并显示到对应的容器内
+					pointX = e.point.lng;
+					pointY = e.point.lat;
+					$('.quicklist-r .linktop .message-num').attr('data-point',pointX+','+pointY)
+				});
+			}
+    		if(pointX){
+    			map.clearOverlays(); 
+				dragMarker(pointX,pointY);
+    		}
+    		var keyword;
+    		$('.linktop .search').click(function(){
+    			keyword = $(this).siblings('.message-num').val();
+				local.search(keyword);
+    		}); 
     	},
     	InputStyle : function(){
     		$('input').focus(function(){
-				$(this).addClass('input_border');
-				$(this).css('border','solid 1px #639cfb');
+				$(this).addClass('input_border').css('border','solid 1px #639cfb');
 			}).blur(function(){
-				$(this).removeClass('input_border')
-				$(this).css('border','solid 1px #999');
+				$(this).removeClass('input_border').css('border','solid 1px #999');
 			});
     	},
     	ShowPos : function(){
-    		$('.phone_func span i').click(function(){
+    		$('.phone_func span').not('.icon_box').find('i').click(function(){
 				$(this).hasClass('blue') ? $(this).removeClass('blue').addClass('grey') : $(this).removeClass('grey').addClass('blue');
 			});
     	},
@@ -690,12 +788,12 @@ function phone_indexController($scope,$http ,$location) {
 				oncallback 	: function(indexlist){}
 	       	});
     	},
-    	bottomnavsType : function(){
+    	QuickBarType : function(){
     		var _this = this;
     		$('.phone_quickbar_style .all_button').click(function(event) {
     			var html = '';
-		    	var ModelGetBottomnavs = function(platform){
-		    		$http.post(_this.bottomnavsTypeUrl,{platform: platform}).success(function(json){
+		    	var ModelGetQuickBar = function(platform){
+		    		$http.post(_this.QuickBarTypeUrl,{platform: platform}).success(function(json){
 			    		checkJSON(json,function(json){
 			    			var _div = '';
 			    			$.each(json.data,function(k, v) {
@@ -710,6 +808,11 @@ function phone_indexController($scope,$http ,$location) {
 							var warningbox = new WarningBox('',{warning_context : html});
 							warningbox.ng_fuc();
     						_this.mousewheelXs();
+			    			// $('.button .save').click(function({
+			    			// 	$http.post('',{bottomnavs: navsArray}).success(function(json){
+						    // 		checkJSON(json);
+						    // 	});
+			    			// })
 			    		});
 			    	});
 		    	}
@@ -727,25 +830,47 @@ function phone_indexController($scope,$http ,$location) {
 		   	event.preventDefault(); 
     	},
     	SaveData : function(){
-    		$('.phone_index_btn .bottomnavs_save').click(function(){
-	    		var navsArray = new Array(),
-	    			show = [],data = [];
-		    	$('#phone_index-bottomnavs .phone_quickbar_item .phone_func .move_feild').each(function() {
-		    		$(this).find('span:eq(0) i').eq(0).hasClass('blue') ? show.push('pc_show') : '';
-		    		$(this).find('span:eq(0) i').eq(1).hasClass('blue') ? show.push('mobile_show') : '';
-		    		if($(this).find('span:eq(1) i').length != 0){
-		    			$.each($(this).find('span:eq(1) i'),function(index, ele) {
-		    				$(ele).hasClass('blue') ? data.push($(ele).data('name')) : '';
-		    			});
+    		$('.phone_index-banner .save').click(function(){
+	    		var navsArray = new Array();
+		    	$('.phone_quickbar_item .phone_func .move_feild').each(function() {
+		    		var show = [],data = [],icons,
+		    			type = $(this).find('.quicklist-l>.message-name').data('type');
+		    		icons = $(this).find('.icon_input').val();
+		    		switch(type){
+		    			case 'tel':
+	    				case 'sms':
+		    				data = $(this).find('.quicklist-r .message-num').val();
+		    				break;
+		    			case 'im':
+		    				var info = '',name,num,fs,
+		    					count = $(this).find('.consultation li').length;
+		    				$(this).find('.consultation li').each(function(i, j) {
+		    					name = $(this).find('.consultation-name').val();
+		    					num = $(this).find('.consultation-num').val();
+		    					fs = $(this).find('select').val();
+		    					info += (name+':'+num+'@'+fs+(count == 0 ? null : i == count-1 ? null : '|'));
+		    				});
+		    				data = info;
+		    				break;
+	    				case 'link':
+		    				data = $(this).find('.quicklist-r .linktop .message-num').val()+'|'+$(this).find('.quicklist-r .linktop .message-num').data('point')
+		    				break;
+	    				case 'share':
+		    				$(this).find('.quicklist-r .shareicon i').each(function(index, el) {
+		    					$(this).hasClass('blue') ? data.push($(this).data('name')) : null;
+		    				});
+		    				break;
 		    		}
 	    			navsArray.push({
-		    			name  : $(this).find('.message-name').text(),
+		    			name  : $(this).find('.quicklist-l>.message-name').text(),
+		    			icon  : icons,
 						data  : data,
-						isshow: show,
-						type  : $(this).find('.btn_type').val()
+						enable_pc: $(this).find('.quicklist-l span:eq(0) i').eq(0).hasClass('blue') ? 1 : 0,
+						enable_mobile: $(this).find('.quicklist-l span:eq(0) i').eq(1).hasClass('blue') ? 1 : 0,
+						type  : type
 		    		});				
 				});
-		    	$http.post('../mhomepage-modify',{bottomnavs: navsArray}).success(function(json){
+		    	$http.post('../quickbar.jsonmodify',{QuickBar: navsArray}).success(function(json){
 		    		checkJSON(json,function(json){
 		    			phoneindexinit.Save_hint();
 		    		});

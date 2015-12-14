@@ -62,6 +62,7 @@ function columnController($scope, $http) {
                     case 3: layout = '<i class="fa iconfont icon-list"></i>';break;
                     case 2: layout = '<i class="fa iconfont icon-graph"></i>';break;
                     case 4: layout = '<i class="fa iconfont icon-wenjian"></i>';break;
+                    case 5: layout = '<i class="fa iconfont icon-liuyanban"></i>';break;
                     case 6: layout = '<i class="fa iconfont icon-lianjie"></i>';break;
                     case 7: layout = '<i class="fa iconfont icon-weixin"></i>';break;
                     case 8: layout = '<i class="fa iconfont icon-dingwei"></i>';break;
@@ -150,7 +151,7 @@ function columnController($scope, $http) {
             // 站点展示
             this.column_show();
             // 栏目图标
-            var columnicon = new this.column_icon_choose();
+            var columnicon = new icon_choose();
             columnicon.clicks();
             // 栏目编辑提交
             this.column_edit(editor);
@@ -163,40 +164,6 @@ function columnController($scope, $http) {
                 $(this).parents('tr').nextUntil('.Level1').slideToggle();  
                 $(this).children().toggleClass("disnone");      
             });
-        },
-        column_icon_choose : function(){
-            this.clicks = function(){
-                var _this = this;
-                $('.col_icon>i').unbind('click').on('click',function(event) {
-                    if($(this).hasClass('in')){
-                        $('.col_icon_box,.col_icon .arrow').fadeOut();
-                        $(this).removeClass('in')
-                    }else{
-                        $('.col_icon_box,.col_icon .arrow').fadeIn();
-                        $(this).addClass('in')
-                    }
-                    $http.get('../icon-list').success(function(json){
-                        checkJSON(json, function(json){
-                            var _div = '';
-                            $.each(json.icons,function(index, el) {
-                                _div += '<li name="'+el.replace('&', '&amp;')+'"><i class="iconfonts">'+el+'</i></li>';
-                            });
-                            $('.col_icon_box ul').html(_div);
-                            _this._clickhide();
-                        });
-                    });
-                })  
-            },
-            this._clickhide = function(){
-                var _this = this;
-                $('.col_icon_box ul li').unbind('click').click(function(event) {
-                    var _Pthis = $(this).closest('.col_icon');
-                    _Pthis.children('i').before('<i class="iconfonts">'+$(this).attr('name')+'</i></li>').remove();
-                    _Pthis.children('.icon_input').val($(this).attr('name'));
-                    $('.col_icon_box,.col_icon .arrow').fadeOut();
-                    _this.clicks();
-                });
-            } 
         },
         column_type_info : function(type){
             // 转化弹框栏目类型
@@ -267,7 +234,7 @@ function columnController($scope, $http) {
                     $('.icon_input').val(d.icon);
                     d.icon ? $('.col_icon>i').before('<i class="iconfonts">'+d.icon+'</i>').remove() : $('.col_icon>i').before('<i class="iconfont icon-dengpao"></i>').remove();
                     // 栏目图标
-                    var columnicon = new _this.column_icon_choose();
+                    var columnicon = new icon_choose();
                     columnicon.clicks();
                     $('.en_name').val(d.en_name);
                     $('#out_url input').val(d.url);
@@ -465,8 +432,6 @@ function columnController($scope, $http) {
                             description  : vdescription,
                             img          : _this.upload_picname,
                             icon         : icons,
-                            module_key   : module_key,
-                            module_value : module_value,
                             force        : (first ? 0 : 1),
                             article_type : article_type,
                             page_content : editor.getContent()}).success(function(json) {

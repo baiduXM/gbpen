@@ -186,7 +186,7 @@ function homeController($scope, $http) {
 								});
 								_rel += '<div class="dropdown" style="margin-bottom:10px;">\
 	                            <div class="selectBox" type="text">'+pname+'</div><span class="arrow"></span>'+sign+'\
-	                            <ul>'+list1+'</ul><span class="move_icon"><i class="iconfont icon-liebiao"></i><i class="iconfont icon-guanbi"></i></span></div>'+(idx == (v.config.ids.length-1) ? '<div class="add_icon"><i class="iconfont icon-add" data-limit="'+v.config.limit+'"></i></div>' : '')+'';
+	                            <ul>'+list1+'</ul><span class="move_icon"><i class="iconfont icon-liebiao"></i><i class="iconfont icon-guanbi"></i></span></div>'+(idx == (v.config.ids.length-1) ? '<div class="crl_icon"><i class="iconfont icon-add" data-limit="'+v.config.limit+'"></i></div>' : '')+'';
 							});
 						}else{
 							list1 += '<li><a >暂无内容！</a></li>'
@@ -213,7 +213,7 @@ function homeController($scope, $http) {
 	       		$(this).closest('.dropdown').remove();
 	       	});
 	       	// 添加拖拽栏目
-			$('.add_icon i').on('click', function(event) {
+			$('.crl_icon i').on('click', function(event) {
 	       		if($(this).parent().siblings('.dropdown').length >= $(this).data('limit')){
 	       			alert('超出数量！')
 	       		}else{

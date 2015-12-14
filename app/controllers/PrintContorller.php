@@ -314,8 +314,8 @@ class PrintController extends BaseController{
                 }
             }
         }
-		
-        return $result;
+        
+        return $result; 
     }
 
     /**
@@ -515,57 +515,73 @@ class PrintController extends BaseController{
                        $config['style']['iconColor']=$config['style']['textColor']?$config['style']['textColor']:'';
                    }
                }
-                
+               
+               $CommonCont = new CommonController();
+               $quickbar=$CommonCont->quickBarJsonInit();
+               $quickbar=json_decode($quickbar,true);
+               $quickbar=$quickbar['data'];
+               foreach ($quickbar as $key=>$val){
+                   if($this->type=='pc'){
+                      $quickbar[$key]['enable']=intval($quickbar[$key]['enable_pc']);
+                   }
+                   else{
+                       $quickbar[$key]['enable']=intval($quickbar[$key]['enable_mobile']);
+                   }
+                   //TODO:删除enable_pc/enable_mobile键值
+                   unset ($quickbar[$key]['enable_pc']);
+                   unset ($quickbar[$key]['enable_mobile']);
+               }
+               //print_r($quickbar);exit;
                 //quickbar按钮
-                $global_data=WebsiteConfig::where('cus_id',$this->cus_id)->where('type',2)->where('template_id',$this->tpl_id)->pluck('value');
-                if($global_data){
-                    $global_data = unserialize($global_data);
-                    $global_data=$this->detailList($global_data);
-                }else{
-                    $global_data=$this->mobilePageList('global',true);
-                    $global_data=$this->detailList($global_data);
-                }
-                $this->replaceUrl($global_data);
-                $quickbar="";
-                if(isset($global_data['bottomnavs']) && is_array($global_data['bottomnavs'])){
-                    foreach($global_data['bottomnavs'] as &$val){
-                        $val['id']=isset($val['id'])?$val['id']:'';                 
-                        switch($val['type']){
-                            case "tel" :
-                                $val['icon']=isset($val['icon'])?$val['icon']:'&#xe602;';
-                                $val['link']="tel:".$val['data'];
-                                break;
-                            case "sms" :
-                                $val['icon']=isset($val['icon'])?$val['icon']:'&#xe604;';
-                                $val['link']="sms:".$val['data'];
-                                break;
-                            case "im"  :
-                                $val['icon']=isset($val['icon'])?$val['icon']:'&#xe606;';
-                                $val['link']=$val['data'];
-                                $val['enable']=0;
-                                break;
-                            case "share" :
-                                $val['icon']=isset($val['icon'])?$val['icon']:'&#xe600;';
-                                $val['link']='javascript:void(0);';
-                                break;
-                            case "link" :                 
-                                $val['icon']=isset($val['icon'])?$val['icon']:'&#xe605;';
-                                $address=CustomerInfo::where('cus_id',$this->cus_id)->pluck('address');
-                                $val['link']='http://map.baidu.com/mobile/webapp/search/search/qt=s&wd='.$address.'/vt=map/?fromhash=1';
-                                break;
-                            }
-                    }
-                    $quickbar=$global_data['bottomnavs'];
-                }else{
-                    $quickbar=[
-                        ['name'=>'电话','icon'=>'&#xe602;','image'=>'icon/2.png','data'=>'','link'=>'tel://','type'=>'tel','enable'=>1],
-                        ['name'=>'短信','icon'=>'&#xe604;','image'=>'icon/3.png','data'=>'','link'=>'sms://','type'=>'sms','enable'=>1],
-                        ['name'=>'咨询','icon'=>'&#xe606;','image'=>'icon/5.png','data'=>'10000@QQ','link'=>'javascript:void(0);','type'=>'im','enable'=>0],
-                        ['name'=>'地图','icon'=>'&#xe605;','image'=>'icon/4.png','data'=>'','link'=>'http://map.baidu.com','type'=>'link','enable'=>1],
-                        ['name'=>'分享','icon'=>'&#xe600;','image'=>'icon/8.png','data'=>'','link'=>'javascript:void(0);','type'=>'share','enable'=>1],
-                        ['name'=>'搜索','icon'=>'&#xe636;','image'=>'icon/8.png','data'=>'','link'=>'javascript:void(0);','type'=>'search','enable'=>0],
-                    ];  
-                }
+//                $global_data=WebsiteConfig::where('cus_id',$this->cus_id)->where('type',2)->where('template_id',$this->tpl_id)->pluck('value');
+//                if($global_data){
+//                    $global_data = unserialize($global_data);
+//                    $global_data=$this->detailList($global_data);
+//                }else{
+//                    $global_data=$this->mobilePageList('global',true);
+//                    $global_data=$this->detailList($global_data);
+//                }
+//                $this->replaceUrl($global_data);
+//                $quickbar="";
+//                if(isset($global_data['bottomnavs']) && is_array($global_data['bottomnavs'])){
+//                    foreach($global_data['bottomnavs'] as &$val){
+//                        $val['id']=isset($val['id'])?$val['id']:'';                 
+//                        switch($val['type']){
+//                            case "tel" :
+//                                $val['icon']=isset($val['icon'])?$val['icon']:'&#xe602;';
+//                                $val['link']="tel:".$val['data'];
+//                                break;
+//                            case "sms" :
+//                                $val['icon']=isset($val['icon'])?$val['icon']:'&#xe604;';
+//                                $val['link']="sms:".$val['data'];
+//                                break;
+//                            case "im"  :
+//                                $val['icon']=isset($val['icon'])?$val['icon']:'&#xe606;';
+//                                $val['link']=$val['data'];
+//                                $val['enable']=0;
+//                                break;
+//                            case "share" :
+//                                $val['icon']=isset($val['icon'])?$val['icon']:'&#xe600;';
+//                                $val['link']='javascript:void(0);';
+//                                break;
+//                            case "link" :                 
+//                                $val['icon']=isset($val['icon'])?$val['icon']:'&#xe605;';
+//                                $address=CustomerInfo::where('cus_id',$this->cus_id)->pluck('address');
+//                                $val['link']='http://map.baidu.com/mobile/webapp/search/search/qt=s&wd='.$address.'/vt=map/?fromhash=1';
+//                                break;
+//                            }
+//                    }
+//                    $quickbar=$global_data['bottomnavs'];
+//                }else{
+//                    $quickbar=[
+//                        ['name'=>'电话','icon'=>'&#xe602;','image'=>'icon/2.png','data'=>'','link'=>'tel://','type'=>'tel','enable'=>1],
+//                        ['name'=>'短信','icon'=>'&#xe604;','image'=>'icon/3.png','data'=>'','link'=>'sms://','type'=>'sms','enable'=>1],
+//                        ['name'=>'咨询','icon'=>'&#xe606;','image'=>'icon/5.png','data'=>'10000@QQ','link'=>'javascript:void(0);','type'=>'im','enable'=>0],
+//                        ['name'=>'地图','icon'=>'&#xe605;','image'=>'icon/4.png','data'=>'','link'=>'http://map.baidu.com','type'=>'link','enable'=>1],
+//                        ['name'=>'分享','icon'=>'&#xe600;','image'=>'icon/8.png','data'=>'','link'=>'javascript:void(0);','type'=>'share','enable'=>1],
+//                        ['name'=>'搜索','icon'=>'&#xe636;','image'=>'icon/8.png','data'=>'','link'=>'javascript:void(0);','type'=>'search','enable'=>0],
+//                    ];  
+//                }
                 //快捷导航
                 $navs = Classify::where('cus_id',$this->cus_id)->where('mobile_show',1)->select('id','type','name','en_name','icon','url','p_id','en_name')->OrderBy('sort','asc')->get()->toArray();
                 if(count($navs)){
@@ -586,13 +602,20 @@ class PrintController extends BaseController{
                     }
                 }
                 $classify=new Classify();
+
                 $catlist=$classify->toTree($navs);
+                if(!is_array($catlist)){
+                    $catlist=array();
+                }
                 array_unshift($catlist,array('id'=>null,'name'=>'首页','en_name'=>'Home','url'=>$this->site_url,'childmenu'=>null));
                 $quickbarCallback=array('config'=>$config,'quickbar'=>$quickbar,'catlist'=>$catlist);
                 if($this->showtype=='preview'){
                     echo "quickbarCallback(".json_encode($quickbarCallback).")";
                 }else{
-                    file_put_contents(public_path("customers/".$this->customer.($this->type!='pc'?'/mobile':'').'/quickbar.json'),"quickbarCallback(".json_encode($quickbarCallback).")");
+                    if($this->type=='pc'){
+                       file_put_contents(public_path("customers/".$this->customer.'/quickbar.json'),"quickbarCallback(".json_encode($quickbarCallback).")");
+                    }
+                  file_put_contents(public_path("customers/".$this->customer.'/mobile'.'/quickbar.json'),"quickbarCallback(".json_encode($quickbarCallback).")");
                 }
             }
         }
@@ -607,7 +630,7 @@ class PrintController extends BaseController{
      */
     private function pagePublic($c_id=0){
         if($this->type=='pc'){
-            $navs = Classify::where('cus_id',$this->cus_id)->where('pc_show',1)->whereIN('type',[1,2,3,4,6])->select('id','type','img','icon','name','url','p_id','en_name','meta_description as description')->OrderBy('sort','asc')->get()->toArray();
+            $navs = Classify::where('cus_id',$this->cus_id)->where('pc_show',1)->whereIN('type',[1,2,3,4,5,6])->select('id','type','img','icon','name','url','p_id','en_name','meta_description as description')->OrderBy('sort','asc')->get()->toArray();
         }else{
             $navs = Classify::where('cus_id',$this->cus_id)->where('mobile_show',1)->select('id','type','img','icon','name','url','p_id','en_name','meta_description as description')->OrderBy('sort','asc')->get()->toArray();
         }
@@ -683,11 +706,29 @@ class PrintController extends BaseController{
             }
         }
         $contact= CustomerInfo::where('cus_id',$this->cus_id)->select('company','contact_name as name','mobile','telephone','fax','email as mail','qq','address')->first()->toArray();
-        $pc_domain=CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_domain');
-        if(!empty($pc_domain)){
-            $domain_arr=parse_url($pc_domain);
-            $pc_domain=$domain_arr['host'];     
-            $pc_domain="http://wwvv.".ltrim($pc_domain,'www.');
+        if($this->showtype=='preview'){
+            $name=  Customer::where('id',$this->cus_id)->pluck('name');
+            if($this->type=='pc'){
+                $pc_domain=$name.'s.5.67.org';
+            }else{
+                $pc_domain=$name.'m.s.5.67.org';
+            }
+        }else{
+            if($this->type=='pc'){
+                $pc_domain=CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_domain');
+                if(!empty($pc_domain)){
+                    $domain_arr=parse_url($pc_domain);
+                    $pc_domain=$domain_arr['host'];
+                    $pc_domain="http://wwvv.".ltrim($pc_domain,'www.');
+                }
+            }else{
+                $pc_domain=CustomerInfo::where('cus_id',$this->cus_id)->pluck('mobile_domain');
+                if(!empty($pc_domain)){
+                    $domain_arr=parse_url($pc_domain);
+                    $pc_domain=$domain_arr['host'];
+                    $pc_domain="http://wwvv.m.".ltrim($pc_domain,'www.');
+                }
+            }
         }
         $result = [
             'stylecolor'=>$stylecolor,
@@ -1511,11 +1552,14 @@ class PrintController extends BaseController{
         elseif($classify->type==4){//内容单页
             $viewname = 'list-page';
         }
+        elseif($classify->type==5){//留言板
+            $viewname = 'list-page';
+        }
         else{//跳转404
 
         }
         //echo $viewname;exit;
-        if(in_array($classify->type,array(1,2,3,4))){
+        if(in_array($classify->type,array(1,2,3,4,5))){
             $sub = str_replace('-', '_', $viewname);
             $data = $this->pagedata($viewname);
             $index = $this->detailList($data);
@@ -1528,6 +1572,41 @@ class PrintController extends BaseController{
                 }else{
                     $result['list']['content'] =preg_replace('/\/customers\/'.$this->customer.'/i','',Page::where('id',$classify->page_id)->pluck('content'));                   
                 }   
+            }elseif($classify->type==5){
+                $result['list']['content'] ='<form action="http://swap.5067.org/admin/add.php" method="post" name="messageboard" onsubmit="return CheckPost();" class="elegant-aero">
+                    <h1>留言板
+                    <span>请填写您的留言。</span>
+                    </h1>
+                    <label>
+                    <span>姓名 :</span>
+                    <input id="name" type="text" name="name" placeholder="您的姓名" />
+                    </label>
+                    <label>
+                    <span>标题 :</span>
+                    <input id="title" type="text" name="title" placeholder="标题" />
+                    </label>
+                    <label>
+                    <span>描述 :</span>
+                    <input id="descript" type="text" name="descript" placeholder="描述" />
+                    </label>
+                    <label>
+                    <span>Email :</span>
+                    <input id="email" type="email" name="email" placeholder="Email地址" />
+                    </label>
+                    <label>
+                    <span>联系电话 :</span>
+                    <input id="telephone" type="text" name="telephone" placeholder="您的联系方式" />
+                    </label>
+                    <label>
+                    <label>
+                    <span>内容 :</span>
+                    <textarea id="content" name="content" placeholder="您的想法...."></textarea>
+                    </label>
+                    <label>
+                    <span>&nbsp;</span>
+                    <input type="submit" class="button" name="submit" value="提交" />
+                    </label>
+                    </form>';
             }else{
                 $result['list']['data'] = $index_list['data'];         
             }
@@ -1543,6 +1622,114 @@ class PrintController extends BaseController{
             $smarty->setCompileDir(app_path('storage/views/compile'));
             $smarty->registerPlugin('function','mapExt',array('PrintController','createMap'));
             $smarty->registerPlugin('function', 'shareExt', array('PrintController','createShare'));
+            if($classify->type==5){
+                $result['footscript'] .='<STYLE TYPE="text/css"> 
+                <!-- 
+                .elegant-aero {
+                margin-left:auto;
+                margin-right:auto;
+                max-width: 500px;
+                /*background: #D2E9FF;*/
+                padding: 20px 20px 20px 20px;
+                font: 12px Arial, Helvetica, sans-serif;
+                color: #666;
+                }
+                .elegant-aero h1 {
+                font: 24px "Trebuchet MS", Arial, Helvetica, sans-serif;
+                padding: 10px 10px 10px 20px;
+                display: block;
+                /*background: #C0E1FF;*/
+                border-bottom: 1px solid #B8DDFF;
+                margin: -20px -20px 15px;
+                }
+                .elegant-aero h1>span {
+                display: block;
+                font-size: 11px;
+                }
+                .elegant-aero label>span {
+                float: left;
+                margin-top: 10px;
+                color: #5E5E5E;
+                }
+                .elegant-aero label {
+                display: block;
+                margin: 0px 0px 5px;
+                }
+                .elegant-aero label>span {
+                float: left;
+                width: 20%;
+                text-align: right;
+                padding-right: 15px;
+                margin-top: 10px;
+                font-weight: bold;
+                }
+                .elegant-aero input[type="text"], .elegant-aero input[type="email"], .elegant-aero textarea, .elegant-aero select {
+                color: #888;
+                width: 70%;
+                padding: 0px 0px 0px 5px;
+                border: 1px solid #C5E2FF;
+                background: #FBFBFB;
+                outline: 0;
+                -webkit-box-shadow:inset 0px 1px 6px #ECF3F5;
+                box-shadow: inset 0px 1px 6px #ECF3F5;
+                font: 200 12px/25px Arial, Helvetica, sans-serif;
+                height: 30px;
+                line-height:15px;
+                margin: 2px 6px 16px 0px;
+                }
+                .elegant-aero textarea{
+                height:100px;
+                padding: 5px 0px 0px 5px;
+                width: 70%;
+                }
+                .elegant-aero select {
+                background: #fbfbfb url(\'down-arrow.png\') no-repeat right;
+                background: #fbfbfb url(\'down-arrow.png\') no-repeat right;
+                appearance:none;
+                -webkit-appearance:none;
+                -moz-appearance: none;
+                text-indent: 0.01px;
+                text-overflow: \'\';
+                width: 70%;
+                }
+                .elegant-aero .button{
+                padding: 10px 30px 10px 30px;
+                background: #ACB5B7;;
+                border: none;
+                color: #FFF;
+                box-shadow: 1px 1px 1px #4C6E91;
+                -webkit-box-shadow: 1px 1px 1px #4C6E91;
+                -moz-box-shadow: 1px 1px 1px #4C6E91;
+                text-shadow: 1px 1px 1px #5079A3;
+                }
+                .elegant-aero .button:hover{
+                background: #C5CFD2;
+                color: #6B6262;
+                }--> 
+                </STYLE><SCRIPT language=javascript>
+                function CheckPost()
+                {
+                        if (messageboard.name.value=="")
+                        {
+                                alert("请填写用户名");
+                                messageboard.name.focus();
+                                return false;
+                        }
+                        if (messageboard.title.value.length=="")
+                        {
+                                alert("请填写标题!");
+                                messageboard.title.focus();
+                                return false;
+                        }
+                        if (messageboard.content.value=="")
+                        {
+                                alert("必须要填写留言内容");
+                                messageboard.content.focus();
+                                return false;
+                        }
+                }
+                </SCRIPT>';
+            }
             $smarty->assign($result);
             $smarty->display($viewname.'.html');
             //return View::make('templates.'.$this->themename.'.'.$viewname,$result);
@@ -1602,7 +1789,11 @@ class PrintController extends BaseController{
                 break;
             }
         }
-        $result = $this->pagePublic($article->c_id);        
+        $result = $this->pagePublic($article->c_id); 
+        
+        if(!is_array($result['navs'])){
+            $result['navs']=array();
+        }
         foreach($result['navs'] as $nav){
             if($nav['current']==1){
                 $pagenavs = $nav['childmenu'];

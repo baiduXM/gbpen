@@ -1,35 +1,35 @@
 
 function heightauto(){
-	//自动获取高度
-	var col_list=$(".box_info").height()/2;
-	$(".box_info").css({
-		"marginTop":"-"+col_list+"px"
-	})
+    //自动获取高度
+    var col_list=$(".box_info").height()/2;
+    $(".box_info").css({
+        "marginTop":"-"+col_list+"px"
+    })
 }
 function tanchuang(ColumnInit){
-	// 弹窗处理
-	$('.close').click(function(){
+    // 弹窗处理
+    $('.close').click(function(){
         $('#bomb-box').removeClass('in').fadeOut(function(){
-			$(".box_info").css({
-			"marginTop":"-"+2000+"px"
-			});
+            $(".box_info").css({
+            "marginTop":"-"+2000+"px"
+            });
             $('.box-up').text('添加栏目');
             clear_info();
-		}); 
+        }); 
     });
     $('.mask,.box_info .boxs .cancel,.save_column').click(function(){
         $('#bomb-box').removeClass('in').fadeOut(function(){
-			$(".box_info").css({
-			"marginTop":"-"+2000+"px"
-			});
+            $(".box_info").css({
+            "marginTop":"-"+2000+"px"
+            });
             $('.box-up').text('添加栏目');
             clear_info();
-		});
+        });
     });
     $('.addcolumn,.addlist,.addauto').click(function(){
         $('#bomb-box').fadeIn(function(){
-			heightauto()
-		});
+            heightauto()
+        });
         $('#bomb-box').addClass('in');
         clear_info();
         ColumnInit._Save_id(1);
@@ -58,8 +58,8 @@ function tanchuang(ColumnInit){
         $('#page_editor').hide();
         $('#inside_model').addClass('none');
         $('#models').hide();
-        $('.col_icon_box,.col_icon .arrow').fadeOut();
-        $('.col_icon_box').siblings('i').removeClass('in');
+        $('.icon_ousidebox,.icon_box .arrow').fadeOut();
+        $('.icon_ousidebox').siblings('i').removeClass('in');
         $('.box-down .mod_border').each(function(){
             $(this).hasClass('cu')?$(this).removeClass('cu'):'';
         });
@@ -131,7 +131,7 @@ var ercodeDrop = {
 ercodeDrop._init('.phone-content .notice');
 
 // 弹框警告
-var WarningBox = function(del,warning_context){console.log('12');
+var WarningBox = function(del,warning_context){
     this.context = $.extend(true,{
         warning_context : '∑(っ°Д ° )っ你确定删除吗？',
         IsBaseShow : false
@@ -153,6 +153,9 @@ var WarningBox = function(del,warning_context){console.log('12');
         $('.tpl_mask').click(function(){
             $(this).hide();
             $(this).next().hide();
+        });
+        $('.warning_box .cancel').click(function(){
+            $('.warning_box ').hide().prev().hide();
         });
     };
     this.ng_fuc =  function(){
@@ -212,7 +215,7 @@ WarningBox.prototype = {
                 crop: function (e) {
                     $('.cutsize').text(Math.round(e.width)+' * '+Math.round(e.height));
                 }
-            };console.log($image.cropper());
+            };
             $image.cropper(options);
             this._UpFunction($image,defaults.ajaxurl,defaults.IsBaseShow,defaults.oncallback);
         }else{
@@ -508,4 +511,44 @@ function checkjs(parame){
         }
     });     
 }
-    
+// 图标选择
+function icon_choose(limintHeight){
+    this.clicks = function(){
+        var _this = this;
+        $('.icon_box>i').unbind('click').on('click',function(event) {
+            if($(this).offset().top > limintHeight){
+                $(this).siblings('.icon_ousidebox').css({'top':'auto','bottom':'30px'}).end()
+                .siblings('.arrow').css({'border-color':'rgba(0,0,0,0.7) transparent transparent transparent','bottom':'18px','top':'auto'});
+            }
+            var event_this = $(this);
+            if($(this).parent().hasClass('in')){
+                $(this).siblings('.icon_ousidebox,.arrow').fadeOut();
+                $(this).parent().removeClass('in')
+            }else{
+                $(this).siblings('.icon_ousidebox,.arrow').fadeIn();
+                $(this).parent().addClass('in')
+            }
+            $.get('../icon-list',function(json){
+                checkJSON(json, function(json){
+                    var _div = '';
+                    $.each(json.icons,function(index, el) {
+                        _div += '<li name="'+el.replace('&', '&amp;')+'"><i class="iconfonts">'+el+'</i></li>';
+                    });
+                    event_this.siblings('.icon_ousidebox').find('ul').html(_div);
+                    _this._clickhide();
+                });
+            });
+        })  
+    },
+    this._clickhide = function(){
+        var _this = this;
+        $('.icon_ousidebox ul li').unbind('click').click(function(event) {
+            var _Pthis = $(this).closest('.icon_box');
+            _Pthis.children('i').before('<i class="iconfonts">'+$(this).attr('name')+'</i></li>').remove();
+            _Pthis.children('.icon_input').val($(this).attr('name'));
+            $('.icon_ousidebox,.icon_box .arrow').fadeOut();
+            _Pthis.removeClass('in')
+            _this.clicks();
+        });
+    }
+}
