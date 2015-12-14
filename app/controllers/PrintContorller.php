@@ -200,9 +200,9 @@ class PrintController extends BaseController{
                                 $c_arr=$classify->toTree($c_arr);
                                 $templates->unsetFalseClassify($c_arr,array(1,2,3,4));
                                 $templates->unsetLastClassify($c_arr);
-                                if(!is_array($c_arr)){
-                                    $c_arr=array();
-                                }
+//                                if(!is_array($c_arr)){
+//                                    $c_arr=array();
+//                                }
                                 $c_arr=array_merge($c_arr);                            
                                 $v['config']['limit']=isset($v['config']['limit'])?$v['config']['limit']:20;
                             }
