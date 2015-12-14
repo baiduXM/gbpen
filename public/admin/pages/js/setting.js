@@ -76,6 +76,7 @@
             $('.set_pic'+num+'').append(_newpic);
         },
         _settingSave : function(){
+            $('input').val().toLowerCase();
             $('#setting .addsave').click(function(){
                 var data = $('#setting_info').serializeJson();
                 $http.post('../customer-setting',data).success(function(json){
