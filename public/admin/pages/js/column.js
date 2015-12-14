@@ -207,8 +207,8 @@ function columnController($scope, $http) {
             var _this = this;
             $('.a-table').unbind('click').on('click','.column-edit',function(){
                 _this.this_id = $(this).parent().siblings('.delv').attr('name');
-                // $http.get('../classify-info?id='+_this.this_id+'').success(function(json) {
-                $http.get('json/classify-info.json').success(function(json) {
+                $http.get('../classify-info?id='+_this.this_id+'').success(function(json) {
+                // $http.get('json/classify-info.json').success(function(json) {
                     var d = json.data;
                     // proportion = json.data.width/json.data.height;
                     // 对应父级栏目
