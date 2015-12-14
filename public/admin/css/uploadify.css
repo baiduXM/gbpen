@@ -13,6 +13,8 @@ Released under the MIT License <http://www.opensource.org/licenses/mit-license.p
 	color: #808080;
 }
 .uploadify-queue {
+	-webkit-transition:all 0.2s;
+	transition:all 0.2s;
 	margin-bottom: 1em;
 	position: absolute;
 	top: 10%;
