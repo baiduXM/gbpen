@@ -1573,34 +1573,34 @@ class PrintController extends BaseController{
                     $result['list']['content'] =preg_replace('/\/customers\/'.$this->customer.'/i','',Page::where('id',$classify->page_id)->pluck('content'));                   
                 }   
             }elseif($classify->type==5){
-                $result['list']['content'] ='<form action="http://swap.5067.org/admin/add.php" method="post" name="messageboard" onsubmit="return CheckPost();" class="elegant-aero">
+                $result['list']['content'] ='<form action="http://swap.5067.org/message/'.$this->cus_id.'" method="post" name="messageboard" onsubmit="return CheckPost();" class="elegant-aero">
                     <h1>留言板
-                    <span>请填写您的留言。</span>
+                    <span>message board</span>
                     </h1>
                     <label>
                     <span>姓名 :</span>
-                    <input id="name" type="text" name="name" placeholder="您的姓名" />
+                    <input id="name" type="text" name="name" placeholder="Name" />
                     </label>
                     <label>
                     <span>标题 :</span>
-                    <input id="title" type="text" name="title" placeholder="标题" />
+                    <input id="title" type="text" name="title" placeholder="Title" />
                     </label>
                     <label>
                     <span>描述 :</span>
-                    <input id="descript" type="text" name="descript" placeholder="描述" />
+                    <input id="descript" type="text" name="descript" placeholder="Descript" />
                     </label>
                     <label>
                     <span>Email :</span>
-                    <input id="email" type="email" name="email" placeholder="Email地址" />
+                    <input id="email" type="email" name="email" placeholder="Email Address" />
                     </label>
                     <label>
                     <span>联系电话 :</span>
-                    <input id="telephone" type="text" name="telephone" placeholder="您的联系方式" />
+                    <input id="telephone" type="tel" name="telephone" placeholder="Telephone" />
                     </label>
                     <label>
                     <label>
                     <span>内容 :</span>
-                    <textarea id="content" name="content" placeholder="您的想法...."></textarea>
+                    <textarea id="content" name="content" placeholder="You mind ...."></textarea>
                     </label>
                     <label>
                     <span>&nbsp;</span>
@@ -1628,12 +1628,14 @@ class PrintController extends BaseController{
                 .elegant-aero {
                 margin-left:auto;
                 margin-right:auto;
+                width: 100%;
                 max-width: 500px;
                 /*background: #D2E9FF;*/
                 padding: 20px 20px 20px 20px;
                 font: 12px Arial, Helvetica, sans-serif;
                 color: #666;
                 }
+                .input[placeholder]{color:#5c5c5c;}
                 .elegant-aero h1 {
                 font: 24px "Trebuchet MS", Arial, Helvetica, sans-serif;
                 padding: 10px 10px 10px 20px;
@@ -1663,7 +1665,7 @@ class PrintController extends BaseController{
                 margin-top: 10px;
                 font-weight: bold;
                 }
-                .elegant-aero input[type="text"], .elegant-aero input[type="email"], .elegant-aero textarea, .elegant-aero select {
+                .elegant-aero input[type="text"], .elegant-aero input[type="tel"], .elegant-aero input[type="email"], .elegant-aero textarea, .elegant-aero select {
                 color: #888;
                 width: 70%;
                 padding: 0px 0px 0px 5px;
@@ -1706,7 +1708,8 @@ class PrintController extends BaseController{
                 background: #C5CFD2;
                 color: #6B6262;
                 }--> 
-                </STYLE><SCRIPT language=javascript>
+                </STYLE>
+                <SCRIPT language=javascript>
                 function CheckPost()
                 {
                         if (messageboard.name.value=="")
@@ -1726,6 +1729,14 @@ class PrintController extends BaseController{
                                 alert("必须要填写留言内容");
                                 messageboard.content.focus();
                                 return false;
+                        }
+                        if (messageboard.telephone.value!="")
+                        {
+                                if(isNaN(messageboard.telephone.value)){
+                                    alert("电话号码请填写数字");
+                                    messageboard.telephone.focus();
+                                    return false;
+                                }
                         }
                 }
                 </SCRIPT>';
@@ -1800,7 +1811,6 @@ class PrintController extends BaseController{
                 break;
             }
             else{
-                dd('121515');
                 $pagenavs = [];
             }
         }
