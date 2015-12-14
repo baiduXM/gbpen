@@ -569,9 +569,9 @@ border-radius: 5px;}
 .nsvshowtype-title{text-align: left;padding: 5px;margin-bottom: 5px;border-bottom: 1px solid #ccc;}
 .nsvshowtype-info-box{height: 500px;}
 .nsvshowtype-info-box li{display: inline-block;padding: 5px 10px;cursor: pointer;margin: 10px auto;}
-.nsvshowtype-info-box li:hover{background-color:rebeccapurple;}
+.nsvshowtype-info-box li:hover{background-color:#C489FF;}
 .nsvshowtype-info-box li:hover span{color: #fff}
-.nsvshowtype-info-box li.cu{background-color:rebeccapurple;}
+.nsvshowtype-info-box li.cu{background-color:#C489FF;}
 .nsvshowtype-info-box li.cu span{color: #fff}
 .nsvshowtype-info-box img{width: 300px;height: 200px;display: block;}
 .nsvshowtype-content{overflow-y: scroll;}
