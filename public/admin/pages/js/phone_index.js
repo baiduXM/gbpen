@@ -640,7 +640,7 @@ function phone_indexController($scope,$http ,$location) {
     	QuickBarInfo : function(){
     		var data = (this.jsonData == undefined ? null : this.jsonData.value),_this = this,
 				_div1 = '',num,info;
-			$.each(this.jsonData,function(k,v){console.log(v);
+			$.each(this.jsonData,function(k,v){
 				switch(v.type){
 					case 'tel':
 					case 'sms':

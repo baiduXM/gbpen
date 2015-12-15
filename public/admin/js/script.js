@@ -89,8 +89,7 @@ mainApp.config(function($routeProvider, $httpProvider) {
 			$('nav .nav a').each(function(){
 				var locat = $(this).attr('href').substr(2);
 				var loca_than = location.hash.substr(2);
-				var pattern = new RegExp(locat+"+$","g"); 
-				if(pattern.test(loca_than)){
+				if(locat === loca_than){
 					locathash = $(this).attr('href');
 					$(this).parent().addClass('selected').siblings().removeClass('selected');
 				}
