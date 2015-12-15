@@ -452,7 +452,7 @@ class PrintController extends BaseController{
 				 	break;
             }
         }
-        if($slimming['feedback']){
+        if(isset($slimming['feedback'])){
             $slimming['feedback']['value']['posturl']='http://swap.5067.org/message/'.$this->cus_id;
         }
         return $slimming;
