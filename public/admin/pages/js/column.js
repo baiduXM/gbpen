@@ -231,8 +231,8 @@ function columnController($scope, $http) {
                     $('.dropdown li a[data-id='+_this.this_id+']').parent().hide();
                     $('.column_name').val(d.name);
                     // 图标判断
-                    $('.icon_input').val(d.icon);
-                    d.icon ? $('.col_icon>i').before('<i class="iconfonts">'+d.icon+'</i>').remove() : $('.col_icon>i').before('<i class="iconfont icon-dengpao"></i>').remove();
+                    $('.icon_input').val(d.icon);console.log(d.icon);
+                    d.icon ? $('.col_icon .icon_box>i').before('<i class="iconfonts">'+d.icon+'</i>').remove() : $('.col_icon .icon_box>i').before('<i class="iconfont icon-dengpao"></i>').remove();
                     // 栏目图标
                     var columnicon = new icon_choose();
                     columnicon.clicks();
