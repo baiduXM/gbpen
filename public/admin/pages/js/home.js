@@ -235,6 +235,33 @@ function homeController($scope, $http) {
             });
             var homeboxHeight = $('#home-edit').height() - parseInt($('.home-page-preview .hd').height()) + 10;
 			$('.home-box .home-page-preview .iframs').css('height', homeboxHeight);
+
+			//编辑图片经过效果
+			$('.home-edite').on('mouseenter', '.preview', function(event) {
+				$(this).children('.preview-edit').css('visibility','visible');
+				$(this).children('.preview-mask').css('visibility','visible');
+			}).on('mouseleave', '.preview', function(event) {
+				$(this).children('.preview-edit').css('visibility','hidden');
+				$(this).children('.preview-mask').css('visibility','hidden');
+			}).on('click', '.homeed-right .preview-close', function(event) {
+				$(this).parent().parent().remove();
+				return false;
+			});
+			// 全屏按钮
+			$('.home-box .iframs .full_screen').hover(function(event) {
+				$(this).css('opacity','1').animate({'height':'70px','width':'48px'},200);
+				$('.home-box .iframs .full_screen .pos').animate({'margin-top':'8px'},200);
+			},function(){
+				$(this).css('opacity','0.6').animate({'height':'60px','width':'38px'},200);
+				$('.home-box .iframs .full_screen .pos').animate({'margin-top':''},200);
+			}).click(function(){
+				$('.home-box .full_screen_box').fadeIn(500,function() {
+					heightauto()
+				});
+			});
+			$('.home-page-preview .mask').click(function(){
+				$('.home-box .full_screen_box').fadeOut(500);
+			});
 			// 编辑图片
 			var this_edit;
 			$('.home-edite').on('click','.preview-edit',function(){
@@ -258,7 +285,7 @@ function homeController($scope, $http) {
 						</span>\n\
 					</div>\n\
 				</div>';
-				$('.column_pic').append(_pics);
+				$('.homebox_pic').append(_pics);
 				return false;
 			});
             $("#temple-data input[type=checkbox]").on('click',function(){alert($(this).attr('checked'))});

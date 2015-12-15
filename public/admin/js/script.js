@@ -94,7 +94,7 @@ mainApp.config(function($routeProvider, $httpProvider) {
 					$(this).parent().addClass('selected').siblings().removeClass('selected');
 				}
 			});
-			locathash ? $('#blob').animate({left:$('nav .nav a[href="'+locathash+'"]').parent().position().left},1000,'easeOutExpo') : '';
+			locathash ? $('#blob').animate({left:$('nav .nav a[href="'+locathash+'"]').parent().position().left},1000,'easeOutExpo').addClass('rotation') : '';
 		}, 200);
 		/*
 		// reload page
@@ -183,7 +183,7 @@ mainApp.controller('indexController', function($scope) {
 	$scope.$parent.menu = [];
 });
 
-$(document).ready(function() {
+$(document).ready(function($scope) {
 	// 初始化 ----------
 	var bgImg = new Image();
 	bgImg.src = 'images/bg_top.jpg';
@@ -196,110 +196,107 @@ $(document).ready(function() {
 		$('#phone').data('phoneClosed', true);
 	}, $.support.leadingWhitespace?1200:1);
 	
-	// 导航栏 ----------
-	$('header nav ul').spasticNav({
-		overlap: 0,
-		reset : 1000,
-		color: 'transparent',
-		backToSelected_callback: function() {
-			$('header nav ul li.selected').find('em').fadeIn();
-			$('#blob').addClass('rotation');
-		}
-	}).find('li:not(#blob)').mouseenter(function() {
-		if (!$(this).hasClass('selected')) {
-			$('header nav ul li.selected').find('em').hide();
-			$('#blob').removeClass('rotation');
-		} else if (!$('#blob').hasClass('rotation')) {
-			$('#blob').addClass('rotation');
-			var _this = $(this);
-			setTimeout(function() {
-				_this.find('em').fadeIn('fast');
-			}, 200);
-		}
-	}).mouseleave(function(){
-		if ($(this).hasClass('selected')) return false;
-		$(this).find('em').hide();
-	}).click(function(){
-		if ($(this).hasClass('selected')) return false;
-		$(this).find('em').fadeIn();
-		$(this).siblings().find('em').hide();
-		$('#blob').addClass('rotation');
-		$(this).addClass('selected').siblings().removeClass('selected');
-	});
-	$('.member_buttons a:nth-of-type(2)').click(function(){
-		$('header nav ul li').removeClass('selected').find('em').hide();
-		$('#blob').removeClass('rotation').animate({left:0},1000,'easeOutExpo');
-	});
-	
-	// 侧边菜单 ----------
-	$('#menu-close').click(function() {
-		$('body').toggleClass('closemenu');
-		$(window).resize();
-	});
-
-	// 手机拉出收起事件 ----------
-	$('#preview-phone').mouseenter(function() {
-        if($('#phone').data('phoneClosed_index')){
-            return false;
-        }else{
-            if (!$('#phone').data('phoneClosed')) return false;
-            $('.previews').addClass('phone-hover');
-            $('#phone').addClass('phone-hover').removeClass('phone-hoveroff');
-        }
-	});
-	$('#phone').mouseleave(function() {
-        if($('#phone').data('phoneClosed_index')){
-            return false;
-        }else{
-            if (!$('#phone').data('phoneClosed')) return false;
-            $(this).addClass('phone-hoveroff').removeClass('phone-hover');
-            $('.previews').removeClass('phone-hover');
-        }
-	});
-	$('#phone-home, #preview-phone, #preview-wechat').click(function() {
-        $('#phone').data('phoneClosed_index') == false ? $('#phone').data('phoneClosed',true) : $('#phone').data('phoneClosed_index') == undefined ? $('#phone').data('phoneClosed',true) : $('#phone').data('phoneClosed',false);
-		if ($('#phone').data('phoneClosed')) {
-            $('#phone').data('phoneClosed_index', true);
-			$('#phone').removeClass('phone-hover').data('phoneClosed', false);
-			$('body').removeClass('closephone').addClass('closemenu');
-			$('.previews').removeClass('phone-hover');
-			if ($(this).attr('id') == 'preview-wechat') {
-				$('#phone #weixin_preview').show();
-				$('#phone #phone_preview').hide();
-			}else{
-				$('#phone #phone_preview').show();
-				$('#phone #weixin_preview').hide();
-			}
-		}else{
-            $('#phone').data('phoneClosed_index', false);
-			$('body').addClass('closephone').removeClass('closemenu');
-			setTimeout(function() {
-				$('#phone').data('phoneClosed', true);
-			}, $.support.leadingWhitespace?1200:1);
-		}
-		$(window).resize();
-	});
-	// 手机预览区域显隐控制
-	var ClosephoneThis;
-    $('.closephone header nav li').click(function(){
-    	if(ClosephoneThis != $(this).index()){
-    		$('#phone').removeData('phoneClosed_index');
-			$('body').addClass('closephone').removeClass('closemenu');
+	$scope.MainInit = function(){
+	    this._init();
+	};
+	$scope.MainInit.prototype = {
+		_init : function(){
+    		this.navanimation();
+    		this.otherPageSkip();
+    		this.phoneMousehover();
+    		this.phoneClick();
+    	},
+    	navanimation : function(){
+    		$('header nav ul').spasticNav({
+				overlap: 0,
+				reset : 1000,
+				color: 'transparent',
+				backToSelected_callback: function() {
+					$('header nav ul li.selected').find('em').fadeIn();
+					$('#blob').addClass('rotation');
+				}
+			}).find('li:not(#blob)').mouseenter(function() {
+				if (!$(this).hasClass('selected')) {
+					$('header nav ul li.selected').find('em').hide();
+					$('#blob').removeClass('rotation');
+				} else if (!$('#blob').hasClass('rotation')) {
+					$('#blob').addClass('rotation');
+					var _this = $(this);
+					setTimeout(function() {
+						_this.find('em').fadeIn('fast');
+					}, 200);
+				}
+			}).mouseleave(function(){
+				if ($(this).hasClass('selected')) return false;
+				$(this).find('em').hide();
+			}).click(function(){
+				if ($(this).hasClass('selected')) return false;
+				$(this).find('em').fadeIn();
+				$(this).siblings().find('em').hide();
+				$('#blob').addClass('rotation');
+				$(this).addClass('selected').siblings().removeClass('selected');
+			});
+    	},
+    	otherPageSkip : function(){
+    		$('.member_buttons a').click(function(){
+				$('header nav ul li').removeClass('selected').find('em').hide();
+				$('#blob').removeClass('rotation').animate({left:0},1000,'easeOutExpo');
+			});
+    	},
+    	leftMenu : function(){
+    		// 侧边菜单 ----------
+    		$('#menu-close').click(function() {
+				$('body').toggleClass('closemenu');
+				$(window).resize();
+			});
+    	},
+    	phoneMousehover : function(){
+			$('#preview-phone').mouseenter(function() {
+		        if($('#phone').data('phoneClosed_index')){
+		            return false;
+		        }else{
+		            if (!$('#phone').data('phoneClosed')) return false;
+		            $('.previews').addClass('phone-hover');
+		            $('#phone').addClass('phone-hover').removeClass('phone-hoveroff');
+		        }
+			});
+			$('#phone').mouseleave(function() {
+		        if($('#phone').data('phoneClosed_index')){
+		            return false;
+		        }else{
+		            if (!$('#phone').data('phoneClosed')) return false;
+		            $(this).addClass('phone-hoveroff').removeClass('phone-hover');
+		            $('.previews').removeClass('phone-hover');
+		        }
+			});
+    	},
+    	phoneClick : function(){
+			$('#phone-home, #preview-phone, #preview-wechat').click(function() {
+		        $('#phone').data('phoneClosed_index') == false ? $('#phone').data('phoneClosed',true) : $('#phone').data('phoneClosed_index') == undefined ? $('#phone').data('phoneClosed',true) : $('#phone').data('phoneClosed',false);
+				if ($('#phone').data('phoneClosed')) {
+		            $('#phone').data('phoneClosed_index', true);
+					$('#phone').removeClass('phone-hover').data('phoneClosed', false);
+					$('body').removeClass('closephone').addClass('closemenu');
+					$('.previews').removeClass('phone-hover');
+					if ($(this).attr('id') == 'preview-wechat') {
+						$('#phone #weixin_preview').show();
+						$('#phone #phone_preview').hide();
+					}else{
+						$('#phone #phone_preview').show();
+						$('#phone #weixin_preview').hide();
+					}
+				}else{
+		            $('#phone').data('phoneClosed_index', false);
+					$('body').addClass('closephone').removeClass('closemenu');
+					setTimeout(function() {
+						$('#phone').data('phoneClosed', true);
+					}, $.support.leadingWhitespace?1200:1);
+				}
+				$(window).resize();
+			});
     	}
-    	ClosephoneThis = $(this).index();
-    });
-});
- 
-//上传图片效果
-$('.home-edite').on('mouseenter', '.preview', function(event) {
-	$(this).children('.preview-edit').css('visibility','visible');
-	$(this).children('.preview-mask').css('visibility','visible');
-}).on('mouseleave', '.preview', function(event) {
-	$(this).children('.preview-edit').css('visibility','hidden');
-	$(this).children('.preview-mask').css('visibility','hidden');
-}).on('click', '.homeed-right .preview-close', function(event) {
-	$(this).parent().parent().remove();
-	return false;
+	};
+	var maininit = new $scope.MainInit();
 });
 
 var mainMarginLeft = parseInt($('#main').css('margin-left'));
@@ -343,21 +340,7 @@ window.onbeforeunload=function(event){
 		return "你更改的文件尚未推送！";
 	}
 }
-// 全屏按钮
-$('.home-box .iframs .full_screen').hover(function(event) {
-	$(this).css('opacity','1').animate({'height':'70px','width':'48px'},200);
-	$('.home-box .iframs .full_screen .pos').animate({'margin-top':'8px'},200);
-},function(){
-	$(this).css('opacity','0.6').animate({'height':'60px','width':'38px'},200);
-	$('.home-box .iframs .full_screen .pos').animate({'margin-top':''},200);
-}).click(function(){
-	$('.home-box .full_screen_box').fadeIn(500,function() {
-		heightauto()
-	});
-});
-$('.home-page-preview .mask').click(function(){
-	$('.home-box .full_screen_box').fadeOut(500);
-});
+
 
 
 
