@@ -168,6 +168,9 @@ class PrintController extends BaseController{
             $classify = new Classify;
             $templates= new TemplatesController;
             $c_arr = Classify::where('cus_id',$this->cus_id)->whereIn('type',array(1,2,3,4,5,6))->where('pc_show','=',1)->get()->toArray();
+            if(empty($c_arr)) {
+            $c_arr = array();
+         }
             foreach($result as &$v){
                 if($v['type']=='list'){
                     if(isset($v['config']['mustchild']) && $v['config']['mustchild']==true){
@@ -185,7 +188,7 @@ class PrintController extends BaseController{
                                 $v['config']['limit']=isset($v['config']['limit'])?$v['config']['limit']:20;
 			                }
 				            /*20151021添加feeback filter*/
-				            elseif($v['config']['filter']=='feedback'){
+			    elseif($v['config']['filter']=='feedback'){
                                 $c_arr=$classify->toTree($c_arr);
                                 $templates->unsetFalseClassify($c_arr,array(5));
                                 $templates->unsetLastClassify($c_arr);
@@ -200,9 +203,6 @@ class PrintController extends BaseController{
                                 $c_arr=$classify->toTree($c_arr);
                                 $templates->unsetFalseClassify($c_arr,array(1,2,3,4));
                                 $templates->unsetLastClassify($c_arr);
-//                                if(!is_array($c_arr)){
-//                                    $c_arr=array();
-//                                }
                                 $c_arr=array_merge($c_arr);                            
                                 $v['config']['limit']=isset($v['config']['limit'])?$v['config']['limit']:20;
                             }
@@ -1811,10 +1811,13 @@ class PrintController extends BaseController{
                 break;
             }
             else{
-                $pagenavs = [];
+                $pagenavs = array();
             }
         }
         }
+         if(empty($pagenavs)) {
+            $pagenavs = array();
+         }              
         $result['pagenavs']=$pagenavs;
         $result['posnavs']=$this->getPosNavs($article->c_id);
         $result['title'] = $article->title;
