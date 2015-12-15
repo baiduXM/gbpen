@@ -1804,9 +1804,7 @@ class PrintController extends BaseController{
             }
         }
         $result = $this->pagePublic($article->c_id); 
-//        if(!is_array($result['navs'])){
-//            $result['navs']=array();
-//        }
+        if(is_array($result['navs']) && !emptyempty($result['navs'])){  
         foreach($result['navs'] as $nav){
             if($nav['current']==1){
                 $pagenavs = $nav['childmenu'];
@@ -1815,6 +1813,7 @@ class PrintController extends BaseController{
             else{
                 $pagenavs = [];
             }
+        }
         }
         $result['pagenavs']=$pagenavs;
         $result['posnavs']=$this->getPosNavs($article->c_id);
