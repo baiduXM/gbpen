@@ -1804,10 +1804,9 @@ class PrintController extends BaseController{
             }
         }
         $result = $this->pagePublic($article->c_id); 
-        
-        if(!is_array($result['navs'])){
-            $result['navs']=array();
-        }
+//        if(!is_array($result['navs'])){
+//            $result['navs']=array();
+//        }
         foreach($result['navs'] as $nav){
             if($nav['current']==1){
                 $pagenavs = $nav['childmenu'];
