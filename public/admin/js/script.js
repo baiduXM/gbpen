@@ -238,7 +238,7 @@ $(document).ready(function($scope) {
 			});
     	},
     	otherPageSkip : function(){
-    		$('.member_buttons a:nth-of-type(2)').click(function(){
+    		$('.member_buttons a').click(function(){
 				$('header nav ul li').removeClass('selected').find('em').hide();
 				$('#blob').removeClass('rotation').animate({left:0},1000,'easeOutExpo');
 			});
