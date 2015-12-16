@@ -63,7 +63,7 @@ function messageController($scope, $http ,$location) {
     		// 删除操作
     		$('.message-del').click(function(){
     			var id = $(this).data('id'),event_this = $(this);
-    			$http.post('../message-state',{id:id,status:1}).success(function(json){
+    			$http.post('../message-state',{id:id}).success(function(json){
 	    			checkJSON(json,function(json){
                         event_this.closest('.message-item').remove();
                     })
