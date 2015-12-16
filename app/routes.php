@@ -310,9 +310,13 @@ Route::group(array('before' => 'auth'), function() {
         'uses' => 'FeedbackController@getFeedbackData'
     ]);
     
-	Route::get('message-board',[
-		'uses' => 'FeedbackController@getmessageboard'
-	]);
+    Route::get('message-board',[
+            'uses' => 'FeedbackController@getmessageboard'
+    ]);
+    
+    Route::post('message-state',[
+            'uses' => 'FeedbackController@messagestate'
+    ]);
 });
 
 Route::get('seach-seachinfo', [//推送文章到搜索平台
