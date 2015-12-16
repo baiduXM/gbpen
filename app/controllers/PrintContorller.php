@@ -1619,14 +1619,6 @@ class PrintController extends BaseController{
                     <input id="name" type="text" name="name" placeholder="Name" />
                     </label>
                     <label>
-                    <span>标题 :</span>
-                    <input id="title" type="text" name="title" placeholder="Title" />
-                    </label>
-                    <label>
-                    <span>描述 :</span>
-                    <input id="descript" type="text" name="descript" placeholder="Descript" />
-                    </label>
-                    <label>
                     <span>Email :</span>
                     <input id="email" type="email" name="email" placeholder="Email Address" />
                     </label>
@@ -1753,12 +1745,6 @@ class PrintController extends BaseController{
                         {
                                 alert("请填写用户名");
                                 messageboard.name.focus();
-                                return false;
-                        }
-                        if (messageboard.title.value.length=="")
-                        {
-                                alert("请填写标题!");
-                                messageboard.title.focus();
                                 return false;
                         }
                         if (messageboard.content.value=="")

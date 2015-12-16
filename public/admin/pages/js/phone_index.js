@@ -629,7 +629,7 @@ function phone_indexController($scope,$http ,$location) {
     // 底部导航
     $scope.phoneIndexQuickbar = function(ele){
     	this.jsonData = ele;
-    	this.QuickBarShowTypeUrl = '../quickbar.jsoninit';
+    	this.QuickBarShowTypeUrl = 'json/bottomnavsType.json';
     	this.init();
     };
     $scope.phoneIndexQuickbar.prototype = {
@@ -656,7 +656,7 @@ function phone_indexController($scope,$http ,$location) {
 							    			var fg = newArr[x].split('@'),
 												kfname = fg[0].split(':')[0],kfnum = fg[0].split(':')[1];
 							    			_li += '<li class="consultation-item">\
-														<select><option value="qq"'+(fg[1] == 'qq' ? 'selected' : '')+'>QQ</option><option value="53kf"'+(fg[1] == '53kf' ? 'selected' : '')+'>53客服</option></select>\
+														<select><option value="qq"'+(fg[1] == 'qq' ? 'selected' : '')+'>QQ</option></select>\
 														<span><input class="consultation-name message-num" value="'+(kfname||'')+'" />-<input class="consultation-num message-num" value="'+(kfnum||'')+'" /></span>\
 														<div class="crl_icon fr"><i class="iconfont icon-guanbi"></i></div>\
 													</li>';
@@ -787,9 +787,9 @@ function phone_indexController($scope,$http ,$location) {
 		    	var ModelGetQuickBar = function(platform){
 		    		$http.post(_this.QuickBarShowTypeUrl,{platform: platform}).success(function(json){
 			    		checkJSON(json,function(json){
-			    			var _div = '';
+			    			var _div = '',name;
 			    			$.each(json.data,function(k, v) {
-			    				_div += '<li><div class="nsvshowtype-item-border"><img src="'+v.url+'" alt="" /><span'+(v.selected ? ' class="red"' : '')+'>'+v.name+'</span></div></li>';
+			    				_div += '<li'+(v.selected ? ' class="cu"' : '')+'><div class="nsvshowtype-item-border"><img src="'+v.url+'" alt="" /><span'+(v.selected ? ' class="red"' : '')+'>'+v.name+'</span></div></li>';
 			    			});
 			    			html = '<div class="nsvshowtype">\
 										<div class="nsvshowtype-title"><span>'+(platform ? 'PC导航风格' : '手机导航风格')+'</span></div>\
@@ -799,27 +799,24 @@ function phone_indexController($scope,$http ,$location) {
 				    				</div>';
 							var warningbox = new WarningBox('',{warning_context : html});
 							warningbox.ng_fuc();
-    						_this.mousewheelXs();
-			    			// $('.button .save').click(function({
-			    			// 	$http.post('',{bottomnavs: navsArray}).success(function(json){
-						    // 		checkJSON(json);
-						    // 	});
-			    			// })
+							$('.nsvshowtype-info-box li').click(function(){
+								$(this).addClass('cu').siblings().removeClass('cu');
+								name = $(this).find('span').text();
+							});
+			    			$('.button .save').click(function(){
+			    				$http.post('',{platform:platform,name:name}).success(function(json){
+						    		checkJSON(json);
+						    	});
+			    			});
 			    		});
 			    	});
 		    	}
     			if($(this).closest('.pc_check_btn').length){
-    				ModelGetBottomnavs(1);
+    				ModelGetQuickBar(1);
     			}else if($(this).closest('.mob_check_btn').length){
-    				ModelGetBottomnavs(0);
+    				ModelGetQuickBar(0);
     			}
     		});
-    	},
-    	mousewheelXs : function(){
-    		$('.nsvshowtype-info-box').width($('.nsvshowtype-info-box li').length*$('.nsvshowtype-info-box li').width())
-    		var left=$(window). scrollLeft(); 
-		   	$(window). scrollLeft(left-100) 
-		   	event.preventDefault(); 
     	},
     	SaveData : function(){
     		$('.phone_index-banner .save').click(function(){
