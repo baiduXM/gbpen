@@ -803,7 +803,7 @@ function phone_indexController($scope,$http ,$location) {
 								$(this).addClass('cu').siblings().removeClass('cu');
 								name = $(this).find('span').text();
 							});
-			    			$('.button .save').click(function({
+			    			$('.button .save').click(function(){
 			    				$http.post('',{platform:platform,name:name}).success(function(json){
 						    		checkJSON(json);
 						    	});
