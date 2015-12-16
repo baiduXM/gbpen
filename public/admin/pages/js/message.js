@@ -29,7 +29,7 @@ function messageController($scope, $http ,$location) {
 			                <td>'+ele.telephone+'</td>\
 			                <td>'+ele.email+'</td>\
 			                <td>'+ele.creat_time+'</td>\
-			                <td><span class="message-status">'+(ele.status == 1 ? '通过' : '未通过')+'</span><span class="message-del" data-id="'+ele.id+'">删除</span></td>\
+			                <td><span class="message-del" data-id="'+ele.id+'">删除</span></td>\
 			            </tr>'
     				});
     				$('.message-tb .a-table .sapces').after(_div);
@@ -63,9 +63,23 @@ function messageController($scope, $http ,$location) {
     		// 删除操作
     		$('.message-del').click(function(){
     			id = $(this).data('id');
-    			$http.post('',{id:id}).success(function(json){
-	    			checkJSON(json,function(json){})
-	    		});
+    			/*$http.post('http://swap.5067.org/delect.html',{id:id}).success(function(json){
+	    			checkJSON(json,function(json){
+                        console.log(json);
+                    })
+	    		});*/
+                $.ajax({
+                type : "get",
+                url : 'http://swap.5067.org/delect.html?id='+id,
+                dataType : "jsonp",
+                jsonp: "callback",
+                success : function(json){
+                    
+                },
+                error:function(e){
+                    alert("error");
+                }
+            });
     		});
     	},
     	_pageflip : function(json){

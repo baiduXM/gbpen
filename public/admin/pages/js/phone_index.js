@@ -668,10 +668,10 @@ function phone_indexController($scope,$http ,$location) {
 					case 'share':
 						info = '<div class="quicklist-r inline-block">\
 								<span class="shareicon ml5">\
-									<i class="iconfonts '+($.inArray('tsina', v.data) == -1 ? 'grey' : 'blue')+'" data-name="tsina">&#xe653;</i>\
-									<i class="iconfonts '+($.inArray('ibaidu', v.data) == -1 ? 'grey' : 'blue')+'"  data-name="ibaidu">&#xe651;</i>\
-									<i class="iconfonts '+($.inArray('qzone', v.data) == -1 ? 'grey' : 'blue')+'"  data-name="qzone">&#xe652;</i>\
-									<i class="iconfonts '+($.inArray('tqq', v.data) == -1 ? 'grey' : 'blue')+'"  data-name="tqq">&#xe650;</i>\
+									<i class="iconfonts '+(v.data.indexOf('tsina') == -1 ? 'grey' : 'blue')+'" data-name="tsina">&#xe653;</i>\
+									<i class="iconfonts '+(v.data.indexOf('ibaidu') == -1 ? 'grey' : 'blue')+'"  data-name="ibaidu">&#xe651;</i>\
+									<i class="iconfonts '+(v.data.indexOf('qzone') == -1 ? 'grey' : 'blue')+'"  data-name="qzone">&#xe652;</i>\
+									<i class="iconfonts '+(v.data.indexOf('tqq') == -1 ? 'grey' : 'blue')+'"  data-name="tqq">&#xe650;</i>\
 								</span></div>';
 						break;
 					case 'link':
@@ -856,7 +856,7 @@ function phone_indexController($scope,$http ,$location) {
 	    			navsArray.push({
 		    			name  : $(this).find('.quicklist-l>.message-name').text(),
 		    			icon  : icons,
-						data  : data,
+						data  : data.toString(),
 						enable_pc: $(this).find('.quicklist-l span:eq(0) i').eq(0).hasClass('blue') ? 1 : 0,
 						enable_mobile: $(this).find('.quicklist-l span:eq(0) i').eq(1).hasClass('blue') ? 1 : 0,
 						type  : type
