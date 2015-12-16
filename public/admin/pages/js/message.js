@@ -53,7 +53,7 @@ function messageController($scope, $http ,$location) {
     		// 审核是否通过
     		$('.message-status').click(function(){
     			$(this).closest('.message-item').hasClass('gray') ? IsStatus = 1 : IsStatus = 0;
-                id = $(this).siblings('.message-del').data('id');
+                var id = $(this).siblings('.message-del').data('id');
     			$http.post('',{id:id,status:IsStatus}).success(function(json){
 	    			checkJSON(json,function(json){
 	    				IsStatus ? $(this).closest('.message-item').removeClass('gray') : $(this).closest('.message-item').addClass('gray');
@@ -62,24 +62,28 @@ function messageController($scope, $http ,$location) {
     		});
     		// 删除操作
     		$('.message-del').click(function(){
-    			id = $(this).data('id');
+    			var id = $(this).data('id'),event_this = $(this);
     			/*$http.post('http://swap.5067.org/delect.html',{id:id}).success(function(json){
 	    			checkJSON(json,function(json){
                         console.log(json);
                     })
 	    		});*/
                 $.ajax({
-                type : "get",
-                url : 'http://swap.5067.org/delect.html?id='+id,
-                dataType : "jsonp",
-                jsonp: "callback",
-                success : function(json){
-                    
-                },
-                error:function(e){
-                    alert("error");
-                }
-            });
+                    type : "get",
+                    url : 'http://swap.5067.org/delect.html?id='+id,
+                    dataType : "jsonp",
+                    jsonp: "callback",
+                    success : function(json){
+                        if(json.err){
+                            alert(json.msg)
+                        }else{
+                            event_this.closest('.message-item').remove();
+                        }
+                    },
+                    error:function(e){
+                        alert("error");
+                    }
+                });
     		});
     	},
     	_pageflip : function(json){
