@@ -63,11 +63,6 @@ function messageController($scope, $http ,$location) {
     		// 删除操作
     		$('.message-del').click(function(){
     			var id = $(this).data('id'),event_this = $(this);
-    			/*$http.post('http://swap.5067.org/delect.html',{id:id}).success(function(json){
-	    			checkJSON(json,function(json){
-                        console.log(json);
-                    })
-	    		});*/
                 $.ajax({
                     type : "get",
                     url : 'http://swap.5067.org/delect.html?id='+id,
