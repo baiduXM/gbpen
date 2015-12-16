@@ -54,7 +54,7 @@ function messageController($scope, $http ,$location) {
     		$('.message-status').click(function(){
     			$(this).closest('.message-item').hasClass('gray') ? IsStatus = 1 : IsStatus = 0;
                 var id = $(this).siblings('.message-del').data('id');
-    			$http.post('',{id:id,status:IsStatus}).success(function(json){
+    			$http.post('../message-state',{id:id,status:IsStatus}).success(function(json){
 	    			checkJSON(json,function(json){
 	    				IsStatus ? $(this).closest('.message-item').removeClass('gray') : $(this).closest('.message-item').addClass('gray');
 	    			})
@@ -63,22 +63,11 @@ function messageController($scope, $http ,$location) {
     		// 删除操作
     		$('.message-del').click(function(){
     			var id = $(this).data('id'),event_this = $(this);
-                $.ajax({
-                    type : "get",
-                    url : 'http://swap.5067.org/delect.html?id='+id,
-                    dataType : "jsonp",
-                    jsonp: "callback",
-                    success : function(json){
-                        if(json.err){
-                            alert(json.msg)
-                        }else{
-                            event_this.closest('.message-item').remove();
-                        }
-                    },
-                    error:function(e){
-                        alert("error");
-                    }
-                });
+    			$http.post('../message-state',{id:id,status:1}).success(function(json){
+	    			checkJSON(json,function(json){
+                        event_this.closest('.message-item').remove();
+                    })
+	    		});
     		});
     	},
     	_pageflip : function(json){

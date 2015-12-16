@@ -656,7 +656,7 @@ function phone_indexController($scope,$http ,$location) {
 							    			var fg = newArr[x].split('@'),
 												kfname = fg[0].split(':')[0],kfnum = fg[0].split(':')[1];
 							    			_li += '<li class="consultation-item">\
-														<select><option value="qq"'+(fg[1] == 'qq' ? 'selected' : '')+'>QQ</option><option value="53kf"'+(fg[1] == '53kf' ? 'selected' : '')+'>53客服</option></select>\
+														<select><option value="qq"'+(fg[1] == 'qq' ? 'selected' : '')+'>QQ</option></select>\
 														<span><input class="consultation-name message-num" value="'+(kfname||'')+'" />-<input class="consultation-num message-num" value="'+(kfnum||'')+'" /></span>\
 														<div class="crl_icon fr"><i class="iconfont icon-guanbi"></i></div>\
 													</li>';

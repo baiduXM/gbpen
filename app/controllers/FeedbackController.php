@@ -38,9 +38,11 @@ class FeedbackController extends BaseController{
     
     public function messagestate(){
         $message['cus_id']=Auth::id();
-        $message['id']=Input::post('id');
+        $message['id']=Input::get('id');
         $postFun=new CommonController;
-        if(isset(Input::post('status'))){
+        $a = Input::get('status');
+        var_dump($a);exit();
+        if(false){
             echo $postFun->postsend("http://swap.5067.org/admin/del.php",$message);
         }else{
             $message['status']=Input::post('status');
