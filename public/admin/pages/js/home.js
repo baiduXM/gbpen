@@ -277,7 +277,7 @@ function homeController($scope, $http) {
 					title = $(this).parent().siblings('input[name*="title"]').val();
 				$('.box-down .column_name').val(href);
 				$('.box-down .keyword').val(title);
-				description == undefined ? null :$('.box-down .description').val(description);
+				description == undefined ? $('.box-down .description').val('') :$('.box-down .description').val(description);
 				_pics = '<div class="template-download fade fl in">\n\
 					<div>\n\
 						<span class="preview">\n\
@@ -293,15 +293,13 @@ function homeController($scope, $http) {
 				$(this).parents('.addimg').siblings('.table-striped').find('.template-download').remove()
 			});
 			//保存图片
-			$('.save_column').click(function(event) {
-				if($('.box-down .status').val() == 'old'){
-					this_edit.parent().attr('href',$('.box-down .column_name').val());
-					this_edit.siblings('input').val($('.box-down .keyword').val());
-					this_edit.siblings('img').attr('src',$('.template-download .preview').children('img').attr('src'));
-					this_edit.parent().siblings('input[name*="title"]').val($('.box-down .keyword').val());
-					this_edit.parent().siblings('input[name*="href"]').val($('.box-down .column_name').val());
-					this_edit.parent().siblings('input[name*="description"]').val($('.box-down .description').val());
-				}
+			$('.box_info .boxs .save').click(function(event) {console.log('12');
+				this_edit.parent().attr('href',$('.box-down .column_name').val());
+				this_edit.siblings('input').val($('.box-down .keyword').val());
+				this_edit.siblings('img').attr('src',$('.template-download .preview').children('img').attr('src'));
+				this_edit.parent().siblings('input[name*="title"]').val($('.box-down .keyword').val());
+				this_edit.parent().siblings('input[name*="href"]').val($('.box-down .column_name').val());
+				this_edit.parent().siblings('input[name*="description"]').val($('.box-down .description').val());
 			});
             //是否仅显示星标文章
             $('#temple-data input[id*=star_only]').on('click',function(){
@@ -345,7 +343,7 @@ function homeController($scope, $http) {
 				}
 			});
 
-			$('.mask,.cancel,.save_column').click(function(){
+			$('.mask,.cancel,.save_column,.box_info .boxs .save').click(function(){
 				$('#bomb-box').fadeOut('400', function() {
 					$('.box_info .box-up').text('编辑图片');
 				});

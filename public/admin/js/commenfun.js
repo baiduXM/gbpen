@@ -17,7 +17,7 @@ function tanchuang(ColumnInit){
             clear_info();
         }); 
     });
-    $('.mask,.box_info .boxs .cancel,.save_column').click(function(){
+    $('.mask,.box_info .boxs .cancel,.save_column,.box_info .boxs .save').click(function(){
         $('#bomb-box').removeClass('in').fadeOut(function(){
             $(".box_info").css({
             "marginTop":"-"+2000+"px"

@@ -178,7 +178,7 @@ i.fa-mobile{font-size: 25px;}
 .reflash div{margin: 5px 0 0 19px}
 .home-txt{width: 195px;height: 25px;margin-bottom: 10px;}
 .add-edite{width: 200px;}
-.preview{display: block;width: 90px;height: 67px;position: relative;cursor: pointer;}
+.preview{display: block;width: 90px;height: 67px;position: relative;}
 .preview .preview-close{position: absolute;right: 0;z-index: 1;}
 .preview .preview-close img{width: 17px;height: 17px;cursor: pointer;display: block;}
 .preview .preview-mask{width: 80px;height: 64px;margin: 5px;background-color: #4989ca;position: relative;opacity: 0.6;margin-top:-36px;cursor: pointer;}
