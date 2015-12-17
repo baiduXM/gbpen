@@ -607,7 +607,7 @@ border-radius: 5px;}
 .message-item>td{width: 8%;}
 .message-item span{cursor: pointer;margin: auto 10px;}
 .message-item .first-item{overflow: hidden;white-space: nowrap;text-overflow:ellipsis;width: 300px;display: block;text-indent: 5px;}
-.detail{text-align: center;background-color: #fff;display: none;width: 100%;padding: 10px 0;position: absolute;}
+.detail{text-align: left;background-color: #fff;display: none;width: 100%;padding: 10px 0;position: absolute;}
 
 
 
