@@ -23,7 +23,7 @@ function messageController($scope, $http ,$location) {
     					_div = '';
     				$.each(data,function(idx, ele) {
     					_div += '\
-    					<tr class="message-item'+(ele.status == 1 ? '' : ' gray')+'">\
+    					<tr class="message-item">\
 			                <td class="first-item"><span>'+ele.content+'</span></td>\
 			                <td>'+ele.name+'</td>\
 			                <td>'+ele.telephone+'</td>\
