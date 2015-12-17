@@ -44,9 +44,9 @@ function messageController($scope, $http ,$location) {
     			_this = this;
 			// 内容详细显示
     		$('.first-item').hover(function(){
-    			$(this).parent().after('<tr class="detail"><td colspan="6"></td></tr>');
-    			$('.detail td').text($(this).find('span').text());
-    			$('.detail').fadeIn()
+    			$(this).parent().after('<div class="detail"><p colspan="6"></p></div>');
+                $('.detail p').text($(this).find('span').text());
+                $('.detail').fadeIn()
     		},function(){
     			$('.detail').remove();
     		});
