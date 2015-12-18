@@ -814,6 +814,7 @@ class PrintController extends BaseController{
                 $global_data=$this->mobilePageList('global',true);           
             }
             if(count($global_data)>0){
+                $quickbarKey=false;
                 foreach($global_data as $gkey=>$gval){
                     if($global_data[$gkey]['type']=='quickbar'){
                         $quickbar= WebsiteConfig::where('cus_id',$this->cus_id)->where('key','quickbar')->pluck('value');
@@ -848,13 +849,14 @@ class PrintController extends BaseController{
                                 unset ($quickbar[$key]['enable_pc']);
                                 unset ($quickbar[$key]['enable_mobile']);
                             }                                  
-                            $global_data[$gkey]['value']=$quickbar;
+                            $quickbarKey=$gkey;;
                         }
                     }
                 }
             }      
             $global_data=$this->detailList($global_data);
             $this->replaceUrl($global_data);
+            if($quickbarKey) $global_data[$quickbarKey]=$quickbar;
         }
         $contact= CustomerInfo::where('cus_id',$this->cus_id)->select('company','contact_name as name','mobile','telephone','fax','email as mail','qq','address')->first()->toArray();
         if($this->showtype=='preview'){
