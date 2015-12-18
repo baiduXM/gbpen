@@ -810,12 +810,9 @@ class PrintController extends BaseController{
             $global_data=WebsiteConfig::where('cus_id',$this->cus_id)->where('type',2)->where('template_id',$this->tpl_id)->pluck('value');
             if($global_data){
                 $global_data = unserialize($global_data);
-                $global_data=$this->detailList($global_data);
             }else{
                 $global_data=$this->mobilePageList('global',true);           
-                $global_data=$this->detailList($global_data);
             }
-            $this->replaceUrl($global_data);
             if(count($global_data)>0){
                 foreach($global_data as $gkey=>$gval){
                     if($global_data[$gkey]['type']=='quickbar'){
@@ -855,7 +852,9 @@ class PrintController extends BaseController{
                         }
                     }
                 }
-            }         
+            }      
+            $global_data=$this->detailList($global_data);
+            $this->replaceUrl($global_data);
         }
         $contact= CustomerInfo::where('cus_id',$this->cus_id)->select('company','contact_name as name','mobile','telephone','fax','email as mail','qq','address')->first()->toArray();
         if($this->showtype=='preview'){
