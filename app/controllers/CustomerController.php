@@ -53,10 +53,20 @@ class CustomerController extends BaseController{
 		$data['address'] = $customer_info->address;
         $websiteinfo=WebsiteInfo::where('cus_id',$cus_id)->select('pc_tpl_id','mobile_tpl_id')->first();
         $pc_tpl_name=Template::where('id',$websiteinfo->pc_tpl_id)->pluck('name');
-        $pc_ini=parse_ini_file(public_path('/templates/'.$pc_tpl_name.'/config.ini'),true);
+        if($pc_tpl_name!=null){
+              $pc_ini=parse_ini_file(public_path('/templates/'.$pc_tpl_name.'/config.ini'),true);
+        }
+        else{
+            $pc_ini=false;
+        }
         $data['pc_logo_size']=isset($pc_ini['Config']['LogoSize'])?strtr($pc_ini['Config']['LogoSize'],'*', '/'):0;
         $mobile_tpl_name=Template::where('id',$websiteinfo->mobile_tpl_id)->pluck('name');
-        $mobile_ini=parse_ini_file(public_path('/templates/'.$mobile_tpl_name.'/config.ini'),true);
+         if($mobile_tpl_name!=null){
+             $mobile_ini=parse_ini_file(public_path('/templates/'.$mobile_tpl_name.'/config.ini'),true);
+        }
+        else{
+            $mobile_ini=false;
+        }
         $data['m_logo_size']=isset($mobile_ini['Config']['LogoSize'])?strtr($mobile_ini['Config']['LogoSize'],'*', '/'):0;
 		$result['err'] = 0;
         $result['msg'] = '';
