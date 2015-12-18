@@ -98,14 +98,14 @@ function homeController($scope, $http) {
                         $.each(v.value,function(i,j){
 							srclen = j.image.split('/').length;
 							src = j.image.split('/')[srclen-1];
-							Isdescription = (j.description == undefined ? '' : '<input type="hidden" value="'+j.description+'" name="data['+k+']['+num+'][description]" />');
                             _rel += '<dd><a href="'+j.link+'" class="preview" onclick="return false">\n\
 							<div class="preview-close"><img src="images/preview-close.png" /></div>\n\
 							<div class="preview-edit" style="visibility:hidden"><img src="images/preview-edit.png" /><span>编辑</span></div>\n\
 							<div class="preview-mask" style="visibility:hidden"></div>\n\
 							<img src="'+j.image+'" class="home_pic" data-preimg="preimg"></a>\n\
 							<input type="hidden" value="'+src+'" name="data['+k+']['+num+'][src]" />\n\
-							<input type="hidden" value="'+j.title+'" name="data['+k+']['+num+'][title]" />'+Isdescription+'\n\
+							<input type="hidden" value="'+j.title+'" name="data['+k+']['+num+'][title]" />\n\
+							<input type="hidden" value="'+(j.description || '')+'" name="data['+k+']['+num+'][description]" />\n\
 							<input type="hidden" value="'+j.link+'" name="data['+k+']['+num+'][href]" /></dd>';
                             num++;
                             pic++;
