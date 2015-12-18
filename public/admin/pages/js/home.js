@@ -315,7 +315,6 @@ function homeController($scope, $http) {
 				var limit = $(this).parent().siblings('.homeed-left').find('.pic_limit').text();
 				var ratio = $(this).parent().siblings('.homeed-left').find('.ratio').text().split('*');
 				$(this).data('role').split('-')[0] == 'images'? '' : $().prev().remove();
-				var IsDescription = $(this).prev().find('input').eq(2).attr('name').match(/data\[(.*)\]\[(\d*)\]\[(.*)\]/)[3];
 	        	var pic_num = ($(this).prev().find('input').length == 0 ? 0 : $(this).prev().find('input').eq(0).attr('name').match(/data\[(.*)\]\[(\d*)\]\[(.*)\]/)[2]);
 				if((limit == 0) || $(this).parent().children().length <= limit){
 					var warningbox = new WarningBox();
@@ -335,7 +334,7 @@ function homeController($scope, $http) {
 									<input type="hidden" value="' + json.data.name + '" name="data['+pic_name+']'+(upload_Classname == 'images'?'['+new_num+']':'')+'[src]" />\n\
 									<input type="hidden" value="" name="data['+pic_name+']'+(upload_Classname == 'images'?'['+new_num+']':'')+'[title]" />\n\
 									<input type="hidden" value="" name="data['+pic_name+']'+(upload_Classname == 'images'?'['+new_num+']':'')+'[href]" />\n\
-									'+(IsDescription == 'description' ? '<input type="hidden" value="" name="data['+pic_name+']'+(upload_Classname == 'images'?'['+new_num+']':'')+'[description]" />' : '')+'\n\
+									<input type="hidden" value="" name="data['+pic_name+']'+(upload_Classname == 'images'?'['+new_num+']':'')+'[description]" />\n\
 									</dd>';
 							$('.new_add[data-role='+role+']').before(_newpic);
 						}
