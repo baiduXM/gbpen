@@ -98,14 +98,14 @@ function homeController($scope, $http) {
                         $.each(v.value,function(i,j){
 							srclen = j.image.split('/').length;
 							src = j.image.split('/')[srclen-1];
-							Isdescription = (j.description == undefined ? '' : '<input type="hidden" value="'+j.description+'" name="data['+k+']['+num+'][description]" />');
                             _rel += '<dd><a href="'+j.link+'" class="preview" onclick="return false">\n\
 							<div class="preview-close"><img src="images/preview-close.png" /></div>\n\
 							<div class="preview-edit" style="visibility:hidden"><img src="images/preview-edit.png" /><span>编辑</span></div>\n\
 							<div class="preview-mask" style="visibility:hidden"></div>\n\
 							<img src="'+j.image+'" class="home_pic" data-preimg="preimg"></a>\n\
 							<input type="hidden" value="'+src+'" name="data['+k+']['+num+'][src]" />\n\
-							<input type="hidden" value="'+j.title+'" name="data['+k+']['+num+'][title]" />'+Isdescription+'\n\
+							<input type="hidden" value="'+j.title+'" name="data['+k+']['+num+'][title]" />\n\
+							<input type="hidden" value="'+(j.description || '')+'" name="data['+k+']['+num+'][description]" />\n\
 							<input type="hidden" value="'+j.link+'" name="data['+k+']['+num+'][href]" /></dd>';
                             num++;
                             pic++;
@@ -315,7 +315,6 @@ function homeController($scope, $http) {
 				var limit = $(this).parent().siblings('.homeed-left').find('.pic_limit').text();
 				var ratio = $(this).parent().siblings('.homeed-left').find('.ratio').text().split('*');
 				$(this).data('role').split('-')[0] == 'images'? '' : $().prev().remove();
-				var IsDescription = $(this).prev().find('input').eq(2).attr('name').match(/data\[(.*)\]\[(\d*)\]\[(.*)\]/)[3];
 	        	var pic_num = ($(this).prev().find('input').length == 0 ? 0 : $(this).prev().find('input').eq(0).attr('name').match(/data\[(.*)\]\[(\d*)\]\[(.*)\]/)[2]);
 				if((limit == 0) || $(this).parent().children().length <= limit){
 					var warningbox = new WarningBox();
@@ -335,7 +334,7 @@ function homeController($scope, $http) {
 									<input type="hidden" value="' + json.data.name + '" name="data['+pic_name+']'+(upload_Classname == 'images'?'['+new_num+']':'')+'[src]" />\n\
 									<input type="hidden" value="" name="data['+pic_name+']'+(upload_Classname == 'images'?'['+new_num+']':'')+'[title]" />\n\
 									<input type="hidden" value="" name="data['+pic_name+']'+(upload_Classname == 'images'?'['+new_num+']':'')+'[href]" />\n\
-									'+(IsDescription == 'description' ? '<input type="hidden" value="" name="data['+pic_name+']'+(upload_Classname == 'images'?'['+new_num+']':'')+'[description]" />' : '')+'\n\
+									<input type="hidden" value="" name="data['+pic_name+']'+(upload_Classname == 'images'?'['+new_num+']':'')+'[description]" />\n\
 									</dd>';
 							$('.new_add[data-role='+role+']').before(_newpic);
 						}
