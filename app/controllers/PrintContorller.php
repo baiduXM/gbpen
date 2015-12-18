@@ -848,7 +848,7 @@ class PrintController extends BaseController{
                                 unset ($quickbar[$key]['enable_pc']);
                                 unset ($quickbar[$key]['enable_mobile']);
                             }                                  
-                            $global_data[$gkey]=$quickbar;
+                            $global_data[$gkey]['value']=$quickbar;
                         }
                     }
                 }
