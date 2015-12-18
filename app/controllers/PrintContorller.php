@@ -850,13 +850,39 @@ class PrintController extends BaseController{
                                 unset ($quickbar[$key]['enable_mobile']);
                             }                                  
                             $quickbarKey=$gkey;;
+                        }else{
+                           foreach($global_data[$gkey] as $key=>$val){
+                                 if($global_data[$gkey][$key]['type']=='tel'){
+                                         $global_data[$gkey][$key]['link']="tel:".$global_data[$gkey][$key]['data'];
+                                     }
+                                 elseif($global_data[$gkey][$key]['type']=='sms'){
+                                         $global_data[$gkey][$key]['link']="sms:".$global_data[$gkey][$key]['data'];
+                                     }
+                                 elseif($global_data[$gkey][$key]['type']=='im'){
+                                         $qq = explode('|', $global_data[$gkey][$key]['data']);
+                                         $qq = explode(':', $qq[0]);
+                                         $qq = explode('@', $qq[1]);
+                                        $global_data[$gkey][$key]['link']='http://wpd.b.qq.com/cgi/get_m_sign.php?uin='.$qq[0];
+                                     }
+                                 elseif($global_data[$gkey][$key]['type']=='link'){
+                                         if($global_data[$gkey][$key]['data']!=null){
+                                          $location = explode('|', $global_data[$gkey][$key]['data']);
+                                          $address = explode(',', $location[1]);
+                                         $global_data[$gkey][$key]['link']='http://api.map.baidu.com/marker?location='.$address[1] .','.$address[0].'&title=目标位置&content='.$location[0].'&output=html';   
+                                         }
+                                         else{
+                                             $address=CustomerInfo::where('cus_id',$this->cus_id)->pluck('address');
+                                            $global_data[$gkey][$key]['link']='http://api.map.baidu.com/geocoder?address='.$address.'&output=html';     
+                                         }
+                                     }
+                           }
                         }
                     }
                 }
             }      
             $global_data=$this->detailList($global_data);
             $this->replaceUrl($global_data);
-            if($quickbarKey) $global_data[$quickbarKey]=$quickbar;
+            if($quickbarKey && $quickbar) $global_data[$quickbarKey]=$quickbar;
         }
         $contact= CustomerInfo::where('cus_id',$this->cus_id)->select('company','contact_name as name','mobile','telephone','fax','email as mail','qq','address')->first()->toArray();
         if($this->showtype=='preview'){
