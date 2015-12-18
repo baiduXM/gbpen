@@ -521,7 +521,6 @@ class PrintController extends BaseController{
                        $config['style']['iconColor']=$config['style']['textColor']?$config['style']['textColor']:'';
                    }
                }
-               
                $CommonCont = new CommonController();
                $quickbar=$CommonCont->quickBarJsonInit();
                $quickbar=json_decode($quickbar,true);
@@ -537,7 +536,6 @@ class PrintController extends BaseController{
                    unset ($quickbar[$key]['enable_pc']);
                    unset ($quickbar[$key]['enable_mobile']);
                }
-               
                 foreach($quickbar as $key=>$val){
                         if($quickbar[$key]['type']=='tel'){
                                 $quickbar[$key]['link']="tel:".$quickbar[$key]['data'];
@@ -655,7 +653,111 @@ class PrintController extends BaseController{
                   file_put_contents(public_path("customers/".$this->customer.'/mobile'.'/quickbar.json'),"quickbarCallback(".json_encode($quickbarCallback).")");
                 }
             }
+            else{
+                $config_arr[1] = '#AAA,#BBB,#FFF|tel';
+                $quickbar_arr=explode('|',$config_arr[1]);
+                $tmpStyleConfigQuickbar = explode(',',$quickbar_arr[0]);  
+                $config['enable']=true;
+                if ($this->type=='pc') {
+                  $config['type']='custom';
+                }else  {    
+                  $config['type']='custom';
+                }
+                $config['style']=array();
+               if(count($tmpStyleConfigQuickbar)){
+                   $keys=array('barColor','navtopColor','textColor','iconColor');
+                   foreach($tmpStyleConfigQuickbar as $key=>$val){
+                       $arr=explode('|',$val);
+                       $config['style'][$keys[$key]]=$arr[0];
+                   }
+                   if(!key_exists('iconColor',$config['style'])){
+                       $config['style']['iconColor']=$config['style']['textColor']?$config['style']['textColor']:'';
+                   }
+               }
+               $CommonCont = new CommonController();
+               $quickbar=$CommonCont->quickBarJsonInit();
+               $quickbar=json_decode($quickbar,true);
+               $quickbar=$quickbar['data'];
+               foreach ($quickbar as $key=>$val){
+                   if($this->type=='pc'){
+                      $quickbar[$key]['enable']=intval($quickbar[$key]['enable_pc']);
+                   }
+                   else{
+                       $quickbar[$key]['enable']=intval($quickbar[$key]['enable_mobile']);
+                   }
+                   //TODO:删除enable_pc/enable_mobile键值
+                   unset ($quickbar[$key]['enable_pc']);
+                   unset ($quickbar[$key]['enable_mobile']);
+               }
+                foreach($quickbar as $key=>$val){
+                        if($quickbar[$key]['type']=='tel'){
+                                $quickbar[$key]['link']="tel:".$quickbar[$key]['data'];
+                            }
+                        elseif($quickbar[$key]['type']=='sms'){
+                                $quickbar[$key]['link']="sms:".$quickbar[$key]['data'];
+                            }
+                        elseif($quickbar[$key]['type']=='im'){
+                                $qq = explode('|', $quickbar[$key]['data']);
+                                $qq = explode(':', $qq[0]);
+                                $qq = explode('@', $qq[1]);
+                                if($this->type=='pc'){
+                                $quickbar[$key]['link']='http://wpa.qq.com/msgrd?v=3&uin='.$qq[0].'&site=qq&menu=yes';
+                                }
+                                else{
+                                $quickbar[$key]['link']='http://wpd.b.qq.com/cgi/get_m_sign.php?uin='.$qq[0];
+                                }
+                            }
+                        elseif($quickbar[$key]['type']=='link'){
+                                if($quickbar[$key]['data']!=null){
+                                 $location = explode('|', $quickbar[$key]['data']);
+                                 $address = explode(',', $location[1]);
+                                $quickbar[$key]['link']='http://api.map.baidu.com/marker?location='.$address[1] .','.$address[0].'&title=目标位置&content='.$location[0].'&output=html';   
+                                }
+                                else{
+                                    $address=CustomerInfo::where('cus_id',$this->cus_id)->pluck('address');
+                                   $quickbar[$key]['link']='http://api.map.baidu.com/geocoder?address='.$address.'&output=html';     
+                                }
+                            }    
+                        }
+         
+                $navs = Classify::where('cus_id',$this->cus_id)->where('mobile_show',1)->select('id','type','name','en_name','icon','url','p_id','en_name')->OrderBy('sort','asc')->get()->toArray();
+                if(count($navs)){
+                    if($this->showtype=='preview'){
+                        foreach($navs as &$nav){
+                            $nav['icon']='<i class="iconfont">'.$nav['icon'].'</i>';
+                            if(in_array($nav['type'],array('1','2','3','4'))){
+                                $nav['url']=$this->domain."/category/".$nav['id'];
+                            }
+                        }  
+                    }else{
+                        foreach($navs as &$nav){
+                            $nav['icon']='<i class="iconfont">'.$nav['icon'].'</i>';
+                            if(in_array($nav['type'],array('1','2','3','4'))){
+                                $nav['url']=$this->domain."/category/".$nav['id'].'.html';
+                            }
+                        }  
+                    }
+                }
+                $classify=new Classify();
+
+                $catlist=$classify->toTree($navs);
+                if(!is_array($catlist)){
+                    $catlist=array();
+                }
+                array_unshift($catlist,array('id'=>null,'name'=>'首页','en_name'=>'Home','url'=>$this->site_url,'childmenu'=>null));
+                $quickbarCallback=array('config'=>$config,'quickbar'=>$quickbar,'catlist'=>$catlist);
+                if($this->showtype=='preview'){
+                    echo "quickbarCallback(".json_encode($quickbarCallback).")";
+                }else{
+                    if($this->type=='pc'){
+                       file_put_contents(public_path("customers/".$this->customer.'/quickbar.json'),"quickbarCallback(".json_encode($quickbarCallback).")");
+                    }
+                  file_put_contents(public_path("customers/".$this->customer.'/mobile'.'/quickbar.json'),"quickbarCallback(".json_encode($quickbarCallback).")");
+                }
+            }
+            
         }
+        
     }
     
     
