@@ -611,7 +611,7 @@ class TemplatesController extends BaseController{
      * 手机底部功能条
      */
     public function quickBarJson(){
-        if (array_key_exists('HTTP_REFERER', $_SERVER) && (strstr(strtolower($_SERVER['HTTP_REFERER']), 'mobile') || strstr(strtolower($_SERVER['HTTP_REFERER']), 'templates/GM'))) {
+        if (array_key_exists('HTTP_REFERER', $_SERVER) && (strstr(strtolower($_SERVER['HTTP_REFERER']), 'mobile') || strstr(strtolower($_SERVER['HTTP_HOST']), 'templates/GM'))) {
             $template=new PrintController('preview','mobile');
         }else{
             $template=new PrintController('preview','pc');

@@ -147,7 +147,6 @@ Route::group(array('before' => 'auth'), function() {
     Route::get('templates/GM{num}', [//手机预览 首页跳转
         'uses' => 'TemplatesController@mhomepagePreview'
     ])->where('num', '[0-9]+');
-
    
     //--------------------PC部分----------------------
     Route::get('homepage-preview', [//首页预览
