@@ -852,6 +852,7 @@ class PrintController extends BaseController{
                             $quickbarKey=$gkey;;
                         }else{
                            foreach($global_data[$gkey] as $key=>$val){
+                               dd($global_data[$gkey][$key]['type']);
                                  if($global_data[$gkey][$key]['type']=='tel'){
                                          $global_data[$gkey][$key]['link']="tel:".$global_data[$gkey][$key]['data'];
                                      }
