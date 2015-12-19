@@ -849,40 +849,35 @@ class PrintController extends BaseController{
                                 unset ($quickbar[$key]['enable_pc']);
                                 unset ($quickbar[$key]['enable_mobile']);
                             }                                  
-                            $quickbarKey=$gkey;;
+                            $quickbarKey=$gkey;
                         }else{
-                           foreach($global_data[$gkey] as $key=>$val){
-                                 if($global_data[$gkey][$key]['type']=='tel'){
-                                         $global_data[$gkey][$key]['link']="tel:".$global_data[$gkey][$key]['data'];
+                           foreach($global_data[$gkey]['value'] as $key=>$val){
+                                 if($global_data[$gkey]['value'][$key]['type']=='tel'){
+                                         $global_data[$gkey]['value'][$key]['link']="tel:".$global_data[$gkey]['value'][$key]['data'];
                                      }
-                                 elseif($global_data[$gkey][$key]['type']=='sms'){
-                                         $global_data[$gkey][$key]['link']="sms:".$global_data[$gkey][$key]['data'];
+                                 elseif($global_data[$gkey]['value'][$key]['type']=='sms'){
+                                         $global_data[$gkey]['value'][$key]['link']="sms:".$global_data[$gkey]['value'][$key]['data'];
                                      }
-                                 elseif($global_data[$gkey][$key]['type']=='im'){
-                                         $qq = explode('|', $global_data[$gkey][$key]['data']);
+                                 elseif($global_data[$gkey]['value'][$key]['type']=='im'){
+                                         $qq = explode('|', $global_data[$gkey]['value'][$key]['data']);
                                          $qq = explode(':', $qq[0]);
                                          $qq = explode('@', $qq[1]);
-                                        $global_data[$gkey][$key]['link']='http://wpd.b.qq.com/cgi/get_m_sign.php?uin='.$qq[0];
+                                        $global_data[$gkey]['value'][$key]['link']='http://wpd.b.qq.com/cgi/get_m_sign.php?uin='.$qq[0];
                                      }
-                                 elseif($global_data[$gkey][$key]['type']=='link'){
-                                         if($global_data[$gkey][$key]['data']!=null){
-                                          $location = explode('|', $global_data[$gkey][$key]['data']);
-                                          $address = explode(',', $location[1]);
-                                         $global_data[$gkey][$key]['link']='http://api.map.baidu.com/marker?location='.$address[1] .','.$address[0].'&title=目标位置&content='.$location[0].'&output=html';   
-                                         }
-                                         else{
+                                 elseif($global_data[$gkey]['value'][$key]['type']=='link'){
                                              $address=CustomerInfo::where('cus_id',$this->cus_id)->pluck('address');
-                                            $global_data[$gkey][$key]['link']='http://api.map.baidu.com/geocoder?address='.$address.'&output=html';     
-                                         }
+                                            $global_data[$gkey]['value'][$key]['link']='http://api.map.baidu.com/geocoder?address='.$address.'&output=html';     
                                      }
                            }
+                           $quickbarKey=$gkey;
+                           $quickbar=$global_data[$gkey]['value'];
                         }
                     }
                 }
             }      
             $global_data=$this->detailList($global_data);
             $this->replaceUrl($global_data);
-            if($quickbarKey && $quickbar) $global_data[$quickbarKey]=$quickbar;
+            if($quickbarKey) $global_data[$quickbarKey]=$quickbar;
         }
         $contact= CustomerInfo::where('cus_id',$this->cus_id)->select('company','contact_name as name','mobile','telephone','fax','email as mail','qq','address')->first()->toArray();
         if($this->showtype=='preview'){
@@ -2300,14 +2295,14 @@ class PrintController extends BaseController{
             foreach($old_arr as $key => $val){
                 if(array_key_exists($key, $new_arr)){
                     if($old_arr[$key]['type']=='list' || $old_arr[$key]['type']=='nav'){
-                        $old_arr[$key]['config']['star_only']=$new_arr[$key]['value']['star_only'];
-                        $old_arr[$key]['config']['id']=isset($new_arr[$key]['value']['id'])?$new_arr[$key]['value']['id']:'';              
+                        $old_arr[$key]['config']['star_only']=$new_arr['value'][$key]['star_only'];
+                        $old_arr[$key]['config']['id']=isset($new_arr['value'][$key]['id'])?$new_arr['value'][$key]['id']:'';              
                     }elseif($old_arr[$key]['type']=='page'){
-                        $old_arr[$key]['config']=$new_arr[$key]['value'];              
+                        $old_arr[$key]['config']=$new_arr['value'][$key];              
                     }elseif($old_arr[$key]['type']=='navs'){
-                        $old_arr[$key]['config']['ids']=$new_arr[$key]['value']['ids'];
+                        $old_arr[$key]['config']['ids']=$new_arr['value'][$key]['ids'];
                     }else{
-                        $old_arr[$key]['value']=$new_arr[$key]['value'];                       
+                        $old_arr['value'][$key]=$new_arr['value'][$key];                       
                     }
                 }else{
                     if($old_arr[$key]['type']=='list' || $old_arr[$key]['type']=='nav'){
@@ -2316,8 +2311,8 @@ class PrintController extends BaseController{
                     }elseif($old_arr[$key]['type']=='page' || $old_arr[$key]['type']=='navs'){
                         $old_arr[$key]['config']=array();            
                     }else{
-                        if(is_array($old_arr[$key]['value']) && count($old_arr[$key]['value']) > 0){
-                            foreach($old_arr[$key]['value'] as &$v){
+                        if(is_array($old_arr['value'][$key]) && count($old_arr['value'][$key]) > 0){
+                            foreach($old_arr['value'][$key] as &$v){
                                 $v='';
                             }               
                         }
