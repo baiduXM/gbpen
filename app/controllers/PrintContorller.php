@@ -139,7 +139,7 @@ class PrintController extends BaseController{
             $default = json_decode(trim($json),TRUE);
             $result = $this->array_merge_recursive_new($default,$website_confige_value);
             //$result = $website_confige_value;
-            $this->replaceUrl($result);
+            $this->replaceUrl($result);   
             $result=$this->dataDeal($result);
             foreach($result as &$v){
                 if($v['type']=='list'){
@@ -203,7 +203,9 @@ class PrintController extends BaseController{
                                 $c_arr=$classify->toTree($c_arr);
                                 $templates->unsetFalseClassify($c_arr,array(1,2,3,4));
                                 $templates->unsetLastClassify($c_arr);
-                                $c_arr=array_merge($c_arr);                            
+                                if(is_array($c_arr)){
+                                    $c_arr=array_merge($c_arr);   
+                                }                
                                 $v['config']['limit']=isset($v['config']['limit'])?$v['config']['limit']:20;
                             }
                         }else{
@@ -467,6 +469,7 @@ class PrintController extends BaseController{
      *
      */
     public function replaceUrl(&$result){
+        if(!count($result)){return $result;}
         foreach($result as $k => $v){
             if(is_array($v)){
                 $this->replaceUrl($result[$k]);
@@ -849,7 +852,7 @@ class PrintController extends BaseController{
                                 unset ($quickbar[$key]['enable_pc']);
                                 unset ($quickbar[$key]['enable_mobile']);
                             }                                  
-                            $quickbarKey=$gkey;
+                            $quickbarKey=$gkey;;
                         }else{
                            foreach($global_data[$gkey]['value'] as $key=>$val){
                                  if($global_data[$gkey]['value'][$key]['type']=='tel'){
@@ -2295,14 +2298,14 @@ class PrintController extends BaseController{
             foreach($old_arr as $key => $val){
                 if(array_key_exists($key, $new_arr)){
                     if($old_arr[$key]['type']=='list' || $old_arr[$key]['type']=='nav'){
-                        $old_arr[$key]['config']['star_only']=$new_arr['value'][$key]['star_only'];
-                        $old_arr[$key]['config']['id']=isset($new_arr['value'][$key]['id'])?$new_arr['value'][$key]['id']:'';              
+                        $old_arr[$key]['config']['star_only']=$new_arr[$key]['value']['star_only'];
+                        $old_arr[$key]['config']['id']=isset($new_arr[$key]['value']['id'])?$new_arr[$key]['value']['id']:'';              
                     }elseif($old_arr[$key]['type']=='page'){
-                        $old_arr[$key]['config']=$new_arr['value'][$key];              
+                        $old_arr[$key]['config']=$new_arr[$key]['value'];              
                     }elseif($old_arr[$key]['type']=='navs'){
-                        $old_arr[$key]['config']['ids']=$new_arr['value'][$key]['ids'];
+                        $old_arr[$key]['config']['ids']=$new_arr[$key]['value']['ids'];
                     }else{
-                        $old_arr['value'][$key]=$new_arr['value'][$key];                       
+                        $old_arr[$key]['value']=$new_arr[$key]['value'];                       
                     }
                 }else{
                     if($old_arr[$key]['type']=='list' || $old_arr[$key]['type']=='nav'){
@@ -2311,8 +2314,8 @@ class PrintController extends BaseController{
                     }elseif($old_arr[$key]['type']=='page' || $old_arr[$key]['type']=='navs'){
                         $old_arr[$key]['config']=array();            
                     }else{
-                        if(is_array($old_arr['value'][$key]) && count($old_arr['value'][$key]) > 0){
-                            foreach($old_arr['value'][$key] as &$v){
+                        if(is_array($old_arr[$key]['value']) && count($old_arr[$key]['value']) > 0){
+                            foreach($old_arr[$key]['value']as &$v){
                                 $v='';
                             }               
                         }
@@ -2321,7 +2324,6 @@ class PrintController extends BaseController{
             }
             return $old_arr;
     }
-    
     public function mobilePageList($page,$is_index=false){
         $json_content=@file_get_contents(public_path("/templates/$this->themename/json/$page.json"));
         if($json_content){
