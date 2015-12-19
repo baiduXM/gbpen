@@ -629,14 +629,14 @@ class PrintController extends BaseController{
                     if($this->showtype=='preview'){
                         foreach($navs as &$nav){
                             $nav['icon']='<i class="iconfont">'.$nav['icon'].'</i>';
-                            if(in_array($nav['type'],array('1','2','3','4'))){
+                            if(in_array($nav['type'],array('1','2','3','4','5'))){
                                 $nav['url']=$this->domain."/category/".$nav['id'];
                             }
                         }  
                     }else{
                         foreach($navs as &$nav){
                             $nav['icon']='<i class="iconfont">'.$nav['icon'].'</i>';
-                            if(in_array($nav['type'],array('1','2','3','4'))){
+                            if(in_array($nav['type'],array('1','2','3','4','5'))){
                                 $nav['url']=$this->domain."/category/".$nav['id'].'.html';
                             }
                         }  
