@@ -732,7 +732,7 @@ function phone_indexController($scope,$http ,$location) {
     	},
     	BdMap : function(){
     		// 百度地图API功能
-    		var pointX = this.pointX || null,pointY = this.pointY || null,
+    		var pointX = this.pointX || null,pointY = this.pointY || null,marker
 				map = new BMap.Map("bdmap");          
 			map.centerAndZoom(new BMap.Point(116.404, 39.915), 15);
 			var local = new BMap.LocalSearch(map, {
@@ -742,7 +742,7 @@ function phone_indexController($scope,$http ,$location) {
     			var new_point = new BMap.Point(pointX, pointY);
 				map.panTo(new_point);
 				// 拖拽坐标
-    			var marker = new BMap.Marker(new_point);  // 创建标注
+    			marker = new BMap.Marker(new_point);  // 创建标注
 				map.addOverlay(marker);              // 将标注添加到地图中
 				var label = new BMap.Label("拖拽坐标确定位置",{offset:new BMap.Size(20,-10)});
 				marker.setLabel(label);
@@ -762,7 +762,9 @@ function phone_indexController($scope,$http ,$location) {
     		map.addEventListener("click", function(e){
 				pointX = e.point.lng;
 				pointY = e.point.lat;
-				$('.quicklist-r .linktop .message-num').attr('data-point',pointX+','+pointY)
+				$('.quicklist-r .linktop .message-num').attr('data-point',pointX+','+pointY);
+				map.removeOverlay(marker);
+				dragMarker(pointX,pointY);
 			});
     		var keyword;
     		$('.linktop .search').click(function(){
