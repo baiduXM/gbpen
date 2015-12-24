@@ -759,6 +759,11 @@ function phone_indexController($scope,$http ,$location) {
     			map.clearOverlays(); 
 				dragMarker(pointX,pointY);
     		}
+    		map.addEventListener("click", function(e){
+				pointX = e.point.lng;
+				pointY = e.point.lat;
+				$('.quicklist-r .linktop .message-num').attr('data-point',pointX+','+pointY)
+			});
     		var keyword;
     		$('.linktop .search').click(function(){
     			keyword = $(this).siblings('.message-num').val();
