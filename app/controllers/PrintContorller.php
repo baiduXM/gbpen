@@ -1437,7 +1437,7 @@ class PrintController extends BaseController{
      * 
      * 
      */
-	public static function createShare($params){
+		public static function createShare($params){
 		$s = '<div class="bdsharebuttonbox" data-tag="share_1">
 		  <a class="bds_mshare" data-cmd="mshare"></a>
 		  <a class="bds_qzone" data-cmd="qzone" href="#"></a>
@@ -1449,7 +1449,7 @@ class PrintController extends BaseController{
 		  <a class="bds_count" data-cmd="count"></a>
 		</div>'."\n";
 		// 显示类型
-        $s.="<script>\n";
+        $s.="<script>status = 1;\n";
 		$params['style'] = isset($params['style'])?$params['style']:"1";
 		$s.="window._bd_share_config = {
 		  common : {
@@ -1505,11 +1505,13 @@ class PrintController extends BaseController{
         }else{
             $s.="delete _bd_share_config.image\n";
         }
-		$s.="with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];\n";
+		$s.= "function loadjs(status){if(status == 1){console.log(status);"
+                        . "with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];}}\n"
+                        . "loadjs(status)\n";
 		$s.="</script>";
         echo $s;
 	}
-        
+       
     /**
      * PC显示首页
      */
