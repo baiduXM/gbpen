@@ -1505,9 +1505,7 @@ class PrintController extends BaseController{
         }else{
             $s.="delete _bd_share_config.image\n";
         }
-		$s.= "function loadjs(status){if(status == 1){console.log(status);"
-                        . "with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];}}\n"
-                        . "loadjs(status)\n";
+		$s.= "window.onload=function(){with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];}\n";
 		$s.="</script>";
         echo $s;
 	}
