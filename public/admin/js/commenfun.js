@@ -27,6 +27,7 @@ function tanchuang(ColumnInit){
         });
     });
     $('.addcolumn,.addlist,.addauto').click(function(){
+        $(this).hasClass('addcolumn') ? ColumnInit.Column_Upload('') : null;
         $('#bomb-box').fadeIn(function(){
             heightauto()
         });
