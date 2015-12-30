@@ -218,6 +218,7 @@ class HtmlController extends BaseController{
      * 
      */
     public function pushPrecent(){
+        set_time_limit(0);
         if (ob_get_level() == 0){
             ob_start();
         }
@@ -232,6 +233,8 @@ class HtmlController extends BaseController{
             $customer_data = [];
         }
         $mindexhtml = $this->homgepagehtml('mobile');
+        $searchhtml = $this->sendData('pc');
+        $msearchhtml = $this->sendData('mobile');
         $pc_classify_ids = Classify::where('cus_id',$this->cus_id)->where('pc_show',1)->lists('id');
         $mobile_classify_ids = Classify::where('cus_id',$this->cus_id)->where('mobile_show',1)->lists('id');
         $pc_article_ids = Articles::where('cus_id',$this->cus_id)->where('pc_show',1)->lists('id');
@@ -247,6 +250,9 @@ class HtmlController extends BaseController{
         $zip = new ZipArchive;
         if ($zip->open($path, ZipArchive::CREATE) === TRUE) {
             $zip->addFile($indexhtml,'index.html');
+            $zip->addFile($searchhtml,'search.html');
+            $zip->addFile(public_path('customers/'.$this->customer.'/pc_article_data.json'),'pc_article_data.json');
+            $zip->addFile(public_path('customers/'.$this->customer.'/mobile_article_data.json'),'mobile_article_data.json');
             $nowpercent = $this->percent + $this->lastpercent;
             if(floor($nowpercent)!=$this->lastpercent){
                 echo floor($nowpercent) . '%<script type="text/javascript">parent.refresh(' . floor($nowpercent) . ');</script><br />';
@@ -255,6 +261,7 @@ class HtmlController extends BaseController{
             }
             $this->lastpercent += 70+$this->percent;
             $zip->addFile($mindexhtml,'mobile/index.html');
+            $zip->addFile($msearchhtml,'mobile/search.html');
             $nowpercent = $this->percent + $this->lastpercent;
             if(floor($nowpercent)!=floor($this->lastpercent)){
                 echo floor($nowpercent) . '%<script type="text/javascript">parent.refresh(' . floor($nowpercent) . ');</script><br />';
@@ -314,6 +321,7 @@ class HtmlController extends BaseController{
                 }
                 ftp_put($conn,"/".$this->customer."/site.zip",$path,FTP_BINARY);
                 ftp_put($conn,"/".$this->customer."/unzip.php",public_path("packages/unzip.php"),FTP_ASCII);
+                ftp_put($conn,"/".$this->customer."/search.php",public_path("packages/search.php"),FTP_ASCII);
                 ftp_put($conn,"/".$this->customer."/quickbar.json",public_path('customers/'.$this->customer.'/quickbar.json'),FTP_ASCII);
                 //ftp_chdir($conn,$this->customer);
                 if(@ftp_chdir($conn,"/".$this->customer."/mobile") == FALSE){
@@ -329,8 +337,6 @@ class HtmlController extends BaseController{
             echo '100%<script type="text/javascript">parent.refresh(100);</script><br />';
             Classify::where('cus_id',$this->cus_id)->where('pushed',1)->update(['pushed'=>0]);
             Articles::where('cus_id',$this->cus_id)->where('pushed',1)->update(['pushed'=>0]);
-            $search_data=new TemplatesController;
-            $search_data->sendData();
             $pc_domain = CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_domain');
             @file_get_contents("$pc_domain/unzip.php");
         } 
@@ -396,5 +402,17 @@ class HtmlController extends BaseController{
         $data_final = ['err'=>0,'msg'=>'','data'=>['cache_num'=>$count]];
         return Response::json($data_final);
     }
-
+    
+    /**
+    * 生成搜索页面
+     */
+    public function sendData($type='pc'){
+        $template = new PrintController('online',$type);
+        ob_start();
+        $path = $type =='pc' ? public_path('customers/'.$this->customer.'/search.html') : public_path('customers/'.$this->customer.'/mobile/search.html');
+        echo $template->searchPreview();
+        file_put_contents($path, ob_get_contents());
+        ob_end_clean();
+        return $path;
+    }
 }
