@@ -15,7 +15,7 @@
 		<script type="text/javascript" src="js/html5.js"></script>
 		<![endif]-->
 	</head>
-	<body class="closephone page-{{ pagename }}" ng-class="{
+	<body class="closephone" ng-class="{
 		'showbox-main':showbox=='main',
 		'showbox-index':showbox=='home',
 		'showbox-page':showbox=='page',
@@ -88,7 +88,7 @@
 					</ul>
 				</nav>
 			</section><!--管理页
-			--><section id="main" class="inline-block vt" data-fixedwidth="{{ fixedwidth }}">
+			--><section id="main" class="inline-block vt"> 
 				<div class="main-content">
 					<!-- 子页面 -->
 					<div ng-view></div>
@@ -100,7 +100,7 @@
 				<!--[if lte IE 8]><div class="main_left"></div><![endif]-->
 			</section><!--
 			--><div id="pagedata" class="home-box"><!--页面内容
-				--><section id="home-edit" class="inline-block vt" data-fixedwidth="{{ fixedwidth }}">
+				--><section id="home-edit" class="inline-block vt">
 					<div class="main-content">
 						<!-- 子页面 -->
 						<div class="home-content whole" style="max-width:340px;">
@@ -162,7 +162,7 @@
 		            	</div>
 	            	</div><!--
         	--></div><div id="diy" class="home-box"><!--高级定制
-				--><section id="home-diy" class="inline-block vt" data-fixedwidth="{{ fixedwidth }}">
+				--><section id="home-diy" class="inline-block vt">
 					<div class="main-content main-content1">
 						<!-- 子页面 -->
 						<div class="home-content whole" style="max-width:340px;">

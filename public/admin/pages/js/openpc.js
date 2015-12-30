@@ -14,14 +14,13 @@ function openpcController($scope, $http ,$location) {
 		window.location.hash = '#/openpc?tpltype='+tpltype+'';
 	});//列表结束
 	tpltype == 2 ? $('.openpc_top .hd li').eq(1).addClass('on') : '';
-	var per_page = 4; //控制显示数目
+	var per_page = 8; //控制显示数目
     var pageselectCallback = function(page_indexs, jq) {
     	// 第一页
     	if(!page_num){
 			$http.get('../mytemplate-list?type='+tpltype+'&per_page='+per_page+'').success(function(json){
 				checkJSON(json,function(json){
 					if(tpltype == 1){
-                        $scope.$parent.homepreview = false;
 						// PC我的定制
 						var _div1 = '';
 						var d = json.data.mytemplelist;
@@ -46,7 +45,6 @@ function openpcController($scope, $http ,$location) {
                         $('.pc_tpl_list').after('<div id="Pagination" class="clearfix mt_0"></div>');
 	 					PC_temp(json);
 					}else{
-                        $scope.$parent.homepreview = true;
 						// 手机我的定制
 						var _div1 = '';
 						var d = json.data.mytemplelist;

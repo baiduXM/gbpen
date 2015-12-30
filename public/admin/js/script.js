@@ -310,9 +310,9 @@ function width_resize(data){
 	var menuWidth = $('body').hasClass('showmenu') ? ( !$('body').hasClass('closemenu') ? $('#menu').outerWidth()+parseInt($('#menu').css('margin-right')) : parseInt($('#menu').data('restwidth')) ) : 0;
 	var phoneWidth = !$('body').hasClass('closephone') ? $('#phone').outerWidth(true) : 0;
 	var mainExtraWidth = mainMarginLeft + parseInt($('#main').css('padding-left'));
-	mainWidth = $(window).width() - menuWidth - phoneWidth - previewsWidth - mainExtraWidth - 37;
+	mainWidth = $(window).width() -phoneWidth - menuWidth - previewsWidth - mainExtraWidth - 37;
 	// console.log('menuWidth:'+menuWidth,'phoneWidth:'+phoneWidth,'previewsWidth:'+previewsWidth,'mainExtraWidth:'+mainExtraWidth);
-	location.hash.match(/[a-z]+?$/) == 'setting' ? '' : $('#main').css({'width' : mainWidth,'marginLeft' : mainMarginLeft});
+	location.hash.match(/[a-z]+?$/) == 'setting' ? null : $('#main').css({'width' : mainWidth,'marginLeft' : mainMarginLeft});
 	// .home-box
 	var homeboxWidth = $(window).width() - parseInt($('#home-edit').css('margin-left')) - parseInt($('#home-edit').width()) - parseInt($('#home-edit').css('padding-left')) - parseInt($('.home-box').css('margin-right')) - 40;
 	$('#diy .home-page-preview').css('width', homeboxWidth);
