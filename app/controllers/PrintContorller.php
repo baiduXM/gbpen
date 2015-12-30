@@ -2276,7 +2276,7 @@ class PrintController extends BaseController{
             }
         }
         $result['pagenavs'] = $pagenavs;
-        $result['posnavs']=array(0=>array('en_name'=>'Search','name'=>'搜索'));
+        $result['posnavs']=array(0=>array('en_name'=>'Search','name'=>'搜索','link'=>'javascript:;','icon'=>''));
         
         //搜索数据替换
         //搜索数据标记与替换

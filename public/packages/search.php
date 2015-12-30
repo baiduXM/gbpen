@@ -30,7 +30,6 @@
     }
     
     preg_match('/<!--search_content_start-->([\s\S]*)<!--search_content_end-->/', $search_content,$search_exchange);
-    $search_exchange = $search_exchange[1];
     
     $article_id = array();
     //搜索数据
@@ -87,7 +86,7 @@
         $i = 1;
         foreach($article_id as $v){
             if(($current_page-1)*$per_page < $i && $i <= $current_page*$per_page){
-                $linshi = $search_exchange;
+                $linshi = $search_exchange[1];
                 $linshi = str_replace('search_$title',$article_content[$v]['title'],$linshi);
                 $linshi = str_replace('search_$image',$article_content[$v]['img'],$linshi);
                 $linshi = str_replace('search_$description',$article_content[$v]['introduction'],$linshi);
@@ -101,10 +100,10 @@
                 break;
         }
         
-        $search_content = str_replace($search_exchange, $string, $search_content);
+        $search_content = str_replace($search_exchange[0], $string, $search_content);
         $search_content = str_replace('-1000_search', count($article_id), $search_content);
     }else{
-        $search_content = str_replace($search_exchange, '没有查找到相关的数据', $search_content);
+        $search_content = str_replace($search_exchange[0], '没有查找到相关的数据', $search_content);
         $search_content = str_replace('-1000_search', 0 , $search_content);
         $current_page = 1;
         $per_page = $article_content['count'];
