@@ -45,8 +45,8 @@ class CommonController extends BaseController{
                 ['pc'=>0,'mobile'=>0,'name'=>'电话','icon'=>'&#xe602;','image'=>'icon/2.png','data'=>'18459276266','link'=>'tel://','type'=>'tel','enable_pc'=>1,'enable_mobile'=>1],
                 ['pc'=>0,'mobile'=>0,'name'=>'短信','icon'=>'&#xe604;','image'=>'icon/3.png','data'=>'18459276267','link'=>'sms://','type'=>'sms','enable_pc'=>1,'enable_mobile'=>1],
                 ['pc'=>0,'mobile'=>0,'name'=>'咨询','icon'=>'&#xe606;','image'=>'icon/5.png','data'=>'小E:156568451@QQ|客服-XX:10000@QQ|客服-YY:10000@53kf','type'=>'im','enable_pc'=>1,'enable_mobile'=>1],
-                ['pc'=>0,'mobile'=>0,'name'=>'地图','icon'=>'&#xe605;','image'=>'icon/4.png','data'=>'厦门市思明区观日路30号|118.17342,24.493927','type'=>'link','enable_pc'=>1,'enable_mobile'=>1],
-                ['pc'=>0,'mobile'=>0,'name'=>'分享','icon'=>'&#xe600;','image'=>'icon/8.png','data'=>['qzone','tqq','tsina','ibaidu'],'type'=>'share','enable_pc'=>1,'enable_mobile'=>1],
+                ['pc'=>0,'mobile'=>0,'name'=>'地图','icon'=>'&#xe605;','image'=>'icon/4.png','data'=>'','type'=>'link','enable_pc'=>1,'enable_mobile'=>1],
+                ['pc'=>0,'mobile'=>0,'name'=>'分享','icon'=>'&#xe600;','image'=>'icon/8.png','data'=>'qzone,tqq,tsina,ibaidu','type'=>'share','enable_pc'=>1,'enable_mobile'=>1],
                 ['pc'=>0,'mobile'=>0,'name'=>'搜索','icon'=>'&#xe636;','image'=>'icon/8.png','data'=>'','type'=>'search','enable_pc'=>1,'enable_mobile'=>1],
             ];  
         if(!$QuickBar){

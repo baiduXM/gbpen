@@ -285,9 +285,9 @@ function phone_indexController($scope,$http ,$location) {
 			            <span class="sanjiao"></span>\n\
 			            <div class="materlist-second">\n\
 			            	<dt class="title">编辑名称</dt>\n\
-			                <dd class="input"><input name="slidepics'+(parameter.num == undefined ? '' : '['+parameter.num+']')+'[PC_name]" type="text" value="'+(parameter.title || '')+'" /></dd>\n\
+			                <dd class="input"><input name="'+parameter.key+(parameter.num == undefined ? '[0]' : '['+parameter.num+']')+'[PC_name]" type="text" value="'+(parameter.title || '')+'" /></dd>\n\
 			                <dt class="title">编辑链接</dt>\n\
-			                <dd class="input"><input name="slidepics'+(parameter.num == undefined ? '' : '['+parameter.num+']')+'[PC_link]" type="text" value="'+(parameter.link || '')+'" /></dd>\n\
+			                <dd class="input"><input name="'+parameter.key+(parameter.num == undefined ? '[0]' : '['+parameter.num+']')+'[PC_link]" type="text" value="'+(parameter.link || '')+'" /></dd>\n\
 			                <dl class="btnbox">\n\
 			                	<dd class="surebtn">确定</dd>\n\
 			                    <dd class="cancebtn">取消</dd>\n\
@@ -303,7 +303,7 @@ function phone_indexController($scope,$http ,$location) {
 				                    <dd class="cancebtn">取消</dd>\n\
 			                	</dl>\n\
 			                </div>\n\
-			            </div><input type="hidden" name="slidepics'+(parameter.num == undefined ? '' : '['+parameter.num+']')+'[phone_info_pic]" value="'+(parameter.subimage || '')+'" />\n\
+			            </div><input type="hidden" name="'+parameter.key+(parameter.num == undefined ? '[0]' : '['+parameter.num+']')+'[phone_info_pic]" value="'+(parameter.subimage || '')+'" />\n\
 					</'+(parameter.Tag || 'li')+'>';
 				return _div;
     		};
@@ -323,7 +323,7 @@ function phone_indexController($scope,$http ,$location) {
 		    			ColumnNum = Math.floor(mainWidth/oddColumnWidth),		// 列数
 		    			lastColumnNum = (data.length%ColumnNum);				// 记录最终添加完的是第几列
 					// 添加瀑布流列
-					$('#phone_index_image').before('<form id="phone_index_images_'+num+'"></form>');
+					$('#phone_index_image').before('<form id="phone_index_images_'+num+'" data-key="'+index+'"></form>');
 					$('#phone_index_images_'+num).append('<div class="pictitle">多图文'+num+'</div>').data({'lastColumnNum':lastColumnNum,'ColumnNum':ColumnNum,'aspectRatio':aspectRatio});
 					for(var i = 1;i <= ColumnNum;i++){
 						$('#phone_index_images_'+num).append('<ul id="phone_index_col_'+num+'_'+i+'" class="phone_index_col" style="width:'+oddColumnWidth+'px"></ul>');
@@ -333,6 +333,7 @@ function phone_indexController($scope,$http ,$location) {
 						// 除余取列
 						var C_num = (k+1)%ColumnNum == 0 ? (k+1) : (k+1)%ColumnNum;
 						var _div = _this.ModelSlidepicsInfo({
+							key 	: index,
 							title	: v.title,
 							image	: v.image,
 							subimage: v.image,
@@ -351,6 +352,7 @@ function phone_indexController($scope,$http ,$location) {
 				}else{
 					var data = ele.value,aspectRatio = ele.config.width/ele.config.height || '',
 						_div = _this.ModelSlidepicsInfo({
+							key 	: index,
 							title	: data.title,
 							image	: data.image,
 							subimage: data.image,
@@ -429,6 +431,7 @@ function phone_indexController($scope,$http ,$location) {
 		            	if($(event_this).closest('#phone_index_image').length){
 		            		$('#phone_index_image div.phone_index-field').remove();
 		            		_newpic = _this.ModelSlidepicsInfo({
+		            			key 	: event_this.closest('form').data('key'),
 								image	: json.data.url,
 								subimage: json.data.name,
 								Tag 	: 'div',
@@ -437,6 +440,7 @@ function phone_indexController($scope,$http ,$location) {
 		            		$(event_this).parent().before(_newpic);
 		            	}else{
 			                _newpic = _this.ModelSlidepicsInfo({
+			                	key 	: event_this.closest('form').data('key'),
 								image	: json.data.url,
 								subimage: json.data.name,
 								num		: ++(_this.count),
@@ -656,7 +660,7 @@ function phone_indexController($scope,$http ,$location) {
 							    			var fg = newArr[x].split('@'),
 												kfname = fg[0].split(':')[0],kfnum = fg[0].split(':')[1];
 							    			_li += '<li class="consultation-item">\
-														<select><option value="qq"'+(fg[1] == 'qq' ? 'selected' : '')+'>QQ</option><option value="53kf"'+(fg[1] == '53kf' ? 'selected' : '')+'>53客服</option></select>\
+														<select><option value="qq"'+(fg[1] == 'qq' ? 'selected' : '')+'>QQ</option></select>\
 														<span><input class="consultation-name message-num" value="'+(kfname||'')+'" />-<input class="consultation-num message-num" value="'+(kfnum||'')+'" /></span>\
 														<div class="crl_icon fr"><i class="iconfont icon-guanbi"></i></div>\
 													</li>';
@@ -668,10 +672,10 @@ function phone_indexController($scope,$http ,$location) {
 					case 'share':
 						info = '<div class="quicklist-r inline-block">\
 								<span class="shareicon ml5">\
-									<i class="iconfonts '+($.inArray('tsina', v.data) == -1 ? 'grey' : 'blue')+'" data-name="tsina">&#xe653;</i>\
-									<i class="iconfonts '+($.inArray('ibaidu', v.data) == -1 ? 'grey' : 'blue')+'"  data-name="ibaidu">&#xe651;</i>\
-									<i class="iconfonts '+($.inArray('qzone', v.data) == -1 ? 'grey' : 'blue')+'"  data-name="qzone">&#xe652;</i>\
-									<i class="iconfonts '+($.inArray('tqq', v.data) == -1 ? 'grey' : 'blue')+'"  data-name="tqq">&#xe650;</i>\
+									<i class="iconfonts '+(v.data.indexOf('tsina') == -1 ? 'grey' : 'blue')+'" data-name="tsina">&#xe653;</i>\
+									<i class="iconfonts '+(v.data.indexOf('ibaidu') == -1 ? 'grey' : 'blue')+'"  data-name="ibaidu">&#xe651;</i>\
+									<i class="iconfonts '+(v.data.indexOf('qzone') == -1 ? 'grey' : 'blue')+'"  data-name="qzone">&#xe652;</i>\
+									<i class="iconfonts '+(v.data.indexOf('tqq') == -1 ? 'grey' : 'blue')+'"  data-name="tqq">&#xe650;</i>\
 								</span></div>';
 						break;
 					case 'link':
@@ -728,7 +732,7 @@ function phone_indexController($scope,$http ,$location) {
     	},
     	BdMap : function(){
     		// 百度地图API功能
-    		var pointX = this.pointX || null,pointY = this.pointY || null,
+    		var pointX = this.pointX || null,pointY = this.pointY || null,marker
 				map = new BMap.Map("bdmap");          
 			map.centerAndZoom(new BMap.Point(116.404, 39.915), 15);
 			var local = new BMap.LocalSearch(map, {
@@ -738,7 +742,7 @@ function phone_indexController($scope,$http ,$location) {
     			var new_point = new BMap.Point(pointX, pointY);
 				map.panTo(new_point);
 				// 拖拽坐标
-    			var marker = new BMap.Marker(new_point);  // 创建标注
+    			marker = new BMap.Marker(new_point);  // 创建标注
 				map.addOverlay(marker);              // 将标注添加到地图中
 				var label = new BMap.Label("拖拽坐标确定位置",{offset:new BMap.Size(20,-10)});
 				marker.setLabel(label);
@@ -755,6 +759,13 @@ function phone_indexController($scope,$http ,$location) {
     			map.clearOverlays(); 
 				dragMarker(pointX,pointY);
     		}
+    		map.addEventListener("click", function(e){
+				pointX = e.point.lng;
+				pointY = e.point.lat;
+				$('.quicklist-r .linktop .message-num').attr('data-point',pointX+','+pointY);
+				map.removeOverlay(marker);
+				dragMarker(pointX,pointY);
+			});
     		var keyword;
     		$('.linktop .search').click(function(){
     			keyword = $(this).siblings('.message-num').val();
@@ -853,7 +864,7 @@ function phone_indexController($scope,$http ,$location) {
 	    			navsArray.push({
 		    			name  : $(this).find('.quicklist-l>.message-name').text(),
 		    			icon  : icons,
-						data  : data,
+						data  : data.toString(),
 						enable_pc: $(this).find('.quicklist-l span:eq(0) i').eq(0).hasClass('blue') ? 1 : 0,
 						enable_mobile: $(this).find('.quicklist-l span:eq(0) i').eq(1).hasClass('blue') ? 1 : 0,
 						type  : type

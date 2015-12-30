@@ -308,7 +308,8 @@ class HtmlController extends BaseController{
             }
             $customerinfo = Customer::find($this->cus_id);
             $ftp_array = explode(':',$customerinfo->ftp_address);
-            $ftp_array[1] = isset($ftp_array[1])?$ftp_array[1]:'21';
+            $port= $customerinfo->ftp_port;
+            $ftp_array[1] = isset($ftp_array[1])?$ftp_array[1]:$port;
             $conn = ftp_connect($ftp_array[0],$ftp_array[1]);
             
             if($conn){

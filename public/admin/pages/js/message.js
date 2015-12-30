@@ -23,13 +23,13 @@ function messageController($scope, $http ,$location) {
     					_div = '';
     				$.each(data,function(idx, ele) {
     					_div += '\
-    					<tr class="message-item'+(ele.status == 1 ? '' : ' gray')+'">\
+    					<tr class="message-item">\
 			                <td class="first-item"><span>'+ele.content+'</span></td>\
 			                <td>'+ele.name+'</td>\
 			                <td>'+ele.telephone+'</td>\
 			                <td>'+ele.email+'</td>\
 			                <td>'+ele.creat_time+'</td>\
-			                <td><span class="message-status">'+(ele.status == 1 ? '通过' : '未通过')+'</span><span class="message-del" data-id="'+ele.id+'">删除</span></td>\
+			                <td><span class="message-del" data-id="'+ele.id+'">删除</span></td>\
 			            </tr>'
     				});
     				$('.message-tb .a-table .sapces').after(_div);
@@ -44,17 +44,17 @@ function messageController($scope, $http ,$location) {
     			_this = this;
 			// 内容详细显示
     		$('.first-item').hover(function(){
-    			$(this).parent().after('<tr class="detail"><td colspan="6"></td></tr>');
-    			$('.detail td').text($(this).find('span').text());
-    			$('.detail').fadeIn()
+    			$(this).parent().after('<div class="detail"><p colspan="6"></p></div>');
+                $('.detail p').text($(this).find('span').text());
+                $('.detail').fadeIn()
     		},function(){
     			$('.detail').remove();
     		});
     		// 审核是否通过
     		$('.message-status').click(function(){
     			$(this).closest('.message-item').hasClass('gray') ? IsStatus = 1 : IsStatus = 0;
-                id = $(this).siblings('.message-del').data('id');
-    			$http.post('',{id:id,status:IsStatus}).success(function(json){
+                var id = $(this).siblings('.message-del').data('id');
+    			$http.post('../message-state',{id:id,status:IsStatus}).success(function(json){
 	    			checkJSON(json,function(json){
 	    				IsStatus ? $(this).closest('.message-item').removeClass('gray') : $(this).closest('.message-item').addClass('gray');
 	    			})
@@ -62,9 +62,11 @@ function messageController($scope, $http ,$location) {
     		});
     		// 删除操作
     		$('.message-del').click(function(){
-    			id = $(this).data('id');
-    			$http.post('',{id:id}).success(function(json){
-	    			checkJSON(json,function(json){})
+    			var id = $(this).data('id'),event_this = $(this);
+    			$http.post('../message-state',{id:id}).success(function(json){
+	    			checkJSON(json,function(json){
+                        event_this.closest('.message-item').remove();
+                    })
 	    		});
     		});
     	},

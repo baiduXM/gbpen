@@ -32,15 +32,16 @@ class UploadController extends BaseController{
                        //同步到客户服务器
                         $customerinfo = Customer::find($cus_id);
                         $ftp_array = explode(':',$customerinfo->ftp_address);
-                        $ftp_array[1] = isset($ftp_array[1])?$ftp_array[1]:'21';
+                        $port= $customerinfo->ftp_port;
+                        $ftp_array[1] = isset($ftp_array[1])?$ftp_array[1]:$port;
                         $conn = ftp_connect($ftp_array[0],$ftp_array[1]);
                         if($conn){
                             ftp_login($conn,$customerinfo->ftp_user,$customerinfo->ftp_pwd);
                             ftp_pasv($conn, 1);
-                            ftp_put($conn,$customer.'images/l/'.$target.'/'.$fileName,$destinationPath.'/l/'.$target.'/'.$fileName,FTP_BINARY);
-                            ftp_put($conn,$customer.'images/s/'.$target.'/'.$fileName,$destinationPath.'/s/'.$target.'/'.$fileName,FTP_BINARY);
-                            ftp_put($conn,$customer.'mobile/images/l/'.$target.'/'.$fileName,public_path('customers/'.$customer.'/mobile/images/l/').$target.'/'.$fileName,FTP_BINARY);
-                            ftp_put($conn,$customer.'mobile/images/s/'.$target.'/'.$fileName,public_path('customers/'.$customer.'/mobile/images/s/').$target.'/'.$fileName,FTP_BINARY);
+                            ftp_put($conn,$customer.'/images/l/'.$target.'/'.$fileName,$destinationPath.'/l/'.$target.'/'.$fileName,FTP_BINARY);
+                            ftp_put($conn,$customer.'/images/s/'.$target.'/'.$fileName,$destinationPath.'/s/'.$target.'/'.$fileName,FTP_BINARY);
+                            ftp_put($conn,$customer.'/mobile/images/l/'.$target.'/'.$fileName,public_path('customers/'.$customer.'/mobile/images/l/').$target.'/'.$fileName,FTP_BINARY);
+                            ftp_put($conn,$customer.'/mobile/images/s/'.$target.'/'.$fileName,public_path('customers/'.$customer.'/mobile/images/s/').$target.'/'.$fileName,FTP_BINARY);
                             ftp_close($conn);
                         }
                         $data[$i]['name']=$fileName;
@@ -78,7 +79,8 @@ class UploadController extends BaseController{
                //同步到客户服务器
                 $customerinfo = Customer::find($cus_id);
                 $ftp_array = explode(':',$customerinfo->ftp_address);
-                $ftp_array[1] = isset($ftp_array[1])?$ftp_array[1]:'21';
+                $port= $customerinfo->ftp_port;
+                $ftp_array[1] = isset($ftp_array[1])?$ftp_array[1]:$port;
                 $conn = ftp_connect($ftp_array[0],$ftp_array[1]);
                  if($conn){
                     ftp_login($conn,$customerinfo->ftp_user,$customerinfo->ftp_pwd);
