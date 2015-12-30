@@ -301,7 +301,7 @@ Route::group(array('before' => 'auth'), function() {
     ]);
     
     Route::get('search-preview', [//搜索结果也数据
-        'uses' => 'TemplatesController@sendData'
+        'uses' => 'TemplatesController@searchPreview'
     ]);
     
     //-----------万用表单--------

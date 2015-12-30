@@ -141,7 +141,7 @@ mainApp.config(function($routeProvider, $httpProvider) {
 		$('div[ng-view]').css('opacity', 0.5);
 	};
 }).run(function($rootScope, $http, pageLoadingStart, pageLoadingSuccess) {
-	$http.get('json/config.json').success(function(response) {
+	$http.get('json/config.json').success(function(response) { 
 		$rootScope.pages = response;
 	});
 	

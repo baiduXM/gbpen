@@ -637,8 +637,21 @@ class TemplatesController extends BaseController{
     }
     
     /**
-     * 获取搜索页数据
+     * 搜索页面预览
      */
+    public function searchPreview($type='pc'){
+        header("Content-type:text/html;charset=utf-8");
+        echo '预览页面不支持搜索功能，请在网站中使用--- , 当前页面将在3s后自动跳转';
+        ob_flush(); 
+        flush(); 
+        sleep(3);
+        echo '<script language="javascript">
+                history.go(-1);
+            </script>';
+        //$template = new PrintController('preview',$type);
+        //return $template->searchPreview();
+    }
+    /*
     public function searchPreview($url,$type='pc'){
         $template = new PrintController('online',$type);
         return $template->sendCusAllData($url);
@@ -648,4 +661,5 @@ class TemplatesController extends BaseController{
         $this->searchPreview('http://swap.gbpen.com/PostTemplates.php','pc');  
         $this->searchPreview('http://swap.gbpen.com/PostTemplates.php','mobile');  
     }
+     * */
 }
