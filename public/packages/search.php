@@ -89,7 +89,6 @@
         $i = 1;
         foreach($article_id as $v){
             if(($current_page-1)*$per_page < $i && $i <= $current_page*$per_page){
-                echo $v.'<br />';
                 $linshi = $search_exchange[1];
                 $linshi = str_replace('search_$title',$article_content[$v]['title'],$linshi);
                 $linshi = str_replace('search_$image',$article_content[$v]['img'],$linshi);
