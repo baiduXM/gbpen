@@ -2256,6 +2256,7 @@ class PrintController extends BaseController{
      * 搜索页面数据
      */
     public function searchPreview(){
+        error_reporting(E_ALL ^ E_NOTICE);
         $result = $this->pagePublic();
         $customer_info = CustomerInfo::where('cus_id',$this->cus_id)->first();
         $result['title'] = $customer_info->title;
