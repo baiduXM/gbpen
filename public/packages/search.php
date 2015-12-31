@@ -7,7 +7,10 @@
             $pageUrl = $_SERVER['HTTP_REFERER'];
             $pageUrl = str_replace('http://','', $pageUrl);
             $pageUrl = explode('/', $pageUrl);
-            $type = $pageUrl[1];
+            if($pageUrl[1] == 'mobile')
+                $type = 'mobile';
+            else
+                $type = 'pc';
         }else{
             jump('不存在此链接');
         }
@@ -86,6 +89,7 @@
         $i = 1;
         foreach($article_id as $v){
             if(($current_page-1)*$per_page < $i && $i <= $current_page*$per_page){
+                echo $v.'<br />';
                 $linshi = $search_exchange[1];
                 $linshi = str_replace('search_$title',$article_content[$v]['title'],$linshi);
                 $linshi = str_replace('search_$image',$article_content[$v]['img'],$linshi);
@@ -94,8 +98,10 @@
                 $linshi = str_replace('search_$link',$article_content[$v]['link'],$linshi);
                 $string .= $linshi;
                 $i +=1;
-            }elseif(($current_page-1)*$per_page >= $i)
+            }elseif(($current_page-1)*$per_page >= $i){
+                $i +=1;
                 continue;
+            }
             else
                 break;
         }
