@@ -2283,7 +2283,11 @@ class PrintController extends BaseController{
         
         //搜索数据替换
         //搜索数据标记与替换
-        $file_content=file_get_contents(app_path('views/templates/'.$this->themename.'/searchresult.html'));
+        if(file_exists(app_path('views/templates/'.$this->themename.'/searchresult.html'))){
+            $file_content=file_get_contents(app_path('views/templates/'.$this->themename.'/searchresult.html'));
+        }else{
+            $file_content=file_get_contents(public_path("packages/searchresult.html"));
+        }
         //匹配搜索循环
         preg_match('/({foreach[^}]*from[\s]*=[\s]*\$search\.data[^}]*})((?!{\/foreach})[\s\S]*){\/foreach}/',$file_content,$search_foreach);
         $file_content=str_replace($search_foreach[2],'<!--search_content_start-->'.$search_foreach[2].'<!--search_content_end-->',$file_content);
@@ -2309,8 +2313,6 @@ class PrintController extends BaseController{
                         $result[$key]=$this->detailList($this->pagedata($key));
                     }
                 }
-            }else{
-                return false;
             }
         }
         if($this->type=='pc'){

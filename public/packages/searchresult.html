@@ -1,0 +1,5 @@
+<ul class="news_ls"> 	
+                        {foreach item=article from=$search.data}
+	                     <li><a href="{$article.link}"><span class="date"><time datetime="{$article.pubdate}" pubdate="pubdate">{$article.pubdate}</time></span>{$article.title}</a></li>
+       				    {/foreach} 
+	                </ul>
