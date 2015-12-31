@@ -2266,13 +2266,15 @@ class PrintController extends BaseController{
             $current_arr=$this->currentCidArray($c_id);
             $result['navs']= $this->addCurrent($result['navs'],$current_arr);
         }
-        foreach($result['navs'] as $nav){
-            if($nav['current']==1){
-                $pagenavs = $nav['childmenu'];
-                break;
-            }
-            else{
-                $pagenavs = [];
+        if(is_array($result['navs'])){
+            foreach($result['navs'] as $nav){
+                if($nav['current']==1){
+                    $pagenavs = $nav['childmenu'];
+                    break;
+                }
+                else{
+                    $pagenavs = [];
+                }
             }
         }
         $result['pagenavs'] = $pagenavs;

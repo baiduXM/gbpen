@@ -233,8 +233,8 @@ class HtmlController extends BaseController{
             $customer_data = [];
         }
         $mindexhtml = $this->homgepagehtml('mobile');
-        //$searchhtml = $this->sendData('pc');
-        //$msearchhtml = $this->sendData('mobile');
+        $searchhtml = $this->sendData('pc');
+        $msearchhtml = $this->sendData('mobile');
         $pc_classify_ids = Classify::where('cus_id',$this->cus_id)->where('pc_show',1)->lists('id');
         $mobile_classify_ids = Classify::where('cus_id',$this->cus_id)->where('mobile_show',1)->lists('id');
         $pc_article_ids = Articles::where('cus_id',$this->cus_id)->where('pc_show',1)->lists('id');
@@ -250,7 +250,7 @@ class HtmlController extends BaseController{
         $zip = new ZipArchive;
         if ($zip->open($path, ZipArchive::CREATE) === TRUE) {
             $zip->addFile($indexhtml,'index.html');
-            //$zip->addFile($searchhtml,'search.html');
+            $zip->addFile($searchhtml,'search.html');
             $zip->addFile(public_path('customers/'.$this->customer.'/pc_article_data.json'),'pc_article_data.json');
             $zip->addFile(public_path('customers/'.$this->customer.'/mobile_article_data.json'),'mobile_article_data.json');
             $nowpercent = $this->percent + $this->lastpercent;
@@ -261,7 +261,7 @@ class HtmlController extends BaseController{
             }
             $this->lastpercent += 70+$this->percent;
             $zip->addFile($mindexhtml,'mobile/index.html');
-            //$zip->addFile($msearchhtml,'mobile/search.html');
+            $zip->addFile($msearchhtml,'mobile/search.html');
             $nowpercent = $this->percent + $this->lastpercent;
             if(floor($nowpercent)!=floor($this->lastpercent)){
                 echo floor($nowpercent) . '%<script type="text/javascript">parent.refresh(' . floor($nowpercent) . ');</script><br />';
@@ -322,7 +322,7 @@ class HtmlController extends BaseController{
                 }
                 ftp_put($conn,"/".$this->customer."/site.zip",$path,FTP_BINARY);
                 ftp_put($conn,"/".$this->customer."/unzip.php",public_path("packages/unzip.php"),FTP_ASCII);
-                //ftp_put($conn,"/".$this->customer."/search.php",public_path("packages/search.php"),FTP_ASCII);
+                ftp_put($conn,"/".$this->customer."/search.php",public_path("packages/search.php"),FTP_ASCII);
                 ftp_put($conn,"/".$this->customer."/quickbar.json",public_path('customers/'.$this->customer.'/quickbar.json'),FTP_ASCII);
                 //ftp_chdir($conn,$this->customer);
                 if(@ftp_chdir($conn,"/".$this->customer."/mobile") == FALSE){
