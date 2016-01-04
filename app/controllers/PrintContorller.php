@@ -1423,6 +1423,7 @@ class PrintController extends BaseController{
      * 
      */
 		public static function createShare($params){
+            echo $params['sharePic'];
 		$s = '<div class="bdsharebuttonbox" data-tag="share_1">
 		  <a class="bds_mshare" data-cmd="mshare"></a>
 		  <a class="bds_qzone" data-cmd="qzone" href="#"></a>
