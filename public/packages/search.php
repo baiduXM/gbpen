@@ -1,36 +1,13 @@
 <?php
     header("Content-type:text/html;charset=utf-8");
-    if($_GET['type']){
-        $type = $_GET['type'];
-    }else{
-        if($_SERVER['HTTP_REFERER']){
-            $pageUrl = $_SERVER['HTTP_REFERER'];
-            $pageUrl = str_replace('http://','', $pageUrl);
-            $pageUrl = explode('/', $pageUrl);
-            if($pageUrl[1] == 'mobile')
-                $type = 'mobile';
-            else
-                $type = 'pc';
-        }else{
-            jump('不存在此链接');
-        }
-    }
     
     $search = $_GET['s'];
     
-    if($type == 'mobile'){
-        if(file_exists('./mobile_article_data.json') && file_exists('./mobile/search.html')){
-            $article_content = file_get_contents('./mobile_article_data.json');
-            $search_content = file_get_contents('./mobile/search.html');
-        }else
-            jump('不存在信息内容');
-    }else{
-        if(file_exists('./pc_article_data.json') && file_exists('./search.html')){
-            $article_content = file_get_contents('./pc_article_data.json');
-            $search_content = file_get_contents('./search.html');
-        }else
-            jump('不存在信息内容');
-    }
+    if(file_exists('./article_data.json') && file_exists('./search.html')){
+        $article_content = file_get_contents('./article_data.json');
+        $search_content = file_get_contents('./search.html');
+    }else
+        jump('不存在信息内容');
     
     preg_match('/<!--search_content_start-->([\s\S]*)<!--search_content_end-->/', $search_content,$search_exchange);
     
@@ -67,18 +44,18 @@
             $first_link = 'javascript:;';
             $prev_link = 'javascript:;';
             if($current_page<$page_count){
-                $next_link = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?type='.$type.'&s='.$search.'&page='.($current_page+1);
-                $last_link = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?type='.$type.'&s='.$search.'&page='.$page_count;
+                $next_link = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?s='.$search.'&page='.($current_page+1);
+                $last_link = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?s='.$search.'&page='.$page_count;
             }else{
                 $next_link = 'javascript:;';
                 $last_link = 'javascript:;';
             }
         }else{
-            $first_link = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?type='.$type.'&s='.$search.'&page=1';
-            $prev_link = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?type='.$type.'&s='.$search.'&page='.($current_page-1);
+            $first_link = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?s='.$search.'&page=1';
+            $prev_link = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?s='.$search.'&page='.($current_page-1);
             if($current_page<$page_count){
-                $next_link = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?type='.$type.'&s='.$search.'&page='.($current_page+1);
-                $last_link = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?type='.$type.'&s='.$search.'&page='.$page_count;
+                $next_link = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?s='.$search.'&page='.($current_page+1);
+                $last_link = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?s='.$search.'&page='.$page_count;
             }else{
                 $next_link = 'javascript:;';
                 $last_link = 'javascript:;';

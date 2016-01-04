@@ -251,8 +251,8 @@ class HtmlController extends BaseController{
         if ($zip->open($path, ZipArchive::CREATE) === TRUE) {
             $zip->addFile($indexhtml,'index.html');
             $zip->addFile($searchhtml,'search.html');
-            $zip->addFile(public_path('customers/'.$this->customer.'/pc_article_data.json'),'pc_article_data.json');
-            $zip->addFile(public_path('customers/'.$this->customer.'/mobile_article_data.json'),'mobile_article_data.json');
+            $zip->addFile(public_path('customers/'.$this->customer.'/article_data.json'),'article_data.json');
+            $zip->addFile(public_path('customers/'.$this->customer.'/mobile/article_data.json'),'mobile/article_data.json');
             $nowpercent = $this->percent + $this->lastpercent;
             if(floor($nowpercent)!=$this->lastpercent){
                 echo floor($nowpercent) . '%<script type="text/javascript">parent.refresh(' . floor($nowpercent) . ');</script><br />';
@@ -323,6 +323,7 @@ class HtmlController extends BaseController{
                 ftp_put($conn,"/".$this->customer."/site.zip",$path,FTP_BINARY);
                 ftp_put($conn,"/".$this->customer."/unzip.php",public_path("packages/unzip.php"),FTP_ASCII);
                 ftp_put($conn,"/".$this->customer."/search.php",public_path("packages/search.php"),FTP_ASCII);
+                ftp_put($conn,"/".$this->customer."/mobile/search.php",public_path("packages/search.php"),FTP_ASCII);
                 ftp_put($conn,"/".$this->customer."/quickbar.json",public_path('customers/'.$this->customer.'/quickbar.json'),FTP_ASCII);
                 //ftp_chdir($conn,$this->customer);
                 if(@ftp_chdir($conn,"/".$this->customer."/mobile") == FALSE){
