@@ -186,9 +186,9 @@ class PrintController extends BaseController{
                                 $templates->unsetLastClassify($c_arr);
                                 $c_arr=array_merge($c_arr);
                                 $v['config']['limit']=isset($v['config']['limit'])?$v['config']['limit']:20;
-			                }
-				            /*20151021添加feeback filter*/
-			    elseif($v['config']['filter']=='feedback'){
+                            }
+                            /*20151021添加feeback filter*/
+                elseif($v['config']['filter']=='feedback'){
                                 $c_arr=$classify->toTree($c_arr);
                                 $templates->unsetFalseClassify($c_arr,array(5));
                                 $templates->unsetLastClassify($c_arr);
@@ -225,9 +225,9 @@ class PrintController extends BaseController{
                             }elseif($v['config']['filter']=='list'){
                                  $v['config']['id']=Classify::where('cus_id',$this->cus_id)->whereIn('type',array(1,2,3))->where('pc_show',1)->pluck('id');
                                  $v['config']['limit']=isset($v['config']['limit'])?$v['config']['limit']:20;
-							}
-							/*20151021添加feeback filter*/
-							elseif($v['config']['filter']=='feedback'){
+                            }
+                            /*20151021添加feeback filter*/
+                            elseif($v['config']['filter']=='feedback'){
                                  $v['config']['id']=Classify::where('cus_id',$this->cus_id)->whereIn('type',array(5))->where('pc_show',1)->pluck('id'); 
                             }elseif($v['config']['filter']=='ALL'){
                                  $v['config']['id']=Classify::where('cus_id',$this->cus_id)->whereIn('type',array(1,2,3,4,5,6))->where('pc_show',1)->pluck('id');  
@@ -354,12 +354,12 @@ class PrintController extends BaseController{
                     /*
                     if (!array_key_exists('title', $slimming[$k]['value']) || !array_key_exists('image', $slimming[$k]['value']) || !array_key_exists('link', $slimming[$k]['value'])) {
                         echo json_encode(array(
-                    		'err' => 2001,
-                    		'data' => null,
-                    		'msg' => 'json文件中type为【image】格式的value值必须包含【title、image、link】元素，可选【description】\r\n详情参见：http://pme/wiki/doku.php?id=ued:template:json#typeimage'
-                		));
-                		exit;
-                	}
+                            'err' => 2001,
+                            'data' => null,
+                            'msg' => 'json文件中type为【image】格式的value值必须包含【title、image、link】元素，可选【description】\r\n详情参见：http://pme/wiki/doku.php?id=ued:template:json#typeimage'
+                        ));
+                        exit;
+                    }
                     
                     if (!array_key_exists('config', $slimming[$k]) || !is_array($slimming[$k]['config']) || (!is_numeric($slimming[$k]['config']['width']) && !is_numeric($slimming[$k]['config']['height']))) {
                         $msg = 'json文件中type为【image】格式应配置【config】的【width】【height】配置项\r\n详情参见：http://pme/wiki/doku.php?id=ued:template:json#typeimage';
@@ -373,85 +373,85 @@ class PrintController extends BaseController{
                      */
                     break;
                 case 'images':
-					if (!is_array($slimming[$k]) || !count($slimming[$k])) dd('json文件中type为【images】格式不正确！\r\n详情参见：http://pme/wiki/doku.php?id=ued:template:json#typeimages');
+                    if (!is_array($slimming[$k]) || !count($slimming[$k])) dd('json文件中type为【images】格式不正确！\r\n详情参见：http://pme/wiki/doku.php?id=ued:template:json#typeimages');
                     foreach ($slimming[$k]['value'] as $key => $val) {
-						if (!array_key_exists('title', $val) || !array_key_exists('image', $val) || !array_key_exists('link', $val))
-							dd('json文件中type为【images】格式value值的每个子元素必须包含【title、image、link】元素，可选【description】\r\n详情参见：http://pme/wiki/doku.php?id=ued:template:json#typeimages');
-					}
+                        if (!array_key_exists('title', $val) || !array_key_exists('image', $val) || !array_key_exists('link', $val))
+                            dd('json文件中type为【images】格式value值的每个子元素必须包含【title、image、link】元素，可选【description】\r\n详情参见：http://pme/wiki/doku.php?id=ued:template:json#typeimages');
+                    }
                     /*
-					if (!array_key_exists('config',$slimming[$k]) || !is_array($slimming[$k]['config']) || (!is_numeric($slimming[$k]['config']['width']) && !is_numeric($slimming[$k]['config']['height']))) {
-						$msg = 'json文件中type为【images】格式应配置【config】的【width】【height】配置项\r\n详情参见：http://pme/wiki/doku.php?id=ued:template:json#typeimages';
-						if (array_key_exists('config', $slimming[$k]) && is_array($slimming[$k]['config']) && array_key_exists('forcesize', $slimming[$k]['config']) && $slimming[$k]['config']['forcesize'] === true) {
-							dd($msg);
-						}else{
-							dd('Error: '.$msg);
-						}
-					}*/
-					break;
+                    if (!array_key_exists('config',$slimming[$k]) || !is_array($slimming[$k]['config']) || (!is_numeric($slimming[$k]['config']['width']) && !is_numeric($slimming[$k]['config']['height']))) {
+                        $msg = 'json文件中type为【images】格式应配置【config】的【width】【height】配置项\r\n详情参见：http://pme/wiki/doku.php?id=ued:template:json#typeimages';
+                        if (array_key_exists('config', $slimming[$k]) && is_array($slimming[$k]['config']) && array_key_exists('forcesize', $slimming[$k]['config']) && $slimming[$k]['config']['forcesize'] === true) {
+                            dd($msg);
+                        }else{
+                            dd('Error: '.$msg);
+                        }
+                    }*/
+                    break;
                 case 'page':
-					if(!array_key_exists('config', $slimming[$k]) || !is_array($slimming[$k]['config'])) $slimming[$k]['config'] = array();
-					$slimming[$k]['config']['filter'] = "page";
-					$slimming[$k]['type'] = "list";
+                    if(!array_key_exists('config', $slimming[$k]) || !is_array($slimming[$k]['config'])) $slimming[$k]['config'] = array();
+                    $slimming[$k]['config']['filter'] = "page";
+                    $slimming[$k]['type'] = "list";
                     
                 case 'nav':
-                    if(!array_key_exists('config', $slimming[$k]) || !is_array($slimming[$k]['config'])) $slimming[$k]['config'] = array();					
-					if(!array_key_exists('filter', $slimming[$k]['config']) || empty($slimming[$k]['config']['filter'])) $slimming[$k]['config']['filter'] = "ALL";
-					$slimming[$k]['type'] = "list";
-				case 'navs':
+                    if(!array_key_exists('config', $slimming[$k]) || !is_array($slimming[$k]['config'])) $slimming[$k]['config'] = array();                 
+                    if(!array_key_exists('filter', $slimming[$k]['config']) || empty($slimming[$k]['config']['filter'])) $slimming[$k]['config']['filter'] = "ALL";
+                    $slimming[$k]['type'] = "list";
+                case 'navs':
                     if(!array_key_exists('config', $slimming[$k]) || !is_array($slimming[$k]['config'])) $slimming[$k]['config'] = array();
-					if(!array_key_exists('filter', $slimming[$k]['config']) || empty($slimming[$k]['config']['filter'])) $slimming[$k]['config']['filter'] = "ALL";                    
+                    if(!array_key_exists('filter', $slimming[$k]['config']) || empty($slimming[$k]['config']['filter'])) $slimming[$k]['config']['filter'] = "ALL";                    
                     $slimming[$k]['config']['limit'] = array_key_exists('limit', $slimming[$k]['config']) ? $slimming[$k]['config']['limit'] : 0;
                  
-				case 'list':
-					if(!array_key_exists('config', $slimming[$k]) || !is_array($slimming[$k]['config'])) $slimming[$k]['config'] = array();
-					if(!array_key_exists('filter', $slimming[$k]['config']) || empty($slimming[$k]['config']['filter'])) $slimming[$k]['config']['filter'] = "list";
-					$slimming[$k]['config']['limit'] = array_key_exists('limit', $slimming[$k]['config']) ? $slimming[$k]['config']['limit'] : 20;
-					$slimming[$k]['config']['star_only'] = array_key_exists('star_only', $slimming[$k]['config']) && $slimming[$k]['config']['star_only'] ? 1 : 0;
-				 	break;
+                case 'list':
+                    if(!array_key_exists('config', $slimming[$k]) || !is_array($slimming[$k]['config'])) $slimming[$k]['config'] = array();
+                    if(!array_key_exists('filter', $slimming[$k]['config']) || empty($slimming[$k]['config']['filter'])) $slimming[$k]['config']['filter'] = "list";
+                    $slimming[$k]['config']['limit'] = array_key_exists('limit', $slimming[$k]['config']) ? $slimming[$k]['config']['limit'] : 20;
+                    $slimming[$k]['config']['star_only'] = array_key_exists('star_only', $slimming[$k]['config']) && $slimming[$k]['config']['star_only'] ? 1 : 0;
+                    break;
                 case 'quickbar':
                     //if ($this->type == 'pc') dd('PC模板的json文件中没有type为【quickbar】的变量！\r\n如果你现在制作的是手机模板，请修改config.ini文件对应参数。详情参见：http://pme.eexx.me/doku.php?id=ued:template:config#config_%E6%A8%A1%E6%9D%BF%E9%85%8D%E7%BD%AE%E9%83%A8%E5%88%86');
-					if (!is_string($slimming[$k]) || !count($slimming[$k])) dd('json文件中type为【navs】格式不正确！\r\n详情参见：http://pme/wiki/doku.php?id=ued:template:mindex#%E5%BA%95%E9%83%A8%E5%AF%BC%E8%88%AA%E5%AE%9A%E4%B9%89%E6%96%B9%E6%B3%95');
-					foreach ($slimming[$k] as $i => $v) {
-						if (!array_key_exists('name',$v) ||
-							!array_key_exists('image',$v) ||
-							!array_key_exists('data',$v) ||
-							!array_key_exists('type',$v) ||
-							!array_key_exists('enable',$v)
-						) dd('json文件中type为【navs】格式value值的每个子元素必须包【name、image、data、type、enable】元素，可选【childmenu】\r\n详情参见：http://pme/wiki/doku.php?id=ued:template:mindex#%E5%BA%95%E9%83%A8%E5%AF%BC%E8%88%AA%E5%AE%9A%E4%B9%89%E6%96%B9%E6%B3%95');
-						if (!preg_match("/^(tel|sms|im|link|share)$/",$v['type']))
-							dd('json文件中type为【navs】格式value值的子元素的【type】值只能为【tel、sms、im、link、share】其中之一\r\n详情参见：http://pme/wiki/doku.php?id=ued:template:mindex#%E5%BA%95%E9%83%A8%E5%AF%BC%E8%88%AA%E5%AE%9A%E4%B9%89%E6%96%B9%E6%B3%95');
-						if (!array_key_exists('enable',$v)) {
-							unset($slimming[$k][$i]);
-						}
-						switch ($v['type']) {
-							case 'tel':
-								$slimming[$k]['link'] = 'tel://'.$v['data'];
-								break;
-							case 'sms':
-								$slimming[$k]['link'] = 'sms://'.$v['data'];
-								break;
-							case 'share':
-							case 'im':
-								$slimming[$k]['link'] = 'javascript:void(0);';
-								break;
-							case 'link':
-								if (!array_key_exists('childmenu',$v) && !count($v['childmenu'])) {
-									$slimming[$k]['link'] = 'javascript:void(0);';
-									foreach ($slimming[$k]['childmenu'] as $kk => $vv) {
-										if (!array_key_exists('enable',$v['childmenu'])) {
-											unset($slimming[$k]['childmenu'][$i]);
-										}
-										$slimming[$k]['childmenu']['link'] = $vv['data'];
-									}
-								}else{
-									$slimming[$k]['link'] = $v['data'];
-								}
-								break;
-							default:
-								$slimming[$k]['link'] = $v['data'];
-						}
-					}
-				 	break;
+                    if (!is_string($slimming[$k]) || !count($slimming[$k])) dd('json文件中type为【navs】格式不正确！\r\n详情参见：http://pme/wiki/doku.php?id=ued:template:mindex#%E5%BA%95%E9%83%A8%E5%AF%BC%E8%88%AA%E5%AE%9A%E4%B9%89%E6%96%B9%E6%B3%95');
+                    foreach ($slimming[$k] as $i => $v) {
+                        if (!array_key_exists('name',$v) ||
+                            !array_key_exists('image',$v) ||
+                            !array_key_exists('data',$v) ||
+                            !array_key_exists('type',$v) ||
+                            !array_key_exists('enable',$v)
+                        ) dd('json文件中type为【navs】格式value值的每个子元素必须包【name、image、data、type、enable】元素，可选【childmenu】\r\n详情参见：http://pme/wiki/doku.php?id=ued:template:mindex#%E5%BA%95%E9%83%A8%E5%AF%BC%E8%88%AA%E5%AE%9A%E4%B9%89%E6%96%B9%E6%B3%95');
+                        if (!preg_match("/^(tel|sms|im|link|share)$/",$v['type']))
+                            dd('json文件中type为【navs】格式value值的子元素的【type】值只能为【tel、sms、im、link、share】其中之一\r\n详情参见：http://pme/wiki/doku.php?id=ued:template:mindex#%E5%BA%95%E9%83%A8%E5%AF%BC%E8%88%AA%E5%AE%9A%E4%B9%89%E6%96%B9%E6%B3%95');
+                        if (!array_key_exists('enable',$v)) {
+                            unset($slimming[$k][$i]);
+                        }
+                        switch ($v['type']) {
+                            case 'tel':
+                                $slimming[$k]['link'] = 'tel://'.$v['data'];
+                                break;
+                            case 'sms':
+                                $slimming[$k]['link'] = 'sms://'.$v['data'];
+                                break;
+                            case 'share':
+                            case 'im':
+                                $slimming[$k]['link'] = 'javascript:void(0);';
+                                break;
+                            case 'link':
+                                if (!array_key_exists('childmenu',$v) && !count($v['childmenu'])) {
+                                    $slimming[$k]['link'] = 'javascript:void(0);';
+                                    foreach ($slimming[$k]['childmenu'] as $kk => $vv) {
+                                        if (!array_key_exists('enable',$v['childmenu'])) {
+                                            unset($slimming[$k]['childmenu'][$i]);
+                                        }
+                                        $slimming[$k]['childmenu']['link'] = $vv['data'];
+                                    }
+                                }else{
+                                    $slimming[$k]['link'] = $v['data'];
+                                }
+                                break;
+                            default:
+                                $slimming[$k]['link'] = $v['data'];
+                        }
+                    }
+                    break;
             }
         }
         if(isset($slimming['feedback'])){
@@ -1422,33 +1422,33 @@ class PrintController extends BaseController{
      * 
      * 
      */
-		public static function createShare($params){
-		$s = '<div class="bdsharebuttonbox" data-tag="share_1">
-		  <a class="bds_mshare" data-cmd="mshare"></a>
-		  <a class="bds_qzone" data-cmd="qzone" href="#"></a>
-		  <a class="bds_tsina" data-cmd="tsina"></a>
-		  <a class="bds_baidu" data-cmd="baidu"></a>
-		  <a class="bds_renren" data-cmd="renren"></a>
-		  <a class="bds_tqq" data-cmd="tqq"></a>
-		  <a class="bds_more" data-cmd="more">更多</a>
-		  <a class="bds_count" data-cmd="count"></a>
-		</div>'."\n";
-		// 显示类型
+        public static function createShare($params){
+        $s = '<div class="bdsharebuttonbox" data-tag="share_1">
+          <a class="bds_mshare" data-cmd="mshare"></a>
+          <a class="bds_qzone" data-cmd="qzone" href="#"></a>
+          <a class="bds_tsina" data-cmd="tsina"></a>
+          <a class="bds_baidu" data-cmd="baidu"></a>
+          <a class="bds_renren" data-cmd="renren"></a>
+          <a class="bds_tqq" data-cmd="tqq"></a>
+          <a class="bds_more" data-cmd="more">更多</a>
+          <a class="bds_count" data-cmd="count"></a>
+        </div>'."\n";
+        // 显示类型
         $s.="<script>status = 1;\n";
-		$params['style'] = isset($params['style'])?$params['style']:"1";
-		$s.="window._bd_share_config = {
-		  common : {
-			bdText : \"";
+        $params['style'] = isset($params['style'])?$params['style']:"1";
+        $s.="window._bd_share_config = {
+          common : {
+            bdText : \"";
         $s.=isset($params['shareText'])?$params['shareText']:'';
         $s.="\",
         bdMiniList: ['mshare', 'qzone', 'tsina', 'bdysc', 'weixin', 'renren', 'tqq', 'kaixin001', 'tqf', 'tieba', 'douban', 'bdhome', 'sqq', 'thx', 'ibaidu', 'meilishuo', 'mogujie', 'huaban', 'duitang', 'hx', 'fx', 'youdao', 'sdo', 'qingbiji', 'people', 'xinhua', 'mail', 'isohu', 'yaolan', 'wealink', 'ty', 'iguba', 'linkedin', 'copy', 'print'], 
-			bdDesc : \"";
+            bdDesc : \"";
         $s.=isset($params['shareDesc'])?$params['shareDesc']:'';
         $s.="\", 
-			bdUrl : \"";
+            bdUrl : \"";
         $s.=isset($params['shareUrl'])?$params['shareUrl']:rtrim(self::$cus_domain,'/').$_SERVER['REQUEST_URI'].'.html';
         $s.="\",   
-			bdPic : \"";
+            bdPic : \"";
         $s.=isset($params['sharePic'])?$params['sharePic']:'';
         $s.="\",
             bdMini : \"";
@@ -1457,27 +1457,27 @@ class PrintController extends BaseController{
             bdMinilist : ['qzone','tsina','huaban','tqq','renren']";
         $s.=isset($params['bdMinilist'])?$params['bdMinilist']:'';
         $s.="
-		  },
-		  share : [{
-			bdSize :";
+          },
+          share : [{
+            bdSize :";
         $s.=isset($params['viewSize'])?$params['viewSize']:16;
-		$s.="}],
-		  slide : [{     
-			bdImg : 0,
-			bdPos : 'right',
-			bdTop : 200
-		  }],
-		  image : [{
-			viewType : 'list',
-			viewPos : 'top',
-			viewColor : 'black',
-			viewSize : '16',
-			viewList : ['qzone','tsina','huaban','tqq','renren']
-		  }],
-		  selectShare : [{
-			bdselectMiniList : ['qzone','tqq','kaixin001','bdxc','tqf']
-		  }]
-		};\n";
+        $s.="}],
+          slide : [{     
+            bdImg : 0,
+            bdPos : 'right',
+            bdTop : 200
+          }],
+          image : [{
+            viewType : 'list',
+            viewPos : 'top',
+            viewColor : 'black',
+            viewSize : '16',
+            viewList : ['qzone','tsina','huaban','tqq','renren']
+          }],
+          selectShare : [{
+            bdselectMiniList : ['qzone','tqq','kaixin001','bdxc','tqf']
+          }]
+        };\n";
         if($params['style'] == "1"){
             $s.="delete _bd_share_config.slide\n";
         }elseif($params['style'] == "2"){
@@ -1490,10 +1490,10 @@ class PrintController extends BaseController{
         }else{
             $s.="delete _bd_share_config.image\n";
         }
-		$s.= "window.onload=function(){with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];}\n";
-		$s.="</script>";
+        $s.= "window.onload=function(){with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];}\n";
+        $s.="</script>";
         echo $s;
-	}
+    }
        
     /**
      * PC显示首页
@@ -2289,7 +2289,7 @@ class PrintController extends BaseController{
             $file_content=file_get_contents(public_path("packages/searchresult.html"));
         }
         //匹配搜索循环
-        preg_match('/({foreach[^}]*from[\s]*=[\s]*\$search\.data[^}]*})((?!{\/foreach})[\s\S]*){\/foreach}/',$file_content,$search_foreach);
+        preg_match('/({foreach[^}]*from[\s]*=[\s]*\$search\.data[^}]*})([\s\S]*?){\/foreach}/',$file_content,$search_foreach);
         $file_content=str_replace($search_foreach[2],'<!--search_content_start-->'.$search_foreach[2].'<!--search_content_end-->',$file_content);
         //匹配foreach中的item值
         preg_match('/item[\s]*=[\s]*([\S]*)/',$search_foreach[1],$search_view);
