@@ -2289,7 +2289,7 @@ class PrintController extends BaseController{
             $file_content=file_get_contents(public_path("packages/searchresult.html"));
         }
         //匹配搜索循环
-        preg_match('/({foreach[^}]*from[\s]*=[\s]*\$search\.data[^}]*})((?!{\/foreach})[\s\S]*){\/foreach}/',$file_content,$search_foreach);
+        preg_match('/({foreach[^}]*from[\s]*=[\s]*\$search\.data[^}]*})([\s\S]*?){\/foreach}/',$file_content,$search_foreach);
         $file_content=str_replace($search_foreach[2],'<!--search_content_start-->'.$search_foreach[2].'<!--search_content_end-->',$file_content);
         //匹配foreach中的item值
         preg_match('/item[\s]*=[\s]*([\S]*)/',$search_foreach[1],$search_view);
