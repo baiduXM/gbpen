@@ -420,19 +420,17 @@ class TemplatesController extends BaseController{
         $template_id = WebsiteInfo::where('cus_id',$cus_id)->pluck('mobile_tpl_id');
         $data=Input::all();
         $keys=  array_keys($data);
-        if($keys[0]=='slidepics'){
-            if($data['slidepics']!=''){
-                foreach($data['slidepics'] as $key=>$val){
-                    $data['slidepics'][$key]['title']=$data['slidepics'][$key]['PC_name'];
-                    $data['slidepics'][$key]['image']=basename($data['slidepics'][$key]['phone_info_pic']);
-                    $data['slidepics'][$key]['link']=$data['slidepics'][$key]['PC_link'];
-                    unset($data['slidepics'][$key]['PC_name']);
-                    unset($data['slidepics'][$key]['phone_info_pic']);
-                    unset($data['slidepics'][$key]['PC_link']);
-                }
+        $config_str = WebsiteConfig::where('cus_id',$cus_id)->where('type',2)->where('template_id',$template_id)->pluck('value');
+        if($data[$keys[0]]!=''){
+            foreach($data[$keys[0]] as $key=>$val){
+                $data[$keys[0]][$key]['title']=$data[$keys[0]][$key]['PC_name'];
+                $data[$keys[0]][$key]['image']=basename($data[$keys[0]][$key]['phone_info_pic']);
+                $data[$keys[0]][$key]['link']=$data[$keys[0]][$key]['PC_link'];
+                unset($data[$keys[0]][$key]['PC_name']);
+                unset($data[$keys[0]][$key]['phone_info_pic']);
+                unset($data[$keys[0]][$key]['PC_link']);
             }
         }
-        $config_str = WebsiteConfig::where('cus_id',$cus_id)->where('type',2)->where('template_id',$template_id)->pluck('value');
         if($config_str){
             $config_arr = unserialize($config_str);
             $config_arr[$keys[0]]['value']=$data[$keys[0]];
