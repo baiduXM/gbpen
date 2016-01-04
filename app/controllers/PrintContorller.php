@@ -2466,7 +2466,7 @@ class PrintController extends BaseController{
         }
         return $fileArray;
     }
-}<?php
+}
 /**
  * 输出预览或用于生成静态时输出到缓冲区
  * @author 財財 530176577@qq.com
