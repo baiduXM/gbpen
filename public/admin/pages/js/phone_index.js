@@ -423,24 +423,25 @@ function phone_indexController($scope,$http ,$location) {
 		        	lastColumnNum = $(this).closest('form').data('lastColumnNum'),
 		        	aspectRatio = $(this).closest('form').data('aspectRatio'),
 		        	ColumnNum = $(this).closest('form').data('ColumnNum'),
-		        	event_this = this;
+		        	$eventthis = $(this),
+		        	key = $eventthis.closest('form').data('key');
 		        warningbox._upImage({
 		        	aspectRatio: aspectRatio,
 		            ajaxurl    : '../file-upload?target=page_index',
 		            oncallback : function(json){
-		            	if($(event_this).closest('#phone_index_image').length){
+		            	if($eventthis.closest('#phone_index_image').length){
 		            		$('#phone_index_image div.phone_index-field').remove();
 		            		_newpic = _this.ModelSlidepicsInfo({
-		            			key 	: event_this.closest('form').data('key'),
+		            			key 	: key,
 								image	: json.data.url,
 								subimage: json.data.name,
 								Tag 	: 'div',
 								IsNew   : true
 							});
-		            		$(event_this).parent().before(_newpic);
+		            		$eventthis.parent().before(_newpic);
 		            	}else{
 			                _newpic = _this.ModelSlidepicsInfo({
-			                	key 	: event_this.closest('form').data('key'),
+			                	key 	: key,
 								image	: json.data.url,
 								subimage: json.data.name,
 								num		: ++(_this.count),
@@ -449,7 +450,7 @@ function phone_indexController($scope,$http ,$location) {
 							var addBtn = (lastColumnNum+1)%ColumnNum,
 								addpic = (lastColumnNum+2)%ColumnNum;
 			                $('#phone_index_col_'+eventitemnum+'_'+(addBtn == 0 ? (lastColumnNum+1) : addBtn)+'').append(_newpic);
-			                $('#phone_index_col_'+eventitemnum+'_'+(addpic == 0 ? (lastColumnNum+2) : addpic)+'').append($(event_this).parent());
+			                $('#phone_index_col_'+eventitemnum+'_'+(addpic == 0 ? (lastColumnNum+2) : addpic)+'').append($eventthis.parent());
 			                lastColumnNum++;
 		            	}
 						_this.IsDelete();
