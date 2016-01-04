@@ -140,16 +140,11 @@ function homeController($scope, $http) {
 						}else{
 							list1 += '<li><a >暂无内容！</a></li>'
 						}
-						if(v.config.filter == 'page'){
-							_rel += '<div class="dropdown" style="display:block;">\
-		                            <div class="selectBox" type="text">'+pname+'</div><span class="arrow"></span>\
-		                            <input class="selectBox_val" name="data['+k+'][id]" type="hidden" value="'+v.config.id+'"/>\
-		                            <ul>'+list1+'</ul></div>';
-						}else{
-	                        _rel += '<div class="dropdown" style="display:block;">\
-		                            <div class="selectBox" type="text">'+pname+'</div><span class="arrow"></span>'+sign+'\
-		                            <ul>'+list1+'</ul></div>\
-		                            <dl class="fl checkclass"><input type="hidden" value="'+v.config.star_only+'" name="data['+k+'][star_only]" style="display:none;">' +
+						_rel += '<div class="dropdown" style="display:block;">\
+	                            <div class="selectBox" type="text">'+pname+'</div><span class="arrow"></span>'+sign+'\
+	                            <ul>'+list1+'</ul></div>';
+						if(v.config.filter != 'page' && !v.config.mustchild){
+							_rel += '<dl class="fl checkclass"><input type="hidden" value="'+v.config.star_only+'" name="data['+k+'][star_only]" style="display:none;">' +
 	                        		'<label class="label '+(v.config.star_only == 1?'nchecked':'')+'"></label></dl><label for="'+k+'-star_only" class="vm">仅显示星标文章</label>';
 						}
 						break;
