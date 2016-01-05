@@ -304,6 +304,10 @@ Route::group(array('before' => 'auth'), function() {
         'uses' => 'TemplatesController@searchPreview'
     ]);
     
+    Route::get('mobile/search-preview', [//搜索结果也数据
+        'uses' => 'TemplatesController@searchPreview'
+    ]);
+    
     //-----------万用表单--------
     Route::get('feedback-data', [//获取表单数据
         'uses' => 'FeedbackController@getFeedbackData'

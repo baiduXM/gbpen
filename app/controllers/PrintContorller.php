@@ -482,7 +482,7 @@ class PrintController extends BaseController{
                         if(file_exists(public_path("customers/".$this->customer.'/images/')."l/page_index/".$v)){
                             $result[$k] = $this->source_dir."l/page_index/".$v;
                         }else{
-                            $result[$k] = $this->site_url.'images/'.ltrim($v,'images/');
+                            $result[$k] = $this->site_url.'images/'.preg_replace('/^images\/(.*?)$/','$1',$v);
                         }
                     }
                 }
