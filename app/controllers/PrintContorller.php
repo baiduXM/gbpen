@@ -774,6 +774,7 @@ class PrintController extends BaseController{
      * @return array 返回一个包含公共数据的数组
      */
     private function pagePublic($c_id=0){
+        error_reporting(E_ALL ^ E_NOTICE);
         if($this->type=='pc'){
             $navs = Classify::where('cus_id',$this->cus_id)->where('pc_show',1)->whereIN('type',[1,2,3,4,5,6])->select('id','type','img','icon','name','url','p_id','en_name','meta_description as description')->OrderBy('sort','asc')->get()->toArray();
         }else{
