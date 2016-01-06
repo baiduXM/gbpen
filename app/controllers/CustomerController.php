@@ -54,20 +54,24 @@ class CustomerController extends BaseController{
         $websiteinfo=WebsiteInfo::where('cus_id',$cus_id)->select('pc_tpl_id','mobile_tpl_id')->first();
         $pc_tpl_name=Template::where('id',$websiteinfo->pc_tpl_id)->pluck('name');
         if($pc_tpl_name!=null){
-              $pc_ini=parse_ini_file(public_path('/templates/'.$pc_tpl_name.'/config.ini'),true);
+              $pc_ini=file_get_contents(public_path('/templates/'.$pc_tpl_name.'/config.ini'));
+        	  $pc_search="/LogoSize=(.*)/i";
+        	  $pc_search_result=preg_match($pc_search,$pc_ini,$pc_config_arr);
         }
         else{
             $pc_ini=false;
         }
-        $data['pc_logo_size']=isset($pc_ini['Config']['LogoSize'])?strtr($pc_ini['Config']['LogoSize'],'*', '/'):0;
+        $data['pc_logo_size']=$pc_search_result?strtr($pc_config_arr[1],'*', '/'):0;
         $mobile_tpl_name=Template::where('id',$websiteinfo->mobile_tpl_id)->pluck('name');
          if($mobile_tpl_name!=null){
-             $mobile_ini=parse_ini_file(public_path('/templates/'.$mobile_tpl_name.'/config.ini'),true);
+             $mobile_ini=file_get_contents(public_path('/templates/'.$mobile_tpl_name.'/config.ini'));
+        	 $mobile_search="/LogoSize=(.*)/i";
+        	 $mobile_search_result=preg_match($mobile_search,$mobile_ini,$mobile_config_arr);
         }
         else{
             $mobile_ini=false;
         }
-        $data['m_logo_size']=isset($mobile_ini['Config']['LogoSize'])?strtr($mobile_ini['Config']['LogoSize'],'*', '/'):0;
+        $data['m_logo_size']=$mobile_search_result?strtr($mobile_config_arr[1],'*', '/'):0;
 		$result['err'] = 0;
         $result['msg'] = '';
         $result['data'] = $data;

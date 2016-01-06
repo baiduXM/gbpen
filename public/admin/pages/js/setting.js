@@ -90,10 +90,12 @@
             });
         },
         _settingUpload : function(pc_logo_size,m_logo_size){
+            var pc_logo_size_arr = pc_logo_size ? pc_logo_size.split('|') : null,
+                m_logo_size_arr = m_logo_size ? m_logo_size.split('|') : null;
             $('.set_up_name').on('click',function(event) {
                 var _this =  $(this);
                 var warningbox = new WarningBox(),
-                    role = (pc_logo_size == undefined || m_logo_size == undefined ? '' :$(this).data('role') == 'favicon' ? 32/32 : $(this).data('role') == 'logo_large' ? eval(pc_logo_size) : $(this).data('role') == 'logo_small' ? eval(m_logo_size) : '');
+                    role = (pc_logo_size == undefined || m_logo_size == undefined ? '' :$(this).data('role') == 'favicon' ? 32/32 : $(this).data('role') == 'logo_large' ? eval(pc_logo_size_arr[1]) ?  eval(pc_logo_size_arr[0]) : '' : $(this).data('role') == 'logo_small' ? eval(m_logo_size_arr[1]) ? eval(m_logo_size_arr[0]) : '' : '');
                 warningbox._upImage({
                     aspectRatio: role,
                     ajaxurl    : '../file-upload?target=common',
