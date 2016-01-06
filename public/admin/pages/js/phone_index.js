@@ -350,7 +350,7 @@ function phone_indexController($scope,$http ,$location) {
 					$('#phone_index_col_'+num+'_'+(lastColumnNum+1)+'').append(addButton);
 					num++;
 				}else{
-					var data = ele.value,aspectRatio = ele.config.width/ele.config.height || '',
+					var data = (ele.value instanceof(Array) ? ele.value[0] : ele.value),aspectRatio = ele.config.width/ele.config.height || '',
 						_div = _this.ModelSlidepicsInfo({
 							key 	: index,
 							title	: data.title,
@@ -364,7 +364,7 @@ function phone_indexController($scope,$http ,$location) {
 										<div class="up_pic up_phone"></div>\
 									</div>';
 					$('#phone_index_image').append('<div class="pictitle">单图</div>');
-					$('#phone_index_image').append(_div+addButton).data('aspectRatio', aspectRatio);
+					$('#phone_index_image').append(_div+addButton).data('aspectRatio', aspectRatio);console.log(data instanceof(Array));
 				}
 			});
 			_this.slidepics_upload();
