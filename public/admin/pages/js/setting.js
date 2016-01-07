@@ -90,12 +90,20 @@
             });
         },
         _settingUpload : function(pc_logo_size,m_logo_size){
-            var pc_logo_size_arr = pc_logo_size ? pc_logo_size.split('|') : null,
-                m_logo_size_arr = m_logo_size ? m_logo_size.split('|') : null;
+            var pc_logo_size_arr = pc_logo_size ? pc_logo_size.indexOf('|') ? pc_logo_size.split('|') : pc_logo_size : null,
+                m_logo_size_arr = m_logo_size ? m_logo_size.indexOf('|') ? m_logo_size.split('|') : m_logo_size : null;
             $('.set_up_name').on('click',function(event) {
                 var _this =  $(this);
-                var warningbox = new WarningBox(),
-                    role = (pc_logo_size == undefined || m_logo_size == undefined ? '' :$(this).data('role') == 'favicon' ? 32/32 : $(this).data('role') == 'logo_large' ? eval(pc_logo_size_arr[1]) ?  eval(pc_logo_size_arr[0]) : '' : $(this).data('role') == 'logo_small' ? eval(m_logo_size_arr[1]) ? eval(m_logo_size_arr[0]) : '' : '');
+                var warningbox = new WarningBox(),role = '';
+                if($(this).data('role') == 'favicon'){
+                    role = 32/32;
+                }else if($(this).data('role') == 'logo_large'){
+                    if(eval(pc_logo_size_arr instanceof(Array)) && pc_logo_size_arr[1] == 'forcesize')
+                        role = eval(pc_logo_size_arr[0]);
+                }else if($(this).data('role') == 'logo_small'){
+                    if(eval(m_logo_size_arr instanceof(Array)) && m_logo_size_arr[1] == 'forcesize')
+                        role = eval(m_logo_size_arr[0]);
+                }
                 warningbox._upImage({
                     aspectRatio: role,
                     ajaxurl    : '../file-upload?target=common',
