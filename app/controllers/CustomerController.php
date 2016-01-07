@@ -67,7 +67,7 @@ class CustomerController extends BaseController{
         else{
             $mobile_ini=false;
         }
-        $data['m_logo_size']=$mobile_search_result?strtr($mobile_config_arr[1],'*', '/'):0;
+        $data['m_logo_size']=isset($mobile_ini['Config']['LogoSize'])?strtr($mobile_ini['Config']['LogoSize'],'*', '/'):0;
 		$result['err'] = 0;
         $result['msg'] = '';
         $result['data'] = $data;
