@@ -420,7 +420,7 @@ function phone_indexController($scope,$http ,$location) {
 			// 添加图片弹框
     		$('.up_pic').on('click',function(event) {
 		        var warningbox = new WarningBox(),eventitemnum = $(this).closest('form').attr('id').split('_')[3],
-		        	lastColumnNum = $(this).closest('form').data('lastColumnNum'),
+		        	lastColumnNum = $(this).closest('form').find('li').length,
 		        	aspectRatio = $(this).closest('form').data('aspectRatio'),
 		        	ColumnNum = $(this).closest('form').data('ColumnNum'),
 		        	$eventthis = $(this),
