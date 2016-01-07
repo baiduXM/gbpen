@@ -364,7 +364,7 @@ function phone_indexController($scope,$http ,$location) {
 										<div class="up_pic up_phone"></div>\
 									</div>';
 					$('#phone_index_image').append('<div class="pictitle">单图</div>');
-					$('#phone_index_image').append(_div+addButton).data('aspectRatio', aspectRatio);console.log(data instanceof(Array));
+					$('#phone_index_image').append(_div+addButton).data('aspectRatio', aspectRatio);
 				}
 			});
 			_this.slidepics_upload();

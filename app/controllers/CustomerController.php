@@ -61,7 +61,7 @@ class CustomerController extends BaseController{
         else{
             $pc_ini=false;
         }
-        $data['pc_logo_size']=$pc_search_result?strtr($pc_config_arr[1],'*', '/'):0;
+        $data['pc_logo_size']=$pc_search_result?1:0;
         $mobile_tpl_name=Template::where('id',$websiteinfo->mobile_tpl_id)->pluck('name');
          if($mobile_tpl_name!=null){
              $mobile_ini=file_get_contents(public_path('/templates/'.$mobile_tpl_name.'/config.ini'));
