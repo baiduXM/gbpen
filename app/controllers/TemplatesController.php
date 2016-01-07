@@ -405,6 +405,17 @@ class TemplatesController extends BaseController{
         // dd($config_arr['slidepics']['value']);
         foreach($config_arr as $key => $val){
             $pagelist[]=array('page'=>$key,'title'=>$config_arr[$key]['description'],'type'=>$config_arr[$key]['type']);
+            if(count($config_arr[$key]['value'])==1){
+                $img = 1;
+                foreach($config_arr[$key]['value'][0] as $img_key => $img_value){
+                    if($img_value){
+                        $img = 0;
+                    }
+                }
+                if($img){
+                    $config_arr[$key]['value'] = array();
+                }
+            }
             $data[$key]=$config_arr[$key];
         }
         $templatedata['templatedata']=$data;
@@ -419,25 +430,31 @@ class TemplatesController extends BaseController{
         $cus_id = Auth::id();
         $template_id = WebsiteInfo::where('cus_id',$cus_id)->pluck('mobile_tpl_id');
         $data=Input::all();
-        $keys=  array_keys($data);
+        $input_keys=  array_keys($data);
         $config_str = WebsiteConfig::where('cus_id',$cus_id)->where('type',2)->where('template_id',$template_id)->pluck('value');
-        if($data[$keys[0]]!=''){
-            foreach($data[$keys[0]] as $key=>$val){
-                $data[$keys[0]][$key]['title']=$data[$keys[0]][$key]['PC_name'];
-                $data[$keys[0]][$key]['image']=basename($data[$keys[0]][$key]['phone_info_pic']);
-                $data[$keys[0]][$key]['link']=$data[$keys[0]][$key]['PC_link'];
-                unset($data[$keys[0]][$key]['PC_name']);
-                unset($data[$keys[0]][$key]['phone_info_pic']);
-                unset($data[$keys[0]][$key]['PC_link']);
-            }
-        }
         if($config_str){
             $config_arr = unserialize($config_str);
-            $config_arr[$keys[0]]['value']=$data[$keys[0]];
+            $output_keys = array_keys($config_arr);
+            if($data[$input_keys[0]]!=''){
+                foreach($data[$input_keys[0]] as $key=>$val){
+                    $data[$input_keys[0]][$key]['title']=$data[$input_keys[0]][$key]['PC_name'];
+                    $data[$input_keys[0]][$key]['image']=basename($data[$input_keys[0]][$key]['phone_info_pic']);
+                    $data[$input_keys[0]][$key]['link']=$data[$input_keys[0]][$key]['PC_link'];
+                    unset($data[$input_keys[0]][$key]['PC_name']);
+                    unset($data[$input_keys[0]][$key]['phone_info_pic']);
+                    unset($data[$input_keys[0]][$key]['PC_link']);
+                }
+            }else{
+                $data[$input_keys[0]][0]['title']='';
+                $data[$input_keys[0]][0]['image']='';
+                $data[$input_keys[0]][0]['link']='';
+            }
+            $config_arr = unserialize($config_str);
+            $config_arr[$input_keys[0]]['value']=$data[$input_keys[0]];
         }else{
             $mobile=new PrintController('preview','mobile');
             $config_arr=$mobile->mobilePageList('global',true);
-            $config_arr[$keys[0]]['value']=$data[$keys[0]];
+            $config_arr[$input_keys[0]]['value']=$data[$input_keys[0]];
         }
         $new_config_str = serialize($config_arr);
         if($config_str){

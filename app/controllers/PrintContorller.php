@@ -876,6 +876,16 @@ class PrintController extends BaseController{
                            $quickbarKey=$gkey;
                            $quickbar=$global_data[$gkey]['value'];
                         }
+                    }elseif ($global_data[$gkey]['type']=='images' or $global_data[$gkey]['type']=='image') {
+                        $img = 1;
+                        foreach ($global_data[$gkey]['value'] as $img_key => $img_value) {
+                            if($img_value){
+                                $img = 0;
+                            }
+                        }
+                        if($img){
+                            $global_data[$gkey]['value'] = array();
+                        }
                     }
                 }
             }      

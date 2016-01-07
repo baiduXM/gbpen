@@ -109,7 +109,7 @@
                     }
                 }
             }else{
-                $page_num = pagearray($page_links);
+                $page_num = pagearray($page_count);
                 foreach($page_num as $num){
                     if($num == $current_page){
                         $page_corrent_linshi = $page_corrent_exchange[1];
