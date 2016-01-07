@@ -478,19 +478,31 @@ function phone_indexController($scope,$http ,$location) {
 				$(this).parents(".phone_index-field").find(".zz").hide();
 			})
 			$('.detailbox .surebtn').click(function(){
-				var itemIdNum = $(this).closest('.phone_index_col').attr('id').split('_')[3];
-				$(this).parents('.phone_index-field').fadeOut('400', function() { 
-					$(this).remove();
-					_this.layoutChange(itemIdNum);
-					//幻灯片删除
-					if(!$(this).hasClass('new')){
-						var data = $('#phone_index_images_'+itemIdNum).serializeJson();
-						var data1 = ($('#phone_index_images_'+itemIdNum).serializeArray().length > 0?data:{slidepics : ""});
-						$http.post('../mhomepage-modify',data1).success(function(){
-							phoneindexinit.Save_hint();
-						});
-					}
-				});
+				if($(this).closest('#phone_index_image').length){
+					$(this).parents('.phone_index-field').fadeOut('400', function() { 
+						$(this).remove();
+						//幻灯片删除
+						if(!$(this).hasClass('new')){
+							$http.post('../mhomepage-modify',{slidepics : ""}).success(function(){
+								phoneindexinit.Save_hint();
+							});
+						}
+					});
+				}else{
+					var itemIdNum = $(this).closest('.phone_index_col').attr('id').split('_')[3];
+					$(this).parents('.phone_index-field').fadeOut('400', function() { 
+						$(this).remove();
+						_this.layoutChange(itemIdNum);
+						//幻灯片删除
+						if(!$(this).hasClass('new')){
+							var data = $('#phone_index_images_'+itemIdNum).serializeJson();
+							var data1 = ($('#phone_index_images_'+itemIdNum).serializeArray().length > 0?data:{slidepics : ""});
+							$http.post('../mhomepage-modify',data1).success(function(){
+								phoneindexinit.Save_hint();
+							});
+						}
+					});
+				}
 			})
 			$('.materlist-secondbox .surebtn').click(function(){
 				var _this = $(this).closest('.phone_index-field');
