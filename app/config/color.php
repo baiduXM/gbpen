@@ -10,4 +10,5 @@ return array(
     'red' => '#FF0000',
     'purple' => '#9900FF',
     'brown' => '#663300',
+    'colorful' => 'renxing',
 );
