@@ -447,6 +447,11 @@ class PrintController extends BaseController{
                                     $slimming[$k]['link'] = $v['data'];
                                 }
                                 break;
+                            case 'search':
+                                if($this->showtype=='preview')
+                                    $slimming[$k]['data']='http://'.$_SERVER['HTTP_HOST'].'/search-preview';
+                                else
+                                    $slimming[$k]['data']=  $this->domain.'/search.php';
                             default:
                                 $slimming[$k]['link'] = $v['data'];
                         }
@@ -562,6 +567,13 @@ class PrintController extends BaseController{
                             else{
                                 $address=CustomerInfo::where('cus_id',$this->cus_id)->pluck('address');
                                $quickbar[$key]['link']='http://api.map.baidu.com/geocoder?address='.$address.'&output=html';     
+                            }
+                        }elseif($quickbar[$key]['type']=='search'){
+                            if($this->showtype=='preview'){
+                                    $quickbar[$key]['data']='http://'.$_SERVER['HTTP_HOST'].'/search-preview';
+                            }
+                            else{
+                                $quickbar[$key]['data']=$this->domain.'/search.php';
                             }
                         } 
                    
@@ -722,6 +734,12 @@ class PrintController extends BaseController{
                                 else{
                                     $address=CustomerInfo::where('cus_id',$this->cus_id)->pluck('address');
                                    $quickbar[$key]['link']='http://api.map.baidu.com/geocoder?address='.$address.'&output=html';     
+                                }
+                            }elseif($quickbar[$key]['type']=='search'){
+                                if($this->showtype=='preview'){
+                                    $quickbar[$key]['data']='http://'.$_SERVER['HTTP_HOST'].'/search-preview';
+                                }else{
+                                    $quickbar[$key]['data']=$this->domain.'/search.php';
                                 }
                             }    
                         }
