@@ -363,6 +363,7 @@ function phone_indexController($scope,$http ,$location) {
 						addButton = '<div class="phone_index-add">\
 										<div class="up_pic up_phone"></div>\
 									</div>';
+					$('#phone_index_image').attr('data-key', index);
 					$('#phone_index_image').append('<div class="pictitle">单图</div>');
 					$('#phone_index_image').append(_div+addButton).data('aspectRatio', aspectRatio);
 				}
@@ -413,6 +414,7 @@ function phone_indexController($scope,$http ,$location) {
 				}
 				$('#phone_index_images_'+itemIdNum).html(htmlColumn);
 				this.slidepics_upload();
+				this.IsDelete();
 			}
     	},
     	slidepics_upload : function(){

@@ -90,7 +90,6 @@ function articleController($scope, $http ,$location) {
                                         <td>\n\
                                             <span><i class="fa iconfont icon-pc btn btn-show btn-desktop '+(v.pc_show?'blue':'grey')+'"></i></span>\n\
                                             <span><i class="fa iconfont icon-snimicshouji btn btn-show btn-mobile '+(v.mobile_show?'blue':'grey')+'"></i></span>\n\
-                                            <span><i class="fa iconfont icon-weixin btn btn-show btn-wechat '+(v.wechat_show?'blue':'grey')+'"></i></span>\n\
                                         </td>\n\
                                         <td>'+v.created_at+'</td>\n\
                                         <td><a style="margin:0 10px;" class="column-edit pr" href="#/addarticle?id='+v.id+'&c_id='+v.c_id+'"><i class="fa iconfont icon-bianji"></i><div class="warning"><i class="iconfont'+(v.img_err?' icon-gantanhao':'')+'"></i></div></a><a class="delv" name="'+v.id+'"><i class="fa iconfont icon-delete mr5"></i></a></td>\n\
