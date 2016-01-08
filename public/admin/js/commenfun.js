@@ -72,7 +72,8 @@ var ercodeDrop = {
     end_y  : 0,
     selector  : '',
     height : 0,
-    _init  : function(selector){
+    _init  : function(selector,mobileurl){
+        this.mobileurl = mobileurl;
         this.selector = $(selector);
         this.height = this.selector.height();
         this._mouseenter();
@@ -80,15 +81,16 @@ var ercodeDrop = {
     },
     _mouseenter : function(difheight){
         var _this = this;
+        this.selector.find('img').attr('src','http://s.jiathis.com/qrcode.php?url='+this.mobileurl);
         this.selector.hover(function(event) {
             $(this).children().not('img').fadeIn();
             $(this).height(40);
             _this._click();
         },function(){
-            $(this).children('.arrow').hide();
-            $(this).find('.arrow2').attr('class','arrow').hide().end().find('span').removeClass('posb').text('拖动下拉扫描二维码');
-            $(this).find('img').hide();
-            $(this).height(20);
+            $(this).children('.arrow').hide().end()
+                .find('.arrow2').attr('class','arrow').hide().end().find('span').removeClass('posb').text('拖动下拉扫描二维码').end()
+                .find('img').hide().end()
+                .height(20);
         });
     },
     _mousedown : function(){
@@ -116,7 +118,7 @@ var ercodeDrop = {
         var _this = this;
         this.selector.find('.arrow').click(function(event) {
             _this.selector.height(_this.selector.parent().height());
-            _this.selector.find('img').fadeIn(800);
+            _this.selector.find('img').show();
             _this.selector.find('.arrow').attr('class','arrow2').end().find('span').addClass('posb').text('点击收起');
         });
     },
@@ -129,7 +131,6 @@ var ercodeDrop = {
         });
     }
 }
-ercodeDrop._init('.phone-content .notice');
 
 // 弹框警告
 var WarningBox = function(del,warning_context){

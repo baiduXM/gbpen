@@ -174,6 +174,7 @@ mainApp.controller('memberController', function($scope,$http) {
 		checkJSON(json,function(json){
 			$scope.companyname = json.data.company_name;
 			$scope.$parent.domain_pc = json.data.domain_pc;
+			ercodeDrop._init('.phone-content .notice',json.data.domain_m);
 		});
 	});
 });

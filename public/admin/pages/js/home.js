@@ -1,12 +1,13 @@
 function homeController($scope, $http) { 
 	$scope.$parent.showbox = "page";
-    $scope.$parent.homepreview = false;
+    $scope.$parent.homepreview = false; 
 	$scope.$parent.menu = [];
 	
 	var homeRequest = function(){
 		var templePage = 'index',
 			templeType = 1,
 			url_index;
+		$('body').addClass('closephone');
 		$http.get('../homepage-manage?page='+templePage).success(function(json) {
 			checkJSON(json, function(json) { 
 				// 页面导航

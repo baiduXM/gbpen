@@ -49,6 +49,8 @@
                 $('.setting-content input[name=mail]').val(set.mail);
                 $('.setting-content input[name=qq]').val(set.qq);
                 $('.setting-content input[name=address]').val(set.address);
+                // $('.setting-content label[name=pcnum]').val(set.address);
+                // $('.setting-content label[name=mobnum]').val(set.address);
                 if(set.favicon != null){
                     _this._ModelAddPic(set.favicon,'favicon',1);
                 }
