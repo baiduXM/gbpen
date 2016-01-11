@@ -488,8 +488,6 @@ function phone_indexController($scope,$http ,$location) {
 						$(this).remove();
 						//幻灯片删除
 						if(!$(this).hasClass('new')){
-							
-							console.log(json);
 							$http.post('../mhomepage-modify',json).success(function(){
 								phoneindexinit.Save_hint();
 							});
@@ -503,7 +501,7 @@ function phone_indexController($scope,$http ,$location) {
 						//幻灯片删除
 						if(!$(this).hasClass('new')){
 							var data = $('#phone_index_images_'+itemIdNum).serializeJson();
-							var data1 = ($('#phone_index_images_'+itemIdNum).serializeArray().length > 0?json : null);
+							var data1 = ($('#phone_index_images_'+itemIdNum).serializeArray().length > 0?data : json);
 							$http.post('../mhomepage-modify',data1).success(function(){
 								phoneindexinit.Save_hint();
 							});
