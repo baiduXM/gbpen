@@ -324,7 +324,7 @@ function phone_indexController($scope,$http ,$location) {
 		    			lastColumnNum = (data.length%ColumnNum);				// 记录最终添加完的是第几列
 					// 添加瀑布流列
 					$('#phone_index_image').before('<form id="phone_index_images_'+num+'" data-key="'+index+'"></form>');
-					$('#phone_index_images_'+num).append('<div class="pictitle">多图文'+num+'</div>').data({'lastColumnNum':lastColumnNum,'ColumnNum':ColumnNum,'aspectRatio':aspectRatio});
+					$('#phone_index_images_'+num).append('<div class="pictitle">(多图文)<span class="red">'+ele.description+'</span></div>').data({'lastColumnNum':lastColumnNum,'ColumnNum':ColumnNum,'aspectRatio':aspectRatio});
 					for(var i = 1;i <= ColumnNum;i++){
 						$('#phone_index_images_'+num).append('<ul id="phone_index_col_'+num+'_'+i+'" class="phone_index_col" style="width:'+oddColumnWidth+'px"></ul>');
 					}
@@ -351,7 +351,7 @@ function phone_indexController($scope,$http ,$location) {
 					num++;
 				}else{
 					var data = (ele.value instanceof(Array) ? ele.value[0] : ele.value),aspectRatio = ele.config.width/ele.config.height || '',
-						_div = _this.ModelSlidepicsInfo({
+						_div = data.length == 0 || data == null ? '' : _this.ModelSlidepicsInfo({
 							key 	: index,
 							title	: data.title,
 							image	: data.image,
@@ -364,7 +364,7 @@ function phone_indexController($scope,$http ,$location) {
 										<div class="up_pic up_phone"></div>\
 									</div>';
 					$('#phone_index_image').attr('data-key', index);
-					$('#phone_index_image').append('<div class="pictitle">单图</div>');
+					$('#phone_index_image').append('<div class="pictitle">(单图)<span class="red">'+ele.description+'</span></div>');
 					$('#phone_index_image').append(_div+addButton).data('aspectRatio', aspectRatio);
 				}
 			});
