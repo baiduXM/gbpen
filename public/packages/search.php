@@ -134,7 +134,6 @@
         $search_content = str_replace($search_exchange[0], '没有查找到相关的数据', $search_content);
         $search_content = str_replace('-1000_search', 0 , $search_content);
         $current_page = 1;
-        $per_page = $article_content['count'];
         $page_count = 1;
         $first_link = 'javascript:;';
         $prev_link = 'javascript:;';
