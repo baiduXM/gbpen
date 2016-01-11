@@ -350,7 +350,7 @@ function phone_indexController($scope,$http ,$location) {
 					$('#phone_index_col_'+num+'_'+(lastColumnNum+1)+'').append(addButton);
 					num++;
 				}else{
-					var data = (ele.value instanceof(Array) ? ele.value[0] : ele.value),aspectRatio = ele.config.width/ele.config.height || '',
+					var data = (ele.value instanceof(Array) &&  ele.value.length != 0? ele.value[0] : ele.value),aspectRatio = ele.config.width/ele.config.height || '',
 						_div = data.length == 0 || data == null ? '' : _this.ModelSlidepicsInfo({
 							key 	: index,
 							title	: data.title,
