@@ -480,12 +480,17 @@ function phone_indexController($scope,$http ,$location) {
 				$(this).parents(".phone_index-field").find(".zz").hide();
 			})
 			$('.detailbox .surebtn').click(function(){
+				var key = $(this).closest('form').data('key'),
+					str = '{"'+key+'":""}';
+				eval('var json = ' + str);
 				if($(this).closest('#phone_index_image').length){
 					$(this).parents('.phone_index-field').fadeOut('400', function() { 
 						$(this).remove();
 						//幻灯片删除
 						if(!$(this).hasClass('new')){
-							$http.post('../mhomepage-modify',{slidepics : ""}).success(function(){
+							
+							console.log(json);
+							$http.post('../mhomepage-modify',json).success(function(){
 								phoneindexinit.Save_hint();
 							});
 						}
@@ -498,7 +503,7 @@ function phone_indexController($scope,$http ,$location) {
 						//幻灯片删除
 						if(!$(this).hasClass('new')){
 							var data = $('#phone_index_images_'+itemIdNum).serializeJson();
-							var data1 = ($('#phone_index_images_'+itemIdNum).serializeArray().length > 0?data:{slidepics : ""});
+							var data1 = ($('#phone_index_images_'+itemIdNum).serializeArray().length > 0?json : null);
 							$http.post('../mhomepage-modify',data1).success(function(){
 								phoneindexinit.Save_hint();
 							});
