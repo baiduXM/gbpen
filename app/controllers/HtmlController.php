@@ -339,8 +339,10 @@ class HtmlController extends BaseController{
             echo '100%<script type="text/javascript">parent.refresh(100);</script><br />';
             Classify::where('cus_id',$this->cus_id)->where('pushed',1)->update(['pushed'=>0]);
             Articles::where('cus_id',$this->cus_id)->where('pushed',1)->update(['pushed'=>0]);
-            $pc_domain = CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_domain');
-            @file_get_contents("$pc_domain/unzip.php");
+            //$pc_domain = CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_domain');
+            $cus_name =strtolower( Customer::where('id',$this->cus_id)->pluck('name'));
+            $ftp_pcdomain="http://".$cus_name.".n01.5067.org";
+            @file_get_contents("$ftp_pcdomain/unzip.php");
         } 
         else {
             echo '打包失败';
