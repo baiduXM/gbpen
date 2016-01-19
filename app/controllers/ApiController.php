@@ -80,7 +80,7 @@ class ApiController extends BaseController{
 			{
 				//修改操作
 				$save = Customer::where('id',$cus_id)->update($update);
-                                WebsiteInfo::where('id',$cus_id)->update(['pc_tpl_id'=>$update['pc_tpl_id'],'mobile_tpl_id'=>$update['mobile_tpl_id']]);
+                                WebsiteInfo::where('cus_id',$cus_id)->update(['pc_tpl_id'=>$update['pc_tpl_id'],'mobile_tpl_id'=>$update['mobile_tpl_id']]);
 				if($save)
 				{
 					$result = ['err'=>1000,'msg'=>'更新用户成功'];
