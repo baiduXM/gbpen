@@ -153,7 +153,7 @@ class PrintController extends BaseController{
                          $v['config']['limit']=isset($v['config']['limit'])?$v['config']['limit']:20;
                     }
                 }elseif($v['type']=='navs'){
-                    if($v['config']['ids']){
+                    if(isset($v['config']['ids'])){
                         $v['config']['ids']=array_merge($v['config']['ids']);
                     }
                 }

@@ -64,6 +64,10 @@ class ApiController extends BaseController{
 			$update['name'] = trim(Input::get('name'));
 			$update['email'] = trim(Input::get('email'));
                         $update['weburl'] = trim(Input::get('weburl'));
+                        $update['pc_domain'] = trim(Input::get('pc_domain'));
+                        $update['mobile_domain'] = trim(Input::get('mobile_domain'));
+                        $update['pc_tpl_id'] = trim(Input::get('pc_tpl_id'));
+                        $update['mobile_tpl_id'] = trim(Input::get('mobile_tpl_id'));
                         $update['ftp_port'] = trim(Input::get('ftp_port'));
                         $update['ftp_dir'] = trim(Input::get('ftp_dir'));
 			$update['ftp_address'] = trim(Input::get('ftp_address'));
@@ -72,11 +76,11 @@ class ApiController extends BaseController{
 			$update['ended_at'] = trim(Input::get('ended_at'));
 			$update['status'] = Input::get('status');
 			$cus_id = Customer::where('name',$update['name'])->pluck('id');
-                        
 			if($cus_id)
 			{
 				//修改操作
 				$save = Customer::where('id',$cus_id)->update($update);
+                                WebsiteInfo::where('id',$cus_id)->update(['pc_tpl_id'=>$update['pc_tpl_id'],'mobile_tpl_id'=>$update['mobile_tpl_id']]);
 				if($save)
 				{
 					$result = ['err'=>1000,'msg'=>'更新用户成功'];
@@ -92,11 +96,12 @@ class ApiController extends BaseController{
 				//print_r($_POST);exit;
 				//增加操作
 				$update['password'] = Hash::make($update['name']);
-                $insert_id = Customer::insertGetId($update);
+                                $insert_id = Customer::insertGetId($update);
                 
 				if($insert_id)
 				{
-                    WebsiteInfo::insert(['cus_id'=>$insert_id]);
+                    WebsiteInfo::insert(['cus_id'=>$insert_id,'pc_tpl_id'=>$update['pc_tpl_id'],'mobile_tpl_id'=>$update['mobile_tpl_id']]);
+                    
                     CustomerInfo::insert(['cus_id'=>$insert_id]);
                     
                     //创建客户目录
