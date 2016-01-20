@@ -70,6 +70,7 @@ class ApiController extends BaseController{
                             $update['pc_tpl_num']=1;
                         }
                         else{
+                            
                             $update['pc_tpl_num'] = trim(Input::get('pc_tpl_id'));
                         }
                         if(trim(Input::get('mobile_tpl_id'))=='0'){
@@ -114,7 +115,7 @@ class ApiController extends BaseController{
 				{
                     $pc_id = Template::where('tpl_num',$update['pc_tpl_num'])->where('type',1)->pluck('id');
                     $mobile_id = Template::where('tpl_num',$update['mobile_tpl_num'])->where('type',2)->pluck('id');
-                    WebsiteInfo::where('cus_id',$cus_id)->update(['pc_tpl_id'=>$pc_id,'mobile_tpl_id'=>$mobile_id]);
+                    WebsiteInfo::insert(['cus_id'=>$insert_id,'pc_tpl_id'=>$pc_id,'mobile_tpl_id'=>$mobile_id]);
                     CustomerInfo::insert(['cus_id'=>$insert_id]);
                     
                     //创建客户目录
