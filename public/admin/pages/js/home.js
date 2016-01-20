@@ -120,7 +120,7 @@ function homeController($scope, $http) {
 								var _this = $(this);
 								if(vlist.p_id == 0 && (v.config.filter != 'page' || (v.config.filter == 'page' && vlist.type == 4))){
 									if(vlist.selected == 1) {sign = '<input class="selectBox_val" type="hidden" value="'+vlist.id+'" name="data['+rootNodeName+'][id]" />';pname = vlist.name}
-									if(v.config.filter != 'list,page' || vlist.childmenu == null){
+									if(v.config.filter != 'list,page' || vlist.childmenu != null){
 										list1 += '<li><a class="'+(vlist.childmenu == null ? 'lastchild ' : '')+'parents'+((v.config.filter == 'all' || v.config.filter == 'list,page') ? '' : v.config.filter == 'page' ? '' : vlist.type == 4 ? ' not-allowed' : '')+'" data-id="'+vlist.id+'">'+vlist.name+'</a></li>';
 									}
 					                var NextChild = vlist;
