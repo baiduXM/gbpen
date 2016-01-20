@@ -66,8 +66,18 @@ class ApiController extends BaseController{
                         $update['weburl'] = trim(Input::get('weburl'));
                         $update['pc_domain'] = trim(Input::get('pc_domain'));
                         $update['mobile_domain'] = trim(Input::get('mobile_domain'));
-                        $update['pc_tpl_id'] = trim(Input::get('pc_tpl_id'));
-                        $update['mobile_tpl_id'] = trim(Input::get('mobile_tpl_id'));
+                        if(trim(Input::get('pc_tpl_id'))=='0'){
+                            $update['pc_tpl_num']=1;
+                        }
+                        else{
+                            $update['pc_tpl_num'] = trim(Input::get('pc_tpl_id'));
+                        }
+                        if(trim(Input::get('mobile_tpl_id'))=='0'){
+                            $update['mobile_tpl_num']=1;
+                        }
+                        else{
+                            $update['mobile_tpl_num'] = trim(Input::get('mobile_tpl_id'));
+                        }
                         $update['ftp_port'] = trim(Input::get('ftp_port'));
                         $update['ftp_dir'] = trim(Input::get('ftp_dir'));
 			$update['ftp_address'] = trim(Input::get('ftp_address'));
@@ -80,7 +90,9 @@ class ApiController extends BaseController{
 			{
 				//修改操作
 				$save = Customer::where('id',$cus_id)->update($update);
-                                WebsiteInfo::where('cus_id',$cus_id)->update(['pc_tpl_id'=>$update['pc_tpl_id'],'mobile_tpl_id'=>$update['mobile_tpl_id']]);
+                                $pc_id = Template::where('tpl_num',$update['pc_tpl_num'])->where('type',1)->pluck('id');
+                                $mobile_id = Template::where('tpl_num',$update['mobile_tpl_num'])->where('type',2)->pluck('id');
+                                WebsiteInfo::where('cus_id',$cus_id)->update(['pc_tpl_id'=>$pc_id,'mobile_tpl_id'=>$mobile_id]);
 				if($save)
 				{
 					$result = ['err'=>1000,'msg'=>'更新用户成功'];
@@ -100,8 +112,9 @@ class ApiController extends BaseController{
                 
 				if($insert_id)
 				{
-                    WebsiteInfo::insert(['cus_id'=>$insert_id,'pc_tpl_id'=>$update['pc_tpl_id'],'mobile_tpl_id'=>$update['mobile_tpl_id']]);
-                    
+                    $pc_id = Template::where('tpl_num',$update['pc_tpl_num'])->where('type',1)->pluck('id');
+                    $mobile_id = Template::where('tpl_num',$update['mobile_tpl_num'])->where('type',2)->pluck('id');
+                    WebsiteInfo::where('cus_id',$cus_id)->update(['pc_tpl_id'=>$pc_id,'mobile_tpl_id'=>$mobile_id]);
                     CustomerInfo::insert(['cus_id'=>$insert_id]);
                     
                     //创建客户目录
