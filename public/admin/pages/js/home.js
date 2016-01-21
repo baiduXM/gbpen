@@ -143,6 +143,7 @@ function homeController($scope, $http) {
 						}else{
 							list1 += '<li><a >暂无内容！</a></li>'
 						}
+						sign = (sign == '' ? '<input class="selectBox_val" type="hidden" value="'+vlist.id+'" name="data['+rootNodeName+'][id]" />' : sign);
 						_rel += '<div class="dropdown" style="display:block;">\
 	                            <div class="selectBox" type="text">'+pname+'</div><span class="arrow"></span>'+sign+'\
 	                            <ul>'+list1+'</ul></div>';

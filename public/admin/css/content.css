@@ -437,12 +437,12 @@ ul.phone_tpl_list li .zz{width:194px; height:291px;}
 ul.made_style{ height:auto; overflow:hidden; padding-left:17px;}
 ul.made_style li{ height:auto; overflow: hidden; width:100%; float: left; margin:5px 0px; color:#3d4455;border-radius:5px;}
 ul.made_style li a{ height:35px; overflow:hidden; color:#3878c0; font-size:14px; display:block; line-height:35px;width: 215px;white-space: nowrap;text-overflow: ellipsis; }
+ul.made_style li a.red{color:#cc0031}
 ul.made_style li a .made_name{ color:#3878c0}
 ul.made_style li a.foot_tpl{ padding-left:52px;}
 ul.made_style li:hover,ul.made_style li.cu{ background:#fff;}
 ul.made_style li a:hover{ color:#d91f1f}
-ul.made_style li a:hover .made_name{ color:#d91f1f}
-ul.made_style li.list_a .text_box{ width:50px; float:left; height:70px; line-height:70px; margin-left:8px;}
+ul.made_style li.list_a .text_box{ float:left; height:70px; line-height:70px; margin-left:8px;}
 ul.made_style li.list_a .wid_box{ height:35px; margin-top:17px; border:1px solid #3878c0; display:block; overflow:hidden; border-right:0px; float:left; display:inline;}
 ul.made_style li.list_a .list_box{ width:190px; float:left; margin-left:14px;}
 ul.made_style li.list_a .list_box a{ color:#3878c0; display:block; height:35px; overflow:hidden;}
@@ -450,12 +450,11 @@ ul.made_style li.list_a .list_box a:hover{ color:#d91f1f; background:none}
 ul.made_style li.list_a .list_box a.cu{ background:none; color:#d91f1f}
 .made_style_edite{margin:10px; height: auto; overflow:hidden; box-shadow:0px 0px 10px #1e1006;background: url("../images/con_bg.png") left top repeat; border-radius:7px; padding:10px 30px 30px;}
 .made_style_edite_top{ height:45px; line-height:45px; overflow:hidden; font-size:16px; color:#3d4455}
-.made_style_edite_top .made_btn{ width:92px; font-size:15px; margin-top:9px; height:34px; float:right; display:inline; margin-left:10px; border-radius:5px; text-align:center; line-height:34px; color:#fff;}
+.made_style_edite_top .made_btn{ width:92px; font-size:15px; margin-top:9px; height:34px; display:inline; margin-left:10px; border-radius:5px; text-align:center; line-height:34px; color:#fff;cursor: pointer;}
 .made_style_edite_top .resh_btn{ background:#3878c0}
 .made_style_edite_top .Preview_btn{ background:#3d4455}
 .made_edite{ border:1px solid #cccccc; background:#ffffff; height:92%; overflow:hidden; overflow-y:visible; margin:10px auto 0px; padding:15px; color:#666;width: 98%;}
 .made_style .made_left{ float: left; display:inline; height:35px; line-height:35px; margin-left:5px;}
-.made_style .made_right{padding-left: 48px;}
 .made_style_edite_top .invalid_button{cursor: default;background: #868686;}
 
 /*Setting用户设置*/
