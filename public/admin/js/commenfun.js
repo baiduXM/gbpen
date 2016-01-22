@@ -517,7 +517,7 @@ function checkjs(parame){
 function icon_choose(limintHeight){
     this.clicks = function(){
         var _this = this;
-        $('.icon_box>i').unbind('click').on('click',function(event) {
+        $('.icon_box>i').unbind('click').on('click',function(event) {console.log($(this).offset().bottom)
             if($(this).offset().top > limintHeight){
                 $(this).siblings('.icon_ousidebox').css({'top':'auto','bottom':'30px'}).end()
                 .siblings('.arrow').css({'border-color':'rgba(0,0,0,0.7) transparent transparent transparent','bottom':'18px','top':'auto'});
