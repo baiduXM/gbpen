@@ -2,6 +2,7 @@
 .ml60{margin-left:60px}
 .mr60{margin-right:60px}
 .valign{vertical-align:middle;}
+.bluebtn{display: block;width: 92px;margin: 0 auto; font-size: 15px; height: 34px; border-radius: 5px; background: #3878c0; text-align: center; line-height: 34px; color: #fff; cursor: pointer;}
 /*移动提示框*/
 .BoxStyle{border:1px solid #cccccc; background:#9900CC;color:#fff; padding:5px; display:none; position:absolute;border-radius: 5px;box-shadow: 1px 1px 2px #ccc;z-index: 999;}
 
@@ -165,7 +166,7 @@ i.fa-mobile{font-size: 25px;}
 /*Column、article栏目文章管理——end*/
 
 /*Home首页管理——begin*/
-.home-content{margin: 0;}
+.home-content{margin: 0 auto; max-width: 340px;}
 .home-info,.add-info{margin:0 25px 25px 10px;margin-right: 30px;list-style: none;max-width: 350px;}
 .btn-top .save{border-radius: 3px;height: 35px;line-height: 35px;text-align: center;color: #ffffff;background-color: #3878c0;cursor: pointer;}
 .home-list li{clear: both;}
@@ -437,27 +438,29 @@ ul.phone_tpl_list li .zz{width:194px; height:291px;}
 ul.made_style{ height:auto; overflow:hidden; padding-left:17px;}
 ul.made_style li{ height:auto; overflow: hidden; width:100%; float: left; margin:5px 0px; color:#3d4455;border-radius:5px;}
 ul.made_style li a{ height:35px; overflow:hidden; color:#3878c0; font-size:14px; display:block; line-height:35px;width: 215px;white-space: nowrap;text-overflow: ellipsis; }
+ul.made_style li a.red{color:#cc0031}
 ul.made_style li a .made_name{ color:#3878c0}
 ul.made_style li a.foot_tpl{ padding-left:52px;}
 ul.made_style li:hover,ul.made_style li.cu{ background:#fff;}
 ul.made_style li a:hover{ color:#d91f1f}
-ul.made_style li a:hover .made_name{ color:#d91f1f}
-ul.made_style li.list_a .text_box{ width:50px; float:left; height:70px; line-height:70px; margin-left:8px;}
+ul.made_style li.list_a .text_box{ float:left; height:70px; line-height:70px; margin-left:8px;}
 ul.made_style li.list_a .wid_box{ height:35px; margin-top:17px; border:1px solid #3878c0; display:block; overflow:hidden; border-right:0px; float:left; display:inline;}
 ul.made_style li.list_a .list_box{ width:190px; float:left; margin-left:14px;}
 ul.made_style li.list_a .list_box a{ color:#3878c0; display:block; height:35px; overflow:hidden;}
 ul.made_style li.list_a .list_box a:hover{ color:#d91f1f; background:none}
 ul.made_style li.list_a .list_box a.cu{ background:none; color:#d91f1f}
 .made_style_edite{margin:10px; height: auto; overflow:hidden; box-shadow:0px 0px 10px #1e1006;background: url("../images/con_bg.png") left top repeat; border-radius:7px; padding:10px 30px 30px;}
+.made_style_edite .up_load{background: #3878c0;}
 .made_style_edite_top{ height:45px; line-height:45px; overflow:hidden; font-size:16px; color:#3d4455}
-.made_style_edite_top .made_btn{ width:92px; font-size:15px; margin-top:9px; height:34px; float:right; display:inline; margin-left:10px; border-radius:5px; text-align:center; line-height:34px; color:#fff;}
+.made_style_edite_top .made_btn{ width:92px; font-size:15px; margin-top:9px; height:34px; display:inline; margin-left:10px; border-radius:5px; text-align:center; line-height:34px; color:#fff;cursor: pointer;}
 .made_style_edite_top .resh_btn{ background:#3878c0}
 .made_style_edite_top .Preview_btn{ background:#3d4455}
 .made_edite{ border:1px solid #cccccc; background:#ffffff; height:92%; overflow:hidden; overflow-y:visible; margin:10px auto 0px; padding:15px; color:#666;width: 98%;}
 .made_style .made_left{ float: left; display:inline; height:35px; line-height:35px; margin-left:5px;}
-.made_style .made_right{padding-left: 48px;}
 .made_style_edite_top .invalid_button{cursor: default;background: #868686;}
-
+.home-content .addfile-item{width: 100%;text-align: center;}
+.addfile-item .on{background-color: #A9A9A9;}
+.newfile input{width: 90px;height: 24px;text-align: center;margin: 10px auto;}
 /*Setting用户设置*/
 .setting-feild .setting-name{color: #5f8cc5;font-size: 16px;line-height: 36px;border-bottom: 1px solid #b2b2b2;}
 .setting-feild .feild-content{margin: 20px auto 20px auto;max-width: 620px;}

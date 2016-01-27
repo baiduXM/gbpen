@@ -55,10 +55,28 @@ function diytplController($scope, $http, $location) {
 					$.each(v.data,function(i,j){
 						list += '<dd class="made_name"><a href="javascript:void(0);">'+(v.type == 1?'':'一')+j.title+'（'+j.filename+'）</a></dd>';
 					});
-					homelist += '<li class="list_a"><dl class="'+(v.type == 1?'made_left':'text_box')+'">'+v.title+'：</dl>'+(v.type == 1?'':'<dl class="wid_box"></dl>')+'<dl class="made_right">'+list+'</dl></li>'
+					homelist += '<li class="list_a"><dl class="'+(v.type == 1?'made_left fl':'text_box')+'">'+v.title+'：</dl>'+(v.type == 1?'':'<dl class="wid_box"></dl>')+'<dl class="made_right fl">'+list+'</dl></li>'
 				});
-				$('.made_style').html(homelist);
-
+				$('.made_style').html(homelist).after('<div class="addfile-item"><a href="javascript:void(0);" class="bluebtn addfile">添加文件</a></div>');
+				$('.home-content .addfile').click(function(event) {
+					$(this).before('<div class="newfile"><input type="text" placeholder="所属分类" />-<input type="text" placeholder="文件别名" />-<input type="text" placeholder="文件名" /></div>')
+					$('.newfile input').keyup(function(event) {
+						var e = event || window.event || arguments.callee.caller.arguments[0],isnull;
+						if(e && e.keyCode == 13){
+							$('.newfile input',$(this)).each(function() {
+								if($(this).val() == ''){
+									isnull = true;
+									alert('请确认是否填写完整!');
+									return false;
+								}
+							});
+							if(!isnull){
+								$(this).parent().addClass('on').siblings('.newfile').removeClass('on');
+								$('.made_style_edite .made_edite').html('');
+							}
+						}
+					});
+				});
 				//右侧预览页
 				var file_name,file_tit;
 				$('.made_right .made_name').on('click',function(){
@@ -68,7 +86,7 @@ function diytplController($scope, $http, $location) {
 					$.each(json.data.files,function(k,v){
 						$('.made_style_edite_top .made_edite').text(''+v.content+'');
 					});
-					var preview = '<h1 class="made_style_edite_top"><a href="javascript:void(0);" class="made_btn resh_btn">保存文件</a><a href="../homepage-preview" class="made_btn Preview_btn">预览首页</a><a onclick="javascript:history.go(-1);" class="made_btn resh_btn" style="cursor: pointer;">返回</a>'+files+'：'+file_tit+'（'+file_name+'）</h1>\n\
+					var preview = '<h1 class="made_style_edite_top"><a href="javascript:void(0);" class="made_btn resh_btn fr">保存文件</a><a href="../homepage-preview" class="made_btn Preview_btn fr">预览首页</a><a onclick="javascript:history.go(-1);" class="made_btn resh_btn fr">返回</a><span class="fl">'+files+'：'+file_tit+'（'+file_name+'）</span><a href="javascript:void(0);" class="made_btn up_load fl">上传图片</a></h1>\n\
                             <textarea class="made_edite">厦门易尔通厦门易</textarea>';
                 	$('.made_style_edite').html(preview);
 
@@ -77,7 +95,7 @@ function diytplController($scope, $http, $location) {
 							$('.made_style_edite .made_edite').html(json.data.code);
 						});
 					});
-
+                	$(this).find('a').addClass('red').end().siblings().find('a').removeClass('red').end().closest('.list_a').siblings().find('a').removeClass('red');
                 	$('.made_style_edite_top .resh_btn').on('click',function(){
 						$http.post('../template-fileedit',{type:type,filename:file_name,code:$('.made_style_edite .made_edite').val()}).success(function(json){
 							checkJSON(json, function(json){
@@ -87,8 +105,8 @@ function diytplController($scope, $http, $location) {
 						});
 					});
 				});
-			var paddinHeight = $('.made_style_edite').outerHeight() - $('.made_style_edite').height();
-			$('.made_style_edite').css('height', $('#home-diy').innerHeight() - paddinHeight);
+				var paddinHeight = $('.made_style_edite').outerHeight() - $('.made_style_edite').height();
+				$('.made_style_edite').css('height', $('#home-diy').innerHeight() - paddinHeight);
 			}//判断为PC模板
 		});//checkJSON结束
 	});//GET请求结束
