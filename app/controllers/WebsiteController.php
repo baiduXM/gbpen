@@ -388,7 +388,6 @@ class WebsiteController extends BaseController{
             }
         }
         $files[12] = $tpl_9;
-        print_r($files);exit;
         $result = ['name'=>$name,'files'=>$files];
         //dd($result);
         return Response::json(['err'=>0,'msg' => '','data' => $result]);
