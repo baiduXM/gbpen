@@ -454,6 +454,7 @@ class PrintController extends BaseController{
                                     $slimming[$k]['data']='http://'.$_SERVER['HTTP_HOST'].'/search-preview';
                                 else
                                     $slimming[$k]['data']=  $this->domain.'/search.php';
+                                $slimming[$k]['link'] = 'javascript:void(0);';
                             default:
                                 $slimming[$k]['link'] = $v['data'];
                         }

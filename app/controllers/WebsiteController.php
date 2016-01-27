@@ -246,6 +246,60 @@ class WebsiteController extends BaseController{
         }
     }
 
+    public function fileAdd(){
+        $id = Auth::id();
+        $filename = Input::get('filename');
+        $filetype = Input::get('filetype');
+        $name = WebsiteInfo::leftJoin('template','pc_tpl_id','=','template.id')->where('website_info.cus_id',$id)->pluck('name');
+        switch ($filetype) {
+            case 'html':
+                $dst = app_path('views/templates/'.$name);
+                file_put_contents($dst.'/'.$filename.'.html','厦门易尔通携程为您服务');
+                break;
+            case 'css':
+                $dst = public_path('templates/'.$name.'/css');
+                file_put_contents($dst.'/'.$filename.'.css','厦门易尔通携程为您服务');
+                break;
+            case 'js':
+                $dst = public_path('templates/'.$name.'/js');
+                file_put_contents($dst.'/'.$filename.'.js','厦门易尔通携程为您服务');
+                break;
+            case 'json':
+                $dst = public_path('templates/'.$name.'/json');
+                file_put_contents($dst.'/'.$filename.'.json','厦门易尔通携程为您服务');
+                break;
+            default:
+                $error = 1;
+                break;
+        }
+        if(isset($error))
+            return Response::json(['err'=>1001,'msg' => '错误的文件名后缀','data' => '']);
+        else
+            return Response::json(['err'=>0,'msg' => '新建文件成功','data' => '']);
+    }
+
+    public function fileAddImg(){
+        $id = Auth::id();
+        $filename = Input::get('filename');
+        $filename = explode('.', $filename);
+        $filetype = end($filename);
+        $name = WebsiteInfo::leftJoin('template','pc_tpl_id','=','template.id')->where('website_info.cus_id',$id)->pluck('name');
+        $file = Input::file('file');
+        if($file -> isValid()){
+            $type = $file->getClientOriginalExtension();
+            $truth_name=time().mt_rand(100,999).'.'.$type;
+            $up_result=$file->move(public_path('templates/'.$name.'/img_linshi/'),$truth_name);
+            if($up_result){
+                if($filetype == 'html')
+                    $load = '{$site_url}images/'.$truth_name;
+                else
+                    $load = '../images/'.$truth_name;
+                return Response::json(['err'=>0,'msg' => '图片上传成功','data' => $load]);
+            }else
+                return Response::json(['err'=>1001,'msg' => '图片上传失败','data' => '']);
+        }
+    }
+    
     public function fileList(){
         $id = Auth::id();
         $name = WebsiteInfo::leftJoin('template','pc_tpl_id','=','template.id')->where('website_info.cus_id',$id)->pluck('name');
@@ -253,26 +307,89 @@ class WebsiteController extends BaseController{
         $dst_css = public_path('templates/'.$name.'/css');
         $dst_js = public_path('templates/'.$name.'/js');
         $dst_json = public_path('templates/'.$name.'/json');
+        //css处理
         $css = $this->getFile($dst_css);
-        $tpl = $this->getFile($dst);
-        $js = $this->getFile($dst_js);
-        $json = $this->getFile($dst_json);
-        $files = array_merge($css,$tpl,$js,$json);
-        //print_r($files);exit;
-        foreach($files as $k => $f){
-            $file_type = explode('.', $f);
-            switch (end($file_type)) {
-                case 'html':$sub = '文件';break;
-                case 'js':$sub = '脚本';break;
-                case 'css':$sub = '样式';break;
-                case 'json':$sub = '数据';break;
-                default:
-                    $sub = '';
-            }      
-            $filelist[$k]['title'] = Config::get('file.'.$file_type[0],'其他').$sub;
-            $filelist[$k]['filename'] = $f;
+        $css_0['title'] = '颜色样式';
+        $css_1['title'] = '整体样式';
+        foreach ($css as $css_v){
+            if(preg_match('/style[_a-z]*.css/', $css_v)){
+                $css_0_file[] = $css_v;
+            }else{
+                $css_1_file[] = $css_v;
+            }
         }
-        $result = ['name'=>$name,'files'=>$filelist];
+        $css_0['files'] = $css_0_file;
+        $css_1['files'] = $css_1_file;
+        //html和json
+        $tpl = $this->getFile($dst);
+        $json = $this->getFile($dst_json);
+        $astrict = ['content-news' => 70,
+                    'content-product' => 80,
+                    '_footer' => 20,
+                    '_header' => 10,
+                    'index' => 0,
+                    'list-image' => 50,
+                    'list-imagetext' => 60,
+                    'list-page' => 30,
+                    'list-text' => 40];
+        $tpl_0['title'] = '首页文件';
+        $tpl_1['title'] = '头部文件';
+        $tpl_2['title'] = '底部文件';
+        $tpl_3['title'] = '内容单页';
+        $tpl_4['title'] = '文字列表';
+        $tpl_5['title'] = '图片列表';
+        $tpl_6['title'] = '图文列表';
+        $tpl_7['title'] = '新闻内容页';
+        $tpl_8['title'] = '产品内容页';
+        $tpl_file_0 = [];
+        $tpl_file_1 = [];
+        foreach ($tpl as $tpl_v){
+            $file_type = explode('.', $tpl_v);
+            if(array_key_exists($file_type[0], $astrict)){
+                $tpl_file_0[$astrict[$file_type[0]]] = $tpl_v;
+                if(array_search($file_type[0].'json',$json)!==false){
+                    $tpl_file_0[$astrict[$file_type[0]]+1] = $file_type[0].'json';
+                    $json_del = array_search($file_type[0].'json',$json);
+                    unset($json[$json_del]);
+                }
+            }else{
+                $tpl_file_1[] = $tpl_v;
+                if(array_search($file_type[0].'json',$json)!==false){
+                    $tpl_file_1[] = $file_type[0].'json';
+                    $json_del = array_search($file_type[0].'json',$json);
+                    unset($json[$json_del]);
+                }
+            }
+        }
+        ksort($tpl_file_0);
+        foreach ($tpl_file_0 as $key => $val){
+            if($key)
+                $num = intval($key/10);
+            else
+                $num = $key;
+            $title_num = 'tpl_'.$num;
+            $filename['files'][$key] = $val;
+            $$title_num = array_merge($$title_num,$filename);
+            unset($filename);
+        }
+        $tpl_9['title'] = '模块文件';
+        $tpl_9['files'] = $tpl_file_1;
+        //js
+        $js['title'] = '脚本文件';
+        $js['files'] = $this->getFile($dst_js);
+        $files[0] = $css_0;
+        $files[1] = $css_1;
+        $files[2] = $js;
+        for($i=0;$i<9;$i++){
+            $title_num = 'tpl_'.$i;
+            $files[$i+3]=$$title_num;
+            if(isset($files[$i+3]['files'])){
+                $files[$i+3]['files']=array_merge($files[$i+3]['files']);
+            }
+        }
+        $files[12] = $tpl_9;
+        print_r($files);exit;
+        $result = ['name'=>$name,'files'=>$files];
         //dd($result);
         return Response::json(['err'=>0,'msg' => '','data' => $result]);
     }
@@ -304,13 +421,27 @@ class WebsiteController extends BaseController{
         $cus_id = Auth::id();
         $filename = Input::get('filename');
         $content = Input::get('code');
+        $img_json = Input::get('fileimg');
+        $template = WebsiteInfo::join('template','pc_tpl_id','=','template.id')->where('website_info.cus_id',$cus_id)->pluck('name');
+        $fail = [];
         if($filename===NULL || $content===NULL){
             $result = ['err' => 1001, 'msg' => '提交数据错误'];
         }
         else{
+            if ($img_json){
+                $img_array = json_decode($img_json);
+                foreach ($img_array as $val){
+                    if(strpos($content, $val)){
+                        if(file_exists(public_path('templates/'.$template.'/img_linshi/'.$val))){
+                            rename(public_path('templates/'.$template.'/img_linshi/'.$val), public_path('templates/'.$template.'/images/'.$val));
+                        }else{
+                            $fail[] = $val;
+                        }
+                    }
+                }
+            }
             $file_type = explode('.', $filename);
             $file_type=end($file_type);
-            $template = WebsiteInfo::join('template','pc_tpl_id','=','template.id')->where('website_info.cus_id',$cus_id)->pluck('name');
             if($file_type=='css'){
                $dst = public_path('templates/'.$template.'/css/'.$filename);
             }
@@ -331,7 +462,7 @@ class WebsiteController extends BaseController{
                     $result = ['err' => 1001, 'msg' => '无法编辑文件'];
                 }
                 else{
-                    $result = ['err' => 0, 'msg' => ''];
+                    $result = ['err' => 0, 'msg' => '', 'data' => $fail];
                 }
             }
             else{
