@@ -509,7 +509,7 @@ class PrintController extends BaseController{
         if (!$result) {
             $result=1;
             $config_arr=array();
-            $config_arr[1] = '#AAA,#BBB,#FFF|tel';
+            $config_arr[1] = '#AAA,#BBB,#FFF|totop';
         }
         if($result!=0){
             if (trim($config_arr[1])!="custom") {
