@@ -340,6 +340,11 @@ Route::post('file-upload',[//文件上传
         'uses' => 'UploadController@fileRead'
     ]);
 
+Route::post('batchAdd',[//批量上传
+        'as' => 'batchAdd',
+        'uses' => 'UploadController@batchAdd'
+    ]);
+
 Route::post('upload_template', [//模板上传
     'as' => 'upload_template',
     'uses' => 'WebsiteController@uploadTemplate'
