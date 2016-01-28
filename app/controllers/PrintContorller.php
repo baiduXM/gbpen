@@ -521,7 +521,7 @@ class PrintController extends BaseController{
                   $config['type']='m1';
                 }
                 $config['style']=array();
-                $tmpStyleConfigQuickbar = explode(',',$quickbar_arr[0]);  
+                $tmpStyleConfigQuickbar = explode(',',$quickbar_arr[0]); 
                if(count($tmpStyleConfigQuickbar)){
                    $keys=array('mainColor','secondColor','textColor','iconColor');
                    foreach($tmpStyleConfigQuickbar as $key=>$val){
@@ -533,12 +533,12 @@ class PrintController extends BaseController{
                    }
                }
                 $config['module']=array();
-                $tmpModulesConfigQuickbar = explode(',',$quickbar_arr[1]);
+                $tmpModulesConfigQuickbar = explode(',',trim($quickbar_arr[1]));
                 if (count($tmpModulesConfigQuickbar)) {
                     foreach($tmpModulesConfigQuickbar as $key=>$val){
                        if($val=='tel'){
                            $tel = Customerinfo::where('cus_id',$this->cus_id)->pluck('telephone');
-                           $config['module']['tel'] = $tel;//数据库联系电话
+                           $config['module']['tel'] = $tel;//数据库联系电话                 
                        }
                        elseif($val=='totop'){
                            $config['module']['totop'] = 1;
