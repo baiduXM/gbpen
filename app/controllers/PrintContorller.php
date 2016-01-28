@@ -454,6 +454,7 @@ class PrintController extends BaseController{
                                     $slimming[$k]['data']='http://'.$_SERVER['HTTP_HOST'].'/search-preview';
                                 else
                                     $slimming[$k]['data']=  $this->domain.'/search.php';
+                                $slimming[$k]['link'] = 'javascript:void(0);';
                             default:
                                 $slimming[$k]['link'] = $v['data'];
                         }
@@ -513,7 +514,6 @@ class PrintController extends BaseController{
         if($result!=0){
             if (trim($config_arr[1])!="custom") {
                 $quickbar_arr=explode('|',$config_arr[1]);
-                $tmpStyleConfigQuickbar = explode(',',$quickbar_arr[0]);  
                 $config['enable']=true;
                 if ($this->type=='pc') {
                   $config['type']='p1';
@@ -521,8 +521,9 @@ class PrintController extends BaseController{
                   $config['type']='m1';
                 }
                 $config['style']=array();
+                $tmpStyleConfigQuickbar = explode(',',$quickbar_arr[0]);  
                if(count($tmpStyleConfigQuickbar)){
-                   $keys=array('barColor','navtopColor','textColor','iconColor');
+                   $keys=array('mainColor','secondColor','textColor','iconColor');
                    foreach($tmpStyleConfigQuickbar as $key=>$val){
                        $arr=explode('|',$val);
                        $config['style'][$keys[$key]]=$arr[0];
@@ -531,6 +532,18 @@ class PrintController extends BaseController{
                        $config['style']['iconColor']=$config['style']['textColor']?$config['style']['textColor']:'';
                    }
                }
+                $config['module']=array();
+                $tmpModulesConfigQuickbar = explode(',',$quickbar_arr[1]);
+                if (count($tmpModulesConfigQuickbar)) {
+                    if (array_key_exists('tel', tmpModulesConfigQuickbar)) {
+                        $config['module']['tel'] = 000;//数据库联系电话
+                    }
+                    if (array_key_exists('totop', tmpModulesConfigQuickbar)) {
+                        $config['module']['totop'] = 1;
+                    }
+                }else{
+                    $config['module'] = $quickbar_arr[1];
+                }
                $CommonCont = new CommonController();
                $quickbar=$CommonCont->quickBarJsonInit();
                $quickbar=json_decode($quickbar,true);
@@ -685,7 +698,7 @@ class PrintController extends BaseController{
                 }
                 $config['style']=array();
                if(count($tmpStyleConfigQuickbar)){
-                   $keys=array('barColor','navtopColor','textColor','iconColor');
+                   $keys=array('mainColor','secondColor','textColor','iconColor');
                    foreach($tmpStyleConfigQuickbar as $key=>$val){
                        $arr=explode('|',$val);
                        $config['style'][$keys[$key]]=$arr[0];
