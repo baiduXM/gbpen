@@ -423,7 +423,7 @@ function articleController($scope, $http ,$location) {
                 var warningbox = new WarningBox();
                 warningbox._upImage({
                     IsBaseShow : true,
-                    ajaxurl    : '../file-upload?target=articles',
+                    ajaxurl    : '',
                     IsMultiple : true,
                     oncallback : function(json){
                         var html = '',ids = [];

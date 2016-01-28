@@ -298,7 +298,8 @@ WarningBox.prototype = {
         var callbackdata = [];
         // 改变弹框样式
         $('.warning_box .button').addClass('batchbtn');
-        $('.batchbtn .save').val('批量编辑').css('cursor','not-allowed');
+//        $('.batchbtn .save').val('批量编辑').css('cursor','not-allowed');
+$('.batchbtn .save').hide();
         $('.img-container>img').remove();
         $('.btn-upload .up_pic_btn').remove();
         $('.btn-upload').css('position','inherit');
@@ -308,7 +309,7 @@ WarningBox.prototype = {
         // 添加多图生成文章
         $('#inputImage').uploadify({
             'swf'      : 'images/uploadify.swf',
-            'uploader' : '../file-upload?target=articles',
+            'uploader' : '../batchAdd?target=articles',
             'removeCompleted' : false,
             'buttonText' : "添加",
             'onUploadStart' : function(file) {
@@ -500,7 +501,8 @@ function checkjs(parame){
                 }
             });
         }
-        num >=2 ? $('.batchedit').fadeIn() : $('.batchedit').fadeOut();
+//        勾选数目判断批量编辑显隐
+//        num >=2 ? $('.batchedit').fadeIn() : $('.batchedit').fadeOut();
         return false;
     });
     $(".jumbotron").on('click','.labe2',function () {

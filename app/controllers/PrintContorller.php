@@ -535,12 +535,15 @@ class PrintController extends BaseController{
                 $config['module']=array();
                 $tmpModulesConfigQuickbar = explode(',',$quickbar_arr[1]);
                 if (count($tmpModulesConfigQuickbar)) {
-                    if (array_key_exists('tel', tmpModulesConfigQuickbar)) {
-                        $config['module']['tel'] = 000;//数据库联系电话
-                    }
-                    if (array_key_exists('totop', tmpModulesConfigQuickbar)) {
-                        $config['module']['totop'] = 1;
-                    }
+                    foreach($tmpModulesConfigQuickbar as $key=>$val){
+                       if($val=='tel'){
+                           $tel = Customerinfo::where('cus_id',$this->cus_id)->pluck('telephone');
+                           $config['module']['tel'] = $tel;//数据库联系电话
+                       }
+                       elseif($val=='totop'){
+                           $config['module']['totop'] = 1;
+                       }
+                   }
                 }else{
                     $config['module'] = $quickbar_arr[1];
                 }
