@@ -535,10 +535,10 @@ class PrintController extends BaseController{
                 $config['module']=array();
                 $tmpModulesConfigQuickbar = explode(',',$quickbar_arr[1]);
                 if (count($tmpModulesConfigQuickbar)) {
-                    if ($tmpModulesConfigQuickbar.tel) {
+                    if (array_key_exists('tel', tmpModulesConfigQuickbar)) {
                         $config['module']['tel'] = 000;//数据库联系电话
                     }
-                    if ($tmpModulesConfigQuickbar.totop) {
+                    if (array_key_exists('totop', tmpModulesConfigQuickbar)) {
                         $config['module']['totop'] = 1;
                     }
                 }else{
