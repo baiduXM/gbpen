@@ -1,0 +1,34 @@
+假定主项目仓库名：gbpen，数据项目仓库名：gbpen-data
+
+
+克隆如下版本到新目录（假设平级目录gbpen-data）
+https://github.com/baiduXM/gbpen-data.git
+
+将主项目gbpen以下目录全部删除！（理论空目录）
+app/config/local/
+app/views/templates/
+public/temp_templates/
+public/templates/
+
+到主项目gbpen目录下执行以下代码关联目录：
+mklink /j app\config\local ..\gbpen-data\app\config\local
+mklink /j public\templates ..\gbpen-data\public\templates
+mklink /j public\temp_templates ..\gbpen-data\public\temp_templates
+mklink /j app\views\templates ..\gbpen-data\app\views\templates
+
+
+！！自动拉取！！
+建立bat文件，内容如下（修改对应目录位置"D:\gbpen"和对应分支"5067"）：
+
+:: start
+cd /d "D:\gbpen"
+"C:\Program Files\Git\bin\git.exe" pull https://github.com/baiduXM/gbpen.git master
+
+cd /d "D:\gbpen-data"
+"C:\Program Files\Git\bin\git.exe" pull https://github.com/baiduXM/gbpen-data.git 5067
+"C:\Program Files\Git\bin\git.exe" add --all
+"C:\Program Files\Git\bin\git.exe" commit -m "auto"
+"C:\Program Files\Git\bin\git.exe" push https://bdxm:a123456@github.com/baiduXM/gbpen-data.git 5067:5067
+:: end
+
+然后为其创建windows计划任务。
