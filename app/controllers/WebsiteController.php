@@ -277,28 +277,6 @@ class WebsiteController extends BaseController{
         else
             return Response::json(['err'=>0,'msg' => '新建文件成功','data' => '']);
     }
-
-    public function fileAddImg(){
-        $id = Auth::id();
-        $filename = Input::get('filename');
-        $filename = explode('.', $filename);
-        $filetype = end($filename);
-        $name = WebsiteInfo::leftJoin('template','pc_tpl_id','=','template.id')->where('website_info.cus_id',$id)->pluck('name');
-        $file = Input::file('file');
-        if($file -> isValid()){
-            $type = $file->getClientOriginalExtension();
-            $truth_name=time().mt_rand(100,999).'.'.$type;
-            $up_result=$file->move(public_path('templates/'.$name.'/img_linshi/'),$truth_name);
-            if($up_result){
-                if($filetype == 'html')
-                    $load = '{$site_url}images/'.$truth_name;
-                else
-                    $load = '../images/'.$truth_name;
-                return Response::json(['err'=>0,'msg' => '图片上传成功','data' => $load]);
-            }else
-                return Response::json(['err'=>1001,'msg' => '图片上传失败','data' => '']);
-        }
-    }
     
     public function fileList(){
         $id = Auth::id();
