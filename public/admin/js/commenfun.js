@@ -525,7 +525,7 @@ function checkjs(parame){
 function icon_choose(limintHeight){
     this.clicks = function(){
         var _this = this;
-        $('.icon_box>i').unbind('click').on('click',function(event) {console.log($(this).offset().bottom)
+        $('.icon_box>i').unbind('click').on('click',function(event) {
             if($(this).offset().top > limintHeight){
                 $(this).siblings('.icon_ousidebox').css({'top':'auto','bottom':'30px'}).end()
                 .siblings('.arrow').css({'border-color':'rgba(0,0,0,0.7) transparent transparent transparent','bottom':'18px','top':'auto'});
@@ -567,18 +567,17 @@ function insertText(obj, str) {
     if (document.selection) {
         obj.focus();
         var sel = document.selection.createRange();
-        console.log(sel)
         sel.text = str;
         var range = obj.createTextRange();
         range.collapse(true);
         range.moveStart('character', 10);
         range.moveEnd('character', 20);
         range.select();
-    } else if (typeof obj.selectionStart === 'number' && typeof obj.selectionEnd === 'number') {console.log(22222222)
+    } else if (typeof obj.selectionStart === 'number' && typeof obj.selectionEnd === 'number') {
         var startPos = obj.selectionStart,
             endPos = obj.selectionEnd,
             cursorPos = startPos,
-            tmpStr = obj.value;console.log(123)
+            tmpStr = obj.value;
         obj.value = tmpStr.substring(0, startPos) + str + tmpStr.substring(endPos, tmpStr.length);
         cursorPos += str.length;
         obj.selectionStart = obj.selectionEnd = cursorPos;
