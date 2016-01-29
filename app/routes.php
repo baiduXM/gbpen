@@ -294,11 +294,6 @@ Route::group(array('before' => 'auth'), function() {
         'as'=>'template-fileadd',
         'uses' => 'WebsiteContorller@fileAdd'
     ]);
-    
-    Route::get('template-addimg',[//文件添加之图片
-        'as'=>'template-addimg',
-        'uses' => 'WebsiteContorller@fileAddImg'
-    ]);
 
     Route::get('template-fileget', [//文件提取
         'as' => 'template-fileget',
