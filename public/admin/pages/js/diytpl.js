@@ -9,6 +9,7 @@ function diytplController($scope, $http, $location) {
     }
     $scope.DiytplInit.prototype = {
     	init : function(){
+    		this.FileImgArr = [];
     		this.getinfo();
     		this.clicks();
     	},
@@ -135,6 +136,7 @@ function diytplController($scope, $http, $location) {
 			});
     	},
     	_UploadImg : function(){
+    		var _this = this;
     		$('.up_load').on('click',function(event) {
                 var targe = $(this);
                 var warningbox = new WarningBox();
@@ -143,6 +145,7 @@ function diytplController($scope, $http, $location) {
                     ajaxurl    : '../file-upload?target=imgcache',
                     oncallback : function(json){
                         insertText($('.made_edite')[0],json.data[0].url);
+                        _this.FileImgArr.push(json.data[0].url);
                     }
                 });
             });
@@ -166,7 +169,12 @@ function diytplController($scope, $http, $location) {
 				});
             	target.find('a').addClass('red').end().siblings().find('a').removeClass('red').end().closest('.list_a').siblings().find('a').removeClass('red');
             	$('.made_style_edite_top .resh_btn').on('click',function(){
-					$http.post('../template-fileedit',{type:type,filename:file_name,code:$('.made_style_edite .made_edite').val()}).success(function(json){
+					$http.post('../template-fileedit',{
+						type 	: type,
+						filename: file_name,
+						code 	: $('.made_style_edite .made_edite').val(),
+						fileimg : _this.FileImgArr
+					}).success(function(json){
 						checkJSON(json, function(json){
 							var hint_box = new Hint_box();
                 			hint_box;
