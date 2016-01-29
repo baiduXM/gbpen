@@ -190,10 +190,11 @@ WarningBox.prototype = {
     _upImage : function(defaults){
         var defaults = $.extend(true, {
             selector    : null,
-            aspectRatio : '',
+            aspectRatio : '',           // 截图比例
             ajaxurl     : '',
-            IsMultiple  : false,
-            IsBaseShow  : false,
+            IsMultiple  : false,        // 是否支持多图
+            IsBaseShow  : false,        // 基础弹框显示，使用进度条上传
+            IsOneNatural  : false,      // 单张普通上传
             oncallback  : function(){}
         }, defaults);
         this.context.IsBaseShow = defaults.IsBaseShow;
@@ -219,12 +220,12 @@ WarningBox.prototype = {
                 }
             };
             $image.cropper(options);
-            this._UpFunction($image,defaults.ajaxurl,defaults.IsBaseShow,defaults.oncallback);
+            this._UpFunction($image,defaults.ajaxurl,defaults.IsBaseShow,defaults.IsOneNatural,defaults.oncallback);
         }else{
             this._Schedule(defaults.oncallback);    // 带进度条
         }
     },
-    _UpFunction : function($image,ajaxurl,IsBaseShow,oncallback){
+    _UpFunction : function($image,ajaxurl,IsBaseShow,IsOneNatural,oncallback){
         var _this = this,
             $inputImage = $('#inputImage'),
             URL = window.URL || window.webkitURL,
@@ -236,7 +237,7 @@ WarningBox.prototype = {
                 if (!$image.data('cropper')) {
                     return;
                 }
-                if (files && files.length == 1) {
+                if (files && files.length == 1 && !IsOneNatural) {
                     file = files[0];
                     _this.fileType = file.type;
                     if(file.size/1024 > 600){
@@ -254,10 +255,14 @@ WarningBox.prototype = {
                         $body.tooltip('请上传图片！', 'warning');
                     }
                 }else{
-                    if(confirm('这是多图上传！请确认好图片已经达到所需要求！')){
+                    if(IsOneNatural){
                         _this._filter($('#inputImage')[0].files,ajaxurl,oncallback);
-                    }else{
-                        return false;
+                    }else {
+                        if(confirm('这是多图上传！请确认好图片已经达到所需要求！')){
+                            _this._filter($('#inputImage')[0].files,ajaxurl,oncallback);
+                        }else{
+                            return false;
+                        }
                     }
                 }
             });
@@ -293,6 +298,7 @@ WarningBox.prototype = {
                 alert(textStatus || errorThrown);
             }
         });
+        $('.warning_box').hide().prev().hide();
     },
     _Schedule : function(oncallback){
         var callbackdata = [];
@@ -303,7 +309,7 @@ WarningBox.prototype = {
         $('.btn-upload .up_pic_btn').remove();
         $('.btn-upload').css('position','inherit');
         $('.batchbtn .cancel').click(function(){
-            $('.warning_box ').hide().prev().hide();
+            $('.warning_box').hide().prev().hide();
         })
         // 添加多图生成文章
         $('#inputImage').uploadify({
@@ -344,10 +350,10 @@ WarningBox.prototype = {
                     alert(textStatus || errorThrown);
                 }
             });
-            $('.warning_box ').hide().prev().hide();
+            $('.warning_box').hide().prev().hide();
         });
         $('.warning_box .cancel').click(function(){
-            $('.warning_box ').hide().prev().hide();
+            $('.warning_box').hide().prev().hide();
         });
     }
 }
@@ -552,5 +558,31 @@ function icon_choose(limintHeight){
             _Pthis.removeClass('in')
             _this.clicks();
         });
+    }
+}
+
+function insertText(obj, str) {
+    if (document.selection) {
+        obj.focus();
+        var sel = document.selection.createRange();
+        console.log(sel)
+        sel.text = str;
+        var range = obj.createTextRange();
+        range.collapse(true);
+        range.moveStart('character', 10);
+        range.moveEnd('character', 20);
+        range.select();
+    } else if (typeof obj.selectionStart === 'number' && typeof obj.selectionEnd === 'number') {console.log(22222222)
+        var startPos = obj.selectionStart,
+            endPos = obj.selectionEnd,
+            cursorPos = startPos,
+            tmpStr = obj.value;console.log(123)
+        obj.value = tmpStr.substring(0, startPos) + str + tmpStr.substring(endPos, tmpStr.length);
+        cursorPos += str.length;
+        obj.selectionStart = obj.selectionEnd = cursorPos;
+        obj.setSelectionRange(startPos, cursorPos);
+        // obj.focus();
+    } else {
+        obj.value += str;
     }
 }
