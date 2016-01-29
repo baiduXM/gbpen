@@ -177,11 +177,11 @@ class UploadController extends BaseController{
                         $data[$i]['name']=$fileName;
                         
                         $data[$i]['url']=asset('customers/'.$customer.'/images/l/'.$target.'/'.$fileName);
+                        $clientName = $file->getClientOriginalName();
                         $img=$fileName;
-                        
                         $article=new Articles();
                         $cus_id=Auth::id();                      
-                        $article->title=$img;
+                        $article->title=$clientName;
                         $article->img=$img;
                         $article->cus_id=$cus_id;
                         $article->is_top=' ';
