@@ -398,19 +398,18 @@ class WebsiteController extends BaseController{
         $cus_id = Auth::id();
         $filename = Input::get('filename');
         $content = Input::get('code');
-        $img_json = Input::get('fileimg');
+        $img_array = Input::get('fileimg');
         $template = WebsiteInfo::join('template','pc_tpl_id','=','template.id')->where('website_info.cus_id',$cus_id)->pluck('name');
         $fail = [];
         if($filename===NULL || $content===NULL){
             $result = ['err' => 1001, 'msg' => '提交数据错误'];
         }
         else{
-            if ($img_json){
-                $img_array = json_decode($img_json);
+            if ($img_array){
                 foreach ($img_array as $val){
                     if(strpos($content, $val)){
-                        if(file_exists(public_path('templates/'.$template.'/img_linshi/'.$val))){
-                            rename(public_path('templates/'.$template.'/img_linshi/'.$val), public_path('templates/'.$template.'/images/'.$val));
+                        if(file_exists(public_path('templates/'.$template.'/img_cache/'.$val))){
+                            rename(public_path('templates/'.$template.'/img_cache/'.$val), public_path('templates/'.$template.'/images/'.$val));
                         }else{
                             $fail[] = $val;
                         }
