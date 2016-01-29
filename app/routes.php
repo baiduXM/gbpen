@@ -289,6 +289,16 @@ Route::group(array('before' => 'auth'), function() {
         'as' => 'template-filelist',
         'uses' => 'WebsiteController@fileList'
     ]);
+    
+    Route::get('template-fileadd',[//文件添加
+        'as'=>'template-fileadd',
+        'uses' => 'WebsiteContorller@fileAdd'
+    ]);
+    
+    Route::get('template-addimg',[//文件添加之图片
+        'as'=>'template-addimg',
+        'uses' => 'WebsiteContorller@fileAddImg'
+    ]);
 
     Route::get('template-fileget', [//文件提取
         'as' => 'template-fileget',
@@ -338,6 +348,11 @@ Route::get('seach-userinfo', [//
 Route::post('file-upload',[//文件上传
         'as' => 'file-upload',
         'uses' => 'UploadController@fileRead'
+    ]);
+
+Route::post('batchAdd',[//批量上传
+        'as' => 'batchAdd',
+        'uses' => 'UploadController@batchAdd'
     ]);
 
 Route::post('upload_template', [//模板上传

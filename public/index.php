@@ -32,6 +32,11 @@ require __DIR__.'/../bootstrap/autoload.php';
 |
 */
 
+if (!file_exists(__DIR__.'/../bootstrap/start.php')) {
+	echo '<pre>' . file_get_contents(__DIR__.'/../README.md') . '</pre>';
+	exit;
+}
+
 $app = require_once __DIR__.'/../bootstrap/start.php';
 
 /*
