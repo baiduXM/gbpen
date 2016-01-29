@@ -289,6 +289,8 @@ class WebsiteController extends BaseController{
         $css = $this->getFile($dst_css);
         $css_0['title'] = '颜色样式';
         $css_1['title'] = '整体样式';
+        $css_0_file = [];
+        $css_1_file = [];
         foreach ($css as $css_v){
             if(preg_match('/style[_a-z]*.css/', $css_v)){
                 $css_0_file[] = $css_v;
