@@ -74,6 +74,7 @@ function diytplController($scope, $http, $location) {
     		var preview = '<h1 class="made_style_edite_top"><a href="javascript:void(0);" class="made_btn resh_btn fr">保存文件</a><a href="../homepage-preview" class="made_btn Preview_btn fr">预览首页</a><a onclick="javascript:history.go(-1);" class="made_btn resh_btn fr">返回</a><span class="fl">'+files+'：'+filetitle+'（'+filename+'）</span><a href="javascript:void(0);" class="made_btn up_load fl">上传图片</a></h1>\n\
                     <textarea class="made_edite">厦门易尔通厦门易</textarea>';
         	$('.made_style_edite').html(preview);
+        	this.$made_edite = $('.made_edite')
         	this._UploadImg();
     	},
     	AddFile : function(){
