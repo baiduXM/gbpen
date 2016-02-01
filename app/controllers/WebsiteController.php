@@ -357,18 +357,18 @@ class WebsiteController extends BaseController{
         //js
         $js['title'] = '脚本文件';
         $js['files'] = $this->getFile($dst_js);
-        $filenames[0] = $css_0;
-        $filenames[1] = $css_1;
-        $filenames[2] = $js;
+        $files[0] = $css_0;
+        $files[1] = $css_1;
+        $files[2] = $js;
         for($i=0;$i<9;$i++){
             $title_num = 'tpl_'.$i;
-            $filenames[$i+3]=$$title_num;
-            if(isset($filenames[$i+3]['files'])){
-                $filenames[$i+3]['files']=array_merge($filenames[$i+3]['files']);
+            $files[$i+3]=$$title_num;
+            if(isset($files[$i+3]['files'])){
+                $files[$i+3]['files']=array_merge($files[$i+3]['files']);
             }
         }
-        $filenames[12] = $tpl_9;
-        $result = ['name'=>$name,'files'=>$filenames];
+        $files[12] = $tpl_9;
+        $result = ['name'=>$name,'filenames'=>$files];
         //dd($result);
         return Response::json(['err'=>0,'msg' => '','data' => $result]);
     }
