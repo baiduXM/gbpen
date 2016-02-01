@@ -54,13 +54,13 @@ function homeController($scope, $http) {
 	// 刷新按钮
 	function homeReflash(){
 		$('.home-box .reflash').on('click', function() {
-			var _currentNav = $('.home-page-preview .pages-nav li.current a');
-			if ($('.home-page-preview .iframs iframe').attr('src') == _currentNav.attr('href')) {
+			var _currentNav = $('.home-page-preview .pages-nav li.current a'),$iframe = $('.home-page-preview .iframs iframe');
+			if ($iframe.attr('src') == _currentNav.attr('href')) {
 				// Todo 还有bug
-				$('.home-page-preview .iframs iframe').attr('src', '');
-				$('.home-page-preview .iframs iframe').attr('src', _currentNav.attr('href'));
+				$iframe.attr('src', '');
+				$iframe.attr('src', _currentNav.attr('href'));
 			}else{
-				_currentNav.data('url') == '' ? $('.home-page-preview .iframs iframe').attr('src', url_index) : $('.home-page-preview .iframs iframe').attr('src', _currentNav.data('url'));
+				_currentNav.data('url') == '' ? $iframe.attr('src', url_index) : $iframe.attr('src', _currentNav.data('url'));
 			}
 		});
 	}

@@ -10,47 +10,51 @@ class UploadController extends BaseController{
         $files=Input::file();
         $destinationPath = public_path('customers/'.$customer.'/images/');
         if($files){
-            $data=array();
-            $i=0;
-            foreach($files as $file){
-                if($file -> isValid()){
-                    $type = $file->getClientOriginalExtension();
-                    $fileName=time().str_random(4).'.'.$type;
-                    $up_result=$file->move($destinationPath.'/l/'.$target.'/',$fileName);
-                    if($up_result){
-                        $s_path = $destinationPath.'/s/'.$target.'/'.$fileName;
-                        $img_info=  getimagesize($destinationPath.'/l/'.$target.'/'.$fileName);
-                        switch($img_info[2]){
-                            case 1:$type='gif';break;
-                            case 2:$type='jpg';break;
-                            case 3:$type='png';break;
+            if($target == 'imgcache'){
+                return Response::json($this->fileAddImg());
+            }else{
+                $data=array();
+                $i=0;
+                foreach($files as $file){
+                    if($file -> isValid()){
+                        $type = $file->getClientOriginalExtension();
+                        $fileName=time().str_random(4).'.'.$type;
+                        $up_result=$file->move($destinationPath.'/l/'.$target.'/',$fileName);
+                        if($up_result){
+                            $s_path = $destinationPath.'/s/'.$target.'/'.$fileName;
+                            $img_info=  getimagesize($destinationPath.'/l/'.$target.'/'.$fileName);
+                            switch($img_info[2]){
+                                case 1:$type='gif';break;
+                                case 2:$type='jpg';break;
+                                case 3:$type='png';break;
+                            }
+                            $this->resizeImage($destinationPath.'/l/'.$target.'/'.$fileName,$type,$s_path,400,400);
+                            copy($destinationPath.'/s/'.$target.'/'.$fileName, public_path('customers/'.$customer.'/mobile/images/l/'.$target.'/'.$fileName));
+                            $mobile_s_path=public_path('customers/'.$customer.'/mobile/images/s/').$target.'/'.$fileName;
+                            $this->resizeImage(public_path('customers/'.$customer.'/mobile/images/l/').$target.'/'.$fileName,$type,$mobile_s_path,400,400);
+                           //同步到客户服务器
+                            $customerinfo = Customer::find($cus_id);
+                            $ftp_array = explode(':',$customerinfo->ftp_address);
+                            $port= $customerinfo->ftp_port;
+                            $ftp_array[1] = isset($ftp_array[1])?$ftp_array[1]:$port;
+                            $conn = ftp_connect($ftp_array[0],$ftp_array[1]);
+                            if($conn){
+                                ftp_login($conn,$customerinfo->ftp_user,$customerinfo->ftp_pwd);
+                                ftp_pasv($conn, 1);
+                                ftp_put($conn,$customer.'/images/l/'.$target.'/'.$fileName,$destinationPath.'/l/'.$target.'/'.$fileName,FTP_BINARY);
+                                ftp_put($conn,$customer.'/images/s/'.$target.'/'.$fileName,$destinationPath.'/s/'.$target.'/'.$fileName,FTP_BINARY);
+                                ftp_put($conn,$customer.'/mobile/images/l/'.$target.'/'.$fileName,public_path('customers/'.$customer.'/mobile/images/l/').$target.'/'.$fileName,FTP_BINARY);
+                                ftp_put($conn,$customer.'/mobile/images/s/'.$target.'/'.$fileName,public_path('customers/'.$customer.'/mobile/images/s/').$target.'/'.$fileName,FTP_BINARY);
+                                ftp_close($conn);
+                            }
+                            $data[$i]['name']=$fileName;
+                            $data[$i]['url']=asset('customers/'.$customer.'/images/l/'.$target.'/'.$fileName);
+                            $i++;
                         }
-                        $this->resizeImage($destinationPath.'/l/'.$target.'/'.$fileName,$type,$s_path,400,400);
-                        copy($destinationPath.'/s/'.$target.'/'.$fileName, public_path('customers/'.$customer.'/mobile/images/l/'.$target.'/'.$fileName));
-                        $mobile_s_path=public_path('customers/'.$customer.'/mobile/images/s/').$target.'/'.$fileName;
-                        $this->resizeImage(public_path('customers/'.$customer.'/mobile/images/l/').$target.'/'.$fileName,$type,$mobile_s_path,400,400);
-                       //同步到客户服务器
-                        $customerinfo = Customer::find($cus_id);
-                        $ftp_array = explode(':',$customerinfo->ftp_address);
-                        $port= $customerinfo->ftp_port;
-                        $ftp_array[1] = isset($ftp_array[1])?$ftp_array[1]:$port;
-                        $conn = ftp_connect($ftp_array[0],$ftp_array[1]);
-                        if($conn){
-                            ftp_login($conn,$customerinfo->ftp_user,$customerinfo->ftp_pwd);
-                            ftp_pasv($conn, 1);
-                            ftp_put($conn,$customer.'/images/l/'.$target.'/'.$fileName,$destinationPath.'/l/'.$target.'/'.$fileName,FTP_BINARY);
-                            ftp_put($conn,$customer.'/images/s/'.$target.'/'.$fileName,$destinationPath.'/s/'.$target.'/'.$fileName,FTP_BINARY);
-                            ftp_put($conn,$customer.'/mobile/images/l/'.$target.'/'.$fileName,public_path('customers/'.$customer.'/mobile/images/l/').$target.'/'.$fileName,FTP_BINARY);
-                            ftp_put($conn,$customer.'/mobile/images/s/'.$target.'/'.$fileName,public_path('customers/'.$customer.'/mobile/images/s/').$target.'/'.$fileName,FTP_BINARY);
-                            ftp_close($conn);
-                        }
-                        $data[$i]['name']=$fileName;
-                        $data[$i]['url']=asset('customers/'.$customer.'/images/l/'.$target.'/'.$fileName);
-                        $i++;
                     }
                 }
+                return Response::json(['err' => 0, 'msg' => '','data'=>$data]);
             }
-            return Response::json(['err' => 0, 'msg' => '','data'=>$data]);
         }else{
             $file = Input::get('image');
             if(strpos($file,'jpeg')){
@@ -102,7 +106,31 @@ class UploadController extends BaseController{
 	}
 	
         
-        
+
+    public function fileAddImg(){
+        $id = Auth::id();
+        $filename = Input::get('filename');
+        $filename = explode('.', $filename);
+        $filetype = end($filename);
+        $name = WebsiteInfo::leftJoin('template','pc_tpl_id','=','template.id')->where('website_info.cus_id',$id)->pluck('name');
+        $file = Input::file('file');
+        if($file -> isValid()){
+            $type = $file->getClientOriginalExtension();
+            $truth_name=time().mt_rand(100,999).'.'.$type;
+            $up_result=$file->move(public_path('templates/'.$name.'/img_cache/'),$truth_name);
+            if($up_result){
+                if($filetype == 'html')
+                    $load = '{$site_url}images/'.$truth_name;
+                elseif($filetype == 'json')
+                    $load = 'images/'.$truth_name;
+                else
+                    $load = '../images/'.$truth_name;
+                $return = ['err'=>0,'msg' => '图片上传成功','data' => $load];
+            }else
+                $return = ['err'=>1001,'msg' => '图片上传失败','data' => ''];
+            return $return;
+        }
+    }
         
         
         public function batchAdd(){
