@@ -117,8 +117,8 @@ function diytplController($scope, $http, $location) {
                 	IsOneNatural : true,
                     ajaxurl    : '../file-upload?target=imgcache',
                     oncallback : function(json){
-                        insertText($('.made_edite')[0],json.data[0].url);
-                        _this.FileImgArr.push(json.data[0].url);
+                        insertText($('.made_edite')[0],json.data.url);
+                        _this.FileImgArr.push(json.data.name);
                     }
                 });
             });
@@ -139,7 +139,7 @@ function diytplController($scope, $http, $location) {
             	target.find('a').addClass('red').end().siblings().find('a').removeClass('red').end().closest('.list_a').siblings().find('a').removeClass('red');
             	$('.made_style_edite_top .resh_btn').on('click',function(){
 					$http.post('../template-fileedit',{
-						type 	: type,
+						type 	: _this.type,
 						filename: file_name,
 						code 	: $('.made_style_edite .made_edite').val(),
 						fileimg : _this.FileImgArr
