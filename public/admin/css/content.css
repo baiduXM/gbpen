@@ -443,8 +443,8 @@ ul.made_style li a .made_name{ color:#3878c0}
 ul.made_style li a.foot_tpl{ padding-left:52px;}
 ul.made_style li:hover,ul.made_style li.cu{ background:#fff;}
 ul.made_style li a:hover{ color:#d91f1f}
-ul.made_style li.list_a .text_box{ float:left; height:70px; line-height:70px; margin-left:8px;}
-ul.made_style li.list_a .wid_box{ height:35px; margin-top:17px; border:1px solid #3878c0; display:block; overflow:hidden; border-right:0px; float:left; display:inline;}
+/*ul.made_style li.list_a .text_box{ float:left; height:70px; line-height:35px; margin-left:8px;}*/
+/*ul.made_style li.list_a .wid_box{ height:35px; margin-top:17px; border:1px solid #3878c0; display:block; overflow:hidden; border-right:0px; float:left; display:inline;}*/
 ul.made_style li.list_a .list_box{ width:190px; float:left; margin-left:14px;}
 ul.made_style li.list_a .list_box a{ color:#3878c0; display:block; height:35px; overflow:hidden;}
 ul.made_style li.list_a .list_box a:hover{ color:#d91f1f; background:none}

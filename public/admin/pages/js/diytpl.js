@@ -22,40 +22,12 @@ function diytplController($scope, $http, $location) {
 				var fn = '';
 				checkJSON(json, function(json){
 					if(_this.type == 1){
-						var data_byTitle = [], data_byFilename = [], result = [];
-						$.each(json.data.files,function(k,v){
-							if (typeof data_byTitle[v.title] === 'undefined') data_byTitle[v.title] = [];
-							data_byTitle[v.title].push(v);
-							var filename = v.filename.substr(0, v.filename.lastIndexOf('.'));
-							if (typeof data_byFilename[filename] === 'undefined') data_byFilename[filename] = [];
-							data_byFilename[filename].push(v);
-						});
-						//根据文件名、title归类删除重复文件
-						for (i in data_byTitle){
-							if (data_byTitle[i].length > 1) {
-								$.each(data_byTitle[i],function(k,v){
-									delete data_byFilename[v.filename.substr(0, v.filename.lastIndexOf('.'))];
-								});
-								result.push({
-									title: i,
-									type: data_byTitle[i].length == 2 ? 2 : 1, 
-									data: data_byTitle[i]
-								});
-							}
-						}
-						for (i in data_byFilename){
-							result.push({
-								title: data_byFilename[i][0].title,
-								type: data_byFilename[i].length == 2 ? 2 : 1,
-								data: data_byFilename[i]
-							});
-						}
-						$.each(result,function(k,v){
+						$.each(json.data.filenames,function(k,v){
 							var list = '';
-							$.each(v.data,function(i,j){
-								list += '<dd class="made_name"><a href="javascript:void(0);">'+(v.type == 1?'':'一')+j.title+'（'+j.filename+'）</a></dd>';
-							});
-							homelist += '<li class="list_a"><dl class="'+(v.type == 1?'made_left fl':'text_box')+'">'+v.title+'：</dl>'+(v.type == 1?'':'<dl class="wid_box"></dl>')+'<dl class="made_right fl">'+list+'</dl></li>'
+								$.each(v.files,function(i,j){
+									list += '<dd class="made_name"><a href="javascript:void(0);">（'+j+'）</a></dd>';
+								});
+							homelist += '<li class="list_a"><dl class="made_left fl">'+v.title+'：</dl><dl class="made_right fl">'+list+'</dl></li>'
 						});
 						$('.made_style').html(homelist).after('<div class="addfile-item"><a href="javascript:void(0);" class="bluebtn addfile">添加文件</a></div>');
     					_this.AddFile();
@@ -70,8 +42,8 @@ function diytplController($scope, $http, $location) {
 				$(this).parents("ul.made_style li").siblings().removeClass("cu").find("a,.made_name").removeClass("cu")
 			});
     	},
-    	ModelHtml : function(files,filetitle,filename){
-    		var preview = '<h1 class="made_style_edite_top"><a href="javascript:void(0);" class="made_btn resh_btn fr">保存文件</a><a href="../homepage-preview" class="made_btn Preview_btn fr">预览首页</a><a onclick="javascript:history.go(-1);" class="made_btn resh_btn fr">返回</a><span class="fl">'+files+'：'+filetitle+'（'+filename+'）</span><a href="javascript:void(0);" class="made_btn up_load fl">上传图片</a></h1>\n\
+    	ModelHtml : function(files,filename){
+    		var preview = '<h1 class="made_style_edite_top"><a href="javascript:void(0);" class="made_btn resh_btn fr">保存文件</a><a href="../homepage-preview" class="made_btn Preview_btn fr">预览首页</a><a onclick="javascript:history.go(-1);" class="made_btn resh_btn fr">返回</a><span class="fl">'+files+'：（'+filename+'）</span><a href="javascript:void(0);" class="made_btn up_load fl">上传图片</a></h1>\n\
                     <textarea class="made_edite">厦门易尔通厦门易</textarea>';
         	$('.made_style_edite').html(preview);
         	this.$made_edite = $('.made_edite')
@@ -86,7 +58,7 @@ function diytplController($scope, $http, $location) {
     				document.body.scrollTop = 0;
     				filename = $('.filename:not(:hidden)').val() || $('.fullname:not(:hidden)').val();
     				filename += $('.filesuffix').text();
-					_this.ModelHtml('编辑文件','',filename);
+					_this.ModelHtml('编辑文件',filename);
     			}else{
     				target.text('编辑文件');
     				target.before('<div class="newfile">\
@@ -154,15 +126,11 @@ function diytplController($scope, $http, $location) {
     	EditSave : function(json){
     		//右侧预览页
 			var file_name,file_tit,_this = this;
-			$('.made_right .made_name').on('click',function(){
-				var target = $(this);
+			$('.made_right .made_name').click(function(){
+				var target = $(this),$made_left = target.parent().siblings('.made_left');
 				file_name = target.text().substring(target.text().indexOf('（')+1,target.text().indexOf('）'));
-				file_tit = target.text().substring(0,target.text().indexOf('（'));
-				files = target.parents('.list_a').find('dl:first').text().substring(0,target.parents('.list_a').find('dl:first').text().indexOf('：'));
-				$.each(json.data.files,function(k,v){
-					$('.made_style_edite_top .made_edite').text(''+v.content+'');
-				});
-				_this.ModelHtml(files,file_tit,file_name);
+				file_tit = $made_left.text().substring(0,$made_left.text().indexOf('：'));
+				_this.ModelHtml(file_tit,file_name);
             	$http.get('../template-fileget?type='+_this.type+'&filename='+file_name+'').success(function(json){
 					checkJSON(json, function(json){
 						$('.made_style_edite .made_edite').html(json.data.code);
