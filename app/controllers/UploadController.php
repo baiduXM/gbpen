@@ -11,7 +11,28 @@ class UploadController extends BaseController{
         $destinationPath = public_path('customers/'.$customer.'/images/');
         if($files){
             if($target == 'imgcache'){
-                return Response::json($this->fileAddImg());
+                $id = $cus_id;
+                $filename = Input::get('filename');
+                $filename = explode('.', $filename);
+                $filetype = end($filename);
+                $name = WebsiteInfo::leftJoin('template','pc_tpl_id','=','template.id')->where('website_info.cus_id',$id)->pluck('name');
+                if($files['upload_file0'] -> isValid()){
+                    $type = $files['upload_file0']->getClientOriginalExtension();
+                    $truth_name=time().mt_rand(100,999).'.'.$type;
+                    $up_result=$files['upload_file0']->move(public_path('templates/'.$name.'/img_cache/'),$truth_name);
+                    if($up_result){
+                        $load['name'] = $truth_name;
+                        if($filetype == 'html')
+                            $load['url'] = '{$site_url}images/'.$truth_name;
+                        elseif($filetype == 'json')
+                            $load['url'] = 'images/'.$truth_name;
+                        else
+                            $load['url'] = '../images/'.$truth_name;
+                        $return = ['err'=>0,'msg' => '图片上传成功','data' => $load];
+                    }else
+                        $return = ['err'=>1001,'msg' => '图片上传失败','data' => ''];
+                }
+                    return Response::json($return);
             }else{
                 $data=array();
                 $i=0;
@@ -105,32 +126,6 @@ class UploadController extends BaseController{
         }
 	}
 	
-        
-
-    public function fileAddImg(){
-        $id = Auth::id();
-        $filename = Input::get('filename');
-        $filename = explode('.', $filename);
-        $filetype = end($filename);
-        $name = WebsiteInfo::leftJoin('template','pc_tpl_id','=','template.id')->where('website_info.cus_id',$id)->pluck('name');
-        $file = Input::file('file');
-        if($file -> isValid()){
-            $type = $file->getClientOriginalExtension();
-            $truth_name=time().mt_rand(100,999).'.'.$type;
-            $up_result=$file->move(public_path('templates/'.$name.'/img_cache/'),$truth_name);
-            if($up_result){
-                if($filetype == 'html')
-                    $load = '{$site_url}images/'.$truth_name;
-                elseif($filetype == 'json')
-                    $load = 'images/'.$truth_name;
-                else
-                    $load = '../images/'.$truth_name;
-                $return = ['err'=>0,'msg' => '图片上传成功','data' => $load];
-            }else
-                $return = ['err'=>1001,'msg' => '图片上传失败','data' => ''];
-            return $return;
-        }
-    }
         
         
         public function batchAdd(){
