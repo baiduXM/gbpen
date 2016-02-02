@@ -10,6 +10,8 @@ function diytplController($scope, $http, $location) {
     $scope.DiytplInit.prototype = {
     	init : function(){
     		this.FileImgArr = [];
+    		this.FileJsonArr = [];
+    		this.FileHtmlToJsonArr = [];
     		this.getinfo();
     		this.clicks();
     	},
@@ -17,21 +19,21 @@ function diytplController($scope, $http, $location) {
     		var _this = this;
     		//获取页面列表
 			$http.get('../template-filelist').success(function(json){
-				var homelist ='';
-				var tit = '';
-				var fn = '';
+				var homelist ='',tit = '',fn = '';
 				checkJSON(json, function(json){
 					if(_this.type == 1){
 						$.each(json.data.filenames,function(k,v){
 							var list = '';
-								$.each(v.files,function(i,j){
-									list += '<dd class="made_name"><a href="javascript:void(0);">（'+j+'）</a></dd>';
-								});
+							$.each(v.files,function(i,j){
+								j.match(/.*\.html$/) != null ? _this.FileHtmlToJsonArr.push(j.replace(/\.html$/,'.json')) : null;
+								j.match(/.*\.json$/) != null ? _this.FileJsonArr.push(j) : null;
+								list += '<dd class="made_name"><a href="javascript:void(0);">（'+j+'）</a></dd>';
+							});
 							homelist += '<li class="list_a"><dl class="made_left fl">'+v.title+'：</dl><dl class="made_right fl">'+list+'</dl></li>'
 						});
 						$('.made_style').html(homelist).after('<div class="addfile-item"><a href="javascript:void(0);" class="bluebtn addfile">添加文件</a></div>');
     					_this.AddFile();
-    					_this.EditSave(json);
+    					_this.FileListClick(json);
 					}
 				});//checkJSON结束
 			});//GET请求结束
@@ -44,37 +46,36 @@ function diytplController($scope, $http, $location) {
     	},
     	ModelHtml : function(files,filename){
     		var preview = '<h1 class="made_style_edite_top"><a href="javascript:void(0);" class="made_btn resh_btn fr">保存文件</a><a href="../homepage-preview" class="made_btn Preview_btn fr">预览首页</a><a onclick="javascript:history.go(-1);" class="made_btn resh_btn fr">返回</a><span class="fl">'+files+'：（'+filename+'）</span><a href="javascript:void(0);" class="made_btn up_load fl">上传图片</a></h1>\n\
-                    <textarea class="made_edite">厦门易尔通厦门易</textarea>';
+                    <textarea class="made_edite"></textarea>';
         	$('.made_style_edite').html(preview);
         	this.$made_edite = $('.made_edite')
         	this._UploadImg();
     	},
-    	AddFile : function(){
+    	AddFile : function(){// 添加文件的编辑按钮
     		var _this = this;
     		$('.home-content .addfile').click(function(event) {
     			var target = $(event.target),filename;
     			if(target.prev().hasClass('newfile')){
-    				$('.made_style_edite .made_edite').html('');
     				document.body.scrollTop = 0;
-    				filename = $('.filename:not(:hidden)').val() || $('.fullname:not(:hidden)').val();
-    				filename += $('.filesuffix').text();
+    				filename = $('.filename:not(:hidden)').val() ? $('.filename:not(:hidden)').val()+$('.filesuffix').text() : $('.fullname:not(:hidden)').val();
 					_this.ModelHtml('编辑文件',filename);
+					_this.EditSave(filename);
     			}else{
     				target.text('编辑文件');
     				target.before('<div class="newfile">\
 						<select type="text" class="filetype">\
-							<option selected="selected">文件类型</option>\
 							<option value="js">脚本文件</option>\
-							<option value="html">HTML模板</option>\
-							<option class="filedatachoose">模板数据</option>\
+							<option selected="selected" value="html">HTML模板</option>\
+							<option value="filedatachoose" class="filedatachoose">模板数据</option>\
 						</select>-<input type="text" class="filename" placeholder="文件别名" />\
 						<select type="text" class="fullname none"></select>\
-						<label type="text" class="filesuffix"></label></div>');
+						<label type="text" class="filesuffix">.html</label></div>');
 					_this.AddFileSelect();
     			}
 			});
     	},
     	AddFileSelect : function(){
+    		var _this = this;
     		$('.filetype').change(function(event) {
 				var target = $(this),
 					type = target.val(),
@@ -95,16 +96,15 @@ function diytplController($scope, $http, $location) {
 						suffix.text('');
 						fullname.show();
 						filename.hide();
-						$http.get('').success(function(json){
-							checkJSON(json,function(json){
-								var OPhtml = '<option value="index.json">index.json<option/><option value="global.json">global.json<option/>';
-								for(var key in json){
-									OPhtml += '<option value="'+json[key]+'">'+json[key]+'<option/>';
-								};
-								$('.fullname').append(OPhtml);
-							});
-						});
-						break;	
+						var OPhtml = (_this.type = 1 ? '<option value="global.json">global.json</option>' : '');
+						for(var i in _this.FileJsonArr){
+							_this.FileHtmlToJsonArr.splice($.inArray(concatArr[i],_this.FileHtmlToJsonArr),1);
+						}
+						for(var j in _this.FileHtmlToJsonArr){
+							OPhtml += '<option value="'+_this.FileHtmlToJsonArr[j]+'">'+_this.FileHtmlToJsonArr[j]+'</option>';
+						}
+						$('.fullname').append(OPhtml);
+						break;
 				}
 			});
     	},
@@ -123,7 +123,7 @@ function diytplController($scope, $http, $location) {
                 });
             });
     	},
-    	EditSave : function(json){
+    	FileListClick : function(json){
     		//右侧预览页
 			var file_name,file_tit,_this = this;
 			$('.made_right .made_name').click(function(){
@@ -137,22 +137,27 @@ function diytplController($scope, $http, $location) {
 					});
 				});
             	target.find('a').addClass('red').end().siblings().find('a').removeClass('red').end().closest('.list_a').siblings().find('a').removeClass('red');
-            	$('.made_style_edite_top .resh_btn').on('click',function(){
-					$http.post('../template-fileedit',{
-						type 	: _this.type,
-						filename: file_name,
-						code 	: $('.made_style_edite .made_edite').val(),
-						fileimg : _this.FileImgArr
-					}).success(function(json){
-						checkJSON(json, function(json){
-							var hint_box = new Hint_box();
-                			hint_box;
-						});
-					});
-				});
+            	_this.EditSave(file_name);
 			});
 			var paddinHeight = $('.made_style_edite').outerHeight() - $('.made_style_edite').height();
 			$('.made_style_edite').css('height', $('#home-diy').innerHeight() - paddinHeight);
+    	},
+    	EditSave : function(filename){
+    		var _this = this;
+    		$('.made_style_edite_top .resh_btn').click(function(){
+    			if(!filename) return false;
+				$http.post('../template-fileedit',{
+					type 	: _this.type,
+					filename: filename,
+					code 	: $('.made_style_edite .made_edite').val(),
+					fileimg : _this.FileImgArr
+				}).success(function(json){
+					checkJSON(json, function(json){
+						var hint_box = new Hint_box();
+            			hint_box;
+					});
+				});
+			});
     	}
     }
     var init = new $scope.DiytplInit();

@@ -461,7 +461,7 @@ ul.made_style li.list_a .list_box a.cu{ background:none; color:#d91f1f}
 .home-content .addfile-item{width: 100%;text-align: center;}
 .addfile-item .on{background-color: #A9A9A9;}
 .newfile input{width: 90px;height: 24px;text-align: center;margin: 10px auto;}
-.newfile select{width: 90px;height: 28px;}
+.newfile select{width: 90px;height: 28px;margin: 10px auto;}
 /*Setting用户设置*/
 .setting-feild .setting-name{color: #5f8cc5;font-size: 16px;line-height: 36px;border-bottom: 1px solid #b2b2b2;}
 .setting-feild .feild-content{margin: 20px auto 20px auto;max-width: 620px;}
