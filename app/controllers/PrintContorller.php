@@ -533,8 +533,8 @@ class PrintController extends BaseController{
                    }
                }
                 $config['module']=array();
-                $tmpModulesConfigQuickbar = explode(',',trim($quickbar_arr[1]));
-                if (count($tmpModulesConfigQuickbar)) {
+                if (count($quickbar_arr)>1) {
+                    $tmpModulesConfigQuickbar = explode(',',trim($quickbar_arr[1]));
                     foreach($tmpModulesConfigQuickbar as $key=>$val){
                        if($val=='tel'){
                            $tel = Customerinfo::where('cus_id',$this->cus_id)->pluck('telephone');
@@ -545,7 +545,7 @@ class PrintController extends BaseController{
                        }
                    }
                 }else{
-                    $config['module'] = $quickbar_arr[1];
+                    $config['module'] = array();
                 }
                $CommonCont = new CommonController();
                $quickbar=$CommonCont->quickBarJsonInit();
