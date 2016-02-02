@@ -1,0 +1,10 @@
+diff a/app/controllers/PrintContorller.php b/app/controllers/PrintContorller.php	(rejected hunks)
+@@ -545,7 +545,7 @@
+                        }
+                    }
+                 }else{
+-                    $config['module'] = $quickbar_arr[1];
++                    $config['module'] = array();
+                 }
+                $CommonCont = new CommonController();
+                $quickbar=$CommonCont->quickBarJsonInit();

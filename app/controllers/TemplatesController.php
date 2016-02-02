@@ -402,7 +402,7 @@ class TemplatesController extends BaseController{
         }else{
             $config_arr=$mobile->mobilePageList('global',true);
         }
-        //print_r($config_arr);exit;
+        print_r($config_arr);exit;
         foreach($config_arr as $key => $val){
             $pagelist[]=array('page'=>$key,'title'=>$config_arr[$key]['description'],'type'=>$config_arr[$key]['type']);
             $data[$key]=$config_arr[$key];
