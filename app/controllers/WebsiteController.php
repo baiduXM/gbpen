@@ -670,7 +670,11 @@ class WebsiteController extends BaseController{
                 $new_num=$last_num+1;
                 $tpl_dir=$tpl_dir.str_repeat('0', 4-strlen($new_num)).$new_num;
             }
-
+            
+            //正则匹配tpl_num
+            preg_match('/[A-Z]{2}[0]*(\d*)/',$tpl_name,$have);
+            $new_num = $have[1];
+            
             //配置数据
             $data=array();
             $data['template']=array(
