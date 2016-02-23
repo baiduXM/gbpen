@@ -34,8 +34,8 @@ class ArticleController extends BaseController{
         $article->keywords=Input::get('keywords');
         $article->introduction=Input::get('introduction');
         $article->content=trim(Input::get('content')); 
-        if($article->title=="" || $article->content==""){
-            return Response::json(array('err'=>3001,'msg'=>'标题或内容不能为空'));
+        if($article->title==""){
+            return Response::json(array('err'=>3001,'msg'=>'标题不能为空'));
         }
         $article->pushed=1;
         $img_arr=explode(',',Input::get('src'));
