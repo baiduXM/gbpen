@@ -1783,8 +1783,8 @@ class PrintController extends BaseController{
                 }   
             }elseif($classify->type==5){
                 $result['list']['content'] ='<form action="http://swap.5067.org/message/'.$this->cus_id.'" method="post" name="messageboard" onsubmit="return CheckPost();" class="elegant-aero">
-                    <h1>留言板
-                    <span>message board</span>
+                    <h1>'.$classify->name.'
+                    <span>'.$classify->en_name.'</span>
                     </h1>
                     <label>
                     <span>姓名 :</span>
