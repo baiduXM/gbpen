@@ -92,41 +92,16 @@ class ApiController extends BaseController{
 			{
 				//修改操作
 				$save = Customer::where('id',$cus_id)->update($update);
-                                echo 1;
                                 $pc_id = Template::where('tpl_num',$update['pc_tpl_num'])->where('type',1)->pluck('id');
-                                echo 2;
                                 $mobile_id = Template::where('tpl_num',$update['mobile_tpl_num'])->where('type',2)->pluck('id');
-                                echo 3;
-                                $pc_templateid=Template::where('cus_id',$cus_id)->where('type',1)->pluck('id');
-                                echo 3;
-                                $mobile_templateid=Template::where('cus_id',$cus_id)->where('type',2)->pluck('id');
-                                echo 4;
-                                if($pc_templateid){
-                                    echo 5;
-                                   WebsiteInfo::where('cus_id',$cus_id)->update([$pc_templateid=>$pc_id]);
-                                }
-                                else{
-                                    echo 6;
-                                   WebsiteInfo::where('cus_id',$cus_id)->update(['pc_tpl_id'=>$pc_id,]); 
-                                }
-                                if($mobile_templateid){
-                                    echo 7;
-                                   WebsiteInfo::where('cus_id',$cus_id)->update([$mobile_templateid=>$mobile_id]);
-                                }
-                                else{
-                                    echo 8;
-                                   WebsiteInfo::where('cus_id',$cus_id)->update(['pc_tpl_id'=>$mobile_id,]); 
-                                }
+                                WebsiteInfo::where('cus_id',$cus_id)->update(['pc_tpl_id'=>$pc_id,'mobile_tpl_id'=>$mobile_id]);
                                 CustomerInfo::where('cus_id',$cus_id)->update(['pc_domain'=>$update['pc_domain'],'mobile_domain'=>$update['mobile_domain']]);
-                                echo 9;
 				if($save)
 				{
-                                    echo 10;
 					$result = ['err'=>1000,'msg'=>'更新用户成功'];
 				}
 				else
 				{
-                                    echo 11;
 					$result = ['err'=>1002,'msg'=>'更新用户失败'];
 				}
 			}
@@ -142,8 +117,9 @@ class ApiController extends BaseController{
 				{
                     $pc_id = Template::where('tpl_num',$update['pc_tpl_num'])->where('type',1)->pluck('id');
                     $mobile_id = Template::where('tpl_num',$update['mobile_tpl_num'])->where('type',2)->pluck('id');
+                    
                     WebsiteInfo::insert(['cus_id'=>$insert_id,'pc_tpl_id'=>$pc_id,'mobile_tpl_id'=>$mobile_id]);
-                    CustomerInfo::insert(['cus_id'=>$insert_id,'pc_domain'=>$update['pc_domain'],'mobile_domain'=>$update['mobile_domain']]);
+                                CustomerInfo::insert(['cus_id'=>$insert_id,'pc_domain'=>$update['pc_domain'],'mobile_domain'=>$update['mobile_domain']]);
                     
                     //创建客户目录
                     mkdir(public_path('customers/'.$update['name']));
