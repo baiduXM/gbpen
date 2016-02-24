@@ -94,7 +94,20 @@ class ApiController extends BaseController{
 				$save = Customer::where('id',$cus_id)->update($update);
                                 $pc_id = Template::where('tpl_num',$update['pc_tpl_num'])->where('type',1)->pluck('id');
                                 $mobile_id = Template::where('tpl_num',$update['mobile_tpl_num'])->where('type',2)->pluck('id');
-                                WebsiteInfo::where('cus_id',$cus_id)->update(['pc_tpl_id'=>$pc_id,'mobile_tpl_id'=>$mobile_id]);
+                                $pc_templateid=Template::where('cus_id',$cus_id)->where('type',1)->pluck('id');
+                                $mobile_templateid=Template::where('cus_id',$cus_id)->where('type',2)->pluck('id');
+                                if($pc_templateid){
+                                   WebsiteInfo::where('cus_id',$cus_id)->update(['pc_tpl_id'=>$pc_templateid]);
+                                }
+                                else{
+                                   WebsiteInfo::where('cus_id',$cus_id)->update(['pc_tpl_id'=>$pc_id]); 
+                                }
+                                if($mobile_templateid){
+                                   WebsiteInfo::where('cus_id',$cus_id)->update(['pc_tpl_id'=>$mobile_templateid]);
+                                }
+                                else{
+                                   WebsiteInfo::where('cus_id',$cus_id)->update(['pc_tpl_id'=>$mobile_id]); 
+                                }
                                 CustomerInfo::where('cus_id',$cus_id)->update(['pc_domain'=>$update['pc_domain'],'mobile_domain'=>$update['mobile_domain']]);
 				if($save)
 				{
