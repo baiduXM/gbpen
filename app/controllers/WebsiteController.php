@@ -672,8 +672,10 @@ class WebsiteController extends BaseController{
             }
             
             //正则匹配tpl_num
-            preg_match('/[A-Z]{2}[0]*(\d*)/',$tpl_name,$have);
-            $new_num = $have[1];
+            if(!strstr($_SERVER['HTTP_REFERER'], 'f.no02.gbpen.cn')){
+                preg_match('/[A-Z]{2}[0]*(\d*)/',$tpl_name,$have);
+                $new_num = $have[1];
+            }
             
             //配置数据
             $data=array();
