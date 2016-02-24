@@ -92,33 +92,41 @@ class ApiController extends BaseController{
 			{
 				//修改操作
 				$save = Customer::where('id',$cus_id)->update($update);
-                                $pc_id = Template::where('tpl_num',$update['pc_tpl_num'])->where('type',1)->pluck('id');
-                                $mobile_id = Template::where('tpl_num',$update['mobile_tpl_num'])->where('type',2)->pluck('id');
-                                $pc_templateid=Template::where('cus_id',$cus_id)->where('type',1)->pluck('id');
-                                $mobile_templateid=Template::where('cus_id',$cus_id)->where('type',2)->pluck('id');
                                 echo 1;
+                                $pc_id = Template::where('tpl_num',$update['pc_tpl_num'])->where('type',1)->pluck('id');
+                                echo 2;
+                                $mobile_id = Template::where('tpl_num',$update['mobile_tpl_num'])->where('type',2)->pluck('id');
+                                echo 3;
+                                $pc_templateid=Template::where('cus_id',$cus_id)->where('type',1)->pluck('id');
+                                echo 3;
+                                $mobile_templateid=Template::where('cus_id',$cus_id)->where('type',2)->pluck('id');
+                                echo 4;
                                 if($pc_templateid){
+                                    echo 5;
                                    WebsiteInfo::where('cus_id',$cus_id)->update([$pc_templateid=>$pc_id]);
                                 }
                                 else{
+                                    echo 6;
                                    WebsiteInfo::where('cus_id',$cus_id)->update(['pc_tpl_id'=>$pc_id,]); 
                                 }
-                                echo 2;
                                 if($mobile_templateid){
+                                    echo 7;
                                    WebsiteInfo::where('cus_id',$cus_id)->update([$mobile_templateid=>$mobile_id]);
                                 }
                                 else{
+                                    echo 8;
                                    WebsiteInfo::where('cus_id',$cus_id)->update(['pc_tpl_id'=>$mobile_id,]); 
                                 }
-                                echo 3;
                                 CustomerInfo::where('cus_id',$cus_id)->update(['pc_domain'=>$update['pc_domain'],'mobile_domain'=>$update['mobile_domain']]);
-                                echo 4;
+                                echo 9;
 				if($save)
 				{
+                                    echo 10;
 					$result = ['err'=>1000,'msg'=>'更新用户成功'];
 				}
 				else
 				{
+                                    echo 11;
 					$result = ['err'=>1002,'msg'=>'更新用户失败'];
 				}
 			}
