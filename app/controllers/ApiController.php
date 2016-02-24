@@ -96,19 +96,23 @@ class ApiController extends BaseController{
                                 $mobile_id = Template::where('tpl_num',$update['mobile_tpl_num'])->where('type',2)->pluck('id');
                                 $pc_templateid=Template::where('cus_id',$cus_id)->where('type',1)->pluck('id');
                                 $mobile_templateid=Template::where('cus_id',$cus_id)->where('type',2)->pluck('id');
+                                echo 1;
                                 if($pc_templateid){
                                    WebsiteInfo::where('cus_id',$cus_id)->update([$pc_templateid=>$pc_id]);
                                 }
                                 else{
                                    WebsiteInfo::where('cus_id',$cus_id)->update(['pc_tpl_id'=>$pc_id,]); 
                                 }
+                                echo 2;
                                 if($mobile_templateid){
                                    WebsiteInfo::where('cus_id',$cus_id)->update([$mobile_templateid=>$mobile_id]);
                                 }
                                 else{
                                    WebsiteInfo::where('cus_id',$cus_id)->update(['pc_tpl_id'=>$mobile_id,]); 
                                 }
+                                echo 3;
                                 CustomerInfo::where('cus_id',$cus_id)->update(['pc_domain'=>$update['pc_domain'],'mobile_domain'=>$update['mobile_domain']]);
+                                echo 4;
 				if($save)
 				{
 					$result = ['err'=>1000,'msg'=>'更新用户成功'];
