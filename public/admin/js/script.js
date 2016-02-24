@@ -323,7 +323,7 @@ function width_resize(data){
 $(window).resize(function(){width_resize()});
 // 推送静态文件
 var cache_num;
-setInterval(function(){
+function pushtimer(){
 	$.get('../isneedpush',function(json){
 		checkJSON(json,function(json){
 			cache_num = json.data.cache_num;
@@ -335,6 +335,10 @@ setInterval(function(){
 			}
 		});
 	});
+}
+pushtimer();
+setInterval(function(){
+	pushtimer();
 }, 10000);
 window.onbeforeunload=function(event){
 	if(cache_num){
