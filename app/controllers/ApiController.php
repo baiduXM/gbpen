@@ -270,10 +270,12 @@ class ApiController extends BaseController{
 		if($this->authData()){
 			
 			$name = Input::get('name');
-			
+			$cus_id = Customer::where('name',$name)->pluck('id');
 			$delete = Customer::where('name',$name)->delete();
 			if($delete){
 				$result = ['err'=>1000,'msg'=>'删除用户成功'];
+                                WebsiteInfo::where('cus_id',$cus_id)->delete();
+                                CustomerInfo::where('cus_id',$cus_id)->delete();
 			}
 			else{
 				$result = ['err'=>1001,'msg'=>'删除用户失败'];
