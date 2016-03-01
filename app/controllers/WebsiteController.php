@@ -672,7 +672,7 @@ class WebsiteController extends BaseController{
             }
             
             //正则匹配tpl_num
-            if(!strstr($_SERVER['HTTP_REFERER'], 'f.no02.gbpen.cn')){
+            if(isset($_SERVER['HTTP_REFERER'])){
                 preg_match('/[A-Z]{2}[0]*(\d*)/',$tpl_name,$have);
                 $new_num = $have[1];
             }

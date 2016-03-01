@@ -94,7 +94,21 @@ class ApiController extends BaseController{
 				$save = Customer::where('id',$cus_id)->update($update);
                                 $pc_id = Template::where('tpl_num',$update['pc_tpl_num'])->where('type',1)->pluck('id');
                                 $mobile_id = Template::where('tpl_num',$update['mobile_tpl_num'])->where('type',2)->pluck('id');
-                                WebsiteInfo::where('cus_id',$cus_id)->update(['pc_tpl_id'=>$pc_id,'mobile_tpl_id'=>$mobile_id]);
+                                $pc_templateid=Template::where('cus_id',$cus_id)->where('type',1)->pluck('id');
+                                $mobile_templateid=Template::where('cus_id',$cus_id)->where('type',2)->pluck('id');
+                                if($pc_templateid!= NULL){
+                                WebsiteInfo::where('cus_id',$cus_id)->update(['pc_tpl_id'=>$pc_templateid]);
+                                }
+                                else{
+                                   WebsiteInfo::where('cus_id',$cus_id)->update(['pc_tpl_id'=>$pc_id]);
+                                }
+                                if($mobile_templateid!= NULL){
+                                   WebsiteInfo::where('cus_id',$cus_id)->update(['mobile_tpl_id'=>$mobile_templateid]);
+                                }
+                                else{
+                                   WebsiteInfo::where('cus_id',$cus_id)->update(['mobile_tpl_id'=>$mobile_id]);
+                                }
+                                //WebsiteInfo::where('cus_id',$cus_id)->update(['pc_tpl_id'=>$pc_id,'mobile_tpl_id'=>$mobile_id]);
                                 CustomerInfo::where('cus_id',$cus_id)->update(['pc_domain'=>$update['pc_domain'],'mobile_domain'=>$update['mobile_domain']]);
 				if($save)
 				{
@@ -117,6 +131,7 @@ class ApiController extends BaseController{
 				{
                     $pc_id = Template::where('tpl_num',$update['pc_tpl_num'])->where('type',1)->pluck('id');
                     $mobile_id = Template::where('tpl_num',$update['mobile_tpl_num'])->where('type',2)->pluck('id');
+                    
                     WebsiteInfo::insert(['cus_id'=>$insert_id,'pc_tpl_id'=>$pc_id,'mobile_tpl_id'=>$mobile_id]);
                                 CustomerInfo::insert(['cus_id'=>$insert_id,'pc_domain'=>$update['pc_domain'],'mobile_domain'=>$update['mobile_domain']]);
                     
@@ -255,10 +270,12 @@ class ApiController extends BaseController{
 		if($this->authData()){
 			
 			$name = Input::get('name');
-			
+			$cus_id = Customer::where('name',$name)->pluck('id');
 			$delete = Customer::where('name',$name)->delete();
 			if($delete){
 				$result = ['err'=>1000,'msg'=>'删除用户成功'];
+                                WebsiteInfo::where('cus_id',$cus_id)->delete();
+                                CustomerInfo::where('cus_id',$cus_id)->delete();
 			}
 			else{
 				$result = ['err'=>1001,'msg'=>'删除用户失败'];
