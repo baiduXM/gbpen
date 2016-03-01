@@ -361,28 +361,28 @@ $('.batchbtn .save').hide();
 // 模拟下拉框事件
 function DropdownEvent(PageId){
     $(".selectBox").click(function(){
-        var ul = $(this).siblings('ul'); 
+        var _this = $(this), ul = _this.siblings('ul'); 
         $('.dropdown ul').not(ul).hide();
         if(ul.css("display")=="none"){ 
             ul.slideDown("fast"); 
-            $(this).siblings('.arrow').css({'border-color':'transparent transparent rgb(180,180,180) transparent','top':'2px'});
+            _this.siblings('.arrow').css({'border-color':'transparent transparent rgb(180,180,180) transparent','top':'2px'});
         }else{ 
             ul.slideUp("fast"); 
-            $(this).siblings('.arrow').css({'border-color':'rgb(180,180,180) transparent transparent transparent','top':'7px'});
+            _this.siblings('.arrow').css({'border-color':'rgb(180,180,180) transparent transparent transparent','top':'7px'});
         } 
     }); 
     if(PageId){
         $(".dropdown ul li a").mouseenter(function(){
-            var _this = $(this);
-            if(PageId.indexOf($(this).data('id')) != -1){
-                $(this).addClass('not-allowed');
+            var _this = _this;
+            if(PageId.indexOf(_this.data('id')) != -1){
+                _this.addClass('not-allowed');
                 $('.not-allowed').MoveBox({context:'此为单页类型或者此级下有子级，不支持选择！'});
             }else{
-                if(!$(this).hasClass('not-allowed')){
-                    $(this).click(function(){
-                        var txt = $(this).text(); 
+                if(!_this.hasClass('not-allowed')){
+                    _this.click(function(){
+                        var txt = _this.text(); 
                         $(".selectBox").text(txt); 
-                        var value = $(this).data("id"); 
+                        var value = _this.data("id"); 
                         $(".dropdown ul").slideUp("fast"); 
                         $(".selectBox_val").val(value); 
                         $(".dropdown .arrow").css({'border-color':'rgb(180,180,180) transparent transparent transparent','top':'7px'});
@@ -392,19 +392,20 @@ function DropdownEvent(PageId){
         });
     }else{
         $(".dropdown ul li a").click(function(){
-            if($(this).hasClass('not-allowed')){
+            var _this = $(this);
+            if(_this.hasClass('not-allowed')){
                 return false;
             }
-            var ul = $(this).closest('ul');
-            var value = $(this).data("id"); 
-            ul.siblings('.selectBox').attr('data-id',value).text($(this).text()); 
+            var ul = _this.closest('ul');
+            var value = _this.data("id"); 
+            ul.siblings('.selectBox').attr('data-id',value).text(_this.text()); 
             ul.slideUp("fast"); 
             ul.siblings('.selectBox_val').val(value); 
             ul.siblings('.arrow').css({'border-color':'rgb(180,180,180) transparent transparent transparent','top':'7px'});
             // 页面展示下拉框
-            if($(this).data('size') != undefined){
-                ul.siblings('.selectBox_name').val($(this).data("name"));
-                ul.siblings('.selectBox').attr('data-size',$(this).data("size"));
+            if(_this.data('size') != undefined){
+                ul.siblings('.selectBox_name').val(_this.data("name"));
+                ul.siblings('.selectBox').attr('data-size',_this.data("size"));
             }
         });
     }
@@ -465,44 +466,45 @@ var Hint_box = function(){
 // 全局勾选框
 function checkjs(parame){
     $("."+parame+"-tb").unbind( "click" ).on('click','.label',function() {
-        var num = 0;
-        if($(this).hasClass("allcheck"))
+        var num = 0
+            , _this = $(this);
+        if(_this.hasClass("allcheck"))
         {
-            if(!$(this).hasClass("nchecked")){
+            if(!_this.hasClass("nchecked")){
                 $(".label").addClass("nchecked");
                 $(".label").siblings("input[type=checkbox]").attr("checked", true);
             }else{
                 $(".label").removeClass("nchecked");
                 $(".label").siblings("input[type=checkbox]").attr("checked", false);
             }
-        }else if($(this).parents(".firstlist").attr("data-aid")){
-            if(!$(this).hasClass("nchecked")){
-                $(this).addClass("nchecked");
-                $(this).siblings("input[type=checkbox]").attr("checked", true);
-                $("tr[data-parent='"+$(this).parents(".firstlist").attr("data-aid")+"']").find(".label").each(function(){
-                  $(this).addClass("nchecked");
-                  $(this).siblings("input[type=checkbox]").attr("checked", true);
+        }else if(_this.parents(".firstlist").attr("data-aid")){
+            if(!_this.hasClass("nchecked")){
+                _this.addClass("nchecked");
+                _this.siblings("input[type=checkbox]").attr("checked", true);
+                $("tr[data-parent='"+_this.parents(".firstlist").attr("data-aid")+"']").find(".label").each(function(){
+                  _this.addClass("nchecked");
+                  _this.siblings("input[type=checkbox]").attr("checked", true);
                 });
             }else{
-                $(this).removeClass("nchecked");
+                _this.removeClass("nchecked");
                 $(".allcheck").removeClass("nchecked");
-                $(this).siblings("input[type=checkbox]").attr("checked", false);
-                $("tr[data-parent='"+$(this).parents(".firstlist").attr("data-aid")+"']").find(".label").each(function(){
-                  $(this).removeClass("nchecked");
-                  $(this).siblings("input[type=checkbox]").attr("checked", false);
+                _this.siblings("input[type=checkbox]").attr("checked", false);
+                $("tr[data-parent='"+_this.parents(".firstlist").attr("data-aid")+"']").find(".label").each(function(){
+                  _this.removeClass("nchecked");
+                  _this.siblings("input[type=checkbox]").attr("checked", false);
                 });
             }
         }else{
-            if (!$(this).hasClass("nchecked")) {
-                $(this).addClass("nchecked");
-                $(this).siblings("input[type=checkbox]").attr("checked", true);
+            if (!_this.hasClass("nchecked")) {
+                _this.addClass("nchecked");
+                _this.siblings("input[type=checkbox]").attr("checked", true);
             }else {
-                $(this).removeClass("nchecked");
+                _this.removeClass("nchecked");
                 $(".allcheck").removeClass("nchecked");
-                $(this).siblings("input[type=checkbox]").attr("checked", false);
+                _this.siblings("input[type=checkbox]").attr("checked", false);
             }
             $('.article-check label.label').each(function(i){
-                if($(this).hasClass('nchecked')){
+                if(_this.hasClass('nchecked')){
                     num++;
                 }
             });
@@ -522,7 +524,7 @@ function checkjs(parame){
     });     
 }
 // 图标选择
-function icon_choose(limintHeight){
+function icon_choose(limintHeight){ 
     this.clicks = function(){
         var _this = this;
         $('.icon_box>i').unbind('click').on('click',function(event) {
