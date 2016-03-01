@@ -528,17 +528,17 @@ function icon_choose(limintHeight){
     this.clicks = function(){
         var _this = this;
         $('.icon_box>i').unbind('click').on('click',function(event) {
-            if($(this).offset().top > limintHeight){
-                $(this).siblings('.icon_ousidebox').css({'top':'auto','bottom':'30px'}).end()
+            var event_this = $(this);
+            if(event_this.offset().top > limintHeight){
+                event_this.siblings('.icon_ousidebox').css({'top':'auto','bottom':'30px'}).end()
                 .siblings('.arrow').css({'border-color':'rgba(0,0,0,0.7) transparent transparent transparent','bottom':'18px','top':'auto'});
             }
-            var event_this = $(this);
-            if($(this).parent().hasClass('in')){
-                $(this).siblings('.icon_ousidebox,.arrow').fadeOut();
-                $(this).parent().removeClass('in')
+            if(event_this.parent().hasClass('in')){
+                event_this.siblings('.icon_ousidebox,.arrow').fadeOut();
+                event_this.parent().removeClass('in')
             }else{
-                $(this).siblings('.icon_ousidebox,.arrow').fadeIn();
-                $(this).parent().addClass('in')
+                event_this.siblings('.icon_ousidebox,.arrow').fadeIn();
+                event_this.parent().addClass('in')
             }
             $.get('../icon-list',function(json){
                 checkJSON(json, function(json){
@@ -553,7 +553,6 @@ function icon_choose(limintHeight){
         })  
     },
     this._clickhide = function(){
-        var _this = this;
         $('.icon_ousidebox ul li').unbind('click').click(function(event) {
             var _Pthis = $(this).closest('.icon_box');
             _Pthis.children('i').before('<i class="iconfonts">'+$(this).attr('name')+'</i></li>').remove();
