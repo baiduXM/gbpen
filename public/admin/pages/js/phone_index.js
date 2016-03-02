@@ -696,13 +696,18 @@ function phone_indexController($scope,$http ,$location) {
 									<i class="iconfonts '+(v.data.indexOf('tqq') == -1 ? 'grey' : 'blue')+'"  data-name="tqq">&#xe650;</i>\
 								</span></div>';
 						break;
-					case 'link':
+					case 'map':
 						var point = v.data.split('|')[1] || '';
 						_this.pointX = point.split(',')[0] || '';
 						_this.pointY = point.split(',')[1] || '';
 						info = '<div class="quicklist-r inline-block">\
 									<div class="linktop"><input class="message-num" value="'+v.data.split('|')[0]+'" data-point="'+_this.pointX+','+_this.pointY+'" /><a class="search">搜索</a></div>\
 									<div id="bdmap"></div>\
+								</div>';
+						break;
+					case 'link':
+						info = '<div class="quicklist-r inline-block">\
+									<span class="contact ml5"><input type="text" value="'+v.link+'" class="outurl" /></span>\
 								</div>';
 						break;
 					case 'search':
