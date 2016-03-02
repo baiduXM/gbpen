@@ -169,7 +169,7 @@ mainApp.controller('mainController', function($scope) {
 	$scope.domain_pc = '';
 });
 // 登陆信息
-mainApp.controller('memberController', function($scope,$http) {alert(1)
+mainApp.controller('memberController', function($scope,$http) {
 	$http.get('../customer-info').success(function(json){
 		checkJSON(json,function(json){ 
 			$scope.companyname = json.data.company_name;
