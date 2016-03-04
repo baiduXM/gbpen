@@ -558,7 +558,7 @@ border-radius: 5px;}
 #phone_index-quickbar .phone_quickbar_item .title:after{content:".";visibility:hidden;clear:both;display: block;}
 #phone_index-quickbar .phone_func_move{float: right;margin-top: -34px;color: #317EFF;display: none;cursor:move;}
 .phone_quickbar_item .phone_func>li{margin: 10px auto;border:1px solid transparent;padding: 10px 10px;text-align: left;}
-.phone_quickbar_item .phone_func .message-num{width: 125px;height: 21px;padding: 2px 0 2px 5px;border:solid 1px #999;}
+.phone_quickbar_item .phone_func .message-box{width: 125px;height: 21px;padding: 2px 0 2px 5px;border:solid 1px #999;}
 .phone_quickbar_item .phone_func .custom-menu-title{font-size: 14px;font-weight: bold;margin-right: 36px;}
 .phone_func .shareicon>i{margin: auto 10px;font-size: 24px;cursor: pointer;}
 .phone_quickbar_item .custom-menu-ul>li{padding: 10px;border:1px solid transparent;margin-bottom: 10px;}

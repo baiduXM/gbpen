@@ -666,7 +666,7 @@ function phone_indexController($scope,$http ,$location) {
 				switch(v.type){
 					case 'tel':
 					case 'sms':
-						info = '<div class="quicklist-r inline-block"><span class="contact ml5"><input type="text" value="'+v.data+'" class="message-num" /></span></div>';
+						info = '<div class="quicklist-r inline-block"><span class="contact ml5"><input type="text" value="'+v.data+'" class="message-box" /></span></div>';
 						break;
 					case 'im':
 						info = '<div class="quicklist-r inline-block">\
@@ -679,7 +679,7 @@ function phone_indexController($scope,$http ,$location) {
 												kfname = fg[0].split(':')[0],kfnum = fg[0].split(':')[1];
 							    			_li += '<li class="consultation-item">\
 														<select><option value="qq"'+(fg[1] == 'qq' ? 'selected' : '')+'>QQ</option></select>\
-														<span><input class="consultation-name message-num" value="'+(kfname||'')+'" />-<input class="consultation-num message-num" value="'+(kfnum||'')+'" /></span>\
+														<span><input class="consultation-name message-box" value="'+(kfname||'')+'" />-<input class="consultation-num message-box" value="'+(kfnum||'')+'" /></span>\
 														<div class="crl_icon fr"><i class="iconfont icon-guanbi"></i></div>\
 													</li>';
 							    		} 
@@ -701,13 +701,30 @@ function phone_indexController($scope,$http ,$location) {
 						_this.pointX = point.split(',')[0] || '';
 						_this.pointY = point.split(',')[1] || '';
 						info = '<div class="quicklist-r inline-block">\
-									<div class="linktop"><input class="message-num" value="'+v.data.split('|')[0]+'" data-point="'+_this.pointX+','+_this.pointY+'" /><a class="search">搜索</a></div>\
+									<div class="linktop"><input class="message-box" value="'+v.data.split('|')[0]+'" data-point="'+_this.pointX+','+_this.pointY+'" /><a class="search">搜索</a></div>\
 									<div id="bdmap"></div>\
 								</div>';
 						break;
 					case 'link':
 						info = '<div class="quicklist-r inline-block">\
-									<span class="contact ml5"><input type="text" value="'+v.link+'" class="outurl" /></span>\
+									<ul class="fl">\
+									'+function(){
+										if(v.childmenu != undefined && v.childmenu != null){
+											var newArr = v.childmenu;
+								    		newArr.each(function(idx, ele) {
+								    		 	_li += '<li class="consultation-item">\
+															<span><input class="consultation-name message-box" value="'+ele.data+'" /></span>\
+															<div class="crl_icon fr"><i class="iconfont icon-guanbi"></i></div>\
+														</li>';
+								    		}); 
+										}else{
+											_li = '<li class="consultation-item">\
+														<span><input class="consultation-name message-box" value="'+v.data+'" /></span>\
+														<div class="crl_icon fr"><i class="iconfont icon-guanbi"></i></div>\
+													</li>'
+										}
+							    		return _li;
+									}()+'</ul><div class="crl_icon"><i class="iconfont icon-add"></i></div>\
 								</div>';
 						break;
 					case 'search':
@@ -775,7 +792,7 @@ function phone_indexController($scope,$http ,$location) {
 				marker.addEventListener("dragend", function(e){//将结果进行拼接并显示到对应的容器内
 					pointX = e.point.lng;
 					pointY = e.point.lat;
-					$('.quicklist-r .linktop .message-num').attr('data-point',pointX+','+pointY)
+					$('.quicklist-r .linktop .message-box').attr('data-point',pointX+','+pointY)
 				});
 			}
     		if(pointX){
@@ -785,13 +802,13 @@ function phone_indexController($scope,$http ,$location) {
     		map.addEventListener("click", function(e){
 				pointX = e.point.lng;
 				pointY = e.point.lat;
-				$('.quicklist-r .linktop .message-num').attr('data-point',pointX+','+pointY);
+				$('.quicklist-r .linktop .message-box').attr('data-point',pointX+','+pointY);
 				map.removeOverlay(marker);
 				dragMarker(pointX,pointY);
 			});
     		var keyword;
     		$('.linktop .search').click(function(){
-    			keyword = $(this).siblings('.message-num').val();
+    			keyword = $(this).siblings('.message-box').val();
 				local.search(keyword);
     		}); 
     	},
@@ -862,7 +879,7 @@ function phone_indexController($scope,$http ,$location) {
 		    		switch(type){
 		    			case 'tel':
 	    				case 'sms':
-		    				data = $(this).find('.quicklist-r .message-num').val();
+		    				data = $(this).find('.quicklist-r .message-box').val();
 		    				break;
 		    			case 'im':
 		    				var info = '',name,num,fs,
@@ -876,7 +893,7 @@ function phone_indexController($scope,$http ,$location) {
 		    				data = info;
 		    				break;
 	    				case 'link':
-		    				data = $(this).find('.quicklist-r .linktop .message-num').val()+'|'+$(this).find('.quicklist-r .linktop .message-num').data('point')
+		    				data = $(this).find('.quicklist-r .linktop .message-box').val()+'|'+$(this).find('.quicklist-r .linktop .message-box').data('point')
 		    				break;
 	    				case 'share':
 		    				$(this).find('.quicklist-r .shareicon i').each(function(index, el) {
