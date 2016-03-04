@@ -41,6 +41,11 @@ class CustomerController extends BaseController{
         $data['pc_footer_script'] = $customer_info->pc_footer_script;
 		$data['mobile_footer_script'] = $customer_info->mobile_footer_script;
 		$data['pc_num_per_page'] = $customer_info->pc_page_count;
+		$data['pc_imgtxt_per_page'] = $customer_info->pc_page_imgtxt_count;
+		$data['pc_txt_per_page'] = $customer_info->pc_page_txt_count;
+		$data['pc_img_per_page'] = $customer_info->pc_page_img_count;
+		$data['pc_page_count_switch'] = $customer_info->pc_page_count_switch;
+		
 		$data['pc_num_pagenav'] = $customer_info->pc_page_links;
 		$data['m_num_per_page'] = $customer_info->mobile_page_count;
 		$data['m_num_pagenav'] = $customer_info->mobile_page_links;

@@ -80,6 +80,7 @@ class ApiController extends BaseController{
                         else{
                             $update['mobile_tpl_num'] = trim(Input::get('mobile_tpl_id'));
                         }
+                        $update['stage'] = trim(Input::get('stage'));
                         $update['ftp_port'] = trim(Input::get('ftp_port'));
                         $update['ftp_dir'] = trim(Input::get('ftp_dir'));
 			$update['ftp_address'] = trim(Input::get('ftp_address'));
@@ -91,6 +92,7 @@ class ApiController extends BaseController{
 			if($cus_id)
 			{
 				//修改操作
+                                $coustomer_old = Customer::where('id',$cus_id)->first();
 				$save = Customer::where('id',$cus_id)->update($update);
                                 $pc_id = Template::where('tpl_num',$update['pc_tpl_num'])->where('type',1)->pluck('id');
                                 $mobile_id = Template::where('tpl_num',$update['mobile_tpl_num'])->where('type',2)->pluck('id');
@@ -110,13 +112,19 @@ class ApiController extends BaseController{
                                 }
                                 //WebsiteInfo::where('cus_id',$cus_id)->update(['pc_tpl_id'=>$pc_id,'mobile_tpl_id'=>$mobile_id]);
                                 CustomerInfo::where('cus_id',$cus_id)->update(['pc_domain'=>$update['pc_domain'],'mobile_domain'=>$update['mobile_domain']]);
-				if($save)
+                                
+                                if($update['stage'] != $coustomer_old['stage'] or $update['pc_domain'] != $coustomer_old['pc_domain'] or $update['mobile_domain'] != $coustomer_old['mobile_domain']){
+                                    $common= new CommonController();
+                                    @$common->postsend(trim($update['weburl'],'/')."/urlbind.php",array('cus_name'=>$update['name'],'stage'=>$update['stage'],'pc_domain'=>$update['pc_domain'],'mobile_domain'=>$update['mobile_domain'],'stage_old'=>$coustomer_old['stage'],'pc_domain_old'=>$coustomer_old['pc_domain'],'mobile_domain_old'=>$coustomer_old['mobile_domain']));
+                                }
+                                
+                                if($save)
 				{
-					$result = ['err'=>1000,'msg'=>'更新用户成功'];
+                                    $result = ['err'=>1000,'msg'=>'更新用户成功'];
 				}
 				else
 				{
-					$result = ['err'=>1002,'msg'=>'更新用户失败'];
+                                    $result = ['err'=>1002,'msg'=>'更新用户失败'];
 				}
 			}
 			else
@@ -207,7 +215,7 @@ class ApiController extends BaseController{
                         ftp_close($conn);
                     }
                         $common= new CommonController();
-                        @$common->postsend(trim($update['weburl'],'/')."/urlbind.php",array('cus_name'=>$update['name']));
+                        @$common->postsend(trim($update['weburl'],'/')."/urlbind.php",array('cus_name'=>$update['name'],'stage'=>$update['stage'],'pc_domain'=>$update['pc_domain'],'mobile_domain'=>$update['mobile_domain']));
 					$result = ['err'=>1000,'msg'=>'创建用户成功'];
 				}
 				else
