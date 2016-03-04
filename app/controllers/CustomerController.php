@@ -111,7 +111,11 @@ class CustomerController extends BaseController{
 		$data['fax'] = Input::get('fax');
 		$data['email'] = Input::get('mail');
 		$data['qq'] = Input::get('qq');
-		$data['address'] = Input::get('address');
+                $data['address'] = Input::get('address');
+		$data['pc_page_imgtxt_count'] = (Input::get('pc_imgtxt_per_page')>0)?Input::get('pc_imgtxt_per_page'):3;
+                $data['pc_page_txt_count'] = (Input::get('pc_txt_per_page')>0)?Input::get('pc_txt_per_page'):3;
+                $data['pc_page_img_count'] = (Input::get('pc_img_per_page')>0)?Input::get('pc_img_per_page'):3;
+                $data['pc_page_count_switch'] = Input::get('pc_page_count_switch');
 		$update = CustomerInfo::where('cus_id',$cus_id)->update($data);
 		if($update){
             Articles::where('cus_id',$cus_id)->where('pushed',0)->update(array('pushed'=>1));

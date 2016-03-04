@@ -2,7 +2,6 @@
     $scope.$parent.showbox = 'main';
     $scope.$parent.homepreview = false;
 	$scope.$parent.menu = [];
-
     $scope.settingInit = function(){
         this._init();
     };
@@ -49,6 +48,17 @@
                 $('.setting-content input[name=mail]').val(set.mail);
                 $('.setting-content input[name=qq]').val(set.qq);
                 $('.setting-content input[name=address]').val(set.address);
+                $('.setting-content input[name=pc_imgtxt_per_page]').val(set.pc_imgtxt_per_page);
+                $('.setting-content input[name=pc_txt_per_page]').val(set.pc_txt_per_page);
+                $('.setting-content input[name=pc_img_per_page]').val(set.pc_img_per_page);
+                $('.setting-content input[name=pc_page_count_switch]').val(set.pc_page_count_switch);
+                $('#checkbox1').attr('checked',set.pc_page_count_switch?true:false);
+                var openstatus = $('input.chk').is(':checked');
+                if(openstatus){
+                    $('input.chk').nextAll('.switch_list').find('input,button').attr('disabled',(openstatus?false:true));
+                    $('input.chk').prevAll('input,button').attr('disabled',(openstatus?true:false));
+                    $('input.chk').nextAll('.switch_list').slideToggle();
+                }
                 // $('.setting-content label[name=pcnum]').val(set.address);
                 // $('.setting-content label[name=mobnum]').val(set.address);
                 if(set.favicon != null){
@@ -144,9 +154,12 @@
                 context : '开启设置各个列表展示条数'
             });
             $('input.chk').click(function(event) {
-                $(this).nextAll('.switch_list').find('input,button').prop('disabled',($(this).nextAll('.switch_list').is(":visible")?true:false));
-                $(this).prevAll('input,button').prop('disabled',($(this).prop("checked")?true:false));
-                $(this).nextAll('.switch_list').slideToggle();
+                var _this = $(this),
+                    openstatus = _this.is(':checked'); 
+                _this.nextAll('.switch_list').find('input,button').prop('disabled',(_this.nextAll('.switch_list').is(":visible")?true:false));
+                _this.prevAll('input,button').prop('disabled',(_this.prop("checked")?true:false));
+                _this.nextAll('.switch_list').slideToggle();
+                $('.setting-content input[name=pc_page_count_switch]').val(openstatus?'1':'0');
             });
         },
         _loadPageSize : function(){
