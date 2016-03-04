@@ -145,7 +145,9 @@
                 $(this).prevAll('input').val(parseInt($(this).prevAll('input').val())+1)
             });
             $('button.minus').click(function(event) {
-                $(this).prevAll('input').val(parseInt($(this).prevAll('input').val())-1)
+                if($(this).prevAll('input').val()>1){
+                    $(this).prevAll('input').val(parseInt($(this).prevAll('input').val())-1);
+                }
             });
         },
         _Switch : function(){

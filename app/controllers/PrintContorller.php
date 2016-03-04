@@ -1255,10 +1255,10 @@ class PrintController extends BaseController{
                 if($type==1){
                     $page_number=CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_txt_count');//每页文字显示个数
                 }
-                if($type==2){
+                if($type==3){
                     $page_number=CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_imgtxt_count');//每页图文显示个数  
                 }
-                if($type==3){
+                if($type==2){
                     $page_number=CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_img_count');//每页图片显示个数
                 }
             }
