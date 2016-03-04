@@ -491,6 +491,7 @@ left: 0;width: 100%;height: 100%;border-radius: 100px;box-shadow: inset 0 0 0 0 
 .setting-feild .switch_list{margin-left: 100px;background-color: #AFD7BF;display: none;}
 .switch_list_item{padding: 2px 0;}
 .switch_list_item span{width: 222px;letter-spacing: 2px;text-align: center;}
+.feild-item .logo_size{position: absolute;top: -22px;left: -4px;}
 /*Refresh文件刷新*/
 .refresh-feild .refresh-name{color: #5f8cc5;font-size: 16px;line-height: 36px;border-bottom: 1px solid #b2b2b2;}
 .refresh-feild .feild-content{margin: 20px auto 20px auto;}
