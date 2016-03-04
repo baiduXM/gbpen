@@ -373,7 +373,7 @@ function DropdownEvent(PageId){
     }); 
     if(PageId){
         $(".dropdown ul li a").mouseenter(function(){
-            var _this = _this;
+            var _this = $(this);
             if(PageId.indexOf(_this.data('id')) != -1){
                 _this.addClass('not-allowed');
                 $('.not-allowed').MoveBox({context:'此为单页类型或者此级下有子级，不支持选择！'});
