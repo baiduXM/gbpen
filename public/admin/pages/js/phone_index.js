@@ -670,8 +670,8 @@ function phone_indexController($scope,$http ,$location) {
 						break;
 					case 'im':
 						info = '<div class="quicklist-r inline-block">\
-									<div class="consultation ml5">\
-									<ul class="fl">'
+									<div class="ml5">\
+									<ul class="fl consultation">'
 									+function(){
 										var newArr = v.data.split('|'),_li = '';
 							    		for(var x in newArr){
@@ -707,23 +707,16 @@ function phone_indexController($scope,$http ,$location) {
 						break;
 					case 'link':
 						info = '<div class="quicklist-r inline-block">\
-									<ul class="fl">\
+									<ul class="fl consultation">\
 									'+function(){
-										if(v.childmenu != undefined && v.childmenu != null){
-											var newArr = v.childmenu;
-								    		newArr.each(function(idx, ele) {
-								    		 	_li += '<li class="consultation-item">\
-															<span><input class="consultation-name message-box" value="'+ele.data+'" /></span>\
+										var newArr = v.data.split('|'),_li = '';
+										for(var x in newArr){
+							    			_li += '<li class="consultation-item">\
+															<span><input class="consultation-name message-box" value="'+newArr[x]+'" /></span>\
 															<div class="crl_icon fr"><i class="iconfont icon-guanbi"></i></div>\
 														</li>';
-								    		}); 
-										}else{
-											_li = '<li class="consultation-item">\
-														<span><input class="consultation-name message-box" value="'+v.data+'" /></span>\
-														<div class="crl_icon fr"><i class="iconfont icon-guanbi"></i></div>\
-													</li>'
-										}
-							    		return _li;
+							    		} 
+							    		return _li; 
 									}()+'</ul><div class="crl_icon"><i class="iconfont icon-add"></i></div>\
 								</div>';
 						break;
@@ -761,8 +754,9 @@ function phone_indexController($scope,$http ,$location) {
     	QuickBarListFuc : function(){
     		// 咨询  
     		$('.icon-add').click(function(){
-    			var clone_cell = $(this).closest('.consultation').find('.consultation-item').last().clone(true);
-    			$('.consultation ul').append(clone_cell);
+    			var parenticon = $(this).closest('.crl_icon').siblings('.consultation'),
+    				clone_cell = parenticon.find('.consultation-item').last().clone(true);
+    			parenticon.append(clone_cell);
     		});
     		$('.icon-guanbi').on('click',function(){
     			$('.consultation .consultation-item').length == 1 ? alert('请至少保留一个！') : $(this).closest('.consultation-item').remove();
@@ -892,13 +886,23 @@ function phone_indexController($scope,$http ,$location) {
 		    				});
 		    				data = info;
 		    				break;
-	    				case 'link':
+	    				case 'map':
 		    				data = $(this).find('.quicklist-r .linktop .message-box').val()+'|'+$(this).find('.quicklist-r .linktop .message-box').data('point')
 		    				break;
 	    				case 'share':
 		    				$(this).find('.quicklist-r .shareicon i').each(function(index, el) {
 		    					$(this).hasClass('blue') ? data.push($(this).data('name')) : null;
 		    				});
+		    				break;
+	    				case 'link':
+		    				var info = '',name,
+		    					_this = $(this),
+		    					count = _this.find('.consultation li').length;
+		    				_this.find('.consultation li').each(function(i, j) {
+		    					name = _this.find('.consultation-name').val();
+		    					info += (name+(count == 0 ? null : i == count-1 ? null : '|'));
+		    				});
+		    				data = info;
 		    				break;
 		    		}
 	    			navsArray.push({
