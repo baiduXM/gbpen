@@ -71,8 +71,8 @@
                     _this._ModelAddPic(set.logo_small,'logo_small',3);
                 }
                 _this._settingUpload(set.pc_logo_size,set.m_logo_size);
-                $('.pclogo_size').text('('+set.pc_logo_size.replace('/','*')+')');
-                $('.moblogo_size').text('('+set.m_logo_size.replace('/','*')+')');
+                $('.pclogo_size').text('('+(set.pc_logo_size && set.pc_logo_size.replace('/','*'))+')');
+                $('.moblogo_size').text('('+(set.m_logo_size && set.m_logo_size.replace('/','*'))+')');
             });
         },
         _ModelAddPic : function(picurl,picname,num){
