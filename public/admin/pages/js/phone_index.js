@@ -324,7 +324,7 @@ function phone_indexController($scope,$http ,$location) {
 		    			lastColumnNum = (data.length%ColumnNum);				// 记录最终添加完的是第几列
 					// 添加瀑布流列
 					$('#phone_index_image').before('<form id="phone_index_images_'+num+'" data-key="'+index+'"></form>');
-					$('#phone_index_images_'+num).append('<div class="pictitle">(多图文)<span class="red">'+ele.description+'</span></div>').data({'lastColumnNum':lastColumnNum,'ColumnNum':ColumnNum,'aspectRatio':aspectRatio});
+					$('#phone_index_images_'+num).append('<div class="pictitle">(多图文&nbsp;'+ele.config.width+'*'+ele.config.height+')<span class="red">'+ele.description+'</span></div>').data({'lastColumnNum':lastColumnNum,'ColumnNum':ColumnNum,'aspectRatio':aspectRatio});
 					for(var i = 1;i <= ColumnNum;i++){
 						$('#phone_index_images_'+num).append('<ul id="phone_index_col_'+num+'_'+i+'" class="phone_index_col" style="width:'+oddColumnWidth+'px"></ul>');
 					}
