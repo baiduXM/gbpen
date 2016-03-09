@@ -896,11 +896,10 @@ function phone_indexController($scope,$http ,$location) {
 		    				break;
 	    				case 'link':
 		    				var info = '',name,
-		    					_this = $(this),
-		    					count = _this.find('.consultation li').length;
-		    				_this.find('.consultation li').each(function(i, j) {
-		    					name = _this.find('.consultation-name').val();
-		    					info += (name+(count == 0 ? null : i == count-1 ? null : '|'));
+		    					count = $(this).find('.consultation li').length;
+		    				$(this).find('.consultation li').each(function(i, j) {
+		    					name = $(this).find('.consultation-name').val();console.log(name)
+		    					info += (name+(count == 0 ? '' : i == count-1 ? '' : '|'));
 		    				});
 		    				data = info;
 		    				break;
