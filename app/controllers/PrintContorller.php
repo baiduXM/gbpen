@@ -576,7 +576,7 @@ class PrintController extends BaseController{
                             $quickbar[$key]['link']='http://wpd.b.qq.com/cgi/get_m_sign.php?uin='.$qq[0];
                             }
                         }
-                    elseif($quickbar[$key]['type']=='link'){
+                    elseif($quickbar[$key]['type']=='map'){
                             if($quickbar[$key]['data']!=null){
                              $location = explode('|', $quickbar[$key]['data']);
                              $address = explode(',', $location[1]);
@@ -586,7 +586,13 @@ class PrintController extends BaseController{
                                 $address=CustomerInfo::where('cus_id',$this->cus_id)->pluck('address');
                                $quickbar[$key]['link']='http://api.map.baidu.com/geocoder?address='.$address.'&output=html';     
                             }
-                        }elseif($quickbar[$key]['type']=='search'){
+                        }elseif($quickbar[$key]['type']=='link'){
+                            if($quickbar[$key]['data']!=null){
+                                $url_arr = explode('|', $quickbar[$key]['data']);
+                                $quickbar[$key]['link'] = $url_arr[0];
+                            }
+                        }
+                        elseif($quickbar[$key]['type']=='search'){
                             if($this->showtype=='preview'){
                                     $quickbar[$key]['data']='http://'.$_SERVER['HTTP_HOST'].'/search-preview';
                             }
@@ -743,7 +749,7 @@ class PrintController extends BaseController{
                                 $quickbar[$key]['link']='http://wpd.b.qq.com/cgi/get_m_sign.php?uin='.$qq[0];
                                 }
                             }
-                        elseif($quickbar[$key]['type']=='link'){
+                        elseif($quickbar[$key]['type']=='map'){
                                 if($quickbar[$key]['data']!=null){
                                  $location = explode('|', $quickbar[$key]['data']);
                                  $address = explode(',', $location[1]);
@@ -753,7 +759,13 @@ class PrintController extends BaseController{
                                     $address=CustomerInfo::where('cus_id',$this->cus_id)->pluck('address');
                                    $quickbar[$key]['link']='http://api.map.baidu.com/geocoder?address='.$address.'&output=html';     
                                 }
-                            }elseif($quickbar[$key]['type']=='search'){
+                            }elseif($quickbar[$key]['type']=='link'){
+                                if($quickbar[$key]['data']!=null){
+                                    $url_arr = explode('|', $quickbar[$key]['data']);
+                                    $quickbar[$key]['link'] = $url_arr[0];
+                                }
+                            }
+                            elseif($quickbar[$key]['type']=='search'){
                                 if($this->showtype=='preview'){
                                     $quickbar[$key]['data']='http://'.$_SERVER['HTTP_HOST'].'/search-preview';
                                 }else{
@@ -874,7 +886,7 @@ class PrintController extends BaseController{
                                          $qq = explode('@', $qq[1]);
                                          $quickbar[$key]['link']='http://wpd.b.qq.com/cgi/get_m_sign.php?uin='.$qq[0];
                                      }
-                                 elseif($quickbar[$key]['type']=='link'){
+                                 elseif($quickbar[$key]['type']=='map'){
                                          if($quickbar[$key]['data']!=null){
                                           $location = explode('|', $quickbar[$key]['data']);
                                           $address = explode(',', $location[1]);
@@ -884,7 +896,12 @@ class PrintController extends BaseController{
                                              $address=CustomerInfo::where('cus_id',$this->cus_id)->pluck('address');
                                             $quickbar[$key]['link']='http://api.map.baidu.com/geocoder?address='.$address.'&output=html';     
                                          }
-                                     } 
+                                 }elseif($quickbar[$key]['type']=='link'){
+                                    if($quickbar[$key]['data']!=null){
+                                        $url_arr = explode('|', $quickbar[$key]['data']);
+                                        $quickbar[$key]['link'] = $url_arr[0];
+                                    }
+                                 } 
                                 //TODO:删除enable_pc/enable_mobile键值
                                 unset ($quickbar[$key]['enable_pc']);
                                 unset ($quickbar[$key]['enable_mobile']);
