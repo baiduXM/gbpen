@@ -51,8 +51,6 @@ function tanchuang(ColumnInit){
         $('.sites label.lb_pc').removeClass('chirdchecked');
         $('.sites input[value=mobile]').attr('checked','');
         $('.sites label.lb_mobile').removeClass('chirdchecked');
-        $('.sites input[value=footer]').attr('checked','');
-        $('.sites label.lb_footer').removeClass('chirdchecked');
         $('.sites input[value=wechat]').attr('checked','');
         $('.sites label.lb_wechat').removeClass('chirdchecked');
         $('.sites label.lb_wechat').removeClass('chirdchecked');

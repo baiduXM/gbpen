@@ -47,14 +47,6 @@ class SmartyEngine implements Engines\EngineInterface {
 			foreach($view->getData() as $key => $value){
 				$_template->tpl_vars[$key] = new \Smarty_Variable($value);
 			}
-                        if(isset($_template->tpl_vars['footer_navs'])){
-                            if($viewName=='./_footer.html'){
-                                unset($_template->tpl_vars['navs']);
-                                $_template->tpl_vars['navs']=$_template->tpl_vars['footer_navs'];
-                            }else{
-                                $_template->tpl_vars['navs']=$_template->tpl_vars['index_navs'];
-                            }
-                        }
 			unset($hackView);
 		} else {
 			foreach($_template->properties['file_dependency'] as $file){

@@ -163,7 +163,6 @@ class ClassifyController extends BaseController {
                 $classify->pc_show=0;
                 $classify->mobile_show=0;
                 $classify->wechat_show=0;
-                $classify->footer_show=0;
                 foreach($shows as $show){
                     if($show!=''){
                         $classify->$show = 1;

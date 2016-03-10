@@ -971,12 +971,6 @@ class PrintController extends BaseController{
             'search_action'=>$pc_domain //'http://swap.gbpen.com'
         ];
         
-        if($this->type=='pc'){
-            $footer_navs = Classify::where('cus_id',$this->cus_id)->where('footer_show',1)->select('id','type','img','icon','name','url','p_id','en_name','meta_description as description')->OrderBy('sort','asc')->get()->toArray();
-            $footer_navs=$this->toFooter($footer_navs);
-            $result['footer_navs']=$footer_navs;
-            $result['index_navs']=$navs;
-        }
         return $result;
     }
     

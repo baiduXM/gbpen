@@ -266,10 +266,6 @@ function columnController($scope, $http) {
                         $('.sites input[value=mobile]').attr('checked','true');
                         $('.sites label.lb_mobile').addClass('chirdchecked');
                     }
-                    if(d.footer_show == 1){
-                        $('.sites input[value=footer]').attr('checked','true');
-                        $('.sites label.lb_footer').addClass('chirdchecked');
-                    }
                     if(d.wechat_show == 1){
                         $('.sites input[value=wechat]').attr('checked','true');
                         $('.sites label.lb_wechat').addClass('chirdchecked');
