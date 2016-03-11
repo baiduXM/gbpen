@@ -2207,7 +2207,7 @@ class PrintController extends BaseController{
                 if($v['type'] != 6){
                     $v['link'] = $this->showtype=='preview' ? $this->domain.'/category/'.$v['id'] : $this->domain.'/category/'.$v['id'].'.html';
                 }else{
-                    $v['link'] = strpos($v['url'], 'http')?$v['url']:('http://'.$v['url']);
+                    $v['link'] = strpos('1'.$v['url'], 'http')?$v['url']:('http://'.$v['url']);
                 }
             
             unset($v['img']);
@@ -2273,7 +2273,7 @@ class PrintController extends BaseController{
                 }
             }
             else{
-                $tree[$k]['link'] = strpos($v['url'], 'http')?$v['url']:('http://'.$v['url']);
+                $tree[$k]['link'] = strpos('1'.$v['url'], 'http')?$v['url']:('http://'.$v['url']);
             }
             $tree[$k]['current'] = 0;
             $tree[$k]['selected'] = 0;
