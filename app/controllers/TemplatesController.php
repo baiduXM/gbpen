@@ -463,6 +463,16 @@ class TemplatesController extends BaseController{
         }else{
             $mobile=new PrintController('preview','mobile');
             $config_arr=$mobile->mobilePageList('global',true);
+            if(isset($data[$input_keys[0]])){
+                foreach($data[$input_keys[0]] as $key => $v){
+                    $data[$input_keys[0]][$key]['title']=$data[$input_keys[0]][$key]['PC_name'];
+                    $data[$input_keys[0]][$key]['image']=basename($data[$input_keys[0]][$key]['phone_info_pic']);
+                    $data[$input_keys[0]][$key]['link']=$data[$input_keys[0]][$key]['PC_link'];
+                    unset($data[$input_keys[0]][$key]['PC_name']);
+                    unset($data[$input_keys[0]][$key]['phone_info_pic']);
+                    unset($data[$input_keys[0]][$key]['PC_link']);
+                }
+            }
             $config_arr[$input_keys[0]]['value']=$data[$input_keys[0]];
         }
         $new_config_str = serialize($config_arr);
