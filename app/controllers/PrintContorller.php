@@ -576,7 +576,7 @@ class PrintController extends BaseController{
                             $quickbar[$key]['link']='http://wpd.b.qq.com/cgi/get_m_sign.php?uin='.$qq[0];
                             }
                         }
-                    elseif($quickbar[$key]['type']=='link'){
+                    elseif($quickbar[$key]['type']=='map'){
                             if($quickbar[$key]['data']!=null){
                              $location = explode('|', $quickbar[$key]['data']);
                              $address = explode(',', $location[1]);
@@ -586,7 +586,13 @@ class PrintController extends BaseController{
                                 $address=CustomerInfo::where('cus_id',$this->cus_id)->pluck('address');
                                $quickbar[$key]['link']='http://api.map.baidu.com/geocoder?address='.$address.'&output=html';     
                             }
-                        }elseif($quickbar[$key]['type']=='search'){
+                        }elseif($quickbar[$key]['type']=='link'){
+                            if($quickbar[$key]['data']!=null){
+                                $url_arr = explode('|', $quickbar[$key]['data']);
+                                $quickbar[$key]['link'] = $url_arr[0];
+                            }
+                        }
+                        elseif($quickbar[$key]['type']=='search'){
                             if($this->showtype=='preview'){
                                     $quickbar[$key]['data']='http://'.$_SERVER['HTTP_HOST'].'/search-preview';
                             }
@@ -743,7 +749,7 @@ class PrintController extends BaseController{
                                 $quickbar[$key]['link']='http://wpd.b.qq.com/cgi/get_m_sign.php?uin='.$qq[0];
                                 }
                             }
-                        elseif($quickbar[$key]['type']=='link'){
+                        elseif($quickbar[$key]['type']=='map'){
                                 if($quickbar[$key]['data']!=null){
                                  $location = explode('|', $quickbar[$key]['data']);
                                  $address = explode(',', $location[1]);
@@ -753,7 +759,13 @@ class PrintController extends BaseController{
                                     $address=CustomerInfo::where('cus_id',$this->cus_id)->pluck('address');
                                    $quickbar[$key]['link']='http://api.map.baidu.com/geocoder?address='.$address.'&output=html';     
                                 }
-                            }elseif($quickbar[$key]['type']=='search'){
+                            }elseif($quickbar[$key]['type']=='link'){
+                                if($quickbar[$key]['data']!=null){
+                                    $url_arr = explode('|', $quickbar[$key]['data']);
+                                    $quickbar[$key]['link'] = $url_arr[0];
+                                }
+                            }
+                            elseif($quickbar[$key]['type']=='search'){
                                 if($this->showtype=='preview'){
                                     $quickbar[$key]['data']='http://'.$_SERVER['HTTP_HOST'].'/search-preview';
                                 }else{
@@ -874,7 +886,7 @@ class PrintController extends BaseController{
                                          $qq = explode('@', $qq[1]);
                                          $quickbar[$key]['link']='http://wpd.b.qq.com/cgi/get_m_sign.php?uin='.$qq[0];
                                      }
-                                 elseif($quickbar[$key]['type']=='link'){
+                                 elseif($quickbar[$key]['type']=='map'){
                                          if($quickbar[$key]['data']!=null){
                                           $location = explode('|', $quickbar[$key]['data']);
                                           $address = explode(',', $location[1]);
@@ -884,7 +896,12 @@ class PrintController extends BaseController{
                                              $address=CustomerInfo::where('cus_id',$this->cus_id)->pluck('address');
                                             $quickbar[$key]['link']='http://api.map.baidu.com/geocoder?address='.$address.'&output=html';     
                                          }
-                                     } 
+                                 }elseif($quickbar[$key]['type']=='link'){
+                                    if($quickbar[$key]['data']!=null){
+                                        $url_arr = explode('|', $quickbar[$key]['data']);
+                                        $quickbar[$key]['link'] = $url_arr[0];
+                                    }
+                                 } 
                                 //TODO:删除enable_pc/enable_mobile键值
                                 unset ($quickbar[$key]['enable_pc']);
                                 unset ($quickbar[$key]['enable_mobile']);
@@ -954,6 +971,12 @@ class PrintController extends BaseController{
             'search_action'=>$pc_domain //'http://swap.gbpen.com'
         ];
         
+        if($this->type=='pc'){
+            $footer_navs = Classify::where('cus_id',$this->cus_id)->where('footer_show',1)->select('id','type','img','icon','name','url','p_id','en_name','meta_description as description')->OrderBy('sort','asc')->get()->toArray();
+            $footer_navs=$this->toFooter($footer_navs);
+            $result['footer_navs']=$footer_navs;
+            $result['index_navs']=$navs;
+        }
         return $result;
     }
     
@@ -2170,7 +2193,28 @@ class PrintController extends BaseController{
         }
         return $p_id;
     }
-    
+    /**
+     * 根据从数据库查询的栏目数据数组,添加路径link和icon处理
+     * 
+     * @param array $arr 栏目数据数组
+     * @return array 
+     */
+    private function toFooter($arr){
+        $footer = array();
+        foreach ((array)$arr as $k => $v) {
+            $v['image']=$this->source_dir.'l/category/'.$v['img'];
+            $v['icon']='<i class="iconfont">'.$v['icon'].'</i>';
+                if($v['type'] != 6){
+                    $v['link'] = $this->showtype=='preview' ? $this->domain.'/category/'.$v['id'] : $this->domain.'/category/'.$v['id'].'.html';
+                }else{
+                    $v['link'] = strpos('1'.$v['url'], 'http')?$v['url']:('http://'.$v['url']);
+                }
+            
+            unset($v['img']);
+            $footer[] = $v;
+        }
+        return $footer;
+    }
     /**
      * 根据从数据库查询的栏目数据数组,转为树形结构的数组
      * 
@@ -2229,7 +2273,7 @@ class PrintController extends BaseController{
                 }
             }
             else{
-                $tree[$k]['link'] = $v['url'];
+                $tree[$k]['link'] = strpos('1'.$v['url'], 'http')?$v['url']:('http://'.$v['url']);
             }
             $tree[$k]['current'] = 0;
             $tree[$k]['selected'] = 0;

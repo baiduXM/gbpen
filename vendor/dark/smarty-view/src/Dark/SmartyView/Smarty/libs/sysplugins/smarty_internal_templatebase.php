@@ -51,6 +51,7 @@ abstract class Smarty_Internal_TemplateBase extends Smarty_Internal_Data
         if ($this instanceof Smarty) {
             $_template->caching = $this->caching;
         }
+       
         // merge all variable scopes into template
         if ($merge_tpl_vars) {
             // save local variables
@@ -186,8 +187,7 @@ abstract class Smarty_Internal_TemplateBase extends Smarty_Internal_Data
                         if (empty($_template->properties['unifunc']) || !is_callable($_template->properties['unifunc'])) {
                             throw new SmartyException("Invalid compiled template for '{$_template->template_resource}'");
                         }
-                        array_unshift($_template->_capture_stack, array());
-						
+                        array_unshift($_template->_capture_stack, array());		
 						/// dark edit
                         \Dark\SmartyView\SmartyEngine::integrateViewComposers($_template);               
                         /// end edit   
@@ -217,8 +217,7 @@ abstract class Smarty_Internal_TemplateBase extends Smarty_Internal_Data
 						
 						/// dark edit
                         \Dark\SmartyView\SmartyEngine::integrateViewComposers($_template);               
-                        /// end edit   
-						
+                        /// end edit   	
                         $_template->source->renderUncompiled($_template);
                     }
                     catch (Exception $e) {
@@ -230,6 +229,9 @@ abstract class Smarty_Internal_TemplateBase extends Smarty_Internal_Data
                 }
             }
             $_output = ob_get_clean();
+            if($_template->template_resource=='./_footer.html'&&(empty($_template->tpl_vars['navs']->value))){
+                $_output = preg_replace('/<a href="'.str_replace("/","\/",$_template->tpl_vars['site_url']->value).'"( target="_blank")?( )?>首页<\/a>( )?\|/is', "", $_output);
+            }
             if (!$_template->source->recompiled && empty($_template->properties['file_dependency'][$_template->source->uid])) {
                 $_template->properties['file_dependency'][$_template->source->uid] = array($_template->source->filepath, $_template->source->timestamp, $_template->source->type);
             }
