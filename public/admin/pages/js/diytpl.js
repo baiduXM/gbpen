@@ -64,6 +64,7 @@ function diytplController($scope, $http, $location) {
     				target.text('编辑文件');
     				target.before('<div class="newfile">\
 						<select type="text" class="filetype">\
+							<option value="css">样式文件</option>\
 							<option value="js">脚本文件</option>\
 							<option selected="selected" value="html">HTML模板</option>\
 							<option value="filedatachoose" class="filedatachoose">模板数据</option>\
@@ -82,6 +83,11 @@ function diytplController($scope, $http, $location) {
 					suffix = target.siblings('.filesuffix'),
 					fullname = $('.fullname'),filename = fullname.siblings('.filename');
 				switch (type) {
+                                        case 'css':
+                                                suffix.text('.css');
+						fullname.hide();
+						filename.show();
+						break;
 					case 'js':
 						suffix.text('.js');
 						fullname.hide();
