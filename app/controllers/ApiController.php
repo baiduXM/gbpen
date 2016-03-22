@@ -88,6 +88,7 @@ class ApiController extends BaseController{
 			$update['ftp_pwd'] = trim(Input::get('ftp_pwd'));
 			$update['ended_at'] = trim(Input::get('ended_at'));
 			$update['status'] = Input::get('status');
+                        $update['customization'] = Input::get('customization');
 			$cus_id = Customer::where('name',$update['name'])->pluck('id');
 			if($cus_id)
 			{

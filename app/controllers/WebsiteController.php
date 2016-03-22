@@ -204,6 +204,10 @@ class WebsiteController extends BaseController{
     
     public function copy(){
         $cus_id = Auth::id();
+        $customization = Customer::where('id',$cus_id)->pluck('customization');
+        if(!$customization){
+            return Response::json(['err'=>1002, 'msg' => '您未开启高级定制服务!']);
+        }
         $type = Input::get('tpye');
         $type = 1;
         $id = WebsiteInfo::where('cus_id',$cus_id)->pluck('pc_tpl_id');
