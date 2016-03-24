@@ -834,6 +834,8 @@ function phone_indexController($scope,$http ,$location) {
     		var pointX = this.pointX || null,pointY = this.pointY || null,marker
 				map = new BMap.Map("bdmap");          
 			map.centerAndZoom(new BMap.Point(116.404, 39.915), 15);
+                        var bottom_right_navigation = new BMap.NavigationControl({anchor: BMAP_ANCHOR_BOTTOM_RIGHT, type: BMAP_NAVIGATION_CONTROL_SMALL});
+                        map.addControl(bottom_right_navigation);        
 			var local = new BMap.LocalSearch(map, {
 				renderOptions:{map: map}
 			});

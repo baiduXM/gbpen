@@ -181,9 +181,15 @@ var WarningBox = function(del,warning_context){
             $(this).parents('.box_info').hide().prev().hide();
         });
         $('.warning_box .save').click(function(){
-            $.get('../template-copy',function(json){});
-            $(this).parents('.box_info').hide().prev().hide();
-            location.href = '#/diytpl?type='+templeType+'';
+            var _this = $(this);
+            $.get('../template-copy',function(json){
+                checkJSON(json, function(){
+                            _this.parents('.box_info').hide().prev().hide();
+                            location.href = '#/diytpl?type='+templeType+'';
+			}, function(){
+                            _this.parents('.box_info').hide().prev().hide();
+                        });//checkJSON结束
+            });
         });
     };
 }
