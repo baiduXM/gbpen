@@ -89,8 +89,13 @@ class CommonController extends BaseController{
     public function qrcode($barcode){
         $qrencode=new QRencode();
         $customer = Auth::user()->name;
-        $customer_info = Customer::where('id',Auth::id())->first();
+        $id=Auth::id();
+        $customer_info = Customer::where('id',$id)->first();
         $domain = $customer_info->$barcode;
+        if($domain==""){
+            $customer_info = CustomerInfo::where('id',$id)->first();
+            $domain = $customer_info->$barcode;
+        }
         $url= str_replace('http://', '', $domain);
         $errorCorrectionLevel = "L";
         $path='customers/'.$customer.'/images/l/common/';
@@ -103,39 +108,6 @@ class CommonController extends BaseController{
         $result=WebsiteConfig::where('cus_id',Auth::id())->delete();
         $json_result = ['err' => 0, 'msg' => '重置成功'];
         return $json_result;
-    }
-    public function quickBarTest(){
-        $id=Auth::id();
-        $times=10000;
-        $begin=time();
-        
-        echo $begin;
-        for($i=0;$i<$times;$i++){
-        $pc_article_ids = Articles::where('cus_id',$id)->where('pc_show',1)->lists('id');
-        $mobile_article_ids = Articles::where('cus_id',$id)->where('mobile_show',1)->lists('id');
-        }
-        $end=time();
-        echo '-'.$end;
-        echo '方式一:'.($end-$begin).'<br />';
-        $begin=time();
-        
-        echo $begin;
-        for($i=0;$i<$times;$i++){
-        $article_ids = Articles::where('cus_id',$id)->select('id,pc_show,mobile_show');
-        foreach ($article_ids as $v){
-            if($v['pc_show']){
-                $pc_article_ids=$v['id'];
-            }
-            if($v['mobile_show']){
-                $mobile_article_ids=$v['id'];
-            }
-        }
-        }
-        $end=time();
-        
-        echo '-'.$end;
-//        $mobile_article_ids = Articles::where('cus_id',$this->cus_id)->where('mobile_show',1)->lists('id');
-        echo '方式二:'.($end-$begin);
     }
 }
 
