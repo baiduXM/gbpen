@@ -38,6 +38,7 @@ class CommonController extends BaseController{
     }
     
     public function quickBarJsonInit(){
+        include_once '../public/QRcode.php';
         $Mobile = new PrintController('preview','mobile');
         $QuickBar=WebsiteConfig::where('cus_id',$Mobile->cus_id)->where('type',2)->where('template_id','0')->where('key','quickbar')->pluck('value');
         if($QuickBar) $MobileQuickBar=unserialize($QuickBar);
@@ -49,7 +50,11 @@ class CommonController extends BaseController{
                 ['pc'=>0,'mobile'=>0,'name'=>'分享','icon'=>'&#xe600;','image'=>'icon/8.png','data'=>'qzone,tqq,tsina,ibaidu','type'=>'share','enable_pc'=>1,'enable_mobile'=>1],
                 ['pc'=>0,'mobile'=>0,'name'=>'外链','icon'=>'&#xe632;','image'=>'icon/8.png','data'=>'http://www.gbpen.com/','type'=>'link','enable_pc'=>1,'enable_mobile'=>1],
                 ['pc'=>0,'mobile'=>0,'name'=>'搜索','icon'=>'&#xe636;','image'=>'icon/8.png','data'=>'','type'=>'search','enable_pc'=>1,'enable_mobile'=>1],
-            ];  
+                ['pc'=>0,'mobile'=>0,'name'=>'微信二维码','icon'=>'&#xe61b;','image'=>'icon/a.png','data'=>'','for'=>'vx_barcode','type'=>'follow','enable_pc'=>0,'enable_mobile'=>0],
+//                ['pc'=>0,'mobile'=>0,'name'=>'qq二维码','icon'=>'&#xe60f;','image'=>'icon/a.png','data'=>'','for'=>'qq_barcode','type'=>'follow','enable_pc'=>0,'enable_mobile'=>0],
+                ['pc'=>0,'mobile'=>0,'name'=>'PC二维码','icon'=>'&#xe630;','image'=>'icon/a.png','data'=>$this->qrcode('pc_domain'),'for'=>'pc_barcode','type'=>'follow','enable_pc'=>1,'enable_mobile'=>0],
+                ['pc'=>0,'mobile'=>0,'name'=>'手机二维码','icon'=>'&#xe64b;','image'=>'icon/a.png','data'=>$this->qrcode('mobile_domain'),'for'=>'m_barcode','type'=>'follow','enable_pc'=>1,'enable_mobile'=>0],
+            ];
         if(!$QuickBar){
             $QuickBar = ['err' => 0, 'msg' => '获取成功！','data' =>$DefaultQuickBar];
         }else{
@@ -79,6 +84,58 @@ class CommonController extends BaseController{
             $json_result = ['err' => 1001, 'msg' => '该栏目存在文章，需转移才能创建子栏目','data'=>[]];
         }
         return Response::Json($json_result);
+    }
+    
+    public function qrcode($barcode){
+        $qrencode=new QRencode();
+        $customer = Auth::user()->name;
+        $customer_info = Customer::where('id',Auth::id())->first();
+        $domain = $customer_info->$barcode;
+        $url= str_replace('http://', '', $domain);
+        $errorCorrectionLevel = "L";
+        $path='customers/'.$customer.'/images/l/common/';
+        $outfile=public_path($path);
+        $enc = $qrencode->factory($errorCorrectionLevel,100);
+        $enc->encodePNG($url, $outfile.$barcode.".png", $saveandprint=false);
+        return asset($path.$barcode.".png");
+    }
+    public function quickBarRewrite(){
+        $result=WebsiteConfig::where('cus_id',Auth::id())->delete();
+        $json_result = ['err' => 0, 'msg' => '重置成功'];
+        return $json_result;
+    }
+    public function quickBarTest(){
+        $id=Auth::id();
+        $times=10000;
+        $begin=time();
+        
+        echo $begin;
+        for($i=0;$i<$times;$i++){
+        $pc_article_ids = Articles::where('cus_id',$id)->where('pc_show',1)->lists('id');
+        $mobile_article_ids = Articles::where('cus_id',$id)->where('mobile_show',1)->lists('id');
+        }
+        $end=time();
+        echo '-'.$end;
+        echo '方式一:'.($end-$begin).'<br />';
+        $begin=time();
+        
+        echo $begin;
+        for($i=0;$i<$times;$i++){
+        $article_ids = Articles::where('cus_id',$id)->select('id,pc_show,mobile_show');
+        foreach ($article_ids as $v){
+            if($v['pc_show']){
+                $pc_article_ids=$v['id'];
+            }
+            if($v['mobile_show']){
+                $mobile_article_ids=$v['id'];
+            }
+        }
+        }
+        $end=time();
+        
+        echo '-'.$end;
+//        $mobile_article_ids = Articles::where('cus_id',$this->cus_id)->where('mobile_show',1)->lists('id');
+        echo '方式二:'.($end-$begin);
     }
 }
 

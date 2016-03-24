@@ -248,6 +248,14 @@ Route::group(array('before' => 'auth'), function() {
         'as' => 'quickbar.json',
         'uses' => 'CommonController@quickBarJsonModify'
     ]);
+    Route::post('quickbar.rewrite', [
+        'as' => 'quickbar.rewrite',
+        'uses' => 'CommonController@quickBarRewrite'
+    ]);
+    Route::get('test', [
+        'as' => 'test',
+        'uses' => 'CommonController@quickBarTest'
+    ]);
     //-----------------------------------------------
     //--------------------模版操作--------------------
     Route::post('template-operate', [//更换操作

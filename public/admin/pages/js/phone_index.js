@@ -28,7 +28,8 @@ function phone_indexController($scope,$http ,$location) {
 		    if(Area_name == 'quickbar'){
 				$('.phone_index_btn .delcolumn,.phone_index-banner .navs').remove();
 				$('.phone_index_btn .save').show();
-				$('#phone_index .phone_index_btn').width(122)
+                                $('.phone_index_btn .rewrite').show();
+//				$('#phone_index .phone_index_btn').width(122)
 			}
 			$('#phone_index-'+Area_name).show();
     		// 获取手机切换标签
@@ -723,8 +724,45 @@ function phone_indexController($scope,$http ,$location) {
 					case 'search':
 						info = '<div class="quicklist-r inline-block"></div>';
 						break;
+                                        case 'follow':
+                                              var barcode='';
+                                              if(v.for=="vx_barcode"||v.for=="qq_barcode"){      
+                                                    if(v.data != ''){
+                                                          barcode = '<div class="template-download fade fl in">\n\
+                                                                            <div>\n\
+                                                                                <span class="preview">\n\
+                                                                                <div class="preview-close"><img src="images/preview-close.png" /></div>\n\
+                                                                                    <img src="'+v.data+'" style="width:80px;height:80px;padding:5px;" data-role="'+v.for+' data-preimg="preimg">\n\
+                                                                                </span>\n\
+                                                                            </div><input type="hidden" name="'+v.for+'" value="'+v.data+'"></div>';
+                                                        }
+                                                        
+                                                    info = '<div class="quicklist-r inline-block">\
+                                                                  <div class="feild-item">\
+                                                                  <div class="set_pic3 set_pic inline-block" name="'+v.for+'" data-role="'+v.for+'">';
+                                                    info += barcode;
+                                                    info += '</div>\
+                                                                  <button class="up_load" data-role="'+v.for+'"><span class="set_up_name" data-role="'+v.for+'">二维码上传</span></button>\
+                                                                  </div>\
+                                                              </div>';
+                                              }else{
+                                                    barcode = '<div class="template-download fade fl in">\n\
+                                                                            <div>\n\
+                                                                                <span class="preview">\n\
+                                                                                    <img src="'+v.data+'" style="width:80px;height:80px;padding:5px;" data-role="'+v.for+'" data-preimg="preimg">\n\
+                                                                                </span>\n\
+                                                                            </div><input type="hidden" name="'+v.for+'" value="'+v.data+'"></div>';
+                                                    info = '<div class="quicklist-r inline-block">\
+                                                                  <div class="feild-item">\
+                                                                  <div class="set_pic3 set_pic inline-block" name="'+v.for+'" data-role="'+v.for+'">';
+                                                    info += barcode;
+                                                    info += '</div>\
+                                                                  </div>\
+                                                              </div>';
+                                              }
+						break;
 				}
-				_div1 += '<li class="move_feild">\n\
+				_div1 += '<li class="move_feild" data-role="'+v.for+'" >\n\
 							<div class="quicklist-l inline-block">\
 							<i class="fa iconfont icon-yidong"></i>\n\
 							<span><i class="fa icon-pc iconfont btn btn-show btn-desktop '+(v.enable_pc == 1?'blue':'grey')+'"></i><i class="fa iconfont icon-snimicshouji btn btn-show btn-mobile '+(v.enable_mobile == 1?'blue':'grey')+'"></i></span>\n\
@@ -758,6 +796,33 @@ function phone_indexController($scope,$http ,$location) {
     				clone_cell = parenticon.find('.consultation-item').last().clone(true);
     			parenticon.append(clone_cell);
     		});
+                $(".up_load").click(function(){
+                    var _this = $(this);
+                    var role = '';
+                    role = 32/32;
+                    var warningbox = new WarningBox();
+                    warningbox._upImage({
+						aspectRatio: role,
+						ajaxurl    : '../file-upload?target=common',
+						oncallback : function(json){
+                                                    checkJSON(json,function(json){
+                                                        _this.closest('.feild-item').find('div[data-role='+_this.data('role')+']').children().remove();
+                                                          _newpic = '<div class="template-download fade fl in">\n\
+                                                                        <div>\n\
+                                                                            <span class="preview">\n\
+                                                                            <div class="preview-close"><img src="images/preview-close.png" /></div>\n\
+                                                                                <img src="'+json.data.url+'" style="width:80px;height:80px;padding:5px;" data-role='+_this.data('role')+' data-preimg="preimg">\n\
+                                                                            </span>\n\
+                                                                        </div><input type="hidden" name="'+_this.data('role')+'" value="'+json.data.url+'"></div>';
+                                                         _this.closest('.feild-item').find('div[data-role='+_this.data('role')+']').append(_newpic);
+                                                    });
+                                                }
+					});
+                });
+                $('.preview-close').on('click',function(){
+                    $(this).parents('.template-download').remove();
+                    return false;
+                });
     		$('.icon-guanbi').on('click',function(){
     			$('.consultation .consultation-item').length == 1 ? alert('请至少保留一个！') : $(this).closest('.consultation-item').remove();
 	       	});
@@ -864,10 +929,17 @@ function phone_indexController($scope,$http ,$location) {
     		});
     	},
     	SaveData : function(){
+            $('.phone_index-banner .rewrite').click(function(){
+                $http.post('../quickbar.rewrite').success(function(json){
+		    		checkJSON(json,function(json){
+                                    location.reload();
+		    		});
+		    	});
+            });
     		$('.phone_index-banner .save').click(function(){
 	    		var navsArray = new Array();
 		    	$('.phone_quickbar_item .phone_func .move_feild').each(function() {
-		    		var show = [],data = [],icons,
+		    		var show = [],data = [],icons,for_bar,
 		    			type = $(this).find('.quicklist-l>.message-name').data('type');
 		    		icons = $(this).find('.icon_input').val();
 		    		switch(type){
@@ -898,18 +970,23 @@ function phone_indexController($scope,$http ,$location) {
 		    				var info = '',name,
 		    					count = $(this).find('.consultation li').length;
 		    				$(this).find('.consultation li').each(function(i, j) {
-		    					name = $(this).find('.consultation-name').val();console.log(name)
+		    					name = $(this).find('.consultation-name').val();
 		    					info += (name+(count == 0 ? '' : i == count-1 ? '' : '|'));
 		    				});
 		    				data = info;
 		    				break;
+                                        case 'follow':
+                                                for_bar = $(this).data('role');
+                                                data = $("input[name="+for_bar+"]").val();
+                                                break;
 		    		}
 	    			navsArray.push({
 		    			name  : $(this).find('.quicklist-l>.message-name').text(),
 		    			icon  : icons,
-						data  : data.toString(),
+						data  : data?data.toString():'',
 						enable_pc: $(this).find('.quicklist-l span:eq(0) i').eq(0).hasClass('blue') ? 1 : 0,
 						enable_mobile: $(this).find('.quicklist-l span:eq(0) i').eq(1).hasClass('blue') ? 1 : 0,
+                                                for: for_bar,
 						type  : type
 		    		});				
 				});
