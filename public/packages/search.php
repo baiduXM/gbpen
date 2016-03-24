@@ -1,7 +1,7 @@
 <?php
     header("Content-type:text/html;charset=utf-8");
     
-    $search = $_GET['s'];
+    $search = urldecode($_GET['s']);
     
     if(file_exists('./article_data.json') && file_exists('./search.html')){
         $article_content = file_get_contents('./article_data.json');
