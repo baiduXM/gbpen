@@ -100,7 +100,7 @@ class CommonController extends BaseController{
         $errorCorrectionLevel = "L";
         $path='customers/'.$customer.'/images/l/common/';
         $outfile=public_path($path);
-        $enc = $qrencode->factory($errorCorrectionLevel,100);
+        $enc = $qrencode->factory($errorCorrectionLevel,6);
         $enc->encodePNG($url, $outfile.$barcode.".png", $saveandprint=false);
         return asset($path.$barcode.".png");
     }
