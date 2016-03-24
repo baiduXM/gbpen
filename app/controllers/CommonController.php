@@ -52,7 +52,7 @@ class CommonController extends BaseController{
                 ['pc'=>0,'mobile'=>0,'name'=>'搜索','icon'=>'&#xe636;','image'=>'icon/8.png','data'=>'','type'=>'search','enable_pc'=>1,'enable_mobile'=>1],
                 ['pc'=>0,'mobile'=>0,'name'=>'微信二维码','icon'=>'&#xe61b;','image'=>'icon/a.png','data'=>'','for'=>'vx_barcode','type'=>'follow','enable_pc'=>0,'enable_mobile'=>0],
 //                ['pc'=>0,'mobile'=>0,'name'=>'qq二维码','icon'=>'&#xe60f;','image'=>'icon/a.png','data'=>'','for'=>'qq_barcode','type'=>'follow','enable_pc'=>0,'enable_mobile'=>0],
-                ['pc'=>0,'mobile'=>0,'name'=>'PC二维码','icon'=>'&#xe630;','image'=>'icon/a.png','data'=>$this->qrcode('pc_domain'),'for'=>'pc_barcode','type'=>'follow','enable_pc'=>1,'enable_mobile'=>0],
+//                ['pc'=>0,'mobile'=>0,'name'=>'PC二维码','icon'=>'&#xe630;','image'=>'icon/a.png','data'=>$this->qrcode('pc_domain'),'for'=>'pc_barcode','type'=>'follow','enable_pc'=>0,'enable_mobile'=>0],
                 ['pc'=>0,'mobile'=>0,'name'=>'手机二维码','icon'=>'&#xe64b;','image'=>'icon/a.png','data'=>$this->qrcode('mobile_domain'),'for'=>'m_barcode','type'=>'follow','enable_pc'=>1,'enable_mobile'=>0],
             ];
         if(!$QuickBar){
