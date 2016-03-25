@@ -142,11 +142,11 @@ Route::group(array('before' => 'auth'), function() {
     //--------------------首页内容--------------------
     Route::get('templates/GP{num}', [//PC预览 首页跳转
         'uses' => 'TemplatesController@homepagePreview'
-    ])->where('num', '[0-9]+');
+    ])->where('num', '[0-9_]+');
 
     Route::get('templates/GM{num}', [//手机预览 首页跳转
         'uses' => 'TemplatesController@mhomepagePreview'
-    ])->where('num', '[0-9]+');
+    ])->where('num', '[0-9_]+');
    
     //--------------------PC部分----------------------
     Route::get('homepage-preview', [//首页预览
