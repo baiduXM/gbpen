@@ -33,6 +33,11 @@ Route::post('login-post', [//登录处理
     'uses' => 'SignController@loginPost'
 ]);
 
+Route::post('modify-password', [//修改密码
+        'as' => 'modify-password',
+        'uses' => 'SignController@modifyPassword'
+    ]);
+
 Route::get('login-info', [//用户名称
         'as' => 'login-info',
         'uses' => 'SignController@loginInfo'

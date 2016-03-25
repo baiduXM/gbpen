@@ -23,7 +23,7 @@ class SignController extends BaseController {
             return Redirect::to('admin/index.html');
         }
         else{
-        	echo '<script language="javascript">alert("登录失败!");window.history.back(-1);</script> ';
+        	echo '<meta charset="UTF-8"><script language="javascript">alert("登录失败!");window.history.back(-1);</script> ';
             exit();
             //$result = ['err'=>1001,'msg'=>'登录失败'];
             //return Response::json($result);
@@ -38,18 +38,6 @@ class SignController extends BaseController {
         }
         else{
             return Response::json(['err'=>2001,'msg'=>'未登录']);
-        }
-    }
-
-    public function login(){
-
-        $id = Input::get('id');
-        if(验证成功){
-            $user = User::find(1);
-            Auth::login($user);
-        }
-        else{
-            
         }
     }
     
@@ -68,6 +56,22 @@ class SignController extends BaseController {
 
     public function resetPost(){
         
+    }
+    public function modifyPassword(){
+        $oldpassword=Input::get('oldpassword');
+        $newpassword=Input::get('newpassword');
+        if(Auth::check()){
+            if(Hash::check($oldpassword, Auth::user()->password)){
+                $result=Customer::where('id',Auth::id())->update(['password'=>Hash::make($newpassword)]);
+            }
+        }
+        Auth::logout();
+        if(isset($result)&&($result)){
+            return Response::json(['err'=>0,'msg'=>'修改成功','success'=>1]);
+        }
+        else{
+            return Response::json(['err'=>0,'msg'=>'密码错误','success'=>0]);
+        }
     }
 
 }

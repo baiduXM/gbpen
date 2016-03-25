@@ -108,5 +108,10 @@
     "templateUrl" : "pages/batcharticle.html",
     "scriptUrl"   : "pages/js/batcharticle.js",
     "controller"  : "batcharticleController"
+}, {
+    "router"      : "/user",
+    "templateUrl" : "pages/user.html",
+    "scriptUrl"   : "pages/js/user.js",
+    "controller"  : "userController"
 }
 ]
