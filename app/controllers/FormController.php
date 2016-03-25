@@ -85,6 +85,9 @@ class FormController extends BaseController {
 		//===获取表单详细信息===
 		$num = $form_id % 10;
 		$column_data = DB::table('form_column_' . $num)->where('form_id', $form_id)->select('id as column_id', 'title', 'description', 'type', 'required', 'config')->get();
+		foreach ($column_data as &$v) {
+			$v->config = json_decode($v->config);
+		}
 		$data['form'] = $form_data;
 		$data['column'] = $column_data;
 		return Response::json(['err' => 0, 'msg' => '验证成功，获取列表信息', 'data' => $data]);
@@ -173,6 +176,7 @@ class FormController extends BaseController {
 	public function saveFormColumn() {
 		//===获取参数===
 		$data = Input::get('data');
+		$form_id = Input::get('form_id');
 		$redata = array();
 		/*
 		 * [text]
@@ -206,9 +210,12 @@ class FormController extends BaseController {
 		 */
 		$config = array();
 		foreach ($data as $v) {
-			$redata[$v['name']] = $v['value'];
+			if (!isset($redata[$v['name']])) {
+				$redata[$v['name']] = $v['value'];
+			} else {
+				$redata[$v['name']] = $redata[$v['name']] . ',' . $v['value'];
+			}
 		}
-
 		//===赋值config===
 		if ($redata['type'] == 'text') {
 			$config['text_type'] = $redata['config_text_type'];
@@ -299,7 +306,7 @@ class FormController extends BaseController {
 		//$config['align'] = $redata['config_align'];
 
 		$time = date('Y-m-d H:i:s');
-		return $config;
+
 		$column_data = array(
 			'title' => $redata['title'],
 			'description' => $redata['description'],
@@ -308,11 +315,11 @@ class FormController extends BaseController {
 			'order' => '',
 			'updated_at' => $time
 		);
-		$form_id = $redata['form_id'];
 		$num = $form_id % 10;
 		$column_id = DB::table('form_column_' . $num)->where('id', $redata['column_id'])->update($column_data);
 		$column_data['column_id'] = $redata['column_id'];
 		$column_data['type'] = $redata['type'];
+		$column_data['config'] = $config;
 
 		if ($column_id != NULL) {
 			$json = Response::json(['err' => 0, 'msg' => '更新成功', 'data' => $column_data]);
@@ -346,7 +353,7 @@ class FormController extends BaseController {
 		$form_id = Input::get('form_id'); //表单ID
 		$form_box_info = Input::get('form_box_info'); //表单头信息
 
-		foreach ($form_box_info as $k => $v) {
+		foreach ($form_box_info as $v) {
 			$tn = str_replace('table_', '', $v['name']);
 			$redata[$tn] = $v['value'];
 		}
