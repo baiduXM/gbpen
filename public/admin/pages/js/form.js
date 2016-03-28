@@ -22,7 +22,7 @@ function formController($scope, $http, $location) {
 	function getFormList() {
 		$http.get('../form-list').success(function (json) {
 			checkJSON(json, function (json) {
-				if (json.data != null) {
+				if (json.data !== null) {
 					var form_list_data = json.data;//表单列表数据资料
 					var _div = '<tr>\n\
 							<th>表单名<div class="fr">|</div></th>\n\
@@ -50,6 +50,7 @@ function formController($scope, $http, $location) {
 								<td>' + v.created_at + '</td>\n\
 								<td>\n\
 									<a style="margin:0 10px; cursor: pointer" class="form_edit" ><i class="fa iconfont icon-bianji"></i></a>\n\
+									<a style="margin:0 10px; cursor: pointer" class="form_view" >view</a>\n\
 									<a class="delv"><i class="fa iconfont icon-delete mr5"></i></a>\n\
 								</td>\n\
 							</tr>';
@@ -72,6 +73,9 @@ function formController($scope, $http, $location) {
 			});
 			$('.form_edit').click(function () {
 				editForm($(this));
+			});
+			$('.form_view').click(function () {
+				viewForm($(this));
 			});
 		});
 	}
@@ -139,4 +143,12 @@ function formController($scope, $http, $location) {
 		var form_id = _this.parents('tr').attr('data-id');
 		location.href = "#/addform?form_id=" + form_id;
 	}
+
+	//===浏览表单===
+	function viewForm(_this) {
+		console.log(_this);
+		var form_id = _this.parents('tr').attr('data-id');
+		window.open("#/viewform?form_id=" + form_id);
+	}
+
 }

@@ -118,5 +118,10 @@
 		"templateUrl": "pages/addform.html",
 		"scriptUrl": "pages/js/addform.js",
 		"controller": "addformController"
+	},{
+		"router": "/viewform",
+		"templateUrl": "pages/viewform.html",
+		"scriptUrl": "pages/js/viewform.js",
+		"controller": "viewformController"
 	}
 ]

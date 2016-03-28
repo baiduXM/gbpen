@@ -46,7 +46,7 @@ class FormController extends BaseController {
 		if ($id != NULL) {
 			$res = Response::json(['err' => 0, 'msg' => '添加成功', 'data' => $id]);
 		} else {
-			$res = Response::json(['err' => 1, 'msg' => '没有表单组件', 'data' => '']);
+			$res = Response::json(['err' => 1, 'msg' => '创建表单失败', 'data' => '']);
 		}
 		return $res;
 	}
@@ -63,13 +63,6 @@ class FormController extends BaseController {
 			$json = Response::json(['err' => 1, 'msg' => '删除失败', 'data' => '']);
 		}
 		return $json;
-	}
-
-	/**
-	 * 修改表单
-	 */
-	public function editForm() {
-		
 	}
 
 	/**
@@ -102,7 +95,7 @@ class FormController extends BaseController {
 		if ($data != NULL) {
 			$res = Response::json(['err' => 0, 'msg' => '获取成功', 'data' => $data]);
 		} else {
-			$res = Response::json(['err' => 1, 'msg' => '没有表单组件', 'data' => '']);
+			$res = Response::json(['err' => 1, 'msg' => '获取组件元素失败', 'data' => '']);
 		}
 		return $res;
 	}
@@ -141,9 +134,9 @@ class FormController extends BaseController {
 
 		//===返回数据===
 		if ($column_id != NULL) {
-			$res = Response::json(['err' => 0, 'msg' => '添加成功', 'data' => $element_data]);
+			$res = Response::json(['err' => 0, 'msg' => '添加组件成功', 'data' => $element_data]);
 		} else {
-			$res = Response::json(['err' => 1, 'msg' => '没有表单组件', 'data' => '']);
+			$res = Response::json(['err' => 1, 'msg' => '添加组件失败', 'data' => '']);
 		}
 		return $res;
 	}
@@ -161,11 +154,12 @@ class FormController extends BaseController {
 		$model = DB::table('form_column_' . $num); //分表
 		$column_data = $model->where('id', $column_id)->first();
 		$column_data->column_id = $column_data->id;
+		$column_data->config = json_decode($column_data->config);
 		//===返回数据===
 		if ($column_data != NULL) {
-			$res = Response::json(['err' => 0, 'msg' => '成功', 'data' => $column_data]);
+			$res = Response::json(['err' => 0, 'msg' => '获取组件元素成功', 'data' => $column_data]);
 		} else {
-			$res = Response::json(['err' => 1, 'msg' => '没有表单组件', 'data' => '']);
+			$res = Response::json(['err' => 1, 'msg' => '获取组件元素失败', 'data' => '']);
 		}
 		return $res;
 	}
@@ -176,8 +170,20 @@ class FormController extends BaseController {
 	public function saveFormColumn() {
 		//===获取参数===
 		$data = Input::get('data');
+//		$file = fileRead();
+//		$file = Input::file('config_img_file');
+//		return $file;
 		$form_id = Input::get('form_id');
 		$redata = array();
+		$config = array();
+		foreach ($data as $v) {
+			if (!isset($redata[$v['name']])) {
+				$redata[$v['name']] = $v['value'];
+			} else {
+				$redata[$v['name']] = $redata[$v['name']] . ',' . $v['value'];
+			}
+		}
+		//===赋值config===
 		/*
 		 * [text]
 		 * text_type 文本类型 text-文本 password-密码
@@ -194,12 +200,15 @@ class FormController extends BaseController {
 		 * option_type 选项类型 1-文字 2-图片
 		 * option_img_$i 选项图片
 		 * [+checkbox]
-		 * option_limit 选项限制 >=至少 <=最多 =恰好
+		 * option_limit 选项是否限制
+		 * option_type 选项限制 >=至少 <=最多 =恰好
+		 * option_num 选项限制数
 		 * [date]
 		 * -
 		 * [image]
 		 * img_type 图片类型 1-本地图片 2-外链图片
-		 * img 图片路径or图片http地址
+		 * img_src 图片http地址
+		 * img_file 图片路径
 		 * img_href 图片点击跳转链接 http地址
 		 * img_align 图片显示方式 1-拉伸 2-居中
 		 * [file]
@@ -208,30 +217,24 @@ class FormController extends BaseController {
 		 * align 对齐方式？ left-左对齐 center-居中 right-右对齐
 		 * 
 		 */
-		$config = array();
-		foreach ($data as $v) {
-			if (!isset($redata[$v['name']])) {
-				$redata[$v['name']] = $v['value'];
-			} else {
-				$redata[$v['name']] = $redata[$v['name']] . ',' . $v['value'];
-			}
-		}
-		//===赋值config===
 		if ($redata['type'] == 'text') {
 			$config['text_type'] = $redata['config_text_type'];
+			$config['text_rules'] = $redata['config_rules'];
 			switch ($redata['config_rules']) {
 				case 'mail':
 					$regex = '/^[0-9a-zA-Z]+@(([0-9a-zA-Z]+)[.])+[a-z]{2,4}$/i';
+					$hint = '';
+
 					break;
 				case 'mobile':
 					$regex = '/^((13[0-9])|147|(15[0-35-9])|180|182|(18[45-9]))[0-9]{8}$/';
-					break;
-				case 'username':
-					$regex = '';
 					$hint = '';
+
 					break;
 				case 'number':
 					$regex = '/^\d+$/';
+					$hint = '';
+
 					break;
 				case 'defined':
 					$regex = $redata['config_regex'];
@@ -272,16 +275,19 @@ class FormController extends BaseController {
 		}
 		//===多选===
 		if ($redata['type'] == 'checkbox') {
+			$config['option_limit'] = 0;
 			if (isset($redata['config_control'])) {
+				$config['option_limit'] = 1;
+				$config['option_num'] = intval($redata['config_control_num']);
 				switch ($redata['config_control_type']) {
 					case 0://===至少===
-						$config['option_limit'] = '>=' . intval($redata['config_control_num']);
+						$config['option_type'] = 0;
 						break;
 					case 1://===最多===
-						$config['option_limit'] = '<=' . intval($redata['config_control_num']);
+						$config['option_type'] = 1;
 						break;
 					case 2://===恰好===
-						$config['option_limit'] = '=' . intval($redata['config_control_num']);
+						$config['option_type'] = 2;
 						break;
 					default:
 						break;
@@ -293,10 +299,11 @@ class FormController extends BaseController {
 		}
 		//===图片===
 		if ($redata['type'] == 'image') {
-			$config['img_type'] = $redata['config_img_type'];
-			$config['img'] = $redata['config_img'];
+			$config['img_type'] = intval($redata['config_img_type']);
+//			$config['img_file'] = $redata['config_img_file'];
+			$config['img_src'] = $redata['config_img_src'];
 			$config['img_href'] = $redata['config_img_href'];
-			$config['img_align'] = $redata['config_img_align'];
+			$config['img_align'] = intval($redata['config_img_align']);
 		}
 		//====文件===
 		if ($redata['type'] == 'file') {
@@ -322,9 +329,9 @@ class FormController extends BaseController {
 		$column_data['config'] = $config;
 
 		if ($column_id != NULL) {
-			$json = Response::json(['err' => 0, 'msg' => '更新成功', 'data' => $column_data]);
+			$json = Response::json(['err' => 0, 'msg' => '保存组件信息成功', 'data' => $column_data]);
 		} else {
-			$json = Response::json(['err' => 1, 'msg' => '没有表单组件', 'data' => '']);
+			$json = Response::json(['err' => 1, 'msg' => '保存组件信息失败', 'data' => '']);
 		}
 		return $json;
 	}
