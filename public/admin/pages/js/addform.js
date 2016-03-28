@@ -7,11 +7,11 @@ function addformController($scope, $http, $location) {
 	$('[name="form_id"]').val(form_id);
 	//===表单标题===
 	$('[name="table_title"]').blur(function () {
-		$('h2').html($(this).val());
+		$('.title p').html($(this).val());
 	});
 	//===表单描述===
 	$('[name="table_description"]').blur(function () {
-		$('h3').html($(this).val());
+		$('.description p').html($(this).val());
 	});
 	//===保存表单===
 	$('.addsave').click(function () {
@@ -75,11 +75,14 @@ function addformController($scope, $http, $location) {
 				var form_element = json.data;
 				var _div = '';
 				$.each(form_element, function (k, v) {
-					_div += '<button data-id="' + v.id + '">' + v.title + '</button>';
+					_div += '<li class="utility" data-id="' + v.id + '">\
+								<span class="title">' + v.title + '</span>\
+								<i class="iconfont icon-liebiao grey tpl_info" name="1"></i>\
+							</li>';
 				});
 				$('[name="element-box"]').append(_div);
 			});
-			$('.home-list>button').click(function () {
+			$('.unit-list>li').click(function () {
 				var _this = $(this);
 				bindElementEvent(_this);
 			});
@@ -111,23 +114,23 @@ function addformController($scope, $http, $location) {
 		_div_li += '<li data-type="' + data.type + '" data-id="' + data.column_id + '" name="li_' + data.column_id + '">';
 		switch (data.type) {
 			case 'text':
-				_div += data.title + '：(' + data.description + ')<br /><input type="text" name="col_' + data.column_id + '" value="" />';
+				_div += '<label class="content-l">' + data.title + '：</label><input class="Input" placeholder='+data.description+' type="text" name="col_' + data.column_id + '" value="" />';
 				break;
 			case 'textarea':
-				_div += data.title + '：(' + data.description + ')<br /><textarea name="col_' + data.column_id + '"></textarea>';
+				_div += '<label class="content-l">' + data.title + '(' + data.description + ')：<br /></label><textarea name="col_' + data.column_id + '"></textarea>';
 				break;
 			case 'radio':
-				_div += data.title + '：(' + data.description + ')<br /><input type="radio" name="col_' + data.column_id + '" value="" />\n\
+				_div += '<label class="content-l">' + data.title + '(' + data.description + ')：</label><input type="radio" name="col_' + data.column_id + '" value="" />\n\
 						<input type = "radio" name="col_' + data.column_id + '" value = "" />\n\
 						<input type = "radio" name="col_' + data.column_id + '" value = "" />';
 				break;
 			case 'checkbox':
-				_div += data.title + '：(' + data.description + ')<br /><input type="checkbox" name="col_' + data.column_id + '" value="" />\n\
+				_div += '<label class="content-l">' + data.title + '(' + data.description + ')：</label><input type="checkbox" name="col_' + data.column_id + '" value="" />\n\
 						<input type="checkbox" name="col_' + data.column_id + '" value="" />\n\
 						<input type="checkbox" name="col_' + data.column_id + '" value="" />';
 				break;
 			case 'select':
-				_div += data.title + '：(' + data.description + ')<select name="col_' + data.column_id + '">';
+				_div += '<label class="content-l">' + data.title + '(' + data.description + ')：</label><select name="col_' + data.column_id + '">';
 //				$.each(column_data, function (k, v) {
 //					_div_show(v);
 //				});
@@ -141,16 +144,16 @@ function addformController($scope, $http, $location) {
 				_div += '日期date';
 				break;
 			case 'image':
-				_div += data.title + '：(' + data.description + ')<br /><input type="image" src="submit.gif" alt="Submit" name="col_' + data.column_id + '" />';
+				_div += '<label class="content-l">' + data.title + '(' + data.description + ')：</label><input type="image" src="submit.gif" alt="Submit" name="col_' + data.column_id + '" />';
 				break;
 			case 'file':
-				_div += data.title + '：(' + data.description + ')<br /><input type="file" name="col_' + data.column_id + '"/>';
+				_div += '<label class="content-l">' + data.title + '(' + data.description + ')：</label><input type="file" name="col_' + data.column_id + '"/>';
 				break;
 			default:
 				break;
 		}
 		_div_li += _div;
-		_div_li += '</li><br />';
+		_div_li += '</li>';
 		if ($('li[name="li_' + data.column_id + '"').length > 0) {
 			$('li[name="li_' + data.column_id + '"').html(_div);
 		} else {
@@ -192,7 +195,7 @@ function addformController($scope, $http, $location) {
 					<input type = "radio" name="config_rules" value = "mobile" />手机　\n\
 					<input type = "radio" name="config_rules" value = "username" />用户名　\n\
 					<input type = "radio" name="config_rules" value = "number" />数字　\n\
-					<input type = "radio" name="config_rules" value = "defined" />自定义　<br />\n\
+					<input type = "radio" name="config_rules" value = "defined" />自定义　\n\
 						正则表达式<input type = "text" name="config_regex" value = "" />\n\
 						（提示<input type = "text" name="config_hint" value = "" />）\n\
 				</div>';
@@ -336,7 +339,7 @@ function addformController($scope, $http, $location) {
 								hint_box;
 							});
 						}, 'json');
-					}
+					} 
 				}
 			})();
 		});

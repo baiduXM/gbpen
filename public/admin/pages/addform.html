@@ -1,63 +1,66 @@
 <link rel="stylesheet" href="css/themes.css">
 <link rel="stylesheet" href="css/laydate.css">
 <script src="js/colorpicker.min.js"></script>
-<style>
-	/*.home-list{background-color: black;}*/
-	.add-info{border: 1px #005AFF solid;}
-	.add-show{border: 1px #005AFF solid;}
-	.element-show li{border: 1px #FEB825 solid;}
-</style>
 <div class="jumbotron text-center">
-	<div id="addarticle-con" class="whole article-con">
-		<div class="add-info fl">
+	<div id="addform-con" class="whole">
+		<div class="add-info">
 			<a class="inline-block fl addcancle all_button" href="#/form">返回</a>
 			<a class="inline-block fr addsave all_button" href="" >保存</a>
-			<input name="form_id" type="hidden" value="" />
-			<div class="btn-top clearfix">
-				<fieldset>
-					<legend>设计表单</legend>
-					<form name="box_info">
-						<ul class="home-list">
-							<li><span class="fl">表单名：</span><input name="table_name" type="text" class="visit"/></li>
-							<li><span class="fl">标题：</span><input name="table_title" type="text" class="visit"/></li>
-							<li><span class="fl">描述：</span><textarea name="table_description" type="text" class="visit"></textarea></li>
-							<li><span class="fl">提交表单后动作：</span><input name="action" type="text" class="visit"/></li>
-							<li><span class="fl">每个用户只能提交一次：</span><input name="is_once" type="checkbox" value="1" class="visit"/></li>
-							<li><span class="fl">停用启用：</span><input name="table_status" type="radio" value="1" class="visit"/>启用<input name="table_status" type="radio" value="0" class="visit"/>停用</li>
-						</ul>
-					</form>
-				</fieldset>
-			</div>
-			<div class="btn-top clearfix">
-				<fieldset>
-					<legend>添加组件</legend>
-					<ul class="home-list" name="element-box">
-						<!--ajaxTODO-->
-					</ul>
-				</fieldset>
-			</div>
-			<div class="btn-top clearfix">
-				<fieldset>
-					<legend>编辑组件</legend>
-					<form name="box_column">
-						<ul class="home-list" name="element-edit">
+		</div>
+		<div class="universal-form">
+			<div class="info-l fl">
+				<input name="form_id" type="hidden" value="" />
+				<div class="btn-top clearfix">
+					<fieldset>
+						<legend class="design title">设计表单</legend>
+						<form name="box_info">
+							<ul class="form-list">
+								<li><span class="content-l">表单名：</span><input name="table_name" type="text" class="Input"/></li>
+								<li><span class="content-l">标题：</span><input name="table_title" type="text" class="Input"/></li>
+								<li><span class="content-l">描述：</span><textarea name="table_description" type="text" class="Input"></textarea></li>
+								<li><span class="content-l">提交表单后动作：</span><input name="action" type="text" class="Input"/></li>
+								<li><span class="content-l">每个用户只能提交一次：</span><input name="is_once" type="checkbox" value="1" class=""/></li>
+								<li><span class="content-l">停用启用：</span><input name="table_status" type="radio" value="1" class=""/>&nbsp;启用&nbsp;<input name="table_status" type="radio" value="0" class=""/>&nbsp;停用&nbsp;</li>
+							</ul>
+						</form>
+					</fieldset>
+				</div>
+				<div class="btn-top clearfix">
+					<fieldset>
+						<legend class="addunit title">添加组件</legend>
+						<ul class="unit-list" name="element-box">
 							<!--ajaxTODO-->
 						</ul>
-					</form>
-				</fieldset>
+					</fieldset>
+				</div>
 			</div>
-		</div>
-		<div class="add-show fl pr">
-			<form name="box_show">
-				<h2>标题</h2>
-				<h3>描述</h3>
-				<hr />
-				<content name="content">
-					<ul class="element-show">
-						<!--ajaxTODO-->
-					</ul>
-				</content>
-			</form>
+			<div class="info-r fl">
+				<div class="btn-top clearfix">
+					<fieldset>
+						<legend class="editunit title">编辑组件</legend>
+						<form name="box_column">
+							<ul class="home-list" name="element-edit">
+								<!--ajaxTODO-->
+							</ul>
+						</form>
+					</fieldset>
+				</div>
+				<div class="add-show fl pr">
+					<form class="unit-preview" name="box_show">
+						<div class="title">
+							<label>标题:</label><p>标题</p>
+						</div>
+						<div class="description">
+							<label>描述:</label><p>描述</p>
+						</div>
+						<div name="content">
+							<ul class="element-show">
+								<!--ajaxTODO-->
+							</ul>
+						</div>
+					</form>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>
