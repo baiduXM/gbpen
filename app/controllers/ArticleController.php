@@ -14,7 +14,7 @@ class ArticleController extends BaseController{
     |articleSort    文章排序
     |articleMoveClassify 文章移动分类
     |articleBatchModify  文章批量设置
-    |
+    |articleSortModify   文章顺序修改
 	*/ 
     public function articleAdd(){
         $id=Input::get('id');
@@ -120,8 +120,19 @@ class ArticleController extends BaseController{
         $data['aticlelist'] = $this->articleListData($c_id,$is_star,$per_page);
         return Response::json(['err'=>0,'msg'=>'','data'=>$data]);
     }
-    
-    public function articleList(){
+    public function articleSortModify(){
+        $cus_id=Auth::id();
+        $id=Input::get('id');
+        $sort=Input::get('sort');
+        $result=Articles::where('id',$id)->where('cus_id',$cus_id)->update(['sort'=>$sort]);
+        if($result){
+            return Response::json(['err'=>0,'msg'=>'修改成功']);
+        }else{
+            return Response::json(['err'=>3001,'msg'=>'修改失败']);
+        }
+    }
+
+        public function articleList(){
         $c_id = Input::has('c_id') ? Input::get('c_id') : 0;
         $per_page = Input::has('per_page') ? Input::get('per_page') : 15;
         $is_star=Input::has('is_star') ? Input::get('is_star') : 0;
@@ -140,15 +151,15 @@ class ArticleController extends BaseController{
             $cus_data=new PrintController();
             $c_ids=explode(',',$cus_data->getChirldenCid($c_id));
             if($is_star){
-                $article_list=Articles::whereIn('c_id',$c_ids)->where('is_star','=',$is_star)->paginate($per_page);
+                $article_list=Articles::whereIn('c_id',$c_ids)->where('is_star','=',$is_star)->orderBy('is_top','DESC')->orderBy('sort', 'ASC')->orderBy('created_at','DESC')->paginate($per_page);
             }else{
-                $article_list=Articles::whereIn('c_id',$c_ids)->paginate($per_page);
+                $article_list=Articles::whereIn('c_id',$c_ids)->orderBy('is_top','DESC')->orderBy('sort', 'ASC')->orderBy('created_at','DESC')->paginate($per_page);
             }
         }else{
             if($is_star){
-                $article_list=Articles::where('cus_id','=',$cus_id)->where('is_star','=',$is_star)->paginate($per_page);
+                $article_list=Articles::where('cus_id','=',$cus_id)->where('is_star','=',$is_star)->orderBy('is_top','DESC')->orderBy('sort', 'ASC')->orderBy('created_at','DESC')->paginate($per_page);
             }else{
-                $article_list=Articles::where('cus_id','=',$cus_id)->paginate($per_page);
+                $article_list=Articles::where('cus_id','=',$cus_id)->orderBy('is_top','DESC')->orderBy('sort', 'ASC')->orderBy('created_at','DESC')->paginate($per_page);
             }
         }
         $article_arr=$article_list->toArray();

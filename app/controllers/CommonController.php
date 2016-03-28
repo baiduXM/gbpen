@@ -7,6 +7,7 @@ class CommonController extends BaseController{
 	|--------------------------------------------------------------------------
     | IconsList 获取文字图标库
     | postsend 发起post请求
+    | qrcode   手机、pc二维码生成
 	*/ 
     
     public function IconsList(){
@@ -95,6 +96,7 @@ class CommonController extends BaseController{
         if($domain==""){
             $customer_info = CustomerInfo::where('id',$id)->first();
             $domain = $customer_info->$barcode;
+            return '';
         }
         $url= str_replace('http://', '', $domain);
         $errorCorrectionLevel = "L";

@@ -128,6 +128,11 @@ Route::group(array('before' => 'auth'), function() {
         'uses' => 'ArticleController@articleDelete'
     ]);
     
+    Route::post('article-sort-modify', [//文章排序修改
+        'as' => 'article-sort-modify',
+        'uses' => 'ArticleController@articleSortModify'
+    ]);
+    
     Route::post('article-sort', [//文章排序
         'as' => 'article-list',
         'uses' => 'ArticleController@articleSort'

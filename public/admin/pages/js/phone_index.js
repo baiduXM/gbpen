@@ -755,7 +755,9 @@ function phone_indexController($scope,$http ,$location) {
                                                     info = '<div class="quicklist-r inline-block">\
                                                                   <div class="feild-item">\
                                                                   <div class="set_pic3 set_pic inline-block" name="'+v.for+'" data-role="'+v.for+'">';
-                                                    info += barcode;
+                                                    if(v.data!=''){
+                                                        info += barcode;
+                                                    }
                                                     info += '</div>\
                                                                   </div>\
                                                               </div>';

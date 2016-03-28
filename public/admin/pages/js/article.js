@@ -74,6 +74,7 @@ function articleController($scope, $http ,$location) {
                         <th>访问<div class="fr">|</div></th>\n\
                         <th>展示<div class="fr">|</div></th>\n\
                         <th>发布时间<div class="fr">|</div></th>\n\
+                        <th>排序<div class="fr">|</div></th>\n\
                         <th>操作</th>\n\
                     </tr>\n\
                     <tr class="sapces"></tr>';
@@ -91,7 +92,8 @@ function articleController($scope, $http ,$location) {
                                             <span><i class="fa iconfont icon-pc btn btn-show btn-desktop '+(v.pc_show?'blue':'grey')+'"></i></span>\n\
                                             <span><i class="fa iconfont icon-snimicshouji btn btn-show btn-mobile '+(v.mobile_show?'blue':'grey')+'"></i></span>\n\
                                         </td>\n\
-                                        <td>'+v.created_at+'</td>\n\
+                                        <td>'+v.created_at+'</td>\n\\n\
+                                        <td><input class="sort" type="text" data-id="'+v.id+'"  value="'+((v.sort==1000000)?'':v.sort)+'" /></td>\n\
                                         <td><a style="margin:0 10px;" class="column-edit pr" href="#/addarticle?id='+v.id+'&c_id='+v.c_id+'"><i class="fa iconfont icon-bianji"></i><div class="warning"><i class="iconfont'+(v.img_err?' icon-gantanhao':'')+'"></i></div></a><a class="delv" name="'+v.id+'"><i class="fa iconfont icon-delete mr5"></i></a></td>\n\
                                     </tr>';
                     });
@@ -118,6 +120,7 @@ function articleController($scope, $http ,$location) {
                             <th>访问<div class="fr">|</div></th>\n\
                             <th>展示<div class="fr">|</div></th>\n\
                             <th>发布时间<div class="fr">|</div></th>\n\
+                            <th>排序<div class="fr">|</div></th>\n\
                             <th>操作</th>\n\
                         </tr>\n\
                         <tr class="sapces"></tr>');
@@ -218,6 +221,7 @@ function articleController($scope, $http ,$location) {
             this._searchInfo();
             this._moveclassify();
             this._setInfoClassify();
+            this._sort();
             this._delete();
             this._batchdel();
             this._showPlatform();
@@ -337,9 +341,28 @@ function articleController($scope, $http ,$location) {
                 .addClass((set_val == 1 && !$(this).hasClass('blue') ? 'blue' : $(this).hasClass('blue') ? 'grey' : null));
             });
         },
+        _sort : function(){
+            $('.a-table').on('change','.sort',function(){
+                var id,sort;
+                id=$(this).data('id');
+                sort=$(this).val();
+                $http.post('../article-sort-modify', {id: id,sort:sort}).success(function(json) {
+                                checkJSON(json, function(json){
+                                    $('.a-table').children().remove();
+                                    $scope.getArticleList({
+                                        first : false
+                                    });
+                                    var hint_box = new Hint_box();
+                                    hint_box;
+                                });
+                            });
+            });
+        },
         _delete : function(){
             //删除
             $('.a-table').on('click','.delv',function(){
+                alert(1);
+                return false;
                 var id = $(this).attr('name');
                 var _this = $(this);
                 (function article_delete(del_num){
