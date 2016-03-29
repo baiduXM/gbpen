@@ -1268,7 +1268,7 @@ class PrintController extends BaseController{
             $page_number = CustomerInfo::where('cus_id',$this->cus_id)->pluck('mobile_page_count');//每页显示个数
             $links_count = CustomerInfo::where('cus_id',$this->cus_id)->pluck('mobile_page_links');//分页链接显示个数
             $offset = ($page-1)*$page_number;
-            $total = Articles::whereIn('c_id',$cids)->where('mobile_show','1')->orderBy('sort', 'ASC')->orderBy('created_at','DESC')->select('id','title','img','introduction','created_at','title_bold','title_color')->count();
+            $total = Articles::whereIn('c_id',$cids)->where('mobile_show','1')->select('id','title','img','introduction','created_at','title_bold','title_color')->count();
             $list = Articles::whereIn('c_id',$cids)->where('mobile_show','1')->orderBy('is_top','desc')->orderBy('sort', 'ASC')->orderBy('created_at','DESC')->select('id','title','img','introduction','created_at','title_bold','title_color','c_id')->skip($offset)->take($page_number)->get();
         }
         else{
@@ -1287,7 +1287,7 @@ class PrintController extends BaseController{
             }
             $links_count = CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_links');//分页链接显示个数
             $offset = ($page-1)*$page_number;
-            $total = Articles::whereIn('c_id',$cids)->where('pc_show','1')->orderBy('sort', 'ASC')->orderBy('created_at','DESC')->select('id','title','img','introduction','created_at','title_bold','title_color')->count();
+            $total = Articles::whereIn('c_id',$cids)->where('pc_show','1')->select('id','title','img','introduction','created_at','title_bold','title_color')->count();
             $list = Articles::whereIn('c_id',$cids)->where('pc_show','1')->orderBy('is_top','desc')->orderBy('sort', 'ASC')->orderBy('created_at','DESC')->select('id','title','img','introduction','created_at','title_bold','title_color','c_id')->skip($offset)->take($page_number)->get();
         }
         $page_count = ceil($total/$page_number);
