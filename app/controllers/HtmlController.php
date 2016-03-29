@@ -232,19 +232,122 @@ class HtmlController extends BaseController{
             $new_data = 1;
             $customer_data = [];
         }
-        $mindexhtml = $this->homgepagehtml('mobile');
+        if($_GET['p']='m'){
+            $mindexhtml = $this->homgepagehtml('mobile');
+            $msearchhtml = $this->sendData('mobile');
+            $mobile_classify_ids = Classify::where('cus_id',$this->cus_id)->where('mobile_show',1)->lists('id');
+            $mobile_article_ids = Articles::where('cus_id',$this->cus_id)->where('mobile_show',1)->lists('id');
+            $count = $this->htmlPagecount($mobile_classify_ids,$mobile_article_ids);
+            $this->html_precent= 70/$count;             
+            $mcategoryhtml = $this->categoryhtml($mobile_classify_ids,'mobile');
+            $marticlehtml = $this->articlehtml($mobile_article_ids,'mobile');
+            $this->percent = 20/$count;
+            $path = public_path('customers/'.$this->customer.'/'.$this->customer.'.zip');
+            $zip = new ZipArchive;
+            if ($zip->open($path, ZipArchive::CREATE) === TRUE) {
+                $this->lastpercent += 70+$this->percent;
+                $zip->addFile($mindexhtml,'mobile/index.html');
+                $zip->addFile($msearchhtml,'mobile/search.html');
+                $nowpercent = $this->percent + $this->lastpercent;
+                if(floor($nowpercent)!=floor($this->lastpercent)){
+                    echo floor($nowpercent) . '%<script type="text/javascript">parent.refresh(' . floor($nowpercent) . ');</script><br />';
+                    ob_flush();
+                    flush();
+                }
+                $this->lastpercent += $this->percent;
+                $zip->close();
+            }
+                //$customer_data = $this->compareZip($categoryhtml,$customer_data,'p','category',$path);
+                //$customer_data = $this->compareZip($mcategoryhtml,$customer_data,'m','mobile/category',$path);
+                //$customer_data = $this->compareZip($articlehtml,$customer_data,'pf','detail',$path);
+                //$customer_data = $this->compareZip($marticlehtml,$customer_data,'mf','mobile/detail',$path);
+                 $this->compareZip($mcategoryhtml,$customer_data,'m','mobile/category',$path);
+                 $this->compareZip($marticlehtml,$customer_data,'mf','mobile/detail',$path);
+
+                if(90 > floor($this->lastpercent)) {
+                    echo '90%<script type="text/javascript">parent.refresh(90);</script><br />';
+                    ob_flush();
+                    flush();
+                }
+
+            if ($zip->open($path, ZipArchive::CREATE) === TRUE) {
+                $mobile_dir=  Template::where('website_info.cus_id',$this->cus_id)->Leftjoin('website_info','template.id','=','website_info.mobile_tpl_id')->pluck('name');
+                $maim_dir=public_path("templates/$mobile_dir/");
+                //$images_dir=public_path("customers/".$this->customer."/images/");
+                //$this->addDir($images_dir,$zip,'images/'); 
+                $this->addDir($maim_dir,$zip,'mobile/');
+                $zip->close();
+                $data = serialize($customer_data);
+                if($new_data){
+                    $customerpushfile = new CustomerPushfile;
+                    $customerpushfile->cus_id = $this->cus_id;
+                    $customerpushfile->files = $data;
+                    $customerpushfile->save();
+                }
+                else{
+                    CustomerPushfile::where('cus_id',$this->cus_id)->update(['files'=>$data]);
+                }
+                $customerinfo = Customer::find($this->cus_id);
+                $ftp_array = explode(':',$customerinfo->ftp_address);
+                $port= $customerinfo->ftp_port;
+                $ftp_array[1] = isset($ftp_array[1])?$ftp_array[1]:$port;
+                $conn = ftp_connect($ftp_array[0],$ftp_array[1]);
+
+                if($conn){
+                    ftp_login($conn,$customerinfo->ftp_user,$customerinfo->ftp_pwd);
+                    ftp_pasv($conn, 1);
+                   // dd($conn,$this->customer,$path);
+                    if(@ftp_chdir($conn,$this->customer) == FALSE){
+                    ftp_mkdir($conn,$this->customer);  
+                    //ftp_cdup($conn);
+                    }
+                    ftp_put($conn,"/".$this->customer."/site.zip",$path,FTP_BINARY);
+                    ftp_put($conn,"/".$this->customer."/unzip.php",public_path("packages/unzip.php"),FTP_ASCII);
+                    ftp_put($conn,"/".$this->customer."/mobile/search.php",public_path("packages/search.php"),FTP_ASCII);
+                    //ftp_chdir($conn,$this->customer);
+                    if(@ftp_chdir($conn,"/".$this->customer."/mobile") == FALSE){
+                    ftp_mkdir($conn,"/".$this->customer."/mobile"); 
+                    //ftp_cdup($conn);
+                    }
+
+                    //ftp_chdir($conn,"mobile");
+                    ftp_put($conn,"/".$this->customer."/mobile/quickbar.json",public_path('customers/'.$this->customer.'/mobile/quickbar.json'),FTP_ASCII);
+                    ftp_close($conn);
+                }
+
+                echo '100%<script type="text/javascript">parent.refresh(100);</script><br />';
+                Classify::where('cus_id',$this->cus_id)->where('pushed',1)->update(['pushed'=>0]);
+                Articles::where('cus_id',$this->cus_id)->where('pushed',1)->update(['pushed'=>0]);
+                //$pc_domain = CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_domain');
+                 /**
+                * pc使用本服务器自带域名推送，后期需要改进！
+                */
+                $cus_name =strtolower( Customer::where('id',$this->cus_id)->pluck('name'));
+                $ftp_pcdomain="http://".$cus_name.".n01.5067.org";
+                @file_get_contents("$ftp_pcdomain/unzip.php");
+            } 
+            else {
+                echo '打包失败';
+            }
+            ob_end_flush();
+        }
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         $searchhtml = $this->sendData('pc');
-        $msearchhtml = $this->sendData('mobile');
         $pc_classify_ids = Classify::where('cus_id',$this->cus_id)->where('pc_show',1)->lists('id');
-        $mobile_classify_ids = Classify::where('cus_id',$this->cus_id)->where('mobile_show',1)->lists('id');
         $pc_article_ids = Articles::where('cus_id',$this->cus_id)->where('pc_show',1)->lists('id');
-        $mobile_article_ids = Articles::where('cus_id',$this->cus_id)->where('mobile_show',1)->lists('id');
         $count = $this->htmlPagecount($pc_classify_ids,$mobile_classify_ids,$pc_article_ids,$mobile_article_ids);
         $this->html_precent= 70/$count;             
         $categoryhtml = $this->categoryhtml($pc_classify_ids,'pc');
-        $mcategoryhtml = $this->categoryhtml($mobile_classify_ids,'mobile');
         $articlehtml = $this->articlehtml($pc_article_ids,'pc');
-        $marticlehtml = $this->articlehtml($mobile_article_ids,'mobile');
         $this->percent = 20/$count;
         $path = public_path('customers/'.$this->customer.'/'.$this->customer.'.zip');
         $zip = new ZipArchive;
@@ -252,7 +355,6 @@ class HtmlController extends BaseController{
             $zip->addFile($indexhtml,'index.html');
             $zip->addFile($searchhtml,'search.html');
             $zip->addFile(public_path('customers/'.$this->customer.'/article_data.json'),'article_data.json');
-            $zip->addFile(public_path('customers/'.$this->customer.'/mobile/article_data.json'),'mobile/article_data.json');
             $nowpercent = $this->percent + $this->lastpercent;
             if(floor($nowpercent)!=$this->lastpercent){
                 echo floor($nowpercent) . '%<script type="text/javascript">parent.refresh(' . floor($nowpercent) . ');</script><br />';
