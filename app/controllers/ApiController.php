@@ -81,6 +81,7 @@ class ApiController extends BaseController{
                             $update['mobile_tpl_num'] = trim(Input::get('mobile_tpl_id'));
                         }
                         $update['stage'] = trim(Input::get('stage'));
+                        $update['ftp'] = trim(Input::get('ftp'));
                         $update['ftp_port'] = trim(Input::get('ftp_port'));
                         $update['ftp_dir'] = trim(Input::get('ftp_dir'));
 			$update['ftp_address'] = trim(Input::get('ftp_address'));
@@ -181,6 +182,7 @@ class ApiController extends BaseController{
                     $ftp_array[1] = isset($ftp_array[1])?$ftp_array[1]:$port;
                     $conn = ftp_connect($ftp_array[0],$ftp_array[1]);
                     if($conn){
+                        if($update['ftp']==0){
                         ftp_login($conn,$update['ftp_user'],$update['ftp_pwd']);
                         ftp_mkdir($conn,$update['name']);
                         ftp_mkdir($conn,$update['name'].'/images');
@@ -212,8 +214,42 @@ class ApiController extends BaseController{
                         ftp_mkdir($conn,$update['name'].'/mobile/images/s/articles');
                         ftp_mkdir($conn,$update['name'].'/mobile/images/s/common');
                         ftp_mkdir($conn,$update['name'].'/mobile/images/s/page_index'); 
-                       
                         ftp_close($conn);
+                        }
+                        else {
+                        ftp_login($conn,$update['ftp_user'],$update['ftp_pwd']);
+                        ftp_chdir($conn,$update['ftp']);
+                        ftp_mkdir($conn,$update['ftp'].'/images');
+                        ftp_mkdir($conn,$update['ftp'].'/detail');
+                        ftp_mkdir($conn,$update['ftp'].'/category');
+                        ftp_mkdir($conn,$update['ftp'].'/images/ueditor');
+                        ftp_mkdir($conn,$update['ftp'].'/images/l');
+                        ftp_mkdir($conn,$update['ftp'].'/images/l/category');
+                        ftp_mkdir($conn,$update['ftp'].'/images/l/articles');
+                        ftp_mkdir($conn,$update['ftp'].'/images/l/common');
+                        ftp_mkdir($conn,$update['ftp'].'/images/l/page_index');
+                        ftp_mkdir($conn,$update['ftp'].'/images/s');
+                        ftp_mkdir($conn,$update['ftp'].'/images/s/category');
+                        ftp_mkdir($conn,$update['ftp'].'/images/s/articles');
+                        ftp_mkdir($conn,$update['ftp'].'/images/s/common');
+                        ftp_mkdir($conn,$update['ftp'].'/images/s/page_index');
+                        ftp_mkdir($conn,$update['ftp'].'/mobile');
+                        ftp_mkdir($conn,$update['ftp'].'/mobile/images');
+                        ftp_mkdir($conn,$update['ftp'].'/mobile/detail');
+                        ftp_mkdir($conn,$update['ftp'].'/mobile/category');
+                        ftp_mkdir($conn,$update['ftp'].'/mobile/images/ueditor');
+                        ftp_mkdir($conn,$update['ftp'].'/mobile/images/l');
+                        ftp_mkdir($conn,$update['ftp'].'/mobile/images/l/category');
+                        ftp_mkdir($conn,$update['ftp'].'/mobile/images/l/articles');
+                        ftp_mkdir($conn,$update['ftp'].'/mobile/images/l/common');
+                        ftp_mkdir($conn,$update['ftp'].'/mobile/images/l/page_index');
+                        ftp_mkdir($conn,$update['ftp'].'/mobile/images/s');
+                        ftp_mkdir($conn,$update['ftp'].'/mobile/images/s/category');
+                        ftp_mkdir($conn,$update['ftp'].'/mobile/images/s/articles');
+                        ftp_mkdir($conn,$update['ftp'].'/mobile/images/s/common');
+                        ftp_mkdir($conn,$update['ftp'].'/mobile/images/s/page_index'); 
+                        ftp_close($conn);
+                        }
                     }
                         $common= new CommonController();
                         @$common->postsend(trim($update['weburl'],'/')."/urlbind.php",array('cus_name'=>$update['name'],'stage'=>$update['stage'],'pc_domain'=>$update['pc_domain'],'mobile_domain'=>$update['mobile_domain']));
