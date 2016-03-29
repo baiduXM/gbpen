@@ -155,7 +155,7 @@ Route::group(array('before' => 'auth'), function() {
 		'as' => 'form-list',
 		'uses' => 'FormController@editForm'
 	]);
-	Route::post('form-submit', [//修改表单名
+	Route::post('form-submit', [//保存表单
 		'as' => 'form-list',
 		'uses' => 'FormController@submitForm'
 	]);
@@ -184,7 +184,15 @@ Route::group(array('before' => 'auth'), function() {
 		'as' => 'form-list',
 		'uses' => 'FormController@deleteFormColumn'
 	]);
-
+	Route::any('form-view',[//表单预览
+		'as' => 'form-list',
+		'uses' => 'FormController@viewForm'
+	]);
+	Route::any('form-view-submit',[//用户表单提交
+		'as' => 'form-list',
+		'uses' => 'FormController@submitViewForm'
+	]);
+	
 	//-----------------------------------------------
 	//--------------------首页内容--------------------
 	Route::get('templates/GP{num}', [//PC预览 首页跳转

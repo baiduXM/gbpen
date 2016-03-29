@@ -247,7 +247,7 @@ class FormController extends BaseController {
 			$config['text_rules_hint'] = isset($hint) ? $hint : '';
 		}
 		if ($redata['type'] == 'textarea') {
-			
+			$config = array();
 		}
 		//===下拉菜单、单选、多选===
 		//===option_default 选项默认值 0 or 0,1...
@@ -258,14 +258,10 @@ class FormController extends BaseController {
 			$config['option_default'] = isset($redata['config_option_default']) ? $redata['config_option_default'] : '';
 			$config['option_count'] = intval($redata['config_option_count']);
 			$config['option_type'] = isset($redata['config_option_type']) ? $redata['config_option_type'] : 1;
-			if ($config['option_type'] == 2) {//===1-文字、2-图片===
-				for ($i = 1; $i <= $config['option_count']; $i++) {
-					$config['option_' . $i] = $redata['option_' . $i];
+			for ($i = 0; $i < $config['option_count']; $i++) {
+				$config['option_' . $i] = $redata['option_' . $i];
+				if ($config['option_type'] == 2) {//===1-文字、2-图片===
 					$config['option_img_' . $i] = $redata['option_img' . $i];
-				}
-			} else {
-				for ($i = 1; $i <= $config['option_count']; $i++) {
-					$config['option_' . $i] = $redata['option_' . $i];
 				}
 			}
 		}
@@ -299,15 +295,15 @@ class FormController extends BaseController {
 		}
 		//===图片===
 		if ($redata['type'] == 'image') {
-			$config['img_type'] = intval($redata['config_img_type']);
-//			$config['img_file'] = $redata['config_img_file'];
-			$config['img_src'] = $redata['config_img_src'];
-			$config['img_href'] = $redata['config_img_href'];
-			$config['img_align'] = intval($redata['config_img_align']);
+			$config['img_type'] = isset($redata['config_img_type']) ? $redata['config_img_type'] : '';
+			$config['img_file'] = isset($redata['config_img_file']) ? $redata['config_img_file'] : '';
+			$config['img_src'] = isset($redata['config_img_src']) ? $redata['config_img_src'] : '';
+			$config['img_href'] = isset($redata['config_img_href']) ? $redata['config_img_href'] : '';
+			$config['img_align'] = isset($redata['config_img_align']) ? $redata['config_img_align'] : '';
 		}
 		//====文件===
 		if ($redata['type'] == 'file') {
-			$config['file_type'] = $redata['config_file_type'];
+			$config['file_type'] = isset($redata['config_file_type']) ? $redata['config_file_type'] : '';
 		}
 		//===?===
 		//$config['align'] = $redata['config_align'];
@@ -382,6 +378,28 @@ class FormController extends BaseController {
 			$json = Response::json(['err' => 1, 'msg' => '保存失败', 'data' => '']);
 		}
 		return $json;
+	}
+
+	//===浏览表单===
+	public function viewForm() {
+		$form_id = Input::get('form_id');
+		$form_data = DB::table('form')->where('id', $form_id)->first();
+		$num = $form_id % 10;
+		$form_info = DB::table('form_column_' . $num)->where('form_id', $form_id)->get();
+		foreach ($form_info as &$v) {
+			$v->config = json_decode($v->config);
+		}
+//		var_dump($form_data);
+//		echo '<br />---form_data---<br />';
+//		var_dump($form_info);
+//		echo '<br />---form_info---<br />';
+		return View::make('view')->with(array('form_data' => $form_data, 'form_info' => $form_info));
+	}
+
+	//===用户表单提交===
+	public function submitViewForm() {
+		$cus_id = Auth::id();
+		echo '谢谢参与!';
 	}
 
 }
