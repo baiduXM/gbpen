@@ -95,8 +95,28 @@ class HtmlController extends BaseController{
         foreach($ids as $id){
             ob_start();
             $c_ids=explode(',',$template->getChirldenCid($id));
-            $total = Articles::whereIn('c_id',$c_ids)->where('cus_id',$this->cus_id)->where($type.'_show','1')->count();
-            $page_count = ceil($total/$per_page);
+            $a_c_type = Classify::where('id',$id)->pluck('type');//取得栏目的type
+            $pc_page_count_switch = CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_count_switch');//页面图文列表图文显示个数是否分开控制开关
+            if(isset($pc_page_count_switch)&&$pc_page_count_switch==1&&$type=='pc'){
+                if($a_c_type==1){
+                    $page_number=CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_txt_count');//每页文字显示个数
+                    $total = Articles::whereIn('c_id',$c_ids)->where('cus_id',$this->cus_id)->where($type.'_show','1')->count();
+                    $page_count = ceil($total/$page_number);
+                }
+                if($a_c_type==3){
+                    $page_number=CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_imgtxt_count');//每页图文显示个数
+                    $total = Articles::whereIn('c_id',$c_ids)->where('cus_id',$this->cus_id)->where($type.'_show','1')->count();
+                    $page_count = ceil($total/$page_number);
+                }
+                if($a_c_type==2){
+                    $page_number=CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_img_count');//每页图片显示个数
+                    $total = Articles::whereIn('c_id',$c_ids)->where('cus_id',$this->cus_id)->where($type.'_show','1')->count();
+                    $page_count = ceil($total/$page_number);
+                }
+            }else{
+                $total = Articles::whereIn('c_id',$c_ids)->where('cus_id',$this->cus_id)->where($type.'_show','1')->count();
+                $page_count = ceil($total/$per_page);
+            }
             $this->getPrecent();   
             $path = $type =='pc' ? public_path('customers/'.$this->customer.'/category/'.$id.'.html') : public_path('customers/'.$this->customer.'/mobile/category/'.$id.'.html');
             echo $template->categoryPreview($id,1);
@@ -172,17 +192,52 @@ class HtmlController extends BaseController{
         $pc_per_page = CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_count');
         foreach($pc_classify_ids as $id){
             $c_ids=explode(',',$template->getChirldenCid($id));
-            $total = Articles::whereIn('c_id',$c_ids)->where('cus_id',$this->cus_id)->where('pc_show','1')->count();
-            if($total){
-                $page_count += ceil($total/$pc_per_page);
-            }
-            else{
-                $page_count++;
+            $a_c_type = Classify::where('id',$id)->pluck('type');//取得栏目的type
+            $pc_page_count_switch = CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_count_switch');//页面图文列表图文显示个数是否分开控制开关
+            if(isset($pc_page_count_switch)&&$pc_page_count_switch==1){
+                if($a_c_type==1){
+                    $page_number=CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_txt_count');//每页文字显示个数
+                    $total = Articles::whereIn('c_id',$c_ids)->where('cus_id',$this->cus_id)->where('pc_show','1')->count();
+                    if($total){
+                        $page_count += ceil($total/$page_number);
+                    }
+                    else{
+                        $page_count++;
+                    }
+                }
+                if($a_c_type==3){
+                    $page_number=CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_imgtxt_count');//每页图文显示个数
+                    $total = Articles::whereIn('c_id',$c_ids)->where('cus_id',$this->cus_id)->where('pc_show','1')->count();
+                    if($total){
+                        $page_count += ceil($total/$page_number);
+                    }
+                    else{
+                        $page_count++;
+                    }
+                }
+                if($a_c_type==2){
+                    $page_number=CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_img_count');//每页图片显示个数
+                    $total = Articles::whereIn('c_id',$c_ids)->where('cus_id',$this->cus_id)->where('pc_show','1')->count();
+                    if($total){
+                        $page_count += ceil($total/$page_number);
+                    }
+                    else{
+                        $page_count++;
+                    }
+                }
+            }else{
+                $total = Articles::whereIn('c_id',$c_ids)->where('cus_id',$this->cus_id)->where('pc_show','1')->count();
+                if($total){
+                    $page_count += ceil($total/$pc_per_page);
+                }
+                else{
+                    $page_count++;
+                }
             }
 
         }
         $mobileper_page = CustomerInfo::where('cus_id',$this->cus_id)->pluck('mobile_page_count');
-        foreach($pc_classify_ids as $id){
+        foreach($mobile_classify_ids as $id){
             $c_ids=explode(',',$template->getChirldenCid($id));
             $total = Articles::whereIn('c_id',$c_ids)->where('cus_id',$this->cus_id)->where('mobile_show','1')->count();
             if($total){

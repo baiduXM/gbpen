@@ -1273,18 +1273,18 @@ class PrintController extends BaseController{
         }
         else{
             $page_number = CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_count');//每页显示个数
-//            $pc_page_count_switch = CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_count_switch');//页面图文列表图文显示个数是否分开控制开关
-//            if(isset($pc_page_count_switch)&&$pc_page_count_switch==1){
-//                if($type==1){
-//                    $page_number=CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_txt_count');//每页文字显示个数
-//                }
-//                if($type==3){
-//                    $page_number=CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_imgtxt_count');//每页图文显示个数  
-//                }
-//                if($type==2){
-//                    $page_number=CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_img_count');//每页图片显示个数
-//                }
-//            }
+            $pc_page_count_switch = CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_count_switch');//页面图文列表图文显示个数是否分开控制开关
+            if(isset($pc_page_count_switch)&&$pc_page_count_switch==1){
+                if($type==1){
+                    $page_number=CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_txt_count');//每页文字显示个数
+                }
+                if($type==3){
+                    $page_number=CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_imgtxt_count');//每页图文显示个数  
+                }
+                if($type==2){
+                    $page_number=CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_img_count');//每页图片显示个数
+                }
+            }
             $links_count = CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_links');//分页链接显示个数
             $offset = ($page-1)*$page_number;
             $total = Articles::whereIn('c_id',$cids)->where('pc_show','1')->select('id','title','img','introduction','created_at','title_bold','title_color')->count();
