@@ -361,8 +361,6 @@ function articleController($scope, $http ,$location) {
         _delete : function(){
             //删除
             $('.a-table').on('click','.delv',function(){
-                alert(1);
-                return false;
                 var id = $(this).attr('name');
                 var _this = $(this);
                 (function article_delete(del_num){
