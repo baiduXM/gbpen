@@ -182,8 +182,8 @@ class ApiController extends BaseController{
                     $ftp_array[1] = isset($ftp_array[1])?$ftp_array[1]:$port;
                     $conn = ftp_connect($ftp_array[0],$ftp_array[1]);
                     if($conn){
-                        if(trim($update['ftp'])=='0'){
-                            ftp_login($conn,$update['ftp_user'],$update['ftp_pwd']);
+                        if(trim(Input::get('ftp'))=='0'){
+                        ftp_login($conn,$update['ftp_user'],$update['ftp_pwd']);
                         ftp_mkdir($conn,$update['name']);
                         ftp_mkdir($conn,$update['name'].'/images');
                         ftp_mkdir($conn,$update['name'].'/detail');
