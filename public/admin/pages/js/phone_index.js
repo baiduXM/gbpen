@@ -19,9 +19,11 @@ function phone_indexController($scope,$http ,$location) {
     		this._getInfo();
     	},
     	_loading : function(){
+            if($scope.$parent.phonepreview){
     		$('#phone').data('phoneClosed_index', true);
 		    $('body').removeClass('closephone');
 		    setTimeout(function(){ width_resize(); },4);
+                }
     	},
     	_getInfo : function(){
 		    var Area_name = $_GET['Area'] || 'index',_this = this;

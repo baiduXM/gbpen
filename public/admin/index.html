@@ -184,7 +184,7 @@
                         </div>
 	            	</div><!--
         	--></div><!--
-            --><section id="phone" class="inline-block vt" ng-show="homepreview">
+            --><section id="phone" class="inline-block vt" ng-show="phonepreview&&homepreview" >
 				<div class="phone-content">
 					<div class="notice">
 						<span>拖动下拉扫描二维码</span>
@@ -200,7 +200,7 @@
 		
 		<!-- 预览按钮 -->
 		<div class="previews" ng-show="homepreview">
-			<a id="preview-phone" class="preview" href="javascript:;"></a>
+			<a id="preview-phone" class="preview" ng-show="phonepreview" href="javascript:;"></a>
 			<a id="preview-pc" class="preview" href="../homepage-preview" target="_blank"></a>
 			<a id="preview-refresh" class="preview" href="#/refresh" style="display:none"><i class="fa iconfont icon-shuaxin1 fa_refresh"></i><div class="red_dot"></div></a>
 		</div>

@@ -22,6 +22,8 @@ class CustomerController extends BaseController{
 		$data['domain_pc'] = str_replace('http://', '', $domain_pc);
 		$domain_m = $customer_info->mobile_domain;
 		$data['domain_m'] = str_replace('http://', '', $domain_m);
+                $data['def_domain_pc']=$customer.".n01.5067.org";
+                $data['def_domain_m']="m.".$customer.".n01.5067.org";
         if($customer_info->favicon!=''){
             $data['favicon'] = asset('customers/'.$customer.'/images/l/common/'.$customer_info->favicon);
         }

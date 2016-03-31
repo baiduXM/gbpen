@@ -22,6 +22,8 @@
                 $('.setting-content input[name=company_name]').val(set.company_name);
                 $('.setting-content input[name=domain_pc]').val(set.domain_pc);
                 $('.setting-content input[name=domain_m]').val(set.domain_m);
+                $('.setting-content input[name=def_domain_pc]').val(set.def_domain_pc);
+                $('.setting-content input[name=def_domain_m]').val(set.def_domain_m);
                 $('.setting-content input[name=company_name]').val(set.company_name);
                 $('.setting-content input[name=company_name]').val(set.company_name);
                 $('.setting-content input[name=title]').val(set.title);

@@ -167,6 +167,7 @@ mainApp.controller('mainController', function($scope) {
 	$scope.showbox = "";
 	$scope.menu = [];
 	$scope.domain_pc = '';
+        $scope.phonepreview=true;
 });
 // 登陆信息
 mainApp.controller('memberController', function($scope,$http) {
@@ -174,6 +175,9 @@ mainApp.controller('memberController', function($scope,$http) {
 		checkJSON(json,function(json){ 
 			$scope.companyname = json.data.company_name;
 			$scope.$parent.domain_pc = json.data.domain_pc;
+                        if(json.data.domain_m==''||json.data.domain_m==null){
+                            $scope.$parent.phonepreview=false;
+                        }
 			ercodeDrop._init('.phone-content .notice',json.data.domain_m);
 		});
 	});
