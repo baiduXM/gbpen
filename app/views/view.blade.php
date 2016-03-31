@@ -10,10 +10,10 @@
 	<body>
 		<h1>{{$form_data->title}}</h1>
 		<h2 class="description">{{$form_data->description}}</h2>
-		<form action="../form-view-submit" method="post" id="user_form" name="user_form">
+		<form action="./form-view-submit" method="post" id="user_form" name="user_form">
 			{{Form::open(array('url' => '../form-view-submit','method'=>'post','files'=>true))}}
 			{{Form::hidden('form_id',$form_data->id)}}
-			@foreach ($form_info as $column)
+			@foreach ($column_data as $column)
 			{{Form::hidden('column_id',$column->id)}}
 			<?php $config = $column->config; ?>
 			<div>

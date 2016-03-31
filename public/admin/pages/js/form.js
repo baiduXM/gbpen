@@ -50,7 +50,8 @@ function formController($scope, $http, $location) {
 								<td>' + v.created_at + '</td>\n\
 								<td>\n\
 									<a style="margin:0 10px; cursor: pointer" class="form_edit" ><i class="fa iconfont icon-bianji"></i></a>\n\
-									<a style="margin:0 10px; cursor: pointer" class="form_view" >view</a>\n\
+									<a style="margin:0 10px; cursor: pointer" class="form_view_list" >view</a>\n\
+									<a style="margin:0 10px; cursor: pointer" class="form_view" >write</a>\n\
 									<a class="delv"><i class="fa iconfont icon-delete mr5"></i></a>\n\
 								</td>\n\
 							</tr>';
@@ -76,6 +77,9 @@ function formController($scope, $http, $location) {
 			});
 			$('.form_view').click(function () {
 				viewForm($(this));
+			});
+			$('.form_view_list').click(function () {
+				viewFormList($(this));
 			});
 		});
 	}
@@ -148,7 +152,13 @@ function formController($scope, $http, $location) {
 	function viewForm(_this) {
 		console.log(_this);
 		var form_id = _this.parents('tr').attr('data-id');
-		window.open("#/viewform?form_id=" + form_id);
+		window.open("../form-view?form_id=" + form_id);
+	}
+	//===浏览表单列表===
+	function viewFormList(_this) {
+		console.log(_this);
+		var form_id = _this.parents('tr').attr('data-id');
+		window.open("../form-view-list?form_id=" + form_id);
 	}
 
 }
