@@ -228,6 +228,7 @@ WarningBox.prototype = {
 				$inputImage = $('#inputImage'),
 				URL = window.URL || window.webkitURL,
 				blobURL;
+		console.log($inputImage);
 		if (URL) {
 			$inputImage.change(function () {
 				var files = this.files;
@@ -448,8 +449,11 @@ function checkJSON(json, callback, fail_callback) {
 	}
 }
 //保存提示效果
-var Hint_box = function () {
-	$('.jumbotron,#diy').append('<div class="hint_box">保存成功！</div>');
+var Hint_box = function (text) {
+	if(text=='undefined'){
+		text='保存成功！';
+	}
+	$('.jumbotron,#diy').append('<div class="hint_box">'+text+'</div>');
 	setTimeout(function () {
 		$('.hint_box').remove();
 	}, 2000);
