@@ -219,7 +219,6 @@ class ApiController extends BaseController{
                         }
                         else{
                         ftp_login($conn,$update['ftp_user'],$update['ftp_pwd']);
-                        ftp_chdir($conn,$update['ftp_dir']);
                         ftp_mkdir($conn,$update['ftp_dir'].'/images');
                         ftp_mkdir($conn,$update['ftp_dir'].'/detail');
                         ftp_mkdir($conn,$update['ftp_dir'].'/category');
