@@ -539,6 +539,7 @@ class WebsiteController extends BaseController{
      *
      */
     public function uploadTemplate(){
+        set_time_limit(0);
         $file = Input::file('file');
         if($file -> isValid()){
             //$truth_name=$file->getClientOriginalName();
