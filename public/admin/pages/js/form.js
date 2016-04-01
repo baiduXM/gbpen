@@ -2,7 +2,6 @@ function formController($scope, $http, $location) {
 	$scope.$parent.showbox = "main"; //===主页
 	$scope.$parent.homepreview = true; //===右边导航
 	$scope.$parent.menu = []; //===？不知道
-
 	getFormList();
 	$('.add_form').click(function () {
 		$('#bomb-box').show();
@@ -49,10 +48,10 @@ function formController($scope, $http, $location) {
 								<td>' + v.status + '</td>\n\
 								<td>' + v.created_at + '</td>\n\
 								<td>\n\
-									<a style="margin:0 10px; cursor: pointer" class="form_edit" ><i class="fa iconfont icon-bianji"></i></a>\n\
-									<a style="margin:0 10px; cursor: pointer" class="form_view_list" >view</a>\n\
-									<a style="margin:0 10px; cursor: pointer" class="form_view" >write</a>\n\
-									<a class="delv"><i class="fa iconfont icon-delete mr5"></i></a>\n\
+									<a style="margin:0 10px; cursor: pointer" class="form_edit" title="编辑"><i class="fa iconfont icon-bianji"></i></a>\n\
+									<a style="margin:0 10px; cursor: pointer" class="form_view" title="浏览"><i class="fa iconfont icon-dengpao1"></i></a>\n\
+									<a style="margin:0 10px; cursor: pointer" class="form_write" title="填表"><i class="fa iconfont icon-liuyanban"></i></a>\n\
+									<a class="delv" title="删除"><i class="fa iconfont icon-delete mr5"></i></a>\n\
 								</td>\n\
 							</tr>';
 					});
@@ -72,14 +71,21 @@ function formController($scope, $http, $location) {
 			$('.delv').click(function () {
 				deleteForm($(this));
 			});
+			//===编辑表单===
 			$('.form_edit').click(function () {
-				editForm($(this));
+				var form_id = $(this).parents('tr').attr('data-id');
+				location.href = "#/addform?form_id=" + form_id;
 			});
+			//===浏览表单===
 			$('.form_view').click(function () {
-				viewForm($(this));
+				var form_id = $(this).parents('tr').attr('data-id');
+				location.href = "#/viewform?form_id=" + form_id;
 			});
-			$('.form_view_list').click(function () {
-				viewFormList($(this));
+			//===填写表单(不依赖后台)===
+			$('.form_write').click(function () {
+				var form_id = $(this).parents('tr').attr('data-id');
+				location.href = "#/writeform?form_id=" + form_id;
+//				window.open("../writeform?form_id=" + form_id);
 			});
 		});
 	}
@@ -119,7 +125,11 @@ function formController($scope, $http, $location) {
 		$('#bomb-box').hide();
 	}
 
-	//===删除表单===
+	/**
+	 * ===删除表单===
+	 * @param {type} _this
+	 * @returns {undefined}
+	 */
 	function deleteForm(_this) {
 		var form_id = _this.parents('tr').attr('data-id');
 		//===弹窗确认===
@@ -141,24 +151,4 @@ function formController($scope, $http, $location) {
 			}
 		})();
 	}
-
-	//===编辑表单===
-	function editForm(_this) {
-		var form_id = _this.parents('tr').attr('data-id');
-		location.href = "#/addform?form_id=" + form_id;
-	}
-
-	//===浏览表单===
-	function viewForm(_this) {
-		console.log(_this);
-		var form_id = _this.parents('tr').attr('data-id');
-		window.open("../form-view?form_id=" + form_id);
-	}
-	//===浏览表单列表===
-	function viewFormList(_this) {
-		console.log(_this);
-		var form_id = _this.parents('tr').attr('data-id');
-		window.open("../form-view-list?form_id=" + form_id);
-	}
-
 }

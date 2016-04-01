@@ -3,9 +3,8 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>万用表单test</title>
-		<style>
-
-		</style>
+		<link href="../../public/admin/css/universal-form.css" rel="stylesheet" type="text/css"/>
+		<script src="../../public/admin/js/jquery.min.js" type="text/javascript"></script>
 	</head>
 	<body>
 		<h1>{{$form_data->title}}</h1>
@@ -80,4 +79,9 @@
 			<!--===TODO===-->
 		</form>
 	</body>
+	<script>
+	$(function(){
+		alert(1)
+	});
+	</script>
 </html>

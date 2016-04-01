@@ -1,30 +1,27 @@
 <link rel="stylesheet" href="css/themes.css">
 <link rel="stylesheet" href="css/laydate.css">
-<script src="js/colorpicker.min.js"></script>
-<style>
-	/*.home-list{background-color: black;}*/
-	.add-info{border: 1px #005AFF solid;}
-	.add-show{border: 1px #005AFF solid;}
-	.element-show li{border: 1px #FEB825 solid;}
-</style>
+<link rel="stylesheet" href="css/universal-form.css">
 <div class="jumbotron text-center">
-	<div id="addarticle-con" class="whole article-con">
-		<div class="add-info fl">
-			<a class="inline-block fl addcancle all_button" href="#/form">返回</a>
-			<a class="inline-block fr addsave all_button" href="" >保存</a>
-			<input name="form_id" type="hidden" value="" />
-		</div>
-		<div class="add-show fl pr">
-			<form name="box_show">
-				<h2>标题</h2>
-				<h3>描述</h3>
-				<hr />
-				<content name="content">
-					<input type="file" name="file" />
-				</content>
+	<div class="fl clearfix vf-left">
+		<a class="f-btn inline-block addcancle all_button" href="#/form" style="margin-top:20px;">返回</a>
+		<table height="410px" class="a-table">
+			<!-- 显示内容 -->
+		</table>
+		<!-- 分页 -->	
+	</div>
+	<div class="fr clearfix vf-right">
+		<div class="add-show">
+			<div class="as-title">
+				【标题】
+			</div>
+			<div class="as-description">
+				【描述】
+			</div>
+			<hr>
+			<form class="unit-preview" name="box_show">
+				<ul class="element-show">
+				</ul>
 			</form>
 		</div>
 	</div>
 </div>
-<script type="text/javascript">
-</script>

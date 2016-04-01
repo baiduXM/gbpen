@@ -6,11 +6,11 @@ function addformController($scope, $http, $location) {
 	$('[name="form_id"]').val(form_id);
 	//===表单标题===
 	$('[name="table_title"]').blur(function () {
-		$('.title p').html($(this).val());
+		$('.as-title').html($(this).val());
 	});
 	//===表单描述===
 	$('[name="table_description"]').blur(function () {
-		$('.description p').html($(this).val());
+		$('.as-description').html($(this).val());
 	});
 	//===保存表单===
 	$('.addsave').click(function () {
@@ -48,14 +48,9 @@ function addformController($scope, $http, $location) {
 					location.href = "#/form";
 				}
 				var column_data = json.data.column;
-
-
-				console.log(column_data);
 				$.each(column_data, function (k, v) {
-					console.log(v.type);
 					_div_show(v);
 				});
-
 				//===获取表单信息===
 				var data = json.data.form;
 				$('[name="table_name"]').val(data.name);
@@ -71,8 +66,8 @@ function addformController($scope, $http, $location) {
 					$('[name="table_status"]:eq(1)').attr('checked', true);
 				}
 				//===显示区域===
-				$('.title p').html(data.title);
-				$('.description p').html(data.description);
+				$('.as-title').html(data.title);
+				$('.as-description').html(data.description);
 			});
 		}, 'json');
 		getFormElement();
@@ -131,31 +126,41 @@ function addformController($scope, $http, $location) {
 		var _div_li = '';
 		var temp = '';
 		var to = '';
-		_div_li += '<li data-type="' + data.type + '" data-id="' + data.column_id + '" name="li_' + data.column_id + '">';
+		console.log(data);
+		_div_li += '<li class="list-item" data-type="' + data.type + '" data-id="' + data.column_id + '" name="li_' + data.column_id + '">';
 		switch (data.type) {
 			case 'text':
-				_div += '<label class="content-l">' + data.title + '：</label><input class="Input" placeholder=' + data.description + ' type="text" name="col_' + data.column_id + '" value=""  disabled="disabled"/>';
+				_div += '<p class="content-l">' + data.title + '：</p>\n\
+					<input  type="text" name="col_' + data.column_id + '" value=""  disabled="disabled" placeholder=' + data.description + '/>';
 				break;
 			case 'textarea':
-				_div += '<label class="content-l">' + data.title + '(' + data.description + ')：<br /></label><textarea name="col_' + data.column_id + '" disabled="disabled"></textarea>';
+				_div += '<p class="content-l">' + data.title + '：</p>\n\
+					<textarea name="col_' + data.column_id + '" disabled="disabled" placeholder=' + data.description + '></textarea>';
 				break;
 			case 'radio':
-				_div += data.title + '：(' + data.description + ')<br />';
+				
+				_div +='<p class="content-l">' + data.title + '：(' + data.description + ')</p>';
 				for (var i = 0; i < _config.option_count; i++) {
 					to = "option_" + i;
-					_div += '<input type = "radio" name = "col_' + data.column_id + '" value = ' + i + '  disabled="disabled"/><label>' + _config[to] + '</label>';
+					_div += '<span class="option-item">';
+					_div += '<input type = "radio" name = "col_' + data.column_id + '" value = ' + i + '  disabled="disabled"/>\n\
+						<label>' + _config[to] + '</label>';
+					_div += '</span>';
 				}
 				temp = _config.option_default;
-//				_div="<br>----radio---<br>";
+				_div += "<br>---radio-+++" + temp + "---<br>";
 				break;
 			case 'checkbox':
 				_div += data.title + '：(' + data.description + ')<br />';
 				for (var i = 0; i < _config.option_count; i++) {
 					to = "option_" + i;
+					_div += '<span class="option-item">';
 					_div += '<input type = "checkbox" name = "col_' + data.column_id + '" value = ' + i + '  disabled="disabled"/><label>' + _config[to] + '</label>';
+					_div += '</span>';
+
 				}
 				temp = _config.option_default.split(',');
-//				_div="<br>----checkbox---<br>";
+				_div += "<br>---checkbox-" + temp + "---<br>";
 				break;
 			case 'select':
 				_div += data.title + '：(' + data.description + ')<br />';
@@ -167,6 +172,7 @@ function addformController($scope, $http, $location) {
 				}
 				_div += '</select>';
 				temp = _config.option_default.split(',');
+				_div += "<br>---select-" + temp + "---<br>";
 				break;
 			case 'date':
 				_div += '日期date';
@@ -190,26 +196,28 @@ function addformController($scope, $http, $location) {
 		}
 
 		//===改变选项默认选定div_show===
-//		if (temp !== '') {
-//			switch (data.type) {
-//				case 'radio':
-//					$('input[name="col_' + data.column_id + '"]:eq(' + temp + ')').attr('checked', true);
-//					break;
-//				case 'checkbox':
-//					$.each(temp, function (k, v) {
-//						$('input[name="col_' + data.column_id + '"]:eq(' + v + ')').attr('checked', true);
-//					});
-//					break;
-//				case 'select':
-////					alert($('option').change().val());
-//					$.each(temp, function (k, v) {
-//						$('[name="col_' + data.column_id + '"] option:eq(' + v + ')').attr('selected', true);
-//					});
-//					break;
-//				default:
-//					break;
-//			}
-//		}
+		console.log(temp);
+		if (temp != '') {
+			console.log(12345654321);
+			switch (data.type) {
+				case 'radio':
+					$('[name="col_' + data.column_id + '"]:eq(' + temp + ')').attr('checked', true);
+					break;
+				case 'checkbox':
+					$.each(temp, function (tk, tv) {
+						$('[name="col_' + data.column_id + '"]:eq(' + tv + ')').attr('checked', true);
+					});
+					break;
+				case 'select':
+//					alert($('option').change().val());
+					$.each(temp, function (tk, tv) {
+						$('[name="col_' + data.column_id + '"] option:eq(' + tv + ')').attr('selected', true);
+					});
+					break;
+				default:
+					break;
+			}
+		}
 
 		//===绑定元素点击响应事件===
 		$(".element-show>li").unbind('click').on('click', function () {
@@ -369,13 +377,11 @@ function addformController($scope, $http, $location) {
 				<input type="hidden" name="column_id" value="' + data.column_id + '"/>\n\
 				<input type="hidden" name="type" value="' + data.type + '"/></li>';
 		$('[name="element-edit"]').html(_div);
-		if (('[name="config_option_count"]').length > 0) {
+		if (('[name="config_option_default"]').length > 0) {
 			$('[name="config_option_count"]').val($('[name="config_option_default"]').length);
 		}
-		//===改变选项默认选定===
+		//===改变选项默认选定_div_edit===
 //		if (data.type) {
-		console.log(_config);
-
 		switch (data.type) {
 			case 'text':
 				if (_config.text_type === 'text') {
@@ -454,7 +460,6 @@ function addformController($scope, $http, $location) {
 				}
 			});
 			var form_data = $('form[name="box_column"]').serializeArray();
-//			console.log(form_data);exit;
 			$.post('../form-save-column', {form_id: form_id, data: form_data}, function (json) {
 				checkJSON(json, function (json) {
 					_div_show(json.data);

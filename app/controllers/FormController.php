@@ -113,8 +113,7 @@ class FormController extends BaseController {
 			'id' => $element_id
 		);
 		$element_data = DB::table('form_element')->where($where)->first();
-		$element_data->config = json_decode($element_data->config);
-
+//		$element_data->config = ($element_data->config);
 		//===添加数据===
 		$time = date('Y-m-d H:i:s');
 		$column_data = array(
@@ -123,7 +122,7 @@ class FormController extends BaseController {
 			'description' => $element_data->description,
 			'type' => $element_data->type,
 			'required' => '0',
-			'config' => '',
+			'config' => $element_data->config,
 			'order' => '',
 			'created_at' => $time,
 			'updated_at' => $time
@@ -380,26 +379,143 @@ class FormController extends BaseController {
 		return $json;
 	}
 
-	//===浏览表单===
+	/**
+	 * ===浏览表单===
+	 * @return type
+	 */
 	public function viewForm() {
 		$form_id = Input::get('form_id');
 		$form_data = DB::table('form')->where('id', $form_id)->first();
 		$num = $form_id % 10;
-		$form_info = DB::table('form_column_' . $num)->where('form_id', $form_id)->get();
-		foreach ($form_info as &$v) {
+		$column_data = DB::table('form_column_' . $num)->where('form_id', $form_id)->get();
+		foreach ($column_data as &$v) {
 			$v->config = json_decode($v->config);
 		}
 //		var_dump($form_data);
 //		echo '<br />---form_data---<br />';
 //		var_dump($form_info);
 //		echo '<br />---form_info---<br />';
-		return View::make('view')->with(array('form_data' => $form_data, 'form_info' => $form_info));
+		return View::make('view')->with(array('form_data' => $form_data, 'column_data' => $column_data));
 	}
 
-	//===用户表单提交===
+	/**
+	 * ===用户表单提交===
+	 */
 	public function submitViewForm() {
+		$input = Input::all();
+		$form_id = $input['form_id'];
+		$num = $form_id % 10;
 		$cus_id = Auth::id();
-		echo '谢谢参与!';
+		$table = DB::table('form_data_' . $num);
+		$time = date('Y-m-d H:i:s');
+		foreach ($input as $key => $value) {
+			if (strstr($key, 'col_')) {
+				$config[$key] = $value;
+			}
+		}
+		$data = array(
+			'form_id' => $form_id,
+			'cus_id' => $cus_id,
+			'data' => json_encode($config),
+			'created_at' => $time,
+			'updated_at' => $time
+		);
+		$res = $table->insertGetId($data);
+		if ($res) {
+			echo '谢谢参与!';
+		} else {
+			echo '提交失败!';
+		}
+	}
+
+	/**
+	 * ===预览用户表单列表===
+	 * form-view-list
+	 */
+	public function viewFormList() {
+		$form_id = Input::get('form_id');
+		$list = DB::table('form_data_' . $form_id % 10)->where('form_id', $form_id)->get();
+		foreach ($list as &$value) {
+			$value->data = json_decode($value->data);
+		}
+		if ($list != NULL) {
+			$json = Response::json(['err' => 0, 'msg' => '获取成功', 'data' => $list]);
+		} else {
+			$json = Response::json(['err' => 1, 'msg' => '获取失败', 'data' => '']);
+		}
+		return $json;
+	}
+
+	/**
+	 * ===删除用户表单数据===
+	 * form-data-delete
+	 */
+	public function deleteFormData() {
+		$form_id = Input::get('form_id');
+		$id = Input::get('id');
+		$res = DB::table('form_data_' . $form_id % 10)->where('id', $id)->delete();
+		if ($res != NULL) {
+			$json = Response::json(['err' => 0, 'msg' => '删除成功', 'data' => $res]);
+		} else {
+			$json = Response::json(['err' => 1, 'msg' => '删除失败', 'data' => '']);
+		}
+		return $json;
+	}
+
+	/**
+	 * ===预览用户提交的表单详情===
+	 * form-view-detail
+	 */
+	public function viewFormDetail() {
+		$form_id = Input::get('form_id');
+		$id = Input::get('id');
+		$form_data = DB::table('form')->where('id', $form_id)->first();
+		$column_data = DB::table('form_column_' . $form_id % 10)->where('form_id', $form_id)->get();
+		foreach ($column_data as &$value) {
+			$value->config = json_decode($value->config);
+		}
+		$user = DB::table('form_data_' . $form_id % 10)->where('id', $id)->first();
+		$user_data = json_decode($user->data, TRUE);
+		return View::make('view_detail')->with(array('form_data' => $form_data, 'column_data' => $column_data, 'user_data' => $user_data));
+	}
+
+	/**
+	 * ===预览用户提交的表单删除===
+	 * form-delete-detail
+	 */
+	public function deleteFormDetail() {
+		//===判断是否有删除权限===
+		//===TODO===
+		$form_id = Input::get('form_id');
+		$id = Input::get('id');
+		$num = $form_id % 10;
+		$table = DB::table('form_data_' . $num);
+		$res = $table->where('id', $id)->delete();
+		if ($res) {
+			echo '删除成功';
+		} else {
+			echo '删除失败';
+		}
+	}
+
+	/**
+	 * 用户填写表单
+	 */
+	public function writeFormData() {
+		$form_id = Input::get('form_id');
+		$form_data = DB::table('form')->where('id', $form_id)->first();
+		$num = $form_id % 10;
+		$column_data = DB::table('form_column_' . $num)->where('form_id', $form_id)->get();
+		foreach ($column_data as &$v) {
+			$v->config = json_decode($v->config);
+		}
+		$res = array('form_data' => $form_data, 'column_data' => $column_data);
+		if ($res != NULL) {
+			$json = Response::json(['err' => 0, 'msg' => '读取成功', 'data' => $res]);
+		} else {
+			$json = Response::json(['err' => 1, 'msg' => '读取失败', 'data' => '']);
+		}
+		return $json;
 	}
 
 }

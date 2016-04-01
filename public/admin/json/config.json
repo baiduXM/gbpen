@@ -123,5 +123,10 @@
 		"templateUrl": "pages/viewform.html",
 		"scriptUrl": "pages/js/viewform.js",
 		"controller": "viewformController"
+	},{
+		"router": "/writeform",
+		"templateUrl": "pages/writeform.html",
+		"scriptUrl": "pages/js/writeform.js",
+		"controller": "writeformController"
 	}
 ]

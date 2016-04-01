@@ -7,10 +7,6 @@
 .form-list li{margin: 10px 0;}
 .form-list li>*{display: inline-block;}
 
-*/.utility{transition: all 0.3s ease 0s;width: 26.5%;margin: 6px 2%;background: #FFF;padding: 5px 0.6% 5px 1.4%;z-index: 10;border: 1px dashed #999;border-radius: 3px;cursor: pointer;float: left;}
-.utility:hover{background-color: #D0E2F3;border-color: #57A5CA;border-style: solid;}
-.utility .title{display: inline-block;line-height: 30px;margin: 0 auto;}/*
-
 .universal-form .info-r{margin-left: 120px;}
 .unit-preview{width: 100%;}
 .unit-preview p{text-indent: 2em;background-color: #fff;margin: 10px auto;padding: 5px;}
@@ -18,9 +14,16 @@
 .element-show li{margin: 5px auto;}
 
 .test-b{border: 1px red solid;}*/
-
-/*左边*/
+/*万用表单编辑组件页面*/
 /*===选项卡标题部分===*/
+.af-left{
+	width: 39%;
+	min-width: 198px;
+}
+.af-right{
+	width: 59%;
+	min-width: 298px;
+}
 .tab-head{
 	/*border-bottom: 2px grey solid;*/
 	height: 40px;
@@ -50,10 +53,11 @@
 .tab-content-item{
 	margin-top: 20px;
 }
+/*项目列表加样式*/
 .list-item{
 	margin-top: 5px;
 	overflow: hidden;
-	padding: 5px;
+	padding: 5px 10px;
 	text-align: left;
 }
 .list-item .content-l{	
@@ -75,22 +79,24 @@
 	font-size: 12px;
 	min-height: 20px;
 	line-height: 20px;
-	/*display: inline-block;*/
 }
 input[type="submit"]{
 	width: 100px;
-
 }
 input[type="text"]{
 	height: 30px;
 	border-radius: 5px;
-	width: 60%;
+	width: 75%;
+	padding: 0 10px;
+	border: 1px solid #ccc;
 }
-input[type="textarea"]{
+textarea{
 	height: 100px;
-	width: 60%;
+	width: 75%;
+	padding: 10px;
+	overflow: auto;
+	border-radius: 5px;
 }
-
 input[type="checkbox"]{
 	-webkit-appearance: none;
 	border: 1px solid #ccc;
@@ -118,7 +124,7 @@ input[type="radio"]{
 	border-radius:100%;
 	outline:none;
 	cursor:pointer;
-	vertical-align:-2px;
+	vertical-align: middle;
 	margin-right: 10px;
 }
 input[type="radio"]:checked {
@@ -126,6 +132,65 @@ input[type="radio"]:checked {
 	background: url(../images/radioico.jpg) center center no-repeat;
 	margin-right: 10px;
 }
-
+/*组件样式*/
+.utility{transition: all 0.3s ease 0s;width: 26.5%;margin: 6px 2%;background: #FFF;padding: 5px 0.6% 5px 1.4%;z-index: 10;border: 1px dashed #999;border-radius: 3px;cursor: pointer;float: left;}
+.utility:hover{background-color: #D0E2F3;border-color: #57A5CA;border-style: solid;}
+.utility .title{display: inline-block;line-height: 30px;margin: 0 auto;}
 
 /*右边*/
+.add-show{
+	width: 80%;
+	background: #956448;
+	border: 1px #57A5CA solid;
+	margin: 0 auto;
+	padding: 20px;
+}
+.add-show .as-title{
+	text-align: center;
+	font-size: 20px;
+	font-weight: bold;
+}
+
+.add-show .as-description{
+	text-align: center;
+	font-size: 14px;
+	overflow: hidden;
+	margin: 10px;
+	word-wrap: break-word;
+}
+
+.add-show .unit-preview{
+	margin: 10px 20px;
+
+}
+.add-show .unit-preview .element-show{
+
+}
+
+.add-info{
+	text-align: center;
+	margin: 10px auto;
+	max-width: 100%;
+}
+.add-info .f-btn{
+	margin: 5px 20px;
+
+}
+
+/*浏览用户表单数据页面*/
+.vf-left{
+	width:49%;
+}
+.vf-right{
+	width: 49%;
+}
+
+.a-table{
+}
+
+
+/*用户填写表单页面*/
+.form-write{
+	width:80%;
+	margin:0 auto;
+}

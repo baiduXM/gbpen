@@ -184,26 +184,23 @@ Route::group(array('before' => 'auth'), function() {
 		'as' => 'form-list',
 		'uses' => 'FormController@deleteFormColumn'
 	]);
-	Route::any('form-view',[//用户表单填写
-		'as' => 'form-list',
-		'uses' => 'FormController@viewForm'
-	]);
-	Route::any('form-view-submit',[//用户表单提交
-		'as' => 'form-list',
-		'uses' => 'FormController@submitViewForm'
-	]);
 	Route::any('form-view-list',[//用户表单数据查看
 		'as' => 'form-list',
 		'uses' => 'FormController@viewFormList'
 	]);
-	Route::any('form-view-detail',[//用户表单数据查看
+	Route::any('form-data-delete',[//用户表单数据删除
 		'as' => 'form-list',
-		'uses' => 'FormController@viewFormDetail'
+		'uses' => 'FormController@deleteFormData'
 	]);
-	Route::any('form-delete-detail',[//用户表单数据删除
+	Route::any('form-data-write',[//用户填写表单？要脱离后台啊
 		'as' => 'form-list',
-		'uses' => 'FormController@deleteFormDetail'
+		'uses' => 'FormController@writeFormData'
 	]);
+	Route::any('writeform',[//用户表单数据删除
+		'as' => 'form-list',
+		'uses' => 'FormController@writeFormData'
+	]);
+	
 	
 	//-----------------------------------------------
 	//--------------------首页内容--------------------
