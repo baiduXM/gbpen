@@ -6,7 +6,6 @@
  * ===1、如何减少对数据库的访问，getFormElement和addFormColumn都有对表form_element进行访问===
  */
 class FormController extends BaseController {
-//	static private $element;
 
 	/**
 	 * 表单列表
@@ -84,6 +83,29 @@ class FormController extends BaseController {
 		$data['form'] = $form_data;
 		$data['column'] = $column_data;
 		return Response::json(['err' => 0, 'msg' => '验证成功，获取列表信息', 'data' => $data]);
+	}
+
+	/**
+	 * 保存表单信息
+	 */
+	public function saveForm() {
+		$form_id = Input::get('form_id');
+		$form_data = Input::get('box_info');
+		$time = date('Y-m-d H:i:s');
+		foreach ($form_data as $v) {
+			$data[$v['name']] = $v['value'];
+		}
+		$data['updated_at'] = $time;
+		$res = DB::table('form')
+			->where('id', $form_id)
+			->update($data);
+		//===返回数据===
+		if ($res != NULL) {
+			$res = Response::json(['err' => 0, 'msg' => '更新表单信息成功', 'data' => $res]);
+		} else {
+			$res = Response::json(['err' => 1, 'msg' => '更新表单信息失败', 'data' => '']);
+		}
+		return $res;
 	}
 
 	/**
@@ -179,7 +201,7 @@ class FormController extends BaseController {
 			if (!isset($redata[$v['name']])) {
 				$redata[$v['name']] = $v['value'];
 			} else {
-				$redata[$v['name']] = $redata[$v['name']] . ',' . $v['value'];
+				$redata[$v['name']] = $redata[$v['name']] . ',' . $v['value']; //合并checkbox选项值
 			}
 		}
 		//===赋值config===
@@ -509,6 +531,7 @@ class FormController extends BaseController {
 		foreach ($column_data as &$v) {
 			$v->config = json_decode($v->config);
 		}
+//		$column_data['column_id'] = $column_data['id'];
 		$res = array('form_data' => $form_data, 'column_data' => $column_data);
 		if ($res != NULL) {
 			$json = Response::json(['err' => 0, 'msg' => '读取成功', 'data' => $res]);
@@ -516,6 +539,34 @@ class FormController extends BaseController {
 			$json = Response::json(['err' => 1, 'msg' => '读取失败', 'data' => '']);
 		}
 		return $json;
+	}
+
+	/**
+	 * 用户表单提交
+	 */
+	public function writeFormSubmit() {
+
+		$form_data = Input::get('form_data');
+		$redata = array();
+		foreach ($form_data as $v) {
+			if (!isset($redata[$v['name']])) {
+				$redata[$v['name']] = $v['value'];
+			} else {
+				$redata[$v['name']] = $redata[$v['name']] . ',' . $v['value']; //合并checkbox选项值
+			}
+		}
+		return ($redata);
+
+//		$cus_id = Auth::id();
+//		$temp = Input::form('box_show');
+//		var_dump($temp);
+//		$res = array('form_data' => $form_data, 'column_data' => $column_data);
+//		if ($res != NULL) {
+//			$json = Response::json(['err' => 0, 'msg' => '读取成功', 'data' => $res]);
+//		} else {
+//			$json = Response::json(['err' => 1, 'msg' => '读取失败', 'data' => '']);
+//		}
+//		return $json;
 	}
 
 }

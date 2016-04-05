@@ -5,11 +5,11 @@ function addformController($scope, $http, $location) {
 	var form_id = 6; //表单ID
 	$('[name="form_id"]').val(form_id);
 	//===表单标题===
-	$('[name="table_title"]').blur(function () {
+	$('[name="title"]').blur(function () {
 		$('.as-title').html($(this).val());
 	});
 	//===表单描述===
-	$('[name="table_description"]').blur(function () {
+	$('[name="description"]').blur(function () {
 		$('.as-description').html($(this).val());
 	});
 	//===保存表单===
@@ -24,6 +24,21 @@ function addformController($scope, $http, $location) {
 			});
 		}, 'json');
 	});
+	//===预览表单===
+	$('[name="writeform"]').click(function () {
+		window.open('#/writeform?=form_id' + form_id);
+	});
+
+	//===保存表单信息（没有栏目信息）===
+	$('[name="save_form"]').click(function () {
+		var box_info = $('form[name="box_info"]').serializeArray();
+		$.post('../form-save', {form_id: form_id, box_info: box_info}, function (json) {
+			checkJSON(json, function (json) {
+				Hint_box(json.msg);
+			});
+		}, 'json');
+	});
+
 	//===切换选项卡===
 	$('.tab-head-item').click(function () {
 		var name = $(this).attr('name');
@@ -53,17 +68,17 @@ function addformController($scope, $http, $location) {
 				});
 				//===获取表单信息===
 				var data = json.data.form;
-				$('[name="table_name"]').val(data.name);
-				$('[name="table_title"]').val(data.title);
-				$('[name="table_description"]').val(data.description);
+				$('[name="name"]').val(data.name);
+				$('[name="title"]').val(data.title);
+				$('[name="description"]').val(data.description);
 				$('[name="action"]').val(data.action);
 				if (data.is_once === 1) {
 					$('[name="is_once"]').attr('checked', true);
 				}
 				if (data.status === 1) {
-					$('[name="table_status"]:eq(0)').attr('checked', true);
+					$('[name="status"]:eq(0)').attr('checked', true);
 				} else {
-					$('[name="table_status"]:eq(1)').attr('checked', true);
+					$('[name="status"]:eq(1)').attr('checked', true);
 				}
 				//===显示区域===
 				$('.as-title').html(data.title);
@@ -131,15 +146,15 @@ function addformController($scope, $http, $location) {
 		switch (data.type) {
 			case 'text':
 				_div += '<p class="content-l">' + data.title + '：</p>\n\
-					<input  type="text" name="col_' + data.column_id + '" value=""  disabled="disabled" placeholder=' + data.description + '/>';
+					<input  type="text" name="col_' + data.column_id + '" value=""  disabled="disabled" placeholder="' + data.description + '"/>';
 				break;
 			case 'textarea':
 				_div += '<p class="content-l">' + data.title + '：</p>\n\
 					<textarea name="col_' + data.column_id + '" disabled="disabled" placeholder=' + data.description + '></textarea>';
 				break;
 			case 'radio':
-				
-				_div +='<p class="content-l">' + data.title + '：(' + data.description + ')</p>';
+
+				_div += '<p class="content-l">' + data.title + '：(' + data.description + ')</p>';
 				for (var i = 0; i < _config.option_count; i++) {
 					to = "option_" + i;
 					_div += '<span class="option-item">';
@@ -171,7 +186,7 @@ function addformController($scope, $http, $location) {
 					_div += '<option value=' + i + '>' + _config[to] + '</option>';
 				}
 				_div += '</select>';
-				temp = _config.option_default.split(',');
+				temp = _config.option_default;
 				_div += "<br>---select-" + temp + "---<br>";
 				break;
 			case 'date':
@@ -198,7 +213,6 @@ function addformController($scope, $http, $location) {
 		//===改变选项默认选定div_show===
 		console.log(temp);
 		if (temp != '') {
-			console.log(12345654321);
 			switch (data.type) {
 				case 'radio':
 					$('[name="col_' + data.column_id + '"]:eq(' + temp + ')').attr('checked', true);
@@ -209,10 +223,7 @@ function addformController($scope, $http, $location) {
 					});
 					break;
 				case 'select':
-//					alert($('option').change().val());
-					$.each(temp, function (tk, tv) {
-						$('[name="col_' + data.column_id + '"] option:eq(' + tv + ')').attr('selected', true);
-					});
+					$('[name="col_' + data.column_id + '"] option:eq(' + temp + ')').attr('selected', true);
 					break;
 				default:
 					break;
@@ -222,7 +233,7 @@ function addformController($scope, $http, $location) {
 		//===绑定元素点击响应事件===
 		$(".element-show>li").unbind('click').on('click', function () {
 			$('.tab-head-item').removeClass('tab-head-item-active');
-			$('p[name="item_2"]').addClass('tab-head-item-active');
+			$('.tab-head-item[name="item_2"]').addClass('tab-head-item-active');
 			$('.tab-content-item').hide();
 			$('div[name="item_2"]').show();
 			var _this_column = $(this);
@@ -359,7 +370,7 @@ function addformController($scope, $http, $location) {
 					<span class="option-item"><input type = "checkbox" name="config_file_type" value = "3" /><音频></span>\n\
 					<span class="option-item"><input type = "checkbox" name="config_file_type" value = "4" /><其他></span>\n\
 				</li>';
-				temp = _config.file_type.split(',');
+//				temp = _config.file_type.split(',');
 				break;
 			default:
 				break;
@@ -443,22 +454,22 @@ function addformController($scope, $http, $location) {
 
 		//===保存组件修改===
 		$('[name="save_column"]').unbind('click').click(function () {
-			var option_default = '';
-			var file_type = '';
-			$('[name="config_option_default"]:checked').each(function () {
-				if (option_default === '') {
-					option_default += $(this).val();
-				} else {
-					option_default += ',' + $(this).val();
-				}
-			});
-			$('[name="config_file_type"]:checked').each(function () {
-				if (file_type === '') {
-					file_type += $(this).val();
-				} else {
-					file_type += ',' + $(this).val();
-				}
-			});
+//			var option_default = '';
+//			var file_type = '';
+//			$('[name="config_option_default"]:checked').each(function () {
+//				if (option_default === '') {
+//					option_default += $(this).val();
+//				} else {
+//					option_default += ',' + $(this).val();
+//				}
+//			});
+//			$('[name="config_file_type"]:checked').each(function () {
+//				if (file_type === '') {
+//					file_type += $(this).val();
+//				} else {
+//					file_type += ',' + $(this).val();
+//				}
+//			});
 			var form_data = $('form[name="box_column"]').serializeArray();
 			$.post('../form-save-column', {form_id: form_id, data: form_data}, function (json) {
 				checkJSON(json, function (json) {

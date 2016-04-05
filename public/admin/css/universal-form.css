@@ -82,6 +82,7 @@
 }
 input[type="submit"]{
 	width: 100px;
+	height: 30px;
 }
 input[type="text"]{
 	height: 30px;

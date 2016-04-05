@@ -155,9 +155,13 @@ Route::group(array('before' => 'auth'), function() {
 		'as' => 'form-list',
 		'uses' => 'FormController@editForm'
 	]);
-	Route::post('form-submit', [//保存表单
+	Route::post('form-submit', [//保存表单，表单信息包括栏目信息
 		'as' => 'form-list',
 		'uses' => 'FormController@submitForm'
+	]);
+	Route::any('form-save', [//保存表单，仅表单信息
+		'as' => 'form-list',
+		'uses' => 'FormController@saveForm'
 	]);
 
 	Route::post('form-auth', [//检测表单
@@ -184,24 +188,24 @@ Route::group(array('before' => 'auth'), function() {
 		'as' => 'form-list',
 		'uses' => 'FormController@deleteFormColumn'
 	]);
-	Route::any('form-view-list',[//用户表单数据查看
+	Route::any('form-view-list', [//用户表单数据查看
 		'as' => 'form-list',
 		'uses' => 'FormController@viewFormList'
 	]);
-	Route::any('form-data-delete',[//用户表单数据删除
+	Route::any('form-data-delete', [//用户表单数据删除
 		'as' => 'form-list',
 		'uses' => 'FormController@deleteFormData'
 	]);
-	Route::any('form-data-write',[//用户填写表单？要脱离后台啊
+	Route::any('form-data-write', [//用户填写表单？要脱离后台啊
 		'as' => 'form-list',
 		'uses' => 'FormController@writeFormData'
 	]);
-	Route::any('writeform',[//用户表单数据删除
+	Route::any('form-write-submit', [//用户表单数据删除
 		'as' => 'form-list',
-		'uses' => 'FormController@writeFormData'
+		'uses' => 'FormController@writeFormSubmit'
 	]);
-	
-	
+
+
 	//-----------------------------------------------
 	//--------------------首页内容--------------------
 	Route::get('templates/GP{num}', [//PC预览 首页跳转
