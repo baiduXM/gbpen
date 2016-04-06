@@ -204,6 +204,10 @@ Route::group(array('before' => 'auth'), function() {
 		'as' => 'form-list',
 		'uses' => 'FormController@writeFormSubmit'
 	]);
+	Route::any('form-column-move', [//用户表单排序
+		'as' => 'form-list',
+		'uses' => 'FormController@moveFormColumn'
+	]);
 
 
 	//-----------------------------------------------

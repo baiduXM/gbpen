@@ -141,8 +141,8 @@ input[type="radio"]:checked {
 /*右边*/
 .add-show{
 	width: 80%;
-	background: #956448;
-	border: 1px #57A5CA solid;
+	background: #AAAAAA;
+	/*border: 1px #57A5CA solid;*/
 	margin: 0 auto;
 	padding: 20px;
 }
@@ -194,4 +194,16 @@ input[type="radio"]:checked {
 .form-write{
 	width:80%;
 	margin:0 auto;
+}
+
+
+.hover{
+	background: #D0E2F3;
+}
+
+button{
+	display: inline-block;
+	width: 45px;
+	height: 25px;
+	margin: 0 5px;
 }

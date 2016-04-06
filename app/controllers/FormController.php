@@ -76,7 +76,8 @@ class FormController extends BaseController {
 		}
 		//===获取表单详细信息===
 		$num = $form_id % 10;
-		$column_data = DB::table('form_column_' . $num)->where('form_id', $form_id)->select('id as column_id', 'title', 'description', 'type', 'required', 'config')->get();
+//		$column_data = DB::table('form_column_' . $num)->where('form_id', $form_id)->orderBy('order', 'asc')->get();
+		$column_data = DB::table('form_column_' . $num)->where('form_id', $form_id)->orderBy('order', 'asc')->select('id as column_id', 'title', 'description', 'type', 'required', 'config', 'order')->get();
 		foreach ($column_data as &$v) {
 			$v->config = json_decode($v->config);
 		}
@@ -172,8 +173,7 @@ class FormController extends BaseController {
 
 		//===获取数据===
 		$num = $form_id % 10;
-		$model = DB::table('form_column_' . $num); //分表
-		$column_data = $model->where('id', $column_id)->first();
+		$column_data = DB::table('form_column_' . $num)->orderBy('order', 'asc')->where('id', $column_id)->first();
 		$column_data->column_id = $column_data->id;
 		$column_data->config = json_decode($column_data->config);
 		//===返回数据===
@@ -191,9 +191,6 @@ class FormController extends BaseController {
 	public function saveFormColumn() {
 		//===获取参数===
 		$data = Input::get('data');
-//		$file = fileRead();
-//		$file = Input::file('config_img_file');
-//		return $file;
 		$form_id = Input::get('form_id');
 		$redata = array();
 		$config = array();
@@ -336,7 +333,7 @@ class FormController extends BaseController {
 			'description' => $redata['description'],
 			'required' => isset($redata['required']) ? 1 : 0,
 			'config' => json_encode($config),
-			'order' => '',
+			'order' => $redata['order'],
 			'updated_at' => $time
 		);
 		$num = $form_id % 10;
@@ -392,7 +389,7 @@ class FormController extends BaseController {
 			'updated_at' => $time
 		);
 //		return $data;
-		$res = DB::table('form')->where('id', $form_id)->increment('version', 1, $data);
+		$res = DB::table('form')->where('id', $form_id)->updata($data);
 		if ($res != NULL) {
 			$json = Response::json(['err' => 0, 'msg' => '保存成功', 'data' => $res]);
 		} else {
@@ -409,7 +406,7 @@ class FormController extends BaseController {
 		$form_id = Input::get('form_id');
 		$form_data = DB::table('form')->where('id', $form_id)->first();
 		$num = $form_id % 10;
-		$column_data = DB::table('form_column_' . $num)->where('form_id', $form_id)->get();
+		$column_data = DB::table('form_column_' . $num)->orderBy('order')->where('form_id', $form_id)->get();
 		foreach ($column_data as &$v) {
 			$v->config = json_decode($v->config);
 		}
@@ -492,7 +489,7 @@ class FormController extends BaseController {
 		$form_id = Input::get('form_id');
 		$id = Input::get('id');
 		$form_data = DB::table('form')->where('id', $form_id)->first();
-		$column_data = DB::table('form_column_' . $form_id % 10)->where('form_id', $form_id)->get();
+		$column_data = DB::table('form_column_' . $form_id % 10)->orderBy('order')->where('form_id', $form_id)->get();
 		foreach ($column_data as &$value) {
 			$value->config = json_decode($value->config);
 		}
@@ -527,7 +524,7 @@ class FormController extends BaseController {
 		$form_id = Input::get('form_id');
 		$form_data = DB::table('form')->where('id', $form_id)->first();
 		$num = $form_id % 10;
-		$column_data = DB::table('form_column_' . $num)->where('form_id', $form_id)->get();
+		$column_data = DB::table('form_column_' . $num)->orderBy('order')->where('form_id', $form_id)->get();
 		foreach ($column_data as &$v) {
 			$v->config = json_decode($v->config);
 		}
@@ -567,6 +564,35 @@ class FormController extends BaseController {
 //			$json = Response::json(['err' => 1, 'msg' => '读取失败', 'data' => '']);
 //		}
 //		return $json;
+	}
+
+	/**
+	 * 移动排序
+	 */
+	public function moveFormColumn() {
+		$form_id = Input::get('form_id');
+		$column_id = Input::get('column_id');
+		$operate = Input::get('operate');
+		switch ($operate) {
+			case 'up':
+				$res = DB::table('form_column_' . $form_id % 10)->where('id', $column_id)->decrement('order');
+				break;
+			case 'down':
+				$res = DB::table('form_column_' . $form_id % 10)->where('id', $column_id)->increment('order');
+				break;
+			case 'add':
+				break;
+			case 'delete':
+				break;
+			default:
+				break;
+		}
+		if ($res != NULL) {
+			$json = Response::json(['err' => 0, 'msg' => '排序成功', 'data' => $res]);
+		} else {
+			$json = Response::json(['err' => 1, 'msg' => '排序失败', 'data' => '']);
+		}
+		return $json;
 	}
 
 }

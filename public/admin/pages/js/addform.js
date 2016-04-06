@@ -1,54 +1,32 @@
+/**
+ * ===编辑表单js控制器===
+ * 1、验证用户是否登录，修改的表单是否是自己的表单
+ * 2、初始化，加载左边（表单数据）、右边（表单列）
+ * 3、根据操作（click,hover...）响应对应事件
+ */
 function addformController($scope, $http, $location) {
 	$scope.$parent.showbox = "main";
 	$scope.$parent.homepreview = true;
 	$scope.$parent.menu = [];
-	var form_id = 6; //表单ID
+	//表单ID
+	var form_id = 6;
 	$('[name="form_id"]').val(form_id);
-	//===表单标题===
-	$('[name="title"]').blur(function () {
-		$('.as-title').html($(this).val());
-	});
-	//===表单描述===
-	$('[name="description"]').blur(function () {
-		$('.as-description').html($(this).val());
-	});
-	//===保存表单===
-	$('.addsave').click(function () {
-		var form_box_info = $('form[name="box_info"]').serializeArray(); //表单头信息
-		var form_box_show = $('form[name="box_show"]').serializeArray(); //表单详细信息
-		$.post('../form-submit', {form_id: form_id, form_box_info: form_box_info, form_box_show: form_box_show}, function (json) {
-			checkJSON(json, function (json) {
-				var hint_box = new Hint_box();
-				hint_box;
-				setTimeout('location.href = "#/form"', 2000);
-			});
-		}, 'json');
-	});
-	//===预览表单===
-	$('[name="writeform"]').click(function () {
-		window.open('#/writeform?=form_id' + form_id);
-	});
-
-	//===保存表单信息（没有栏目信息）===
-	$('[name="save_form"]').click(function () {
-		var box_info = $('form[name="box_info"]').serializeArray();
-		$.post('../form-save', {form_id: form_id, box_info: box_info}, function (json) {
-			checkJSON(json, function (json) {
-				Hint_box(json.msg);
-			});
-		}, 'json');
-	});
-
-	//===切换选项卡===
-	$('.tab-head-item').click(function () {
-		var name = $(this).attr('name');
-		$('.tab-head-item').removeClass('tab-head-item-active');
-		$(this).addClass('tab-head-item-active');
-		$('.tab-content-item').hide();
-		$('div[name=' + name + ']').show();
-	});
-
+	auth();
 	init();
+
+
+
+
+	function auth() {
+		$.post('../form-auth', {form_id: form_id}, function (json) {
+			checkJSON(json, function (json) {
+				if (json.err !== 0) {
+					alert(json.msg);
+					location.href = "#/form";
+				}
+			});
+		}, 'json');
+	}
 	/**
 	 * 初始化
 	 * 1、验证表单是否是该用户的，并加载表单信息
@@ -87,6 +65,53 @@ function addformController($scope, $http, $location) {
 		}, 'json');
 		getFormElement();
 	}
+
+
+	//===表单标题===
+	$('[name="title"]').blur(function () {
+		$('.as-title').html($(this).val());
+	});
+	//===表单描述===
+	$('[name="description"]').blur(function () {
+		$('.as-description').html($(this).val());
+	});
+	//===保存表单===
+	$('.addsave').click(function () {
+		var form_box_info = $('form[name="box_info"]').serializeArray(); //表单头信息
+		var form_box_show = $('form[name="box_show"]').serializeArray(); //表单详细信息
+		$.post('../form-submit', {form_id: form_id, form_box_info: form_box_info, form_box_show: form_box_show}, function (json) {
+			checkJSON(json, function (json) {
+				var hint_box = new Hint_box();
+				hint_box;
+				setTimeout('location.href = "#/form"', 2000);
+			});
+		}, 'json');
+	});
+	//===预览表单===
+	$('[name="writeform"]').click(function () {
+		window.open('#/writeform?=form_id' + form_id);
+	});
+	//===保存表单信息（没有栏目信息）===
+	$('[name="save_form"]').click(function () {
+		var box_info = $('form[name="box_info"]').serializeArray();
+		$.post('../form-save', {form_id: form_id, box_info: box_info}, function (json) {
+			checkJSON(json, function (json) {
+				Hint_box(json.msg);
+			});
+		}, 'json');
+	});
+
+	//===切换选项卡===
+	$('.tab-head-item').click(function () {
+		var name = $(this).attr('name');
+		$('.tab-head-item').removeClass('tab-head-item-active');
+		$(this).addClass('tab-head-item-active');
+		$('.tab-content-item').hide();
+		$('div[name=' + name + ']').show();
+	});
+
+
+
 	/**
 	 * 获取组件元素
 	 * @returns {undefined}
@@ -136,13 +161,14 @@ function addformController($scope, $http, $location) {
 	 * @returns {String}
 	 */
 	function _div_show(data) {
+		console.log(data)
+		console.log('_div_show')
 		var _config = data.config;
 		var _div = '';
 		var _div_li = '';
 		var temp = '';
 		var to = '';
-		console.log(data);
-		_div_li += '<li class="list-item" data-type="' + data.type + '" data-id="' + data.column_id + '" name="li_' + data.column_id + '">';
+		_div_li += '<li class="list-item" data-type="' + data.type + '" data-id="' + data.column_id + '" name="li_' + data.column_id + '" data-order="' + data.order + '">';
 		switch (data.type) {
 			case 'text':
 				_div += '<p class="content-l">' + data.title + '：</p>\n\
@@ -153,7 +179,6 @@ function addformController($scope, $http, $location) {
 					<textarea name="col_' + data.column_id + '" disabled="disabled" placeholder=' + data.description + '></textarea>';
 				break;
 			case 'radio':
-
 				_div += '<p class="content-l">' + data.title + '：(' + data.description + ')</p>';
 				for (var i = 0; i < _config.option_count; i++) {
 					to = "option_" + i;
@@ -211,7 +236,6 @@ function addformController($scope, $http, $location) {
 		}
 
 		//===改变选项默认选定div_show===
-		console.log(temp);
 		if (temp != '') {
 			switch (data.type) {
 				case 'radio':
@@ -242,6 +266,14 @@ function addformController($scope, $http, $location) {
 				_div_edit(col_data);
 			}, 'json');
 		});
+		//===绑定元素鼠标滑动事件===
+		$(".element-show>li").unbind('hover').hover(
+				function () {
+					$(this).addClass("hover");
+				},
+				function () {
+					$(this).removeClass("hover");
+				});
 	}
 	/**
 	 * 编辑组件
@@ -249,12 +281,17 @@ function addformController($scope, $http, $location) {
 	 * @returns {undefined}
 	 */
 	function _div_edit(data) {
+		console.log(data);
+		console.log('div_edit');
 		var _config = data.config;
 		var _div = '';
 		var temp = '';
 		_div += '<li class="list-item"><p class="content-l">标题：</p><input name="title" type="text" value="' + data.title + '" /></li>';
 		_div += '<li class="list-item"><p class="content-l">描述：</p><input name="description" type="text" value="' + data.description + '" /></li>';
 		_div += '<li class="list-item"><p class="content-l"><span class="option-item"><input type="checkbox" name="required" value="1"/>是否必填</span></p></li>';
+		_div += '<li class="list-item"><p class="content-l">排序：</p>\n\
+				<p class="content-l"><span class="option-item"><input type="text" name="order" value="' + data.order + '"/></span>\n\
+				<span class="option-item"><button name="moveup">上移</button><button name="movedown">下移</button></span></p></li>';
 		if (data.required === 1) {
 			$('[name="required"]').attr('checked', true);
 		}
@@ -454,22 +491,6 @@ function addformController($scope, $http, $location) {
 
 		//===保存组件修改===
 		$('[name="save_column"]').unbind('click').click(function () {
-//			var option_default = '';
-//			var file_type = '';
-//			$('[name="config_option_default"]:checked').each(function () {
-//				if (option_default === '') {
-//					option_default += $(this).val();
-//				} else {
-//					option_default += ',' + $(this).val();
-//				}
-//			});
-//			$('[name="config_file_type"]:checked').each(function () {
-//				if (file_type === '') {
-//					file_type += $(this).val();
-//				} else {
-//					file_type += ',' + $(this).val();
-//				}
-//			});
 			var form_data = $('form[name="box_column"]').serializeArray();
 			$.post('../form-save-column', {form_id: form_id, data: form_data}, function (json) {
 				checkJSON(json, function (json) {
@@ -504,5 +525,32 @@ function addformController($scope, $http, $location) {
 				}
 			})();
 		});
+		//===上移、下移===
+		$('[name="moveup"]').click(function () {
+			$.post('../form-column-move', {form_id: form_id, column_id: data.column_id, operate: 'up'}, function (json) {
+				console.log(json);
+				checkJSON(json, function (json) {
+					Hint_box(json.msg);
+					init();
+
+				});
+			});
+		});
+		$('[name="movedown"]').click(function () {
+			$.post('../form-column-move', {form_id: form_id, column_id: data.column_id, operate: 'down'}, function (json) {
+				console.log(json);
+				checkJSON(json, function (json) {
+					Hint_box(json.msg);
+					init();
+					//动画
+				});
+			});
+		});
+	}
+	/**
+	 * 移动排序
+	 * @returns {undefined}
+	 */
+	function moveColumn() {
 	}
 }

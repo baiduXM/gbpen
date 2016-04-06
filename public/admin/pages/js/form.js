@@ -84,8 +84,8 @@ function formController($scope, $http, $location) {
 			//===填写表单(不依赖后台)===
 			$('.form_write').click(function () {
 				var form_id = $(this).parents('tr').attr('data-id');
-				location.href = "#/writeform?form_id=" + form_id;
-//				window.open("../writeform?form_id=" + form_id);
+//				location.href = "#/writeform?form_id=" + form_id;
+				window.open("#/writeform?form_id=" + form_id);
 			});
 		});
 	}
