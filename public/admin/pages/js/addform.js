@@ -9,43 +9,24 @@ function addformController($scope, $http, $location) {
 	$scope.$parent.homepreview = true;
 	$scope.$parent.menu = [];
 	//表单ID
-	var form_id = 6;
+
+	var form_id = getUrlParam('form_id');
 	$('[name="form_id"]').val(form_id);
-	auth();
+	authSelf();
 	init();
 
-
-
-
-	function auth() {
-		$.post('../form-auth', {form_id: form_id}, function (json) {
-			checkJSON(json, function (json) {
-				if (json.err !== 0) {
-					alert(json.msg);
-					location.href = "#/form";
-				}
-			});
-		}, 'json');
-	}
 	/**
-	 * 初始化
-	 * 1、验证表单是否是该用户的，并加载表单信息
-	 * 2、加载组件元素
+	 * 验证表单是否是自己的、并且获取表单信息
 	 * @returns {undefined}
 	 */
-	function init() {
-		$.post('../form-auth', {form_id: form_id}, function (json) {
+	function authSelf() {
+		$.post('../form-auth-self', {form_id: form_id}, function (json) {
 			checkJSON(json, function (json) {
 				if (json.err !== 0) {
 					alert(json.msg);
 					location.href = "#/form";
 				}
-				var column_data = json.data.column;
-				$.each(column_data, function (k, v) {
-					_div_show(v);
-				});
-				//===获取表单信息===
-				var data = json.data.form;
+				var data = json.data;
 				$('[name="name"]').val(data.name);
 				$('[name="title"]').val(data.title);
 				$('[name="description"]').val(data.description);
@@ -62,11 +43,8 @@ function addformController($scope, $http, $location) {
 				$('.as-title').html(data.title);
 				$('.as-description').html(data.description);
 			});
-		}, 'json');
-		getFormElement();
+		});
 	}
-
-
 	//===表单标题===
 	$('[name="title"]').blur(function () {
 		$('.as-title').html($(this).val());
@@ -75,14 +53,30 @@ function addformController($scope, $http, $location) {
 	$('[name="description"]').blur(function () {
 		$('.as-description').html($(this).val());
 	});
-	//===保存表单===
+	//===保存表单信息（form数据）===
+	$('[name="save_form"]').click(function () {
+		var box_info = $('form[name="box_info"]').serializeArray();
+		$.post('../form-save', {form_id: form_id, box_info: box_info}, function (json) {
+			checkJSON(json, function (json) {
+				Hint_box(json.msg);
+			});
+		});
+	});
+	//===编辑表单信息===
+	$('.as-title,.as-description').click(function () {
+		$('.tab-head-item').removeClass('tab-head-item-active');
+		$('.tab-head-item[name="item_0"]').addClass('tab-head-item-active');
+		$('.tab-content-item').hide();
+		$('div[name="item_0"]').show();
+	});
+	//===保存表单（column数据）===
 	$('.addsave').click(function () {
 		var form_box_info = $('form[name="box_info"]').serializeArray(); //表单头信息
 		var form_box_show = $('form[name="box_show"]').serializeArray(); //表单详细信息
 		$.post('../form-submit', {form_id: form_id, form_box_info: form_box_info, form_box_show: form_box_show}, function (json) {
 			checkJSON(json, function (json) {
-				var hint_box = new Hint_box();
-				hint_box;
+				Hint_box();
+//				hint_box;
 				setTimeout('location.href = "#/form"', 2000);
 			});
 		}, 'json');
@@ -90,15 +84,6 @@ function addformController($scope, $http, $location) {
 	//===预览表单===
 	$('[name="writeform"]').click(function () {
 		window.open('#/writeform?=form_id' + form_id);
-	});
-	//===保存表单信息（没有栏目信息）===
-	$('[name="save_form"]').click(function () {
-		var box_info = $('form[name="box_info"]').serializeArray();
-		$.post('../form-save', {form_id: form_id, box_info: box_info}, function (json) {
-			checkJSON(json, function (json) {
-				Hint_box(json.msg);
-			});
-		}, 'json');
 	});
 
 	//===切换选项卡===
@@ -109,9 +94,22 @@ function addformController($scope, $http, $location) {
 		$('.tab-content-item').hide();
 		$('div[name=' + name + ']').show();
 	});
-
-
-
+	/**
+	 * 初始化
+	 * 1、加载表单数据
+	 * 2、获取组件元素
+	 * @returns {undefined}
+	 */
+	function init() {
+		$.get('../form-data', {form_id: form_id}, function (json) {
+			checkJSON(json, function () {
+				$.each(json.data, function (k, v) {
+					_div_show(v);
+				});
+			});
+		});
+		getFormElement();
+	}
 	/**
 	 * 获取组件元素
 	 * @returns {undefined}
@@ -132,7 +130,6 @@ function addformController($scope, $http, $location) {
 			$('.unit-list>li').click(function () {
 				var _this = $(this);
 				bindElementEvent(_this);
-
 			});
 		});
 	}
@@ -148,7 +145,7 @@ function addformController($scope, $http, $location) {
 		$.post('../form-add-column', {form_id: form_id, element_id: element_id}, function (json) {
 			var data = json.data;
 			$('.tab-head-item').removeClass('tab-head-item-active');
-			$('p[name="item_2"]').addClass('tab-head-item-active');
+			$('.tab-head-item[name="item_2"]').addClass('tab-head-item-active');
 			$('.tab-content-item').hide();
 			$('div[name="item_2"]').show();
 			_div_show(data);
@@ -161,8 +158,6 @@ function addformController($scope, $http, $location) {
 	 * @returns {String}
 	 */
 	function _div_show(data) {
-		console.log(data)
-		console.log('_div_show')
 		var _config = data.config;
 		var _div = '';
 		var _div_li = '';
@@ -281,8 +276,8 @@ function addformController($scope, $http, $location) {
 	 * @returns {undefined}
 	 */
 	function _div_edit(data) {
-		console.log(data);
-		console.log('div_edit');
+//		console.log(data);
+//		console.log('div_edit');
 		var _config = data.config;
 		var _div = '';
 		var temp = '';
@@ -528,7 +523,6 @@ function addformController($scope, $http, $location) {
 		//===上移、下移===
 		$('[name="moveup"]').click(function () {
 			$.post('../form-column-move', {form_id: form_id, column_id: data.column_id, operate: 'up'}, function (json) {
-				console.log(json);
 				checkJSON(json, function (json) {
 					Hint_box(json.msg);
 					init();
@@ -538,7 +532,6 @@ function addformController($scope, $http, $location) {
 		});
 		$('[name="movedown"]').click(function () {
 			$.post('../form-column-move', {form_id: form_id, column_id: data.column_id, operate: 'down'}, function (json) {
-				console.log(json);
 				checkJSON(json, function (json) {
 					Hint_box(json.msg);
 					init();

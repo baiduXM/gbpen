@@ -2,29 +2,12 @@
 
 /**
  * 万用表单控制器
- * @author xieqx
+ * @author xieqixiang
  * ===1、如何减少对数据库的访问，getFormElement和addFormColumn都有对表form_element进行访问===
  */
 class FormController extends BaseController {
 
-	/**
-	 * 表单列表
-	 */
-	public function getFormList() {
-		//===判断用户是否登录===
-		$cus_id = Auth::id();
-		//TODO
-		//===根据用户id查找用户表单列表===
-		$data = DB::table('form')->where('cus_id', $cus_id)->get();
-		//===返回数据===
-		if ($data != NULL) {
-			$res = Response::json(['err' => 0, 'msg' => '获取成功', 'data' => $data]);
-		} else {
-			$res = Response::json(['err' => 3001, 'msg' => '没有表单数据', 'data' => '']);
-		}
-		return $res;
-	}
-
+	//===form.js===
 	/**
 	 * 创建表单
 	 */
@@ -65,48 +48,52 @@ class FormController extends BaseController {
 	}
 
 	/**
-	 * 验证表单是否是自己的，显示表单信息
+	 * 表单列表
 	 */
-	public function checkAuth() {
+	public function getFormList() {
+		$cus_id = Auth::id();
+		//===根据用户id查找用户表单列表===
+		$data = DB::table('form')->where('cus_id', $cus_id)->get();
+		//===返回数据===
+		if ($data != NULL) {
+			$res = Response::json(['err' => 0, 'msg' => '获取成功', 'data' => $data]);
+		} else {
+			$res = Response::json(['err' => 3001, 'msg' => '没有表单数据', 'data' => '']);
+		}
+		return $res;
+	}
+
+	//===addform.js---star===
+	/**
+	 * 验证表单是否是自己的、并且获取表单信息
+	 */
+	public function checkAuthSelf() {
 		$cus_id = Auth::id();
 		$form_id = Input::get('form_id');
-		$form_data = DB::table('form')->where('id', $form_id)->where('cus_id', $cus_id)->first();
-		if (empty($form_data)) {
-			return Response::json(['err' => 1, 'msg' => '没有权限', 'data' => '']);
+		$res = DB::table('form')->where('id', $form_id)->where('cus_id', $cus_id)->first();
+		if ($res != NULL) {
+			$json = Response::json(['err' => 0, 'msg' => '验证成功，获取表单信息', 'data' => $res]);
+		} else {
+			$json = Response::json(['err' => 1, 'msg' => '验证失败，没有编辑权限', 'data' => '']);
 		}
-		//===获取表单详细信息===
-		$num = $form_id % 10;
-//		$column_data = DB::table('form_column_' . $num)->where('form_id', $form_id)->orderBy('order', 'asc')->get();
-		$column_data = DB::table('form_column_' . $num)->where('form_id', $form_id)->orderBy('order', 'asc')->select('id as column_id', 'title', 'description', 'type', 'required', 'config', 'order')->get();
-		foreach ($column_data as &$v) {
-			$v->config = json_decode($v->config);
-		}
-		$data['form'] = $form_data;
-		$data['column'] = $column_data;
-		return Response::json(['err' => 0, 'msg' => '验证成功，获取列表信息', 'data' => $data]);
+		return $json;
 	}
 
 	/**
-	 * 保存表单信息
+	 * 获取表单详细信息
 	 */
-	public function saveForm() {
+	public function getFormData() {
 		$form_id = Input::get('form_id');
-		$form_data = Input::get('box_info');
-		$time = date('Y-m-d H:i:s');
-		foreach ($form_data as $v) {
-			$data[$v['name']] = $v['value'];
+		$res = DB::table('form_column_' . $form_id % 10)->where('form_id', $form_id)->orderBy('order', 'asc')->select('id as column_id', 'title', 'description', 'type', 'required', 'config', 'order')->get();
+		foreach ($res as &$v) {
+			$v->config = json_decode($v->config);
 		}
-		$data['updated_at'] = $time;
-		$res = DB::table('form')
-			->where('id', $form_id)
-			->update($data);
-		//===返回数据===
 		if ($res != NULL) {
-			$res = Response::json(['err' => 0, 'msg' => '更新表单信息成功', 'data' => $res]);
+			$json = Response::json(['err' => 0, 'msg' => '验证成功', 'data' => $res]);
 		} else {
-			$res = Response::json(['err' => 1, 'msg' => '更新表单信息失败', 'data' => '']);
+			$json = Response::json(['err' => 3001, 'msg' => '验证失败', 'data' => '']);
 		}
-		return $res;
+		return $json;
 	}
 
 	/**
@@ -116,11 +103,33 @@ class FormController extends BaseController {
 		$data = DB::table('form_element')->where('status', 1)->get();
 		//===返回数据===
 		if ($data != NULL) {
-			$res = Response::json(['err' => 0, 'msg' => '获取成功', 'data' => $data]);
+			$res = Response::json(['err' => 0, 'msg' => '获取组件元素成功', 'data' => $data]);
 		} else {
 			$res = Response::json(['err' => 1, 'msg' => '获取组件元素失败', 'data' => '']);
 		}
 		return $res;
+	}
+
+	/**
+	 * 保存表单信息
+	 */
+	public function saveFormInfo() {
+		$form_id = Input::get('form_id');
+		$form_data = Input::get('box_info');
+		$time = date('Y-m-d H:i:s');
+		foreach ($form_data as $v) {
+			$data[$v['name']] = $v['value'];
+		}
+		$data['updated_at'] = $time;
+
+		$res = DB::table('form')->where('id', $form_id)->update($data);
+		//===返回数据===
+		if ($res != NULL) {
+			$json = Response::json(['err' => 0, 'msg' => '更新表单信息成功', 'data' => $res]);
+		} else {
+			$json = Response::json(['err' => 1, 'msg' => '更新表单信息失败', 'data' => '']);
+		}
+		return $json;
 	}
 
 	/**
