@@ -135,7 +135,7 @@ function homeController($scope, $http) {
                                             });
                                         }
                                     }
-                                    v.config.filter == 'page' ? '' : LoopChlid(NextChild,num);
+                                    LoopChlid(NextChild,num);
 								}
 							});
 						}else{
