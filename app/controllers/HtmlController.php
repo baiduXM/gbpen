@@ -364,10 +364,12 @@ class HtmlController extends BaseController{
             $customerinfo = Customer::find($this->cus_id);
             $ftp_array = explode(':',$customerinfo->ftp_address);
             $port= $customerinfo->ftp_port;
+            $ftpdir=$customerinfo->ftp_dir;
+            $ftp=$customerinfo->ftp;
             $ftp_array[1] = isset($ftp_array[1])?$ftp_array[1]:$port;
             $conn = ftp_connect($ftp_array[0],$ftp_array[1]);
-            
-            if($conn){
+            if(trim($ftp)=='1'){
+                if($conn){
                 ftp_login($conn,$customerinfo->ftp_user,$customerinfo->ftp_pwd);
                 ftp_pasv($conn, 1);
                // dd($conn,$this->customer,$path);
@@ -390,6 +392,20 @@ class HtmlController extends BaseController{
                 ftp_put($conn,"/".$this->customer."/mobile/quickbar.json",public_path('customers/'.$this->customer.'/mobile/quickbar.json'),FTP_ASCII);
                 ftp_close($conn);
             }
+            }else{
+                 if($conn){
+                ftp_login($conn,$customerinfo->ftp_user,$customerinfo->ftp_pwd);
+                ftp_pasv($conn, 1);
+                ftp_put($conn,$ftpdir."/site.zip",$path,FTP_BINARY);
+                ftp_put($conn,$ftpdir."/unzip.php",public_path("packages/unzip.php"),FTP_ASCII);
+                ftp_put($conn,$ftpdir."/search.php",public_path("packages/search.php"),FTP_ASCII);
+                ftp_put($conn,$ftpdir."/mobile/search.php",public_path("packages/search.php"),FTP_ASCII);
+                ftp_put($conn,$ftpdir."/quickbar.json",public_path('customers/'.$this->customer.'/quickbar.json'),FTP_ASCII);
+                ftp_put($conn,$ftpdir."/mobile/quickbar.json",public_path('customers/'.$this->customer.'/mobile/quickbar.json'),FTP_ASCII);
+                ftp_close($conn);
+            }
+            }
+           
             
             echo '100%<script type="text/javascript">parent.refresh(100);</script><br />';
             Classify::where('cus_id',$this->cus_id)->where('pushed',1)->update(['pushed'=>0]);
@@ -399,7 +415,13 @@ class HtmlController extends BaseController{
             * pc使用本服务器自带域名推送，后期需要改进！
             */
             $cus_name =strtolower( Customer::where('id',$this->cus_id)->pluck('name'));
-            $ftp_pcdomain="http://".$cus_name.".n01.5067.org";
+            if(trim($ftp)=='1'){
+                $ftp_pcdomain="http://".$cus_name.".n01.5067.org";
+            }
+            else{
+                $ftp_pcdomain=$customerinfo->pc_domain;
+                dd($ftp_pcdomain);
+            }
             @file_get_contents("$ftp_pcdomain/unzip.php");
         } 
         else {

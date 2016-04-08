@@ -57,15 +57,25 @@ class UploadController extends BaseController{
                             $customerinfo = Customer::find($cus_id);
                             $ftp_array = explode(':',$customerinfo->ftp_address);
                             $port= $customerinfo->ftp_port;
+                            $ftpdir=$customerinfo->ftp_dir;
+                            $ftp=$customerinfo->ftp;
                             $ftp_array[1] = isset($ftp_array[1])?$ftp_array[1]:$port;
                             $conn = ftp_connect($ftp_array[0],$ftp_array[1]);
                             if($conn){
                                 ftp_login($conn,$customerinfo->ftp_user,$customerinfo->ftp_pwd);
                                 ftp_pasv($conn, 1);
-                                ftp_put($conn,$customer.'/images/l/'.$target.'/'.$fileName,$destinationPath.'/l/'.$target.'/'.$fileName,FTP_BINARY);
-                                ftp_put($conn,$customer.'/images/s/'.$target.'/'.$fileName,$destinationPath.'/s/'.$target.'/'.$fileName,FTP_BINARY);
-                                ftp_put($conn,$customer.'/mobile/images/l/'.$target.'/'.$fileName,public_path('customers/'.$customer.'/mobile/images/l/').$target.'/'.$fileName,FTP_BINARY);
-                                ftp_put($conn,$customer.'/mobile/images/s/'.$target.'/'.$fileName,public_path('customers/'.$customer.'/mobile/images/s/').$target.'/'.$fileName,FTP_BINARY);
+                                if(trim($ftp)=='1'){
+                                    ftp_put($conn,$customer.'/images/l/'.$target.'/'.$fileName,$destinationPath.'/l/'.$target.'/'.$fileName,FTP_BINARY);
+                                    ftp_put($conn,$customer.'/images/s/'.$target.'/'.$fileName,$destinationPath.'/s/'.$target.'/'.$fileName,FTP_BINARY);
+                                    ftp_put($conn,$customer.'/mobile/images/l/'.$target.'/'.$fileName,public_path('customers/'.$customer.'/mobile/images/l/').$target.'/'.$fileName,FTP_BINARY);
+                                    ftp_put($conn,$customer.'/mobile/images/s/'.$target.'/'.$fileName,public_path('customers/'.$customer.'/mobile/images/s/').$target.'/'.$fileName,FTP_BINARY);
+                                 }
+                                 else{
+                                    ftp_put($conn,$ftpdir.'/'.'images/l/'.$target.'/'.$fileName,$destinationPath.'/l/'.$target.'/'.$fileName,FTP_BINARY);
+                                    ftp_put($conn,$ftpdir.'/'.'images/s/'.$target.'/'.$fileName,$destinationPath.'/s/'.$target.'/'.$fileName,FTP_BINARY);
+                                    ftp_put($conn,$ftpdir.'/'.'mobile/images/l/'.$target.'/'.$fileName,public_path('customers/'.$customer.'/mobile/images/l/').$target.'/'.$fileName,FTP_BINARY);
+                                    ftp_put($conn,$ftpdir.'/'.'mobile/images/s/'.$target.'/'.$fileName,public_path('customers/'.$customer.'/mobile/images/s/').$target.'/'.$fileName,FTP_BINARY); 
+                                 }
                                 ftp_close($conn);
                             }
                             $data[$i]['name']=$fileName;
@@ -105,15 +115,25 @@ class UploadController extends BaseController{
                 $customerinfo = Customer::find($cus_id);
                 $ftp_array = explode(':',$customerinfo->ftp_address);
                 $port= $customerinfo->ftp_port;
+                $ftpdir=$customerinfo->ftp_dir;
+                $ftp=$customerinfo->ftp;
                 $ftp_array[1] = isset($ftp_array[1])?$ftp_array[1]:$port;
                 $conn = ftp_connect($ftp_array[0],$ftp_array[1]);
                  if($conn){
                     ftp_login($conn,$customerinfo->ftp_user,$customerinfo->ftp_pwd);
                     ftp_pasv($conn, 1);
-                    ftp_put($conn,$customer.'/'.'images/l/'.$target.'/'.$fileName,$destinationPath.'/l/'.$target.'/'.$fileName,FTP_BINARY);
-                    ftp_put($conn,$customer.'/'.'images/s/'.$target.'/'.$fileName,$destinationPath.'/s/'.$target.'/'.$fileName,FTP_BINARY);
-                    ftp_put($conn,$customer.'/'.'mobile/images/l/'.$target.'/'.$fileName,public_path('customers/'.$customer.'/mobile/images/l/').$target.'/'.$fileName,FTP_BINARY);
-                    ftp_put($conn,$customer.'/'.'mobile/images/s/'.$target.'/'.$fileName,public_path('customers/'.$customer.'/mobile/images/s/').$target.'/'.$fileName,FTP_BINARY);
+                    if(trim($ftp)=='1'){
+                     ftp_put($conn,$customer.'/images/l/'.$target.'/'.$fileName,$destinationPath.'/l/'.$target.'/'.$fileName,FTP_BINARY);
+                     ftp_put($conn,$customer.'/images/s/'.$target.'/'.$fileName,$destinationPath.'/s/'.$target.'/'.$fileName,FTP_BINARY);
+                     ftp_put($conn,$customer.'/mobile/images/l/'.$target.'/'.$fileName,public_path('customers/'.$customer.'/mobile/images/l/').$target.'/'.$fileName,FTP_BINARY);
+                     ftp_put($conn,$customer.'/mobile/images/s/'.$target.'/'.$fileName,public_path('customers/'.$customer.'/mobile/images/s/').$target.'/'.$fileName,FTP_BINARY);
+                    }
+                    else{
+                     ftp_put($conn,$ftpdir.'/'.'images/l/'.$target.'/'.$fileName,$destinationPath.'/l/'.$target.'/'.$fileName,FTP_BINARY);
+                     ftp_put($conn,$ftpdir.'/'.'images/s/'.$target.'/'.$fileName,$destinationPath.'/s/'.$target.'/'.$fileName,FTP_BINARY);
+                     ftp_put($conn,$ftpdir.'/'.'mobile/images/l/'.$target.'/'.$fileName,public_path('customers/'.$customer.'/mobile/images/l/').$target.'/'.$fileName,FTP_BINARY);
+                     ftp_put($conn,$ftpdir.'/'.'mobile/images/s/'.$target.'/'.$fileName,public_path('customers/'.$customer.'/mobile/images/s/').$target.'/'.$fileName,FTP_BINARY); 
+                    }
                     ftp_close($conn);
                  }
 
@@ -160,16 +180,25 @@ class UploadController extends BaseController{
                         $customerinfo = Customer::find($cus_id);
                         $ftp_array = explode(':',$customerinfo->ftp_address);
                         $port= $customerinfo->ftp_port;
+                        $ftpdir=$customerinfo->ftp_dir;
+                        $ftp=$customerinfo->ftp;
                         $ftp_array[1] = isset($ftp_array[1])?$ftp_array[1]:$port;
                         $conn = ftp_connect($ftp_array[0],$ftp_array[1]);
                         if($conn){
                             ftp_login($conn,$customerinfo->ftp_user,$customerinfo->ftp_pwd);
                             ftp_pasv($conn, 1);
-                            ftp_put($conn,$customer.'/images/l/'.$target.'/'.$fileName,$destinationPath.'/l/'.$target.'/'.$fileName,FTP_BINARY);
-                            ftp_put($conn,$customer.'/images/s/'.$target.'/'.$fileName,$destinationPath.'/s/'.$target.'/'.$fileName,FTP_BINARY);
-                            ftp_put($conn,$customer.'/mobile/images/l/'.$target.'/'.$fileName,public_path('customers/'.$customer.'/mobile/images/l/').$target.'/'.$fileName,FTP_BINARY);
-                            ftp_put($conn,$customer.'/mobile/images/s/'.$target.'/'.$fileName,public_path('customers/'.$customer.'/mobile/images/s/').$target.'/'.$fileName,FTP_BINARY);
-                            ftp_close($conn);
+                           if(trim($ftp)=='1'){
+                             ftp_put($conn,$customer.'/images/l/'.$target.'/'.$fileName,$destinationPath.'/l/'.$target.'/'.$fileName,FTP_BINARY);
+                             ftp_put($conn,$customer.'/images/s/'.$target.'/'.$fileName,$destinationPath.'/s/'.$target.'/'.$fileName,FTP_BINARY);
+                             ftp_put($conn,$customer.'/mobile/images/l/'.$target.'/'.$fileName,public_path('customers/'.$customer.'/mobile/images/l/').$target.'/'.$fileName,FTP_BINARY);
+                             ftp_put($conn,$customer.'/mobile/images/s/'.$target.'/'.$fileName,public_path('customers/'.$customer.'/mobile/images/s/').$target.'/'.$fileName,FTP_BINARY);
+                    }
+                    else{
+                            ftp_put($conn,$ftpdir.'/'.'images/l/'.$target.'/'.$fileName,$destinationPath.'/l/'.$target.'/'.$fileName,FTP_BINARY);
+                            ftp_put($conn,$ftpdir.'/'.'images/s/'.$target.'/'.$fileName,$destinationPath.'/s/'.$target.'/'.$fileName,FTP_BINARY);
+                            ftp_put($conn,$ftpdir.'/'.'mobile/images/l/'.$target.'/'.$fileName,public_path('customers/'.$customer.'/mobile/images/l/').$target.'/'.$fileName,FTP_BINARY);
+                            ftp_put($conn,$ftpdir.'/'.'mobile/images/s/'.$target.'/'.$fileName,public_path('customers/'.$customer.'/mobile/images/s/').$target.'/'.$fileName,FTP_BINARY); 
+                    }ftp_close($conn);
                         }
                         $data[$i]['name']=$fileName;
                         
@@ -208,16 +237,25 @@ class UploadController extends BaseController{
                 $customerinfo = Customer::find($cus_id);
                 $ftp_array = explode(':',$customerinfo->ftp_address);
                 $port= $customerinfo->ftp_port;
+                $ftpdir=$customerinfo->ftp_dir;
+                $ftp=$customerinfo->ftp;
                 $ftp_array[1] = isset($ftp_array[1])?$ftp_array[1]:$port;
                 $conn = ftp_connect($ftp_array[0],$ftp_array[1]);
                  if($conn){
                     ftp_login($conn,$customerinfo->ftp_user,$customerinfo->ftp_pwd);
                     ftp_pasv($conn, 1);
-                    ftp_put($conn,$customer.'/'.'images/l/'.$target.'/'.$fileName,$destinationPath.'/l/'.$target.'/'.$fileName,FTP_BINARY);
-                    ftp_put($conn,$customer.'/'.'images/s/'.$target.'/'.$fileName,$destinationPath.'/s/'.$target.'/'.$fileName,FTP_BINARY);
-                    ftp_put($conn,$customer.'/'.'mobile/images/l/'.$target.'/'.$fileName,public_path('customers/'.$customer.'/mobile/images/l/').$target.'/'.$fileName,FTP_BINARY);
-                    ftp_put($conn,$customer.'/'.'mobile/images/s/'.$target.'/'.$fileName,public_path('customers/'.$customer.'/mobile/images/s/').$target.'/'.$fileName,FTP_BINARY);
-                    ftp_close($conn);
+                   if(trim($ftp)=='1'){
+                     ftp_put($conn,$customer.'/images/l/'.$target.'/'.$fileName,$destinationPath.'/l/'.$target.'/'.$fileName,FTP_BINARY);
+                     ftp_put($conn,$customer.'/images/s/'.$target.'/'.$fileName,$destinationPath.'/s/'.$target.'/'.$fileName,FTP_BINARY);
+                     ftp_put($conn,$customer.'/mobile/images/l/'.$target.'/'.$fileName,public_path('customers/'.$customer.'/mobile/images/l/').$target.'/'.$fileName,FTP_BINARY);
+                     ftp_put($conn,$customer.'/mobile/images/s/'.$target.'/'.$fileName,public_path('customers/'.$customer.'/mobile/images/s/').$target.'/'.$fileName,FTP_BINARY);
+                    }
+                    else{
+                     ftp_put($conn,$ftpdir.'/'.'images/l/'.$target.'/'.$fileName,$destinationPath.'/l/'.$target.'/'.$fileName,FTP_BINARY);
+                     ftp_put($conn,$ftpdir.'/'.'images/s/'.$target.'/'.$fileName,$destinationPath.'/s/'.$target.'/'.$fileName,FTP_BINARY);
+                     ftp_put($conn,$ftpdir.'/'.'mobile/images/l/'.$target.'/'.$fileName,public_path('customers/'.$customer.'/mobile/images/l/').$target.'/'.$fileName,FTP_BINARY);
+                     ftp_put($conn,$ftpdir.'/'.'mobile/images/s/'.$target.'/'.$fileName,public_path('customers/'.$customer.'/mobile/images/s/').$target.'/'.$fileName,FTP_BINARY); 
+                    }ftp_close($conn);
                  }
 
                 return Response::json(['err' => 0, 'msg' => '','data'=>['name' => $fileName,'url' => asset('customers/'.$customer.'/images/l/'.$target.'/'.$fileName)]]);
