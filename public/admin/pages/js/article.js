@@ -448,62 +448,28 @@ function articleController($scope, $http ,$location) {
                     IsMultiple : true,
                     oncallback : function(json){
                         var html = '',ids = [];
-                        $('.save_column,.batchbtn .cancel').css('cursor','pointer');
+                        $('.save_column,.batchbtn .save').css('cursor','pointer');
                         $('#inputImage-queue').append('<span class="finish">全部完成！</span>');
-                        $('.batchbtn .cancel').unbind().click(function(){
+                        $(".uploadify-queue").animate({scrollTop:$('.uploadify-queue')[0].scrollHeight},1000);
+                        $('.batchbtn .save').unbind().click(function(){
                             if(confirm('是否确定，并且批量生成文章？')){
-                                $('.warning_box ').hide().prev().hide();
+                                var articleArray = new Array();
+                                $('.batch_title .article').each(function(){
+                                    articleArray.push({
+                                        img:$(this).children(".img").val(),
+                                        title:$(this).children(".title").val(),
+                                    });
+                                });
+                                $http.post('../article-batch-add',{ArticleBatch: articleArray}).success(function(json){
+                                    checkJSON(json, function(json){
+                                        $('.warning_box ').hide().prev().hide();
+                                    });
+                                });
                             }else{
                                 return false;
                             }
-                        });console.log(json);
-                        $.each(json,function(idx, ele) {
-                            ids[idx] = ele.data[0].id;
-                            html += '<li data-id="'+ele.data[0].id+'">\
-                                        <input type="hidden" name="id['+idx+']" value="'+ele.data[0].id+'" />\
-                                        <input type="text" name="title['+idx+']" value="'+ele.data[0].filename.split('.')[0]+'" />\
-                                    </li>'
                         });
-                        if($('.batch_title_edit').length){
-                            $('.batch_title').html(html);
-                        }else{
-                            $('.btn-upload').append('<form class="batch_title_edit"><ul class="batch_title">'+html+'</ul></form>');
-                        }
-                        $('.uploadify-queue').css({
-                            left: '18%'
-                        });
-                        // 生成按钮操作
-                        $('.batchbtn .save,.batchbtn .cancel').click(function(event) {
-                            var datapost = function(){
-                                var data = $('.batch_title_edit').serializeJson();
-                                $http.post('../article-batch-modify',data).success(function(json){
-                                    checkJSON(json, function(json){
-                                        window.location.hash = '#/batcharticle?ids='+ids+'';
-                                    });
-                                });
-                            }
-                            if($(this).hasClass('.cancel')){
-                                if(confirm('是否确定，并且批量生成文章？')){
-                                    datapost();
-                                    $('.warning_box ').hide().prev().hide();
-                                }else{
-                                    return false;
-                                }
-                            }else{
-                                datapost();
-                            }
-                        });
-                        _this.batchDelPic();
                     }
-                });
-            });
-        },
-        batchDelPic : function(){
-            $('.uploadify-queue .cancel a').click(function(){
-                var id = $(this).closest('.uploadify-queue-item').data('id');
-                $('.batch_title li[data-id='+id+']').remove(); 
-                $http.post('../article-delete',{id:id}).success(function(json){
-                    checkJSON(json, function(json){});
                 });
             });
         },

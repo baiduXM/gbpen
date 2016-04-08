@@ -310,13 +310,14 @@ WarningBox.prototype = {
     },
     _Schedule : function(oncallback){
         var callbackdata = [];
+        var scrollmargin=0;
         // 改变弹框样式
         $('.warning_box .button').addClass('batchbtn');
 //        $('.batchbtn .save').val('批量编辑').css('cursor','not-allowed');
 $('.batchbtn .save').hide();
         $('.img-container>img').remove();
         $('.btn-upload .up_pic_btn').remove();
-        $('.btn-upload').css('position','inherit');
+        $('.btn-upload').css('position','inherit'); 
         $('.batchbtn .cancel').click(function(){
             $('.warning_box').hide().prev().hide();
         })
@@ -328,19 +329,33 @@ $('.batchbtn .save').hide();
             'buttonText' : "添加",
             'onUploadStart' : function(file) {
                 $('.uploadify-queue .finish').remove();
-                $('.batchbtn .cancel').unbind().val('生成完成').css('cursor','not-allowed');
+                $('.batchbtn .save').show();
+                $('.batchbtn .save').unbind().val('生成完成').css('cursor','not-allowed');
                 $('.tpl_mask').unbind();
             },
             'onUploadSuccess' : function(file, data, response){
                 var data = eval("("+data+")");
+                var html;
                 data.data[0].filename = file.name
-                $('.uploadify-queue-item').attr('data-id',data.data[0].name);
+                $('.uploadify-queue-item').each(function(){
+                    if(!$(this).attr('data-id')){
+                        $(this).attr('data-id',data.data[0].name.split('.')[0]);
+                        html = '<div  class="article" data-id="'+data.data[0].name.split('.')[0]+'" style="width:100%;">\
+                                        <input type="hidden" name="img'+data.data[0].name+'" class="img" value="'+data.data[0].name+'" />\
+                                        <input type="text" name="title'+data.data[0].filename.split('.')[0]+'" class="title" value="'+data.data[0].filename.split('.')[0]+'" style="width:100%;" />\
+                                    </div>'
+                        $(this).children('.uploadify-progress').append('<div class="batch_title">'+html+'</div>');
+                        scrollmargin =$(".uploadify-queue").scrollTop()+$(this).offset().top-$('.uploadify-queue').offset().top;
+                        $(".uploadify-queue").animate({scrollTop:scrollmargin},1000);
+                        return false;
+                    }
+                })
                 callbackdata.push(data);
             },
             'onQueueComplete' : function(queueData) {
                 oncallback(callbackdata);
             }
-        });
+        });          
     },
     _save : function($image,ajaxurl,oncallback){
         var _this = this;

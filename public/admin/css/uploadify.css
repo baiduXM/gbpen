@@ -19,10 +19,12 @@ Released under the MIT License <http://www.opensource.org/licenses/mit-license.p
 	margin-bottom: 1em;
 	position: absolute;
 	top: 10%;
-	left: 28%;
-	width: 40%;
+	left: 50px;
+	width: 750px;
+        height:370px;
+        overflow-y: scroll
 }
-.batch_title{position: absolute;margin-bottom: 1em;position: absolute;top: 14%;left: 60%;}
+.batch_title{top: 10px;width:99%;margin-top:10px;}
 .batch_title li{margin: 25px auto;}
 .uploadify-queue-item {
 	background-color: #F5F5F5;
@@ -31,7 +33,7 @@ Released under the MIT License <http://www.opensource.org/licenses/mit-license.p
 	border-radius: 3px;
 	font: 11px Verdana, Geneva, sans-serif;
 	margin-top: 5px;
-	max-width: 350px;
+	width: 700px;
 	padding: 10px;
 }
 .uploadify-error {
@@ -48,7 +50,7 @@ Released under the MIT License <http://www.opensource.org/licenses/mit-license.p
 	background-color: #E5E5E5;
 }
 .uploadify-progress {
-	background-color: #E5E5E5;
+	/*background-color: #E5E5E5;*/
 	margin-top: 10px;
 	width: 100%;
 }

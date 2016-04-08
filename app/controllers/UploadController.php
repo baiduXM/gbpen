@@ -174,20 +174,6 @@ class UploadController extends BaseController{
                         $data[$i]['name']=$fileName;
                         
                         $data[$i]['url']=asset('customers/'.$customer.'/images/l/'.$target.'/'.$fileName);
-                        $clientName = explode('.', $file->getClientOriginalName());
-                        $img=$fileName;
-                        $article=new Articles();
-                        $cus_id=Auth::id();                      
-                        $article->title=$clientName[0];
-                        $article->img=$img;
-                        $article->cus_id=$cus_id;
-                        $article->is_top=' ';
-                        $article->is_star=' ';
-                        $article->is_star=' ';
-                        $article->sort=' ';
-                        $article->save();
-                        $id=Articles::where('title',$img)->pluck('id');
-                        $data[$i]['id'] = $id;
                         $i++;
                     }
                 }
