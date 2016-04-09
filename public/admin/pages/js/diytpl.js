@@ -17,6 +17,9 @@ function diytplController($scope, $http, $location) {
     	},
     	getinfo : function(){
     		var _this = this;
+                if($('#phone').data('phoneClosed_index')){
+                    $('#phone-home').click();
+                }
     		//获取页面列表
 			$http.get('../template-filelist?type='+_this.type).success(function(json){
 				var homelist ='',tit = '',fn = '';

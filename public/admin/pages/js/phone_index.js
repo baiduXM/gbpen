@@ -40,7 +40,6 @@ function phone_indexController($scope,$http ,$location) {
 		    		var data = json.data.pagelist,
                                     mpagetype,type,
                                     templeType=2;
-                                    console.log(json.data.coded);
                                 if(json.data.coded == 0){
                                     $('.mobile_super').css('backgroundColor','#888');
                                 }else{

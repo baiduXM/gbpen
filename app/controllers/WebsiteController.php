@@ -306,7 +306,7 @@ class WebsiteController extends BaseController{
             $name = WebsiteInfo::leftJoin('template','pc_tpl_id','=','template.id')->where('website_info.cus_id',$id)->pluck('name');
         else
             $name = WebsiteInfo::leftJoin('template','mobile_tpl_id','=','template.id')->where('website_info.cus_id',$id)->pluck('name');
-        if(!strstr("_", $name))
+        if(!strstr($name, "_"))
             return Response::json(['err'=>1002,'msg' => '您已开启相应的高级定制，但未点亮相应的高级定制，请到页面编辑点亮','data' => '您已开启相应的高级定制，但未点亮相应的高级定制，请到页面编辑点亮']);
         $dst = app_path('views/templates/'.$name);
         $dst_css = public_path('templates/'.$name.'/css');
