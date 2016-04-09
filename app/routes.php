@@ -148,6 +148,11 @@ Route::group(array('before' => 'auth'), function() {
         'uses' => 'ArticleController@articleBatchModify'
     ]);
     
+    Route::post('article-batch-add', [//文章批量添加
+        'as' => 'article-batch-add',
+        'uses' => 'ArticleController@articleBatchAdd'
+    ]);
+    
     //-----------------------------------------------
     //--------------------首页内容--------------------
     Route::get('templates/GP{num}', [//PC预览 首页跳转

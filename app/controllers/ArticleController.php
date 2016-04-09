@@ -15,6 +15,7 @@ class ArticleController extends BaseController{
     |articleMoveClassify 文章移动分类
     |articleBatchModify  文章批量设置
     |articleSortModify   文章顺序修改
+    |articleBatchAdd   文章批量添加
 	*/ 
     public function articleAdd(){
         $id=Input::get('id');
@@ -335,6 +336,27 @@ class ArticleController extends BaseController{
                 $return_mag=array('err'=>3001,'msg'=>'变更失败');
             }
         }
+        return Response::json($return_msg);
+    }
+    public function articleBatchAdd(){
+        $cus_id=Auth::id();
+        $ArticleArray = Input::get('ArticleBatch');
+        foreach ($ArticleArray as $Article){
+            $article=new Articles();
+            $article->cus_id=$cus_id;
+            $article->is_top=' ';
+            $article->is_star=' ';
+            $article->is_star=' ';
+            $article->sort=1000000;
+            $article->title=$Article['title'];
+            $article->img=$Article['img'];
+            $ret=$article->save();
+            if(!$ret){
+                $return_mag=array('err'=>3001,'msg'=>'添加失败');
+                return Response::json($return_msg);
+            }
+        }
+        $return_msg=array('err'=>0,'msg'=>'');
         return Response::json($return_msg);
     }
 }

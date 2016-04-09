@@ -79,7 +79,7 @@ function homeController($scope, $http) {
 						src = v.value.image;
 						tit = v.value.title; 
 						href = v.value.link;
-						_rel = '<dd><a class="preview" href="'+v.value.link+'" onclick="return false">\n\
+						_rel = '<dd class="img_show"><a class="preview" href="'+v.value.link+'" onclick="return false">\n\
 							<div class="preview-close"><img src="images/preview-close.png" /></div>\n\
 							<div class="preview-edit" style="visibility:hidden"><img src="images/preview-edit.png" /><span>编辑</span></div>\n\
 							<div class="preview-mask" style="visibility:hidden"></div>\n\
@@ -87,7 +87,7 @@ function homeController($scope, $http) {
 							<input type="hidden" value="'+src+'" name="data['+k+'][src]" />\n\
 							<input type="hidden" value="'+tit+'" name="data['+k+'][title]" />\n\
 							<input type="hidden" value="'+href+'" name="data['+k+'][href]" /></dd>';
-                        _rel += '<dd class="new_add pr" data-role="image-'+k+'" style="margin-left:8px;"></dd>';
+                        _rel += '<dd class="new_add pr" data-role="image-'+k+'" data-type="image" style="margin-left:8px;"></dd>';
 						break;
 					case 'text':
 						var _rel = '';
@@ -99,7 +99,7 @@ function homeController($scope, $http) {
                         $.each(v.value,function(i,j){
 							srclen = j.image.split('/').length;
 							src = j.image.split('/')[srclen-1];
-                            _rel += '<dd><a href="'+j.link+'" class="preview" onclick="return false">\n\
+                            _rel += '<dd class="img_show" ><a href="'+j.link+'" class="preview" onclick="return false">\n\
 							<div class="preview-close"><img src="images/preview-close.png" /></div>\n\
 							<div class="preview-edit" style="visibility:hidden"><img src="images/preview-edit.png" /><span>编辑</span></div>\n\
 							<div class="preview-mask" style="visibility:hidden"></div>\n\
@@ -111,7 +111,7 @@ function homeController($scope, $http) {
                             num++;
                             pic++;
                         });
-						_rel += '<dd class="new_add pr" data-role="images-'+k+'" style="margin-left:8px;"></dd>';
+						_rel += '<dd class="new_add pr" data-role="images-'+k+'" data-type="image" style="margin-left:8px;"></dd>';
 						break;
 					case 'list':
 						var _rel = '',sign = '',list1 = '',pname = '',rootNodeName = k;
@@ -323,7 +323,7 @@ function homeController($scope, $http) {
 							var pic_name = role.split('-')[1];
 				        	var upload_Classname = role.split('-')[0];
 				        	var new_num = parseInt(pic_num)+1;
-				        	_newpic = '<dd><a href="" class="preview" onclick="return false">\n\
+				        	_newpic = '<dd class="img_show"><a href="" class="preview" onclick="return false">\n\
 									<div class="preview-close"><img src="images/preview-close.png" /></div>\n\
 									<div class="preview-edit" style="visibility:hidden"><img src="images/preview-edit.png" /><span>编辑</span></div>\n\
 									<div class="preview-mask" style="visibility:hidden"></div>\n\
@@ -352,6 +352,17 @@ function homeController($scope, $http) {
 	//修改首页 
 	function homeChangeSave(){
 		$('.home-info .btn-top .save').not($('.save_column')).unbind( "click" ).click(function(){
+                    var err=0;
+                    $('dd[data-type=image]').each(function(){
+                        if(!$(this).parent().children('.img_show').length){
+                            err=1;
+                            alert('至少选择一张图片');
+                            return false;
+                        }
+                    });
+                    if(err){
+                        return false;
+                    }
 	    	var data1 = $("#temple-data").serializeJson();
 	        $http.post('../homepage-modify',data1).success(function(json) {
 	        	checkJSON(json,function(json){
