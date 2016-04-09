@@ -204,14 +204,24 @@ class WebsiteController extends BaseController{
     
     public function copy(){
         $cus_id = Auth::id();
+        $type = Input::get('type');
+        $type_name = $type==1?'PC':'手机';
         $customization = Customer::where('id',$cus_id)->pluck('customization');
-        if(!$customization){
-            return Response::json(['err'=>1002, 'msg' => '您未开启高级定制服务!']);
+        if($customization<=0)
+            return Response::json(['err'=>1002, 'msg' => '您未开启'.$type_name.'高级定制服务!']);
+        elseif($type == 1){
+            if($customization == 3 or $customization == 1){
+                $id = WebsiteInfo::where('cus_id',$cus_id)->pluck('pc_tpl_id');
+                $had_name = WebsiteInfo::leftJoin('template','pc_tpl_id','=','template.id')->where('template.cus_id',$cus_id)->pluck('name');
+            }else
+                return Response::json(['err'=>1002, 'msg' => '您未开启'.$type_name.'高级定制服务!']);
+        }elseif($type == 2){
+            if($customization == 3 or $customization == 2){
+                $id = WebsiteInfo::where('cus_id',$cus_id)->pluck('mobile_tpl_id');
+                $had_name = WebsiteInfo::leftJoin('template','mobile_tpl_id','=','template.id')->where('template.cus_id',$cus_id)->pluck('name');
+            }else
+                return Response::json(['err'=>1002, 'msg' => '您未开启'.$type_name.'高级定制服务!']);
         }
-        $type = Input::get('tpye');
-        $type = 1;
-        $id = WebsiteInfo::where('cus_id',$cus_id)->pluck('pc_tpl_id');
-        $had_name = WebsiteInfo::leftJoin('template','pc_tpl_id','=','template.id')->where('template.cus_id',$cus_id)->pluck('name');
         if($had_name){
             return Response::json(['err' => 0, 'msg' => '']);
         }
@@ -252,9 +262,13 @@ class WebsiteController extends BaseController{
 
     public function fileAdd(){
         $id = Auth::id();
+        $type = Input::get('type');
         $filename = Input::get('filename');
         $filetype = Input::get('filetype');
-        $name = WebsiteInfo::leftJoin('template','pc_tpl_id','=','template.id')->where('website_info.cus_id',$id)->pluck('name');
+        if($type == 1)
+            $name = WebsiteInfo::leftJoin('template','pc_tpl_id','=','template.id')->where('website_info.cus_id',$id)->pluck('name');
+        else
+            $name = WebsiteInfo::leftJoin('template','mobile_tpl_id','=','template.id')->where('website_info.cus_id',$id)->pluck('name');
         switch ($filetype) {
             case 'html':
                 $dst = app_path('views/templates/'.$name);
@@ -284,7 +298,16 @@ class WebsiteController extends BaseController{
     
     public function fileList(){
         $id = Auth::id();
-        $name = WebsiteInfo::leftJoin('template','pc_tpl_id','=','template.id')->where('website_info.cus_id',$id)->pluck('name');
+        $type = Input::get('type');
+        $customization = Customer::where('id',$id)->pluck('customization');
+        if($customization <= 0 or ($customization != 3 && $customization != $type))
+            return Response::json(['err'=>1001,'msg' => '您未开启相应的高级定制，高级定制需要付费，如需要，请联系客服','data' => '您未开启高级定制，高级定制需要付费，如需要，请联系客服']);
+        if($type == 1)
+            $name = WebsiteInfo::leftJoin('template','pc_tpl_id','=','template.id')->where('website_info.cus_id',$id)->pluck('name');
+        else
+            $name = WebsiteInfo::leftJoin('template','mobile_tpl_id','=','template.id')->where('website_info.cus_id',$id)->pluck('name');
+        if(!strstr("_", $name))
+            return Response::json(['err'=>1002,'msg' => '您已开启相应的高级定制，但未点亮相应的高级定制，请到页面编辑点亮','data' => '您已开启相应的高级定制，但未点亮相应的高级定制，请到页面编辑点亮']);
         $dst = app_path('views/templates/'.$name);
         $dst_css = public_path('templates/'.$name.'/css');
         $dst_js = public_path('templates/'.$name.'/js');
@@ -379,10 +402,14 @@ class WebsiteController extends BaseController{
 
     public function fileget(){
         $id = Auth::id();
+        $type = Input::get('type');
         $filename = Input::get('filename');
         $file_type = explode('.', $filename);
         $file_type=end($file_type);
-        $name = WebsiteInfo::leftJoin('template','pc_tpl_id','=','template.id')->where('website_info.cus_id',$id)->pluck('name');
+        if($type == 1)
+            $name = WebsiteInfo::leftJoin('template','pc_tpl_id','=','template.id')->where('website_info.cus_id',$id)->pluck('name');
+        else
+            $name = WebsiteInfo::leftJoin('template','mobile_tpl_id','=','template.id')->where('website_info.cus_id',$id)->pluck('name');
         if($file_type=='css'){
             $dst = public_path('templates/'.$name.'/css/'.$filename);
         }
@@ -402,10 +429,14 @@ class WebsiteController extends BaseController{
 
     public function fileedit(){
         $cus_id = Auth::id();
+        $type = Input::get('type');
         $filename = Input::get('filename');
         $content = Input::get('code');
         $img_array = Input::get('fileimg');
-        $template = WebsiteInfo::join('template','pc_tpl_id','=','template.id')->where('website_info.cus_id',$cus_id)->pluck('name');
+        if($type == 1)
+            $template = WebsiteInfo::join('template','pc_tpl_id','=','template.id')->where('website_info.cus_id',$cus_id)->pluck('name');
+        else
+            $template = WebsiteInfo::join('template','mobile_tpl_id','=','template.id')->where('website_info.cus_id',$cus_id)->pluck('name');
         $fail = [];
         if($filename===NULL || $content===NULL){
             $result = ['err' => 1001, 'msg' => '提交数据错误'];

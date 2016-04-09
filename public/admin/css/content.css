@@ -11,7 +11,7 @@
 .all_button{border-radius: 3px;height: 35px;line-height: 35px;text-align: center;color: #ffffff;margin-right: 10px;}
 .all_button i{ font-size:16px;}
 .info-top img{vertical-align:middle;margin: -5px 5px auto 5px;}
-.delarticle,.edit_btn,.pre_btn,.delcolumn{background-color: #7589a0;width: 105px;}
+.delarticle,.edit_btn,.pre_btn,.delcolumn,.mobile_super{background-color: #7589a0;width: 105px;}
 .delcolumn:hover{ background:#6a7c91}
 .movarticle{background-color: #7589a0;width: 105px;-webkit-transition: 0.2s;transition: 0.2s;}
 .setarticle{background-color: #7589a0;width: 85px;border-radius: 3px 3px 3px 0;}

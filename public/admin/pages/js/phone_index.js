@@ -28,7 +28,7 @@ function phone_indexController($scope,$http ,$location) {
     	_getInfo : function(){
 		    var Area_name = $_GET['Area'] || 'index',_this = this;
 		    if(Area_name == 'quickbar'){
-				$('.phone_index_btn .delcolumn,.phone_index-banner .navs').remove();
+				$('.phone_index_btn .delcolumn,.phone_index_btn .mobile_super,.phone_index-banner .navs').remove();
 				$('.phone_index_btn .save').show();
                                 $('.phone_index_btn .rewrite').show();
 //				$('#phone_index .phone_index_btn').width(122)
@@ -37,7 +37,24 @@ function phone_indexController($scope,$http ,$location) {
     		// 获取手机切换标签
 		    $http.get(this.maininfourl).success(function(json){
 		    	checkJSON(json,function(json){ 
-		    		var data = json.data.pagelist,mpagetype,type;
+		    		var data = json.data.pagelist,
+                                    mpagetype,type,
+                                    templeType=2;
+                                    console.log(json.data.coded);
+                                if(json.data.coded == 0){
+                                    $('.mobile_super').css('backgroundColor','#888');
+                                }else{
+                                    $('.mobile_super').css('backgroundColor','#3878c0');
+                                }
+                                //手机高级定制
+                                $('.mobile_super').unbind('click').click(function(){
+                                    if(json.data.coded){
+                                        location.href = '#/diytpl?type='+templeType+'';
+                                    }else{
+                                        var warningbox = new WarningBox('',{warning_context : '∑(っ°Д ° )っ此定制编辑需要有一定的代码基础，确定要对文件进行编辑吗？'});
+                                        warningbox.idx_fuc(templeType);
+                                    }
+                                })
 		    		// 标签切换修改保存按钮类名
 				    $('.phone_index-banner .navs li a').on('click',function(){
 						var page = $(this).data('sub').split("-");

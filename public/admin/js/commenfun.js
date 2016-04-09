@@ -182,7 +182,7 @@ var WarningBox = function(del,warning_context){
         });
         $('.warning_box .save').click(function(){
             var _this = $(this);
-            $.get('../template-copy',function(json){
+            $.get('../template-copy?type='+templeType,function(json){
                 checkJSON(json, function(){
                             _this.parents('.box_info').hide().prev().hide();
                             location.href = '#/diytpl?type='+templeType+'';

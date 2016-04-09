@@ -349,6 +349,16 @@ class TemplatesController extends BaseController{
     public function getMobilePageData(){
         $cus_id=Auth::id();
         $mobile=new PrintController('preview','mobile');
+        $mobile_tpl_id = WebsiteInfo::where('cus_id',$cus_id)->pluck('mobile_tpl_id');
+        $my_tpl_name = Template::where('former_id',$mobile_tpl_id)->where('cus_id',$cus_id)->pluck('name');
+        $is_my_tpl = Template::where('id',$mobile_tpl_id)->where('cus_id',$cus_id)->pluck('name');
+        $my_tpl_num = count(Template::where('cus_id',$cus_id)->lists('id'));
+        if($my_tpl_name || $is_my_tpl ||$my_tpl_num >=3){
+            $coded = 1;
+        }
+        else{
+            $coded = 0;
+        }
         $m_catlist=Classify::where('mobile_show',1)->where('cus_id',$mobile->cus_id)->whereIn('type',[1,2,3,4])->orderBy('sort')->select('id','name','p_id','type')->get()->toArray();
         $showtypetotal= WebsiteInfo::where('website_info.cus_id',$cus_id)->LeftJoin('template','mobile_tpl_id','=','template.id')->select('template.list1showtypetotal','template.list2showtypetotal','template.list3showtypetotal','template.list4showtypetotal')->first();
         if(count($m_catlist) > 0){
@@ -413,6 +423,7 @@ class TemplatesController extends BaseController{
         }
         $templatedata['templatedata']=$data;
         $templatedata['pagelist']=$pagelist;
+        $templatedata['coded']=$coded;
         $templatedata['m_catlist']=$m_catlist;
         $mobile->replaceUrl($templatedata);
         $return_msg=array('err'=>0,'msg'=>'','data'=>$templatedata);

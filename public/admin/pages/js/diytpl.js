@@ -18,10 +18,10 @@ function diytplController($scope, $http, $location) {
     	getinfo : function(){
     		var _this = this;
     		//获取页面列表
-			$http.get('../template-filelist').success(function(json){
+			$http.get('../template-filelist?type='+_this.type).success(function(json){
 				var homelist ='',tit = '',fn = '';
 				checkJSON(json, function(json){
-					if(_this.type == 1){
+					if(_this.type == 1 || _this.type == 2){
 						$.each(json.data.filenames,function(k,v){
 							var list = '';
 							$.each(v.files,function(i,j){
