@@ -182,7 +182,7 @@ class HtmlController1 extends BaseController{
         foreach($ids as $id){
             $this->getPrecent();
             $this->end=time();
-            echo "{$num}_articlehtml_".$id."test1(".($this->end)-($this->start).")<br />";
+            echo "{$num}_articlehtml_".$id."test1(".(($this->end)-($this->start)).")<br />";
             $this->start=time();
             $num++;
             ob_start();
@@ -341,7 +341,7 @@ class HtmlController1 extends BaseController{
     public function pushPrecent(){
         set_time_limit(0);
         $this->start=time();
-        echo 'start:'.date("H:i:s");
+        echo 'start:'.date("H:i:s",time());
         if (ob_get_level() == 0){
             ob_start();
         }
@@ -370,26 +370,26 @@ class HtmlController1 extends BaseController{
         $count = $this->htmlPagecount($pc_classify_ids,$mobile_classify_ids,$pc_article_ids,$mobile_article_ids);
         $this->html_precent= 70/$count;
         $this->end=time();
-         echo "test0(".($this->end)-($this->start).")";
+         echo "test0(".(($this->end)-($this->start)).")";
         $this->start=time();
         var_dump($pc_classify_ids);
         $categoryhtml = $this->categoryhtml($pc_classify_ids,'pc');
         $this->end=time();
-         echo "test1(".($this->end)-($this->start).")";
+         echo "test1(".(($this->end)-($this->start)).")";
          $this->start=time();
          var_dump($mobile_classify_ids);
         $mcategoryhtml = $this->categoryhtml($mobile_classify_ids,'mobile');
         $this->end=time();
-         echo "test2(".($this->end)-($this->start).")";
+         echo "test2(".(($this->end)-($this->start)).")";
          $this->start=time();
         $articlehtml = $this->articlehtml($pc_article_ids,'pc');
         $this->end=time();
-        echo "test3(".($this->end)-($this->start).")";
+        echo "test3(".(($this->end)-($this->start)).")";
         $this->start=time();
         $marticlehtml = $this->articlehtml($mobile_article_ids,'mobile');
         $this->percent = 20/$count;
         $this->end=time();
-        echo "test4(".($this->end)-($this->start).")";
+        echo "test4(".(($this->end)-($this->start)).")";
         $this->start=time();
         $path = public_path('customers/'.$this->customer.'/'.$this->customer.'.zip');
         $zip = new ZipArchive;
