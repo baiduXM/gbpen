@@ -1866,7 +1866,7 @@ class PrintController extends BaseController{
                 .elegant-aero {
                 margin-left:auto;
                 margin-right:auto;
-                width: 100%;
+                width: 90%;
                 max-width: 500px;
                 /*background: #D2E9FF;*/
                 padding: 20px 20px 20px 20px;
