@@ -95,7 +95,7 @@ class HtmlController1 extends BaseController{
         $template = new PrintController('online',$type);
         $per_page = CustomerInfo::where('cus_id',$this->cus_id)->pluck($type."_page_count");
         $c_id_lists=Articles::where('cus_id',$this->cus_id)->where($type.'_show','1')->lists('c_id');
-        if($type='pc'){
+        if($type=='pc'){
             $pc_page_count_switch = CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_count_switch');//页面图文列表图文显示个数是否分开控制开关
             if(isset($pc_page_count_switch)&&$pc_page_count_switch==1){
                 $page_txt_number=CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_txt_count');//每页文字显示个数
@@ -191,7 +191,6 @@ class HtmlController1 extends BaseController{
             echo "{$num}_articlehtml_".$id."test1(".(($this->end)-($this->start)).")<br />";
             ob_flush();
             flush();
-            $this->start=time();
             $num++;
             ob_start();
             $path = $type =='pc' ? public_path('customers/'.$this->customer.'/detail/'.$id.'.html') : public_path('customers/'.$this->customer.'/mobile/detail/'.$id.'.html');
@@ -384,26 +383,21 @@ class HtmlController1 extends BaseController{
         $this->html_precent= 70/$count;
         $this->end=time();
          echo "test0(".(($this->end)-($this->start)).")";
-        $this->start=time();
         var_dump($pc_classify_ids);
         $categoryhtml = $this->categoryhtml($pc_classify_ids,'pc');
         $this->end=time();
          echo "test1(".(($this->end)-($this->start)).")";
-         $this->start=time();
          var_dump($mobile_classify_ids);
         $mcategoryhtml = $this->categoryhtml($mobile_classify_ids,'mobile');
         $this->end=time();
          echo "test2(".(($this->end)-($this->start)).")";
-         $this->start=time();
         $articlehtml = $this->articlehtml($pc_article_ids,'pc');
         $this->end=time();
         echo "test3(".(($this->end)-($this->start)).")";
-        $this->start=time();
         $marticlehtml = $this->articlehtml($mobile_article_ids,'mobile');
         $this->percent = 20/$count;
         $this->end=time();
         echo "test4(".(($this->end)-($this->start)).")";
-        $this->start=time();
         $path = public_path('customers/'.$this->customer.'/'.$this->customer.'.zip');
         $zip = new ZipArchive;
         if ($zip->open($path, ZipArchive::CREATE) === TRUE) {
