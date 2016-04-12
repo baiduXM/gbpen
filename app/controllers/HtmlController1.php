@@ -52,7 +52,9 @@ class HtmlController1 extends BaseController{
      * @var string
      */
     private $customer;
-    
+    private $start;
+    private $end;
+            
     
     function __construct(){
         $this->cus_id = Auth::id();
@@ -104,7 +106,7 @@ class HtmlController1 extends BaseController{
         foreach($ids as $id){
             $c_ids=explode(',',$template->getChirldenCid($id));
             $a_c_type = Classify::where('id',$id)->pluck('type');//取得栏目的type
-            if(isset($pc_page_count_switch)&&$pc_page_count_switch==1&&$type=='pc'){
+            if(isset($pc_page_count_switch)&&$pc_page_count_switch==1&&$type=='pc'&&$a_c_type<=3){
                 if($a_c_type==1){
                     $total=0;
                     foreach($c_id_lists as $c_id){
@@ -172,12 +174,17 @@ class HtmlController1 extends BaseController{
      * @return string
      */
     private function articlehtml($ids=[],$type ='pc'){
+        set_time_limit(0);
         $template = new PrintController('online',$type);
         $result = [];
         var_dump($ids);
+        $num=1;
         foreach($ids as $id){
             $this->getPrecent();
-            echo "articlehtml_".$id."<br />";
+            $this->end=time();
+            echo "{$num}_articlehtml_".$id."test1(".($this->end)-($this->start).")<br />";
+            $this->start=time();
+            $num++;
             ob_start();
             $path = $type =='pc' ? public_path('customers/'.$this->customer.'/detail/'.$id.'.html') : public_path('customers/'.$this->customer.'/mobile/detail/'.$id.'.html');
             echo $template->articlePreview($id);
@@ -231,7 +238,7 @@ class HtmlController1 extends BaseController{
         foreach($pc_classify_ids as $id){
             $c_ids=explode(',',$template->getChirldenCid($id));
             $a_c_type = Classify::where('id',$id)->pluck('type');//取得栏目的type
-            if(isset($pc_page_count_switch)&&$pc_page_count_switch==1){
+            if(isset($pc_page_count_switch)&&$pc_page_count_switch==1&&$a_c_type<=3){
                 if($a_c_type==1){
                     $total=0;
                     foreach($pc_c_id_lists as $c_id){
@@ -333,7 +340,8 @@ class HtmlController1 extends BaseController{
      */
     public function pushPrecent(){
         set_time_limit(0);
-        echo 'start';
+        $this->start=time();
+        echo 'start:'.date("H:i:s");
         if (ob_get_level() == 0){
             ob_start();
         }
@@ -361,20 +369,28 @@ class HtmlController1 extends BaseController{
          echo "t5";
         $count = $this->htmlPagecount($pc_classify_ids,$mobile_classify_ids,$pc_article_ids,$mobile_article_ids);
         $this->html_precent= 70/$count;
-        
-         echo "test0";
+        $this->end=time();
+         echo "test0(".($this->end)-($this->start).")";
+        $this->start=time();
         var_dump($pc_classify_ids);
         $categoryhtml = $this->categoryhtml($pc_classify_ids,'pc');
-         echo "test1";
+        $this->end=time();
+         echo "test1(".($this->end)-($this->start).")";
+         $this->start=time();
          var_dump($mobile_classify_ids);
         $mcategoryhtml = $this->categoryhtml($mobile_classify_ids,'mobile');
-         echo "test2";
+        $this->end=time();
+         echo "test2(".($this->end)-($this->start).")";
+         $this->start=time();
         $articlehtml = $this->articlehtml($pc_article_ids,'pc');
-        echo "test3";
+        $this->end=time();
+        echo "test3(".($this->end)-($this->start).")";
+        $this->start=time();
         $marticlehtml = $this->articlehtml($mobile_article_ids,'mobile');
         $this->percent = 20/$count;
-        
-        echo "test4";
+        $this->end=time();
+        echo "test4(".($this->end)-($this->start).")";
+        $this->start=time();
         $path = public_path('customers/'.$this->customer.'/'.$this->customer.'.zip');
         $zip = new ZipArchive;
         if ($zip->open($path, ZipArchive::CREATE) === TRUE) {
