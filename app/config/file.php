@@ -10,7 +10,7 @@ return [
 	'list-image' => '图片列表',
 	'list-imagetext' => '图文列表',
 	'list-page' => '内容单页',
-	'list-page-form' => '内容单页',
+//	'list-page-form' => '表单单页',
 	'list-text' => '文字列表',
 	//'global' => '全局',
 	//'style' => '基本',
