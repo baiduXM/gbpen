@@ -27,8 +27,8 @@ function diytplController($scope, $http, $location) {
 					if(_this.type == 1 || _this.type == 2){
 						$.each(json.data.filenames,function(k,v){
 							var list = '';
-                                                        console.log(v.files+'\\n');
-                                                        if(v.indexOf('files')){
+                                                        console.log(v.files);
+                                                        if(v.files){
                                                             $.each(v.files,function(i,j){
                                                                     j.match(/.*\.html$/) != null ? _this.FileHtmlToJsonArr.push(j.replace(/\.html$/,'.json')) : null;
                                                                     j.match(/.*\.json$/) != null ? _this.FileJsonArr.push(j) : null;
