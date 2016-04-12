@@ -420,7 +420,6 @@ class HtmlController extends BaseController{
             }
             else{
                 $ftp_pcdomain=$customerinfo->pc_domain;
-                dd($ftp_pcdomain);
             }
             @file_get_contents("$ftp_pcdomain/unzip.php");
         } 
