@@ -26,16 +26,15 @@ function diytplController($scope, $http, $location) {
 				checkJSON(json, function(json){
 					if(_this.type == 1 || _this.type == 2){
 						$.each(json.data.filenames,function(k,v){
-							var list = '';
-                                                        console.log(v.files);
-                                                        if(v.files){
-                                                            $.each(v.files,function(i,j){
-                                                                    j.match(/.*\.html$/) != null ? _this.FileHtmlToJsonArr.push(j.replace(/\.html$/,'.json')) : null;
-                                                                    j.match(/.*\.json$/) != null ? _this.FileJsonArr.push(j) : null;
-                                                                    list += '<dd class="made_name"><a href="javascript:void(0);">（'+j+'）</a></dd>';
-                                                            });
-                                                        }
-							homelist += '<li class="list_a"><dl class="made_left fl">'+v.title+'：</dl><dl class="made_right fl">'+list+'</dl></li>'
+                                                    var list = '';
+                                                    if(v.files){
+                                                        $.each(v.files,function(i,j){
+                                                                j.match(/.*\.html$/) != null ? _this.FileHtmlToJsonArr.push(j.replace(/\.html$/,'.json')) : null;
+                                                                j.match(/.*\.json$/) != null ? _this.FileJsonArr.push(j) : null;
+                                                                list += '<dd class="made_name"><a href="javascript:void(0);">（'+j+'）</a></dd>';
+                                                        });
+                                                        homelist += '<li class="list_a"><dl class="made_left fl">'+v.title+'：</dl><dl class="made_right fl">'+list+'</dl></li>'
+                                                    }
 						});
 						$('.made_style').html(homelist).after('<div class="addfile-item"><a href="javascript:void(0);" class="bluebtn addfile">添加文件</a></div>');
     					_this.AddFile();
