@@ -202,6 +202,9 @@ Route::group(array('before' => 'auth'), function() {
     Route::get('push',[
         'uses' => 'HTMLController@pushPrecent'
         ]);
+    Route::get('pushtest',[
+        'uses' => 'HTMLController1@pushPrecent'
+        ]);
     Route::get('isneedpush',[
     'uses' => 'HTMLController@isNeedPush'
         ]);
