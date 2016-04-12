@@ -3,17 +3,34 @@
 /**
  * 万用表单控制器
  * @author xieqixiang
- * ===1、如何减少对数据库的访问，getFormElement和addFormColumn都有对表form_element进行访问===
+ * createForm
  */
 class FormController extends BaseController {
 
-	//===form.js===
+	/**
+	 * 表单列表
+	 */
+	public function getFormList() {
+		$cus_id = Auth::id();
+		//===根据用户id查找用户表单列表===
+		$data = DB::table('form')->where('cus_id', $cus_id)->get();
+		//===返回数据===
+		if ($data != NULL) {
+			$res = Response::json(['err' => 0, 'msg' => '获取表单列表成功', 'data' => $data]);
+		} else {
+			$res = Response::json(['err' => 1, 'msg' => '获取表单列表失败', 'data' => '']);
+		}
+		return $res;
+	}
+
 	/**
 	 * 创建表单
 	 */
 	public function createForm() {
 		$name = Input::get('name');
 		$platform = Input::get('platform');
+		$showmodel = Input::get('showmodel');
+
 		$time = date('Y-m-d H:i:s');
 		$cus_id = Auth::id();
 		$data = array(
@@ -21,12 +38,13 @@ class FormController extends BaseController {
 			'name' => $name,
 			'platform' => $platform,
 			'created_at' => $time,
-			'updated_at' => $time
+			'updated_at' => $time,
+			'showmodel' => $showmodel
 		);
 		$id = DB::table('form')->insertGetId($data);
 		//===返回数据===
 		if ($id != NULL) {
-			$res = Response::json(['err' => 0, 'msg' => '添加成功', 'data' => $id]);
+			$res = Response::json(['err' => 0, 'msg' => '创建表单成功', 'data' => $id]);
 		} else {
 			$res = Response::json(['err' => 1, 'msg' => '创建表单失败', 'data' => '']);
 		}
@@ -47,34 +65,19 @@ class FormController extends BaseController {
 		return $json;
 	}
 
-	/**
-	 * 表单列表
-	 */
-	public function getFormList() {
-		$cus_id = Auth::id();
-		//===根据用户id查找用户表单列表===
-		$data = DB::table('form')->where('cus_id', $cus_id)->get();
-		//===返回数据===
-		if ($data != NULL) {
-			$res = Response::json(['err' => 0, 'msg' => '获取成功', 'data' => $data]);
-		} else {
-			$res = Response::json(['err' => 3001, 'msg' => '没有表单数据', 'data' => '']);
-		}
-		return $res;
-	}
-
 	//===addform.js---star===
 	/**
-	 * 验证表单是否是自己的、并且获取表单信息
+	 * 获取表单信息
+	 * 并验证表单是否是自己的、并且获取表单信息
 	 */
-	public function checkAuthSelf() {
+	public function getFormData() {
 		$cus_id = Auth::id();
 		$form_id = Input::get('form_id');
 		$res = DB::table('form')->where('id', $form_id)->where('cus_id', $cus_id)->first();
 		if ($res != NULL) {
-			$json = Response::json(['err' => 0, 'msg' => '验证成功，获取表单信息', 'data' => $res]);
+			$json = Response::json(['err' => 0, 'msg' => '获取表单信息成功', 'data' => $res]);
 		} else {
-			$json = Response::json(['err' => 1, 'msg' => '验证失败，没有编辑权限', 'data' => '']);
+			$json = Response::json(['err' => 1, 'msg' => '获取表单信息失败', 'data' => '']);
 		}
 		return $json;
 	}
@@ -82,16 +85,16 @@ class FormController extends BaseController {
 	/**
 	 * 获取表单详细信息
 	 */
-	public function getFormData() {
+	public function getFormColumnList() {
 		$form_id = Input::get('form_id');
 		$res = DB::table('form_column_' . $form_id % 10)->where('form_id', $form_id)->orderBy('order', 'asc')->select('id as column_id', 'title', 'description', 'type', 'required', 'config', 'order')->get();
 		foreach ($res as &$v) {
 			$v->config = json_decode($v->config);
 		}
 		if ($res != NULL) {
-			$json = Response::json(['err' => 0, 'msg' => '验证成功', 'data' => $res]);
+			$json = Response::json(['err' => 0, 'msg' => '获取表单列数据成功', 'data' => $res]);
 		} else {
-			$json = Response::json(['err' => 3001, 'msg' => '验证失败', 'data' => '']);
+			$json = Response::json(['err' => 0, 'msg' => '获取表单列数据为空', 'data' => '']);
 		}
 		return $json;
 	}
@@ -99,7 +102,7 @@ class FormController extends BaseController {
 	/**
 	 * 获取组件元素
 	 */
-	public function getFormElement() {
+	public function getFormElementList() {
 		$data = DB::table('form_element')->where('status', 1)->get();
 		//===返回数据===
 		if ($data != NULL) {
@@ -111,9 +114,31 @@ class FormController extends BaseController {
 	}
 
 	/**
+	 * 编辑组件元素（获取信息）
+	 */
+	public function getFormColumn() {
+		//===获取参数===
+		$form_id = Input::get('form_id');
+		$column_id = Input::get('column_id');
+
+		//===获取数据===
+		$num = $form_id % 10;
+		$column_data = DB::table('form_column_' . $num)->orderBy('order', 'asc')->where('id', $column_id)->first();
+		$column_data->column_id = $column_data->id;
+		$column_data->config = json_decode($column_data->config);
+		//===返回数据===
+		if ($column_data != NULL) {
+			$res = Response::json(['err' => 0, 'msg' => '获取组件元素成功', 'data' => $column_data]);
+		} else {
+			$res = Response::json(['err' => 1, 'msg' => '获取组件元素失败', 'data' => '']);
+		}
+		return $res;
+	}
+
+	/**
 	 * 保存表单信息
 	 */
-	public function saveFormInfo() {
+	public function editForm() {
 		$form_id = Input::get('form_id');
 		$form_data = Input::get('box_info');
 		$time = date('Y-m-d H:i:s');
@@ -173,31 +198,9 @@ class FormController extends BaseController {
 	}
 
 	/**
-	 * 编辑组件元素（获取信息）
-	 */
-	public function editFormColumn() {
-		//===获取参数===
-		$form_id = Input::get('form_id');
-		$column_id = Input::get('column_id');
-
-		//===获取数据===
-		$num = $form_id % 10;
-		$column_data = DB::table('form_column_' . $num)->orderBy('order', 'asc')->where('id', $column_id)->first();
-		$column_data->column_id = $column_data->id;
-		$column_data->config = json_decode($column_data->config);
-		//===返回数据===
-		if ($column_data != NULL) {
-			$res = Response::json(['err' => 0, 'msg' => '获取组件元素成功', 'data' => $column_data]);
-		} else {
-			$res = Response::json(['err' => 1, 'msg' => '获取组件元素失败', 'data' => '']);
-		}
-		return $res;
-	}
-
-	/**
 	 * 保存组件信息
 	 */
-	public function saveFormColumn() {
+	public function editFormColumn() {
 		//===获取参数===
 		$data = Input::get('data');
 		$form_id = Input::get('form_id');
@@ -377,9 +380,9 @@ class FormController extends BaseController {
 	}
 
 	/**
-	 * 提交表单
+	 * 保存表单
 	 */
-	public function submitForm() {
+	public function saveForm() {
 		$form_id = Input::get('form_id'); //表单ID
 		$form_box_info = Input::get('form_box_info'); //表单头信息
 
@@ -408,11 +411,30 @@ class FormController extends BaseController {
 	}
 
 	/**
+	 * ===预览用户表单列表===
+	 * form-view-list
+	 */
+	public function viewFormList() {
+		$form_id = Input::get('form_id');
+		$list = DB::table('form_data_' . $form_id % 10)->where('form_id', $form_id)->get();
+		foreach ($list as &$value) {
+			$value->data = json_decode($value->data);
+		}
+		if ($list != NULL) {
+			$json = Response::json(['err' => 0, 'msg' => '获取成功', 'data' => $list]);
+		} else {
+			$json = Response::json(['err' => 1, 'msg' => '获取失败', 'data' => '']);
+		}
+		return $json;
+	}
+
+	/**
 	 * ===浏览表单===
 	 * @return type
 	 */
-	public function viewForm() {
-		$form_id = Input::get('form_id');
+	public function viewForm($id) {
+//		$form_id = Input::get('form_id');
+		$form_id = $id;
 		$form_data = DB::table('form')->where('id', $form_id)->first();
 		$num = $form_id % 10;
 		$column_data = DB::table('form_column_' . $num)->orderBy('order')->where('form_id', $form_id)->get();
@@ -457,24 +479,6 @@ class FormController extends BaseController {
 	}
 
 	/**
-	 * ===预览用户表单列表===
-	 * form-view-list
-	 */
-	public function viewFormList() {
-		$form_id = Input::get('form_id');
-		$list = DB::table('form_data_' . $form_id % 10)->where('form_id', $form_id)->get();
-		foreach ($list as &$value) {
-			$value->data = json_decode($value->data);
-		}
-		if ($list != NULL) {
-			$json = Response::json(['err' => 0, 'msg' => '获取成功', 'data' => $list]);
-		} else {
-			$json = Response::json(['err' => 1, 'msg' => '获取失败', 'data' => '']);
-		}
-		return $json;
-	}
-
-	/**
 	 * ===删除用户表单数据===
 	 * form-data-delete
 	 */
@@ -494,7 +498,7 @@ class FormController extends BaseController {
 	 * ===预览用户提交的表单详情===
 	 * form-view-detail
 	 */
-	public function viewFormDetail() {
+	public function viewFormDetail($id) {
 		$form_id = Input::get('form_id');
 		$id = Input::get('id');
 		$form_data = DB::table('form')->where('id', $form_id)->first();
@@ -602,6 +606,15 @@ class FormController extends BaseController {
 			$json = Response::json(['err' => 1, 'msg' => '排序失败', 'data' => '']);
 		}
 		return $json;
+	}
+
+	/**
+	 * 万用表单前端预览界面
+	 * @param type $id
+	 */
+	public function universalFormPreview($id) {
+		echo 123;
+		return $id;
 	}
 
 }

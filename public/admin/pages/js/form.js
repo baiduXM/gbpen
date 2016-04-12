@@ -20,6 +20,7 @@ function formController($scope, $http, $location) {
 	//===表单列表===
 	function getFormList() {
 		$http.get('../form-list').success(function (json) {
+			console.log(json);
 			checkJSON(json, function (json) {
 				if (json.data !== null) {
 					var form_list_data = json.data;//表单列表数据资料
@@ -100,21 +101,14 @@ function formController($scope, $http, $location) {
 				platform += ',' + $(this).val();
 			}
 		});
-		$.ajax({
-			type: 'post',
-			url: '../form-create',
-			data: {
-				name: form_name,
-				platform: platform
-			},
-			dataType: 'json',
-			success: function (json) {
-				//===跳转到表单编辑页面===
-				if (json.err === 0) {
-					location.href = "#/addform?form_id=" + json.data;
-				} else {
-					alert("添加失败");
-				}
+		var showmodel = $('[name="showmodel"]:checked').val();
+		$.post('../form-create', {name: form_name, platform: platform, showmodel: showmodel}, function (json) {
+			console.log(json);
+			//===跳转到表单编辑页面===
+			if (json.err === 0) {
+				location.href = "#/addform?form_id=" + json.data;
+			} else {
+				alert("添加失败");
 			}
 		});
 	}
@@ -143,8 +137,7 @@ function formController($scope, $http, $location) {
 					$http.post('../form-delete', {form_id: form_id}).success(function (json) {
 						checkJSON(json, function (json) {
 							_this.parents('tr').remove();
-							var hint_box = new Hint_box('删除成功');
-							hint_box;
+							Hint_box('删除成功');
 						});
 					});
 				}

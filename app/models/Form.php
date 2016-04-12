@@ -6,7 +6,7 @@ use Illuminate\Auth\Reminders\RemindableInterface;
 
 class Admin extends Eloquent implements UserInterface, RemindableInterface{
     use UserTrait, RemindableTrait;
-    protected $table = 'admin';
+    protected $table = 'form';
     protected $hidden = array('password', 'remember_token');
 }
 

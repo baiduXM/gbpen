@@ -9,42 +9,24 @@ function addformController($scope, $http, $location) {
 	$scope.$parent.homepreview = true;
 	$scope.$parent.menu = [];
 	//表单ID
-
 	var form_id = getUrlParam('form_id');
 	$('[name="form_id"]').val(form_id);
-	authSelf();
 	init();
-
 	/**
-	 * 验证表单是否是自己的、并且获取表单信息
+	 * 初始化
+	 * 1、加载表单数据
+	 * 2、获取组件元素
 	 * @returns {undefined}
 	 */
-	function authSelf() {
-		$.post('../form-auth-self', {form_id: form_id}, function (json) {
-			checkJSON(json, function (json) {
-				if (json.err !== 0) {
-					alert(json.msg);
-					location.href = "#/form";
-				}
-				var data = json.data;
-				$('[name="name"]').val(data.name);
-				$('[name="title"]').val(data.title);
-				$('[name="description"]').val(data.description);
-				$('[name="action"]').val(data.action);
-				if (data.is_once === 1) {
-					$('[name="is_once"]').attr('checked', true);
-				}
-				if (data.status === 1) {
-					$('[name="status"]:eq(0)').attr('checked', true);
-				} else {
-					$('[name="status"]:eq(1)').attr('checked', true);
-				}
-				//===显示区域===
-				$('.as-title').html(data.title);
-				$('.as-description').html(data.description);
-			});
-		});
+	function init() {
+		getFormData();
+		getFormColumn();
+		getFormElement();
 	}
+
+	//******************************
+	//******操作事件（无ajax）******
+	//******************************
 	//===表单标题===
 	$('[name="title"]').blur(function () {
 		$('.as-title').html($(this).val());
@@ -53,15 +35,6 @@ function addformController($scope, $http, $location) {
 	$('[name="description"]').blur(function () {
 		$('.as-description').html($(this).val());
 	});
-	//===保存表单信息（form数据）===
-	$('[name="save_form"]').click(function () {
-		var box_info = $('form[name="box_info"]').serializeArray();
-		$.post('../form-save', {form_id: form_id, box_info: box_info}, function (json) {
-			checkJSON(json, function (json) {
-				Hint_box(json.msg);
-			});
-		});
-	});
 	//===编辑表单信息===
 	$('.as-title,.as-description').click(function () {
 		$('.tab-head-item').removeClass('tab-head-item-active');
@@ -69,23 +42,6 @@ function addformController($scope, $http, $location) {
 		$('.tab-content-item').hide();
 		$('div[name="item_0"]').show();
 	});
-	//===保存表单（column数据）===
-	$('.addsave').click(function () {
-		var form_box_info = $('form[name="box_info"]').serializeArray(); //表单头信息
-		var form_box_show = $('form[name="box_show"]').serializeArray(); //表单详细信息
-		$.post('../form-submit', {form_id: form_id, form_box_info: form_box_info, form_box_show: form_box_show}, function (json) {
-			checkJSON(json, function (json) {
-				Hint_box();
-//				hint_box;
-				setTimeout('location.href = "#/form"', 2000);
-			});
-		}, 'json');
-	});
-	//===预览表单===
-	$('[name="writeform"]').click(function () {
-		window.open('#/writeform?=form_id' + form_id);
-	});
-
 	//===切换选项卡===
 	$('.tab-head-item').click(function () {
 		var name = $(this).attr('name');
@@ -94,28 +50,75 @@ function addformController($scope, $http, $location) {
 		$('.tab-content-item').hide();
 		$('div[name=' + name + ']').show();
 	});
-	/**
-	 * 初始化
-	 * 1、加载表单数据
-	 * 2、获取组件元素
-	 * @returns {undefined}
-	 */
-	function init() {
-		$.get('../form-data', {form_id: form_id}, function (json) {
-			checkJSON(json, function () {
-				$.each(json.data, function (k, v) {
-					_div_show(v);
-				});
+	//===预览表单===
+	$('[name="writeform"]').click(function () {
+		window.open('#/writeform?=form_id' + form_id);
+	});
+	//******************************
+	//******响应事件（ajax）******
+	//******************************
+	//===保存表单信息（form数据）===
+	$('[name="save_form"]').click(function () {
+		var box_info = $('form[name="box_info"]').serializeArray();
+		$.post('../form-edit', {form_id: form_id, box_info: box_info}, function (json) {
+			console.log(json);
+			checkJSON(json, function (json) {
+				Hint_box(json.msg);
 			});
 		});
-		getFormElement();
+	});
+	//===保存表单（column数据）===
+	$('.addsave').click(function () {
+		var form_box_info = $('form[name="box_info"]').serializeArray(); //表单头信息
+		var form_box_show = $('form[name="box_show"]').serializeArray(); //表单详细信息
+		$.post('../form-save', {form_id: form_id, form_box_info: form_box_info, form_box_show: form_box_show}, function (json) {
+			console.log(json);
+			checkJSON(json, function (json) {
+				Hint_box();
+				setTimeout('location.href = "#/form"', 2000);
+			});
+		}, 'json');
+	});
+
+
+
+
+	/**
+	 * 验证表单是否是自己的、并且获取表单信息
+	 * @returns {undefined}
+	 */
+	function getFormData() {
+		$.get('../form-data', {form_id: form_id}, function (json) {
+			console.log(json);
+			if (json.err !== 0) {
+				alert(json.msg);
+				location.href = "#/form";
+			}
+			var data = json.data;
+			$('[name="name"]').val(data.name);
+			$('[name="title"]').val(data.title);
+			$('[name="description"]').val(data.description);
+			$('[name="action"]').val(data.action);
+			if (data.is_once === 1) {
+				$('[name="is_once"]').attr('checked', true);
+			}
+			if (data.status === 1) {
+				$('[name="status"]:eq(0)').attr('checked', true);
+			} else {
+				$('[name="status"]:eq(1)').attr('checked', true);
+			}
+			//===显示区域===
+			$('.as-title').html(data.title);
+			$('.as-description').html(data.description);
+		});
 	}
 	/**
 	 * 获取组件元素
 	 * @returns {undefined}
 	 */
 	function getFormElement() {
-		$http.get('../form-element').success(function (json) {
+		$http.get('../form-element-list').success(function (json) {
+			console.log(json);
 			checkJSON(json, function (json) {
 				var form_element = json.data;
 				var _div = '';
@@ -133,6 +136,21 @@ function addformController($scope, $http, $location) {
 			});
 		});
 	}
+	/**
+	 * 获取表单列
+	 * @returns {undefined}
+	 */
+	function getFormColumn() {
+		$.get('../form-column-list', {form_id: form_id}, function (json) {
+			console.log(json);
+			checkJSON(json, function () {
+				$.each(json.data, function (k, v) {
+					_div_show(v);
+				});
+			});
+		});
+	}
+
 
 	/**
 	 * 绑定组件事件
@@ -142,7 +160,8 @@ function addformController($scope, $http, $location) {
 	function bindElementEvent(_this) {
 		var element_id = _this.data('id');
 		//===添加组件===
-		$.post('../form-add-column', {form_id: form_id, element_id: element_id}, function (json) {
+		$.post('../form-column-add', {form_id: form_id, element_id: element_id}, function (json) {
+			console.log(json);
 			var data = json.data;
 			$('.tab-head-item').removeClass('tab-head-item-active');
 			$('.tab-head-item[name="item_2"]').addClass('tab-head-item-active');
@@ -256,8 +275,9 @@ function addformController($scope, $http, $location) {
 			$('.tab-content-item').hide();
 			$('div[name="item_2"]').show();
 			var _this_column = $(this);
-			$.post('../form-edit-column', {form_id: form_id, column_id: _this_column.attr('data-id')}, function (col_json) {
-				var col_data = col_json.data;
+			$.get('../form-column', {form_id: form_id, column_id: _this_column.attr('data-id')}, function (json) {
+				console.log(json);
+				var col_data = json.data;
 				_div_edit(col_data);
 			}, 'json');
 		});
@@ -276,8 +296,6 @@ function addformController($scope, $http, $location) {
 	 * @returns {undefined}
 	 */
 	function _div_edit(data) {
-//		console.log(data);
-//		console.log('div_edit');
 		var _config = data.config;
 		var _div = '';
 		var temp = '';
@@ -315,7 +333,12 @@ function addformController($scope, $http, $location) {
 				for (var i = 0; i < _config.option_count; i++) {
 					to = 'option_' + i;
 					_div += '<p class="option-item"><input type = "radio" name="config_option_default" value = "' + i + '" />';
-					_div += '<input type="text" name="option_' + i + '" value="' + _config[to] + '" /></p>';
+					if (i + 1 < _config.option_count) {
+						_div += '<input type="text" name="option_' + i + '" value="' + _config[to] + '" /><button class="square" name="option_del">-</button></p>';
+					} else {
+						_div += '<input type="text" name="option_' + i + '" value="' + _config[to] + '" /><button class="square" name="option_del">-</button><button class="square" name="option_add">+</button></p>';
+					}
+//					_div += '<input type="text" name="option_' + i + '" value="' + _config[to] + '" /></p>';
 				}
 				_div += '</li>';
 				_div += '<input type = "hidden" name="config_option_count" value = "" />';
@@ -329,7 +352,11 @@ function addformController($scope, $http, $location) {
 					if (_config.option_type == 1) {
 						_div += '<img name="option_img_' + i + '" src="" />';
 					}
-					_div += '<input type="text" name="option_' + i + '" value="' + _config[to] + '" /></p>';
+					if (i + 1 < _config.option_count) {
+						_div += '<input type="text" name="option_' + i + '" value="' + _config[to] + '" /><button class="square" name="option_del">-</button></p>';
+					} else {
+						_div += '<input type="text" name="option_' + i + '" value="' + _config[to] + '" /><button class="square" name="option_del">-</button><button class="square" name="option_add">+</button></p>';
+					}
 				}
 				_div += '</li>';
 				_div += '<input type = "hidden" name="config_option_count" value = "" />';
@@ -352,7 +379,12 @@ function addformController($scope, $http, $location) {
 					if (_config.option_type == 1) {
 						_div += '<img name="option_img_' + i + '" src="" />';
 					}
-					_div += '<input type="text" name="option_' + i + '" value="' + _config[to] + '" /></p>';
+					if (i + 1 < _config.option_count) {
+						_div += '<input type="text" name="option_' + i + '" value="' + _config[to] + '" /><button class="square" name="option_del">-</button></p>';
+					} else {
+						_div += '<input type="text" name="option_' + i + '" value="' + _config[to] + '" /><button class="square" name="option_del">-</button><button class="square" name="option_add">+</button></p>';
+					}
+//					_div += '<input type="text" name="option_' + i + '" value="' + _config[to] + '" /></p>';
 				}
 				_div += '</li>';
 				_div += '<input type = "hidden" name="config_option_count" value = "" />';
@@ -407,11 +439,6 @@ function addformController($scope, $http, $location) {
 			default:
 				break;
 		}
-//		_div += '<hr /><div>对齐方式\n\
-//				<input type = "radio" name="config_align" value = "left" />文字左对齐\n\
-//				<input type = "radio" name="config_align" value = "center" />居中\n\
-//				<input type = "radio" name="config_align" value = "right" />右对齐\n\
-//			</div>';
 
 		//===保存按钮===
 		_div += '<li class="list-item">\n\
@@ -482,12 +509,22 @@ function addformController($scope, $http, $location) {
 			default:
 				break;
 		}
-//		}
 
+		$('[name="option_add"]').unbind('click').click(function () {
+			alert('add');
+			var _this = $(this);
+			var _this_parent_p=_this.parent('p');
+			console.log(_this_parent_p);
+			_this_parent_p.add()
+		});
+		$('[name="option_del"]').unbind('click').click(function () {
+			alert('del')
+		});
 		//===保存组件修改===
 		$('[name="save_column"]').unbind('click').click(function () {
 			var form_data = $('form[name="box_column"]').serializeArray();
-			$.post('../form-save-column', {form_id: form_id, data: form_data}, function (json) {
+			$.post('../form-column-edit', {form_id: form_id, data: form_data}, function (json) {
+				console.log(json);
 				checkJSON(json, function (json) {
 					_div_show(json.data);
 					Hint_box('修改成功');
@@ -504,14 +541,15 @@ function addformController($scope, $http, $location) {
 				} else {
 					if (del_num) {
 						//===数据库删除===
-						$.post('../form-delete-column', {form_id: form_id, column_id: data.column_id}, function (json) {
+						$.post('../form-column-delete', {form_id: form_id, column_id: data.column_id}, function (json) {
+							console.log(json);
 							checkJSON(json, function (json) {
 								$('li[name=li_' + data.column_id + ']').remove();
 								$('[name="element-edit"]').html('');
 								var hint_box = new Hint_box('删除成功');
 								hint_box;
 								$('.tab-head-item').removeClass('tab-head-item-active');
-								$('p[name="item_1"]').addClass('tab-head-item-active');
+								$('.tab-head-item[name="item_1"]').addClass('tab-head-item-active');
 								$('.tab-content-item').hide();
 								$('div[name="item_1"]').show();
 							});
@@ -525,7 +563,6 @@ function addformController($scope, $http, $location) {
 			$.post('../form-column-move', {form_id: form_id, column_id: data.column_id, operate: 'up'}, function (json) {
 				checkJSON(json, function (json) {
 					Hint_box(json.msg);
-					init();
 
 				});
 			});
@@ -534,16 +571,8 @@ function addformController($scope, $http, $location) {
 			$.post('../form-column-move', {form_id: form_id, column_id: data.column_id, operate: 'down'}, function (json) {
 				checkJSON(json, function (json) {
 					Hint_box(json.msg);
-					init();
-					//动画
 				});
 			});
 		});
-	}
-	/**
-	 * 移动排序
-	 * @returns {undefined}
-	 */
-	function moveColumn() {
 	}
 }

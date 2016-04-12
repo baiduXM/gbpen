@@ -433,6 +433,9 @@ function column_type(type) {
 		case 8:
 			col_type = '直达号功能';
 			break;
+		case 9:
+			col_type = '万用表单';
+			break;
 	}
 	return col_type;
 }

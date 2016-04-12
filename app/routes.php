@@ -137,90 +137,72 @@ Route::group(array('before' => 'auth'), function() {
 	]);
 	//============
 	//===万用表单===
-	//===form.js===
-	//===addform.js===
-	Route::any('form-auth-self', [//检测表单
-		'as' => 'form-list',
-		'uses' => 'FormController@checkAuthSelf'
-	]);
-
-	Route::any('form-data', [//获取表单信息
-		'as' => 'form-list',
-		'uses' => 'FormController@getFormData'
-	]);
-	Route::any('form-element', [//获取组件元素
-		'as' => 'form-list',
-		'uses' => 'FormController@getFormElement'
-	]);
-	Route::any('form-save', [//保存表单，仅表单信息
-		'as' => 'form-list',
-		'uses' => 'FormController@saveFormInfo'
-	]);
-	Route::any('form-submit', [//保存表单，表单信息包括栏目信息
-		'as' => 'form-list',
-		'uses' => 'FormController@submitForm'
-	]);
-
-
-
-	Route::any('form-list', [//获取表单列表
+	//============
+	Route::get('form-list', [//获取表单列表
 		'as' => 'form-list',
 		'uses' => 'FormController@getFormList'
 	]);
-	Route::any('form-create', [//创建表单
+	Route::post('form-create', [//创建表单
 		'as' => 'form-list',
 		'uses' => 'FormController@createForm'
 	]);
-	Route::any('form-delete', [//删除表单
+	Route::post('form-delete', [//删除表单
 		'as' => 'form-list',
 		'uses' => 'FormController@deleteForm'
 	]);
-	Route::any('form-edit', [//修改表单名
+	Route::post('form-edit', [//保存表单，仅表单信息
 		'as' => 'form-list',
 		'uses' => 'FormController@editForm'
 	]);
-
-
-
-	Route::any('form-element', [//获取组件元素
+	Route::post('form-save', [//保存表单，表单信息包括栏目信息
 		'as' => 'form-list',
-		'uses' => 'FormController@getFormElement'
+		'uses' => 'FormController@saveForm'
 	]);
-	Route::any('form-add-column', [//添加组件
+	
+	Route::get('form-data', [//获取表单信息
+		'as' => 'form-list',
+		'uses' => 'FormController@getFormData'
+	]);
+	Route::get('form-element-list', [//获取组件元素
+		'as' => 'form-list',
+		'uses' => 'FormController@getFormElementList'
+	]);
+	Route::get('form-column-list', [//获取组件元素
+		'as' => 'form-list',
+		'uses' => 'FormController@getFormColumnList'
+	]);
+	Route::get('form-column', [//编辑组件
+		'as' => 'form-list',
+		'uses' => 'FormController@getFormColumn'
+	]);
+	Route::post('form-column-add', [//添加组件
 		'as' => 'form-list',
 		'uses' => 'FormController@addFormColumn'
 	]);
-	Route::any('form-edit-column', [//编辑组件
+	Route::post('form-column-edit', [//删除组件
 		'as' => 'form-list',
 		'uses' => 'FormController@editFormColumn'
 	]);
-	Route::any('form-save-column', [//删除组件
-		'as' => 'form-list',
-		'uses' => 'FormController@saveFormColumn'
-	]);
-	Route::any('form-delete-column', [//删除组件
+	Route::post('form-column-delete', [//删除组件
 		'as' => 'form-list',
 		'uses' => 'FormController@deleteFormColumn'
 	]);
-	Route::any('form-view-list', [//用户表单数据查看
-		'as' => 'form-list',
-		'uses' => 'FormController@viewFormList'
-	]);
-	Route::any('form-data-delete', [//用户表单数据删除
-		'as' => 'form-list',
-		'uses' => 'FormController@deleteFormData'
-	]);
-	Route::any('form-data-write', [//用户填写表单？要脱离后台啊
-		'as' => 'form-list',
-		'uses' => 'FormController@writeFormData'
-	]);
-	Route::any('form-write-submit', [//用户表单数据删除
-		'as' => 'form-list',
-		'uses' => 'FormController@writeFormSubmit'
-	]);
-	Route::any('form-column-move', [//用户表单排序
+	Route::post('form-column-move', [//用户表单排序
 		'as' => 'form-list',
 		'uses' => 'FormController@moveFormColumn'
+	]);
+	
+	Route::get('form-userdata-list', [//用户表单数据查看
+		'as' => 'form-list',
+		'uses' => 'FormController@getFormUserdataList'
+	]);
+	Route::get('form-userdata', [//用户数据删除
+		'as' => 'form-list',
+		'uses' => 'FormController@getFormUserdata'
+	]);
+	Route::post('form-userdata-delete', [//用户数据删除
+		'as' => 'form-list',
+		'uses' => 'FormController@deleteFormUserdata'
 	]);
 
 
@@ -253,9 +235,12 @@ Route::group(array('before' => 'auth'), function() {
 		'uses' => 'TemplatesController@homepageManage'
 	]);
 
-
 	Route::get('category/{id}', [//栏目页预览
 		'uses' => 'TemplatesController@categoryPreview'
+	])->where('id', '[0-9]+');
+
+	Route::get('universal-form/{id}', [//万用表单
+		'uses' => 'TemplatesController@universalForm'
 	])->where('id', '[0-9]+');
 
 	Route::get('category/{id}_{page}', [//栏目页分页预览
