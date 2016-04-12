@@ -174,25 +174,33 @@ class HtmlController1 extends BaseController{
      * @return string
      */
     private function articlehtml($ids=[],$type ='pc'){
-        set_time_limit(0);
+//        set_time_limit(0);
         $template = new PrintController('online',$type);
         $result = [];
         var_dump($ids);
         $num=1;
+        echo "wwww<br />";
         foreach($ids as $id){
-            $this->getPrecent();
+            if(isset($_GET['con']))
+            if($id<8273){
+                continue;
+            }
+            echo $id."_test<br />";
+//              $this->getPrecent();
             $this->end=time();
             echo "{$num}_articlehtml_".$id."test1(".(($this->end)-($this->start)).")<br />";
-            $this->start=time();
-            $num++;
-            ob_start();
-            $path = $type =='pc' ? public_path('customers/'.$this->customer.'/detail/'.$id.'.html') : public_path('customers/'.$this->customer.'/mobile/detail/'.$id.'.html');
+            ob_flush();
+            flush();
+//            $this->start=time();
+//            $num++;
+//            ob_start();
+//            $path = $type =='pc' ? public_path('customers/'.$this->customer.'/detail/'.$id.'.html') : public_path('customers/'.$this->customer.'/mobile/detail/'.$id.'.html');
             echo $template->articlePreview($id);
-            @file_put_contents($path, ob_get_contents());
-            ob_end_clean();
-            $result[] = $path;
+//            file_put_contents($path, ob_get_contents());
+//            ob_end_clean();
+//            $result[] = $path;
         }
-        return $result;
+//        return $result;
     }
 
     private function addDir($path,$zip,$dst=""){
@@ -341,6 +349,9 @@ class HtmlController1 extends BaseController{
     public function pushPrecent(){
         set_time_limit(0);
         $this->start=time();
+        $pc_article_ids = Articles::where('cus_id',$this->cus_id)->where('pc_show',1)->lists('id');
+        $articlehtml = $this->articlehtml($pc_article_ids,'pc');
+        exit();
         echo 'start:'.date("H:i:s",time());
         if (ob_get_level() == 0){
             ob_start();

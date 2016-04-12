@@ -2165,6 +2165,10 @@ class PrintController extends BaseController{
                 $result[$key]=$this->detailList($this->pagedata($key));
             }
         }
+        if(isset($_GET['print'])){
+        return "dd:".$id."<br />";
+        ob_flush();
+        flush();}
         $smarty = new Smarty;
         $smarty->setTemplateDir(app_path('views/templates/'.$this->themename));
         $smarty->setCompileDir(app_path('storage/views/compile'));
