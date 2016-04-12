@@ -106,7 +106,7 @@ class HtmlController1 extends BaseController{
         foreach($ids as $id){
             $c_ids=explode(',',$template->getChirldenCid($id));
             $a_c_type = Classify::where('id',$id)->pluck('type');//取得栏目的type
-            if(isset($pc_page_count_switch)&&$pc_page_count_switch==1&&$type=='pc'&&$a_c_type<=3){
+            if($type=='pc'&&isset($pc_page_count_switch)&&$pc_page_count_switch==1&&$a_c_type<=3){
                 if($a_c_type==1){
                     $total=0;
                     foreach($c_id_lists as $c_id){
@@ -188,7 +188,7 @@ class HtmlController1 extends BaseController{
             ob_start();
             $path = $type =='pc' ? public_path('customers/'.$this->customer.'/detail/'.$id.'.html') : public_path('customers/'.$this->customer.'/mobile/detail/'.$id.'.html');
             echo $template->articlePreview($id);
-            file_put_contents($path, ob_get_contents());
+            @file_put_contents($path, ob_get_contents());
             ob_end_clean();
             $result[] = $path;
         }
