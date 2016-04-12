@@ -92,6 +92,9 @@ class HtmlController1 extends BaseController{
 
     private function categoryhtml($ids=[],$type ='pc'){
         $result = [];
+        sleep(400);
+        echo "cat<br />";
+        sleep(400);
         $template = new PrintController('online',$type);
         $per_page = CustomerInfo::where('cus_id',$this->cus_id)->pluck($type."_page_count");
         $c_id_lists=Articles::where('cus_id',$this->cus_id)->where($type.'_show','1')->lists('c_id');
