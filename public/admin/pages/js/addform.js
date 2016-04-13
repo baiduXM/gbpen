@@ -275,11 +275,14 @@ function addformController($scope, $http, $location) {
 			$('.tab-content-item').hide();
 			$('div[name="item_2"]').show();
 			var _this_column = $(this);
-			$.get('../form-column', {form_id: form_id, column_id: _this_column.attr('data-id')}, function (json) {
-				console.log(json);
-				var col_data = json.data;
-				_div_edit(col_data);
-			}, 'json');
+			console.log(_this_column.attr('data-type'));
+			
+			
+//			$.get('../form-column', {form_id: form_id, column_id: _this_column.attr('data-id')}, function (json) {
+//				console.log(json);
+//				var col_data = json.data;
+//				_div_edit(col_data);
+//			}, 'json');
 		});
 		//===绑定元素鼠标滑动事件===
 		$(".element-show>li").unbind('hover').hover(
