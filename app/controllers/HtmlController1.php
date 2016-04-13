@@ -201,7 +201,7 @@ class HtmlController1 extends BaseController{
             if(!isset($_GET['test']))
             $this->getPrecent();
             $this->end=time();
-            echo "{$num}_articlehtml_".$id."time(".(($this->end)-($this->start)).")--------flush(".ob_get_lenght().")<br />";
+            echo "{$num}_articlehtml_".$id."time(".(($this->end)-($this->start)).")<br />";
             ob_flush();
             flush();
             $num++;
