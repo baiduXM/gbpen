@@ -92,9 +92,19 @@ class HtmlController1 extends BaseController{
 
     private function categoryhtml($ids=[],$type ='pc'){
         $result = [];
+        if(isset($_GET['catflush'])){
+        ob_flush();
+        flush();
+        for(;time()-$this->start<800;sleep(10)){
+        echo "cat:".(time()-$this->start)."<br />";
+        ob_flush();
+        flush();
+        }
         sleep(400);
         echo "cat<br />";
-        sleep(400);
+        ob_flush();
+        flush();
+        sleep(400);}
         $template = new PrintController('online',$type);
         $per_page = CustomerInfo::where('cus_id',$this->cus_id)->pluck($type."_page_count");
         $c_id_lists=Articles::where('cus_id',$this->cus_id)->where($type.'_show','1')->lists('c_id');
@@ -191,14 +201,19 @@ class HtmlController1 extends BaseController{
             if(!isset($_GET['test']))
             $this->getPrecent();
             $this->end=time();
-            echo "{$num}_articlehtml_".$id."test1(".(($this->end)-($this->start)).")<br />";
+            echo "{$num}_articlehtml_".$id."time(".(($this->end)-($this->start)).")--------flush(".ob_get_lenght().")<br />";
             ob_flush();
             flush();
             $num++;
             ob_start();
             $path = $type =='pc' ? public_path('customers/'.$this->customer.'/detail/'.$id.'.html') : public_path('customers/'.$this->customer.'/mobile/detail/'.$id.'.html');
+            if(isset($_GET['art_sleep'])){
+            sleep(10);}else{
             echo $template->articlePreview($id);
-            file_put_contents($path, ob_get_contents());
+            file_put_contents($path, ob_get_contents());}
+            if(isset($_GET['flush'])){
+                echo "flush:".ob_get_lenght()."<br />";
+            }
             ob_end_clean();
             $result[] = $path;
         }
@@ -354,7 +369,8 @@ class HtmlController1 extends BaseController{
         if(isset($_GET['test'])){
         $pc_article_ids = Articles::where('cus_id',$this->cus_id)->where('pc_show',1)->lists('id');
         $articlehtml = $this->articlehtml($pc_article_ids,'pc');
-        exit();
+        if(!isset($_GET['noexit'])){
+        exit();}
         }
         echo 'start:'.date("H:i:s",time());
         if (ob_get_level() == 0){
@@ -394,7 +410,9 @@ class HtmlController1 extends BaseController{
         $mcategoryhtml = $this->categoryhtml($mobile_classify_ids,'mobile');
         $this->end=time();
          echo "test2(".(($this->end)-($this->start)).")";
+       if(!isset($_GET['test'])){
         $articlehtml = $this->articlehtml($pc_article_ids,'pc');
+       }  
         $this->end=time();
         echo "test3(".(($this->end)-($this->start)).")";
         $marticlehtml = $this->articlehtml($mobile_article_ids,'mobile');
