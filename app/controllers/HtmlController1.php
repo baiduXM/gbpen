@@ -92,19 +92,6 @@ class HtmlController1 extends BaseController{
 
     private function categoryhtml($ids=[],$type ='pc'){
         $result = [];
-        if(isset($_GET['catflush'])){
-        ob_flush();
-        flush();
-        for(;time()-$this->start<800;sleep(10)){
-        echo "cat:".(time()-$this->start)."<br />";
-        ob_flush();
-        flush();
-        }
-        sleep(400);
-        echo "cat<br />";
-        ob_flush();
-        flush();
-        sleep(400);}
         $template = new PrintController('online',$type);
         $per_page = CustomerInfo::where('cus_id',$this->cus_id)->pluck($type."_page_count");
         $c_id_lists=Articles::where('cus_id',$this->cus_id)->where($type.'_show','1')->lists('c_id');
@@ -159,7 +146,10 @@ class HtmlController1 extends BaseController{
                 }
                 $page_count = ceil($total/$per_page);
             }
-            $this->getPrecent();   
+            $num=0;
+            $this->getPrecent();
+            $num++;
+            echo 'getprecent:'.$num.'<br />';
             $path = $type =='pc' ? public_path('customers/'.$this->customer.'/category/'.$id.'.html') : public_path('customers/'.$this->customer.'/mobile/category/'.$id.'.html');
             ob_start();
             echo $template->categoryPreview($id,1);
@@ -168,6 +158,8 @@ class HtmlController1 extends BaseController{
             $result[] = $path;
             for($i=1;$i<=$page_count;$i++){
                 $this->getPrecent();
+                $num++;
+                echo 'getprecent:'.$num.'<br />';
                 ob_start();
                 $path = $type =='pc' ? public_path('customers/'.$this->customer.'/category/'.$id.'_'.$i.'.html') : public_path('customers/'.$this->customer.'/mobile/category/'.$id.'_'.$i.'.html');
                 echo $template->categoryPreview($id,$i);
@@ -192,7 +184,6 @@ class HtmlController1 extends BaseController{
         var_dump($ids);
         $num=1;
         foreach($ids as $id){
-            echo $id."_test<br />";
             $this->getPrecent();
             $this->end=time();
             echo "{$num}_articlehtml_".$id."time(".(($this->end)-($this->start)).")<br />";
@@ -324,6 +315,9 @@ class HtmlController1 extends BaseController{
             }
             
         }
+        echo 'content:'.$page_count.'<br />';
+        echo 'count($pc_classify_ids):'.count($pc_classify_ids)."<br />";
+        echo 'count($mobile_classify_ids):'.count($mobile_classify_ids)."<br />";
         $page_count +=count($pc_classify_ids);
         $page_count +=count($mobile_classify_ids);
         return $page_count;
@@ -372,6 +366,8 @@ class HtmlController1 extends BaseController{
         echo "t2";
         $mobile_classify_ids = Classify::where('cus_id',$this->cus_id)->where('mobile_show',1)->lists('id');
         echo "t3";
+//        $pc_article_ids = Articles::where('cus_id',$this->cus_id)->where('pc_show',1)->lists('id');
+//        $mobile_article_ids = Articles::where('cus_id',$this->cus_id)->where('mobile_show',1)->lists('id');
         $count = $this->htmlPagecount($pc_classify_ids,$mobile_classify_ids);
         $this->html_precent= 70/$count;
         $this->end=time();
@@ -388,6 +384,7 @@ class HtmlController1 extends BaseController{
         $this->end=time();
         echo "test3(".(($this->end)-($this->start)).")";
         $marticlehtml = $this->articlehtml($mobile_classify_ids,'mobile');
+        echo "this:70%<br />";
         $this->percent = 20/$count;
         $this->end=time();
         echo "test4(".(($this->end)-($this->start)).")";
@@ -430,7 +427,7 @@ class HtmlController1 extends BaseController{
                 ob_flush();
                 flush();
             }
-            
+            echo "this:90%<br />";
         if ($zip->open($path, ZipArchive::CREATE) === TRUE) {
             $pc_dir=  Template::where('website_info.cus_id',$this->cus_id)->Leftjoin('website_info','website_info.pc_tpl_id','=','template.id')->pluck('name');
             $mobile_dir=  Template::where('website_info.cus_id',$this->cus_id)->Leftjoin('website_info','template.id','=','website_info.mobile_tpl_id')->pluck('name');
