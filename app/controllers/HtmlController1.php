@@ -199,7 +199,7 @@ class HtmlController1 extends BaseController{
             ob_flush();
             flush();
             $num++;
-            $paths=$template->articlePreview($id);
+            $paths=$template->articlepush($id);
             $result=array_merge($result,$paths);
         }
         return $result;
@@ -519,6 +519,7 @@ class HtmlController1 extends BaseController{
             echo '打包失败';
         }
         ob_end_flush();
+        echo "suntime:".(time()-$this->start);
     }
     
     /**
