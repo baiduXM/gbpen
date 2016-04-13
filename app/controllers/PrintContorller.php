@@ -2016,7 +2016,7 @@ class PrintController extends BaseController{
                 $i++;
             }
         }
-        $list_id = Articles::where('c_id',$article->c_id)->where($this->type.'_show','1')->orderBy('is_top','desc')->orderBy('created_at','desc')->select('id','title','img','introduction','created_at')->lists('id');
+        $list_id = Articles::where('c_id',$article->c_id)->where($this->type.'_show','1')->orderBy('is_top','desc')->orderBy('sort','asc')->orderBy('created_at','desc')->select('id','title','img','introduction','created_at')->lists('id');
         foreach($list_id as $key=>$val){
             $article_prev=NULL;
             $article_next=NULL;
@@ -2165,10 +2165,7 @@ class PrintController extends BaseController{
                 $result[$key]=$this->detailList($this->pagedata($key));
             }
         }
-        if(isset($_GET['print'])){
-        return "dd:".$id."<br />";
-        ob_flush();
-        flush();}
+        
         $smarty = new Smarty;
         $smarty->setTemplateDir(app_path('views/templates/'.$this->themename));
         $smarty->setCompileDir(app_path('storage/views/compile'));
@@ -2178,7 +2175,160 @@ class PrintController extends BaseController{
         $smarty->display($viewname.'.html');
         //return View::make('templates.'.$this->themename.'.'.$viewname,$result); 
     }
+    /**
+     * 推送文章页
+     *
+     * @param int $id 文章id
+     */
+    public function articlepush($c_id){
+        $paths=[];
+        $result = $this->pagePublic($c_id); 
+        if(is_array($result['navs']) && !empty($result['navs'])){  
+        foreach($result['navs'] as $nav){
+            if($nav['current']==1){
+                $pagenavs = $nav['childmenu'];
+                break;
+            }
+            else{
+                $pagenavs = array();
+            }
+        }
+        }
+         if(empty($pagenavs)) {
+            $pagenavs = array();
+         }              
+        $result['pagenavs']=$pagenavs;
+        $result['posnavs']=$this->getPosNavs($c_id);
+        $article_type = Classify::where('id',$c_id)->pluck('article_type');
+        if($article_type==1){//新闻内容
+            $viewname = 'content-news';
+        }
+        elseif ($article_type==2) {//产品内容
+            $viewname = 'content-product';
+        }
+        else{//跳转404
     
+        }
+        
+        $result['article']['category']=$result['posnavs'][count($result['posnavs'])-1];
+        $json_keys=$this->getJsonKey($viewname.'.html');
+        if(count($json_keys)){
+            foreach($json_keys as $key){
+                $result[$key]=$this->detailList($this->pagedata($key));
+            }
+        }
+        $articles = Articles::where($this->type.'_show','1')->where('c_id',$c_id)->orderBy('is_top','desc')->orderBy('sort','asc')->orderBy('created_at','desc')->get()->toArray();
+        foreach((array)$articles as $key=>$article){
+            echo $article['id'];
+            $the_result=$result;
+            $a_moreimg = Moreimg::where('a_id',$article['id'])->get()->toArray();
+            array_unshift($a_moreimg,array('title'=>$article['title'],'img'=>$article['img']));
+            $images=array();
+            if(count($a_moreimg)){
+                $i=0;
+                foreach($a_moreimg as $a_img){
+                    $images[$i]['title'] = $a_img['title'];
+                    $images[$i]['image'] = $this->source_dir.'l/articles/'.$a_img['img'];
+                    $i++;
+                }
+            }      
+            $the_result['title'] =$article['title'];
+            $the_result['keywords'] =$article['keywords'];
+            $the_result['description'] =$article['introduction'];
+            $the_result['article']['title'] =$article['title'];
+            $the_result['article']['keywords'] =$article['keywords'];
+            $the_result['article']['description'] =$article['introduction'];
+            $the_result['article']['viewcount'] = '<em id="article-viewcount">0</em>';
+                   
+            if(!isset($articles[$key+1])){
+                $the_result['article']['next']['title']='已经是最后一篇';
+                $the_result['article']['next']['link'] = '';
+            }
+            else{
+                $the_result['article']['next']['title'] = $articles[$key+1]['title'];
+                $the_result['article']['next']['link'] = $this->domain.'/detail/'.($articles[$key+1]['id']).'.html';
+            }
+                
+            if(!isset($articles[$key-1])){
+                $the_result['article']['prev']['title']='已经是第一篇';
+                $the_result['article']['prev']['link'] = '';
+            }
+            else{
+                $the_result['article']['prev']['title'] = $articles[$key-1]['title'];
+                $the_result['article']['prev']['link'] = $this->domain.'/detail/'.($articles[$key-1]['id']).'.html';
+            }
+            $the_result['article']['image'] = $this->source_dir.'l/articles/'.$article['img'];
+            $the_result['article']['images'] = $images;
+            $the_result['article']['content'] =preg_replace('/\/customers\/'.$this->customer.'/i','',$article['content']);
+            $the_result['article']['description'] =$article['introduction'];
+            $the_result['article']['pubdate']=$article['created_at'];
+            $the_result['article']['pubtimestamp']=strtotime($article['created_at']);
+            //关联文章查询
+            $pa = new PhpAnalysis();
+
+            $pa->SetSource($article['title']);
+
+            //设置分词属性
+            $pa->resultType = 2;
+            $pa->differMax  = true;
+            $pa->StartAnalysis();
+
+            //获取你想要的结果
+            $keywords=$pa->GetFinallyIndex();
+            if(count($keywords)){
+                $relation_where="";
+                foreach($keywords as $key=>$word){
+                    $relation_where.="or title like '%$key%' ";
+                }
+                $relation_where=ltrim($relation_where,'or');
+                $prefix = Config::get('database.connections.mysql.prefix');     
+                $related_data=DB::select("select id,title,img as image,introduction,created_at,c_id from {$prefix}article where cus_id={$this->cus_id} and ($relation_where)");
+                $related=array();
+                if(count($related_data)){
+                    foreach($related_data as $val){
+                        $temp_arr=[];  
+                        $temp_arr['title']=$val->title;
+                        $temp_arr['description']=$val->introduction;
+                        $temp_arr['image']=$this->source_dir.'l/articles/'.$val->image;
+                        if($this->showtype=='preview'){
+                            $temp_arr['link'] = $this->domain.'/detail/'.$val->id;
+                            $temp_arr['category']['link']= $this->domain.'/category/'.$val->id.'.html';
+                        }else{
+                            $temp_arr['link'] = $this->domain.'/detail/'.$val->id.'.html';
+                            $temp_arr['category']['link']= $this->domain.'/category/'.$val->id.'.html';
+                        }
+                        $temp_arr['pubdate']=$val->created_at;
+                        $temp_arr['pubtimestamp']=strtotime($val->created_at);
+                        $a_c_info=Classify::where('id',$val->c_id)->first();
+                        $temp_arr['category']['name']=$a_c_info->name;
+                        $temp_arr['category']['en_name']=$a_c_info->en_name;
+                        $temp_arr['category']['icon']='<i class="iconfont">'.$a_c_info->icon.'</i>';
+                        $related[]=$temp_arr;
+                    }
+                }
+            }
+            $the_result['related']=$related;
+            $output=$this->articledisplay($the_result,$viewname);
+            $path = $this->type =='pc' ? public_path('customers/'.$this->customer.'/detail/'.$article['id'].'.html') : public_path('customers/'.$this->customer.'/mobile/detail/'.$article['id'].'.html');
+            file_put_contents($path, $output);
+            $paths[]=$path;
+            echo $output;
+        }
+        return $paths;
+    }
+    private function articledisplay($the_result,$viewname){
+        ob_start();
+            $smarty = new Smarty;
+            $smarty->setTemplateDir(app_path('views/templates/'.$this->themename));
+            $smarty->setCompileDir(app_path('storage/views/compile'));
+            $smarty->registerPlugin('function','mapExt',array('PrintController','createMap'));
+            $smarty->registerPlugin('function', 'shareExt', array('PrintController','createShare'));
+            $smarty->assign($the_result);
+            $smarty->display($viewname.'.html');
+        $output=ob_get_contents();
+        ob_end_clean();
+        return $output;
+    }
     /**
      * 根据栏目id获取其顶级id
      *

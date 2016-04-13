@@ -191,31 +191,16 @@ class HtmlController1 extends BaseController{
         $result = [];
         var_dump($ids);
         $num=1;
-        echo "wwww<br />";
         foreach($ids as $id){
-            if(isset($_GET['con']))
-            if($id<8273){
-                continue;
-            }
             echo $id."_test<br />";
-            if(!isset($_GET['test']))
             $this->getPrecent();
             $this->end=time();
             echo "{$num}_articlehtml_".$id."time(".(($this->end)-($this->start)).")<br />";
             ob_flush();
             flush();
             $num++;
-            ob_start();
-            $path = $type =='pc' ? public_path('customers/'.$this->customer.'/detail/'.$id.'.html') : public_path('customers/'.$this->customer.'/mobile/detail/'.$id.'.html');
-            if(isset($_GET['art_sleep'])){
-            sleep(10);}else{
-            echo $template->articlePreview($id);
-            file_put_contents($path, ob_get_contents());}
-            if(isset($_GET['flush'])){
-                echo "flush:".ob_get_lenght()."<br />";
-            }
-            ob_end_clean();
-            $result[] = $path;
+            $paths=$template->articlePreview($id);
+            $result=array_merge($result,$paths);
         }
         return $result;
     }
@@ -248,7 +233,7 @@ class HtmlController1 extends BaseController{
      * @param array $mobile_article_ids 手机文章id
      * @return int
      */
-    private function htmlPagecount($pc_classify_ids=[],$mobile_classify_ids=[],$pc_article_ids=[],$mobile_article_ids=[]){
+    private function htmlPagecount($pc_classify_ids=[],$mobile_classify_ids=[]){
         $template = new PrintController();
         $page_count = 2;
         $pc_per_page = CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_count');
@@ -339,8 +324,8 @@ class HtmlController1 extends BaseController{
             }
             
         }
-        $page_count +=count($pc_article_ids);
-        $page_count +=count($mobile_article_ids);
+        $page_count +=count($pc_classify_ids);
+        $page_count +=count($mobile_classify_ids);
         return $page_count;
     }
     
@@ -366,13 +351,6 @@ class HtmlController1 extends BaseController{
     public function pushPrecent(){
         set_time_limit(0);
         $this->start=time();
-        if(isset($_GET['test'])){
-        $pc_article_ids = Articles::where('cus_id',$this->cus_id)->where('pc_show',1)->lists('id');
-        $articlehtml = $this->articlehtml($pc_article_ids,'pc');
-        if(!isset($_GET['noexit'])){
-        exit();}
-        }
-        echo 'start:'.date("H:i:s",time());
         if (ob_get_level() == 0){
             ob_start();
         }
@@ -394,11 +372,7 @@ class HtmlController1 extends BaseController{
         echo "t2";
         $mobile_classify_ids = Classify::where('cus_id',$this->cus_id)->where('mobile_show',1)->lists('id');
         echo "t3";
-        $pc_article_ids = Articles::where('cus_id',$this->cus_id)->where('pc_show',1)->lists('id');
-        echo "t4";
-        $mobile_article_ids = Articles::where('cus_id',$this->cus_id)->where('mobile_show',1)->lists('id');
-         echo "t5";
-        $count = $this->htmlPagecount($pc_classify_ids,$mobile_classify_ids,$pc_article_ids,$mobile_article_ids);
+        $count = $this->htmlPagecount($pc_classify_ids,$mobile_classify_ids);
         $this->html_precent= 70/$count;
         $this->end=time();
          echo "test0(".(($this->end)-($this->start)).")";
@@ -410,12 +384,10 @@ class HtmlController1 extends BaseController{
         $mcategoryhtml = $this->categoryhtml($mobile_classify_ids,'mobile');
         $this->end=time();
          echo "test2(".(($this->end)-($this->start)).")";
-       if(!isset($_GET['test'])){
-        $articlehtml = $this->articlehtml($pc_article_ids,'pc');
-       }  
+        $articlehtml = $this->articlehtml($pc_classify_ids,'pc');
         $this->end=time();
         echo "test3(".(($this->end)-($this->start)).")";
-        $marticlehtml = $this->articlehtml($mobile_article_ids,'mobile');
+        $marticlehtml = $this->articlehtml($mobile_classify_ids,'mobile');
         $this->percent = 20/$count;
         $this->end=time();
         echo "test4(".(($this->end)-($this->start)).")";
