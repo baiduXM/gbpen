@@ -2312,7 +2312,6 @@ class PrintController extends BaseController{
             $path = $this->type =='pc' ? public_path('customers/'.$this->customer.'/detail/'.$article['id'].'.html') : public_path('customers/'.$this->customer.'/mobile/detail/'.$article['id'].'.html');
             file_put_contents($path, $output);
             $paths[]=$path;
-            echo $output;
         }
         return $paths;
     }
