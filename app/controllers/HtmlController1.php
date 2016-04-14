@@ -118,8 +118,7 @@ class HtmlController1 extends BaseController{
             }else{
                 $total = Articles::whereIn('c_id',$c_ids)->where('cus_id',$this->cus_id)->where($type.'_show','1')->count();
                 $page_count = ceil($total/$per_page);
-            }
-            $this->getPrecent();   
+            }   
             $path = $type =='pc' ? public_path('customers/'.$this->customer.'/category/'.$id.'.html') : public_path('customers/'.$this->customer.'/mobile/category/'.$id.'.html');
             echo $template->categoryPreview($id,1);
             file_put_contents($path, ob_get_contents());
