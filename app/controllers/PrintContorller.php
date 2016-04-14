@@ -2470,7 +2470,7 @@ class PrintController extends BaseController{
     
     private function addCurrent(&$c_list,$current_ids){
         if(count($c_list)){
-            foreach((array)$c_list as &$c_arr){
+            foreach($c_list as &$c_arr){
                 if($c_arr['childmenu']){
                     $this->addCurrent($c_arr['childmenu'],$current_ids);
                 }
