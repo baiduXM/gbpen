@@ -94,72 +94,39 @@ class HtmlController1 extends BaseController{
         $result = [];
         $template = new PrintController('online',$type);
         $per_page = CustomerInfo::where('cus_id',$this->cus_id)->pluck($type."_page_count");
-        $c_id_lists=Articles::where('cus_id',$this->cus_id)->where($type.'_show','1')->lists('c_id');
-        if($type=='pc'){
-            $pc_page_count_switch = CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_count_switch');//页面图文列表图文显示个数是否分开控制开关
-            if(isset($pc_page_count_switch)&&$pc_page_count_switch==1){
-                $page_txt_number=CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_txt_count');//每页文字显示个数
-                $page_imgtxt_number=CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_imgtxt_count');//每页图文显示个数
-                $page_img_number=CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_count');//每页图片显示个数
-            }
-        }
         foreach($ids as $id){
+            ob_start();
             $c_ids=explode(',',$template->getChirldenCid($id));
             $a_c_type = Classify::where('id',$id)->pluck('type');//取得栏目的type
-            if($type=='pc'&&isset($pc_page_count_switch)&&$pc_page_count_switch==1&&$a_c_type<=3){
+            $pc_page_count_switch = CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_count_switch');//页面图文列表图文显示个数是否分开控制开关
+            if(isset($pc_page_count_switch)&&$pc_page_count_switch==1&&$type=='pc'){
                 if($a_c_type==1){
-                    $total=0;
-                    foreach($c_id_lists as $c_id){
-                        if(in_array($c_id, $c_ids)){
-                            $total++;
-                        }
-                    }
-                    $page_count = ceil($total/$page_txt_number);
-                    echo "type:1<br />";
+                    $page_number=CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_txt_count');//每页文字显示个数
+                    $total = Articles::whereIn('c_id',$c_ids)->where('cus_id',$this->cus_id)->where($type.'_show','1')->count();
+                    $page_count = ceil($total/$page_number);
                 }
                 if($a_c_type==3){
-                    $total=0;
-                    foreach($c_id_lists as $c_id){
-                        if(in_array($c_id, $c_ids)){
-                            $total++;
-                        }
-                    }
-                    $page_count = ceil($total/$page_imgtxt_number);
-                    echo "type:2<br />";
+                    $page_number=CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_imgtxt_count');//每页图文显示个数
+                    $total = Articles::whereIn('c_id',$c_ids)->where('cus_id',$this->cus_id)->where($type.'_show','1')->count();
+                    $page_count = ceil($total/$page_number);
                 }
                 if($a_c_type==2){
-                    $total=0;
-                    foreach($c_id_lists as $c_id){
-                        if(in_array($c_id, $c_ids)){
-                            $total++;
-                        }
-                    }
-                    $page_count = ceil($total/$page_img_number);
-                    echo "type:1<br />";
+                    $page_number=CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_img_count');//每页图片显示个数
+                    $total = Articles::whereIn('c_id',$c_ids)->where('cus_id',$this->cus_id)->where($type.'_show','1')->count();
+                    $page_count = ceil($total/$page_number);
                 }
             }else{
-                $total=0;
-                foreach($c_id_lists as $c_id){
-                    if(in_array($c_id, $c_ids)){
-                        $total++;
-                    }
-                }
+                $total = Articles::whereIn('c_id',$c_ids)->where('cus_id',$this->cus_id)->where($type.'_show','1')->count();
                 $page_count = ceil($total/$per_page);
             }
-            $num=0;
-            $this->getPrecent();
-            $num++;
-            echo 'getprecent:'.$num.'<br />';
+            $this->getPrecent();   
             $path = $type =='pc' ? public_path('customers/'.$this->customer.'/category/'.$id.'.html') : public_path('customers/'.$this->customer.'/mobile/category/'.$id.'.html');
-            ob_start();
             echo $template->categoryPreview($id,1);
             file_put_contents($path, ob_get_contents());
             ob_end_clean();        
             $result[] = $path;
             for($i=1;$i<=$page_count;$i++){
                 $this->getPrecent();
-                $num++;
-                echo 'getprecent:'.$num.'<br />';
                 ob_start();
                 $path = $type =='pc' ? public_path('customers/'.$this->customer.'/category/'.$id.'_'.$i.'.html') : public_path('customers/'.$this->customer.'/mobile/category/'.$id.'_'.$i.'.html');
                 echo $template->categoryPreview($id,$i);
@@ -190,7 +157,8 @@ class HtmlController1 extends BaseController{
             ob_flush();
             flush();
             $num++;
-            $paths=$template->articlepush($id);
+            $paths=$template->articlepush($id,$this->last_html_precent,$this->html_precent);
+            $this->last_html_precent +=($this->html_precent*count($paths));
             $result=array_merge($result,$paths);
         }
         return $result;
@@ -224,71 +192,47 @@ class HtmlController1 extends BaseController{
      * @param array $mobile_article_ids 手机文章id
      * @return int
      */
-    private function htmlPagecount($pc_classify_ids=[],$mobile_classify_ids=[]){
-        $template = new PrintController();
+    private function htmlPagecount($pc_classify_ids=[],$mobile_classify_ids=[],$pc_article_ids=[],$mobile_article_ids=[]){
+         $template = new PrintController();
         $page_count = 2;
         $pc_per_page = CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_count');
-        $pc_page_count_switch = CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_count_switch');//页面图文列表图文显示个数是否分开控制开关
-        $pc_c_id_lists=Articles::where('cus_id',$this->cus_id)->where('pc_show','1')->lists('c_id');
-        $mobile_c_id_lists=Articles::where('cus_id',$this->cus_id)->where('mobile_show','1')->lists('c_id');
-        if(isset($pc_page_count_switch)&&$pc_page_count_switch==1){
-            $page_txt_number=CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_txt_count');//每页文字显示个数
-            $page_imgtxt_number=CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_imgtxt_count');//每页图文显示个数
-            $page_img_number=CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_count');//每页图片显示个数
-        }
         foreach($pc_classify_ids as $id){
             $c_ids=explode(',',$template->getChirldenCid($id));
             $a_c_type = Classify::where('id',$id)->pluck('type');//取得栏目的type
-            if(isset($pc_page_count_switch)&&$pc_page_count_switch==1&&$a_c_type<=3){
+            $pc_page_count_switch = CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_count_switch');//页面图文列表图文显示个数是否分开控制开关
+            if(isset($pc_page_count_switch)&&$pc_page_count_switch==1){
                 if($a_c_type==1){
-                    $total=0;
-                    foreach($pc_c_id_lists as $c_id){
-                        if(in_array($c_id, $c_ids)){
-                            $total++;
-                        }
-                    }
+                    $page_number=CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_txt_count');//每页文字显示个数
+                    $total = Articles::whereIn('c_id',$c_ids)->where('cus_id',$this->cus_id)->where('pc_show','1')->count();
                     if($total){
-                        $page_count += ceil($total/$page_txt_number);
+                        $page_count += ceil($total/$page_number);
                     }
                     else{
                         $page_count++;
                     }
                 }
                 if($a_c_type==3){
-                    $total=0;
-                    foreach($pc_c_id_lists as $c_id){
-                        if(in_array($c_id, $c_ids)){
-                            $total++;
-                        }
-                    }
+                    $page_number=CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_imgtxt_count');//每页图文显示个数
+                    $total = Articles::whereIn('c_id',$c_ids)->where('cus_id',$this->cus_id)->where('pc_show','1')->count();
                     if($total){
-                        $page_count += ceil($total/$page_imgtxt_number);
+                        $page_count += ceil($total/$page_number);
                     }
                     else{
                         $page_count++;
                     }
                 }
                 if($a_c_type==2){
-                    $total=0;
-                    foreach($pc_c_id_lists as $c_id){
-                        if(in_array($c_id, $c_ids)){
-                            $total++;
-                        }
-                    }
+                    $page_number=CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_img_count');//每页图片显示个数
+                    $total = Articles::whereIn('c_id',$c_ids)->where('cus_id',$this->cus_id)->where('pc_show','1')->count();
                     if($total){
-                        $page_count += ceil($total/$page_img_number);
+                        $page_count += ceil($total/$page_number);
                     }
                     else{
                         $page_count++;
                     }
                 }
             }else{
-                $total=0;
-                foreach($pc_c_id_lists as $c_id){
-                    if(in_array($c_id, $c_ids)){
-                        $total++;
-                    }
-                }
+                $total = Articles::whereIn('c_id',$c_ids)->where('cus_id',$this->cus_id)->where('pc_show','1')->count();
                 if($total){
                     $page_count += ceil($total/$pc_per_page);
                 }
@@ -301,12 +245,7 @@ class HtmlController1 extends BaseController{
         $mobileper_page = CustomerInfo::where('cus_id',$this->cus_id)->pluck('mobile_page_count');
         foreach($mobile_classify_ids as $id){
             $c_ids=explode(',',$template->getChirldenCid($id));
-            $total=0;
-            foreach($mobile_c_id_lists as $c_id){
-                if(in_array($c_id, $c_ids)){
-                    $total++;
-                }
-            }
+            $total = Articles::whereIn('c_id',$c_ids)->where('cus_id',$this->cus_id)->where('mobile_show','1')->count();
             if($total){
                 $page_count += ceil($total/$mobileper_page);
             }
@@ -315,11 +254,8 @@ class HtmlController1 extends BaseController{
             }
             
         }
-        echo 'content:'.$page_count.'<br />';
-        echo 'count($pc_classify_ids):'.count($pc_classify_ids)."<br />";
-        echo 'count($mobile_classify_ids):'.count($mobile_classify_ids)."<br />";
-        $page_count +=count($pc_classify_ids);
-        $page_count +=count($mobile_classify_ids);
+        $page_count +=count($pc_article_ids);
+        $page_count +=count($mobile_article_ids);
         return $page_count;
     }
     
@@ -367,9 +303,9 @@ class HtmlController1 extends BaseController{
         echo "t2";
         $mobile_classify_ids = Classify::where('cus_id',$this->cus_id)->where('mobile_show',1)->lists('id');
         echo "t3";
-//        $pc_article_ids = Articles::where('cus_id',$this->cus_id)->where('pc_show',1)->lists('id');
-//        $mobile_article_ids = Articles::where('cus_id',$this->cus_id)->where('mobile_show',1)->lists('id');
-        $count = $this->htmlPagecount($pc_classify_ids,$mobile_classify_ids);
+        $pc_article_ids = Articles::where('cus_id',$this->cus_id)->where('pc_show',1)->lists('id');
+        $mobile_article_ids = Articles::where('cus_id',$this->cus_id)->where('mobile_show',1)->lists('id');
+        $count = $this->htmlPagecount($pc_classify_ids,$mobile_classify_ids,$pc_article_ids,$mobile_article_ids);
         $this->html_precent= 70/$count;
         echo 'html_precent:'.$this->html_precent."<br />";
         $this->end=time();

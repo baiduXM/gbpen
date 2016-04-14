@@ -2180,7 +2180,7 @@ class PrintController extends BaseController{
      *
      * @param int $id 文章id
      */
-    public function articlepush($c_id){
+    public function articlepush($c_id,$last_html_precent,$html_precent){
         $paths=[];
         $result = $this->pagePublic($c_id); 
         if(is_array($result['navs']) && !empty($result['navs'])){  
@@ -2312,6 +2312,13 @@ class PrintController extends BaseController{
             $path = $this->type =='pc' ? public_path('customers/'.$this->customer.'/detail/'.$article['id'].'.html') : public_path('customers/'.$this->customer.'/mobile/detail/'.$article['id'].'.html');
             file_put_contents($path, $output);
             $paths[]=$path;
+            $nowpercent = $last_html_precent+$html_precent;
+            if(floor($nowpercent)!==floor($last_html_precent)){
+                echo floor($nowpercent) . '%<script type="text/javascript">parent.refresh(' . floor($nowpercent) . ');</script><br />';
+                ob_flush();
+                flush();
+            }
+            $last_html_precent +=$html_precent;
         }
         return $paths;
     }
