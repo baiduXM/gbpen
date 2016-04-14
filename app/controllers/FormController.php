@@ -612,9 +612,15 @@ class FormController extends BaseController {
 	 * 万用表单前端预览界面
 	 * @param type $id
 	 */
-	public function universalFormPreview($id) {
-		echo 123;
-		return $id;
+	public function formPreview($id) {
+		$form_id = DB::table('classify')->where('id', $id)->pluck('form_id');
+		$form_data = DB::table('form')->where('id', $form_id)->first();
+		$column_data = DB::table('form_column_' . $form_id % 10)->where('form_id', $form_id)->get();
+		foreach ($column_data as &$v) {
+			$v->config = json_decode($v->config);
+		}
+		$res = array('form_data' => $form_data, 'column_data' => $column_data);
+		return $res;
 	}
 
 }

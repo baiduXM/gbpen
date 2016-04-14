@@ -173,11 +173,15 @@ class PrintController extends BaseController {
 			$classify = new Classify;
 			$templates = new TemplatesController;
 			$c_arr = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3, 4, 5, 6, 9))->where('pc_show', '=', 1)->get()->toArray();
-
+//			var_dump($c_arr);
+//			echo "<br>---c_arr---<br>";
+//			exit;
 			if (empty($c_arr)) {
 				$c_arr = array();
 			}
 			foreach ($result as &$v) {
+//				var_dump($v);
+//				echo "<br>---v---<br>";
 				if ($v['type'] == 'list') {
 					if (isset($v['config']['mustchild']) && $v['config']['mustchild'] == true) {
 						if (isset($v['config']['filter'])) {
@@ -424,6 +428,7 @@ class PrintController extends BaseController {
 					$slimming[$k]['config']['star_only'] = array_key_exists('star_only', $slimming[$k]['config']) && $slimming[$k]['config']['star_only'] ? 1 : 0;
 					break;
 				case 'quickbar':
+					echo '<br>---quickbar---<br>';
 					//if ($this->type == 'pc') dd('PC模板的json文件中没有type为【quickbar】的变量！\r\n如果你现在制作的是手机模板，请修改config.ini文件对应参数。详情参见：http://pme.eexx.me/doku.php?id=ued:template:config#config_%E6%A8%A1%E6%9D%BF%E9%85%8D%E7%BD%AE%E9%83%A8%E5%88%86');
 					if (!is_string($slimming[$k]) || !count($slimming[$k]))
 						dd('json文件中type为【navs】格式不正确！\r\n详情参见：http://pme/wiki/doku.php?id=ued:template:mindex#%E5%BA%95%E9%83%A8%E5%AF%BC%E8%88%AA%E5%AE%9A%E4%B9%89%E6%96%B9%E6%B3%95');
@@ -636,6 +641,8 @@ class PrintController extends BaseController {
 //                }
 				//快捷导航
 				$navs = Classify::where('cus_id', $this->cus_id)->where('mobile_show', 1)->select('id', 'type', 'name', 'en_name', 'icon', 'url', 'p_id', 'en_name')->OrderBy('sort', 'asc')->get()->toArray();
+//				var_dump($navs);
+//				echo '<br>---navs---<br>';
 				if (count($navs)) {
 					if ($this->showtype == 'preview') {
 						foreach ($navs as &$nav) {
@@ -776,12 +783,15 @@ class PrintController extends BaseController {
 	 */
 	private function pagePublic($c_id = 0) {
 		if ($this->type == 'pc') {
-			$navs = Classify::where('cus_id', $this->cus_id)->where('pc_show', 1)->whereIN('type', [1, 2, 3, 4, 5, 6])->select('id', 'type', 'img', 'icon', 'name', 'url', 'p_id', 'en_name', 'meta_description as description')->OrderBy('sort', 'asc')->get()->toArray();
+			//===type:9 万用表单===
+			$navs = Classify::where('cus_id', $this->cus_id)->where('pc_show', 1)->whereIN('type', [1, 2, 3, 4, 5, 6, 9])->select('id', 'type', 'img', 'icon', 'name', 'url', 'p_id', 'en_name', 'meta_description as description', 'form_id')->OrderBy('sort', 'asc')->get()->toArray();
 		} else {
 			$navs = Classify::where('cus_id', $this->cus_id)->where('mobile_show', 1)->select('id', 'type', 'img', 'icon', 'name', 'url', 'p_id', 'en_name', 'meta_description as description')->OrderBy('sort', 'asc')->get()->toArray();
 		}
-		$navs = $this->toTree($navs, 0, TRUE);
 
+		$navs = $this->toTree($navs, 0, TRUE);
+//		var_dump($navs);
+//		echo '<br>---navs---<br>';
 		if ($c_id) {
 			$current_arr = $this->currentCidArray($c_id);
 			$navs = $this->addCurrent($navs, $current_arr);
@@ -874,6 +884,8 @@ class PrintController extends BaseController {
 					}
 				}
 			}
+			var_dump($global_data);
+			echo '<br>---global_data---<br>';
 			$global_data = $this->detailList($global_data);
 			$this->replaceUrl($global_data);
 			if ($quickbarKey)
@@ -914,6 +926,8 @@ class PrintController extends BaseController {
 	 * @return array 返回一个包含公共数据的数组
 	 */
 	private function detailList($data) {
+//		var_dump($data);
+//		echo '<br>---detailList---<br>';
 		$index = [];
 		$list = [];
 		if ($data == NULL) {
@@ -1675,8 +1689,8 @@ class PrintController extends BaseController {
 //		var_dump($id);
 //		echo ('<br>===id===<br>');
 		$classify = Classify::find($id);
-//		var_dump($classify);
-//		echo ('<br>===classify===<br>');
+		var_dump($classify);
+		echo '<br>===classify===<br>';
 		$result['title'] = $classify->name;
 		$result['keywords'] = $classify->meta_keywords;
 		$result['description'] = $classify->meta_description;
@@ -1704,10 +1718,20 @@ class PrintController extends BaseController {
 		} elseif ($classify->type == 5) {//留言板
 			$viewname = 'list-page';
 		} elseif ($classify->type == 9) {//万用表单
-			$viewname = 'list-page';
+			$form_id = $classify->form_id;
+			$form_data = DB::table('form')->where('id', $form_id)->first();
+			$column_data = DB::table('form_column_' . $form_id % 10)->where('form_id', $form_id)->get();
+			foreach ($column_data as &$v) {
+				$v->config = json_decode($v->config);
+			}
+			var_dump($form_data);
+			echo '<br>---form_data---<br>';
+			var_dump($column_data);
+			echo '<br>---$column_data---<br>';
+//			View::make('form_preview')->with(array('form_data' => $form_data, 'column_data' => $column_data));
+			$viewname = 'list-page-form';
 		} else {//跳转404
 		}
-		//echo $viewname;exit;
 		if (in_array($classify->type, array(1, 2, 3, 4, 5, 9))) {
 			$sub = str_replace('-', '_', $viewname);
 			$data = $this->pagedata($viewname);
@@ -1750,7 +1774,11 @@ class PrintController extends BaseController {
                     </label>
                     </form>';
 			} elseif ($classify->type == 9) {
-				$result['list']['content'] = include app_path('views/write_form.blade.php');
+//				$result['list']['content'] = include(app_path('views/form_preview.blade.php'));
+				$result['list']['content'] = file_get_contents(app_path('views/form_preview.blade.php'));
+//				var_dump($result['list']['content']);
+//				echo '<br>---$result[list][content]---<br>';
+//				exit;
 			} else {
 				$result['list']['data'] = $index_list['data'];
 			}
@@ -1761,6 +1789,7 @@ class PrintController extends BaseController {
 					$result[$key] = $this->detailList($this->pagedata($key));
 				}
 			}
+			
 			$smarty = new Smarty;
 			$smarty->setTemplateDir(app_path('views/templates/' . $this->themename));
 			$smarty->setCompileDir(app_path('storage/views/compile'));
@@ -1880,9 +1909,8 @@ class PrintController extends BaseController {
                 }
                 </SCRIPT>';
 			} elseif ($classify->type == 9) {
-				//E:\yu1\unify\public\admin\pages\js\writeform.js
 //				$result['footscript'] .='<script src="/index.js" type="text/javascript"></script>';
-				$result['footscript'] .='<script type="text/javascript">alert("hahah")</script>';
+//				$result['footscript'] .='<script type="text/javascript">alert("hahah")</script>';
 			}
 			$smarty->assign($result);
 			$smarty->display($viewname . '.html');
@@ -2107,9 +2135,6 @@ class PrintController extends BaseController {
 	 */
 	private function toTree($arr, $pid = 0, $isNav = FALSE) {
 		$tree = array();
-//		var_dump($arr);
-//		echo "<br>=====<br>";
-//		exit;
 		foreach ($arr as $k => $v) {
 			if ($v['p_id'] == $pid) {
 				$v['image'] = $this->source_dir . 'l/category/' . $v['img'];
@@ -2118,15 +2143,18 @@ class PrintController extends BaseController {
 				$tree[] = $v;
 			}
 		}
+
 		if (empty($tree)) {
 			return null;
 		}
 //		var_dump($tree);
-//		echo "<br>=====<br>";
-//		exit;
+//		echo "<br>===toTree===<br>";
 		foreach ($tree as $k => $v) {
 			$data = [];
-			if ($v['type'] != 6) {
+			if ($v['type'] == 9) {
+//				$tree[$k]['link'] = $this->showtype == 'preview' ? $this->domain . '/formpreview/' . $v['id'] : $this->domain . '/formpreview/' . $v['id'] . '.html';
+				$tree[$k]['link'] = $this->showtype == 'preview' ? $this->domain . '/category/' . $v['id'] : $this->domain . '/category/' . $v['id'] . '.html';
+			} elseif ($v['type'] != 6) {
 				$tree[$k]['link'] = $this->showtype == 'preview' ? $this->domain . '/category/' . $v['id'] : $this->domain . '/category/' . $v['id'] . '.html';
 				if ($isNav == TRUE) {
 					$cids = explode(',', $this->getChirldenCid($v['id'])); //取得所有栏目id
@@ -2142,7 +2170,6 @@ class PrintController extends BaseController {
 						foreach ($articles as $key => $d) {
 							$data[$key]['title'] = $d->title;
 							$classify = Classify::where('id', $d->c_id)->first();
-
 							$data[$key]['category']['link'] = $this->showtype == 'preview' ? $this->domain . '/category/' . $d->c_id : $this->domain . '/category/' . $d->c_id . '.html';
 							$data[$key]['image'] = $this->source_dir . 's/articles/' . $d->img;
 							$data[$key]['link'] = $this->showtype == 'preview' ? $this->domain . '/detail/' . $d->id : $this->domain . '/detail/' . $d->id . '.html';
@@ -2166,8 +2193,8 @@ class PrintController extends BaseController {
 			$tree[$k]['selected'] = 0;
 			$tree[$k]['childmenu'] = $this->toTree($arr, $v['id']);
 		}
-//		echo "<br>---<br>";
 //		var_dump($tree);
+//		echo '<br>---$tree---<br>';
 		return $tree;
 	}
 
@@ -2391,6 +2418,12 @@ class PrintController extends BaseController {
 		return $id_str;
 	}
 
+	/**
+	 * 
+	 * @param type $c_id
+	 * @param type $posnavs
+	 * @return type
+	 */
 	private function getPosNavs($c_id, &$posnavs = array()) {
 		$classify = Classify::where('id', $c_id)->first();
 		$arr['name'] = $classify->name;
@@ -2451,11 +2484,6 @@ class PrintController extends BaseController {
 			closedir($handle);
 		}
 		return $fileArray;
-	}
-
-	public function universalFormPreview($id) {
-		return $id;
-		return View::make('write_form');
 	}
 
 }

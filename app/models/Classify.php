@@ -28,6 +28,7 @@ class Classify extends Eloquent {
 	}
 
 	public function toTree($arr, $pid = 0) {
+//		echo '<br>---toTree---<br>';
 		$tree = array();
 		foreach ($arr as $k => $v) {
 			if ($v['p_id'] == $pid) {

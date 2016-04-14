@@ -555,6 +555,7 @@ class TemplatesController extends BaseController {
 		if (empty($tree)) {
 			return null;
 		}
+		echo '<br>---tree---<br>';
 		foreach ($tree as $k => $v) {
 			if ($v['type'] == 1 || $v['type'] == 2 || $v['type'] == 3 || $v['type'] == 4) {
 				$tree[$k]['link'] = url('mcategory/' . $v['id'] . '.html');
@@ -604,7 +605,7 @@ class TemplatesController extends BaseController {
 	 */
 	public function formPreview($id) {
 		$template = new FormController();
-		return $template->viewForm($id);
+		return $template->formPreview($id);
 	}
 
 	/**

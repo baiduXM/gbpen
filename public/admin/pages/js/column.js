@@ -51,11 +51,13 @@ function columnController($scope, $http) {
 			var col_list = $(".box_info").height() / 2;
 			$(".box_info").css({
 				"marginTop": "-" + col_list + "px"
-			})
+			});
 		},
 		getJson: function () {
 			var _this = this;
 			$http.get(this.json_url).success(function (json) {
+//				console.log(json);
+//				console.log('===getJson===');
 				checkJSON(json, function (json) {
 					_this.get_column_list(json);
 				});
@@ -200,8 +202,9 @@ function columnController($scope, $http) {
 				$(this).children().toggleClass("disnone");
 			});
 		},
-		column_type_info: function (type) {
+		column_type_info: function (data) {
 			// 转化弹框栏目类型
+			var type = data.type;
 			switch (type) {
 				case 1:
 				case 2:
@@ -216,27 +219,37 @@ function columnController($scope, $http) {
 					} else if (type == 3) {
 						$('#models .txt_pic').addClass('cu');
 					}
+					$("#form_relate").hide();
 					break;
 				case 4:
 					$('#lottery').val(type);
 					$('.box-down #page_editor').show();
+					$("#form_relate").hide();
 					break;
 				case 5:
 					$('#lottery').val(type);
+					$("#form_relate").hide();
 					break;
 				case 6:
 					$('#lottery').val(type);
 					$('#out_url').show();
+					$("#form_relate").hide();
 					break;
 				case 7:
 					$('#lottery').val(type);
 					$('#lottery1,#lottery2,#lottery_mg').show();
+					$("#form_relate").hide();
 					break;
 				case 8:
 					$('#lottery').val(type);
+					$("#form_relate").hide();
 					break;
 				case 9:
 					$('#lottery').val(type);
+					$('#form_relate').show();
+					$('#form_select').val(data.form_id);
+					break;
+				default:
 					break;
 			}
 		},
@@ -280,7 +293,7 @@ function columnController($scope, $http) {
 					$('.en_name').val(d.en_name);
 					$('#out_url input').val(d.url);
 
-					_this.column_type_info(d.type);
+					_this.column_type_info(d);
 					// 联动更改内容展示
 					// if($('#lottery').val() == '列表'){
 					//     _this.Model_DiffSize('list');
