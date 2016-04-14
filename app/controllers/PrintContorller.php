@@ -2207,6 +2207,7 @@ class PrintController extends BaseController{
                     ob_flush();
                     flush();
                 }
+            $last_html_precent +=$html_precent;
             if($classify->type!=5&&$classify->type!=4){
                 for($i=1;$i<=$page;$i++){
                     $the_result=$result;
@@ -2223,6 +2224,7 @@ class PrintController extends BaseController{
                         ob_flush();
                         flush();
                     }
+                    $last_html_precent +=$html_precent;
                 }
             }
             return $paths;
