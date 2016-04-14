@@ -200,7 +200,7 @@ class HtmlController1 extends BaseController{
             $c_ids=explode(',',$template->getChirldenCid($id));
             $a_c_type = Classify::where('id',$id)->pluck('type');//取得栏目的type
             $pc_page_count_switch = CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_count_switch');//页面图文列表图文显示个数是否分开控制开关
-            if(isset($pc_page_count_switch)&&$pc_page_count_switch==1){
+            if(isset($pc_page_count_switch)&&$pc_page_count_switch==1&&$a_c_type<=3){
                 if($a_c_type==1){
                     $page_number=CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_txt_count');//每页文字显示个数
                     $total = Articles::whereIn('c_id',$c_ids)->where('cus_id',$this->cus_id)->where('pc_show','1')->count();

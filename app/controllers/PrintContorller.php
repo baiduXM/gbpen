@@ -2219,7 +2219,6 @@ class PrintController extends BaseController{
         }
         $articles = Articles::where($this->type.'_show','1')->where('c_id',$c_id)->orderBy('is_top','desc')->orderBy('sort','asc')->orderBy('created_at','desc')->get()->toArray();
         foreach((array)$articles as $key=>$article){
-            echo $article['id'];
             $the_result=$result;
             $a_moreimg = Moreimg::where('a_id',$article['id'])->get()->toArray();
             array_unshift($a_moreimg,array('title'=>$article['title'],'img'=>$article['img']));
