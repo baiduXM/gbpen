@@ -329,6 +329,7 @@ class HtmlController1 extends BaseController{
      */
     private function getPrecent(){
         $nowpercent = $this->last_html_precent+$this->html_precent;
+        echo "nowpercent:".$nowpercent."<br />";
         if(floor($nowpercent)!==floor($this->last_html_precent)){
             echo floor($nowpercent) . '%<script type="text/javascript">parent.refresh(' . floor($nowpercent) . ');</script><br />';
             ob_flush();
@@ -370,6 +371,7 @@ class HtmlController1 extends BaseController{
 //        $mobile_article_ids = Articles::where('cus_id',$this->cus_id)->where('mobile_show',1)->lists('id');
         $count = $this->htmlPagecount($pc_classify_ids,$mobile_classify_ids);
         $this->html_precent= 70/$count;
+        echo 'html_precent:'.$this->html_precent."<br />";
         $this->end=time();
          echo "test0(".(($this->end)-($this->start)).")";
         var_dump($pc_classify_ids);
