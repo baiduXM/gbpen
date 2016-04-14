@@ -31,7 +31,21 @@ function columnController($scope, $http) {
 			this._heightauto();
 			this.getJson();
 			this._SaveColumn();
+			this.getFormInfo();
 			this.listType();
+		},
+		getFormInfo: function () {
+			var _div = "";
+			$http.get('../form-list').success(function (json) {
+				console.log(json);
+				console.log('===getFormInfo===')
+				checkJSON(json, function (json) {
+					$.each(json.data, function (k, v) {
+						_div += '<option value="' + v.id + '">' + v.name + '</option>';
+					});
+					$('#form_select').append(_div);
+				});
+			});
 		},
 		_heightauto: function () {
 			var col_list = $(".box_info").height() / 2;
@@ -232,8 +246,6 @@ function columnController($scope, $http) {
 			$('.a-table').unbind('click').on('click', '.column-edit', function () {
 				_this.this_id = $(this).parent().siblings('.delv').attr('name');
 				$http.get('../classify-info?id=' + _this.this_id + '').success(function (json) {
-					console.log(json)
-					console.log('===json===')
 					// $http.get('json/classify-info.json').success(function(json) {
 					var d = json.data;
 					// proportion = json.data.width/json.data.height;
@@ -345,6 +357,7 @@ function columnController($scope, $http) {
 						$('#models').hide();
 						$('#inside_model').addClass('none');
 						$('#out_url').hide();
+						$("#form_relate").hide();
 						$('#page_editor').hide();
 						vlayout = $(this).val();
 						_this._heightauto();
@@ -356,6 +369,7 @@ function columnController($scope, $http) {
 						$('#inside_model').removeClass('none');
 						$('#lottery1,#lottery2,#lottery_mg').hide();
 						$('#out_url').hide();
+						$("#form_relate").hide();
 						$('#page_editor').hide();
 						_this._heightauto();
 						break;
@@ -364,6 +378,7 @@ function columnController($scope, $http) {
 					{
 						$('#out_url').show();
 						$('#models').hide();
+						$("#form_relate").hide();
 						$('#page_editor').hide();
 						$('#lottery1,#lottery2,#lottery_mg').hide();
 						vlayout = $(this).val();
@@ -376,14 +391,21 @@ function columnController($scope, $http) {
 						$('#out_url').hide();
 						$('#models').hide();
 						$('#inside_model').addClass('none');
+						$("#form_relate").hide();
 						$('#lottery1,#lottery2,#lottery_mg').hide();
 						vlayout = $(this).val();
 						_this._heightauto();
 						break;
 					}
+					case '万用表单':
+					{
+						$("#form_relate").show();
+						break;
+					}
 					default:
 						$('#out_url').hide();
 						$('#models').hide();
+						$("#form_relate").hide();
 						$('#inside_model').addClass('none');
 						$('#page_editor').hide();
 						$('#lottery1,#lottery2,#lottery_mg').hide();
@@ -421,6 +443,8 @@ function columnController($scope, $http) {
 				} else {
 					vlayout = $('#lottery').val();
 				}
+				console.log(vlayout);
+				console.log('====vlayout====');
 				var id = (_this.this_id == 1 ? '' : _this.this_id);
 				if (vlayout == null) {
 					alert('保存失败，请选择类型！')
@@ -432,6 +456,7 @@ function columnController($scope, $http) {
 					var vkeywords = $('.keyword').val();
 					var icons = $('.icon_input').val();
 					var vdescription = $('.txts').val();
+					var vform_id = $('#form_select').val();
 					var s_t = new Array();
 					var j = 0;
 					$('.sites input[type="checkbox"]').each(function (i) {
@@ -464,6 +489,7 @@ function columnController($scope, $http) {
 							is_show: s_t,
 							keywords: vkeywords,
 							description: vdescription,
+							form_id: vform_id,
 							img: _this.upload_picname,
 							icon: icons,
 							force: (first ? 0 : 1),

@@ -167,11 +167,11 @@ Route::group(array('before' => 'auth'), function() {
 		'as' => 'form-list',
 		'uses' => 'FormController@getFormElementList'
 	]);
-	Route::get('form-column-list', [//获取组件元素
+	Route::get('form-column-list', [//获取组件列表
 		'as' => 'form-list',
 		'uses' => 'FormController@getFormColumnList'
 	]);
-	Route::get('form-column', [//编辑组件
+	Route::get('form-column', [//获取组件
 		'as' => 'form-list',
 		'uses' => 'FormController@getFormColumn'
 	]);
@@ -179,7 +179,7 @@ Route::group(array('before' => 'auth'), function() {
 		'as' => 'form-list',
 		'uses' => 'FormController@addFormColumn'
 	]);
-	Route::post('form-column-edit', [//删除组件
+	Route::post('form-column-edit', [//编辑组件
 		'as' => 'form-list',
 		'uses' => 'FormController@editFormColumn'
 	]);
@@ -187,16 +187,16 @@ Route::group(array('before' => 'auth'), function() {
 		'as' => 'form-list',
 		'uses' => 'FormController@deleteFormColumn'
 	]);
-	Route::post('form-column-move', [//用户表单排序
+	Route::post('form-column-move', [//移动组件
 		'as' => 'form-list',
 		'uses' => 'FormController@moveFormColumn'
 	]);
 	
-	Route::get('form-userdata-list', [//用户表单数据查看
+	Route::get('form-userdata-list', [//用户表单数据立标
 		'as' => 'form-list',
 		'uses' => 'FormController@getFormUserdataList'
 	]);
-	Route::get('form-userdata', [//用户数据删除
+	Route::get('form-userdata', [//用户数据单条
 		'as' => 'form-list',
 		'uses' => 'FormController@getFormUserdata'
 	]);
@@ -204,6 +204,15 @@ Route::group(array('before' => 'auth'), function() {
 		'as' => 'form-list',
 		'uses' => 'FormController@deleteFormUserdata'
 	]);
+	Route::get('form-write', [//用户数据单条
+		'as' => 'form-list',
+		'uses' => 'FormController@getFormWrite'
+	]);
+	Route::post('form-write-submit', [//用户数据删除
+		'as' => 'form-list',
+		'uses' => 'FormController@submitFormWrite'
+	]);
+	
 
 
 	//-----------------------------------------------
@@ -239,8 +248,8 @@ Route::group(array('before' => 'auth'), function() {
 		'uses' => 'TemplatesController@categoryPreview'
 	])->where('id', '[0-9]+');
 
-	Route::get('universal-form/{id}', [//万用表单
-		'uses' => 'TemplatesController@universalForm'
+	Route::get('formpreview/{id}', [//万用表单
+		'uses' => 'TemplatesController@formPreview'
 	])->where('id', '[0-9]+');
 
 	Route::get('category/{id}_{page}', [//栏目页分页预览

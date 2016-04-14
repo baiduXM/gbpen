@@ -93,6 +93,7 @@ class ClassifyController extends BaseController {
 	public function classifyModify() {
 		$cus_id = Auth::id();
 		$is_forced = Input::get('force');
+		$form_id = Input::get('form_id');
 		$is_passed = true;
 		$id = Input::get('id');
 		if ($id != NULL) {
@@ -107,10 +108,11 @@ class ClassifyController extends BaseController {
 		}
 		$classify->p_id = (Input::get('p_id') == "undefined") ? 0 : Input::get('p_id');
 		$classify->type = Input::get('type');
-		if ($classify->p_id > 0) {
+		$classify->form_id = Input::get('form_id');
+		if ($classify->p_id > 0) {//===创建子类===
 			if ($this->checkClassifyLevel($classify->p_id, 1, $cus_id)) {
 				$p_c_info = Classify::find($classify->p_id);
-				if (in_array($p_c_info->type, array(5, 6, 7, 8))) {
+				if (in_array($p_c_info->type, array(5, 6, 7, 8, 9))) {
 					$result = ['err' => 1001, 'msg' => '该类型不允许添加子栏目', 'data' => []];
 					$is_passed = false;
 				} else {
@@ -118,7 +120,7 @@ class ClassifyController extends BaseController {
 					if (!count($c_c_ids)) {
 						$a_ids = Articles::where('c_id', $p_c_info->id)->lists('id');
 						if (count($a_ids)) {
-							if (in_array($classify->type, array(4, 5, 6, 7, 8))) {
+							if (in_array($classify->type, array(4, 5, 6, 7, 8, 9))) {
 								$result = ['err' => 1001, 'msg' => '存在文章的栏目不允许添加该类型子栏目', 'data' => []];
 								$is_passed = false;
 							} else {

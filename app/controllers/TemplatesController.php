@@ -11,6 +11,7 @@ class TemplatesController extends BaseController {
 	  |homepagePreview    首页预览
 	  |categoryPreview    列表页预览
 	  |articlePreview     内容页预览
+	  |formPreview	表单预览
 	  |
 	 */
 
@@ -601,7 +602,7 @@ class TemplatesController extends BaseController {
 	 * 万用表单
 	 * @return type
 	 */
-	public function universalForm($id) {
+	public function formPreview($id) {
 		$template = new FormController();
 		return $template->viewForm($id);
 	}

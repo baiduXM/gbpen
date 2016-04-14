@@ -167,9 +167,13 @@ class PrintController extends BaseController {
 			$this->replaceUrl($result);
 			//dd($result);
 			$result = $this->dataDeal($result);
+//			var_dump($result);
+//			echo "<br>---aaaa---<br>";
+//			exit;
 			$classify = new Classify;
 			$templates = new TemplatesController;
-			$c_arr = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3, 4, 5, 6))->where('pc_show', '=', 1)->get()->toArray();
+			$c_arr = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3, 4, 5, 6, 9))->where('pc_show', '=', 1)->get()->toArray();
+
 			if (empty($c_arr)) {
 				$c_arr = array();
 			}
@@ -1505,6 +1509,7 @@ class PrintController extends BaseController {
 		$smarty->registerPlugin('function', 'mapExt', array('PrintController', 'createMap'));
 		$smarty->registerPlugin('function', 'shareExt', array('PrintController', 'createShare'));
 		$smarty->assign($result);
+//		var_dump(app_path('views/templates/' . $this->themename));
 		$smarty->display('index.html');
 		//return View::make('templates.'.$this->themename.'.index',$result);
 	}
@@ -1745,26 +1750,7 @@ class PrintController extends BaseController {
                     </label>
                     </form>';
 			} elseif ($classify->type == 9) {
-				$result['list']['content'] = '<div class="form-write" >
-			<div class="add-show">
-				<div class="as-title">
-					【标题】
-				</div>
-				<div class="as-description">
-					【描述】
-				</div>
-				<hr>
-				<form class="unit-preview" name="box_show" action="../form-write-submit" method="post">
-					<ul class="element-show">
-					</ul>
-				</form>
-			</div>
-			<div class="add-info">
-				<a class="f-btn inline-block addcancle all_button" href="#/form">返回</a>
-				<a class="f-btn inline-block addsave all_button" href="javascript:void(0);" >提交</a>
-				<!--<input type="submit" class="f-btn inline-block addsave all_button" value="提交"/>-->
-			</div>
-		</div>';
+				$result['list']['content'] = include app_path('views/write_form.blade.php');
 			} else {
 				$result['list']['data'] = $index_list['data'];
 			}
@@ -2121,6 +2107,9 @@ class PrintController extends BaseController {
 	 */
 	private function toTree($arr, $pid = 0, $isNav = FALSE) {
 		$tree = array();
+//		var_dump($arr);
+//		echo "<br>=====<br>";
+//		exit;
 		foreach ($arr as $k => $v) {
 			if ($v['p_id'] == $pid) {
 				$v['image'] = $this->source_dir . 'l/category/' . $v['img'];
@@ -2132,12 +2121,17 @@ class PrintController extends BaseController {
 		if (empty($tree)) {
 			return null;
 		}
+//		var_dump($tree);
+//		echo "<br>=====<br>";
+//		exit;
 		foreach ($tree as $k => $v) {
 			$data = [];
 			if ($v['type'] != 6) {
 				$tree[$k]['link'] = $this->showtype == 'preview' ? $this->domain . '/category/' . $v['id'] : $this->domain . '/category/' . $v['id'] . '.html';
 				if ($isNav == TRUE) {
 					$cids = explode(',', $this->getChirldenCid($v['id'])); //取得所有栏目id
+//					var_dump($cids);
+//					echo "<br>=====<br>";
 					if ($this->type == 'mobile') {
 						$articles = Articles::whereIn('c_id', $cids)->where('mobile_show', '1')->where('cus_id', $this->cus_id)->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at')->take(20)->get();
 					} else {
@@ -2172,6 +2166,8 @@ class PrintController extends BaseController {
 			$tree[$k]['selected'] = 0;
 			$tree[$k]['childmenu'] = $this->toTree($arr, $v['id']);
 		}
+//		echo "<br>---<br>";
+//		var_dump($tree);
 		return $tree;
 	}
 
@@ -2456,8 +2452,8 @@ class PrintController extends BaseController {
 		}
 		return $fileArray;
 	}
-	
-	public function universalFormPreview($id){
+
+	public function universalFormPreview($id) {
 		return $id;
 		return View::make('write_form');
 	}
