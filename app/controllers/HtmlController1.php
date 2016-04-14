@@ -256,7 +256,6 @@ class HtmlController1 extends BaseController{
      */
     private function getPrecent(){
         $nowpercent = $this->last_html_precent+$this->html_precent;
-        echo "nowpercent:".$nowpercent."<br />";
         if(floor($nowpercent)!==floor($this->last_html_precent)){
             echo floor($nowpercent) . '%<script type="text/javascript">parent.refresh(' . floor($nowpercent) . ');</script><br />';
             ob_flush();
