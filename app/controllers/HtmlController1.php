@@ -94,7 +94,7 @@ class HtmlController1 extends BaseController{
         $result = [];
         $template = new PrintController('online',$type);
         $per_page = CustomerInfo::where('cus_id',$this->cus_id)->pluck($type."_page_count");
-        foreach($ids as $id){
+        foreach((array)$ids as $id){
             ob_start();
             $c_ids=explode(',',$template->getChirldenCid($id));
             $a_c_type = Classify::where('id',$id)->pluck('type');//取得栏目的type
@@ -147,7 +147,7 @@ class HtmlController1 extends BaseController{
     private function articlehtml($ids=[],$type ='pc'){
         $template = new PrintController('online',$type);
         $result = [];
-        foreach($ids as $id){
+        foreach((array)$ids as $id){
             $paths=$template->articlepush($id,$this->last_html_precent,$this->html_precent);
             $this->last_html_precent +=($this->html_precent*count($paths));
             $result=array_merge($result,$paths);
@@ -187,7 +187,7 @@ class HtmlController1 extends BaseController{
          $template = new PrintController();
         $page_count = 2;
         $pc_per_page = CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_count');
-        foreach($pc_classify_ids as $id){
+        foreach((array)$pc_classify_ids as $id){
             $c_ids=explode(',',$template->getChirldenCid($id));
             $a_c_type = Classify::where('id',$id)->pluck('type');//取得栏目的type
             $pc_page_count_switch = CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_count_switch');//页面图文列表图文显示个数是否分开控制开关
@@ -234,7 +234,7 @@ class HtmlController1 extends BaseController{
 
         }
         $mobileper_page = CustomerInfo::where('cus_id',$this->cus_id)->pluck('mobile_page_count');
-        foreach($mobile_classify_ids as $id){
+        foreach((array)$mobile_classify_ids as $id){
             $c_ids=explode(',',$template->getChirldenCid($id));
             $total = Articles::whereIn('c_id',$c_ids)->where('cus_id',$this->cus_id)->where('mobile_show','1')->count();
             if($total){

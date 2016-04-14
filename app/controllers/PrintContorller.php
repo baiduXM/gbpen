@@ -1988,7 +1988,7 @@ class PrintController extends BaseController{
         $content=file_get_contents(app_path('views/templates/'.$this->themename.'/').$viewname);
         preg_match_all('/\{include\s+file=[\"|\'](.*\.html)\s*[\"|\']\}/i',$content,$i_arr);
         if(count($i_arr)){
-            foreach($i_arr[1] as $i_c){              
+            foreach((array)$i_arr[1] as $i_c){              
                 $i_info=pathinfo($i_c);
                 $json_keys[]=$i_info['filename'];
                 $this->getJsonKey($i_info['filename'].'.html',$json_keys);
@@ -2017,7 +2017,7 @@ class PrintController extends BaseController{
             }
         }
         $list_id = Articles::where('c_id',$article->c_id)->where($this->type.'_show','1')->orderBy('is_top','desc')->orderBy('sort','asc')->orderBy('created_at','desc')->select('id','title','img','introduction','created_at')->lists('id');
-        foreach($list_id as $key=>$val){
+        foreach((array)$list_id as $key=>$val){
             $article_prev=NULL;
             $article_next=NULL;
             if($val==$id){
@@ -2034,7 +2034,7 @@ class PrintController extends BaseController{
         }
         $result = $this->pagePublic($article->c_id); 
         if(is_array($result['navs']) && !empty($result['navs'])){  
-        foreach($result['navs'] as $nav){
+        foreach((array)$result['navs'] as $nav){
             if($nav['current']==1){
                 $pagenavs = $nav['childmenu'];
                 break;
@@ -2080,7 +2080,7 @@ class PrintController extends BaseController{
         $keywords=$pa->GetFinallyIndex();
         if(count($keywords)){
             $relation_where="";
-            foreach($keywords as $key=>$word){
+            foreach((array)$keywords as $key=>$word){
                 $relation_where.="or title like '%$key%' ";
             }
             $relation_where=ltrim($relation_where,'or');
@@ -2088,7 +2088,7 @@ class PrintController extends BaseController{
             $related_data=DB::select("select id,title,img as image,introduction,created_at,c_id from {$prefix}article where cus_id={$this->cus_id} and ($relation_where)");
             $related=array();
             if(count($related_data)){
-                foreach($related_data as $val){
+                foreach((array)$related_data as $val){
                     $temp_arr=[];  
                     $temp_arr['title']=$val->title;
                     $temp_arr['description']=$val->introduction;
@@ -2161,7 +2161,7 @@ class PrintController extends BaseController{
         $result['related']=$related;
         $json_keys=$this->getJsonKey($viewname.'.html');
         if(count($json_keys)){
-            foreach($json_keys as $key){
+            foreach((array)$json_keys as $key){
                 $result[$key]=$this->detailList($this->pagedata($key));
             }
         }
@@ -2213,7 +2213,7 @@ class PrintController extends BaseController{
         $result['article']['category']=$result['posnavs'][count($result['posnavs'])-1];
         $json_keys=$this->getJsonKey($viewname.'.html');
         if(count($json_keys)){
-            foreach($json_keys as $key){
+            foreach((array)$json_keys as $key){
                 $result[$key]=$this->detailList($this->pagedata($key));
             }
         }
@@ -2225,7 +2225,7 @@ class PrintController extends BaseController{
             $images=array();
             if(count($a_moreimg)){
                 $i=0;
-                foreach($a_moreimg as $a_img){
+                foreach((array)$a_moreimg as $a_img){
                     $images[$i]['title'] = $a_img['title'];
                     $images[$i]['image'] = $this->source_dir.'l/articles/'.$a_img['img'];
                     $i++;
@@ -2276,7 +2276,7 @@ class PrintController extends BaseController{
             $keywords=$pa->GetFinallyIndex();
             if(count($keywords)){
                 $relation_where="";
-                foreach($keywords as $key=>$word){
+                foreach((array)$keywords as $key=>$word){
                     $relation_where.="or title like '%$key%' ";
                 }
                 $relation_where=ltrim($relation_where,'or');
@@ -2284,7 +2284,7 @@ class PrintController extends BaseController{
                 $related_data=DB::select("select id,title,img as image,introduction,created_at,c_id from {$prefix}article where cus_id={$this->cus_id} and ($relation_where)");
                 $related=array();
                 if(count($related_data)){
-                    foreach($related_data as $val){
+                    foreach((array)$related_data as $val){
                         $temp_arr=[];  
                         $temp_arr['title']=$val->title;
                         $temp_arr['description']=$val->introduction;
@@ -2384,7 +2384,7 @@ class PrintController extends BaseController{
      */
     private function toTree($arr, $pid = 0,$isNav = FALSE) {
         $tree = array();
-        foreach ($arr as $k => $v) {
+        foreach ((array)$arr as $k => $v) {
             if ($v['p_id'] == $pid) {
                 $v['image']=$this->source_dir.'l/category/'.$v['img'];
                 $v['icon']='<i class="iconfont">'.$v['icon'].'</i>';
@@ -2395,7 +2395,7 @@ class PrintController extends BaseController{
         if (empty($tree)) {
             return null;
         }
-        foreach ($tree as $k => $v) {
+        foreach ((array)$tree as $k => $v) {
             $data = [];
             if($v['type'] != 6){
                 $tree[$k]['link'] = $this->showtype=='preview' ? $this->domain.'/category/'.$v['id'] : $this->domain.'/category/'.$v['id'].'.html';
@@ -2409,7 +2409,7 @@ class PrintController extends BaseController{
                     }
                     if(!empty($articles)){
                         $abc = [];
-                        foreach($articles as $key=>$d){
+                        foreach((array)$articles as $key=>$d){
                             $data[$key]['title'] = $d->title;
                             $classify = Classify::where('id',$d->c_id)->first();
                             
@@ -2451,7 +2451,7 @@ class PrintController extends BaseController{
         $result = $cid;
         $cids = Classify::where('p_id',$cid)->lists('id');
         if(!empty($cids)){
-            foreach ($cids as $v) {
+            foreach ((array)$cids as $v) {
                 $result.= ','.$this->getChirldenCid($v);
             }
         }
@@ -2470,7 +2470,7 @@ class PrintController extends BaseController{
     
     private function addCurrent(&$c_list,$current_ids){
         if(count($c_list)){
-            foreach($c_list as &$c_arr){
+            foreach((array)$c_list as &$c_arr){
                 if($c_arr['childmenu']){
                     $this->addCurrent($c_arr['childmenu'],$current_ids);
                 }
@@ -2561,7 +2561,7 @@ class PrintController extends BaseController{
         //匹配所有查询中循环的值
         preg_match_all('/{[\s]*\$'.$search_view.'[.|\[]([a-z]*)[\]]*}/',$search_foreach[2],$date_replace);
         $search_view=array('title'=>'$title','image'=>'$image','link'=>'$link','description'=>'$description','pubdate'=>'$pubdate','pubtimestamp'=>'$pubtimestamp');
-        foreach ($date_replace[0] as $k=>$v){
+        foreach ((array)$date_replace[0] as $k=>$v){
             $search_content=str_replace($v,'search_'.$search_view[$date_replace[1][$k]],$search_content);
         }
         //分页匹配
@@ -2605,7 +2605,7 @@ class PrintController extends BaseController{
         //文章数据json保存
         $article_data = Articles::where('cus_id',$this->cus_id)->where($this->type.'_show','1')->orderBy('is_top','desc')->orderBy('created_at','desc')->select('id','title','img','introduction','created_at')->get()->toArray();
         $article = array();
-        foreach($article_data as $article_img){
+        foreach((array)$article_data as $article_img){
             $article[$article_img['id']]['id'] = $article_img['id'];
             $article[$article_img['id']]['title'] = $article_img['title'];
             $article[$article_img['id']]['img'] = $this->source_dir.'l/articles/'.$article_img['img'];
@@ -2633,7 +2633,7 @@ class PrintController extends BaseController{
     }
     
     public function array_merge_recursive_new($old_arr,$new_arr) {
-            foreach($old_arr as $key => $val){
+            foreach((array)$old_arr as $key => $val){
                 if(array_key_exists($key, $new_arr)){
                     if($old_arr[$key]['type']=='list' || $old_arr[$key]['type']=='nav'){
                         $old_arr[$key]['config']['star_only']=isset($new_arr[$key]['value']['star_only'])?$new_arr[$key]['value']['star_only']:'';
