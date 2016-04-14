@@ -433,6 +433,8 @@ class WebsiteController extends BaseController{
         $filename = Input::get('filename');
         $content = Input::get('code');
         $img_array = Input::get('fileimg');
+        if($img_array)
+            $img_array = explode(',', $img_array);
         if($type == 1)
             $template = WebsiteInfo::join('template','pc_tpl_id','=','template.id')->where('website_info.cus_id',$cus_id)->pluck('name');
         else
