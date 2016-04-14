@@ -147,14 +147,7 @@ class HtmlController1 extends BaseController{
     private function articlehtml($ids=[],$type ='pc'){
         $template = new PrintController('online',$type);
         $result = [];
-        var_dump($ids);
-        $num=1;
         foreach($ids as $id){
-            $this->end=time();
-            echo "{$num}_articlehtml_".$id."time(".(($this->end)-($this->start)).")<br />";
-            ob_flush();
-            flush();
-            $num++;
             $paths=$template->articlepush($id,$this->last_html_precent,$this->html_precent);
             $this->last_html_precent +=($this->html_precent*count($paths));
             $result=array_merge($result,$paths);
@@ -279,7 +272,6 @@ class HtmlController1 extends BaseController{
      */
     public function pushPrecent(){
         set_time_limit(0);
-        $this->start=time();
         if (ob_get_level() == 0){
             ob_start();
         }
@@ -296,34 +288,17 @@ class HtmlController1 extends BaseController{
         $mindexhtml = $this->homgepagehtml('mobile');
         $searchhtml = $this->sendData('pc');
         $msearchhtml = $this->sendData('mobile');
-        echo "t1";
         $pc_classify_ids = Classify::where('cus_id',$this->cus_id)->where('pc_show',1)->lists('id');
-        echo "t2";
         $mobile_classify_ids = Classify::where('cus_id',$this->cus_id)->where('mobile_show',1)->lists('id');
-        echo "t3";
         $pc_article_ids = Articles::where('cus_id',$this->cus_id)->where('pc_show',1)->lists('id');
         $mobile_article_ids = Articles::where('cus_id',$this->cus_id)->where('mobile_show',1)->lists('id');
         $count = $this->htmlPagecount($pc_classify_ids,$mobile_classify_ids,$pc_article_ids,$mobile_article_ids);
         $this->html_precent= 70/$count;
-        echo 'html_precent:'.$this->html_precent."<br />";
-        $this->end=time();
-         echo "test0(".(($this->end)-($this->start)).")";
-        var_dump($pc_classify_ids);
         $categoryhtml = $this->categoryhtml($pc_classify_ids,'pc');
-        $this->end=time();
-         echo "test1(".(($this->end)-($this->start)).")";
-         var_dump($mobile_classify_ids);
         $mcategoryhtml = $this->categoryhtml($mobile_classify_ids,'mobile');
-        $this->end=time();
-         echo "test2(".(($this->end)-($this->start)).")";
         $articlehtml = $this->articlehtml($pc_classify_ids,'pc');
-        $this->end=time();
-        echo "test3(".(($this->end)-($this->start)).")";
         $marticlehtml = $this->articlehtml($mobile_classify_ids,'mobile');
-        echo "this:70%<br />";
         $this->percent = 20/$count;
-        $this->end=time();
-        echo "test4(".(($this->end)-($this->start)).")";
         $path = public_path('customers/'.$this->customer.'/'.$this->customer.'.zip');
         $zip = new ZipArchive;
         if ($zip->open($path, ZipArchive::CREATE) === TRUE) {
@@ -363,7 +338,6 @@ class HtmlController1 extends BaseController{
                 ob_flush();
                 flush();
             }
-            echo "this:90%<br />";
         if ($zip->open($path, ZipArchive::CREATE) === TRUE) {
             $pc_dir=  Template::where('website_info.cus_id',$this->cus_id)->Leftjoin('website_info','website_info.pc_tpl_id','=','template.id')->pluck('name');
             $mobile_dir=  Template::where('website_info.cus_id',$this->cus_id)->Leftjoin('website_info','template.id','=','website_info.mobile_tpl_id')->pluck('name');
@@ -384,7 +358,6 @@ class HtmlController1 extends BaseController{
             else{
                 CustomerPushfile::where('cus_id',$this->cus_id)->update(['files'=>$data]);
             }
-            echo "ftp:start<br />";
             $customerinfo = Customer::find($this->cus_id);
             $ftp_array = explode(':',$customerinfo->ftp_address);
             $port= $customerinfo->ftp_port;
@@ -444,7 +417,6 @@ class HtmlController1 extends BaseController{
             }
             else{
                 $ftp_pcdomain=$customerinfo->pc_domain;
-                dd($ftp_pcdomain);
             }
             @file_get_contents("$ftp_pcdomain/unzip.php");
         } 
@@ -452,7 +424,6 @@ class HtmlController1 extends BaseController{
             echo '打包失败';
         }
         ob_end_flush();
-        echo "suntime:".(time()-$this->start);
     }
     
     /**
