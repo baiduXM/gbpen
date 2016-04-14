@@ -119,20 +119,23 @@ class HtmlController1 extends BaseController{
                 $total = Articles::whereIn('c_id',$c_ids)->where('cus_id',$this->cus_id)->where($type.'_show','1')->count();
                 $page_count = ceil($total/$per_page);
             }   
-            $path = $type =='pc' ? public_path('customers/'.$this->customer.'/category/'.$id.'.html') : public_path('customers/'.$this->customer.'/mobile/category/'.$id.'.html');
-            echo $template->categoryPreview($id,1);
-            file_put_contents($path, ob_get_contents());
-            ob_end_clean();        
-            $result[] = $path;
-            for($i=1;$i<=$page_count;$i++){
-                $this->getPrecent();
-                ob_start();
-                $path = $type =='pc' ? public_path('customers/'.$this->customer.'/category/'.$id.'_'.$i.'.html') : public_path('customers/'.$this->customer.'/mobile/category/'.$id.'_'.$i.'.html');
-                echo $template->categoryPreview($id,$i);
-                file_put_contents($path, ob_get_contents());
-                ob_end_clean();
-                $result[] = $path;
-            }
+//            $path = $type =='pc' ? public_path('customers/'.$this->customer.'/category/'.$id.'.html') : public_path('customers/'.$this->customer.'/mobile/category/'.$id.'.html');
+//            echo $template->categoryPreview($id,1);
+//            file_put_contents($path, ob_get_contents());
+//            ob_end_clean();        
+//            $result[] = $path;
+//            for($i=1;$i<=$page_count;$i++){
+//                $this->getPrecent();
+//                ob_start();
+//                $path = $type =='pc' ? public_path('customers/'.$this->customer.'/category/'.$id.'_'.$i.'.html') : public_path('customers/'.$this->customer.'/mobile/category/'.$id.'_'.$i.'.html');
+//                echo $template->categoryPreview($id,$i);
+//                file_put_contents($path, ob_get_contents());
+//                ob_end_clean();
+//                $result[] = $path;
+//            }
+            $paths=$template->categoryPush($id,$page_count,$this->last_html_precent,$this->html_precent);
+            $this->last_html_precent +=($this->html_precent*count($paths));
+            $result=array_merge($result,$paths);
         }
 
         return $result;
@@ -150,7 +153,7 @@ class HtmlController1 extends BaseController{
         foreach((array)$ids as $id){
             $paths=$template->articlepush($id,$this->last_html_precent,$this->html_precent);
             $this->last_html_precent +=($this->html_precent*count($paths));
-            $result=array_merge($result,$paths);
+            $result=array_merge($result,(array)$paths);
         }
         return $result;
     }
@@ -196,39 +199,39 @@ class HtmlController1 extends BaseController{
                     $page_number=CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_txt_count');//每页文字显示个数
                     $total = Articles::whereIn('c_id',$c_ids)->where('cus_id',$this->cus_id)->where('pc_show','1')->count();
                     if($total){
-                        $page_count += ceil($total/$page_number);
+                        $page_count += ceil($total/$page_number)+1;
                     }
                     else{
-                        $page_count++;
+                        $page_count+=2;
                     }
                 }
                 if($a_c_type==3){
                     $page_number=CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_imgtxt_count');//每页图文显示个数
                     $total = Articles::whereIn('c_id',$c_ids)->where('cus_id',$this->cus_id)->where('pc_show','1')->count();
                     if($total){
-                        $page_count += ceil($total/$page_number);
+                        $page_count += ceil($total/$page_number)+1;
                     }
                     else{
-                        $page_count++;
+                        $page_count+=2;
                     }
                 }
                 if($a_c_type==2){
                     $page_number=CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_img_count');//每页图片显示个数
                     $total = Articles::whereIn('c_id',$c_ids)->where('cus_id',$this->cus_id)->where('pc_show','1')->count();
                     if($total){
-                        $page_count += ceil($total/$page_number);
+                        $page_count += ceil($total/$page_number)+1;
                     }
                     else{
-                        $page_count++;
+                        $page_count+=2;
                     }
                 }
             }else{
                 $total = Articles::whereIn('c_id',$c_ids)->where('cus_id',$this->cus_id)->where('pc_show','1')->count();
                 if($total){
-                    $page_count += ceil($total/$pc_per_page);
+                    $page_count += ceil($total/$pc_per_page)+1;
                 }
                 else{
-                    $page_count++;
+                    $page_count+=2;
                 }
             }
 

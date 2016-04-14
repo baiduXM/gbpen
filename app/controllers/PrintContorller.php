@@ -1978,7 +1978,270 @@ class PrintController extends BaseController{
             //return View::make('templates.'.$this->themename.'.'.$viewname,$result);
         }
     }
-    
+    /**
+     * 推送栏目页的某个分页
+     *
+     * @param int $id 栏目id
+     * @param int $page 总页码
+     */
+    public function categoryPush($id,$page,$last_html_precent,$html_precent){
+        $paths=[];
+         $result = $this->pagePublic($id);
+        foreach((array)$result['navs'] as $nav){
+            if($nav['current']==1){
+                $pagenavs = $nav['childmenu'];
+                break;
+            }
+            else{
+                $pagenavs = [];
+            }
+        }      
+        $classify = Classify::find($id);
+        $result['title'] = $classify->name;
+        $result['keywords'] = $classify->meta_keywords;
+        $result['description'] = $classify->meta_description;
+        $result['list']['name'] = $classify->name;
+        $result['list']['en_name'] = $classify->en_name;
+        $result['list']['description'] = $classify->meta_description;
+        $result['list']['icon'] = '<i class="iconfont">'.$classify->icon.'</i>';
+        $result['list']['image'] = $this->source_dir.'s/category/'.$classify->img;
+        $result['list']['type'] = $classify->type;
+        if($this->showtype=='preview'){
+            $result['list']['link'] = $this->domain.'/category/'.$id;
+        }
+        else{
+            $result['list']['link'] = $this->domain.'/category/'.$id.'.html';
+        }
+        $result['pagenavs'] = $pagenavs;
+        $result['posnavs'] =$this->getPosNavs($id);
+        if($classify->type==1){//文字列表
+            $viewname = 'list-text';
+        }
+        elseif ($classify->type==2) {//图片列表
+            $viewname = 'list-image';
+        }
+        elseif($classify->type==3){//图文列表
+            $viewname = 'list-imagetext';
+        }
+        elseif($classify->type==4){//内容单页
+            $viewname = 'list-page';
+        }
+        elseif($classify->type==5){//留言板
+            $viewname = 'list-page';
+        }
+        else{//跳转404
+
+        }
+        //echo $viewname;exit;
+        if(in_array($classify->type,array(1,2,3,4,5))){
+            $sub = str_replace('-', '_', $viewname);
+            $data = $this->pagedata($viewname);
+            $index = $this->detailList($data);
+            $result = array_add($result, $sub, $index);
+            $data_index = $this->pagedata($viewname);
+            if($classify->type==4){
+                if($this->showtype=='preview'){
+                    $result['list']['content'] =Page::where('id',$classify->page_id)->pluck('content');   
+                }else{
+                    $result['list']['content'] =preg_replace('/\/customers\/'.$this->customer.'/i','',Page::where('id',$classify->page_id)->pluck('content'));                   
+                }   
+            }elseif($classify->type==5){
+                $result['list']['content'] ='<form action="http://swap.5067.org/message/'.$this->cus_id.'" method="post" name="messageboard" onsubmit="return CheckPost();" class="elegant-aero">
+                    <h1>'.$classify->name.'
+                    <span>'.$classify->en_name.'</span>
+                    </h1>
+                    <label>
+                    <span>姓名 :</span>
+                    <input id="name" type="text" name="name" placeholder="Name" />
+                    </label>
+                    <label>
+                    <span>Email :</span>
+                    <input id="email" type="email" name="email" placeholder="Email Address" />
+                    </label>
+                    <label>
+                    <span>联系电话 :</span>
+                    <input id="telephone" type="tel" name="telephone" placeholder="Telephone" />
+                    </label>
+                    <label>
+                    <label>
+                    <span>内容 :</span>
+                    <textarea id="content" name="content" placeholder="You mind ...."></textarea>
+                    </label>
+                    <label>
+                    <span>&nbsp;</span>
+                    <input type="submit" class="button" name="submit" value="提交" />
+                    </label>
+                    </form>';
+            }
+            $json_keys=$this->getJsonKey($viewname.'.html');
+            if(count($json_keys)){
+                foreach($json_keys as $key){
+                    $result[$key]=$this->detailList($this->pagedata($key));
+                }
+            }
+            if($classify->type==5){
+                $result['footscript'] .='<STYLE TYPE="text/css"> 
+                <!-- 
+                .elegant-aero {
+                margin-left:auto;
+                margin-right:auto;
+                width: 90%;
+                max-width: 500px;
+                /*background: #D2E9FF;*/
+                padding: 20px 20px 20px 20px;
+                font: 12px Arial, Helvetica, sans-serif;
+                color: #666;
+                }
+                .input[placeholder]{color:#5c5c5c;}
+                .elegant-aero h1 {
+                font: 24px "Trebuchet MS", Arial, Helvetica, sans-serif;
+                padding: 10px 10px 10px 20px;
+                display: block;
+                /*background: #C0E1FF;*/
+                border-bottom: 1px solid #B8DDFF;
+                margin: -20px -20px 15px;
+                }
+                .elegant-aero h1>span {
+                display: block;
+                font-size: 11px;
+                }
+                .elegant-aero label>span {
+                float: left;
+                margin-top: 10px;
+                color: #5E5E5E;
+                }
+                .elegant-aero label {
+                display: block;
+                margin: 0px 0px 5px;
+                }
+                .elegant-aero label>span {
+                float: left;
+                width: 20%;
+                text-align: right;
+                padding-right: 15px;
+                margin-top: 10px;
+                font-weight: bold;
+                }
+                .elegant-aero input[type="text"], .elegant-aero input[type="tel"], .elegant-aero input[type="email"], .elegant-aero textarea, .elegant-aero select {
+                color: #888;
+                width: 70%;
+                padding: 0px 0px 0px 5px;
+                border: 1px solid #C5E2FF;
+                background: #FBFBFB;
+                outline: 0;
+                -webkit-box-shadow:inset 0px 1px 6px #ECF3F5;
+                box-shadow: inset 0px 1px 6px #ECF3F5;
+                font: 200 12px/25px Arial, Helvetica, sans-serif;
+                height: 30px;
+                line-height:15px;
+                margin: 2px 6px 16px 0px;
+                }
+                .elegant-aero textarea{
+                height:100px;
+                padding: 5px 0px 0px 5px;
+                width: 70%;
+                }
+                .elegant-aero select {
+                background: #fbfbfb url(\'down-arrow.png\') no-repeat right;
+                background: #fbfbfb url(\'down-arrow.png\') no-repeat right;
+                appearance:none;
+                -webkit-appearance:none;
+                -moz-appearance: none;
+                text-indent: 0.01px;
+                text-overflow: \'\';
+                width: 70%;
+                }
+                .elegant-aero .button{
+                padding: 10px 30px 10px 30px;
+                background: #ACB5B7;;
+                border: none;
+                color: #FFF;
+                box-shadow: 1px 1px 1px #4C6E91;
+                -webkit-box-shadow: 1px 1px 1px #4C6E91;
+                -moz-box-shadow: 1px 1px 1px #4C6E91;
+                text-shadow: 1px 1px 1px #5079A3;
+                }
+                .elegant-aero .button:hover{
+                background: #C5CFD2;
+                color: #6B6262;
+                }--> 
+                </STYLE>
+                <SCRIPT language=javascript>
+                function CheckPost()
+                {
+                        if (messageboard.name.value=="")
+                        {
+                                alert("请填写您的姓名");
+                                messageboard.name.focus();
+                                return false;
+                        }
+                        if (messageboard.content.value=="")
+                        {
+                                alert("必须要填写留言内容");
+                                messageboard.content.focus();
+                                return false;
+                        }
+                        if (messageboard.telephone.value!="")
+                        {
+                                if(isNaN(messageboard.telephone.value)){
+                                    alert("电话号码请填写数字");
+                                    messageboard.telephone.focus();
+                                    return false;
+                                }
+                        }
+                }
+                </SCRIPT>';
+            }
+            $the_result=$result;
+            $index_list = $this->pageList($id,1);
+            $the_result['page_links'] = $index_list['page_links'];
+            if($classify->type!=5&&$classify->type!=4){
+                $the_result['list']['data'] = $index_list['data'];
+            }
+            $path = $this->type =='pc' ? public_path('customers/'.$this->customer.'/category/'.$id.'.html') : public_path('customers/'.$this->customer.'/mobile/category/'.$id.'.html');
+            $output=$this->categoryDisplay($the_result,$viewname);
+            file_put_contents($path, $output); 
+            $paths[] = $path;$nowpercent = $last_html_precent+$html_precent;
+                if(floor($nowpercent)!==floor($last_html_precent)){
+                    echo floor($nowpercent) . '%<script type="text/javascript">parent.refresh(' . floor($nowpercent) . ');</script><br />';
+                    ob_flush();
+                    flush();
+                }
+            if($classify->type!=5&&$classify->type!=4){
+                for($i=1;$i<=$page;$i++){
+                    $the_result=$result;
+                    $index_list = $this->pageList($id,$i);
+                    $the_result['page_links'] = $index_list['page_links'];
+                    $the_result['list']['data'] = $index_list['data'];
+                    $path = $this->type =='pc' ? public_path('customers/'.$this->customer.'/category/'.$id.'_'.$i.'.html') : public_path('customers/'.$this->customer.'/mobile/category/'.$id.'_'.$i.'.html');
+                    $output=$this->categoryDisplay($the_result,$viewname);
+                    file_put_contents($path, $output);
+                    $paths[] = $path;
+                    $nowpercent = $last_html_precent+$html_precent;
+                    if(floor($nowpercent)!==floor($last_html_precent)){
+                        echo floor($nowpercent) . '%<script type="text/javascript">parent.refresh(' . floor($nowpercent) . ');</script><br />';
+                        ob_flush();
+                        flush();
+                    }
+                }
+            }
+            return $paths;
+            //return View::make('templates.'.$this->themename.'.'.$viewname,$result);
+        }
+    }
+    private function categoryDisplay($result,$viewname){
+        ob_start();
+            $smarty = new Smarty;
+            $smarty->setTemplateDir(app_path('views/templates/'.$this->themename));
+            $smarty->setCompileDir(app_path('storage/views/compile'));
+            $smarty->registerPlugin('function','mapExt',array('PrintController','createMap'));
+            $smarty->registerPlugin('function', 'shareExt', array('PrintController','createShare'));
+            $smarty->assign($result);
+            $smarty->display($viewname.'.html');
+        $output=  ob_get_contents();
+        ob_end_clean();
+        return $output;
+    }
     /*
      * 获取当前包含的页面 
      * 
