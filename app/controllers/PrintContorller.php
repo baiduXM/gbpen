@@ -1759,7 +1759,7 @@ class PrintController extends BaseController{
      */
     public function categoryPreview($id,$page){
         $result = $this->pagePublic($id);
-        foreach($result['navs'] as $nav){
+        foreach((array)$result['navs'] as $nav){
             if($nav['current']==1){
                 $pagenavs = $nav['childmenu'];
                 break;
