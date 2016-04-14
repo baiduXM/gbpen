@@ -151,7 +151,6 @@ class HtmlController1 extends BaseController{
         var_dump($ids);
         $num=1;
         foreach($ids as $id){
-            $this->getPrecent();
             $this->end=time();
             echo "{$num}_articlehtml_".$id."time(".(($this->end)-($this->start)).")<br />";
             ob_flush();
