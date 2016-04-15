@@ -141,7 +141,7 @@ class PrintController extends BaseController {
 		if ($website_confige_value) {
 			$default = json_decode(trim($json), TRUE);
 			$result = $this->array_merge_recursive_new($default, $website_confige_value);
-			//$result = $website_confige_value;
+//$result = $website_confige_value;
 			$this->replaceUrl($result);
 			$result = $this->dataDeal($result);
 			foreach ($result as &$v) {
@@ -165,7 +165,7 @@ class PrintController extends BaseController {
 				dd("$pagename.json文件错误");
 			}
 			$this->replaceUrl($result);
-			//dd($result);
+//dd($result);
 			$result = $this->dataDeal($result);
 //			var_dump($result);
 //			echo "<br>---aaaa---<br>";
@@ -349,7 +349,7 @@ class PrintController extends BaseController {
 			if (!$checkDataK || !array_key_exists('value', $v) || !array_key_exists('type', $v) || !array_key_exists('description', $v))
 				dd('json文件中每个变量的元素必须包含【value、type、description】元素，可选【config】\r\n详情参见：http://pme/wiki/doku.php?id=ued:template:json');
 			$slimming[$k] = $v;
-			// PHP端数据填充与验证
+// PHP端数据填充与验证
 			switch ($v['type']) {
 				case 'text':
 					if (!is_string($slimming[$k]['value']))
@@ -429,7 +429,7 @@ class PrintController extends BaseController {
 					break;
 				case 'quickbar':
 					echo '<br>---quickbar---<br>';
-					//if ($this->type == 'pc') dd('PC模板的json文件中没有type为【quickbar】的变量！\r\n如果你现在制作的是手机模板，请修改config.ini文件对应参数。详情参见：http://pme.eexx.me/doku.php?id=ued:template:config#config_%E6%A8%A1%E6%9D%BF%E9%85%8D%E7%BD%AE%E9%83%A8%E5%88%86');
+//if ($this->type == 'pc') dd('PC模板的json文件中没有type为【quickbar】的变量！\r\n如果你现在制作的是手机模板，请修改config.ini文件对应参数。详情参见：http://pme.eexx.me/doku.php?id=ued:template:config#config_%E6%A8%A1%E6%9D%BF%E9%85%8D%E7%BD%AE%E9%83%A8%E5%88%86');
 					if (!is_string($slimming[$k]) || !count($slimming[$k]))
 						dd('json文件中type为【navs】格式不正确！\r\n详情参见：http://pme/wiki/doku.php?id=ued:template:mindex#%E5%BA%95%E9%83%A8%E5%AF%BC%E8%88%AA%E5%AE%9A%E4%B9%89%E6%96%B9%E6%B3%95');
 					foreach ($slimming[$k] as $i => $v) {
@@ -581,15 +581,15 @@ class PrintController extends BaseController {
 						}
 					}
 
-					//TODO:删除enable_pc/enable_mobile键值
+//TODO:删除enable_pc/enable_mobile键值
 					unset($quickbar[$key]['enable_pc']);
 					unset($quickbar[$key]['enable_mobile']);
 				}
 //                foreach($quickbar as $key=>$val){
 //   
 //                        }
-				// print_r($quickbar);exit;
-				//quickbar按钮
+// print_r($quickbar);exit;
+//quickbar按钮
 //                $global_data=WebsiteConfig::where('cus_id',$this->cus_id)->where('type',2)->where('template_id',$this->tpl_id)->pluck('value');
 //                if($global_data){
 //                    $global_data = unserialize($global_data);
@@ -639,7 +639,7 @@ class PrintController extends BaseController {
 //                        ['name'=>'搜索','icon'=>'&#xe636;','image'=>'icon/8.png','data'=>'','link'=>'javascript:void(0);','type'=>'search','enable'=>0],
 //                    ];  
 //                }
-				//快捷导航
+//快捷导航
 				$navs = Classify::where('cus_id', $this->cus_id)->where('mobile_show', 1)->select('id', 'type', 'name', 'en_name', 'icon', 'url', 'p_id', 'en_name')->OrderBy('sort', 'asc')->get()->toArray();
 //				var_dump($navs);
 //				echo '<br>---navs---<br>';
@@ -707,7 +707,7 @@ class PrintController extends BaseController {
 					} else {
 						$quickbar[$key]['enable'] = intval($quickbar[$key]['enable_mobile']);
 					}
-					//TODO:删除enable_pc/enable_mobile键值
+//TODO:删除enable_pc/enable_mobile键值
 					unset($quickbar[$key]['enable_pc']);
 					unset($quickbar[$key]['enable_mobile']);
 				}
@@ -783,7 +783,7 @@ class PrintController extends BaseController {
 	 */
 	private function pagePublic($c_id = 0) {
 		if ($this->type == 'pc') {
-			//===type:9 万用表单===
+//===type:9 万用表单===
 			$navs = Classify::where('cus_id', $this->cus_id)->where('pc_show', 1)->whereIN('type', [1, 2, 3, 4, 5, 6, 9])->select('id', 'type', 'img', 'icon', 'name', 'url', 'p_id', 'en_name', 'meta_description as description', 'form_id')->OrderBy('sort', 'asc')->get()->toArray();
 		} else {
 			$navs = Classify::where('cus_id', $this->cus_id)->where('mobile_show', 1)->select('id', 'type', 'img', 'icon', 'name', 'url', 'p_id', 'en_name', 'meta_description as description')->OrderBy('sort', 'asc')->get()->toArray();
@@ -817,7 +817,7 @@ class PrintController extends BaseController {
 			if (!is_array($config_arr))
 				dd('【config.ini】文件不存在！文件格式说明详见：http://pme/wiki/doku.php?id=ued:template:config');
 		}
-		//获取global信息
+//获取global信息
 		if ($this->type == 'pc') {
 			$global_data = $this->pagedata('global');
 			$global_data = $this->detailList($global_data);
@@ -856,7 +856,7 @@ class PrintController extends BaseController {
 										$quickbar[$key]['link'] = 'http://api.map.baidu.com/geocoder?address=' . $address . '&output=html';
 									}
 								}
-								//TODO:删除enable_pc/enable_mobile键值
+//TODO:删除enable_pc/enable_mobile键值
 								unset($quickbar[$key]['enable_pc']);
 								unset($quickbar[$key]['enable_mobile']);
 							}
@@ -1377,7 +1377,7 @@ class PrintController extends BaseController {
 	 * 
 	 * 
 	 */
-	// Smarty Plugins
+// Smarty Plugins
 	public static function createMap($params) {
 		$params['scale_size'] = isset($params['scale_size']) ? $params['scale_size'] : 17;
 		$params['width'] = isset($params['width']) ? $params['width'] : '80%';
@@ -1435,7 +1435,7 @@ class PrintController extends BaseController {
 		  <a class="bds_more" data-cmd="more">更多</a>
 		  <a class="bds_count" data-cmd="count"></a>
 		</div>' . "\n";
-		// 显示类型
+// 显示类型
 		$s.="<script>status = 1;\n";
 		$params['style'] = isset($params['style']) ? $params['style'] : "1";
 		$s.="window._bd_share_config = {
@@ -1525,7 +1525,7 @@ class PrintController extends BaseController {
 		$smarty->assign($result);
 //		var_dump(app_path('views/templates/' . $this->themename));
 		$smarty->display('index.html');
-		//return View::make('templates.'.$this->themename.'.index',$result);
+//return View::make('templates.'.$this->themename.'.index',$result);
 	}
 
 	/**
@@ -1537,7 +1537,7 @@ class PrintController extends BaseController {
 		$result['title'] = $customer_info->title;
 		$result['keywords'] = $customer_info->keywords;
 		$result['description'] = $customer_info->description;
-		//获取模板目录
+//获取模板目录
 		$data = $this->pagedata('index');
 		$show_navs = DB::table('mobile_homepage')->leftJoin('classify', 'classify.id', '=', 'mobile_homepage.c_id')->where('mobile_homepage.index_show', 1)->where('classify.mobile_show', 1)->where('mobile_homepage.cus_id', '=', $this->cus_id)->orderBy('mobile_homepage.s_sort', 'asc')->select('classify.id', 'classify.p_id', 'classify.name', 'classify.en_name', 'classify.type', 'classify.meta_description', 'classify.page_id', 'classify.url', 'classify.img', 'classify.icon', 'mobile_homepage.star_only', 'mobile_homepage.show_num', 'mobile_homepage.m_index_showtype')->get();
 		$mIndexCats = array();
@@ -1563,7 +1563,7 @@ class PrintController extends BaseController {
 					if ($nav->type == 1 || $nav->type == 2 || $nav->type == 3) {
 						$art_arr = array();
 						if ($nav->star_only) {
-							//是否只显示推荐
+//是否只显示推荐
 							$articles = Articles::whereIn('c_id', $id_arr)->where('mobile_show', 1)->where('is_star', 1)->take($nav->show_num)->get();
 						} else {
 							$articles = Articles::whereIn('c_id', $id_arr)->where('mobile_show', 1)->take($nav->show_num)->get();
@@ -1592,7 +1592,7 @@ class PrintController extends BaseController {
 						$content = Page::where('id', $nav->page_id)->pluck('content');
 						$mIndexCat['content'] = $content;
 					} elseif ($nav->type == 5 || $nav->type == 6 || $nav->type == 7 || $nav->type == 8) {
-						//暂时缺省
+//暂时缺省
 					}
 					$mIndexCats[] = $mIndexCat;
 				}
@@ -1617,7 +1617,7 @@ class PrintController extends BaseController {
 					if ($nav->type == 1 || $nav->type == 2 || $nav->type == 3) {
 						$art_arr = array();
 						if ($nav->star_only) {
-							//是否只显示推荐
+//是否只显示推荐
 							$articles = Articles::whereIn('c_id', $id_arr)->where('mobile_show', 1)->where('is_star', 1)->take($nav->show_num)->get();
 						} else {
 							$articles = Articles::whereIn('c_id', $id_arr)->where('mobile_show', 1)->take($nav->show_num)->get();
@@ -1646,7 +1646,7 @@ class PrintController extends BaseController {
 						$content = Page::where('id', $nav->page_id)->pluck('content');
 						$mIndexCat['content'] = $content;
 					} elseif ($nav->type == 5 || $nav->type == 6 || $nav->type == 7 || $nav->type == 8) {
-						//暂时缺省
+//暂时缺省
 					}
 					$mIndexCats[] = $mIndexCat;
 				}
@@ -1657,8 +1657,8 @@ class PrintController extends BaseController {
 			$mIndexCats[$key]['childmenu'] = $classify->toTree($mIndexCats, $mIndexCats[$key]['id']);
 		}
 		$result['mIndexCats'] = $mIndexCats;
-		//print_r($mIndexCats);
-		//exit;
+//print_r($mIndexCats);
+//exit;
 		$smarty = new Smarty;
 		$smarty->setTemplateDir(app_path('views/templates/' . $this->themename));
 		$smarty->setCompileDir(app_path('storage/views/compile'));
@@ -1666,7 +1666,7 @@ class PrintController extends BaseController {
 		$smarty->registerPlugin('function', 'shareExt', array('PrintController', 'createShare'));
 		$smarty->assign($result);
 		$smarty->display('index.html');
-		//return View::make('templates.'.$this->themename.'.index',$result);
+//return View::make('templates.'.$this->themename.'.index',$result);
 	}
 
 	/**
@@ -1677,7 +1677,6 @@ class PrintController extends BaseController {
 	 */
 	public function categoryPreview($id, $page) {
 		$result = $this->pagePublic($id);
-//		var_dump($result);
 		foreach ($result['navs'] as $nav) {
 			if ($nav['current'] == 1) {
 				$pagenavs = $nav['childmenu'];
@@ -1686,11 +1685,7 @@ class PrintController extends BaseController {
 				$pagenavs = [];
 			}
 		}
-//		var_dump($id);
-//		echo ('<br>===id===<br>');
 		$classify = Classify::find($id);
-		var_dump($classify);
-		echo '<br>===classify===<br>';
 		$result['title'] = $classify->name;
 		$result['keywords'] = $classify->meta_keywords;
 		$result['description'] = $classify->meta_description;
@@ -1718,18 +1713,13 @@ class PrintController extends BaseController {
 		} elseif ($classify->type == 5) {//留言板
 			$viewname = 'list-page';
 		} elseif ($classify->type == 9) {//万用表单
+			$viewname = 'list-page';
 			$form_id = $classify->form_id;
 			$form_data = DB::table('form')->where('id', $form_id)->first();
 			$column_data = DB::table('form_column_' . $form_id % 10)->where('form_id', $form_id)->get();
 			foreach ($column_data as &$v) {
 				$v->config = json_decode($v->config);
 			}
-			var_dump($form_data);
-			echo '<br>---form_data---<br>';
-			var_dump($column_data);
-			echo '<br>---$column_data---<br>';
-//			View::make('form_preview')->with(array('form_data' => $form_data, 'column_data' => $column_data));
-			$viewname = 'list-page-form';
 		} else {//跳转404
 		}
 		if (in_array($classify->type, array(1, 2, 3, 4, 5, 9))) {
@@ -1774,11 +1764,74 @@ class PrintController extends BaseController {
                     </label>
                     </form>';
 			} elseif ($classify->type == 9) {
-//				$result['list']['content'] = include(app_path('views/form_preview.blade.php'));
-				$result['list']['content'] = file_get_contents(app_path('views/form_preview.blade.php'));
-//				var_dump($result['list']['content']);
-//				echo '<br>---$result[list][content]---<br>';
-//				exit;
+				$_div_li = '';
+				$_div = "<div class='add-show'>
+						<div class='as-title'>
+							$form_data->title
+						</div>
+						<div class='as-description'>
+							$form_data->description
+						</div>
+						<hr>";
+				$_div.="<form class='unit-preview' name='box_show' action='../form-write-submit' method='post'><ul class='element-show'>";
+				foreach ($column_data as $key => $item) {
+					$_div_li .= "<li class='list-item' data-type=$item->type data-id=$item->id ";
+					$config = $item->config;
+					switch ($item->type) {
+						case 'text':
+							$_div .= "<p class='content-l'>$item->title</p>";
+							$_div .= "<input  type='text' name=col_" . $item->id . "  placeholder=$item->description />";
+							break;
+						case 'textarea':
+							$_div .= "<p class='content-l'>$item->title</p>";
+							$_div .= "<textarea name = 'col_' + $item->id +  placeholder = $item->description ></textarea>";
+							break;
+						case 'radio':
+							$_div .= "<p class='content-l'>$item->title ：（ $item->description ）</p>";
+							for ($i = 0; $i < $config->option_count; $i++) {
+								$to = "option_$i";
+								$_div .= '<span class="option-item">';
+								$_div .= "<input type = 'radio' name = 'col_ " . $item->id . "' value = $i /><label>" . $config->$to . " </label>";
+								$_div .= '</span>';
+							}
+							break;
+						case 'checkbox':
+							$_div .="<p class='content-l'>$item->title ：（ $item->description ）</p>";
+							for ($i = 0; $i < $config->option_count; $i++) {
+								$to = "option_$i";
+								$_div .= '<span class="option-item">';
+								$_div .= "<input type ='checkbox' name = 'col_" . $item->id . "' value = $i /><label>" . $config->$to . " </label>";
+								$_div .= '</span>';
+							}
+							break;
+						case 'select':
+							$_div .="<p class='content-l'>$item->title ：（ $item->description ）</p>";
+							$_div .= "<select name='col_$item->id ' >";
+							for ($i = 0; $i < $config->option_count; $i++) {
+								$to = "option_$i";
+								$_div .= "<option  value = $i />" . $config->$to . "</option>";
+							}
+							$_div .= '</select>';
+							break;
+						case 'date':
+							$_div .="<p class='content-l'>$item->title</p>";
+							$_div .= '日期date';
+							break;
+						case 'image':
+							$_div .="<p class='content-l'>$item->title</p>";
+							break;
+						case 'file':
+							$_div .="<p class='content-l'>$item->title(  $item->description )：</p>";
+							$_div.= "<input type='file' name='col_" . $item->id . "'  />";
+							break;
+						default :
+							break;
+					}
+					$_div_li.="</li>";
+				}
+				$_div .=$_div_li . "</ul>"
+					. "<input type='submit' value='提交' /><button>重置</button></form></div>";
+				$result['list']['content'] = $_div;
 			} else {
 				$result['list']['data'] = $index_list['data'];
 			}
@@ -1789,7 +1842,7 @@ class PrintController extends BaseController {
 					$result[$key] = $this->detailList($this->pagedata($key));
 				}
 			}
-			
+
 			$smarty = new Smarty;
 			$smarty->setTemplateDir(app_path('views/templates/' . $this->themename));
 			$smarty->setCompileDir(app_path('storage/views/compile'));
@@ -1910,7 +1963,17 @@ class PrintController extends BaseController {
                 </SCRIPT>';
 			} elseif ($classify->type == 9) {
 //				$result['footscript'] .='<script src="/index.js" type="text/javascript"></script>';
-//				$result['footscript'] .='<script type="text/javascript">alert("hahah")</script>';
+				$script = "$(function(){"
+					. "$('.as-title').click(function(){"
+					. "alert(2)"
+					
+					
+					
+					. "});"
+					
+					. "});";
+				$style = ".as-title{	font-size: 20px;}";
+				$result['footscript'] .="<STYLE TYPE='text/css'>$style</style><script type='text/javascript'>$script</script>";
 			}
 			$smarty->assign($result);
 			$smarty->display($viewname . '.html');
@@ -2002,17 +2065,17 @@ class PrintController extends BaseController {
 			$viewname = 'content-product';
 		} else {//跳转404
 		}
-		//关联文章查询
+//关联文章查询
 		$pa = new PhpAnalysis();
 
 		$pa->SetSource($article->title);
 
-		//设置分词属性
+//设置分词属性
 		$pa->resultType = 2;
 		$pa->differMax = true;
 		$pa->StartAnalysis();
 
-		//获取你想要的结果
+//获取你想要的结果
 		$keywords = $pa->GetFinallyIndex();
 		if (count($keywords)) {
 			$relation_where = "";
@@ -2021,7 +2084,10 @@ class PrintController extends BaseController {
 			}
 			$relation_where = ltrim($relation_where, 'or');
 			$prefix = Config::get('database.connections.mysql.prefix');
-			$related_data = DB::select("select id,title,img as image,introduction,created_at,c_id from {$prefix}article where cus_id={$this->cus_id} and ($relation_where)");
+			$related_data = DB::select("select id, title, img as image, introduction, created_at, c_id from {
+$prefix
+}article where cus_id = {
+$this->cus_id} and ($relation_where)");
 			$related = array();
 			if (count($related_data)) {
 				foreach ($related_data as $val) {
@@ -2046,7 +2112,7 @@ class PrintController extends BaseController {
 				}
 			}
 		}
-		//dd($article_prev);
+//dd($article_prev);
 		if ($this->showtype == 'preview') {
 			if ($article_next === NULL) {
 				$result['article']['next']['title'] = '已经是最后一篇';
@@ -2103,7 +2169,7 @@ class PrintController extends BaseController {
 		$smarty->registerPlugin('function', 'shareExt', array('PrintController', 'createShare'));
 		$smarty->assign($result);
 		$smarty->display($viewname . '.html');
-		//return View::make('templates.'.$this->themename.'.'.$viewname,$result); 
+//return View::make('templates.'.$this->themename.'.'.$viewname,$result); 
 	}
 
 	/**
@@ -2159,7 +2225,7 @@ class PrintController extends BaseController {
 				if ($isNav == TRUE) {
 					$cids = explode(',', $this->getChirldenCid($v['id'])); //取得所有栏目id
 //					var_dump($cids);
-//					echo "<br>=====<br>";
+//					echo "<br>==== = <br>";
 					if ($this->type == 'mobile') {
 						$articles = Articles::whereIn('c_id', $cids)->where('mobile_show', '1')->where('cus_id', $this->cus_id)->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at')->take(20)->get();
 					} else {
@@ -2295,16 +2361,16 @@ class PrintController extends BaseController {
 		$result['pagenavs'] = $pagenavs;
 		$result['posnavs'] = array(0 => array('en_name' => 'Search', 'name' => '搜索'));
 
-		//搜索数据替换
-		//搜索数据标记与替换
+//搜索数据替换
+//搜索数据标记与替换
 		$file_content = file_get_contents(app_path('views/templates/' . $this->themename . '/searchresult.html'));
-		//匹配搜索循环
+//匹配搜索循环
 		preg_match('/({foreach[^}]*from[\s]*=[\s]*\$search\.data[^}]*})((?!{\/foreach})[\s\S]*){\/foreach}/', $file_content, $search_foreach);
 		$file_content = str_replace($search_foreach[2], '<!--search_content_start-->' . $search_foreach[2] . '<!--search_content_end-->', $file_content);
-		//匹配foreach中的item值
+//匹配foreach中的item值
 		preg_match('/item[\s]*=[\s]*([\S]*)/', $search_foreach[1], $search_view);
 		$search_view = $search_view[1];
-		//匹配所有查询中循环的值
+//匹配所有查询中循环的值
 		preg_match_all('/{[\s]*\$' . $search_view . '[.|\[]([a-z]*)[\]]*}/', $search_foreach[2], $date_replace);
 		$search_view = array('title' => '$title', 'image' => '$image', 'link' => '$link', 'description' => '$description', 'pubdate' => '$pubdate', 'pubtimestamp' => '$pubtimestamp');
 		foreach ($date_replace[0] as $k => $v) {
@@ -2313,7 +2379,7 @@ class PrintController extends BaseController {
 		file_put_contents(app_path('views/templates/' . $this->themename . '/searchresult_do.html'), $file_content);
 		$result['search'] = array('total' => '-1000_search', 'keyword' => 'search_$keyword', 'data' => array(0 => array('link' => '', 'title' => '', 'pubdate' => '', 'description' => '')));
 		$result['page_links'] = array('current_page' => '100-1_search', 'per_page' => '100-2_search', 'page_count' => '100-3_search', 'first_link' => '100-4_search', 'prev_link' => '100-5_search', 'next_link' => '100-6_search', 'last_link' => '100-7_search', 'nears_link' => array('100-8_search' => '100-9_search'));
-		//替换结束
+//替换结束
 
 		if ($this->type != 'mobile') {
 			if (file_exists(app_path('views/templates/' . $this->themename . '/searchresult.html'))) {
@@ -2335,7 +2401,7 @@ class PrintController extends BaseController {
 			$page_link_count = $customer_info->mobile_page_links;
 		}
 
-		//文章数据json保存
+//文章数据json保存
 		$article_data = Articles::where('cus_id', $this->cus_id)->where($this->type . '_show', '1')->orderBy('is_top', 'desc')->orderBy('created_at', 'desc')->select('id', 'title', 'img', 'introduction', 'created_at')->get()->toArray();
 		$article = array();
 		foreach ($article_data as $article_img) {
@@ -2351,7 +2417,7 @@ class PrintController extends BaseController {
 		$article_json = json_encode($article);
 		file_put_contents(public_path('customers/' . $this->customer . '/' . $this->type . '_article_data.json'), $article_json);
 
-		//print_r($result['search']);exit;
+//print_r($result['search']);exit;
 		$smarty = new Smarty;
 		$smarty->setTemplateDir(app_path('views/templates/' . $this->themename));
 		$smarty->setCompileDir(app_path('storage/views/compile'));
@@ -2465,13 +2531,13 @@ class PrintController extends BaseController {
 		}
 	}
 
-	//获取文件列表
+//获取文件列表
 	public function getFile($dir) {
 		$fileArray[] = NULL;
 		if (false != ($handle = opendir($dir))) {
 			$i = 0;
 			while (false !== ($file = readdir($handle))) {
-				//去掉"“.”、“..”以及带“.xxx”后缀的文件
+//去掉"“.”、“..”以及带“.xxx”后缀的文件
 				if ($file != "." && $file != ".." && strpos($file, ".")) {
 					$fileArray[$i] = $file;
 					if ($i == 100) {
@@ -2480,7 +2546,7 @@ class PrintController extends BaseController {
 					$i++;
 				}
 			}
-			//关闭句柄
+//关闭句柄
 			closedir($handle);
 		}
 		return $fileArray;

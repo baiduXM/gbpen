@@ -620,7 +620,7 @@ class FormController extends BaseController {
 			$v->config = json_decode($v->config);
 		}
 		$res = array('form_data' => $form_data, 'column_data' => $column_data);
-		return $res;
+//		return $res;
 	}
 
 }

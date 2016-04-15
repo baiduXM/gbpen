@@ -62,6 +62,7 @@ function addformController($scope, $http, $location) {
 		var box_info = $('form[name="box_info"]').serializeArray();
 		$.post('../form-edit', {form_id: form_id, box_info: box_info}, function (json) {
 			console.log(json);
+			console.log('===save_form===');
 			checkJSON(json, function (json) {
 				Hint_box(json.msg);
 			});
@@ -73,15 +74,13 @@ function addformController($scope, $http, $location) {
 		var form_box_show = $('form[name="box_show"]').serializeArray(); //表单详细信息
 		$.post('../form-save', {form_id: form_id, form_box_info: form_box_info, form_box_show: form_box_show}, function (json) {
 			console.log(json);
+			console.log('===form-save===');
 			checkJSON(json, function (json) {
 				Hint_box();
 				setTimeout('location.href = "#/form"', 2000);
 			});
 		}, 'json');
 	});
-
-
-
 
 	/**
 	 * 验证表单是否是自己的、并且获取表单信息
@@ -90,6 +89,7 @@ function addformController($scope, $http, $location) {
 	function getFormData() {
 		$.get('../form-data', {form_id: form_id}, function (json) {
 			console.log(json);
+			console.log('===getFormData===');
 			if (json.err !== 0) {
 				alert(json.msg);
 				location.href = "#/form";
@@ -119,6 +119,7 @@ function addformController($scope, $http, $location) {
 	function getFormElement() {
 		$http.get('../form-element-list').success(function (json) {
 			console.log(json);
+			console.log('===getFormElement===');
 			checkJSON(json, function (json) {
 				var form_element = json.data;
 				var _div = '';
@@ -143,6 +144,7 @@ function addformController($scope, $http, $location) {
 	function getFormColumn() {
 		$.get('../form-column-list', {form_id: form_id}, function (json) {
 			console.log(json);
+			console.log('===form-column-list===');
 			checkJSON(json, function () {
 				$.each(json.data, function (k, v) {
 					_div_show(v);
@@ -202,7 +204,6 @@ function addformController($scope, $http, $location) {
 					_div += '</span>';
 				}
 				temp = _config.option_default;
-				_div += "<br>---radio-+++" + temp + "---<br>";
 				break;
 			case 'checkbox':
 				_div += data.title + '：(' + data.description + ')<br />';
@@ -214,7 +215,6 @@ function addformController($scope, $http, $location) {
 
 				}
 				temp = _config.option_default.split(',');
-				_div += "<br>---checkbox-" + temp + "---<br>";
 				break;
 			case 'select':
 				_div += data.title + '：(' + data.description + ')<br />';
@@ -226,7 +226,6 @@ function addformController($scope, $http, $location) {
 				}
 				_div += '</select>';
 				temp = _config.option_default;
-				_div += "<br>---select-" + temp + "---<br>";
 				break;
 			case 'date':
 				_div += '日期date';
@@ -275,14 +274,13 @@ function addformController($scope, $http, $location) {
 			$('.tab-content-item').hide();
 			$('div[name="item_2"]').show();
 			var _this_column = $(this);
-			console.log(_this_column.attr('data-type'));
-			
-			
-//			$.get('../form-column', {form_id: form_id, column_id: _this_column.attr('data-id')}, function (json) {
-//				console.log(json);
-//				var col_data = json.data;
-//				_div_edit(col_data);
-//			}, 'json');
+//			console.log(_this_column.attr('data-type'));
+			$.get('../form-column', {form_id: form_id, column_id: _this_column.attr('data-id')}, function (json) {
+				console.log(json);
+				console.log('===form-column===');
+				var col_data = json.data;
+				_div_edit(col_data);
+			}, 'json');
 		});
 		//===绑定元素鼠标滑动事件===
 		$(".element-show>li").unbind('hover').hover(
@@ -513,16 +511,16 @@ function addformController($scope, $http, $location) {
 				break;
 		}
 
-		$('[name="option_add"]').unbind('click').click(function () {
-			alert('add');
-			var _this = $(this);
-			var _this_parent_p=_this.parent('p');
-			console.log(_this_parent_p);
-			_this_parent_p.add()
-		});
-		$('[name="option_del"]').unbind('click').click(function () {
-			alert('del')
-		});
+//		$('[name="option_add"]').unbind('click').click(function () {
+//			alert('add');
+//			var _this = $(this);
+//			var _this_parent_p=_this.parent('p');
+//			console.log(_this_parent_p);
+////			_this_parent_p.addend();
+//		});
+//		$('[name="option_del"]').unbind('click').click(function () {
+//			alert('del')
+//		});
 		//===保存组件修改===
 		$('[name="save_column"]').unbind('click').click(function () {
 			var form_data = $('form[name="box_column"]').serializeArray();

@@ -104,6 +104,7 @@ function formController($scope, $http, $location) {
 		var showmodel = $('[name="showmodel"]:checked').val();
 		$.post('../form-create', {name: form_name, platform: platform, showmodel: showmodel}, function (json) {
 			console.log(json);
+			console.log('===form-create===');
 			//===跳转到表单编辑页面===
 			if (json.err === 0) {
 				location.href = "#/addform?form_id=" + json.data;

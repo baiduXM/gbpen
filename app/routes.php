@@ -142,6 +142,10 @@ Route::group(array('before' => 'auth'), function() {
 		'as' => 'form-list',
 		'uses' => 'FormController@getFormList'
 	]);
+	Route::get('form-data', [//获取表单信息
+		'as' => 'form-list',
+		'uses' => 'FormController@getFormData'
+	]);
 	Route::post('form-create', [//创建表单
 		'as' => 'form-list',
 		'uses' => 'FormController@createForm'
@@ -158,15 +162,12 @@ Route::group(array('before' => 'auth'), function() {
 		'as' => 'form-list',
 		'uses' => 'FormController@saveForm'
 	]);
-	
-	Route::get('form-data', [//获取表单信息
-		'as' => 'form-list',
-		'uses' => 'FormController@getFormData'
-	]);
+
 	Route::get('form-element-list', [//获取组件元素
 		'as' => 'form-list',
 		'uses' => 'FormController@getFormElementList'
 	]);
+
 	Route::get('form-column-list', [//获取组件列表
 		'as' => 'form-list',
 		'uses' => 'FormController@getFormColumnList'
@@ -179,24 +180,24 @@ Route::group(array('before' => 'auth'), function() {
 		'as' => 'form-list',
 		'uses' => 'FormController@addFormColumn'
 	]);
-	Route::post('form-column-edit', [//编辑组件
-		'as' => 'form-list',
-		'uses' => 'FormController@editFormColumn'
-	]);
 	Route::post('form-column-delete', [//删除组件
 		'as' => 'form-list',
 		'uses' => 'FormController@deleteFormColumn'
+	]);
+	Route::post('form-column-edit', [//编辑组件
+		'as' => 'form-list',
+		'uses' => 'FormController@editFormColumn'
 	]);
 	Route::post('form-column-move', [//移动组件
 		'as' => 'form-list',
 		'uses' => 'FormController@moveFormColumn'
 	]);
-	
-	Route::get('form-userdata-list', [//用户表单数据立标
+
+	Route::get('form-userdata-list', [//用户表单数据列表
 		'as' => 'form-list',
 		'uses' => 'FormController@getFormUserdataList'
 	]);
-	Route::get('form-userdata', [//用户数据单条
+	Route::get('form-userdata', [//用户单条数据
 		'as' => 'form-list',
 		'uses' => 'FormController@getFormUserdata'
 	]);
@@ -204,17 +205,11 @@ Route::group(array('before' => 'auth'), function() {
 		'as' => 'form-list',
 		'uses' => 'FormController@deleteFormUserdata'
 	]);
-	Route::get('form-write', [//用户数据单条
+	Route::post('form-userdata-submit', [//用户数据提交
 		'as' => 'form-list',
-		'uses' => 'FormController@getFormWrite'
-	]);
-	Route::post('form-write-submit', [//用户数据删除
-		'as' => 'form-list',
-		'uses' => 'FormController@submitFormWrite'
+		'uses' => 'FormController@submitFormUserdata'
 	]);
 	
-
-
 	//-----------------------------------------------
 	//--------------------首页内容--------------------
 	Route::get('templates/GP{num}', [//PC预览 首页跳转
