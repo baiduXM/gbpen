@@ -205,6 +205,9 @@ button .square{
 	margin:10px 0;
 }
 
+.boxs{
+	overflow-y:auto; 
+}
 
 /*===前端表单样式===*/
 
