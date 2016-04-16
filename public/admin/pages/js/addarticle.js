@@ -147,8 +147,8 @@ function addarticleController($scope, $http, $location) {
                         $('.is_show input[value=mobile_show]').next().addClass('chirdchecked');
                     }
                     if(d.use_url == 1){
-                        $('.use_url input[name=yes]').attr('checked','true');
-                        $('.use_url input[name=yes]').next().addClass('chirdchecked');
+                        $('.use_url input[name=use]').attr('checked','true');
+                        $('.use_url input[name=use]').next().addClass('chirdchecked');
                     }
                     if(d.wechat_show == 1){
                         $('.is_show input[value=wechat_show]').attr('checked','true');
@@ -237,7 +237,7 @@ function addarticleController($scope, $http, $location) {
             var key = $('.keyword').val();
             var txts = $('.txts').val();
             var art_tit = $('.art_tit').val();
-            var use_url = $("input[name=yes][checked]").val()?'1':'0';
+            var use_url = $("input[name=use][checked]").val()?'1':'0';
             var url = $("input[name=url]").val();
             var title_bold;
             if($('#addarticle-con .art_tit').css('font-weight') == '600' || 'bold'){    
