@@ -34,7 +34,9 @@ class ArticleController extends BaseController{
         $article->title_color=Input::get('title_color');
         $article->keywords=Input::get('keywords');
         $article->introduction=Input::get('introduction');
-        $article->content=trim(Input::get('content')); 
+        $article->content=trim(Input::get('content'));
+        $article->url=trim(Input::get('url'));
+        $article->use_url=trim(Input::get('use_url'));
         if($article->title==""){
             return Response::json(array('err'=>3001,'msg'=>'标题不能为空'));
         }

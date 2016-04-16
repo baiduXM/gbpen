@@ -1288,7 +1288,7 @@ class PrintController extends BaseController{
             $links_count = CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_links');//分页链接显示个数
             $offset = ($page-1)*$page_number;
             $total = Articles::whereIn('c_id',$cids)->where('pc_show','1')->select('id','title','img','introduction','created_at','title_bold','title_color')->count();
-            $list = Articles::whereIn('c_id',$cids)->where('pc_show','1')->orderBy('is_top','desc')->orderBy('sort', 'ASC')->orderBy('created_at','DESC')->select('id','title','img','introduction','created_at','title_bold','title_color','c_id')->skip($offset)->take($page_number)->get();
+            $list = Articles::whereIn('c_id',$cids)->where('pc_show','1')->orderBy('is_top','desc')->orderBy('sort', 'ASC')->orderBy('created_at','DESC')->select('id','title','img','introduction','created_at','title_bold','title_color','c_id','url','use_url')->skip($offset)->take($page_number)->get();
         }
         $page_count = ceil($total/$page_number);
         $article = [];
@@ -1310,6 +1310,9 @@ class PrintController extends BaseController{
                     }
                     $article[$key]['image'] = $this->source_dir.'s/articles/'.$d->img;
                     $article[$key]['link'] = $this->domain.'/detail/'.$d->id;
+                    if($d->use_url){
+                        $article[$key]['link'] = $d->url;
+                    }
                     $article[$key]['description'] = $d->introduction;
                     $article[$key]['pubdate'] = $d->created_at;
                     $article[$key]['pubtimestamp'] = strtotime($d->created_at);
@@ -1332,6 +1335,9 @@ class PrintController extends BaseController{
                     }
                     $article[$key]['image'] = $this->source_dir.'s/articles/'.$d->img;
                     $article[$key]['link'] = $this->domain.'/detail/'.$d->id.'.html';
+                    if($d->use_url){
+                        $article[$key]['link'] = $d->url;
+                    }
                     $article[$key]['description'] = $d->introduction;
                     $article[$key]['pubdate'] = $d->created_at;
                     $article[$key]['pubtimestamp'] = strtotime($d->created_at);
@@ -2281,7 +2287,7 @@ class PrintController extends BaseController{
                 $i++;
             }
         }
-        $list_id = Articles::where('c_id',$article->c_id)->where($this->type.'_show','1')->orderBy('is_top','desc')->orderBy('sort','asc')->orderBy('created_at','desc')->select('id','title','img','introduction','created_at')->lists('id');
+        $list_id = Articles::where('c_id',$article->c_id)->where($this->type.'_show','1')->where('use_url','0')->orderBy('is_top','desc')->orderBy('sort','asc')->orderBy('created_at','desc')->select('id','title','img','introduction','created_at')->lists('id');
         foreach((array)$list_id as $key=>$val){
             $article_prev=NULL;
             $article_next=NULL;
@@ -2482,7 +2488,7 @@ class PrintController extends BaseController{
                 $result[$key]=$this->detailList($this->pagedata($key));
             }
         }
-        $articles = Articles::where($this->type.'_show','1')->where('c_id',$c_id)->orderBy('is_top','desc')->orderBy('sort','asc')->orderBy('created_at','desc')->get()->toArray();
+        $articles = Articles::where($this->type.'_show','1')->where('c_id',$c_id)->where('use_url','0')->orderBy('is_top','desc')->orderBy('sort','asc')->orderBy('created_at','desc')->get()->toArray();
         foreach((array)$articles as $key=>$article){
             $the_result=$result;
             $a_moreimg = Moreimg::where('a_id',$article['id'])->get()->toArray();

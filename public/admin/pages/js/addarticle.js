@@ -146,6 +146,10 @@ function addarticleController($scope, $http, $location) {
                         $('.is_show input[value=mobile_show]').attr('checked','true');
                         $('.is_show input[value=mobile_show]').next().addClass('chirdchecked');
                     }
+                    if(d.use_url == 1){
+                        $('.use_url input[name=yes]').attr('checked','true');
+                        $('.use_url input[name=yes]').next().addClass('chirdchecked');
+                    }
                     if(d.wechat_show == 1){
                         $('.is_show input[value=wechat_show]').attr('checked','true');
                         $('.is_show input[value=wechat_show]').next().addClass('chirdchecked');
@@ -164,6 +168,7 @@ function addarticleController($scope, $http, $location) {
                     $('.keyword').val(d.keywords);
                     $('.txts').val(d.introduction);
                     $('.art_tit').val(d.title);
+                    $('input[name=url]').val(d.url);
                     if(d.title_bold){
                         $('.art_tit').css('font-weight','bold');
                         $('.add-r .set_blod').text('取消加粗');
@@ -232,6 +237,8 @@ function addarticleController($scope, $http, $location) {
             var key = $('.keyword').val();
             var txts = $('.txts').val();
             var art_tit = $('.art_tit').val();
+            var use_url = $("input[name=yes][checked]").val()?'1':'0';
+            var url = $("input[name=url]").val();
             var title_bold;
             if($('#addarticle-con .art_tit').css('font-weight') == '600' || 'bold'){    
                 title_bold = 1;
@@ -264,6 +271,8 @@ function addarticleController($scope, $http, $location) {
                 keywords   : key,
                 introduction   : txts,
                 title     : art_tit,
+                use_url   : use_url,
+                url       : url,
                 content   : art_info}).success(function(json) {
                 checkJSON(json, function(json){
                     alert('修改成功！');
