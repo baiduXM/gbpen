@@ -56,9 +56,18 @@ class FormController extends BaseController {
 	 */
 	public function deleteForm() {
 		$form_id = Input::get('form_id');
-		$res = DB::table('form')->where('id', $form_id)->delete();
-		if ($res) {
-			$json = Response::json(['err' => 0, 'msg' => '删除成功', 'data' => $res]);
+		$form_id = 9;
+		//判断是否有栏目关联表单
+		$classify = DB::table('classify')->where('form_id', $form_id)->get();
+		if (!empty($classify))
+			return $classify;
+		//表单删除连同表单组件和用户数据一起删除
+		$res1 = DB::table('form_column_' . $form_id % 10)->where('form_id', $form_id)->delete();
+		$res2 = DB::table('form_data_' . $form_id % 10)->where('form_id', $form_id)->delete();
+		$res3 = DB::table('form')->where('id', $form_id)->delete();
+		//返回数据
+		if ($res1 && $res2 && $res3) {
+			$json = Response::json(['err' => 0, 'msg' => '删除成功', 'data' => '']);
 		} else {
 			$json = Response::json(['err' => 1, 'msg' => '删除失败', 'data' => '']);
 		}
@@ -87,14 +96,14 @@ class FormController extends BaseController {
 	 */
 	public function getFormColumnList() {
 		$form_id = Input::get('form_id');
-		$res = DB::table('form_column_' . $form_id % 10)->where('form_id', $form_id)->orderBy('order', 'asc')->select('id as column_id', 'title', 'description', 'type', 'required', 'config', 'order')->get();
+		$res = DB::table('form_column_' . $form_id % 10)->where('form_id', $form_id)->orderBy('order', 'asc')->get();
 		foreach ($res as &$v) {
 			$v->config = json_decode($v->config);
 		}
 		if ($res != NULL) {
-			$json = Response::json(['err' => 0, 'msg' => '获取表单列数据成功', 'data' => $res]);
+			$json = Response::json(['err' => 0, 'msg' => '获取表单组件数据列表成功', 'data' => $res]);
 		} else {
-			$json = Response::json(['err' => 0, 'msg' => '获取表单列数据为空', 'data' => '']);
+			$json = Response::json(['err' => 1, 'msg' => '获取表单组件数据列表为空', 'data' => '']);
 		}
 		return $json;
 	}
@@ -106,9 +115,9 @@ class FormController extends BaseController {
 		$data = DB::table('form_element')->where('status', 1)->get();
 		//===返回数据===
 		if ($data != NULL) {
-			$res = Response::json(['err' => 0, 'msg' => '获取组件元素成功', 'data' => $data]);
+			$res = Response::json(['err' => 0, 'msg' => '获取组件元素列表成功', 'data' => $data]);
 		} else {
-			$res = Response::json(['err' => 1, 'msg' => '获取组件元素失败', 'data' => '']);
+			$res = Response::json(['err' => 0, 'msg' => '获取组件元素列表失败', 'data' => '']);
 		}
 		return $res;
 	}

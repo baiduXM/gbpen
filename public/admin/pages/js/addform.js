@@ -145,14 +145,13 @@ function addformController($scope, $http, $location) {
 		$.get('../form-column-list', {form_id: form_id}, function (json) {
 			console.log(json);
 			console.log('===form-column-list===');
-			checkJSON(json, function () {
+			if (json.err == 0) {
 				$.each(json.data, function (k, v) {
 					_div_show(v);
 				});
-			});
+			}
 		});
 	}
-
 
 	/**
 	 * 绑定组件事件

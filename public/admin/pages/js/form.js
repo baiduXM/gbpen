@@ -21,19 +21,21 @@ function formController($scope, $http, $location) {
 	function getFormList() {
 		$http.get('../form-list').success(function (json) {
 			console.log(json);
+			console.log("===getFormList===");
 			checkJSON(json, function (json) {
-				if (json.data !== null) {
-					var form_list_data = json.data;//表单列表数据资料
-					var _div = '<tr>\n\
+				var _div = '<tr>\n\
 							<th>表单名<div class="fr">|</div></th>\n\
 							<th>标题<div class="fr">|</div></th>\n\
 							<th>描述<div class="fr">|</div></th>\n\
 							<th>提交后动作<div class="fr">|</div></th>\n\
+							<th>显示模式<div class="fr">|</div></th>\n\
 							<th>表单状态<div class="fr">|</div></th>\n\
 							<th>创建时间<div class="fr">|</div></th>\n\
 							<th>操作</th>\n\
 						</tr>\n\
 						<tr class="sapces"></tr>';
+				if (json.data !== null) {
+					var form_list_data = json.data;//表单列表数据资料
 					$.each(form_list_data, function (k, v) {
 						_div += '<tr class="form-check" data-id="' + v.id + '">\n\
 								<td style="text-align: left">\n\
@@ -45,28 +47,35 @@ function formController($scope, $http, $location) {
 								</td>\n\
 								<td>' + v.title + '</td>\n\
 								<td>' + v.description + '</td>\n\
-								<td>' + v.action + '</td>\n\
-								<td>' + v.status + '</td>\n\
-								<td>' + v.created_at + '</td>\n\
+								<td>' + v.action + '</td>';
+						switch (v.showmodel) {
+							case 1:
+								_div += '<td>单页显示</td>';
+								break;
+							case 2:
+								_div += '<td>嵌入显示</td>';
+								break;
+							case 3:
+								_div += '<td>悬浮显示</td>';
+								break;
+							default:
+								_div += '<td>-</td>';
+								break;
+						}
+						if (v.status == 1) {
+							_div += '<td>启用</td>';
+						} else {
+							_div += '<td>禁用</td>';
+						}
+						_div += '<td>' + v.created_at + '</td>\n\
 								<td>\n\
 									<a style="margin:0 10px; cursor: pointer" class="form_edit" title="编辑"><i class="fa iconfont icon-bianji"></i></a>\n\
 									<a style="margin:0 10px; cursor: pointer" class="form_view" title="浏览"><i class="fa iconfont icon-dengpao1"></i></a>\n\
-									<a style="margin:0 10px; cursor: pointer" class="form_write" title="填表"><i class="fa iconfont icon-liuyanban"></i></a>\n\
 									<a class="delv" title="删除"><i class="fa iconfont icon-delete mr5"></i></a>\n\
 								</td>\n\
 							</tr>';
 					});
 					$('.a-table').html(_div);
-				} else {
-					$('.a-table').html('<tr>\n\
-							<th>表单标题<div class="fr">|</div></th>\n\
-							<th>表单分类<div class="fr">|</div></th>\n\
-							<th>展示地址<div class="fr">|</div></th>\n\
-							<th>表单状态<div class="fr">|</div></th>\n\
-							<th>创建时间<div class="fr">|</div></th>\n\
-							<th>操作</th>\n\
-						</tr>\n\
-						<tr class="sapces"></tr>');
 				}
 			});
 			$('.delv').click(function () {
