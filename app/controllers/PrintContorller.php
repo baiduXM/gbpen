@@ -2874,7 +2874,7 @@ class PrintController extends BaseController{
         }
         
         //文章数据json保存
-        $article_data = Articles::where('cus_id',$this->cus_id)->where($this->type.'_show','1')->orderBy('is_top','desc')->orderBy('created_at','desc')->select('id','title','img','introduction','created_at')->get()->toArray();
+        $article_data = Articles::where('cus_id',$this->cus_id)->where($this->type.'_show','1')->orderBy('is_top','desc')->orderBy('created_at','desc')->select('id','title','img','introduction','created_at','use_url','url')->get()->toArray();
         $article = array();
         foreach((array)$article_data as $article_img){
             $article[$article_img['id']]['id'] = $article_img['id'];
@@ -2883,6 +2883,10 @@ class PrintController extends BaseController{
             $article[$article_img['id']]['introduction'] = $article_img['introduction'];
             $article[$article_img['id']]['created_at'] = strtotime($article_img['created_at']);
             $article[$article_img['id']]['link'] = $this->domain.'/detail/'.$article_img['id'].'.html';
+            if($_GET['useurl']){
+            if($article_img['use_url']){
+               $article[$article_img['id']]['link'] = $article_img['url']; 
+            }}
         }
         $article['count'] = $page_count;
         $article['page_link'] = $page_link_count;

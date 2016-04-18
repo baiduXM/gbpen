@@ -149,6 +149,7 @@ function addarticleController($scope, $http, $location) {
                     if(d.use_url == 1){
                         $('.use_url input[name=use]').attr('checked','true');
                         $('.use_url input[name=use]').next().addClass('chirdchecked');
+                        $('.load_url').show();
                     }
                     if(d.wechat_show == 1){
                         $('.is_show input[value=wechat_show]').attr('checked','true');
@@ -184,6 +185,8 @@ function addarticleController($scope, $http, $location) {
         column_show(); 
         // 编辑文章标题
         AddarticleTitleEditor();
+        //是否使用跳转链接
+        Addarticlecheckjs();
         // 保存
         AddarticleSave();
     }();
@@ -225,6 +228,15 @@ function addarticleController($scope, $http, $location) {
                 }
             }
         });
+    }
+    function Addarticlecheckjs(){
+        $(".jumbotron").on('click','.use_url .labe2',function () {
+        if (!$(this).hasClass("chirdchecked")) {
+            $('.load_url').hide();
+        } else {
+            $('.load_url').show();
+        }
+    }); 
     }
     function AddarticleSave(){
         $('.addsave').click(function(){
