@@ -2883,10 +2883,9 @@ class PrintController extends BaseController{
             $article[$article_img['id']]['introduction'] = $article_img['introduction'];
             $article[$article_img['id']]['created_at'] = strtotime($article_img['created_at']);
             $article[$article_img['id']]['link'] = $this->domain.'/detail/'.$article_img['id'].'.html';
-            if($_GET['useurl']){
             if($article_img['use_url']){
                $article[$article_img['id']]['link'] = $article_img['url']; 
-            }}
+            }
         }
         $article['count'] = $page_count;
         $article['page_link'] = $page_link_count;
