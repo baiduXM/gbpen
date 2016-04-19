@@ -54,7 +54,7 @@ class CommonController extends BaseController{
                 ['pc'=>0,'mobile'=>0,'name'=>'微信二维码','icon'=>'&#xe61b;','image'=>'icon/a.png','data'=>'','for'=>'vx_barcode','type'=>'follow','enable_pc'=>0,'enable_mobile'=>0],
 //                ['pc'=>0,'mobile'=>0,'name'=>'qq二维码','icon'=>'&#xe60f;','image'=>'icon/a.png','data'=>'','for'=>'qq_barcode','type'=>'follow','enable_pc'=>0,'enable_mobile'=>0],
 //                ['pc'=>0,'mobile'=>0,'name'=>'PC二维码','icon'=>'&#xe630;','image'=>'icon/a.png','data'=>$this->qrcode('pc_domain'),'for'=>'pc_barcode','type'=>'follow','enable_pc'=>0,'enable_mobile'=>0],
-                ['pc'=>0,'mobile'=>0,'name'=>'手机二维码','icon'=>'&#xe64b;','image'=>'icon/a.png','data'=>$this->qrcode('mobile_domain'),'for'=>'m_barcode','type'=>'follow','enable_pc'=>1,'enable_mobile'=>0],
+                ['pc'=>0,'mobile'=>0,'name'=>'手机二维码','icon'=>'&#xe64b;','image'=>'icon/a.png','data'=>$this->qrcode('mobile_domain'),'for'=>'m_barcode','type'=>'follow','enable_pc'=>0,'enable_mobile'=>0],
             ];
         if(!$QuickBar){
             $QuickBar = ['err' => 0, 'msg' => '获取成功！','data' =>$DefaultQuickBar];
@@ -88,7 +88,7 @@ class CommonController extends BaseController{
     }
     
     public function qrcode($barcode){
-        $qrencode=new QRencode();
+//        $qrencode=new QRencode();
         $customer = Auth::user()->name;
         $id=Auth::id();
         $customer_info = Customer::where('id',$id)->first();
@@ -98,13 +98,14 @@ class CommonController extends BaseController{
             $domain = $customer_info->$barcode;
             return '';
         }
-        $url= str_replace('http://', '', $domain);
-        $errorCorrectionLevel = "L";
-        $path='customers/'.$customer.'/images/l/common/';
-        $outfile=public_path($path);
-        $enc = $qrencode->factory($errorCorrectionLevel,6);
-        $enc->encodePNG($url, $outfile.$barcode.".png", $saveandprint=false);
-        return asset($path.$barcode.".png");
+//        $url= str_replace('http://', '', $domain);
+//        $errorCorrectionLevel = "L";
+//        $path='customers/'.$customer.'/images/l/common/';
+//        $outfile=public_path($path);
+//        $enc = $qrencode->factory($errorCorrectionLevel,6);
+//        $enc->encodePNG($url, $outfile.$barcode.".png", $saveandprint=false);
+//        return asset($path.$barcode.".png");
+        return 'http://s.jiathis.com/qrcode.php?url='.$domain;
     }
     public function quickBarRewrite(){
         $result=WebsiteConfig::where('cus_id',Auth::id())->delete();
