@@ -105,7 +105,7 @@ class CommonController extends BaseController{
 //        $enc = $qrencode->factory($errorCorrectionLevel,6);
 //        $enc->encodePNG($url, $outfile.$barcode.".png", $saveandprint=false);
 //        return asset($path.$barcode.".png");
-        return 'http://s.jiathis.com/qrcode.php?url='.$domain;
+        return 'http://api.qrserver.com/v1/create-qr-code/?size=200x200&data='.$domain;
     }
     public function quickBarRewrite(){
         $result=WebsiteConfig::where('cus_id',Auth::id())->delete();
