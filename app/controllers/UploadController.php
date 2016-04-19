@@ -8,6 +8,7 @@ class UploadController extends BaseController{
         $target = Input::get('target');
         $this->check_dir($target,$customer);
         $files=Input::file();
+        $img_size=Input::get('imgsize')?Input::get('imgsize'):800;
         $destinationPath = public_path('customers/'.$customer.'/images/');
         if($files){
             if($target == 'imgcache'){
@@ -49,10 +50,13 @@ class UploadController extends BaseController{
                                 case 2:$type='jpg';break;
                                 case 3:$type='png';break;
                             }
-                            $this->resizeImage($destinationPath.'/l/'.$target.'/'.$fileName,$type,$s_path,800,800);
+                            $this->resizeImage($destinationPath.'/l/'.$target.'/'.$fileName,$type,$s_path,$img_size,$img_size);
                             copy($destinationPath.'/s/'.$target.'/'.$fileName, public_path('customers/'.$customer.'/mobile/images/l/'.$target.'/'.$fileName));
+                            if(Input::get('imgsize')){
+                                copy($destinationPath.'/s/'.$target.'/'.$fileName,public_path('customers/'.$customer.'/images/l/'.$target.'/'.$fileName));
+                            }
                             $mobile_s_path=public_path('customers/'.$customer.'/mobile/images/s/').$target.'/'.$fileName;
-                            $this->resizeImage(public_path('customers/'.$customer.'/mobile/images/l/').$target.'/'.$fileName,$type,$mobile_s_path,800,800);
+                            $this->resizeImage(public_path('customers/'.$customer.'/mobile/images/l/').$target.'/'.$fileName,$type,$mobile_s_path,$img_size,$img_size);
                            //同步到客户服务器
                             $customerinfo = Customer::find($cus_id);
                             $ftp_array = explode(':',$customerinfo->ftp_address);
@@ -107,10 +111,13 @@ class UploadController extends BaseController{
                     case 2:$type='jpg';break;
                     case 3:$type='png';break;
                 }
-                $this->resizeImage($destinationPath.'/l/'.$target.'/'.$fileName,$type,$s_path,800,800);
+                $this->resizeImage($destinationPath.'/l/'.$target.'/'.$fileName,$type,$s_path,$img_size,$img_size);
                 copy($destinationPath.'/s/'.$target.'/'.$fileName, public_path('customers/'.$customer.'/mobile/images/l/'.$target.'/'.$fileName));
+                if(Input::get('imgsize')){
+                    copy($destinationPath.'/s/'.$target.'/'.$fileName,public_path('customers/'.$customer.'/images/l/'.$target.'/'.$fileName));
+                }
                 $mobile_s_path=public_path('customers/'.$customer.'/mobile/images/s/').$target.'/'.$fileName;
-                $this->resizeImage(public_path('customers/'.$customer.'/mobile/images/l/').$target.'/'.$fileName,$type,$mobile_s_path,800,800);
+                $this->resizeImage(public_path('customers/'.$customer.'/mobile/images/l/').$target.'/'.$fileName,$type,$mobile_s_path,$img_size,$img_size);
                //同步到客户服务器
                 $customerinfo = Customer::find($cus_id);
                 $ftp_array = explode(':',$customerinfo->ftp_address);

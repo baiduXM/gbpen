@@ -823,7 +823,7 @@ function phone_indexController($scope,$http ,$location) {
                     var warningbox = new WarningBox();
                     warningbox._upImage({
 						aspectRatio: role,
-						ajaxurl    : '../file-upload?target=common',
+						ajaxurl    : '../file-upload?target=common&imgsize=200',
 						oncallback : function(json){
                                                     checkJSON(json,function(json){
                                                         _this.closest('.feild-item').find('div[data-role='+_this.data('role')+']').children().remove();
