@@ -14,26 +14,22 @@ function formController($scope, $http, $location) {
 	});
 	$('.submit_add').click(function () {
 		createForm();
-		$('#bomb-box').hide();
 	});
 
 	//===表单列表===
 	function getFormList() {
 		$http.get('../form-list').success(function (json) {
-			console.log(json);
-			console.log("===getFormList===");
 			checkJSON(json, function (json) {
 				var _div = '<tr>\n\
 							<th>表单名<div class="fr">|</div></th>\n\
 							<th>标题<div class="fr">|</div></th>\n\
 							<th>描述<div class="fr">|</div></th>\n\
-							<th>提交后动作<div class="fr">|</div></th>\n\
 							<th>显示模式<div class="fr">|</div></th>\n\
 							<th>表单状态<div class="fr">|</div></th>\n\
 							<th>创建时间<div class="fr">|</div></th>\n\
-							<th>操作</th>\n\
-						</tr>\n\
-						<tr class="sapces"></tr>';
+							<th style="width: 15%;">操作</th>\n\
+						</tr>';
+				_div += '<tr class="sapces"></tr>';
 				if (json.data !== null) {
 					var form_list_data = json.data;//表单列表数据资料
 					$.each(form_list_data, function (k, v) {
@@ -46,8 +42,7 @@ function formController($scope, $http, $location) {
 									<div class="tit_info"><span class="sap_tit">' + v.name + '</span></div>\n\
 								</td>\n\
 								<td>' + v.title + '</td>\n\
-								<td>' + v.description + '</td>\n\
-								<td>' + v.action + '</td>';
+								<td>' + v.description + '</td>';
 						switch (v.showmodel) {
 							case 1:
 								_div += '<td>单页显示</td>';
@@ -75,8 +70,10 @@ function formController($scope, $http, $location) {
 								</td>\n\
 							</tr>';
 					});
-					$('.a-table').html(_div);
+				} else {
+					_div += "<tr><td colspan='8'>数据为空</td></tr>";
 				}
+				$('.a-table').html(_div);
 			});
 			$('.delv').click(function () {
 				deleteForm($(this));
@@ -111,6 +108,14 @@ function formController($scope, $http, $location) {
 			}
 		});
 		var showmodel = $('[name="showmodel"]:checked').val();
+		//验证值
+		if (form_name == '') {
+			alert('表单名不能为空');
+			return false;
+		} else if (platform == '') {
+			alert('至少选择一个站点展示');
+			return false;
+		}
 		$.post('../form-create', {name: form_name, platform: platform, showmodel: showmodel}, function (json) {
 			console.log(json);
 			console.log('===form-create===');
@@ -121,11 +126,12 @@ function formController($scope, $http, $location) {
 				alert("添加失败");
 			}
 		});
+		$('#bomb-box').hide();
 	}
 	//===取消创建===
 	function cancelForm() {
-		$('[name="form_name"]').val('');
-		$("[name='platform']").removeAttr("checked");
+//		$('[name="form_name"]').val('');
+//		$("[name='platform']").removeAttr("checked");
 		$('#bomb-box').hide();
 	}
 

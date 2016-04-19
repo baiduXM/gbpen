@@ -22,24 +22,42 @@
 					<form name="box_info">
 						<ul class="form-list">
 							<li class="list-item">
-								<p class="content-l">表单名：</p><input name="name" type="text" />
+								<label for="name"><p class="content-l">表单名</p></label>
+								<input id="name" name="name" type="text" />
 							</li>
 							<li class="list-item">
-								<p class="content-l">标题：</p><input name="title" type="text" />
+								<label for="title"><p class="content-l">标题</p></label>
+								<input id="title" name="title" type="text" />
 							</li>
 							<li class="list-item">
-								<p class="content-l">描述：</p><input name="description" type="text"/>
+								<label for="description"><p class="content-l">描述</p></label>
+								<input id="description" name="description" type="text"/>
 							</li>
 							<li class="list-item">
-								<p class="content-l">提交表单后动作：</p><input name="action" type="text" />
+								<p class="content-l">站点展示：</p>
+								<span class="option-item"><input name="platform" type="checkbox" value="0" />PC</span>
+								<span class="option-item"><input name="platform" type="checkbox" value="1" />手机</span>
+								<span class="option-item"><input name="platform" type="checkbox" value="2" />微信</span>
 							</li>
 							<li class="list-item">
-								<p class="content-l"><span class="option-item"><input name="is_once" type="checkbox" value="1"/>每个用户只能提交一次</span></p>
+								<p class="content-l">显示模式：</p>
+								<span class="option-item"><input name="showmodel" type="radio" value="0" />单页</span>
+								<span class="option-item"><input name="showmodel" type="radio" value="1" />嵌入</span>
+								<span class="option-item"><input name="showmodel" type="radio" value="2" />悬浮</span>
+							</li>
+							<li class="list-item">
+								<p class="content-l">提交表单后动作：</p>
+								<span class="option-item"><input name="action_type" type="radio" value="0" />显示文字</span>
+								<span class="option-item"><input name="action_type" type="radio" value="1" />跳转链接</span>
+								<input name="action_text" type="text" value="" />
+							</li>
+							<li class="list-item">
+								<p class="content-l"><input name="is_once" type="checkbox" value="1"/>每个用户只能提交一次</p>
 							</li>
 							<li class="list-item">
 								<p class="content-l">停用启用：</p>
 								<span class="option-item"><input name="status" type="radio" value="1" />启用</span>
-								<span class="option-item"><input name="status" type="radio" value="0" class=""/>停用</span>
+								<span class="option-item"><input name="status" type="radio" value="0"/>停用</span>
 							</li>
 							<li class="list-item">
 								<span class="option-item"><input type="submit" name="save_form" value="保存"/></span>
@@ -54,6 +72,7 @@
 				<div class="tab-content-item" style="display: none;" name="item_2">
 					<form name="box_column">
 						<ul class="home-list" name="element-edit">
+							<li>未选择组件</li>
 						</ul>
 					</form>
 				</div>
@@ -64,10 +83,8 @@
 		<div class="fr clearfix af-right" >
 			<div class="add-show">
 				<div class="as-title">
-					【标题】
 				</div>
 				<div class="as-description">
-					【描述】
 				</div>
 				<hr>
 				<form class="unit-preview" name="box_show">

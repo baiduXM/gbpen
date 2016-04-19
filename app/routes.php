@@ -150,7 +150,7 @@ Route::group(array('before' => 'auth'), function() {
 		'as' => 'form-list',
 		'uses' => 'FormController@createForm'
 	]);
-	Route::any('form-delete', [//删除表单--test
+	Route::post('form-delete', [//删除表单
 		'as' => 'form-list',
 		'uses' => 'FormController@deleteForm'
 	]);

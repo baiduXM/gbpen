@@ -20,9 +20,10 @@ function addformController($scope, $http, $location) {
 	 */
 	function init() {
 		getFormData();
-		getFormColumn();
-		getFormElement();
+//		getFormColumn();
+//		getFormElement();
 	}
+
 
 	//******************************
 	//******操作事件（无ajax）******
@@ -59,13 +60,14 @@ function addformController($scope, $http, $location) {
 	//******************************
 	//===保存表单信息（form数据）===
 	$('[name="save_form"]').click(function () {
+		//验证		
 		var box_info = $('form[name="box_info"]').serializeArray();
+		console.log(box_info);
 		$.post('../form-edit', {form_id: form_id, box_info: box_info}, function (json) {
-			console.log(json);
-			console.log('===save_form===');
-			checkJSON(json, function (json) {
-				Hint_box(json.msg);
-			});
+			console.log(json)
+//			checkJSON(json, function (json) {
+//				Hint_box(json.msg);
+//			});
 		});
 	});
 	//===保存表单（column数据）===
@@ -90,26 +92,11 @@ function addformController($scope, $http, $location) {
 		$.get('../form-data', {form_id: form_id}, function (json) {
 			console.log(json);
 			console.log('===getFormData===');
-			if (json.err !== 0) {
-				alert(json.msg);
+			checkJSON(json, function (json) {
+				_div_info(json.data);
+			}, function () {
 				location.href = "#/form";
-			}
-			var data = json.data;
-			$('[name="name"]').val(data.name);
-			$('[name="title"]').val(data.title);
-			$('[name="description"]').val(data.description);
-			$('[name="action"]').val(data.action);
-			if (data.is_once === 1) {
-				$('[name="is_once"]').attr('checked', true);
-			}
-			if (data.status === 1) {
-				$('[name="status"]:eq(0)').attr('checked', true);
-			} else {
-				$('[name="status"]:eq(1)').attr('checked', true);
-			}
-			//===显示区域===
-			$('.as-title').html(data.title);
-			$('.as-description').html(data.description);
+			});
 		});
 	}
 	/**
@@ -171,6 +158,41 @@ function addformController($scope, $http, $location) {
 			_div_show(data);
 			_div_edit(data);
 		}, 'json');
+	}
+	/**
+	 * 显示表单信息
+	 * @param {type} data
+	 * @returns {undefined}
+	 */
+	function _div_info(data) {
+		console.log(data);
+		$('[name="name"]').val(data.name);
+		$('[name="title"]').val(data.title);
+		$('[name="description"]').val(data.description);
+		var temp = data.platform.split(',');
+		$.each(temp, function (tk, tv) {
+			$('[name="platform"]:eq(' + tv + ')').attr('checked', true);
+		});
+		$('[name="showmodel"]:eq(' + data.showmodel + ')').attr('checked', true);
+		$('[name="action_type"]:eq(' + data.action_type + ')').attr('checked', true);
+		$('[name="action_text"]').val(data.action_text);
+//		$('[name="action_type"]').val(data.action_type);
+//		$('[name="action"]').val(data.action);
+//		$('[name="action"]').val(data.action);
+//		$('[name="action"]').val(data.action);
+//		$('[name="action"]').val(data.action);
+
+		if (data.is_once == 1) {
+			$('[name="is_once"]').attr('checked', true);
+		}
+		if (data.status == 1) {
+			$('[name="status"]:eq(0)').attr('checked', true);
+		} else {
+			$('[name="status"]:eq(1)').attr('checked', true);
+		}
+		//===显示区域===
+		$('.as-title').html(data.title);
+		$('.as-description').html(data.description);
 	}
 	/**
 	 * 显示组件/更新组件信息

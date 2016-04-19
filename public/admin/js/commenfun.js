@@ -1,13 +1,13 @@
 
 function heightauto() {
-	//自动获取高度
+//自动获取高度
 	var col_list = $(".box_info").height() / 2;
 	$(".box_info").css({
 		"marginTop": "-" + col_list + "px"
 	})
 }
 function tanchuang(ColumnInit) {
-	// 弹窗处理
+// 弹窗处理
 	$('.close').click(function () {
 		$('#bomb-box').removeClass('in').fadeOut(function () {
 			$(".box_info").css({
@@ -130,7 +130,6 @@ var ercodeDrop = {
 	}
 }
 ercodeDrop._init('.phone-content .notice');
-
 // 弹框警告
 var WarningBox = function (del, warning_context) {
 	this.context = $.extend(true, {
@@ -148,7 +147,6 @@ var WarningBox = function (del, warning_context) {
             </div>\n\
         </div>\n\
         </div>';
-
 		$('.tpl_mask,.warning_box').remove();
 		$('body').append(this.div);
 		$('.tpl_mask').click(function () {
@@ -220,7 +218,7 @@ WarningBox.prototype = {
 			$image.cropper(options);
 			this._UpFunction($image, defaults.ajaxurl, defaults.IsBaseShow, defaults.oncallback);
 		} else {
-			this._Schedule(defaults.oncallback);    // 带进度条
+			this._Schedule(defaults.oncallback); // 带进度条
 		}
 	},
 	_UpFunction: function ($image, ajaxurl, IsBaseShow, oncallback) {
@@ -439,16 +437,26 @@ function column_type(type) {
 	}
 	return col_type;
 }
-// 错误验证
+/**
+ * 错误验证
+ * @param {type} json
+ * @param {type} callback
+ * @param {type} fail_callback
+ * @returns {undefined}
+ */
 function checkJSON(json, callback, fail_callback) {
-	if (json.err == 0) {
-		typeof callback === 'function' ? callback(json) : null;
-	} else if (json.err == 401) {
-		alert('登入失效！');
-		location.hash = 'login';
-	} else {
-		alert(json.msg);
-		typeof callback === 'function' ? fail_callback == undefined ? null : fail_callback(json) : null;
+	switch (json.err) {
+		case 0:
+			typeof callback === 'function' ? callback(json) : null;
+			break;
+		case 401:
+			alert('登入失效！');
+			location.hash = 'login';
+			break;
+		default:
+			alert(json.msg);
+			typeof callback === 'function' ? fail_callback == undefined ? null : fail_callback(json) : null;
+			break;
 	}
 }
 //保存提示效果
@@ -567,9 +575,21 @@ function icon_choose(limintHeight) {
  */
 function getUrlParam(name) {
 	var reg = new RegExp("(^|&|\\?)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
-	var r = window.location.hash.substr(1).match(reg);  //匹配目标参数
+	var r = window.location.hash.substr(1).match(reg); //匹配目标参数
 	if (r != null) {
 		return unescape(r[2]);
 	}
 	return null; //返回参数值
+}
+
+/**
+ * 验证表单字段
+ */
+function verifyField(field, rule) {
+//	data
+	if(rule == undefined){
+		
+	}
+	return true;
+	return false;
 }

@@ -18,7 +18,7 @@ class FormController extends BaseController {
 		if ($data != NULL) {
 			$res = Response::json(['err' => 0, 'msg' => '获取表单列表成功', 'data' => $data]);
 		} else {
-			$res = Response::json(['err' => 1, 'msg' => '获取表单列表失败', 'data' => '']);
+			$res = Response::json(['err' => 0, 'msg' => '获取表单列表为空', 'data' => null]);
 		}
 		return $res;
 	}
@@ -56,28 +56,26 @@ class FormController extends BaseController {
 	 */
 	public function deleteForm() {
 		$form_id = Input::get('form_id');
-		$form_id = 9;
 		//判断是否有栏目关联表单
 		$classify = DB::table('classify')->where('form_id', $form_id)->get();
-		if (!empty($classify))
-			return $classify;
+		if (!empty($classify)) {
+			return Response::json(['err' => 1, 'msg' => '请先解除关联栏目', 'data' => $classify]);
+		}
 		//表单删除连同表单组件和用户数据一起删除
 		$res1 = DB::table('form_column_' . $form_id % 10)->where('form_id', $form_id)->delete();
 		$res2 = DB::table('form_data_' . $form_id % 10)->where('form_id', $form_id)->delete();
 		$res3 = DB::table('form')->where('id', $form_id)->delete();
 		//返回数据
-		if ($res1 && $res2 && $res3) {
-			$json = Response::json(['err' => 0, 'msg' => '删除成功', 'data' => '']);
+		if ($res3) {
+			$json = Response::json(['err' => 0, 'msg' => '删除成功', 'data' => $res3]);
 		} else {
 			$json = Response::json(['err' => 1, 'msg' => '删除失败', 'data' => '']);
 		}
 		return $json;
 	}
 
-	//===addform.js---star===
 	/**
-	 * 获取表单信息
-	 * 并验证表单是否是自己的、并且获取表单信息
+	 * 获取表单信息	 
 	 */
 	public function getFormData() {
 		$cus_id = Auth::id();
@@ -86,7 +84,7 @@ class FormController extends BaseController {
 		if ($res != NULL) {
 			$json = Response::json(['err' => 0, 'msg' => '获取表单信息成功', 'data' => $res]);
 		} else {
-			$json = Response::json(['err' => 1, 'msg' => '获取表单信息失败', 'data' => '']);
+			$json = Response::json(['err' => 1, 'msg' => '获取表单信息失败', 'data' => null]);
 		}
 		return $json;
 	}
@@ -103,7 +101,7 @@ class FormController extends BaseController {
 		if ($res != NULL) {
 			$json = Response::json(['err' => 0, 'msg' => '获取表单组件数据列表成功', 'data' => $res]);
 		} else {
-			$json = Response::json(['err' => 1, 'msg' => '获取表单组件数据列表为空', 'data' => '']);
+			$json = Response::json(['err' => 0, 'msg' => '获取表单组件数据列表为空', 'data' => null]);
 		}
 		return $json;
 	}
@@ -152,16 +150,21 @@ class FormController extends BaseController {
 		$form_data = Input::get('box_info');
 		$time = date('Y-m-d H:i:s');
 		foreach ($form_data as $v) {
-			$data[$v['name']] = $v['value'];
+			if (!isset($data[$v['name']])) {
+				$data[$v['name']] = $v['value'];
+			} else {
+				$data[$v['name']] = $data[$v['name']] . ',' . $v['value']; //合并checkbox选项值
+			}
 		}
+		$data['is_once'] = isset($data['is_once']) ? 1 : 0;
 		$data['updated_at'] = $time;
-
+		return $data;
 		$res = DB::table('form')->where('id', $form_id)->update($data);
 		//===返回数据===
 		if ($res != NULL) {
 			$json = Response::json(['err' => 0, 'msg' => '更新表单信息成功', 'data' => $res]);
 		} else {
-			$json = Response::json(['err' => 1, 'msg' => '更新表单信息失败', 'data' => '']);
+			$json = Response::json(['err' => 1, 'msg' => '更新表单信息失败', 'data' => null]);
 		}
 		return $json;
 	}
