@@ -336,20 +336,15 @@ $('.batchbtn .save').hide();
             'onUploadSuccess' : function(file, data, response){
                 var data = eval("("+data+")");
                 var html;
-                data.data[0].filename = file.name
-                $('.uploadify-queue-item').each(function(){
-                    if(!$(this).attr('data-id')){
-                        $(this).attr('data-id',data.data[0].name.split('.')[0]);
+                data.data[0].filename = file.name;
+                $('#'+file.id).attr('data-id',data.data[0].name.split('.')[0]);
                         html = '<div  class="article" data-id="'+data.data[0].name.split('.')[0]+'" style="width:100%;">\
                                         <input type="hidden" name="img'+data.data[0].name+'" class="img" value="'+data.data[0].name+'" />\
                                         <input type="text" name="title'+data.data[0].filename.split('.')[0]+'" class="title" value="'+data.data[0].filename.split('.')[0]+'" style="width:100%;" />\
                                     </div>'
-                        $(this).children('.uploadify-progress').append('<div class="batch_title">'+html+'</div>');
-                        scrollmargin =$(".uploadify-queue").scrollTop()+$(this).offset().top-$('.uploadify-queue').offset().top;
+                        $('#'+file.id).children('.uploadify-progress').append('<div class="batch_title">'+html+'</div>');
+                        scrollmargin =$(".uploadify-queue").scrollTop()+$('#'+file.id).offset().top-$('.uploadify-queue').offset().top;
                         $(".uploadify-queue").animate({scrollTop:scrollmargin},1000);
-                        return false;
-                    }
-                })
                 callbackdata.push(data);
             },
             'onQueueComplete' : function(queueData) {
