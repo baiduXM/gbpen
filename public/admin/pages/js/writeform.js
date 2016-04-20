@@ -2,56 +2,52 @@ function writeformController($scope, $http, $location) {
 	$scope.$parent.showbox = "main";
 //	$scope.$parent.homepreview = true;
 	$scope.$parent.menu = [];
-	var form_id = 6; //表单ID
+	var form_id = getUrlParam('form_id');
+	$('[name="form_id"]').val(form_id);
 	init();
 //===初始化===
 	function init() {
 		getFormData();
+		getFormColumn();
 	}
 
 
 	$('.addsave').click(function () {
-//		$('li[data-type="checkbox"]').each(function () {
-//			var id = $(this).data('id');
-//			var col_value = '';
-//			$('[name="col_' + id + '"]:checked').each(function () {
-//				if (col_value === '') {
-//					col_value += $(this).val();
-//				} else {
-//					col_value += ',' + $(this).val();
-//				}
-//			});
-//		});
-		var form_data = $('form[name="box_show"]').serializeArray();
-		$.post('../form-write-submit', {form_data: form_data}, function (json) {
-			console.log(json);
-		});
-
-//		$('[name="box_show"]').submit();
+		alert('浏览表单无法提交');
 	});
 
 	/**
-	 * ===获取表单数据===
+	 * 
 	 * @returns {undefined}
 	 */
 	function getFormData() {
-		$.get('../form-data-write', {form_id: form_id}, function (json) {
-			var column_data = json.data.column_data;
-			var form_data = json.data.form_data;
-			$.each(column_data, function (k, v) {
-//				console.log(v)
-//				$('[name="config_option_default"]:eq(' + v + ')').attr('checked', true);
-				_div_show(v);
+		$.get('../form-view', {form_id: form_id}, function (json) {
+			checkJSON(json, function (json) {
+				_div_info(json.data);
+			});
+		});
+	}
+
+	function getFormColumn() {
+		$.get('../form-column-list', {form_id: form_id}, function (json) {
+			checkJSON(json, function (json) {
+				if (json.data != null) {
+					$.each(json.data, function (k, v) {
+						_div_show(v);
+					});
+				}
 			});
 		});
 	}
 
 	/**
-	 * ===设置默认选项===
+	 * 
+	 * @param {type} data
 	 * @returns {undefined}
 	 */
-	function setDefaultOption() {
-
+	function _div_info(data) {
+		$('.as-title').html(data.title);
+		$('.as-description').html(data.description);
 	}
 	/**
 	 * 显示组件/更新组件信息

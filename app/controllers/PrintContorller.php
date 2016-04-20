@@ -1765,15 +1765,15 @@ class PrintController extends BaseController {
                     </form>';
 			} elseif ($classify->type == 9) {
 				$_div_li = '';
-				$_div = "<div class='add-show'>
-						<div class='as-title'>
+				$_div = "<div class='fv-add-show'>
+						<div class='fv-as-title'>
 							$form_data->title
 						</div>
-						<div class='as-description'>
+						<div class='fv-as-description'>
 							$form_data->description
 						</div>
 						<hr>";
-				$_div.="<form class='unit-preview' name='box_show' action='../form-write-submit' method='post'><ul class='element-show'>";
+				$_div.="<form class='fv-unit-preview' name='box_show' action='../form-submit-userdata' method='post'><ul class='fv-element-show'>";
 				foreach ($column_data as $key => $item) {
 					$_div_li .= "<li class='list-item' data-type=$item->type data-id=$item->id ";
 					$config = $item->config;
@@ -1830,7 +1830,7 @@ class PrintController extends BaseController {
 					$_div_li.="</li>";
 				}
 				$_div .=$_div_li . "</ul>"
-					. "<input type='submit' value='提交' /><button>重置</button></form></div>";
+					. "<input type='submit' value='提交' /><button>重置</button><input type='hidden' name='form_id' value=$form_id></form></div>";
 				$result['list']['content'] = $_div;
 			} else {
 				$result['list']['data'] = $index_list['data'];
@@ -1962,18 +1962,7 @@ class PrintController extends BaseController {
                 }
                 </SCRIPT>';
 			} elseif ($classify->type == 9) {
-//				$result['footscript'] .='<script src="/index.js" type="text/javascript"></script>';
-				$script = "$(function(){"
-					. "$('.as-title').click(function(){"
-					. "alert(2)"
-					
-					
-					
-					. "});"
-					
-					. "});";
-				$style = ".as-title{	font-size: 20px;}";
-				$result['footscript'] .="<STYLE TYPE='text/css'>$style</style><script type='text/javascript'>$script</script>";
+				$result['footscript'].='<link rel="stylesheet" href="../admin/css/universal-form.css">';
 			}
 			$smarty->assign($result);
 			$smarty->display($viewname . '.html');

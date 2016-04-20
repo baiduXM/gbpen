@@ -20,8 +20,8 @@ function addformController($scope, $http, $location) {
 	 */
 	function init() {
 		getFormData();
-//		getFormColumn();
-//		getFormElement();
+		getFormElement();
+		getFormColumn();
 	}
 
 
@@ -53,35 +53,24 @@ function addformController($scope, $http, $location) {
 	});
 	//===预览表单===
 	$('[name="writeform"]').click(function () {
-		window.open('#/writeform?=form_id' + form_id);
+		window.open('#/writeform?form_id=' + form_id);
 	});
 	//******************************
 	//******响应事件（ajax）******
 	//******************************
 	//===保存表单信息（form数据）===
 	$('[name="save_form"]').click(function () {
-		//验证		
 		var box_info = $('form[name="box_info"]').serializeArray();
-		console.log(box_info);
 		$.post('../form-edit', {form_id: form_id, box_info: box_info}, function (json) {
-			console.log(json)
-//			checkJSON(json, function (json) {
-//				Hint_box(json.msg);
-//			});
+			checkJSON(json, function (json) {
+				Hint_box(json.msg);
+			});
 		});
 	});
 	//===保存表单（column数据）===
 	$('.addsave').click(function () {
-		var form_box_info = $('form[name="box_info"]').serializeArray(); //表单头信息
-		var form_box_show = $('form[name="box_show"]').serializeArray(); //表单详细信息
-		$.post('../form-save', {form_id: form_id, form_box_info: form_box_info, form_box_show: form_box_show}, function (json) {
-			console.log(json);
-			console.log('===form-save===');
-			checkJSON(json, function (json) {
-				Hint_box();
-				setTimeout('location.href = "#/form"', 2000);
-			});
-		}, 'json');
+		Hint_box('保存成功');
+		setTimeout('location.href = "#/form"', 2000);
 	});
 
 	/**
@@ -90,8 +79,6 @@ function addformController($scope, $http, $location) {
 	 */
 	function getFormData() {
 		$.get('../form-data', {form_id: form_id}, function (json) {
-			console.log(json);
-			console.log('===getFormData===');
 			checkJSON(json, function (json) {
 				_div_info(json.data);
 			}, function () {
@@ -105,15 +92,13 @@ function addformController($scope, $http, $location) {
 	 */
 	function getFormElement() {
 		$http.get('../form-element-list').success(function (json) {
-			console.log(json);
-			console.log('===getFormElement===');
 			checkJSON(json, function (json) {
 				var form_element = json.data;
 				var _div = '';
 				$.each(form_element, function (k, v) {
 					_div += '<li class="utility" data-id="' + v.id + '">\
 								<span class="title">' + v.title + '</span>\
-								<i class="iconfont icon-liebiao grey tpl_info" name="1"></i>\
+								<i class="iconfont icon-liebiao grey tpl_info"></i>\
 							</li>';
 				});
 				$('[name="element-box"]').append(_div);
@@ -130,13 +115,13 @@ function addformController($scope, $http, $location) {
 	 */
 	function getFormColumn() {
 		$.get('../form-column-list', {form_id: form_id}, function (json) {
-			console.log(json);
-			console.log('===form-column-list===');
-			if (json.err == 0) {
-				$.each(json.data, function (k, v) {
-					_div_show(v);
-				});
-			}
+			checkJSON(json, function (json) {
+				if (json.data != null) {
+					$.each(json.data, function (k, v) {
+						_div_show(v);
+					});
+				}
+			});
 		});
 	}
 
@@ -149,7 +134,6 @@ function addformController($scope, $http, $location) {
 		var element_id = _this.data('id');
 		//===添加组件===
 		$.post('../form-column-add', {form_id: form_id, element_id: element_id}, function (json) {
-			console.log(json);
 			var data = json.data;
 			$('.tab-head-item').removeClass('tab-head-item-active');
 			$('.tab-head-item[name="item_2"]').addClass('tab-head-item-active');
@@ -157,7 +141,7 @@ function addformController($scope, $http, $location) {
 			$('div[name="item_2"]').show();
 			_div_show(data);
 			_div_edit(data);
-		}, 'json');
+		});
 	}
 	/**
 	 * 显示表单信息
@@ -165,7 +149,6 @@ function addformController($scope, $http, $location) {
 	 * @returns {undefined}
 	 */
 	function _div_info(data) {
-		console.log(data);
 		$('[name="name"]').val(data.name);
 		$('[name="title"]').val(data.title);
 		$('[name="description"]').val(data.description);
@@ -299,8 +282,7 @@ function addformController($scope, $http, $location) {
 			$.get('../form-column', {form_id: form_id, column_id: _this_column.attr('data-id')}, function (json) {
 				console.log(json);
 				console.log('===form-column===');
-				var col_data = json.data;
-				_div_edit(col_data);
+				_div_edit(json.data);
 			}, 'json');
 		});
 		//===绑定元素鼠标滑动事件===
@@ -318,6 +300,7 @@ function addformController($scope, $http, $location) {
 	 * @returns {undefined}
 	 */
 	function _div_edit(data) {
+		console.log(data)
 		var _config = data.config;
 		var _div = '';
 		var temp = '';
@@ -327,7 +310,7 @@ function addformController($scope, $http, $location) {
 		_div += '<li class="list-item"><p class="content-l">排序：</p>\n\
 				<p class="content-l"><span class="option-item"><input type="text" name="order" value="' + data.order + '"/></span>\n\
 				<span class="option-item"><button name="moveup">上移</button><button name="movedown">下移</button></span></p></li>';
-		if (data.required === 1) {
+		if (data.required == 1) {
 			$('[name="required"]').attr('checked', true);
 		}
 		if (data.config !== null) {
@@ -340,12 +323,10 @@ function addformController($scope, $http, $location) {
 					<span class="option-item"><input type = "radio" name="config_text_type" value = "password" />密码</span>\n\
 				</li>';
 				_div += '<hr /><li class="list-item"><p class="content-l">规则</p>\n\
-					<span class="option-item"><input type = "radio" name="config_rules" value = "mail" />邮箱</span>\n\
-					<span class="option-item"><input type = "radio" name="config_rules" value = "mobile" />手机</span>\n\
-					<span class="option-item"><input type = "radio" name="config_rules" value = "number" />数字</span>\n\
-					<span class="option-item"><input type = "radio" name="config_rules" value = "defined" />自定义</span>\n\
-					<p class="content-l">正则表达式：<input type = "text" name="config_regex" value = "" /></p>\n\
-					<p class="content-l">提示：<input type = "text" name="config_hint" value = "" /></p>\n\
+					<span class="option-item"><input type = "radio" name="config_rules" value = "0" />无</span>\n\
+					<span class="option-item"><input type = "radio" name="config_rules" value = "1" />邮箱</span>\n\
+					<span class="option-item"><input type = "radio" name="config_rules" value = "2" />手机</span>\n\
+					<span class="option-item"><input type = "radio" name="config_rules" value = "3" />数字</span>\n\
 				</li>';
 				break;
 			case 'textarea':
@@ -568,8 +549,7 @@ function addformController($scope, $http, $location) {
 							checkJSON(json, function (json) {
 								$('li[name=li_' + data.column_id + ']').remove();
 								$('[name="element-edit"]').html('');
-								var hint_box = new Hint_box('删除成功');
-								hint_box;
+								Hint_box('删除成功');
 								$('.tab-head-item').removeClass('tab-head-item-active');
 								$('.tab-head-item[name="item_1"]').addClass('tab-head-item-active');
 								$('.tab-content-item').hide();

@@ -2,15 +2,33 @@ function viewformController($scope, $http, $location) {
 	$scope.$parent.showbox = "main";
 	$scope.$parent.homepreview = true;
 	$scope.$parent.menu = [];
-	var form_id = 6; //表单ID
-	getFormList();
+	var form_id = getUrlParam('form_id');
+	$('[name="form_id"]').val(form_id);
+	init();
+
+	function init() {
+		getFormData();
+		getFormUserdataList();
+	}
+
+	function getFormData() {
+		$.get('../form-data', {form_id: form_id}, function (json) {
+			console.log(json);
+			checkJSON(json, function (json) {
+//				_div_info(json.data);
+			}, function () {
+				location.href = "#/form";
+			});
+		});
+	}
+
 
 	/**
 	 * ===表单列表===
 	 * @returns {undefined}
 	 */
-	function getFormList() {
-		$.post('../form-view-list', {form_id: form_id}, function (json) {
+	function getFormUserdataList() {
+		$.get('../form-userdata-list', {form_id: form_id}, function (json) {
 			checkJSON(json, function (json) {
 				var form_list_data = json.data;//表单列表数据资料
 				var _div = '<tr>\n\
@@ -52,6 +70,12 @@ function viewformController($scope, $http, $location) {
 			});
 		});
 	}
+
+	function getFormUserdata() {
+		$.get('../form-userdata', {form_id: form_id}, function (json) {
+
+		});
+	}
 	/**
 	 * ===删除表单===
 	 * @param {type} _this
@@ -78,5 +102,7 @@ function viewformController($scope, $http, $location) {
 			}
 		})();
 	}
+	
+//	function _div
 }
 

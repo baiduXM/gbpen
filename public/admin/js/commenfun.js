@@ -587,9 +587,9 @@ function getUrlParam(name) {
  */
 function verifyField(field, rule) {
 //	data
-	if(rule == undefined){
-		
-	}
+//	if(rule == undefined){
+//	' /^\s*$/g';	
+//	}
 	return true;
 	return false;
 }

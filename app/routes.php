@@ -146,6 +146,10 @@ Route::group(array('before' => 'auth'), function() {
 		'as' => 'form-list',
 		'uses' => 'FormController@getFormData'
 	]);
+	Route::get('form-view', [//获取表单信息
+		'as' => 'form-list',
+		'uses' => 'FormController@getFormView'
+	]);
 	Route::post('form-create', [//创建表单
 		'as' => 'form-list',
 		'uses' => 'FormController@createForm'
@@ -209,7 +213,7 @@ Route::group(array('before' => 'auth'), function() {
 		'as' => 'form-list',
 		'uses' => 'FormController@submitFormUserdata'
 	]);
-	
+
 	//-----------------------------------------------
 	//--------------------首页内容--------------------
 	Route::get('templates/GP{num}', [//PC预览 首页跳转
