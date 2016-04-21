@@ -183,6 +183,7 @@ function addformController($scope, $http, $location) {
 	 * @returns {String}
 	 */
 	function _div_show(data) {
+
 		var _config = data.config;
 		var _div = '';
 		var _div_li = '';
@@ -252,6 +253,11 @@ function addformController($scope, $http, $location) {
 			$('.element-show').append(_div_li);
 		}
 
+		if (data.required == 1) {
+			$("[data-id='" + data.column_id + "']>.content-l").append("<b>*</b>");
+		} else {
+			$("b").remove("[data-id='" + data.column_id + "']>.content-l");
+		}
 		//===改变选项默认选定div_show===
 		if (temp != '') {
 			switch (data.type) {
@@ -271,6 +277,7 @@ function addformController($scope, $http, $location) {
 			}
 		}
 
+
 		//===绑定元素点击响应事件===
 		$(".element-show>li").unbind('click').on('click', function () {
 			$('.tab-head-item').removeClass('tab-head-item-active');
@@ -280,8 +287,6 @@ function addformController($scope, $http, $location) {
 			var _this_column = $(this);
 //			console.log(_this_column.attr('data-type'));
 			$.get('../form-column', {form_id: form_id, column_id: _this_column.attr('data-id')}, function (json) {
-				console.log(json);
-				console.log('===form-column===');
 				_div_edit(json.data);
 			}, 'json');
 		});
@@ -300,19 +305,24 @@ function addformController($scope, $http, $location) {
 	 * @returns {undefined}
 	 */
 	function _div_edit(data) {
-		console.log(data)
+		console.log(data);
+		console.log('===_div_edit===');
 		var _config = data.config;
 		var _div = '';
 		var temp = '';
 		_div += '<li class="list-item"><p class="content-l">标题：</p><input name="title" type="text" value="' + data.title + '" /></li>';
 		_div += '<li class="list-item"><p class="content-l">描述：</p><input name="description" type="text" value="' + data.description + '" /></li>';
-		_div += '<li class="list-item"><p class="content-l"><span class="option-item"><input type="checkbox" name="required" value="1"/>是否必填</span></p></li>';
+		_div += '<li class="list-item"><p class="content-l"><span class="option-item">';
+		if (data.required == 1) {
+			_div += '<input type="checkbox" name="required" value="1" checked="checked"/>是否必填</span></p></li>';
+		} else {
+			_div += '<input type="checkbox" name="required" value="1"/>是否必填</span></p></li>';
+		}
+
 		_div += '<li class="list-item"><p class="content-l">排序：</p>\n\
 				<p class="content-l"><span class="option-item"><input type="text" name="order" value="' + data.order + '"/></span>\n\
 				<span class="option-item"><button name="moveup">上移</button><button name="movedown">下移</button></span></p></li>';
-		if (data.required == 1) {
-			$('[name="required"]').attr('checked', true);
-		}
+
 		if (data.config !== null) {
 			//===TODO===
 		}
@@ -323,10 +333,10 @@ function addformController($scope, $http, $location) {
 					<span class="option-item"><input type = "radio" name="config_text_type" value = "password" />密码</span>\n\
 				</li>';
 				_div += '<hr /><li class="list-item"><p class="content-l">规则</p>\n\
-					<span class="option-item"><input type = "radio" name="config_rules" value = "0" />无</span>\n\
-					<span class="option-item"><input type = "radio" name="config_rules" value = "1" />邮箱</span>\n\
-					<span class="option-item"><input type = "radio" name="config_rules" value = "2" />手机</span>\n\
-					<span class="option-item"><input type = "radio" name="config_rules" value = "3" />数字</span>\n\
+					<span class="option-item"><input type = "radio" name="config_rules" value = "no" />无</span>\n\
+					<span class="option-item"><input type = "radio" name="config_rules" value = "mail" />邮箱</span>\n\
+					<span class="option-item"><input type = "radio" name="config_rules" value = "mobile" />手机</span>\n\
+					<span class="option-item"><input type = "radio" name="config_rules" value = "number" />数字</span>\n\
 				</li>';
 				break;
 			case 'textarea':
@@ -457,25 +467,34 @@ function addformController($scope, $http, $location) {
 //		if (data.type) {
 		switch (data.type) {
 			case 'text':
-				if (_config.text_type === 'text') {
-					$('[name="config_text_type"]:eq(0)').attr('checked', true);
+				switch (_config.text_type) {
+					case 'text':
+						$('[name="config_text_type"]:eq(0)').attr('checked', true);
+						break;
+					case 'password':
+						$('[name="config_text_type"]:eq(1)').attr('checked', true);
+						break;
+					default:
+						break;
 				}
-				if (_config.text_type === 'password') {
-					$('[name="config_text_type"]:eq(1)').attr('checked', true);
-				}
-				if (_config.text_rules === 'mail') {
-					$('[name="config_rules"]:eq(0)').attr('checked', true);
-				}
-				if (_config.text_rules === 'mobile') {
-					$('[name="config_rules"]:eq(1)').attr('checked', true);
-				}
-				if (_config.text_rules === 'number') {
-					$('[name="config_rules"]:eq(2)').attr('checked', true);
-				}
-				if (_config.text_rules === 'defined') {
-					$('[name="config_rules"]:eq(3)').attr('checked', true);
-					$('[name="config_regex"]').val(_config.text_rules_regex);
-					$('[name="config_hint"]').val(_config.text_rules_hint);
+				switch (_config.text_rules) {
+					case 'mail':
+						$('[name="config_rules"]:eq(1)').attr('checked', true);
+						break;
+					case 'mobile':
+						$('[name="config_rules"]:eq(2)').attr('checked', true);
+						break;
+					case 'number':
+						$('[name="config_rules"]:eq(3)').attr('checked', true);
+						break;
+//					case 'defined':
+//						$('[name="config_rules"]:eq(4)').attr('checked', true);
+//						$('[name="config_regex"]').val(_config.text_rules_regex);
+//						$('[name="config_hint"]').val(_config.text_rules_hint);
+//						break;
+					default:
+						$('[name="config_rules"]:eq(0)').attr('checked', true);
+						break;
 				}
 				break;
 			case 'radio':
@@ -520,19 +539,21 @@ function addformController($scope, $http, $location) {
 //			console.log(_this_parent_p);
 ////			_this_parent_p.addend();
 //		});
-//		$('[name="option_del"]').unbind('click').click(function () {
-//			alert('del')
-//		});
+		$('[name="option_del"]').unbind('click').click(function () {
+			var _this = $(this.parent());
+			console.log(_this);
+		});
 		//===保存组件修改===
 		$('[name="save_column"]').unbind('click').click(function () {
 			var form_data = $('form[name="box_column"]').serializeArray();
 			$.post('../form-column-edit', {form_id: form_id, data: form_data}, function (json) {
 				console.log(json);
+				console.log('form-column-edit');
 				checkJSON(json, function (json) {
 					_div_show(json.data);
 					Hint_box('修改成功');
 				});
-			}, 'json');
+			});
 		});
 		//===删除组件===
 		$('[name="delete_column"]').unbind('click').click(function () {

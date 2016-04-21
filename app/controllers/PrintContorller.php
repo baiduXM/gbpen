@@ -1773,25 +1773,34 @@ class PrintController extends BaseController {
 							$form_data->description
 						</div>
 						<hr>";
-				$_div.="<form class='fv-unit-preview' name='box_show' action='../form-submit-userdata' method='post'><ul class='fv-element-show'>";
-				foreach ($column_data as $key => $item) {
-					$_div_li .= "<li class='list-item' data-type=$item->type data-id=$item->id ";
+				$_div.="<form class='fv-unit-preview' name='box_show' action='../form-userdata-submit' method='post'>"
+					. "<ul class='fv-element-show'>";
+//				var_dump($column_data);
+//				echo '<br>===$column_data===<br>';
+				foreach ($column_data as $item) {
+
+					$_div .= "<li class='list-item' data-type=$item->type data-id=$item->id ";
 					$config = $item->config;
 					switch ($item->type) {
 						case 'text':
 							$_div .= "<p class='content-l'>$item->title</p>";
-							$_div .= "<input  type='text' name=col_" . $item->id . "  placeholder=$item->description />";
+							if ($config->text_type == 'text') {
+								$_div .= "<input  type='text' name='col_" . $item->id . "'  placeholder=$item->description />";
+							} else {
+								$_div .= "<input  type='password' name='col_" . $item->id . "'  placeholder=$item->description />";
+							}
+
 							break;
 						case 'textarea':
 							$_div .= "<p class='content-l'>$item->title</p>";
-							$_div .= "<textarea name = 'col_' + $item->id +  placeholder = $item->description ></textarea>";
+							$_div .= "<textarea name = 'col_" . $item->id . "' placeholder = $item->description ></textarea>";
 							break;
 						case 'radio':
 							$_div .= "<p class='content-l'>$item->title ：（ $item->description ）</p>";
 							for ($i = 0; $i < $config->option_count; $i++) {
 								$to = "option_$i";
 								$_div .= '<span class="option-item">';
-								$_div .= "<input type = 'radio' name = 'col_ " . $item->id . "' value = $i /><label>" . $config->$to . " </label>";
+								$_div .= "<input type = 'radio' name = 'col_" . $item->id . "' value = $i /><label>" . $config->$to . " </label>";
 								$_div .= '</span>';
 							}
 							break;
@@ -1800,13 +1809,13 @@ class PrintController extends BaseController {
 							for ($i = 0; $i < $config->option_count; $i++) {
 								$to = "option_$i";
 								$_div .= '<span class="option-item">';
-								$_div .= "<input type ='checkbox' name = 'col_" . $item->id . "' value = $i /><label>" . $config->$to . " </label>";
+								$_div .= "<input type ='checkbox' name = 'col_" . $item->id . "[]' value = $i /><label>" . $config->$to . " </label>";
 								$_div .= '</span>';
 							}
 							break;
 						case 'select':
 							$_div .="<p class='content-l'>$item->title ：（ $item->description ）</p>";
-							$_div .= "<select name='col_$item->id ' >";
+							$_div .= "<select name='col_" . $item->id . "' >";
 							for ($i = 0; $i < $config->option_count; $i++) {
 								$to = "option_$i";
 								$_div .= "<option  value = $i />" . $config->$to . "</option>";
@@ -1827,10 +1836,10 @@ class PrintController extends BaseController {
 						default :
 							break;
 					}
-					$_div_li.="</li>";
+					$_div.="</li>";
 				}
-				$_div .=$_div_li . "</ul>"
-					. "<input type='submit' value='提交' /><button>重置</button><input type='hidden' name='form_id' value=$form_id></form></div>";
+				$_div .= "</ul>"
+					. "<input type='submit' value='提交' class='button' /><input type='reset' value='重置' class='button'><input type='hidden' name='form_id' value=$form_id></form></div>";
 				$result['list']['content'] = $_div;
 			} else {
 				$result['list']['data'] = $index_list['data'];

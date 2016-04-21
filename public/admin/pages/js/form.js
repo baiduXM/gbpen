@@ -44,13 +44,13 @@ function formController($scope, $http, $location) {
 								<td>' + v.title + '</td>\n\
 								<td>' + v.description + '</td>';
 						switch (v.showmodel) {
-							case 1:
+							case 0:
 								_div += '<td>单页显示</td>';
 								break;
-							case 2:
+							case 1:
 								_div += '<td>嵌入显示</td>';
 								break;
-							case 3:
+							case 2:
 								_div += '<td>悬浮显示</td>';
 								break;
 							default:

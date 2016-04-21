@@ -13,9 +13,8 @@ function viewformController($scope, $http, $location) {
 
 	function getFormData() {
 		$.get('../form-data', {form_id: form_id}, function (json) {
-			console.log(json);
 			checkJSON(json, function (json) {
-//				_div_info(json.data);
+				_div_info(json.data);
 			}, function () {
 				location.href = "#/form";
 			});
@@ -29,6 +28,8 @@ function viewformController($scope, $http, $location) {
 	 */
 	function getFormUserdataList() {
 		$.get('../form-userdata-list', {form_id: form_id}, function (json) {
+			console.log(json);
+			console.log('getFormUserdataList');
 			checkJSON(json, function (json) {
 				var form_list_data = json.data;//表单列表数据资料
 				var _div = '<tr>\n\
@@ -60,19 +61,33 @@ function viewformController($scope, $http, $location) {
 				$('.a-table').html(_div);
 			});
 			//===删除===
-			$('.delv').click(function () {
-				deleteForm($(this));
+			$('.delv').unbind('click').click(function () {
+				deleteFormUserdata($(this));
 			});
 			//===查看表单===
-			$('.form_edit').click(function () {
+			$('.form_edit').unbind('click').click(function () {
 				var id = $(this).parents('tr').attr('data-id');
-				location.href = "#/addform?form_id=" + form_id;
+				getFormUserdata(id);
 			});
 		});
 	}
 
-	function getFormUserdata() {
-		$.get('../form-userdata', {form_id: form_id}, function (json) {
+	function getFormUserdata(id) {
+		$.get('../form-userdata', {form_id: form_id, id: id}, function (json) {
+
+			console.log(json);
+			console.log('form-userdata');
+			checkJSON(json, function (json) {
+				var udata = json.data.data;
+				var _div = '';
+				$.each(udata, function (k, v) {
+					_div += '<li class="data-li clearfix">';
+					_div += '<div class="data-litem">' + k + '</div>'
+					_div += '<div class="data-ritem">' + v + '</div>'
+					_div += '</li>';
+				});
+				$('.element-show').html(_div);
+			});
 
 		});
 	}
@@ -81,7 +96,7 @@ function viewformController($scope, $http, $location) {
 	 * @param {type} _this
 	 * @returns {undefined}
 	 */
-	function deleteForm(_this) {
+	function deleteFormUserdata(_this) {
 		var id = _this.parents('tr').attr('data-id');
 		//===弹窗确认===
 		(function column_delete(del_num) {
@@ -91,18 +106,20 @@ function viewformController($scope, $http, $location) {
 			} else {
 				if (del_num) {
 					//===数据库删除===
-					$http.post('../form-data-delete', {form_id: form_id, id: id}).success(function (json) {
+					$http.post('../form-userdata-delete', {form_id: form_id, id: id}).success(function (json) {
 						checkJSON(json, function (json) {
 							_this.parents('tr').remove();
-							var hint_box = new Hint_box('删除成功');
-							hint_box;
+							Hint_box('删除成功');
 						});
 					});
 				}
 			}
 		})();
 	}
-	
-//	function _div
+
+	function _div_info(data) {
+		$('.as-title').html(data.title);
+		$('.as-description').html(data.description);
+	}
 }
 

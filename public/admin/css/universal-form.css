@@ -67,11 +67,11 @@
 	min-height: 20px;
 	line-height: 20px;
 }
-input[type="submit"]{
+input[type="submit"],input[type="reset"]{
 	width: 100px;
 	height: 30px;
 }
-input[type="text"]{
+input[type="text"],input[type="password"]{
 	height: 30px;
 	border-radius: 5px;
 	width: 75%;
@@ -176,6 +176,29 @@ input[type="radio"]:checked {
 
 .a-table{
 }
+.data-li{
+	border-bottom: 1px #ffffff dashed;
+	padding-bottom: 5px;
+	margin-bottom: 5px;
+	min-height: 30px;
+	line-height: 30px;
+}
+.data-litem{
+	float: left;
+	width: 30%;
+	text-align: right;
+	word-wrap: break-word;
+	word-break: normal; 
+}
+.data-ritem{
+	float: right;
+	width: 60%;
+	text-align: left;
+	word-wrap: break-word;
+	word-break: normal; 
+	color: #5c5c5c;
+	font-size: 12px;
+}
 
 
 /*用户填写表单页面*/
@@ -222,14 +245,14 @@ button .square{
 
 .fv-element-show{ padding-bottom:3%;}
 .fv-element-show p{ width: 100%; line-height: 30px; font-size:16px; font-weight: bold; padding-top: 6px;}
-.fv-element-show input[type="text"]{ width: 100%;height: 26px; line-height: 26px; border:1px solid #cccccc;}
+.fv-element-show input[type="text"],.fv-element-show input[type="password"]{height: 26px; line-height: 26px; border:1px solid #cccccc;}
 .fv-element-show textarea{ width: 100%;height:80px; border:1px solid #cccccc;}
 
 .fv-option-item{ margin-right:6px;}
 
 /*提交、重置按钮*/
 .fv-unit-preview input[type="submit"]{ width: 70px; height: 30px; line-height: 15px; margin-right:1%; text-align: center; vertical-align: middle;}
-.fv-unit-preview button{ width: 70px; height: 30px; line-height: 15px; margin: 0 1%;text-align: center; vertical-align: middle;}
+.fv-unit-preview .button{ width: 70px; height: 30px; line-height: 15px; margin: 0 1%;text-align: center; vertical-align: middle;}
 
 .article_con .about p{text-indent: 0;}
 /*.as-title {
