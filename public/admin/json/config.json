@@ -1,117 +1,132 @@
 [{
-	"router"	  :	"/about",
-	"templateUrl" : "pages/about.html",
-	"scriptUrl"   : "pages/js/about.js",
-	"controller"  : "aboutController"
-}, {
-	"router"	  :	"/member",
-	"templateUrl" : "pages/member.html",
-	"scriptUrl"   : "pages/js/member.js",
-    "controller"  : "memberController"
-}, {
-    "router"	  :	"/article",
-    "templateUrl" : "pages/article.html",
-    "scriptUrl"   : "pages/js/article.js",
-    "controller"  : "articleController"
-}, {
-    "router"	  :	"/column",
-    "templateUrl" : "pages/column.html",
-    "scriptUrl"   : "pages/js/column.js",
-    "controller"  : "columnController"
-}, {
-    "router"	  :	"/quota",
-    "templateUrl" : "pages/quota.html",
-    "scriptUrl"   : "pages/js/quota.js",
-    "controller"  : "quotaController"
-}, {
-    "router"	  :	"/ercode",
-    "templateUrl" : "pages/ercode.html",
-    "scriptUrl"   : "pages/js/ercode.js",
-    "controller"  : "ercodeController"
-}, {
-    "router"	  :	"/home",
-    "templateUrl" : "pages/home.html",
-    "scriptUrl"   : "pages/js/home.js",
-    "controller"  : "homeController"
-}, {
-    "router"	  :	"/visit",
-    "templateUrl" : "pages/visit.html",
-    "scriptUrl"   : "pages/js/visit.js",
-    "controller"  : "visitController"
-}, {
-    "router"	  :	"/contact",
-    "templateUrl" : "pages/contact.html",
-    "scriptUrl"   : "pages/js/contact.js",
-    "controller"  : "contactController"
-}, {
-    "router"	  :	"/menu",
-    "templateUrl" : "pages/menu.html",
-    "scriptUrl"   : "pages/js/menu.js",
-    "controller"  : "menuController"
-}, {
-    "router"	  :	"/auto",
-    "templateUrl" : "pages/auto.html",
-    "scriptUrl"   : "pages/js/auto.js",
-    "controller"  : "autoController"
-}, {
-    "router"	  :	"/material",
-    "templateUrl" : "pages/material.html",
-    "scriptUrl"   : "pages/js/material.js",
-    "controller"  : "materialController"
-}, {
-    "router"	  :	"/addapp",
-    "templateUrl" : "pages/addapp.html",
-    "scriptUrl"   : "pages/js/addapp.js",
-    "controller"  : "addappController"
-}, {
-    "router"      : "/addarticle",
-    "templateUrl" : "pages/addarticle.html",
-    "scriptUrl"   : "pages/js/addarticle.js",
-    "controller"  : "addarticleController"
-}, {
-    "router"      : "/openpc",
-    "templateUrl" : "pages/openpc.html",
-    "scriptUrl"   : "pages/js/openpc.js",
-    "controller"  : "openpcController"
-}, {
-    "router"      : "/wxapp",
-    "templateUrl" : "pages/wxapp.html",
-    "scriptUrl"   : "pages/js/wxapp.js",
-    "controller"  : "wxappController"
-}, {
-    "router"      : "/diytpl",
-    "templateUrl" : "pages/diytpl.html",
-    "scriptUrl"   : "pages/js/diytpl.js",
-    "controller"  : "diytplController"
-}, {
-    "router"      : "/setting",
-    "templateUrl" : "pages/setting.html",
-    "scriptUrl"   : "pages/js/setting.js",
-    "controller"  : "settingController"
-}, {
-    "router"      : "/refresh",
-    "templateUrl" : "pages/refresh.html",
-    "scriptUrl"   : "pages/js/refresh.js",
-    "controller"  : "refreshController"
-}, {
-    "router"      : "/phone_index",
-    "templateUrl" : "pages/phone_index.html",
-    "scriptUrl"   : "pages/js/phone_index.js",
-    "controller"  : "phone_indexController"
-}, {
-    "router"      : "/message",
-    "templateUrl" : "pages/message.html",
-    "scriptUrl"   : "pages/js/message.js",
-    "controller"  : "messageController"
-}, {
-    "router"      : "/batcharticle",
-    "templateUrl" : "pages/batcharticle.html",
-    "scriptUrl"   : "pages/js/batcharticle.js",
-    "controller"  : "batcharticleController"
-}, {
-    "router"      : "/user",
-    "templateUrl" : "pages/user.html",
-    "scriptUrl"   : "pages/js/user.js",
-    "controller"  : "userController"
-}
+		"router": "/about",
+		"templateUrl": "pages/about.html",
+		"scriptUrl": "pages/js/about.js",
+		"controller": "aboutController"
+	}, {
+		"router": "/member",
+		"templateUrl": "pages/member.html",
+		"scriptUrl": "pages/js/member.js",
+		"controller": "memberController"
+	}, {
+		"router": "/article",
+		"templateUrl": "pages/article.html",
+		"scriptUrl": "pages/js/article.js",
+		"controller": "articleController"
+	}, {
+		"router": "/column",
+		"templateUrl": "pages/column.html",
+		"scriptUrl": "pages/js/column.js",
+		"controller": "columnController"
+	}, {
+		"router": "/quota",
+		"templateUrl": "pages/quota.html",
+		"scriptUrl": "pages/js/quota.js",
+		"controller": "quotaController"
+	}, {
+		"router": "/ercode",
+		"templateUrl": "pages/ercode.html",
+		"scriptUrl": "pages/js/ercode.js",
+		"controller": "ercodeController"
+	}, {
+		"router": "/home",
+		"templateUrl": "pages/home.html",
+		"scriptUrl": "pages/js/home.js",
+		"controller": "homeController"
+	}, {
+		"router": "/visit",
+		"templateUrl": "pages/visit.html",
+		"scriptUrl": "pages/js/visit.js",
+		"controller": "visitController"
+	}, {
+		"router": "/contact",
+		"templateUrl": "pages/contact.html",
+		"scriptUrl": "pages/js/contact.js",
+		"controller": "contactController"
+	}, {
+		"router": "/menu",
+		"templateUrl": "pages/menu.html",
+		"scriptUrl": "pages/js/menu.js",
+		"controller": "menuController"
+	}, {
+		"router": "/auto",
+		"templateUrl": "pages/auto.html",
+		"scriptUrl": "pages/js/auto.js",
+		"controller": "autoController"
+	}, {
+		"router": "/material",
+		"templateUrl": "pages/material.html",
+		"scriptUrl": "pages/js/material.js",
+		"controller": "materialController"
+	}, {
+		"router": "/addapp",
+		"templateUrl": "pages/addapp.html",
+		"scriptUrl": "pages/js/addapp.js",
+		"controller": "addappController"
+	}, {
+		"router": "/addarticle",
+		"templateUrl": "pages/addarticle.html",
+		"scriptUrl": "pages/js/addarticle.js",
+		"controller": "addarticleController"
+	}, {
+		"router": "/openpc",
+		"templateUrl": "pages/openpc.html",
+		"scriptUrl": "pages/js/openpc.js",
+		"controller": "openpcController"
+	}, {
+		"router": "/wxapp",
+		"templateUrl": "pages/wxapp.html",
+		"scriptUrl": "pages/js/wxapp.js",
+		"controller": "wxappController"
+	}, {
+		"router": "/diytpl",
+		"templateUrl": "pages/diytpl.html",
+		"scriptUrl": "pages/js/diytpl.js",
+		"controller": "diytplController"
+	}, {
+		"router": "/setting",
+		"templateUrl": "pages/setting.html",
+		"scriptUrl": "pages/js/setting.js",
+		"controller": "settingController"
+	}, {
+		"router": "/refresh",
+		"templateUrl": "pages/refresh.html",
+		"scriptUrl": "pages/js/refresh.js",
+		"controller": "refreshController"
+	}, {
+		"router": "/phone_index",
+		"templateUrl": "pages/phone_index.html",
+		"scriptUrl": "pages/js/phone_index.js",
+		"controller": "phone_indexController"
+	}, {
+		"router": "/message",
+		"templateUrl": "pages/message.html",
+		"scriptUrl": "pages/js/message.js",
+		"controller": "messageController"
+	}, {
+		"router": "/batcharticle",
+		"templateUrl": "pages/batcharticle.html",
+		"scriptUrl": "pages/js/batcharticle.js",
+		"controller": "batcharticleController"
+	}, {
+		"router": "/form",
+		"templateUrl": "pages/form.html",
+		"scriptUrl": "pages/js/form.js",
+		"controller": "formController"
+	}, {
+		"router": "/addform",
+		"templateUrl": "pages/addform.html",
+		"scriptUrl": "pages/js/addform.js",
+		"controller": "addformController"
+	}, {
+		"router": "/writeform",
+		"templateUrl": "pages/writeform.html",
+		"scriptUrl": "pages/js/writeform.js",
+		"controller": "writeformController"
+	}, {
+		"router": "/viewform",
+		"templateUrl": "pages/viewform.html",
+		"scriptUrl": "pages/js/viewform.js",
+		"controller": "viewformController"
+	}
 ]

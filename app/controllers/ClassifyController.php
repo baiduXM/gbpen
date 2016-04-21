@@ -1,95 +1,75 @@
 <?php
 
 class ClassifyController extends BaseController {
-    /*
-      |-------------------------------------------------------------------------
-      | 栏目管理控制器
-      |-------------------------------------------------------------------------
-      |方法：
-      |
-      |classifyList      栏目列表
-      |classifyDelete    栏目删除
-      |classifyInfo      栏目信息
-      |classifyModify    栏目添加、修改
-      |classifyShow      栏目显隐
-      |classifySort      栏目排序
-      |toTree            将数组递归为树形结构
-     */
+	/*
+	  |-------------------------------------------------------------------------
+	  | 栏目管理控制器
+	  |-------------------------------------------------------------------------
+	  |方法：
+	  |
+	  |classifyList      栏目列表
+	  |classifyDelete    栏目删除
+	  |classifyInfo      栏目信息
+	  |classifyModify    栏目添加、修改
+	  |classifyShow      栏目显隐
+	  |classifySort      栏目排序
+	  |toTree            将数组递归为树形结构
+	 */
 
-    public function classifyList() {
-        $customer = Auth::user()->name;
-        $cus_id = Auth::id();
-        $classify = Classify::where('cus_id', $cus_id)->orderBy('sort')->orderBy('id')->get()->toArray();
-        $showtypetotal= WebsiteInfo::where('website_info.cus_id',$cus_id)->LeftJoin('template','mobile_tpl_id','=','template.id')->select('template.list1showtypetotal','template.list2showtypetotal','template.list3showtypetotal','template.list4showtypetotal')->first();
-        if(count($classify)){
-            foreach($classify as &$c_arr){            
-                $liststr='list'.$c_arr['type'].'showtypetotal';  
-                $c_arr['showtypetotal']=$showtypetotal->$liststr;
-                if($c_arr['mobile_show']){
-                    $c_arr['show']=  MobileHomepage::where('c_id',$c_arr['id'])->where('cus_id',$cus_id)->pluck('index_show');
-                }
-            }
-        } 
-        $result['err'] = 0;
-        $result['msg'] = '';
-        $result['data'] = $this->toTree($classify);
-        return Response::json($result);
-    }
+	public function classifyList() {
+		$customer = Auth::user()->name;
+		$cus_id = Auth::id();
+		$classify = Classify::where('cus_id', $cus_id)->orderBy('sort')->orderBy('id')->get()->toArray();
+		$showtypetotal = WebsiteInfo::where('website_info.cus_id', $cus_id)->LeftJoin('template', 'mobile_tpl_id', '=', 'template.id')->select('template.list1showtypetotal', 'template.list2showtypetotal', 'template.list3showtypetotal', 'template.list4showtypetotal')->first();
+		if (count($classify)) {
+			foreach ($classify as &$c_arr) {
+				$liststr = 'list' . $c_arr['type'] . 'showtypetotal';
+				$c_arr['showtypetotal'] = $showtypetotal->$liststr;
+				if ($c_arr['mobile_show']) {
+					$c_arr['show'] = MobileHomepage::where('c_id', $c_arr['id'])->where('cus_id', $cus_id)->pluck('index_show');
+				}
+			}
+		}
+		$result['err'] = 0;
+		$result['msg'] = '';
+		$result['data'] = $this->toTree($classify);
+		return Response::json($result);
+	}
 
-    public function classifyDelete() {
-        $failed = '';
-        $cus_id = Auth::id();
-        $id = explode(',',ltrim(Input::get('id'),','));
-        (count($id) > 1) ? $id:$id=$id[0];
-        if(is_array($id)){
-            foreach($id as $v){
-                $d_c_result = Classify::where('id', $v)->where('cus_id', $cus_id)->delete();
-                Articles::where('c_id',$v)->where('cus_id',$cus_id)->delete();
-                $this->delMobileHomepage($v); //删除手机首页配置
-                if($d_c_result){
-                    $success[] = $v;
-                }else{
-                    $failed .= $v.',';
-                }
-            }
-        }
-        else{
-            $d_c_result = Classify::where('id', $id)->where('cus_id', $cus_id)->delete();
-            Articles::where('c_id',$id)->where('cus_id',$cus_id)->delete();
-            $this->delMobileHomepage($id);
-            $this->delChildClassify($id);
-            if($d_c_result){
-                $success[] = $id;
-            }else{
-                return Response::json(['err'=>1001,'msg'=>'栏目'.$id.'存在子目录或文章,删除失败']);
-            }
-        }
-        if (!$failed){
-            $result = ['err' => 0, 'msg' => '','data'=>$success];
-        } else {
-            $result = ['err' => 1001, 'msg' => '删除栏目失败'];
-        }
-        return Response::json($result);
-    }
-    
-    public function classifyInfo(){
-        $cus_id = Auth::id();
-        $customer=Auth::user()->name;
-        $id = Input::get('id');
-        $classify = Classify::Where('cus_id',$cus_id)->find($id)->toArray();
-        if($classify['img']!=''){
-            $classify['img']=asset("customers/$customer/images/l/category").'/'.$classify['img'];
-        }
-        if(is_numeric($classify['page_id']) && $classify['page_id'] > 0){
-            $classify['page_content']=Page::where('id',$classify['page_id'])->pluck('content');
-        }
-        $result['err'] = 0;
-        $result['msg'] = '';
-        $result['data'] = $classify;
-        $result['data']['keywords']=$classify['meta_keywords'];
-        $result['data']['description']=$classify['meta_description'];
-        return Response::json($result);
-    }
+	public function classifyDelete() {
+		$failed = '';
+		$cus_id = Auth::id();
+		$id = explode(',', ltrim(Input::get('id'), ','));
+		(count($id) > 1) ? $id : $id = $id[0];
+		if (is_array($id)) {
+			foreach ($id as $v) {
+				$d_c_result = Classify::where('id', $v)->where('cus_id', $cus_id)->delete();
+				Articles::where('c_id', $v)->where('cus_id', $cus_id)->delete();
+				$this->delMobileHomepage($v); //删除手机首页配置
+				if ($d_c_result) {
+					$success[] = $v;
+				} else {
+					$failed .= $v . ',';
+				}
+			}
+		} else {
+			$d_c_result = Classify::where('id', $id)->where('cus_id', $cus_id)->delete();
+			Articles::where('c_id', $id)->where('cus_id', $cus_id)->delete();
+			$this->delMobileHomepage($id);
+			$this->delChildClassify($id);
+			if ($d_c_result) {
+				$success[] = $id;
+			} else {
+				return Response::json(['err' => 1001, 'msg' => '栏目' . $id . '存在子目录或文章,删除失败']);
+			}
+		}
+		if (!$failed) {
+			$result = ['err' => 0, 'msg' => '', 'data' => $success];
+		} else {
+			$result = ['err' => 1001, 'msg' => '删除栏目失败'];
+		}
+		return Response::json($result);
+	}
 
     public function classifyModify() {
         $cus_id=Auth::id();
@@ -321,39 +301,4 @@ class ClassifyController extends BaseController {
         $upload = new UploadHandler(['script_url'=>$script_url,'upload_dir'=>$upload_dir,'upload_url' => $upload_url,'max_number_of_files'=>1]);
     }
 
-    private function toTree($arr, $pid = 0) {
-        $tree = array();
-        foreach ($arr as $k => $v) {
-            if ($v['p_id'] == $pid) {
-                $tree[] = $v;
-            }
-        }
-        if (empty($tree)) {
-            return null;
-        }
-        foreach ($tree as $k => $v) {
-            $tree[$k]['childmenu'] = $this->toTree($arr, $v['id']);
-        }
-        return $tree;
-    }
-    
-    //删除手机首页配置
-    private function delMobileHomepage($c_id){
-        $cus_id=Auth::id();
-        @MobileHomepage::where('cus_id',$cus_id)->where('c_id',$c_id)->delete();
-    }
-    
-    //删除分类及其子类
-    private function delChildClassify($c_id){
-        $cus_id=Auth::id();
-        $child_ids=Classify::where('p_id',$c_id)->where('cus_id',$cus_id)->lists('id');
-        if(count($child_ids)){
-            foreach($child_ids as $id){
-                Classify::where('id',$id)->where('cus_id',$cus_id)->delete();
-                Articles::where('c_id',$id)->where('cus_id',$cus_id)->delete();
-                $this->delMobileHomepage($id);
-                $this->delChildClassify($id);
-            }
-        }
-    }
 }

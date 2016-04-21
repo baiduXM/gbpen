@@ -1,6 +1,6 @@
 <?php
 
-class UploadController extends BaseController{
+class UploadController extends BaseController {
 
 	public function fileRead(){
         $customer = Auth::user()->name;
@@ -265,13 +265,65 @@ class UploadController extends BaseController{
                     }ftp_close($conn);
                  }
 
-                return Response::json(['err' => 0, 'msg' => '','data'=>['name' => $fileName,'url' => asset('customers/'.$customer.'/images/l/'.$target.'/'.$fileName)]]);
+				return Response::json(['err' => 0, 'msg' => '', 'data' => ['name' => $fileName, 'url' => asset('customers/' . $customer . '/images/l/' . $target . '/' . $fileName)]]);
+			} else {
+				return Response::json(['err' => 1001, 'msg' => '上传文件失败', 'data' => []]);
+			}
+		}
+	}
 
-            }
-            else{
-                return Response::json(['err' => 1001, 'msg' => '上传文件失败','data'=>[]]);
-            }            
-        }
+	private function check_dir($dirName, $customer) {
+		$path_arr = array(
+			public_path("customers/$customer/images/l/$dirName"),
+			public_path("customers/$customer/images/s/$dirName"),
+			public_path("customers/$customer/mobile/images/l/$dirName"),
+			public_path("customers/$customer/mobile/images/s/$dirName")
+		);
+		foreach ($path_arr as $dirPath) {
+			if (!file_exists($dirPath)) {
+				mkdir($dirPath);
+			}
+		}
+	}
+
+	private function openImage($fileName, $type) {
+		switch ($type) {
+			case 'jpg':$img = @imagecreatefromjpeg($fileName);
+				break;
+			case 'gif':$img = @imagecreatefromgif($fileName);
+				break;
+			case 'png':$img = @imagecreatefrompng($fileName);
+				break;
+			default:$img = false;
+		}
+		return $img;
+	}
+
+	public function resizeImage($src, $type, $path, $newWidth, $newHeight) {
+		$image = $this->openImage($src, $type);
+		$width = imagesx($image);
+		$height = imagesy($image);
+		$ratio = $height / $width;
+		$newHeight = $newWidth * $ratio;
+		$canvas = imagecreatetruecolor($newWidth, $newHeight);
+		$alpha = imagecolorallocatealpha($canvas, 0, 0, 0, 127);
+		imagefill($canvas, 0, 0, $alpha);
+		imagecopyresampled($canvas, $image, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+		imagesavealpha($canvas, true);
+		$this->saveImage($type, $canvas, $path);
+	}
+
+	public function saveImage($type, $canvas, $path) {
+		switch ($type) {
+			case 'jpg':imagejpeg($canvas, $path, 100);
+				break;
+			case 'gif':imagegif($canvas, $path);
+				break;
+			case 'png':imagepng($canvas, $path, 0);
+				break;
+			default:break;
+		}
+		imagedestroy($canvas);
 	}
 	
         

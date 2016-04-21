@@ -1,0 +1,104 @@
+<link rel="stylesheet" href="css/themes.css">
+<link rel="stylesheet" href="css/laydate.css">
+<link rel="stylesheet" href="css/universal-form.css">
+<script src="js/colorpicker.min.js"></script>
+<div class="jumbotron text-center">
+	<div id="addform-con" class="whole">
+		<!--左边选项卡-->
+		<div class="fl clearfix af-left" >
+			<div class="tab-head">
+				<div class="tab-head-item tab-head-item-active" name="item_0">
+					表单设置
+				</div>
+				<div class="tab-head-item " name="item_1">
+					添加组件
+				</div>
+				<div class="tab-head-item" name="item_2">
+					编辑组件
+				</div>
+			</div>
+			<div class="tab-content">
+				<div class="tab-content-item" style="display: block;" name="item_0">
+					<form name="box_info">
+						<ul class="form-list">
+							<li class="list-item">
+								<label for="name"><p class="content-l">表单名</p></label>
+								<input id="name" name="name" type="text" />
+							</li>
+							<li class="list-item">
+								<label for="title"><p class="content-l">标题</p></label>
+								<input id="title" name="title" type="text" />
+							</li>
+							<li class="list-item">
+								<label for="description"><p class="content-l">描述</p></label>
+								<input id="description" name="description" type="text"/>
+							</li>
+							<li class="list-item">
+								<p class="content-l">站点展示：</p>
+								<span class="option-item"><input name="platform" type="checkbox" value="0" />PC</span>
+								<span class="option-item"><input name="platform" type="checkbox" value="1" />手机</span>
+								<span class="option-item"><input name="platform" type="checkbox" value="2" />微信</span>
+							</li>
+							<li class="list-item">
+								<p class="content-l">显示模式：</p>
+								<span class="option-item"><input name="showmodel" type="radio" value="0" />单页</span>
+								<span class="option-item"><input name="showmodel" type="radio" value="1" />嵌入</span>
+								<span class="option-item"><input name="showmodel" type="radio" value="2" />悬浮</span>
+							</li>
+							<li class="list-item">
+								<p class="content-l">提交表单后动作：</p>
+								<span class="option-item"><input name="action_type" type="radio" value="0" />显示文字</span>
+								<span class="option-item"><input name="action_type" type="radio" value="1" />跳转链接</span>
+								<input name="action_text" type="text" value="" />
+							</li>
+							<li class="list-item">
+								<p class="content-l"><input name="is_once" type="checkbox" value="1"/>每个用户只能提交一次</p>
+							</li>
+							<li class="list-item">
+								<p class="content-l">停用启用：</p>
+								<span class="option-item"><input name="status" type="radio" value="1" />启用</span>
+								<span class="option-item"><input name="status" type="radio" value="0"/>停用</span>
+							</li>
+							<li class="list-item">
+								<span class="option-item"><input type="submit" name="save_form" value="保存"/></span>
+							</li>
+						</ul>
+					</form> 
+				</div>
+				<div class="tab-content-item" style="display: none;" name="item_1">
+					<ul class="unit-list" name="element-box">
+					</ul>
+				</div>
+				<div class="tab-content-item" style="display: none;" name="item_2">
+					<form name="box_column">
+						<ul class="home-list" name="element-edit">
+						</ul>
+					</form>
+				</div>
+
+			</div>
+		</div>
+		<!--右边表单预览-->
+		<div class="fr clearfix af-right" >
+			<div class="add-show">
+				<div class="as-title">
+				</div>
+				<div class="as-description">
+				</div>
+				<hr>
+				<form class="unit-preview" name="box_show">
+					<ul class="element-show">
+					</ul>
+				</form>
+			</div>
+			<div class="add-info">
+				<a class="f-btn inline-block addcancle all_button" href="#/form">返回</a>
+				<a class="f-btn inline-block addsave all_button" name="writeform" href="javascript:;">预览</a>
+				<a class="f-btn inline-block addsave all_button" href="javascript:;" >保存</a>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+</script>
+

@@ -200,6 +200,7 @@
         echo '<script language="javascript">
                 document.location = "http://'.$_SERVER['HTTP_HOST'].'";
             </script>';
-        exit;
-    }
+	exit;
+}
+
 ?>

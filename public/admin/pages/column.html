@@ -9,106 +9,110 @@
             <!-- 栏目列表内容 -->
         </table>
         <section id="bomb-box" class="fade" style="display: none;">
-        <div class="mask"></div>
-        <div class="box_info">
-            <div class="close">
-                <img src="images/close.png">
-            </div>
-            <div class="boxs">
-                <div class="box-up">添加栏目</div>
-                <nav class="box-down">
-                    <ul>
-                        <li class="f_column">
-                            <!-- 菜单 -->
-                        </li>
-                        <li>栏目名称：<input type="text" name="column_name" class="column_name" /></li>
-                        <li>英文名称：<input type="text" name="en_name" class="en_name" /></li>
-                        <li>栏目类型：
-                            <select id="lottery">
-                                <option selected="selected" value="选择">请选择</option>
-                                <option value="列表">列表</option>
-                                <option value="4">内容单页</option>
-                                <option value="5">留言板</option>
-                                <option value="6">外链</option>
-                               <!--  <option value="7">抽奖</option>
-                                <option value="8">直达号功能</option> -->
-                            </select>
-                            <select id="lottery1" style="display: none;"><option value="刮刮卡">刮刮卡</option></select>
-                            <select id="lottery2" style="display: none;"><option value="中大奖">中大奖</option></select>
-                            <a id="lottery_mg" style="display: none;"><span >*</span>刮刮卡管理</a>
-                            <a id="out_url" style="margin-left: 10px;display: none;">链接地址：<input type="text" width="200px"/></a>
-                        </li>
-                        <li class="sites">站点展示：
-                            <span style="color:#333"><input type="checkbox" id="1" name="vehicle" value="pc_show" style=" display:none;">
-                                <label class="labe2 lb_pc"></label>PC</span>
-							<span style="color:#333"><input type="checkbox" id="2" name="vehicle" value="mobile_show" style=" display:none;">
-                                <label class="labe2 lb_mobile"></label>手机</span>
-                                <span style="color:#333"><input type="checkbox" id="4" name="vehicle" value="footer_show" style=" display:none;">
-                                <label class="labe2 lb_footer"></label>底部导航</span>
-							<!-- <span style="color:#333"><input type="checkbox" id="3" name="vehicle" value="wechat_show" style=" display:none;">
-                                <label class="labe2 lb_wechat"></label>微信</span> -->
-                        </li>
-                        <li id="models" style="display: none;">
-                            <div class="inline-block vat">选择版式：</div>
-                            <div class="inline-block tpl">
-                                <div class="mod_border text"><i class="iconfont icon-liebiao grey tpl_info" name="1"></i></div>
-                                <p>文字列表</p>
-                            </div>
-                            <div class="inline-block tpl">
-                                <div class="mod_border txt_pic"><i class="iconfont icon-list grey tpl_info" name="3"></i></div>
-                                <p>图文列表</p>
-                            </div>
-                            <div class="inline-block tpl">
-                                <div class="mod_border pic"><i class="iconfont icon-graph grey tpl_info" name="2"></i></div>
-                                <p>图片列表</p>
-                            </div>
-                        </li>
-                        <li id="inside_model" class="none">
-                            <div class="inline-block vat">内页版式：</div>
-                            <div class="inline-block tpl">
-                                <div class="mod_border"><i class="iconfont icon-page_news" name="1"></i></div>
-                                <p>新闻正文</p>
-                            </div>
-                            <div class="inline-block tpl">
-                                <div class="mod_border"><i class="iconfont icon-page_product" name="2"></i></div>
-                                <p>产品介绍</p>
-                            </div>
-                        </li>
-                        <li><span  class="col_keyword_word">关键词</span>：<input name="keyword" class="keyword" /></li>
-                        <li class="col_icon">
-                            <span>栏目图标：</span>
-                            <span class="icon_box pr">
-                                <i class="iconfont icon-dengpao"></i>
-                                <input type="hidden" name="icons" class="icon_input" />
-                                <span class="arrow"></span>
-                                <div class="col_icon_box icon_ousidebox">
-                                    <div class="box_content">
-                                        <ul><!-- 图标编码 --></ul>
-                                    </div>
-                                </div>
-                            </span>
-                            <span>(点击图标更改)</span>
-                        </li>
-                        <li class="index_showtype">
-                            <!-- 页面展示下拉框 -->
-                        </li>
-                        <li class="column_pic clearfix">
-                            <label class="fl pr tc">栏目图片：<div class="colum_description_txt"></div></label>
-    						<div class="up_pic up_column"></div>
-                        </li>
-                        <li class="colum_description">
-                            <div class="inline-block vat">栏目简介：</div>
-                            <textarea name="txts" class="txts" style="width: 530px;height: 65px;resize: none;"></textarea>
-                        </li>
-                        <li id="page_editor">单页编辑：<textarea name="txts" class="page_content" id="container"></textarea></li>
-                    </ul>
-                </nav>
-                <div class="button">
-                    <input type="reset" class="cancel grey" value="取消" />
-                    <input type="submit" class="save save_column" value="保存" />
-                </div>
-            </div>
-        </div>
+			<div class="mask"></div>
+			<div class="box_info">
+				<div class="close">
+					<img src="images/close.png">
+				</div>
+				<div class="boxs">
+					<div class="box-up">添加栏目</div>
+					<nav class="box-down">
+						<ul>
+							<li class="f_column">
+								<!-- 菜单 -->
+							</li>
+							<li>栏目名称：<input type="text" name="column_name" class="column_name" /></li>
+							<li>英文名称：<input type="text" name="en_name" class="en_name" /></li>
+							<li>栏目类型：
+								<select id="lottery">
+									<option selected="selected" value="选择">请选择</option>
+									<option value="列表">列表</option>
+									<option value="4">内容单页</option>
+									<option value="5">留言板</option>
+									<option value="6">外链</option>
+									<option value="7">抽奖</option>
+									<option value="8">直达号功能</option>
+									<option value="9">万用表单</option>
+								</select>
+								<select id="lottery1" style="display: none;"><option value="刮刮卡">刮刮卡</option></select>
+								<select id="lottery2" style="display: none;"><option value="中大奖">中大奖</option></select>
+								<a id="lottery_mg" style="display: none;"><span >*</span>刮刮卡管理</a>
+								<a id="out_url" style="margin-left: 10px;display: none;">链接地址：<input type="text" width="200px"/></a>
+							</li>
+							<li id="form_relate" style="display:none;">关联表单：
+								<select id="form_select" name="form_select">
+									<option selected="selected" value="0">请选择</option>
+								</select>
+							</li>
+							<li class="sites">站点展示：
+								<span style="color:#333"><input type="checkbox" id="1" name="vehicle" value="pc_show" style=" display:none;">
+									<label class="labe2 lb_pc"></label>PC</span>
+								<span style="color:#333"><input type="checkbox" id="2" name="vehicle" value="mobile_show" style=" display:none;">
+									<label class="labe2 lb_mobile"></label>手机</span>
+								<span style="color:#333"><input type="checkbox" id="3" name="vehicle" value="wechat_show" style=" display:none;">
+									<label class="labe2 lb_wechat"></label>微信</span>
+							</li>
+							<li id="models" style="display: none;">
+								<div class="inline-block vat">选择版式：</div>
+								<div class="inline-block tpl">
+									<div class="mod_border text"><i class="iconfont icon-liebiao grey tpl_info" name="1"></i></div>
+									<p>文字列表</p>
+								</div>
+								<div class="inline-block tpl">
+									<div class="mod_border txt_pic"><i class="iconfont icon-list grey tpl_info" name="3"></i></div>
+									<p>图文列表</p>
+								</div>
+								<div class="inline-block tpl">
+									<div class="mod_border pic"><i class="iconfont icon-graph grey tpl_info" name="2"></i></div>
+									<p>图片列表</p>
+								</div>
+							</li>
+							<li id="inside_model" class="none">
+								<div class="inline-block vat">内页版式：</div>
+								<div class="inline-block tpl">
+									<div class="mod_border"><i class="iconfont icon-page_news" name="1"></i></div>
+									<p>新闻正文</p>
+								</div>
+								<div class="inline-block tpl">
+									<div class="mod_border"><i class="iconfont icon-page_product" name="2"></i></div>
+									<p>产品介绍</p>
+								</div>
+							</li>
+							<li><span  class="col_keyword_word">关键词</span>：<input name="keyword" class="keyword" /></li>
+							<li class="col_icon">
+								<span>栏目图标：</span>
+								<span class="icon_box pr">
+									<i class="iconfont icon-dengpao"></i>
+									<input type="hidden" name="icons" class="icon_input" />
+									<span class="arrow"></span>
+									<div class="col_icon_box icon_ousidebox">
+										<div class="box_content">
+											<ul><!-- 图标编码 --></ul>
+										</div>
+									</div>
+								</span>
+								<span>(点击图标更改)</span>
+							</li>
+							<li class="index_showtype">
+								<!-- 页面展示下拉框 -->
+							</li>
+							<li class="column_pic clearfix">
+								<label class="fl pr tc">栏目图片：<div class="colum_description_txt"></div></label>
+								<div class="up_pic up_column"></div>
+							</li>
+							<li class="colum_description">
+								<div class="inline-block vat">栏目简介：</div>
+								<textarea name="txts" class="txts" style="width: 530px;height: 65px;resize: none;"></textarea>
+							</li>
+							<li id="page_editor">单页编辑：<textarea name="txts" class="page_content" id="container"></textarea></li>
+						</ul>
+					</nav>
+					<div class="button">
+						<input type="reset" class="cancel grey" value="取消" />
+						<input type="submit" class="save save_column" value="保存" />
+					</div>
+				</div>
+			</div>
         </section>
     </div>
 </div>
