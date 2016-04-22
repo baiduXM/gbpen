@@ -615,24 +615,7 @@ border-radius: 5px;}
 .message-item span{cursor: pointer;margin: auto 10px;}
 .message-item .first-item{overflow: hidden;white-space: nowrap;text-overflow:ellipsis;width: 300px;display: block;text-indent: 5px;}
 .detail{text-align: left;background-color: #fff;display: none;width: 100%;padding: 10px 0;position: absolute;}
-/*万用表单*/
-/*.universal-form .info-l,.universal-form .info-r{width: 30%;margin-bottom: 50px;margin-top: 10px;}
-.universal-form{padding: 20px;}
-.universal-form legend.title{text-align: center;margin: 5px;height: 20px;line-height: 19px;width: 100%;cursor: pointer;font-size: 14px;padding: 5px 0;background: #C6D8E9;color: #1E3A4D;border: 1px solid #92A4AF;box-shadow: 0 1px 0 0 #F3F3F3 inset, 0 -10px 40px -35px #000 inset;}
-.universal-form .content-l{width: 125px;text-align: right;margin-right: 20px;}
-.universal-form .Input{height: 32px;line-height: 32px;width: 250px;text-indent: 1em}
-.form-list li{margin: 10px 0;}
-.form-list li>*{display: inline-block;}
-input[type="checkbox"] {-webkit-appearance: none;border: 1px solid #ccc;background: #fff;width: 15px;height: 15px;outline:none;cursor:pointer;}
-input[type="radio"]{-webkit-appearance:none;border:1px solid #ccc;background:#fff;width:15px;height:15px;margin-right:0px;border-radius:100%;outline:none;cursor:pointer;vertical-align:-2px;}
-input[type="radio"]:checked {border-color: #ccc;background: url(../images/radioico.jpg) center center no-repeat;}
 
-.utility{transition: all 0.3s ease 0s;width: 26.5%;margin: 6px 2%;background: #FFF;padding: 5px 0.6% 5px 1.4%;z-index: 10;border: 1px dashed #999;border-radius: 3px;cursor: pointer;float: left;}
-.utility:hover{background-color: #D0E2F3;border-color: #57A5CA;border-style: solid;}
-.utility .title{display: inline-block;line-height: 30px;margin: 0 auto;}
 
-.universal-form .info-r{margin-left: 120px;}
-.unit-preview{width: 100%;}
-.unit-preview p{text-indent: 2em;background-color: #fff;margin: 10px auto;padding: 5px;}
-.element-show input,.element-show textarea{margin-top: 10px;}
-.element-show li{margin: 5px auto}*/
+
+
