@@ -32,6 +32,21 @@ function columnController($scope, $http) {
 			this.getJson();
 			this._SaveColumn();
 			this.listType();
+			this.getFormInfo();
+		},
+		//===表单信息===
+		getFormInfo: function () {
+			var _div = "";
+			$http.get('../form-list').success(function (json) {
+				console.log(json);
+				console.log('===getFormInfo===')
+				checkJSON(json, function (json) {
+					$.each(json.data, function (k, v) {
+						_div += '<option value="' + v.id + '">' + v.name + '</option>';
+					});
+					$('#form_select').append(_div);
+				});
+			});
 		},
 		_heightauto: function () {
 			var col_list = $(".box_info").height() / 2;
@@ -42,6 +57,8 @@ function columnController($scope, $http) {
 		getJson: function () {
 			var _this = this;
 			$http.get(this.json_url).success(function (json) {
+//				console.log(json);
+//				console.log('===getJson===');
 				checkJSON(json, function (json) {
 					_this.get_column_list(json);
 				});
@@ -186,6 +203,7 @@ function columnController($scope, $http) {
 				$(this).children().toggleClass("disnone");
 			});
 		},
+		//type-->data.type
 		column_type_info: function (data) {
 			var type = data.type;
 			// 转化弹框栏目类型
@@ -276,7 +294,7 @@ function columnController($scope, $http) {
 					columnicon.clicks();
 					$('.en_name').val(d.en_name);
 					$('#out_url input').val(d.url);
-					_this.column_type_info(d.type);
+					_this.column_type_info(d);
 					// 联动更改内容展示
 					// if($('#lottery').val() == '列表'){
 					//     _this.Model_DiffSize('list');
@@ -449,6 +467,7 @@ function columnController($scope, $http) {
 					var vkeywords = $('.keyword').val();
 					var icons = $('.icon_input').val();
 					var vdescription = $('.txts').val();
+					var vform_id = $('#form_select').val();
 					var s_t = new Array();
 					var j = 0;
 					$('.sites input[type="checkbox"]').each(function (i) {
@@ -481,6 +500,7 @@ function columnController($scope, $http) {
 							is_show: s_t,
 							keywords: vkeywords,
 							description: vdescription,
+							form_id: vform_id,
 							img: _this.upload_picname,
 							icon: icons,
 							force: (first ? 0 : 1),
