@@ -418,6 +418,11 @@ function columnController($scope, $http) {
 					case '万用表单':
 					{
 						$("#form_relate").show();
+						$('#out_url').hide();
+						$('#models').hide();
+						$('#inside_model').addClass('none');
+						$('#page_editor').hide();
+						$('#lottery1,#lottery2,#lottery_mg').hide();
 						break;
 					}
 					default:
@@ -495,6 +500,8 @@ function columnController($scope, $http) {
 					}
 
 					var first = true;
+					console.log(vform_id);
+					console.log('vform_id');
 					var savePostRequest = function (first) {
 						$http.post('../classify-modify', {id: id,
 							p_id: vpid,

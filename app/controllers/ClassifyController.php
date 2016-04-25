@@ -107,6 +107,7 @@ class ClassifyController extends BaseController {
 		}
 		$classify->p_id = (Input::get('p_id') == "undefined") ? 0 : Input::get('p_id');
 		$classify->type = Input::get('type');
+		$classify->form_id = Input::get('form_id');
 		if ($classify->p_id > 0) {
 			if ($this->checkClassifyLevel($classify->p_id, 1, $cus_id)) {
 				$p_c_info = Classify::find($classify->p_id);
