@@ -376,6 +376,7 @@ function columnController($scope, $http) {
 						$('#inside_model').addClass('none');
 						$('#out_url').hide();
 						$('#page_editor').hide();
+						$("#form_relate").hide();
 						vlayout = $(this).val();
 						_this._heightauto();
 						break;
@@ -387,6 +388,7 @@ function columnController($scope, $http) {
 						$('#lottery1,#lottery2,#lottery_mg').hide();
 						$('#out_url').hide();
 						$('#page_editor').hide();
+						$("#form_relate").hide();
 						_this._heightauto();
 						break;
 					}
@@ -395,6 +397,7 @@ function columnController($scope, $http) {
 						$('#out_url').show();
 						$('#models').hide();
 						$('#page_editor').hide();
+						$("#form_relate").hide();
 						$('#lottery1,#lottery2,#lottery_mg').hide();
 						vlayout = $(this).val();
 						_this._heightauto();
@@ -405,6 +408,7 @@ function columnController($scope, $http) {
 						$('#page_editor').show();
 						$('#out_url').hide();
 						$('#models').hide();
+						$("#form_relate").hide();
 						$('#inside_model').addClass('none');
 						$('#lottery1,#lottery2,#lottery_mg').hide();
 						vlayout = $(this).val();
@@ -419,6 +423,7 @@ function columnController($scope, $http) {
 					default:
 						$('#out_url').hide();
 						$('#models').hide();
+						$("#form_relate").hide();
 						$('#inside_model').addClass('none');
 						$('#page_editor').hide();
 						$('#lottery1,#lottery2,#lottery_mg').hide();

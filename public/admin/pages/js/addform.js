@@ -159,12 +159,6 @@ function addformController($scope, $http, $location) {
 		$('[name="showmodel"]:eq(' + data.showmodel + ')').attr('checked', true);
 		$('[name="action_type"]:eq(' + data.action_type + ')').attr('checked', true);
 		$('[name="action_text"]').val(data.action_text);
-//		$('[name="action_type"]').val(data.action_type);
-//		$('[name="action"]').val(data.action);
-//		$('[name="action"]').val(data.action);
-//		$('[name="action"]').val(data.action);
-//		$('[name="action"]').val(data.action);
-
 		if (data.is_once == 1) {
 			$('[name="is_once"]').attr('checked', true);
 		}
@@ -351,7 +345,6 @@ function addformController($scope, $http, $location) {
 					} else {
 						_div += '<input type="text" name="option_' + i + '" value="' + _config[to] + '" /><button class="square" name="option_del">-</button><button class="square" name="option_add">+</button></p>';
 					}
-//					_div += '<input type="text" name="option_' + i + '" value="' + _config[to] + '" /></p>';
 				}
 				_div += '</li>';
 				_div += '<input type = "hidden" name="config_option_count" value = "" />';
@@ -447,7 +440,6 @@ function addformController($scope, $http, $location) {
 					<span class="option-item"><input type = "checkbox" name="config_file_type" value = "3" /><音频></span>\n\
 					<span class="option-item"><input type = "checkbox" name="config_file_type" value = "4" /><其他></span>\n\
 				</li>';
-//				temp = _config.file_type.split(',');
 				break;
 			default:
 				break;
@@ -532,16 +524,16 @@ function addformController($scope, $http, $location) {
 				break;
 		}
 
-//		$('[name="option_add"]').unbind('click').click(function () {
-//			alert('add');
+		$('[name="option_add"]').unbind('click').click(function () {
+			alert('add');
 //			var _this = $(this);
 //			var _this_parent_p=_this.parent('p');
 //			console.log(_this_parent_p);
-////			_this_parent_p.addend();
-//		});
+//			_this_parent_p.addend();
+		});
 		$('[name="option_del"]').unbind('click').click(function () {
-			var _this = $(this.parent());
-			console.log(_this);
+			var _this = $(this).parent();
+			_this.remove();
 		});
 		//===保存组件修改===
 		$('[name="save_column"]').unbind('click').click(function () {

@@ -110,7 +110,7 @@ class ClassifyController extends BaseController {
 		if ($classify->p_id > 0) {
 			if ($this->checkClassifyLevel($classify->p_id, 1, $cus_id)) {
 				$p_c_info = Classify::find($classify->p_id);
-				if (in_array($p_c_info->type, array(5, 6, 7, 8))) {
+				if (in_array($p_c_info->type, array(5, 6, 7, 8, 9))) {
 					$result = ['err' => 1001, 'msg' => '该类型不允许添加子栏目', 'data' => []];
 					$is_passed = false;
 				} else {
@@ -118,7 +118,7 @@ class ClassifyController extends BaseController {
 					if (!count($c_c_ids)) {
 						$a_ids = Articles::where('c_id', $p_c_info->id)->lists('id');
 						if (count($a_ids)) {
-							if (in_array($classify->type, array(4, 5, 6, 7, 8))) {
+							if (in_array($classify->type, array(4, 5, 6, 7, 8, 9))) {
 								$result = ['err' => 1001, 'msg' => '存在文章的栏目不允许添加该类型子栏目', 'data' => []];
 								$is_passed = false;
 							} else {
