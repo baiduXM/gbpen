@@ -268,6 +268,10 @@ Route::group(array('before' => 'auth'), function() {
 		'as' => 'quickbar.rewrite',
 		'uses' => 'CommonController@quickBarRewrite'
 	]);
+        Route::post('getqrcode', [
+		'as' => 'getqrcode',
+		'uses' => 'CommonController@getqrcode'
+	]);
 	//-----------------------------------------------
 	//--------------------模版操作--------------------
 	Route::post('template-operate', [//更换操作

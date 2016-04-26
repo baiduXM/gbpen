@@ -86,8 +86,17 @@ class CommonController extends BaseController{
         }
         return Response::Json($json_result);
     }
-    
-    public function qrcode($barcode){
+    public function getqrcode(){
+        $barcode=Input::get('barcode');
+        $data=$this->qrcode($barcode);
+        if($data){
+            $json_result = ['err' => 0, 'msg' => '获取成功','data'=>$data];
+        }else{
+            $json_result = ['err' => 1001, 'msg' => '不存在手机站','data'=>[]];
+        }
+        return Response::Json($json_result);
+    }
+    private function qrcode($barcode){
 //        $qrencode=new QRencode();
         $customer = Auth::user()->name;
         $id=Auth::id();
@@ -108,7 +117,7 @@ class CommonController extends BaseController{
         return 'http://api.qrserver.com/v1/create-qr-code/?size=200x200&data='.$domain;
     }
     public function quickBarRewrite(){
-        $result=WebsiteConfig::where('cus_id',Auth::id())->delete();
+        $result=WebsiteConfig::where('cus_id',Auth::id())->where('key','quickbar')->delete();
         $json_result = ['err' => 0, 'msg' => '重置成功'];
         return $json_result;
     }
