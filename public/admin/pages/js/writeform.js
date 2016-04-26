@@ -82,7 +82,6 @@ function writeformController($scope, $http, $location) {
 					_div += '</span>';
 				}
 				temp = _config.option_default;
-				_div += "<br>---radio-+++" + temp + "---<br>";
 				break;
 			case 'checkbox':
 				_div += data.title + '：(' + data.description + ')<br />';

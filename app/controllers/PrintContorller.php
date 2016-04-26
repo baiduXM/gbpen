@@ -1847,7 +1847,6 @@ class PrintController extends BaseController {
                     </label>
                     </form>';
 			} elseif ($classify->type == 9) {
-				$_div_li = '';
 				$_div = "<div class='fv-add-show'>
 						<div class='fv-as-title'>
 							$form_data->title
