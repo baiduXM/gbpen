@@ -336,33 +336,25 @@ function addformController($scope, $http, $location) {
 			case 'textarea':
 				break;
 			case 'select':
-				_div += '<hr /><li class="list-item"><p class="content-l">下拉菜单选项设置</p>';
+				_div += '<hr /><li class="list-item"><p class="content-l">下拉菜单选项设置<button class="square" name="option_add">+</button></p>';
 				for (var i = 0; i < _config.option_count; i++) {
 					to = 'option_' + i;
 					_div += '<p class="option-item"><input type = "radio" name="config_option_default" value = "' + i + '" />';
-					if (i + 1 < _config.option_count) {
-						_div += '<input type="text" name="option_' + i + '" value="' + _config[to] + '" /><button class="square" name="option_del">-</button></p>';
-					} else {
-						_div += '<input type="text" name="option_' + i + '" value="' + _config[to] + '" /><button class="square" name="option_del">-</button><button class="square" name="option_add">+</button></p>';
-					}
+					_div += '<input type="text" name="option_' + i + '" value="' + _config[to] + '" /><button class="square" name="option_del">-</button></p>';
 				}
 				_div += '</li>';
 				_div += '<input type = "hidden" name="config_option_count" value = "" />';
 				break;
 			case 'radio':
 				var to = '';
-				_div += '<hr /><li class="list-item"><p class="content-l">单选</p>';
+				_div += '<hr /><li class="list-item"><p class="content-l">单选<button class="square" name="option_add">+</button></p>';
 				for (var i = 0; i < _config.option_count; i++) {
 					to = 'option_' + i;
 					_div += '<p class="option-item"><input type = "radio" name="config_option_default" value = "' + i + '" />';
 					if (_config.option_type == 1) {
-						_div += '<img name="option_img_' + i + '" src="" />';
+						_div += '<img name="option_img[]" src="" />';
 					}
-					if (i + 1 < _config.option_count) {
-						_div += '<input type="text" name="option_' + i + '" value="' + _config[to] + '" /><button class="square" name="option_del">-</button></p>';
-					} else {
-						_div += '<input type="text" name="option_' + i + '" value="' + _config[to] + '" /><button class="square" name="option_del">-</button><button class="square" name="option_add">+</button></p>';
-					}
+					_div += '<input type="text" name="option[]" value="' + _config[to] + '" /><button class="square" name="option_del">-</button></p>';
 				}
 				_div += '</li>';
 				_div += '<input type = "hidden" name="config_option_count" value = "" />';
@@ -378,18 +370,14 @@ function addformController($scope, $http, $location) {
 				</li>';
 				break;
 			case 'checkbox':
-				_div += '<hr /><li class="list-item"><p class="content-l">多选</p>';
+				_div += '<hr /><li class="list-item"><p class="content-l">多选<button class="square" name="option_add">+</button></p>';
 				for (var i = 0; i < _config.option_count; i++) {
 					to = 'option_' + i;
 					_div += '<p class="option-item"><input type = "checkbox" name="config_option_default" value = "' + i + '" />';
 					if (_config.option_type == 1) {
 						_div += '<img name="option_img_' + i + '" src="" />';
 					}
-					if (i + 1 < _config.option_count) {
-						_div += '<input type="text" name="option_' + i + '" value="' + _config[to] + '" /><button class="square" name="option_del">-</button></p>';
-					} else {
-						_div += '<input type="text" name="option_' + i + '" value="' + _config[to] + '" /><button class="square" name="option_del">-</button><button class="square" name="option_add">+</button></p>';
-					}
+					_div += '<input type="text" name="option_' + i + '" value="' + _config[to] + '" /><button class="square" name="option_del">-</button></p>';
 //					_div += '<input type="text" name="option_' + i + '" value="' + _config[to] + '" /></p>';
 				}
 				_div += '</li>';

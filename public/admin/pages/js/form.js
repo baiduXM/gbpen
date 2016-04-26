@@ -26,7 +26,6 @@ function formController($scope, $http, $location) {
 							<th>描述<div class="fr">|</div></th>\n\
 							<th>显示模式<div class="fr">|</div></th>\n\
 							<th>表单状态<div class="fr">|</div></th>\n\
-							<th>创建时间<div class="fr">|</div></th>\n\
 							<th style="width: 15%;">操作</th>\n\
 						</tr>';
 				_div += '<tr class="sapces"></tr>';
@@ -43,6 +42,27 @@ function formController($scope, $http, $location) {
 								</td>\n\
 								<td>' + v.title + '</td>\n\
 								<td>' + v.description + '</td>';
+//						_div += '<td style="text-align:center;">';
+////								<div class="pr size1"><i class="iconfont icon-snimicshouji fa btn btn-show btn-mobile ' + (v.mobile_show ? 'blue' : 'grey') + '"></i><i class="fa iconfont btn icon-phonehome none ' + (v.show ? 'blue' : 'grey') + (v.showtypetotal == 0 ? ' not-allowed' : '') + '"></i></div></td>\n\
+////                                    <td><i class="fa iconfont icon-xiayi btn sort grey "></i><i class="fa iconfont icon-shangyi btn sort grey "></i><a style="margin:0 10px;" class="column-edit-box"><i class="fa iconfont icon-bianji grey column-edit"></i><div class="warning"><i class="iconfont' + (v.img_err ? ' icon-gantanhao' : '') + '"></i></div></a><a class="delv" name="' + v.id + '"><i class="fa iconfont icon-delete grey "></i></a></td></tr>';
+//						var platform = v.platform.split(',');
+//						$.each(platform, function (tk, tv) {
+//							switch (tv) {
+//								case 0://pc
+//									_div += '<span><i class="fa iconfont icon-pc btn btn-show btn-desktop ' + (v.pc_show ? 'blue' : 'grey') + '"></i></span>';
+//									break;
+//								case 1://手机
+//									_div += '<td>嵌入显示</td>';
+//									break;
+//								case 2://微信
+//									_div += '<td>悬浮显示</td>';
+//									break;
+//								default:
+//									_div += '<td>-</td>';
+//									break;
+//							}
+//						});
+//						_div += '</td>';
 						switch (v.showmodel) {
 							case 0:
 								_div += '<td>单页显示</td>';
@@ -62,8 +82,7 @@ function formController($scope, $http, $location) {
 						} else {
 							_div += '<td>禁用</td>';
 						}
-						_div += '<td>' + v.created_at + '</td>\n\
-								<td>\n\
+						_div += '<td>\n\
 									<a style="margin:0 10px; cursor: pointer" class="form_edit" title="编辑"><i class="fa iconfont icon-bianji"></i></a>\n\
 									<a style="margin:0 10px; cursor: pointer" class="form_view" title="浏览"><i class="fa iconfont icon-dengpao1"></i></a>\n\
 									<a class="delv" title="删除"><i class="fa iconfont icon-delete mr5"></i></a>\n\

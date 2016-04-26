@@ -37,14 +37,19 @@ function columnController($scope, $http) {
 		//===表单信息===
 		getFormInfo: function () {
 			var _div = "";
-			$http.get('../form-list').success(function (json) {
-				console.log(json);
-				console.log('===getFormInfo===')
+			$.get('../form-list', {status: 1}, function (json) {
 				checkJSON(json, function (json) {
-					$.each(json.data, function (k, v) {
-						_div += '<option value="' + v.id + '">' + v.name + '</option>';
-					});
-					$('#form_select').append(_div);
+					if (json.data != null) {
+						$.each(json.data, function (k, v) {
+							_div += '<option value="' + v.id + '">' + v.name + '</option>';
+						});
+						$('#form_select').append(_div);
+						$('#form_hint').html('');
+					} else {
+						_div = '表单为空或已停用';
+						$('#form_hint').html(_div);
+					}
+
 				});
 			});
 		},
@@ -52,13 +57,11 @@ function columnController($scope, $http) {
 			var col_list = $(".box_info").height() / 2;
 			$(".box_info").css({
 				"marginTop": "-" + col_list + "px"
-			})
+			});
 		},
 		getJson: function () {
 			var _this = this;
 			$http.get(this.json_url).success(function (json) {
-//				console.log(json);
-//				console.log('===getJson===');
 				checkJSON(json, function (json) {
 					_this.get_column_list(json);
 				});
@@ -500,10 +503,10 @@ function columnController($scope, $http) {
 					}
 
 					var first = true;
-                                        var img_upload = [];
-                                        $('.preview>.img_upload').each(function() {
-                                            img_upload.push($(this).data('name'));
-                                        });
+					var img_upload = [];
+					$('.preview>.img_upload').each(function () {
+						img_upload.push($(this).data('name'));
+					});
 					console.log(vform_id);
 					console.log('vform_id');
 					var savePostRequest = function (first) {
@@ -523,12 +526,12 @@ function columnController($scope, $http) {
 							article_type: article_type,
 							page_content: editor.getContent()}).success(function (json) {
 							checkJSON(json, function (json) {
-                                                                if(img_upload.length){
-                                                                    $http.post('../imgupload?target=category',
-                                                                    {
-                                                                        files    : img_upload
-                                                                    });
-                                                                }
+								if (img_upload.length) {
+									$http.post('../imgupload?target=category',
+											{
+												files: img_upload
+											});
+								}
 								_this.getJson();//重新获取列表
 								var hint_box = new Hint_box();
 								hint_box;
@@ -706,7 +709,7 @@ function columnController($scope, $http) {
                                         <div>\n\
                                             <span class="preview">\n\
                                             <div class="preview-close"><img src="images/preview-close.png" /></div>\n\
-                                                <img src="' + json.data.url + '" class="img_upload" data-name="'+json.data.name+'" style="width:80px;height:64px;padding:5px;" data-preimg="preimg">\n\
+                                                <img src="' + json.data.url + '" class="img_upload" data-name="' + json.data.name + '" style="width:80px;height:64px;padding:5px;" data-preimg="preimg">\n\
                                             </span>\n\
                                         </div>\n\
                                     </div>';

@@ -142,15 +142,15 @@ var WarningBox = function (del, warning_context) {
 	}, warning_context);
 	this.init = function () {
 		this.div = '<div class="tpl_mask" style="display: block;"></div>\n\
-        <div class="warning_box box_info pos">\n\
-        <div class="boxs" style="overflow-y: hidden">\n\
-            <div class="box-up tc">' + this.context.warning_context + '</div>\n\
-            <div class="button pr">\n\
-                <input type="button" class="cancel" value="取消" />\n\
-                <input type="button" class="save save_column" value="确定" />\n\
-            </div>\n\
-        </div>\n\
-        </div>';
+			<div class="warning_box box_info pos">\n\
+			<div class="boxs" style="overflow-y: hidden">\n\
+				<div class="box-up tc">' + this.context.warning_context + '</div>\n\
+				<div class="button pr">\n\
+					<input type="button" class="cancel" value="取消" />\n\
+					<input type="button" class="save save_column" value="确定" />\n\
+				</div>\n\
+			</div>\n\
+			</div>';
 
 		$('.tpl_mask,.warning_box').remove();
 		$('body').append(this.div);
@@ -207,15 +207,15 @@ WarningBox.prototype = {
 		}, defaults);
 		this.context.IsBaseShow = defaults.IsBaseShow;
 		this.context.warning_context = '\
-        <div>\n\
-            <div class="img-container" style="width:' + document.body.clientWidth * 0.4 + 'px;height:' + document.body.clientWidth * 0.2 + 'px">\n\
-                <img src="" alt="请点左下角上传要修改的图片！">\n\
-            </div>\n\
-        </div>\
-        <div class="btn-upload">\
-            <input type="file" class="sr-only" id="inputImage" name="file" accept="image/*" ' + (defaults.IsMultiple ? 'multiple' : '') + '>\
-            <div class="up_pic_btn">添加</div>\n\
-        </div><label class="cutsize fr w100"></label>';
+			<div>\n\
+				<div class="img-container" style="width:' + document.body.clientWidth * 0.4 + 'px;height:' + document.body.clientWidth * 0.2 + 'px">\n\
+					<img src="" alt="请点左下角上传要修改的图片！">\n\
+				</div>\n\
+			</div>\
+			<div class="btn-upload">\
+				<input type="file" class="sr-only" id="inputImage" name="file" accept="image/*" ' + (defaults.IsMultiple ? 'multiple' : '') + '>\
+				<div class="up_pic_btn">添加</div>\n\
+			</div><label class="cutsize fr w100"></label>';
 		this.init();
 		if (!defaults.IsBaseShow) {
 			this.fileType = '';
@@ -312,128 +312,128 @@ WarningBox.prototype = {
 		var callbackdata = [];
 		var scrollmargin = 0;
 		// 改变弹框样式
-                $.ajax({
+		$.ajax({
 			url: '../classify-list',
 			type: 'GET',
 			success: function (json) {
-                            checkJSON(json, function(json){
-                var d = json.data;
-                var option1 = '',pid,pname='',id;
-                var PageId = [];
-                var G_c_id='';
-                if(json.err == 0){
-                    var option1 = '';
-                    
-                                
-                    $.each(d,function(idx,ele){
-                        
-                        if(ele.type < 5){
-                            
-                            if(G_c_id == ele.id){
-                                pid = ele.p_id;
-                                pname = ele.name;
-                                id = ele.id;
-                            }
-                            if(ele.type == '4'){
-                                PageId.push(ele.id);
-                            }
-                            
-                            option1 += '<li><a class="parents'+(ele.childmenu != null?' not-allowed':'')+'" data-id="'+ele.id+'" data-size="'+ele.img_width+','+ele.img_height+','+ele.img_forcesize+'">'+ele.name+'</a></li>';
-                            var NextChild = ele;
-                            var num = 2;
-                            
-                            var LoopChlid = function(NextChild,num){
-                                if(NextChild.childmenu != null){
-                                    $.each(NextChild.childmenu,function(k,v){
-                                        if(v.type < 5){
-                                            if(G_c_id == v.id){
-                                                pid = v.p_id;
-                                                pname = v.name;
-                                                id = v.id;
-                                            }
-                                            if(v.type == '4'){
-                                                PageId.push(v.id);
-                                            }
-                                            option1 += '<li><a class="LevelChild'+num+(v.childmenu != null?' not-allowed':'')+'" data-pid="'+v.p_id+'" data-id="'+v.id+'" data-size="'+v.img_width+','+v.img_height+','+v.img_forcesize+'">├'+v.name+'</a></li>'; 
-                                            if(v.childmenu != null){
-                                                NextChild = v;
-                                                num++;
-                                                LoopChlid(NextChild,num);
-                                                num--;
-                                            }  
-                                        }
-                                    });
-                                }
-                            }
-                            LoopChlid(NextChild,num);
-                        }
-                    });
-                    _op = '<div class="classify">\
-                            <span class="fl mr5">栏目分类：</span>\
-                            <div class="dropdown fl">\
-                            <div class="selectBox" type="text">'+pname+'</div><span class="arrow"></span>\
-                            <input class="selectBox_val" name="column_name" type="hidden" value="'+id+'"/>\
-                            <ul>'+option1+'</ul>\
-                            </div><span class="fl" style="margin-left: 30px">可见站点：</span>\
-                	<span style="color:#333; display: inline ">\
-                        <input type="checkbox" id="1" name="vehicle" value="pc_show" style=" display:none;"><label class="labe2"></label>PC\
-                    </span>\
-					<span style="color:#333; display: inline ">\
-                        <input type="checkbox" id="2" name="vehicle" value="mobile_show" style=" display:none;"><label class="labe2"></label>手机\
-                    </span></div>';
-                }
-                $('.warning_box').append(_op);
-                $('.warning_box .classify').css({'position':'absolute','top':'50px','left':'50px'});
-                $(".classify").on('click', '.labe2', function () {
-		if (!$(this).hasClass("chirdchecked")) {
-			$(this).addClass("chirdchecked");
-			$(this).siblings("input[type=checkbox]").attr("checked", true);
-		} else {
-			$(this).removeClass("chirdchecked");
-			$(this).siblings("input[type=checkbox]").attr("checked", false);
-		}
-                });
-                // 下拉框模拟事件
-                DropdownEvent(PageId);
-//                $('.not-allowed').MoveBox({context:'此为含有子级的父级栏目或为单页内容页，不支持选择！'});
-            });
-//                            var classifylist;
-//                            function lowestChild(value){
-//                                if(value.childmenu){
-//                                    $.each(value.childmenu,function(key,val){
-//                                        lowestChild(val);
-//                                    });
-//                                }else{
-//                                    if(value.type<4){
-//                                        classifylist +='<option value ="'+value.id+'">'+value.name+'</option>';
-//                                    }
-//                                }
-//                            }
-//                            classifylist='<select name="c_id">';
-//                                $.each(json.data,function(k,v){
-//                                    console.log(v.id);
-//                                    console.log(v.name);
-//                                    if(v.type<4){
-//                                        lowestChild(v);
-//                                    }
-//                                });       
-//                            classifylist +='</select>';
-//                            $('.warning_box .button').append(classifylist);
-////                            console.log(json);
+				checkJSON(json, function (json) {
+					var d = json.data;
+					var option1 = '', pid, pname = '', id;
+					var PageId = [];
+					var G_c_id = '';
+					if (json.err == 0) {
+						var option1 = '';
+
+
+						$.each(d, function (idx, ele) {
+
+							if (ele.type < 5) {
+
+								if (G_c_id == ele.id) {
+									pid = ele.p_id;
+									pname = ele.name;
+									id = ele.id;
+								}
+								if (ele.type == '4') {
+									PageId.push(ele.id);
+								}
+
+								option1 += '<li><a class="parents' + (ele.childmenu != null ? ' not-allowed' : '') + '" data-id="' + ele.id + '" data-size="' + ele.img_width + ',' + ele.img_height + ',' + ele.img_forcesize + '">' + ele.name + '</a></li>';
+								var NextChild = ele;
+								var num = 2;
+
+								var LoopChlid = function (NextChild, num) {
+									if (NextChild.childmenu != null) {
+										$.each(NextChild.childmenu, function (k, v) {
+											if (v.type < 5) {
+												if (G_c_id == v.id) {
+													pid = v.p_id;
+													pname = v.name;
+													id = v.id;
+												}
+												if (v.type == '4') {
+													PageId.push(v.id);
+												}
+												option1 += '<li><a class="LevelChild' + num + (v.childmenu != null ? ' not-allowed' : '') + '" data-pid="' + v.p_id + '" data-id="' + v.id + '" data-size="' + v.img_width + ',' + v.img_height + ',' + v.img_forcesize + '">├' + v.name + '</a></li>';
+												if (v.childmenu != null) {
+													NextChild = v;
+													num++;
+													LoopChlid(NextChild, num);
+													num--;
+												}
+											}
+										});
+									}
+								}
+								LoopChlid(NextChild, num);
+							}
+						});
+						_op = '<div class="classify">\
+								<span class="fl mr5">栏目分类：</span>\
+								<div class="dropdown fl">\
+								<div class="selectBox" type="text">' + pname + '</div><span class="arrow"></span>\
+								<input class="selectBox_val" name="column_name" type="hidden" value="' + id + '"/>\
+								<ul>' + option1 + '</ul>\
+								</div><span class="fl" style="margin-left: 30px">可见站点：</span>\
+						<span style="color:#333; display: inline ">\
+							<input type="checkbox" id="1" name="vehicle" value="pc_show" style=" display:none;"><label class="labe2"></label>PC\
+						</span>\
+						<span style="color:#333; display: inline ">\
+							<input type="checkbox" id="2" name="vehicle" value="mobile_show" style=" display:none;"><label class="labe2"></label>手机\
+						</span></div>';
+					}
+					$('.warning_box').append(_op);
+					$('.warning_box .classify').css({'position': 'absolute', 'top': '50px', 'left': '50px'});
+					$(".classify").on('click', '.labe2', function () {
+						if (!$(this).hasClass("chirdchecked")) {
+							$(this).addClass("chirdchecked");
+							$(this).siblings("input[type=checkbox]").attr("checked", true);
+						} else {
+							$(this).removeClass("chirdchecked");
+							$(this).siblings("input[type=checkbox]").attr("checked", false);
+						}
+					});
+					// 下拉框模拟事件
+					DropdownEvent(PageId);
+					//                $('.not-allowed').MoveBox({context:'此为含有子级的父级栏目或为单页内容页，不支持选择！'});
+				});
+				//                            var classifylist;
+				//                            function lowestChild(value){
+				//                                if(value.childmenu){
+				//                                    $.each(value.childmenu,function(key,val){
+				//                                        lowestChild(val);
+				//                                    });
+				//                                }else{
+				//                                    if(value.type<4){
+				//                                        classifylist +='<option value ="'+value.id+'">'+value.name+'</option>';
+				//                                    }
+				//                                }
+				//                            }
+				//                            classifylist='<select name="c_id">';
+				//                                $.each(json.data,function(k,v){
+				//                                    console.log(v.id);
+				//                                    console.log(v.name);
+				//                                    if(v.type<4){
+				//                                        lowestChild(v);
+				//                                    }
+				//                                });       
+				//                            classifylist +='</select>';
+				//                            $('.warning_box .button').append(classifylist);
+				////                            console.log(json);
 			}
 		});
-                $("select[name=c_id]").on("change",function(){
-                    alert($(this).val);
-                })
+		$("select[name=c_id]").on("change", function () {
+			alert($(this).val);
+		})
 		$('.warning_box .button').addClass('batchbtn');
-//        $('.batchbtn .save').val('批量编辑').css('cursor','not-allowed');
+		//        $('.batchbtn .save').val('批量编辑').css('cursor','not-allowed');
 		$('.batchbtn .save').hide();
 		$('.img-container>img').remove();
 		$('.btn-upload .up_pic_btn').remove();
 		$('.btn-upload').css('position', 'inherit');
 		$('.batchbtn .cancel').click(function () {
 			$('.warning_box').hide().prev().hide();
-		})
+		});
 		// 添加多图生成文章
 		$('#inputImage').uploadify({
 			'swf': 'images/uploadify.swf',
@@ -452,9 +452,9 @@ WarningBox.prototype = {
 				data.data[0].filename = file.name;
 				$('#' + file.id).attr('data-id', data.data[0].name.split('.')[0]);
 				html = '<div  class="article" data-id="' + data.data[0].name.split('.')[0] + '" style="width:100%;">\
-                                        <input type="hidden" name="img' + data.data[0].name + '" class="img" value="' + data.data[0].name + '" />\
-                                        <input type="text" name="title' + data.data[0].filename.split('.')[0] + '" class="title" value="' + data.data[0].filename.split('.')[0] + '" style="width:100%;" />\
-                                    </div>'
+											<input type="hidden" name="img' + data.data[0].name + '" class="img" value="' + data.data[0].name + '" />\
+											<input type="text" name="title' + data.data[0].filename.split('.')[0] + '" class="title" value="' + data.data[0].filename.split('.')[0] + '" style="width:100%;" />\
+										</div>'
 				$('#' + file.id).children('.uploadify-progress').append('<div class="batch_title">' + html + '</div>');
 				scrollmargin = $(".uploadify-queue").scrollTop() + $('#' + file.id).offset().top - $('.uploadify-queue').offset().top;
 				$(".uploadify-queue").animate({scrollTop: scrollmargin}, 1000);
@@ -646,8 +646,8 @@ function checkjs(parame) {
 				}
 			});
 		}
-//        勾选数目判断批量编辑显隐
-//        num >=2 ? $('.batchedit').fadeIn() : $('.batchedit').fadeOut();
+		//        勾选数目判断批量编辑显隐
+		//        num >=2 ? $('.batchedit').fadeIn() : $('.batchedit').fadeOut();
 		return false;
 	});
 	$(".jumbotron").on('click', '.labe2', function () {

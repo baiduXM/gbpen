@@ -9,11 +9,18 @@ class FormController extends BaseController {
 
 	/**
 	 * 表单列表
+	 * @param type $status
+	 * @return type
 	 */
-	public function getFormList() {
+	public function getFormList($status = null) {
 		$cus_id = Auth::id();
+		$status = Input::get('status') ? Input::get('status') : null;
 		//===根据用户id查找用户表单列表===
-		$data = DB::table('form')->where('cus_id', $cus_id)->get();
+		if (empty($status)) {
+			$data = DB::table('form')->where('cus_id', $cus_id)->get();
+		} else {
+			$data = DB::table('form')->where('cus_id', $cus_id)->where('status', $status)->get();
+		}
 		//===返回数据===
 		if ($data != NULL) {
 			$res = Response::json(['err' => 0, 'msg' => '获取表单列表成功', 'data' => $data]);

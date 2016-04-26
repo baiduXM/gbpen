@@ -17,7 +17,7 @@
 			"app/database/seeds",
 			"app/tests/TestCase.php",
 			"app/libraries",
-            "vendor/dark/smarty-view"
+			"vendor/dark/smarty-view"
 		]
 	},
 	"scripts": {
