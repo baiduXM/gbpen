@@ -789,6 +789,10 @@ function phone_indexController($scope,$http ,$location) {
                                                         info += barcode;
                                                     }
                                                     info += '</div>\
+                                                                  <button class="flush" data-role="'+v.for+'"><span class="set_up_name" data-role="'+v.for+'">刷新</span></button>\
+                                                                  </div>\
+                                                              </div>';
+                                                    info += '</div>\
                                                                   </div>\
                                                               </div>';
                                               }
@@ -839,21 +843,35 @@ function phone_indexController($scope,$http ,$location) {
 						oncallback : function(json){
                                                     checkJSON(json,function(json){
                                                         _this.closest('.feild-item').find('div[data-role='+_this.data('role')+']').children().remove();
-                                                          _newpic = '<div class="template-download fade fl in">\n\
+                                                         var  _newpic = '<div class="template-download fade fl in">\n\
                                                                         <div>\n\
                                                                             <span class="preview">\n\
                                                                             <div class="preview-close"><img src="images/preview-close.png" /></div>\n\
                                                                                 <img src="'+json.data.url+'" class="img_upload" data-name="'+json.data.name+'" style="width:80px;height:80px;padding:5px;" data-role='+_this.data('role')+' data-preimg="preimg">\n\
                                                                             </span>\n\
-                                                                        </div><input type="hidden" name="'+_this.data('role')+'" value="'+json.data.s_url+'"></div>';
+                                                                        </div><input type="hidden" name="'+_this.data('role')+'" value="'+json.data.s_url+'" /></div>';
                                                          _this.closest('.feild-item').find('div[data-role='+_this.data('role')+']').append(_newpic);
                                                     });
                                                 }
 					});
                 });
-                $('.preview-close').on('click',function(){
+                $('.preview-close').click(function(){
                     $(this).parents('.template-download').remove();
-                    return false;
+                });
+                $('.flush').on('click',function(){
+                    var _this = $(this);
+                    $http.post('../getqrcode',{barcode: 'mobile_domain'}).success(function(json){
+                        checkJSON(json,function(json){
+                        _this.closest('.feild-item').find('div[data-role='+_this.data('role')+']').children().remove();
+                        var _newpic = '<div class="template-download fade fl in">\n\
+                                                                        <div>\n\
+                                                                            <span class="preview">\n\
+                                                                                <img src="'+json.data+'" style="width:80px;height:80px;padding:5px;" data-role='+_this.data('role')+' data-preimg="preimg">\n\
+                                                                            </span>\n\
+                                                                        </div><input type="hidden" name="'+_this.data('role')+'" value="'+json.data+'" /></div>';
+                        _this.closest('.feild-item').find('div[data-role='+_this.data('role')+']').append(_newpic);
+                    });
+                });
                 });
     		$('.icon-guanbi').on('click',function(){
     			$('.consultation .consultation-item').length == 1 ? alert('请至少保留一个！') : $(this).closest('.consultation-item').remove();
