@@ -442,6 +442,14 @@ Route::post('file-upload', [//文件上传
 	'as' => 'file-upload',
 	'uses' => 'UploadController@fileRead'
 ]);
+Route::post('fileupload', [//文件上传
+	'as' => 'fileupload',
+	'uses' => 'UploadController@fileupload'
+]);
+Route::post('imgupload', [//图片同步
+	'as' => 'imgupload',
+	'uses' => 'UploadController@img_upload'
+]);
 
 Route::post('batchAdd', [//批量上传
 	'as' => 'batchAdd',

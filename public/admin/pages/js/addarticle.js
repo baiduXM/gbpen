@@ -13,7 +13,7 @@ function addarticleController($scope, $http, $location) {
             var warningbox = new WarningBox();
             warningbox._upImage({
                 aspectRatio: proportion,
-                ajaxurl    : '../file-upload?target=articles',
+                ajaxurl    : '../fileupload?target=articles',
                 IsMultiple : true,
                 oncallback : function(json){
                     var addpic = function(idx, ele){
@@ -21,7 +21,7 @@ function addarticleController($scope, $http, $location) {
                                         <div>\n\
                                             <span class="preview">\n\
                                             <div class="preview-close"><img src="images/preview-close.png" /></div>\n\
-                                                <img src="'+ele.url+'" style="width:80px;height:64px;padding:5px;" data-preimg="preimg">\n\
+                                                <img src="'+ele.url+'" class="img_upload" data-name="'+ele.name+'" style="width:80px;height:64px;padding:5px;" data-preimg="preimg">\n\
                                             </span>\n\
                                         </div>\n\
                                     </div>';
@@ -271,6 +271,10 @@ function addarticleController($scope, $http, $location) {
                 var len = $(this).attr('src').split('/').length;
                 upload_picname.push($(this).attr('src').split('/')[len-1]);
             });
+            var img_upload = [];
+            $('.up_pic_feild>.template-download .preview>.img_upload').each(function() {
+                img_upload.push($(this).data('name'));
+            });
             $http.post('../article-create', 
                 {id       : id,
                 c_id      : f_c,  
@@ -287,6 +291,12 @@ function addarticleController($scope, $http, $location) {
                 url       : url,
                 content   : art_info}).success(function(json) {
                 checkJSON(json, function(json){
+                    if(img_upload.length){
+                        $http.post('../imgupload?target=articles',
+                        {
+                            files    : img_upload
+                        });
+                    }
                     alert('修改成功！');
                     location.href='#/article';
                 });

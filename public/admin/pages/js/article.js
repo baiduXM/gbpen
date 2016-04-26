@@ -454,14 +454,25 @@ function articleController($scope, $http ,$location) {
                         $('.batchbtn .save').unbind().click(function(){
                             if(confirm('是否确定，并且批量生成文章？')){
                                 var articleArray = new Array();
+                                var img_upload = [];
+                                var pc_show = $('.classify input[value=pc_show][checked]').val()?'1':'0';
+                                var mobile_show = $('.classify input[value=mobile_show][checked]').val()?'1':'0';
+                                var c_id=$('.classify input[name=column_name]').val();
                                 $('.batch_title .article').each(function(){
+                                    img_upload.push($(this).children(".img").val());
                                     articleArray.push({
                                         img:$(this).children(".img").val(),
                                         title:$(this).children(".title").val(),
                                     });
                                 });
-                                $http.post('../article-batch-add',{ArticleBatch: articleArray}).success(function(json){
+                                $http.post('../article-batch-add',{ArticleBatch: articleArray,pc_show:pc_show,mobile_show:mobile_show,c_id:c_id}).success(function(json){
                                     checkJSON(json, function(json){
+                                        if(img_upload.length){
+                                            $http.post('../imgupload?target=articles',
+                                            {
+                                                files    : img_upload
+                                            });
+                                        }
                                         $('.warning_box ').hide().prev().hide();
                                     });
                                 });

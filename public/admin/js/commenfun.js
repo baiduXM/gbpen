@@ -312,6 +312,119 @@ WarningBox.prototype = {
 		var callbackdata = [];
 		var scrollmargin = 0;
 		// 改变弹框样式
+                $.ajax({
+			url: '../classify-list',
+			type: 'GET',
+			success: function (json) {
+                            checkJSON(json, function(json){
+                var d = json.data;
+                var option1 = '',pid,pname='',id;
+                var PageId = [];
+                var G_c_id='';
+                if(json.err == 0){
+                    var option1 = '';
+                    
+                                
+                    $.each(d,function(idx,ele){
+                        
+                        if(ele.type < 5){
+                            
+                            if(G_c_id == ele.id){
+                                pid = ele.p_id;
+                                pname = ele.name;
+                                id = ele.id;
+                            }
+                            if(ele.type == '4'){
+                                PageId.push(ele.id);
+                            }
+                            
+                            option1 += '<li><a class="parents'+(ele.childmenu != null?' not-allowed':'')+'" data-id="'+ele.id+'" data-size="'+ele.img_width+','+ele.img_height+','+ele.img_forcesize+'">'+ele.name+'</a></li>';
+                            var NextChild = ele;
+                            var num = 2;
+                            
+                            var LoopChlid = function(NextChild,num){
+                                if(NextChild.childmenu != null){
+                                    $.each(NextChild.childmenu,function(k,v){
+                                        if(v.type < 5){
+                                            if(G_c_id == v.id){
+                                                pid = v.p_id;
+                                                pname = v.name;
+                                                id = v.id;
+                                            }
+                                            if(v.type == '4'){
+                                                PageId.push(v.id);
+                                            }
+                                            option1 += '<li><a class="LevelChild'+num+(v.childmenu != null?' not-allowed':'')+'" data-pid="'+v.p_id+'" data-id="'+v.id+'" data-size="'+v.img_width+','+v.img_height+','+v.img_forcesize+'">├'+v.name+'</a></li>'; 
+                                            if(v.childmenu != null){
+                                                NextChild = v;
+                                                num++;
+                                                LoopChlid(NextChild,num);
+                                                num--;
+                                            }  
+                                        }
+                                    });
+                                }
+                            }
+                            LoopChlid(NextChild,num);
+                        }
+                    });
+                    _op = '<div class="classify">\
+                            <span class="fl mr5">栏目分类：</span>\
+                            <div class="dropdown fl">\
+                            <div class="selectBox" type="text">'+pname+'</div><span class="arrow"></span>\
+                            <input class="selectBox_val" name="column_name" type="hidden" value="'+id+'"/>\
+                            <ul>'+option1+'</ul>\
+                            </div><span class="fl" style="margin-left: 30px">可见站点：</span>\
+                	<span style="color:#333; display: inline ">\
+                        <input type="checkbox" id="1" name="vehicle" value="pc_show" style=" display:none;"><label class="labe2"></label>PC\
+                    </span>\
+					<span style="color:#333; display: inline ">\
+                        <input type="checkbox" id="2" name="vehicle" value="mobile_show" style=" display:none;"><label class="labe2"></label>手机\
+                    </span></div>';
+                }
+                $('.warning_box').append(_op);
+                $('.warning_box .classify').css({'position':'absolute','top':'50px','left':'50px'});
+                $(".classify").on('click', '.labe2', function () {
+		if (!$(this).hasClass("chirdchecked")) {
+			$(this).addClass("chirdchecked");
+			$(this).siblings("input[type=checkbox]").attr("checked", true);
+		} else {
+			$(this).removeClass("chirdchecked");
+			$(this).siblings("input[type=checkbox]").attr("checked", false);
+		}
+                });
+                // 下拉框模拟事件
+                DropdownEvent(PageId);
+//                $('.not-allowed').MoveBox({context:'此为含有子级的父级栏目或为单页内容页，不支持选择！'});
+            });
+//                            var classifylist;
+//                            function lowestChild(value){
+//                                if(value.childmenu){
+//                                    $.each(value.childmenu,function(key,val){
+//                                        lowestChild(val);
+//                                    });
+//                                }else{
+//                                    if(value.type<4){
+//                                        classifylist +='<option value ="'+value.id+'">'+value.name+'</option>';
+//                                    }
+//                                }
+//                            }
+//                            classifylist='<select name="c_id">';
+//                                $.each(json.data,function(k,v){
+//                                    console.log(v.id);
+//                                    console.log(v.name);
+//                                    if(v.type<4){
+//                                        lowestChild(v);
+//                                    }
+//                                });       
+//                            classifylist +='</select>';
+//                            $('.warning_box .button').append(classifylist);
+////                            console.log(json);
+			}
+		});
+                $("select[name=c_id]").on("change",function(){
+                    alert($(this).val);
+                })
 		$('.warning_box .button').addClass('batchbtn');
 //        $('.batchbtn .save').val('批量编辑').css('cursor','not-allowed');
 		$('.batchbtn .save').hide();
@@ -324,7 +437,7 @@ WarningBox.prototype = {
 		// 添加多图生成文章
 		$('#inputImage').uploadify({
 			'swf': 'images/uploadify.swf',
-			'uploader': '../batchAdd?target=articles',
+			'uploader': '../fileupload?target=articles',
 			'removeCompleted': false,
 			'buttonText': "添加",
 			'onUploadStart': function (file) {

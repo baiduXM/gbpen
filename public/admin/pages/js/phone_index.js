@@ -289,7 +289,7 @@ function phone_indexController($scope,$http ,$location) {
 						<div class="materlist-first">\n\
 			            	<dt class="title">'+(parameter.title || '')+'</dt>\n\
 			                <dd class="msgimg">\n\
-			                <img src="'+parameter.image+'" alt="" width="100%">\n\
+			                <img src="'+parameter.image+'" '+(parameter.is_upload?'class="img_upload" data-name="'+parameter.subimage+'"':'')+'alt="" width="100%">\n\
 			                </dd>\n\
 			                <div class="concrol">\n\
 			                	<dl><dd class="zz"></dd><dd class="concrol-edite"><i class="iconfont icon-bianji"></i></dd></dl>\n\
@@ -448,7 +448,7 @@ function phone_indexController($scope,$http ,$location) {
 		        	key = $eventthis.closest('form').data('key');
 		        warningbox._upImage({
 		        	aspectRatio: aspectRatio,
-		            ajaxurl    : '../file-upload?target=page_index',
+		            ajaxurl    : '../fileupload?target=page_index',
 		            oncallback : function(json){
 		            	if($eventthis.closest('#phone_index_image').length){
 		            		$('#phone_index_image div.phone_index-field').remove();
@@ -457,7 +457,8 @@ function phone_indexController($scope,$http ,$location) {
 								image	: json.data.url,
 								subimage: json.data.name,
 								Tag 	: 'div',
-								IsNew   : true
+								IsNew   : true,
+                                                                is_upload:'img_upload',
 							});
 		            		$eventthis.parent().before(_newpic);
 		            	}else{
@@ -466,7 +467,8 @@ function phone_indexController($scope,$http ,$location) {
 								image	: json.data.url,
 								subimage: json.data.name,
 								num		: ++(_this.count),
-								IsNew   : true
+								IsNew   : true,
+                                                                is_upload:'img_upload',
 							});
 							var addBtn = (lastColumnNum+1)%ColumnNum,
 								addpic = (lastColumnNum+2)%ColumnNum;
@@ -532,10 +534,20 @@ function phone_indexController($scope,$http ,$location) {
 				var _this = $(this).closest('.phone_index-field');
 				$(this).parents(".phone_index-field").find(".materlist-secondbox,.detailbox").slideUp();
 				$(this).parents(".phone_index-field").find(".zz").hide();
+                                var img_upload = [];
+                                $('.msgimg>.img_upload').each(function() {
+                                    img_upload.push($(this).data('name'));
+                                });
 				if($(this).parents('div').hasClass('materlist-secondbox')){
 					//幻灯片保存
 					var data = $(this).closest('form').serializeJson();
 					$http.post('../mhomepage-modify',data).success(function(){
+                                            if(img_upload.length){
+                                                $http.post('../imgupload?target=page_index',
+                                                {
+                                                    files    : img_upload
+                                                });
+                                            }
 						phoneindexinit.Save_hint();
 						_this.removeClass('new');
 					});
@@ -823,7 +835,7 @@ function phone_indexController($scope,$http ,$location) {
                     var warningbox = new WarningBox();
                     warningbox._upImage({
 						aspectRatio: role,
-						ajaxurl    : '../file-upload?target=common&imgsize=200',
+						ajaxurl    : '../fileupload?target=common',
 						oncallback : function(json){
                                                     checkJSON(json,function(json){
                                                         _this.closest('.feild-item').find('div[data-role='+_this.data('role')+']').children().remove();
@@ -831,9 +843,9 @@ function phone_indexController($scope,$http ,$location) {
                                                                         <div>\n\
                                                                             <span class="preview">\n\
                                                                             <div class="preview-close"><img src="images/preview-close.png" /></div>\n\
-                                                                                <img src="'+json.data.url+'" style="width:80px;height:80px;padding:5px;" data-role='+_this.data('role')+' data-preimg="preimg">\n\
+                                                                                <img src="'+json.data.url+'" class="img_upload" data-name="'+json.data.name+'" style="width:80px;height:80px;padding:5px;" data-role='+_this.data('role')+' data-preimg="preimg">\n\
                                                                             </span>\n\
-                                                                        </div><input type="hidden" name="'+_this.data('role')+'" value="'+json.data.url+'"></div>';
+                                                                        </div><input type="hidden" name="'+_this.data('role')+'" value="'+json.data.s_url+'"></div>';
                                                          _this.closest('.feild-item').find('div[data-role='+_this.data('role')+']').append(_newpic);
                                                     });
                                                 }
@@ -1012,8 +1024,19 @@ function phone_indexController($scope,$http ,$location) {
 						type  : type
 		    		});				
 				});
+                        var img_upload = [];
+                        $('.preview>.img_upload').each(function() {
+                            img_upload.push($(this).data('name'));
+                        });
 		    	$http.post('../quickbar.jsonmodify',{QuickBar: navsArray}).success(function(json){
 		    		checkJSON(json,function(json){
+                                        if(img_upload.length){
+                                            $http.post('../imgupload?target=common',
+                                            {
+                                                files    : img_upload,
+                                                imgsize  : 200
+                                            });
+                                        }
 		    			phoneindexinit.Save_hint();
 		    		});
 		    	});

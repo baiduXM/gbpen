@@ -141,7 +141,7 @@ class PrintController extends BaseController {
 		if ($website_confige_value) {
 			$default = json_decode(trim($json), TRUE);
 			$result = $this->array_merge_recursive_new($default, $website_confige_value);
-			//$result = $website_confige_value;
+                        
 			$this->replaceUrl($result);
 			$result = $this->dataDeal($result);
 			foreach ($result as &$v) {

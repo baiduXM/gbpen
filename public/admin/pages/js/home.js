@@ -317,7 +317,7 @@ function homeController($scope, $http) {
 					var warningbox = new WarningBox();
 					warningbox._upImage({
 						aspectRatio: ratio[0]/ratio[1],
-						ajaxurl    : '../file-upload?target=page_index',
+						ajaxurl    : '../fileupload?target=page_index',
 						oncallback : function(json){
 							var role = _this.data('role');
 							var pic_name = role.split('-')[1];
@@ -327,7 +327,7 @@ function homeController($scope, $http) {
 									<div class="preview-close"><img src="images/preview-close.png" /></div>\n\
 									<div class="preview-edit" style="visibility:hidden"><img src="images/preview-edit.png" /><span>编辑</span></div>\n\
 									<div class="preview-mask" style="visibility:hidden"></div>\n\
-									<img src="' + json.data.url + '" class="home_pic" data-preimg="preimg"></a>\n\
+									<img src="' + json.data.url + '" data-name="'+json.data.name+'" class="home_pic img_upload" data-preimg="preimg"></a>\n\
 									<input type="hidden" value="' + json.data.name + '" name="data['+pic_name+']'+(upload_Classname == 'images'?'['+new_num+']':'')+'[src]" />\n\
 									<input type="hidden" value="" name="data['+pic_name+']'+(upload_Classname == 'images'?'['+new_num+']':'')+'[title]" />\n\
 									<input type="hidden" value="" name="data['+pic_name+']'+(upload_Classname == 'images'?'['+new_num+']':'')+'[href]" />\n\
@@ -364,12 +364,38 @@ function homeController($scope, $http) {
                         return false;
                     }
 	    	var data1 = $("#temple-data").serializeJson();
+                var img_upload = [];
+                $('.preview>.img_upload').each(function() {
+                    img_upload.push($(this).data('name'));
+                });
 	        $http.post('../homepage-modify',data1).success(function(json) {
 	        	checkJSON(json,function(json){
-					$('.home-content').append('<div class="hint_box">保存成功！</div>');
-					setTimeout(function(){
-					    $('.hint_box').remove();
-					},2000);
+                            if(img_upload.length){
+                                if(!$('.tpl_mask').attr('class')){
+                                    var fade = '<div class="tpl_mask" style="display: block;"></div><div class="text_tishi">努力保存中<i class="icon-spin4 iconfont icon-shuaxin"></i></div>';
+                                    $('body').append(fade);
+                                }
+                                    $('.tpl_mask').show();
+                                    $('.text_tishi').show();
+                                $http.post('../imgupload?target=page_index',
+                                {
+                                    files    : img_upload
+                                }).success(function(){
+                                    $('.tpl_mask').hide();
+                                    $('.text_tishi').hide();
+                                    $('.home-content').append('<div class="hint_box">保存成功！</div>');
+                                    setTimeout(function(){
+                                        $('.hint_box').remove();
+                                    },2000);
+                                    return false;
+                                });
+                            }else{
+                                $('.home-content').append('<div class="hint_box">保存成功！</div>');
+                                setTimeout(function(){
+                                    $('.hint_box').remove();
+                                },2000);
+                            }
+                                
 	        	});
 	        });
 	        return false;

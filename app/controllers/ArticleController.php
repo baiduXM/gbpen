@@ -343,9 +343,15 @@ class ArticleController extends BaseController{
     public function articleBatchAdd(){
         $cus_id=Auth::id();
         $ArticleArray = Input::get('ArticleBatch');
+        $c_id=Input::get('c_id');
+        $pc_show=Input::get('pc_show');
+        $mobile_show=Input::get('mobile_show');
         foreach ($ArticleArray as $Article){
             $article=new Articles();
             $article->cus_id=$cus_id;
+            $article->c_id=$c_id;
+            $article->pc_show=$pc_show;
+            $article->mobile_show=$mobile_show;
             $article->is_top=' ';
             $article->is_star=' ';
             $article->is_star=' ';

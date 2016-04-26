@@ -154,67 +154,132 @@ class UploadController extends BaseController{
 	}
 	
         
+ 
         
-        public function batchAdd(){
+        public function img_upload(){
         $customer = Auth::user()->name;
         $cus_id = Auth::id();
         $target = Input::get('target');
         $this->check_dir($target,$customer);
-        $files=Input::file();
+        $files = explode(',',ltrim(Input::get('files'),','));
+        $dir=public_path('customers/'.$customer.'/cache_images/');
+        $img_size=Input::get('imgsize')?Input::get('imgsize'):400;
         $destinationPath = public_path('customers/'.$customer.'/images/');
         if($files){
-
-            $data=array();
-            $i=0;
-            foreach($files as $file){
-                if($file -> isValid()){
-                    $type = $file->getClientOriginalExtension();
-                    $fileName=time().str_random(4).'.'.$type;
-                    $up_result=$file->move($destinationPath.'/l/'.$target.'/',$fileName);
-                    if($up_result){
-                        $s_path = $destinationPath.'/s/'.$target.'/'.$fileName;
-                        $img_info=  getimagesize($destinationPath.'/l/'.$target.'/'.$fileName);
-                        switch($img_info[2]){
-                            case 1:$type='gif';break;
-                            case 2:$type='jpg';break;
-                            case 3:$type='png';break;
+                $data=array();
+                $i=0;
+                //同步到客户服务器
+                $customerinfo = Customer::find($cus_id);
+                $ftp_array = explode(':',$customerinfo->ftp_address);
+                $port= $customerinfo->ftp_port;
+                $ftpdir=$customerinfo->ftp_dir;
+                $ftp=$customerinfo->ftp;
+                $domain=$customerinfo->pc_domain?$customerinfo->pc_domain:($customer.".n01.5067.org");
+                $ftp_array[1] = isset($ftp_array[1])?$ftp_array[1]:$port;
+                $conn = ftp_connect($ftp_array[0],$ftp_array[1]);
+                foreach((array)$files as $fileName){
+                    var_dump($fileName);
+                    if(file_exists(public_path('customers/'.$customer.'/cache_images/'.$fileName))){
+                        $file = explode('.',$fileName);
+                        $type=  end($file);
+                        $up_result=copy(public_path('customers/'.$customer.'/cache_images/'.$fileName),$destinationPath.'/l/'.$target.'/'.$fileName);
+                        if($up_result){
+                            $s_path = $destinationPath.'/s/'.$target.'/'.$fileName;
+                            $img_info=  getimagesize($destinationPath.'/l/'.$target.'/'.$fileName);
+                            switch($img_info[2]){
+                                case 1:$type='gif';break;
+                                case 2:$type='jpg';break;
+                                case 3:$type='png';break;
+                            }
+                            $this->resizeImage($destinationPath.'/l/'.$target.'/'.$fileName,$type,$s_path,$img_size,$img_size);
+                            copy($destinationPath.'/s/'.$target.'/'.$fileName, public_path('customers/'.$customer.'/mobile/images/l/'.$target.'/'.$fileName));
+                            $mobile_s_path=public_path('customers/'.$customer.'/mobile/images/s/').$target.'/'.$fileName;
+                            $this->resizeImage(public_path('customers/'.$customer.'/mobile/images/l/').$target.'/'.$fileName,$type,$mobile_s_path,$img_size,$img_size);
+                            if($conn){
+                                ftp_login($conn,$customerinfo->ftp_user,$customerinfo->ftp_pwd);
+                                ftp_pasv($conn, 1);
+                                if(trim($ftp)=='1'){
+                                    ftp_put($conn,$customer.'/images/l/'.$target.'/'.$fileName,$destinationPath.'/l/'.$target.'/'.$fileName,FTP_BINARY);
+                                    ftp_put($conn,$customer.'/images/s/'.$target.'/'.$fileName,$destinationPath.'/s/'.$target.'/'.$fileName,FTP_BINARY);
+                                    ftp_put($conn,$customer.'/mobile/images/l/'.$target.'/'.$fileName,public_path('customers/'.$customer.'/mobile/images/l/').$target.'/'.$fileName,FTP_BINARY);
+                                    ftp_put($conn,$customer.'/mobile/images/s/'.$target.'/'.$fileName,public_path('customers/'.$customer.'/mobile/images/s/').$target.'/'.$fileName,FTP_BINARY);
+                                 }
+                                 else{
+                                    ftp_put($conn,$ftpdir.'/'.'images/l/'.$target.'/'.$fileName,$destinationPath.'/l/'.$target.'/'.$fileName,FTP_BINARY);
+                                    ftp_put($conn,$ftpdir.'/'.'images/s/'.$target.'/'.$fileName,$destinationPath.'/s/'.$target.'/'.$fileName,FTP_BINARY);
+                                    ftp_put($conn,$ftpdir.'/'.'mobile/images/l/'.$target.'/'.$fileName,public_path('customers/'.$customer.'/mobile/images/l/').$target.'/'.$fileName,FTP_BINARY);
+                                    ftp_put($conn,$ftpdir.'/'.'mobile/images/s/'.$target.'/'.$fileName,public_path('customers/'.$customer.'/mobile/images/s/').$target.'/'.$fileName,FTP_BINARY); 
+                                 }
+                            }
+                            $data[$i]['name']=$fileName;
+                            $data[$i]['url']=asset('customers/'.$customer.'/images/l/'.$target.'/'.$fileName);
+                            $data[$i]['s_url']='http://'.$domain.'/'.'images/s/'.$target.'/'.$fileName;
+                            $i++;
                         }
-                        $this->resizeImage($destinationPath.'/l/'.$target.'/'.$fileName,$type,$s_path,800,800);
-                        copy($destinationPath.'/s/'.$target.'/'.$fileName, public_path('customers/'.$customer.'/mobile/images/l/'.$target.'/'.$fileName));
-                        $mobile_s_path=public_path('customers/'.$customer.'/mobile/images/s/').$target.'/'.$fileName;
-                        $this->resizeImage(public_path('customers/'.$customer.'/mobile/images/l/').$target.'/'.$fileName,$type,$mobile_s_path,800,800);
-                       //同步到客户服务器
-                        $customerinfo = Customer::find($cus_id);
-                        $ftp_array = explode(':',$customerinfo->ftp_address);
-                        $port= $customerinfo->ftp_port;
-                        $ftpdir=$customerinfo->ftp_dir;
-                        $ftp=$customerinfo->ftp;
-                        $ftp_array[1] = isset($ftp_array[1])?$ftp_array[1]:$port;
-                        $conn = ftp_connect($ftp_array[0],$ftp_array[1]);
-                        if($conn){
-                            ftp_login($conn,$customerinfo->ftp_user,$customerinfo->ftp_pwd);
-                            ftp_pasv($conn, 1);
-                           if(trim($ftp)=='1'){
-                             ftp_put($conn,$customer.'/images/l/'.$target.'/'.$fileName,$destinationPath.'/l/'.$target.'/'.$fileName,FTP_BINARY);
-                             ftp_put($conn,$customer.'/images/s/'.$target.'/'.$fileName,$destinationPath.'/s/'.$target.'/'.$fileName,FTP_BINARY);
-                             ftp_put($conn,$customer.'/mobile/images/l/'.$target.'/'.$fileName,public_path('customers/'.$customer.'/mobile/images/l/').$target.'/'.$fileName,FTP_BINARY);
-                             ftp_put($conn,$customer.'/mobile/images/s/'.$target.'/'.$fileName,public_path('customers/'.$customer.'/mobile/images/s/').$target.'/'.$fileName,FTP_BINARY);
-                    }
-                    else{
-                            ftp_put($conn,$ftpdir.'/'.'images/l/'.$target.'/'.$fileName,$destinationPath.'/l/'.$target.'/'.$fileName,FTP_BINARY);
-                            ftp_put($conn,$ftpdir.'/'.'images/s/'.$target.'/'.$fileName,$destinationPath.'/s/'.$target.'/'.$fileName,FTP_BINARY);
-                            ftp_put($conn,$ftpdir.'/'.'mobile/images/l/'.$target.'/'.$fileName,public_path('customers/'.$customer.'/mobile/images/l/').$target.'/'.$fileName,FTP_BINARY);
-                            ftp_put($conn,$ftpdir.'/'.'mobile/images/s/'.$target.'/'.$fileName,public_path('customers/'.$customer.'/mobile/images/s/').$target.'/'.$fileName,FTP_BINARY); 
-                    }ftp_close($conn);
-                        }
-                        $data[$i]['name']=$fileName;
-                        
-                        $data[$i]['url']=asset('customers/'.$customer.'/images/l/'.$target.'/'.$fileName);
-                        $i++;
                     }
                 }
+                @ftp_close($conn);
+                $this->deldirfile($dir);
+                return Response::json(['err' => 0, 'msg' => '','data'=>$data]);
+            }else{
+                $this->deldirfile($dir);
+                return Response::json(['err' => 1001, 'msg' => '保存失败']);
             }
-            return Response::json(['err' => 0, 'msg' => '','data'=>$data]);
+	}
+        
+        public function fileupload(){
+        $customer = Auth::user()->name;
+        $cus_id = Auth::id();
+        $target = Input::get('target');
+        $files=Input::file();
+        $dir=public_path('customers/'.$customer.'/cache_images/');
+        $customerinfo = Customer::find($cus_id);
+        $domain=$customerinfo->pc_domain?$customerinfo->pc_domain:($customer.".n01.5067.org");
+        if(!is_dir($dir)){
+            mkdir($dir,0777,true);
+        }
+        if($files){
+            if($target == 'imgcache'){
+                $id = $cus_id;
+                $filename = Input::get('filename');
+                $filename = explode('.', $filename);
+                $filetype = end($filename);
+                $name = WebsiteInfo::leftJoin('template','pc_tpl_id','=','template.id')->where('website_info.cus_id',$id)->pluck('name');
+                if($files['upload_file0'] -> isValid()){
+                    $type = $files['upload_file0']->getClientOriginalExtension();
+                    $truth_name=time().mt_rand(100,999).'.'.$type;
+                    $up_result=$files['upload_file0']->move(public_path('templates/'.$name.'/img_cache/'),$truth_name);
+                    if($up_result){
+                        $load['name'] = $truth_name;
+                        if($filetype == 'html')
+                            $load['url'] = '{$site_url}images/'.$truth_name;
+                        elseif($filetype == 'json')
+                            $load['url'] = 'images/'.$truth_name;
+                        else
+                            $load['url'] = '../images/'.$truth_name;
+                        $return = ['err'=>0,'msg' => '图片上传成功','data' => $load];
+                    }else
+                        $return = ['err'=>1001,'msg' => '图片上传失败','data' => ''];
+                }
+                    return Response::json($return);
+            }else{
+                $data=array();
+                $i=0;
+                foreach($files as $file){
+                    if($file -> isValid()){
+                        $type = $file->getClientOriginalExtension();
+                        $fileName=time().str_random(4).'.'.$type;
+                        $up_result=$file->move($dir.'/',$fileName);
+                        if($up_result){
+                            $data[$i]['name']=$fileName;
+                            $data[$i]['url']=asset('customers/'.$customer.'/cache_images/'.$fileName);
+                            $data[$i]['s_url']=((strpos('http://', $domain) !== false)?'http://':'').$domain.'/'.'images/s/'.$target.'/'.$fileName;
+                            $i++;
+                        }
+                    }
+                }
+                return Response::json(['err' => 0, 'msg' => '','data'=>$data]);
+            }
         }else{
             $file = Input::get('image');
             if(strpos($file,'jpeg')){
@@ -224,48 +289,12 @@ class UploadController extends BaseController{
             }
             $fileName = time().str_random(4).'.'.$type;
             if(strpos($file,'jpeg')){
-                $upload = file_put_contents($destinationPath.'/l/'.$target.'/'.$fileName,base64_decode(preg_replace('/data\:image\/jpeg\;base64\,/i','',$file)));
+                $upload = file_put_contents($dir.'/'.$fileName,base64_decode(preg_replace('/data\:image\/jpeg\;base64\,/i','',$file)));
             }else{
-                $upload = file_put_contents($destinationPath.'/l/'.$target.'/'.$fileName,base64_decode(preg_replace('/data\:image\/png\;base64\,/i','',$file)));               
+                $upload = file_put_contents($dir.'/'.$fileName,base64_decode(preg_replace('/data\:image\/png\;base64\,/i','',$file)));               
             }
             if($upload){
-                $s_path = $destinationPath.'/s/'.$target.'/'.$fileName;
-                $img_info=  getimagesize($destinationPath.'/l/'.$target.'/'.$fileName);
-                switch($img_info[2]){
-                    case 1:$type='gif';break;
-                    case 2:$type='jpg';break;
-                    case 3:$type='png';break;
-                }
-                $this->resizeImage($destinationPath.'/l/'.$target.'/'.$fileName,$type,$s_path,800,800);
-                copy($destinationPath.'/s/'.$target.'/'.$fileName, public_path('customers/'.$customer.'/mobile/images/l/'.$target.'/'.$fileName));
-                $mobile_s_path=public_path('customers/'.$customer.'/mobile/images/s/').$target.'/'.$fileName;
-                $this->resizeImage(public_path('customers/'.$customer.'/mobile/images/l/').$target.'/'.$fileName,$type,$mobile_s_path,800,800);
-               //同步到客户服务器
-                $customerinfo = Customer::find($cus_id);
-                $ftp_array = explode(':',$customerinfo->ftp_address);
-                $port= $customerinfo->ftp_port;
-                $ftpdir=$customerinfo->ftp_dir;
-                $ftp=$customerinfo->ftp;
-                $ftp_array[1] = isset($ftp_array[1])?$ftp_array[1]:$port;
-                $conn = ftp_connect($ftp_array[0],$ftp_array[1]);
-                 if($conn){
-                    ftp_login($conn,$customerinfo->ftp_user,$customerinfo->ftp_pwd);
-                    ftp_pasv($conn, 1);
-                   if(trim($ftp)=='1'){
-                     ftp_put($conn,$customer.'/images/l/'.$target.'/'.$fileName,$destinationPath.'/l/'.$target.'/'.$fileName,FTP_BINARY);
-                     ftp_put($conn,$customer.'/images/s/'.$target.'/'.$fileName,$destinationPath.'/s/'.$target.'/'.$fileName,FTP_BINARY);
-                     ftp_put($conn,$customer.'/mobile/images/l/'.$target.'/'.$fileName,public_path('customers/'.$customer.'/mobile/images/l/').$target.'/'.$fileName,FTP_BINARY);
-                     ftp_put($conn,$customer.'/mobile/images/s/'.$target.'/'.$fileName,public_path('customers/'.$customer.'/mobile/images/s/').$target.'/'.$fileName,FTP_BINARY);
-                    }
-                    else{
-                     ftp_put($conn,$ftpdir.'/'.'images/l/'.$target.'/'.$fileName,$destinationPath.'/l/'.$target.'/'.$fileName,FTP_BINARY);
-                     ftp_put($conn,$ftpdir.'/'.'images/s/'.$target.'/'.$fileName,$destinationPath.'/s/'.$target.'/'.$fileName,FTP_BINARY);
-                     ftp_put($conn,$ftpdir.'/'.'mobile/images/l/'.$target.'/'.$fileName,public_path('customers/'.$customer.'/mobile/images/l/').$target.'/'.$fileName,FTP_BINARY);
-                     ftp_put($conn,$ftpdir.'/'.'mobile/images/s/'.$target.'/'.$fileName,public_path('customers/'.$customer.'/mobile/images/s/').$target.'/'.$fileName,FTP_BINARY); 
-                    }ftp_close($conn);
-                 }
-
-                return Response::json(['err' => 0, 'msg' => '','data'=>['name' => $fileName,'url' => asset('customers/'.$customer.'/images/l/'.$target.'/'.$fileName)]]);
+                return Response::json(['err' => 0, 'msg' => '','data'=>['name' => $fileName,'url' => asset('customers/'.$customer.'/cache_images/'.$fileName),'s_url' => ((strpos('http://', $domain) !== false)?'http://':'').$domain.'/'.'images/s/'.$target.'/'.$fileName]]);
 
             }
             else{
@@ -273,9 +302,6 @@ class UploadController extends BaseController{
             }            
         }
 	}
-	
-        
-        
         
         
         
@@ -328,6 +354,19 @@ class UploadController extends BaseController{
             default:break;
         }
         imagedestroy($canvas);
+    }
+        private function deldirfile($dir) {
+        //删除目录下的文件：
+        $dh=opendir($dir);
+        while ($file=readdir($dh)) {
+          if($file!="." && $file!="..") {
+            $fullpath=$dir."/".$file;
+            var_dump($fullpath);
+//            if(is_file($fullpath)) {
+//                @unlink($fullpath);
+//            }
+          }
+        }
     }
 	
 }

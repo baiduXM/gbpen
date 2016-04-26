@@ -490,6 +490,10 @@ function columnController($scope, $http) {
 					}
 
 					var first = true;
+                                        var img_upload = [];
+                                        $('.preview>.img_upload').each(function() {
+                                            img_upload.push($(this).data('name'));
+                                        });
 					var savePostRequest = function (first) {
 						$http.post('../classify-modify', {id: id,
 							p_id: vpid,
@@ -507,6 +511,12 @@ function columnController($scope, $http) {
 							article_type: article_type,
 							page_content: editor.getContent()}).success(function (json) {
 							checkJSON(json, function (json) {
+                                                                if(img_upload.length){
+                                                                    $http.post('../imgupload?target=category',
+                                                                    {
+                                                                        files    : img_upload
+                                                                    });
+                                                                }
 								_this.getJson();//重新获取列表
 								var hint_box = new Hint_box();
 								hint_box;
@@ -677,14 +687,14 @@ function columnController($scope, $http) {
 				var warningbox = new WarningBox();
 				warningbox._upImage({
 					aspectRatio: proportion,
-					ajaxurl: '../file-upload?target=category',
+					ajaxurl: '../fileupload?target=category',
 					oncallback: function (json) {
 						$('.column_pic .template-download').remove();
 						_newpic = '<div class="template-download fade fl in">\n\
                                         <div>\n\
                                             <span class="preview">\n\
                                             <div class="preview-close"><img src="images/preview-close.png" /></div>\n\
-                                                <img src="' + json.data.url + '" style="width:80px;height:64px;padding:5px;" data-preimg="preimg">\n\
+                                                <img src="' + json.data.url + '" class="img_upload" data-name="'+json.data.name+'" style="width:80px;height:64px;padding:5px;" data-preimg="preimg">\n\
                                             </span>\n\
                                         </div>\n\
                                     </div>';
