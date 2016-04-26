@@ -314,8 +314,8 @@ function addformController($scope, $http, $location) {
 		}
 
 		_div += '<li class="list-item"><p class="content-l">排序：</p>\n\
-				<p class="content-l"><span class="option-item"><input type="text" name="order" value="' + data.order + '"/></span>\n\
-				<span class="option-item"><button name="moveup">上移</button><button name="movedown">下移</button></span></p></li>';
+				<p class="content-l"><span class="option-item"><input type="text" name="order" value="' + data.order + '"/></span>';
+//		_div += '<span class="option-item"><button name="moveup">上移</button><button name="movedown">下移</button></span></p></li>';
 
 		if (data.config !== null) {
 			//===TODO===
@@ -574,20 +574,20 @@ function addformController($scope, $http, $location) {
 			})();
 		});
 		//===上移、下移===
-		$('[name="moveup"]').click(function () {
-			$.post('../form-column-move', {form_id: form_id, column_id: data.column_id, operate: 'up'}, function (json) {
-				checkJSON(json, function (json) {
-					Hint_box(json.msg);
-
-				});
-			});
-		});
-		$('[name="movedown"]').click(function () {
-			$.post('../form-column-move', {form_id: form_id, column_id: data.column_id, operate: 'down'}, function (json) {
-				checkJSON(json, function (json) {
-					Hint_box(json.msg);
-				});
-			});
-		});
+//		$('[name="moveup"]').click(function () {
+//			$.post('../form-column-move', {form_id: form_id, column_id: data.column_id, operate: 'up'}, function (json) {
+//				checkJSON(json, function (json) {
+//					Hint_box(json.msg);
+//
+//				});
+//			});
+//		});
+//		$('[name="movedown"]').click(function () {
+//			$.post('../form-column-move', {form_id: form_id, column_id: data.column_id, operate: 'down'}, function (json) {
+//				checkJSON(json, function (json) {
+//					Hint_box(json.msg);
+//				});
+//			});
+//		});
 	}
 }

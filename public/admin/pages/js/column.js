@@ -439,7 +439,7 @@ function columnController($scope, $http) {
 			});
 			$('#models .mod_border,#inside_model .mod_border').click(function () {
 				$(this).addClass('cu');
-				$(this).parent(".tpl").siblings().find('.mod_border').removeClass('cu')
+				$(this).parent(".tpl").siblings().find('.mod_border').removeClass('cu');
 			});
 		},
 		_Save_id: function (parame) {
