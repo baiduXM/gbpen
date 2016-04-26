@@ -273,7 +273,7 @@ class UploadController extends BaseController{
                         if($up_result){
                             $data[$i]['name']=$fileName;
                             $data[$i]['url']=asset('customers/'.$customer.'/cache_images/'.$fileName);
-                            $data[$i]['s_url']=((strpos('http://', $domain) !== false)?'http://':'').$domain.'/'.'images/s/'.$target.'/'.$fileName;
+                            $data[$i]['s_url']=((strpos('http://', $domain) == false)?'http://':'').$domain.'/'.'images/s/'.$target.'/'.$fileName;
                             $i++;
                         }
                     }
@@ -294,7 +294,7 @@ class UploadController extends BaseController{
                 $upload = file_put_contents($dir.'/'.$fileName,base64_decode(preg_replace('/data\:image\/png\;base64\,/i','',$file)));               
             }
             if($upload){
-                return Response::json(['err' => 0, 'msg' => '','data'=>['name' => $fileName,'url' => asset('customers/'.$customer.'/cache_images/'.$fileName),'s_url' => ((strpos('http://', $domain) !== false)?'http://':'').$domain.'/'.'images/s/'.$target.'/'.$fileName]]);
+                return Response::json(['err' => 0, 'msg' => '','data'=>['name' => $fileName,'url' => asset('customers/'.$customer.'/cache_images/'.$fileName),'s_url' => ((strpos('http://', $domain) == false)?'http://':'').$domain.'/'.'images/s/'.$target.'/'.$fileName]]);
 
             }
             else{
