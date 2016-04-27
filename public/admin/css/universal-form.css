@@ -31,6 +31,9 @@
 	background: grey;
 }
 
+
+
+
 /*===选项卡内容部分===*/
 .tab-content{
 	text-align: center;
@@ -67,7 +70,7 @@
 	min-height: 20px;
 	line-height: 20px;
 }
-input[type="submit"],input[type="reset"]{
+input[type="submit"],input[type="reset"],input[type="button"]{
 	width: 100px;
 	height: 30px;
 }
@@ -208,8 +211,11 @@ input[type="radio"]:checked {
 }
 
 
-.hover{
+.click{
 	background: #D0E2F3;
+}
+.hover{
+	border: 1px #57A5CA dashed;
 }
 
 button{

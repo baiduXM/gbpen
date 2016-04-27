@@ -25,7 +25,7 @@ class FormController extends BaseController {
 		if ($data != NULL) {
 			$res = Response::json(['err' => 0, 'msg' => '获取表单列表成功', 'data' => $data]);
 		} else {
-			$res = Response::json(['err' => 0, 'msg' => '获取表单列表为空', 'data' => null]);
+			$res = Response::json(['err' => 0, 'msg' => '表单列表为空', 'data' => null]);
 		}
 		return $res;
 	}
@@ -53,7 +53,7 @@ class FormController extends BaseController {
 		if ($id != NULL) {
 			$res = Response::json(['err' => 0, 'msg' => '创建表单成功', 'data' => $id]);
 		} else {
-			$res = Response::json(['err' => 1, 'msg' => '创建表单失败', 'data' => '']);
+			$res = Response::json(['err' => 1, 'msg' => '创建表单失败', 'data' => null]);
 		}
 		return $res;
 	}
@@ -493,7 +493,7 @@ class FormController extends BaseController {
 		if ($res != NULL) {
 			$json = Response::json(['err' => 0, 'msg' => '用户数据获取成功', 'data' => $res]);
 		} else {
-			$json = Response::json(['err' => 1, 'msg' => '用户数据获取失败', 'data' => null]);
+			$json = Response::json(['err' => 0, 'msg' => '用户数据为空', 'data' => null]);
 		}
 		return $json;
 	}
@@ -507,9 +507,9 @@ class FormController extends BaseController {
 		$res = DB::table('form_data_' . $form_id % 10)->where('id', $id)->first();
 		$res->data = unserialize($res->data);
 		if ($res != NULL) {
-			$json = Response::json(['err' => 0, 'msg' => '用户详细数据成功', 'data' => $res]);
+			$json = Response::json(['err' => 0, 'msg' => '用户详细数据获取成功', 'data' => $res]);
 		} else {
-			$json = Response::json(['err' => 1, 'msg' => '用户详细数据失败', 'data' => '']);
+			$json = Response::json(['err' => 1, 'msg' => '用户详细数据获取失败', 'data' => '']);
 		}
 		return $json;
 	}
