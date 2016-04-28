@@ -31,7 +31,9 @@
 	background: grey;
 }
 
-
+li{
+	list-style-type:none;
+}
 
 
 /*===选项卡内容部分===*/

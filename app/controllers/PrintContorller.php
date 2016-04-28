@@ -141,7 +141,7 @@ class PrintController extends BaseController {
 		if ($website_confige_value) {
 			$default = json_decode(trim($json), TRUE);
 			$result = $this->array_merge_recursive_new($default, $website_confige_value);
-                        
+
 			$this->replaceUrl($result);
 			$result = $this->dataDeal($result);
 			foreach ($result as &$v) {
@@ -1801,7 +1801,7 @@ class PrintController extends BaseController {
 			$form_data = DB::table('form')->where('id', $form_id)->first();
 			$column_data = DB::table('form_column_' . $form_id % 10)->where('form_id', $form_id)->get();
 			foreach ($column_data as &$v) {
-				$v->config = json_decode($v->config);
+				$v->config = unserialize($v->config);
 			}
 		} else {//跳转404
 		}
@@ -1847,6 +1847,7 @@ class PrintController extends BaseController {
                     </label>
                     </form>';
 			} elseif ($classify->type == 9) {
+				$_div_li = '';
 				$_div = "<div class='fv-add-show'>
 						<div class='fv-as-title'>
 							$form_data->title
@@ -1855,20 +1856,17 @@ class PrintController extends BaseController {
 							$form_data->description
 						</div>
 						<hr>";
-				$_div.="<form class='fv-unit-preview' name='box_show' action='../form-userdata-submit' method='post'>"
+				$_div.="<form class='fv-unit-preview' name='box_show'>"
 					. "<ul class='fv-element-show'>";
 				foreach ($column_data as $item) {
-					$_div .= "<li class='list-item' data-type=$item->type data-id=$item->id ";
+					$_div .= "<li class='list-item' data-type=$item->type data-id=$item->id >";
 					$config = $item->config;
+//					var_dump($config);
+//					echo '<br>===config===<br>';
 					switch ($item->type) {
 						case 'text':
 							$_div .= "<p class='content-l'>$item->title</p>";
-							if ($config->text_type == 'text') {
-								$_div .= "<input  type='text' name='col_" . $item->id . "'  placeholder=$item->description />";
-							} else {
-								$_div .= "<input  type='password' name='col_" . $item->id . "'  placeholder=$item->description />";
-							}
-
+							$_div .= "<input  type=" . $config['text_type'] . " name='col_" . $item->id . "'  placeholder=$item->description />";
 							break;
 						case 'textarea':
 							$_div .= "<p class='content-l'>$item->title</p>";
@@ -1876,28 +1874,31 @@ class PrintController extends BaseController {
 							break;
 						case 'radio':
 							$_div .= "<p class='content-l'>$item->title ：（ $item->description ）</p>";
-							for ($i = 0; $i < $config->option_count; $i++) {
-								$to = "option_$i";
+							$option_key = explode(',', $config['option_key']);
+							foreach ($option_key as $key => $value) {
+								$to = "option_$value";
 								$_div .= '<span class="option-item">';
-								$_div .= "<input type = 'radio' name = 'col_" . $item->id . "' value = $i /><label>" . $config->$to . " </label>";
+								$_div .= "<input type = 'radio' name = 'col_" . $item->id . "' value = $value /><label>" . $config[$to] . " </label>";
 								$_div .= '</span>';
 							}
 							break;
 						case 'checkbox':
 							$_div .="<p class='content-l'>$item->title ：（ $item->description ）</p>";
-							for ($i = 0; $i < $config->option_count; $i++) {
-								$to = "option_$i";
+							$option_key = explode(',', $config['option_key']);
+							foreach ($option_key as $key => $value) {
+								$to = "option_$value";
 								$_div .= '<span class="option-item">';
-								$_div .= "<input type ='checkbox' name = 'col_" . $item->id . "[]' value = $i /><label>" . $config->$to . " </label>";
+								$_div .= "<input type = 'checkbox' name = 'col_" . $item->id . "' value = $value /><label>" . $config[$to] . " </label>";
 								$_div .= '</span>';
 							}
 							break;
 						case 'select':
 							$_div .="<p class='content-l'>$item->title ：（ $item->description ）</p>";
 							$_div .= "<select name='col_" . $item->id . "' >";
-							for ($i = 0; $i < $config->option_count; $i++) {
-								$to = "option_$i";
-								$_div .= "<option  value = $i />" . $config->$to . "</option>";
+							$option_key = explode(',', $config['option_key']);
+							foreach ($option_key as $key => $value) {
+								$to = "option_$value";
+								$_div .= "<option  value =$value />" . $config[$to] . "</option>";
 							}
 							$_div .= '</select>';
 							break;
@@ -1918,7 +1919,7 @@ class PrintController extends BaseController {
 					$_div.="</li>";
 				}
 				$_div .= "</ul>"
-					. "<input type='submit' value='提交' class='button' /><input type='reset' value='重置' class='button'><input type='hidden' name='form_id' value=$form_id></form></div>";
+					. "<input type='button' value='提交' class='button submit-form' /><input type='reset' value='重置' class='button'><input type='hidden' name='form_id' value=$form_id></form></div>";
 				$result['list']['content'] = $_div;
 			} else {
 				$result['list']['data'] = $index_list['data'];
@@ -2049,6 +2050,7 @@ class PrintController extends BaseController {
                 </SCRIPT>';
 			} elseif ($classify->type == 9) {
 				$result['footscript'].='<link rel="stylesheet" href="../admin/css/universal-form.css">';
+				$result['footscript'].='<script type="text/javascript" src="../admin/js/universal-form.js"></script>';
 			}
 			$smarty->assign($result);
 			$smarty->display($viewname . '.html');
@@ -3077,3 +3079,4 @@ class PrintController extends BaseController {
 	}
 
 }
+

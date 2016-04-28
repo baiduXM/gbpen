@@ -33,11 +33,7 @@ function formController($scope, $http, $location) {
 					var form_list_data = json.data;//表单列表数据资料
 					$.each(form_list_data, function (k, v) {
 						_div += '<tr class="form-check" data-id="' + v.id + '">\n\
-								<td style="text-align: left">\n\
-									<dl class="fl checkclass">\n\
-										<input type="checkbox" name="checks" value="Bike1" style=" display:none;">\n\
-										<label class="label"></label>\n\
-									</dl>\n\
+								<td>\n\
 									<div class="tit_info"><span class="sap_tit">' + v.name + '</span></div>\n\
 								</td>\n\
 								<td>' + v.title + '</td>\n\

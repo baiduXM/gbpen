@@ -74,7 +74,6 @@ function viewformController($scope, $http, $location) {
 
 	function getFormUserdata(id) {
 		$.get('../form-userdata', {form_id: form_id, id: id}, function (json) {
-
 			console.log(json);
 			console.log('form-userdata');
 			checkJSON(json, function (json) {
@@ -82,8 +81,8 @@ function viewformController($scope, $http, $location) {
 				var _div = '';
 				$.each(udata, function (k, v) {
 					_div += '<li class="data-li clearfix">';
-					_div += '<div class="data-litem">' + k + '</div>'
-					_div += '<div class="data-ritem">' + v + '</div>'
+					_div += '<div class="data-litem">' + v.name + '</div>'
+					_div += '<div class="data-ritem">' + v.value + '</div>'
 					_div += '</li>';
 				});
 				$('.element-show').html(_div);
