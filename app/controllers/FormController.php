@@ -506,9 +506,9 @@ class FormController extends BaseController {
 		$form_id = Input::get('form_id');
 		$data['form_id'] = $form_id;
 		$data['cus_id'] = Auth::id();
-		$res = $postFun->postsend("http://swap.5067.org/admin/form_userdata_list.php", $data);
+//		$res = $postFun->postsend("http://swap.5067.org/admin/form_userdata_list.php", $data);
 
-//		$res = DB::table('form_data_' . $form_id % 10)->where('form_id', $form_id)->get();
+		$res = DB::table('form_data_' . $form_id % 10)->where('form_id', $form_id)->get();
 		if ($res != NULL) {
 			$json = Response::json(['err' => 0, 'msg' => '用户数据获取成功', 'data' => $res]);
 		} else {
