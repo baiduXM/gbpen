@@ -505,10 +505,14 @@ class FormController extends BaseController {
 	public function getFormUserdataList() {
 		$form_id = Input::get('form_id');
 		$data['form_id'] = $form_id;
-		$data['cus_id'] = Auth::id();
-//		$res = $postFun->postsend("http://swap.5067.org/admin/form_userdata_list.php", $data);
-
-		$res = DB::table('form_data_' . $form_id % 10)->where('form_id', $form_id)->get();
+//		$data['cus_id'] = Auth::id();
+		$postFun = new CommonController;
+		$res = $postFun->postsend("http://swap.5067.org/admin/form_userdata_list.php", $data);
+		$res = json_decode($res);
+		foreach ($res as $key => &$value) {
+			$value->data = unserialize($value->data);
+		}
+//		$res = DB::table('form_data_' . $form_id % 10)->where('form_id', $form_id)->get();
 		if ($res != NULL) {
 			$json = Response::json(['err' => 0, 'msg' => '用户数据获取成功', 'data' => $res]);
 		} else {
@@ -524,9 +528,12 @@ class FormController extends BaseController {
 	public function getFormUserdata() {
 		$form_id = Input::get('form_id');
 		$id = Input::get('id');
-		$res = DB::table('form_data_' . $form_id % 10)->where('id', $id)->first();
+		$param['form_id'] = $form_id;
+		$param['id'] = $id;
+		$postFun = new CommonController;
+		$res = $postFun->postsend("http://swap.5067.org/admin/form_userdata.php", $param);
+		$res = json_decode($res);
 
-		$res->data = unserialize($res->data);
 		if ($res != NULL) {
 			$json = Response::json(['err' => 0, 'msg' => '用户详细数据获取成功', 'data' => $res]);
 		} else {
@@ -541,8 +548,12 @@ class FormController extends BaseController {
 	public function deleteFormUserdata() {
 		$form_id = Input::get('form_id');
 		$id = Input::get('id');
-		$res = DB::table('form_data_' . $form_id % 10)->where('id', $id)->delete();
-		if ($res != NULL) {
+		$param['form_id'] = $form_id;
+		$param['id'] = $id;
+//		$res = DB::table('form_data_' . $form_id % 10)->where('id', $id)->delete();
+		$postFun = new CommonController;
+		$res = $postFun->postsend("http://swap.5067.org/admin/form_userdata_delete.php", $param);
+		if ($res == 1) {
 			$json = Response::json(['err' => 0, 'msg' => '删除成功', 'data' => $res]);
 		} else {
 			$json = Response::json(['err' => 1, 'msg' => '删除失败', 'data' => '']);

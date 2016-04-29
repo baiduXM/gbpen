@@ -39,7 +39,7 @@ function viewformController($scope, $http, $location) {
 							<th>操作</th>\n\
 						</tr>\n\
 						<tr class="sapces"></tr>';
-				if (form_list_data !== null) {
+				if (form_list_data != null) {
 					$.each(form_list_data, function (k, v) {
 						_div += '<tr class="form-check" data-id="' + v.id + '">\n\
 								<td style="text-align: left">\n\
@@ -57,6 +57,8 @@ function viewformController($scope, $http, $location) {
 								</td>\n\
 							</tr>';
 					});
+				} else {
+					_div += "<tr><td colspan='4'>" + json.msg + "</td></tr>";
 				}
 				$('.a-table').html(_div);
 			});
@@ -74,10 +76,8 @@ function viewformController($scope, $http, $location) {
 
 	function getFormUserdata(id) {
 		$.get('../form-userdata', {form_id: form_id, id: id}, function (json) {
-			console.log(json);
-			console.log('form-userdata');
 			checkJSON(json, function (json) {
-				var udata = json.data.data;
+				var udata = json.data;
 				var _div = '';
 				$.each(udata, function (k, v) {
 					_div += '<li class="data-li clearfix">';
@@ -106,6 +106,8 @@ function viewformController($scope, $http, $location) {
 				if (del_num) {
 					//===数据库删除===
 					$http.post('../form-userdata-delete', {form_id: form_id, id: id}).success(function (json) {
+						console.log(json);
+						console.log('form-userdata-delete');
 						checkJSON(json, function (json) {
 							_this.parents('tr').remove();
 							Hint_box('删除成功');
