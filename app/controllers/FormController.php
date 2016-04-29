@@ -508,12 +508,13 @@ class FormController extends BaseController {
 //		$data['cus_id'] = Auth::id();
 		$postFun = new CommonController;
 		$res = $postFun->postsend("http://swap.5067.org/admin/form_userdata_list.php", $data);
-		$res = json_decode($res);
-		foreach ($res as $key => &$value) {
-			$value->data = unserialize($value->data);
-		}
+
 //		$res = DB::table('form_data_' . $form_id % 10)->where('form_id', $form_id)->get();
-		if ($res != NULL) {
+		if ($res != 0) {
+			$res = json_decode($res);
+			foreach ($res as $key => &$value) {
+				$value->data = unserialize($value->data);
+			}
 			$json = Response::json(['err' => 0, 'msg' => '用户数据获取成功', 'data' => $res]);
 		} else {
 			$json = Response::json(['err' => 0, 'msg' => '用户数据为空', 'data' => null]);
