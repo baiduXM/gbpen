@@ -17,3 +17,4 @@ app/storage/logs/*
 app/storage/views/*
 app/storage/sessions/*
 app/controllers/FormController.php.rej
+/vendor/dark/phpanalysis/base_dic_source.txt
