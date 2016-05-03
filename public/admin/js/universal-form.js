@@ -19,7 +19,7 @@ $(function () {
 					setTimeout(data.action_text, 2000);
 				}
 			} else {
-
+				alert(json.msg);
 			}
 		});
 	});

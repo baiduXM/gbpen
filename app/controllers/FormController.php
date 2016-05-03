@@ -70,7 +70,12 @@ class FormController extends BaseController {
 		}
 		//表单删除连同表单组件和用户数据一起删除
 		$res1 = DB::table('form_column_' . $form_id % 10)->where('form_id', $form_id)->delete();
-		$res2 = DB::table('form_data_' . $form_id % 10)->where('form_id', $form_id)->delete();
+		$param['form_id'] = $form_id;
+		$param['id'] = $form_id;
+		$param['flag'] = 2;
+		$postFun = new CommonController;
+		$res2 = $postFun->postsend("http://swap.5067.org/admin/form_userdata_delete.php", $param);
+//		$res2 = DB::table('form_data_' . $form_id % 10)->where('form_id', $form_id)->delete();
 		$res3 = DB::table('form')->where('id', $form_id)->delete();
 		//返回数据
 		if ($res3) {
@@ -246,6 +251,7 @@ class FormController extends BaseController {
 				$option_key[] = preg_replace('/^option_/', '', $v['name']);
 			}
 		}
+
 		//===赋值config===
 		/*
 		 * [text]
@@ -324,6 +330,7 @@ class FormController extends BaseController {
 			$config['option_default'] = isset($redata['config_option_default']) ? $redata['config_option_default'] : '';
 			$config['option_count'] = intval($redata['config_option_count']);
 //			$config['option_type'] = isset($redata['config_option_type']) ? $redata['config_option_type'] : 0;
+			$config['option_key'] = implode(',', $option_key);
 			foreach ($option_key as $key => $value) {
 				$config['option_' . $value] = $redata['option_' . $value];
 			}
@@ -335,9 +342,9 @@ class FormController extends BaseController {
 //			}
 		}
 		//===单选、多选===
-		if ($redata['type'] == 'radio' || $redata['type'] == 'checkbox') {
-			$config['option_layout'] = $redata['config_option_layout'];
-		}
+//		if ($redata['type'] == 'radio' || $redata['type'] == 'checkbox') {
+//			$config['option_layout'] = $redata['config_option_layout'] ? $redata['config_option_layout'] : 0;
+//		}
 		//===多选===
 		if ($redata['type'] == 'checkbox') {
 			$config['option_limit'] = 0;
@@ -359,9 +366,11 @@ class FormController extends BaseController {
 				}
 			}
 		}
+
 		if ($redata['type'] == 'date') {
 			//
 		}
+
 		//===图片===
 		if ($redata['type'] == 'image') {
 			$config['img_type'] = isset($redata['config_img_type']) ? $redata['config_img_type'] : '';
@@ -374,10 +383,10 @@ class FormController extends BaseController {
 		if ($redata['type'] == 'file') {
 			$config['file_type'] = isset($redata['config_file_type']) ? $redata['config_file_type'] : '';
 		}
+
 		//===?===
 		//$config['align'] = $redata['config_align'];
 		$time = date('Y-m-d H:i:s');
-
 		$column_data = array(
 			'title' => $redata['title'],
 			'description' => $redata['description'],
@@ -427,7 +436,18 @@ class FormController extends BaseController {
 		$form_id = Input::get('form_id');
 		$input = Input::get('data');
 		$form_data = DB::table('form')->where('id', $form_id)->first();
-		$userdata = DB::table('form_data_' . $form_id % 10)->where('form_id', $form_id)->where('cus_id', $cus_id)->first();
+
+		$param['form_id'] = $form_id;
+//		$param['cus_id'] = Auth::id();
+		$postFun = new CommonController;
+//		$userdata = $postFun->postsend("http://swap.5067.org/admin/form_userdata_list.php", $param);
+		$userdata = $postFun->postsend("http://swap.5067.org/admin/form_userdata.php", $param);
+		$userdata = json_decode($userdata);
+//		$res = DB::table('form_data_' . $form_id % 10)->where('form_id', $form_id)->get();
+//		$userdata = DB::table('form_data_' . $form_id % 10)->where('form_id', $form_id)->where('cus_id', $cus_id)->first();
+
+
+
 		$column_data = DB::table('form_column_' . $form_id % 10)->where('form_id', $form_id)->orderBy('order', 'asc')->get();
 		if ($form_data->is_once == 1 && !empty($userdata)) {
 			return '请勿重复填写';
@@ -491,9 +511,9 @@ class FormController extends BaseController {
 		$postFun = new CommonController;
 		$flag = $postFun->postsend("http://swap.5067.org/admin/form_userdata_submit.php", $data);
 		if ($flag == 1) {
-			$json = Response::json(['err' => 0, 'msg' => '用户数据获取成功', 'data' => $form_data]);
+			$json = Response::json(['err' => 0, 'msg' => '提交成功', 'data' => $form_data]);
 		} else {
-			$json = Response::json(['err' => 0, 'msg' => '用户数据为空', 'data' => null]);
+			$json = Response::json(['err' => 1, 'msg' => '数据提交失败', 'data' => null]);
 		}
 		return $json;
 	}
@@ -504,13 +524,12 @@ class FormController extends BaseController {
 	 */
 	public function getFormUserdataList() {
 		$form_id = Input::get('form_id');
-		$data['form_id'] = $form_id;
-//		$data['cus_id'] = Auth::id();
+		$param['form_id'] = $form_id;
+//		$param['cus_id'] = Auth::id();
 		$postFun = new CommonController;
-		$res = $postFun->postsend("http://swap.5067.org/admin/form_userdata_list.php", $data);
-
+		$res = $postFun->postsend("http://swap.5067.org/admin/form_userdata_list.php", $param);
 //		$res = DB::table('form_data_' . $form_id % 10)->where('form_id', $form_id)->get();
-		if ($res != 0) {
+		if (!empty($res)) {
 			$res = json_decode($res);
 			foreach ($res as $key => &$value) {
 				$value->data = unserialize($value->data);
@@ -551,6 +570,7 @@ class FormController extends BaseController {
 		$id = Input::get('id');
 		$param['form_id'] = $form_id;
 		$param['id'] = $id;
+		$param['flag'] = 1;
 //		$res = DB::table('form_data_' . $form_id % 10)->where('id', $id)->delete();
 		$postFun = new CommonController;
 		$res = $postFun->postsend("http://swap.5067.org/admin/form_userdata_delete.php", $param);
