@@ -242,7 +242,7 @@ button .square{
 }
 
 /*===前端表单样式，前缀fv（form-view）===*/
-.fv-.add-show{background: none;}
+.fv-add-show{background: none;}
 /*title*/
 .fv-as-title,.fv-as-description{ text-align: center; line-height: 22px;}
 .fv-as-title{ padding-top: 20px; font-weight: bold; font-size: 20px;}

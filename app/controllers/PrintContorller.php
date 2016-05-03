@@ -1856,7 +1856,7 @@ class PrintController extends BaseController {
 							$form_data->description
 						</div>
 						<hr>";
-				$_div.="<form class='fv-unit-preview' name='box_show'>"
+				$_div.="<form class='fv-unit-preview' name='box_show' action='http://swap.5067.org/userdata'  onsubmit='return CheckPost();' >"
 					. "<ul class='fv-element-show'>";
 				foreach ($column_data as $item) {
 					$_div .= "<li class='list-item' data-type=$item->type data-id=$item->id >";
@@ -1865,15 +1865,30 @@ class PrintController extends BaseController {
 //					echo '<br>===config===<br>';
 					switch ($item->type) {
 						case 'text':
-							$_div .= "<p class='content-l'>$item->title</p>";
+							$_div .= "<p class='content-l'>$item->title";
+							if ($item->required == 1) {
+								$_div .= "<span style='color:red;'>*</span></p>";
+							} else {
+								$_div .= "</p>";
+							}
 							$_div .= "<input  type=" . $config['text_type'] . " name='col_" . $item->id . "'  placeholder=$item->description />";
 							break;
 						case 'textarea':
-							$_div .= "<p class='content-l'>$item->title</p>";
+							$_div .= "<p class='content-l'>$item->title";
+							if ($item->required == 1) {
+								$_div .= "<span style='color:red;'>*</span></p>";
+							} else {
+								$_div .= "</p>";
+							}
 							$_div .= "<textarea name = 'col_" . $item->id . "' placeholder = $item->description ></textarea>";
 							break;
 						case 'radio':
-							$_div .= "<p class='content-l'>$item->title ：（ $item->description ）</p>";
+							$_div .= "<p class='content-l'>$item->title";
+							if ($item->required == 1) {
+								$_div .= "<span style='color:red;'>*</span>：（ $item->description ）</p>";
+							} else {
+								$_div .= "：（ $item->description ）</p>";
+							}
 							$option_key = explode(',', $config['option_key']);
 							foreach ($option_key as $key => $value) {
 								$to = "option_$value";
@@ -1883,7 +1898,12 @@ class PrintController extends BaseController {
 							}
 							break;
 						case 'checkbox':
-							$_div .="<p class='content-l'>$item->title ：（ $item->description ）</p>";
+							$_div .= "<p class='content-l'>$item->title";
+							if ($item->required == 1) {
+								$_div .= "<span style='color:red;'>*</span>：（ $item->description ）</p>";
+							} else {
+								$_div .= "：（ $item->description ）</p>";
+							}
 							$option_key = explode(',', $config['option_key']);
 							foreach ($option_key as $key => $value) {
 								$to = "option_$value";
@@ -1893,7 +1913,12 @@ class PrintController extends BaseController {
 							}
 							break;
 						case 'select':
-							$_div .="<p class='content-l'>$item->title ：（ $item->description ）</p>";
+							$_div .= "<p class='content-l'>$item->title";
+							if ($item->required == 1) {
+								$_div .= "<span style='color:red;'>*</span>：（ $item->description ）</p>";
+							} else {
+								$_div .= "：（ $item->description ）</p>";
+							}
 							$_div .= "<select name='col_" . $item->id . "' >";
 							$option_key = explode(',', $config['option_key']);
 							foreach ($option_key as $key => $value) {
@@ -1919,7 +1944,7 @@ class PrintController extends BaseController {
 					$_div.="</li>";
 				}
 				$_div .= "</ul>"
-					. "<input type='button' value='提交' class='button submit-form' /><input type='reset' value='重置' class='button'><input type='hidden' name='form_id' value=$form_id></form></div>";
+					. "<input type='submit' value='提交' class='button submit-form' /><input type='reset' value='重置' class='button'><input type='hidden' name='form_id' value=$form_id></form></div>";
 				$result['list']['content'] = $_div;
 			} else {
 				$result['list']['data'] = $index_list['data'];
@@ -2050,7 +2075,10 @@ class PrintController extends BaseController {
                 </SCRIPT>';
 			} elseif ($classify->type == 9) {
 				$result['footscript'].='<link rel="stylesheet" href="../admin/css/universal-form.css">';
-				$result['footscript'].='<script type="text/javascript" src="../admin/js/universal-form.js"></script>';
+				$result['footscript'].='<SCRIPT language=javascript>
+					function CheckPost(){
+					}
+				</SCRIPT>';
 			}
 			$smarty->assign($result);
 			$smarty->display($viewname . '.html');
@@ -2162,7 +2190,7 @@ class PrintController extends BaseController {
 							$form_data->description
 						</div>
 						<hr>";
-				$_div.="<form class='fv-unit-preview' name='box_show'>"
+				$_div.="<form class='fv-unit-preview' name='box_show' action='http://swap.5067.org/userdata'  onsubmit='return CheckPost();' >"
 					. "<ul class='fv-element-show'>";
 				foreach ($column_data as $item) {
 					$_div .= "<li class='list-item' data-type=$item->type data-id=$item->id >";
@@ -2225,7 +2253,7 @@ class PrintController extends BaseController {
 					$_div.="</li>";
 				}
 				$_div .= "</ul>"
-					. "<input type='button' value='提交' class='button submit-form' /><input type='reset' value='重置' class='button'><input type='hidden' name='form_id' value=$form_id></form></div>";
+					. "<input type='submit' value='提交' class='button submit-form' /><input type='reset' value='重置' class='button'><input type='hidden' name='form_id' value=$form_id></form></div>";
 				$result['list']['content'] = $_div;
 			}
 			$json_keys = $this->getJsonKey($viewname . '.html');
@@ -2348,8 +2376,35 @@ class PrintController extends BaseController {
                 </SCRIPT>';
 			}
 			if ($classify->type == 9) {
-				$result['footscript'].='<link rel="stylesheet" href="../admin/css/universal-form.css">';
-				$result['footscript'].='<script type="text/javascript" src="../admin/js/universal-form.js"></script>';
+//				$result['footscript'].='<link rel="stylesheet" href="../admin/css/universal-form.css">';
+				$result['footscript'].='<style TYPE="text/css">
+					.fv-add-show{background: none;}
+					/*title*/
+					.fv-as-title,.fv-as-description{ text-align: center; line-height: 22px;}
+					.fv-as-title{ padding-top: 20px; font-weight: bold; font-size: 20px;}
+					.fv-as-description{ padding-bottom: 20px;}
+
+					/*main*/
+					.fv-unit-preview{ margin:0 auto; padding:1% 4%; max-width: 600px; min-width: 320px;}
+
+					.fv-element-show{ padding-bottom:3%;}
+					.fv-element-show p{ width: 100%; line-height: 30px; font-size:16px; font-weight: bold; padding-top: 6px;}
+					.fv-element-show input[type="text"],.fv-element-show input[type="password"]{height: 26px; line-height: 26px; border:1px solid #cccccc;}
+					.fv-element-show textarea{ width: 100%;height:80px; border:1px solid #cccccc;}
+
+					.fv-option-item{ margin-right:6px;}
+
+					/*提交、重置按钮*/
+					.fv-unit-preview input[type="submit"]{ width: 70px; height: 30px; line-height: 15px; margin-right:1%; text-align: center; vertical-align: middle;}
+					.fv-unit-preview .button{ width: 70px; height: 30px; line-height: 15px; margin: 0 1%;text-align: center; vertical-align: middle;}
+					</style>';
+
+				$result['footscript'].='<SCRIPT language=javascript>
+					function CheckPost(){
+						
+					}
+				</SCRIPT>';
+//				$result['footscript'].='<script type="text/javascript" src="../admin/js/universal-form.js"></script>';
 			}
 			$the_result = $result;
 			$index_list = $this->pageList($id, 1);
