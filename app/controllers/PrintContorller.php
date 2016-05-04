@@ -2120,7 +2120,7 @@ class PrintController extends BaseController {
 								}
 							}
 						});
-						return false;
+//						return false;
 					}
 				</SCRIPT>";
 			}
@@ -2491,7 +2491,7 @@ class PrintController extends BaseController {
 								}
 							}
 						});
-						return false;
+//						return false;
 					}
 				</SCRIPT>";
 			}
