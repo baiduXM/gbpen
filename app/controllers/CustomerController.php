@@ -58,6 +58,7 @@ class CustomerController extends BaseController{
 		$data['mail'] = $customer_info->email;
 		$data['qq'] = $customer_info->qq;
 		$data['address'] = $customer_info->address;
+                $data['enlarge'] = $customer_info->enlarge;
         $websiteinfo=WebsiteInfo::where('cus_id',$cus_id)->select('pc_tpl_id','mobile_tpl_id')->first();
         $pc_tpl_name=Template::where('id',$websiteinfo->pc_tpl_id)->pluck('name');
         if($pc_tpl_name!=null){
@@ -118,6 +119,7 @@ class CustomerController extends BaseController{
                 $data['pc_page_txt_count'] = (Input::get('pc_txt_per_page')>0)?Input::get('pc_txt_per_page'):3;
                 $data['pc_page_img_count'] = (Input::get('pc_img_per_page')>0)?Input::get('pc_img_per_page'):3;
                 $data['pc_page_count_switch'] = Input::get('pc_page_count_switch');
+                $data['enlarge'] = Input::get('enlargev');
 		$update = CustomerInfo::where('cus_id',$cus_id)->update($data);
 		if($update){
             Articles::where('cus_id',$cus_id)->where('pushed',0)->update(array('pushed'=>1));

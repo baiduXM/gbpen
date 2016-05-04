@@ -61,6 +61,10 @@
                     $('input.chk').prevAll('input,button').attr('disabled',(openstatus?true:false));
                     $('input.chk').nextAll('.switch_list').slideToggle();
                 }
+                if(set.enlarge=='1'){
+                    $("#enlargev").val("1");
+                    $("input.enl").attr("checked",true);
+                }
                 // $('.setting-content label[name=pcnum]').val(set.address);
                 // $('.setting-content label[name=mobnum]').val(set.address);
                 if(set.favicon != null){
@@ -158,6 +162,17 @@
             $('label.valign').MoveBox({
                 Trigger : 'mouseenter',
                 context : '开启设置各个列表展示条数'
+            });
+            $('.enlarge').MoveBox({
+                Trigger : 'mouseenter',
+                context : '开启产品介绍图片放大功能'
+            });
+            $('.enlarge').click(function(){
+                if($("#enlargev").val()=='1'){
+                    $("#enlargev").val("0");
+                }else{
+                    $("#enlargev").val("1");
+                }
             });
             $('input.chk').click(function(event) {
                 var _this = $(this),
