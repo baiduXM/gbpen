@@ -81,8 +81,8 @@ function viewformController($scope, $http, $location) {
 				var _div = '';
 				$.each(udata, function (k, v) {
 					_div += '<li class="data-li clearfix">';
-					_div += '<div class="data-litem">' + v.name + '</div>'
-					_div += '<div class="data-ritem">' + v.value + '</div>'
+					_div += '<div class="data-litem">' + k + '</div>'
+					_div += '<div class="data-ritem">' + v + '</div>'
 					_div += '</li>';
 				});
 				$('.element-show').html(_div);
