@@ -26,19 +26,14 @@ function formController($scope, $http, $location) {
 							<th>描述<div class="fr">|</div></th>\n\
 							<th>显示模式<div class="fr">|</div></th>\n\
 							<th>表单状态<div class="fr">|</div></th>\n\
-							<th>创建时间<div class="fr">|</div></th>\n\
-							<th style="width: 15%;">操作</th>\n\
+							<th style="min-width: 15%;">操作</th>\n\
 						</tr>';
 				_div += '<tr class="sapces"></tr>';
-				if (json.data !== null) {
+				if (json.data != null) {
 					var form_list_data = json.data;//表单列表数据资料
 					$.each(form_list_data, function (k, v) {
 						_div += '<tr class="form-check" data-id="' + v.id + '">\n\
-								<td style="text-align: left">\n\
-									<dl class="fl checkclass">\n\
-										<input type="checkbox" name="checks" value="Bike1" style=" display:none;">\n\
-										<label class="label"></label>\n\
-									</dl>\n\
+								<td>\n\
 									<div class="tit_info"><span class="sap_tit">' + v.name + '</span></div>\n\
 								</td>\n\
 								<td>' + v.title + '</td>\n\
@@ -62,8 +57,7 @@ function formController($scope, $http, $location) {
 						} else {
 							_div += '<td>禁用</td>';
 						}
-						_div += '<td>' + v.created_at + '</td>\n\
-								<td>\n\
+						_div += '<td>\n\
 									<a style="margin:0 10px; cursor: pointer" class="form_edit" title="编辑"><i class="fa iconfont icon-bianji"></i></a>\n\
 									<a style="margin:0 10px; cursor: pointer" class="form_view" title="浏览"><i class="fa iconfont icon-dengpao1"></i></a>\n\
 									<a class="delv" title="删除"><i class="fa iconfont icon-delete mr5"></i></a>\n\
@@ -71,7 +65,7 @@ function formController($scope, $http, $location) {
 							</tr>';
 					});
 				} else {
-					_div += "<tr><td colspan='8'>数据为空</td></tr>";
+					_div += "<tr><td colspan='8'>"+json.msg+"</td></tr>";
 				}
 				$('.a-table').html(_div);
 			});
@@ -121,9 +115,10 @@ function formController($scope, $http, $location) {
 			console.log('===form-create===');
 			//===跳转到表单编辑页面===
 			if (json.err === 0) {
+				Hint_box(json.msg);
 				location.href = "#/addform?form_id=" + json.data;
 			} else {
-				alert("添加失败");
+				alert(json.msg);
 			}
 		});
 		$('#bomb-box').hide();
@@ -153,7 +148,7 @@ function formController($scope, $http, $location) {
 					$http.post('../form-delete', {form_id: form_id}).success(function (json) {
 						checkJSON(json, function (json) {
 							_this.parents('tr').remove();
-							Hint_box('删除成功');
+							Hint_box(json.msg);
 						});
 					});
 				}

@@ -9,16 +9,23 @@ class FormController extends BaseController {
 
 	/**
 	 * 表单列表
+	 * @param type $status
+	 * @return type
 	 */
-	public function getFormList() {
+	public function getFormList($status = null) {
 		$cus_id = Auth::id();
+		$status = Input::get('status') ? Input::get('status') : null;
 		//===根据用户id查找用户表单列表===
-		$data = DB::table('form')->where('cus_id', $cus_id)->get();
+		if (empty($status)) {
+			$data = DB::table('form')->where('cus_id', $cus_id)->get();
+		} else {
+			$data = DB::table('form')->where('cus_id', $cus_id)->where('status', $status)->get();
+		}
 		//===返回数据===
 		if ($data != NULL) {
 			$res = Response::json(['err' => 0, 'msg' => '获取表单列表成功', 'data' => $data]);
 		} else {
-			$res = Response::json(['err' => 0, 'msg' => '获取表单列表为空', 'data' => null]);
+			$res = Response::json(['err' => 0, 'msg' => '表单列表为空', 'data' => null]);
 		}
 		return $res;
 	}
@@ -46,7 +53,7 @@ class FormController extends BaseController {
 		if ($id != NULL) {
 			$res = Response::json(['err' => 0, 'msg' => '创建表单成功', 'data' => $id]);
 		} else {
-			$res = Response::json(['err' => 1, 'msg' => '创建表单失败', 'data' => '']);
+			$res = Response::json(['err' => 1, 'msg' => '创建表单失败', 'data' => null]);
 		}
 		return $res;
 	}
@@ -63,7 +70,12 @@ class FormController extends BaseController {
 		}
 		//表单删除连同表单组件和用户数据一起删除
 		$res1 = DB::table('form_column_' . $form_id % 10)->where('form_id', $form_id)->delete();
-		$res2 = DB::table('form_data_' . $form_id % 10)->where('form_id', $form_id)->delete();
+		$param['form_id'] = $form_id;
+		$param['id'] = $form_id;
+		$param['flag'] = 2;
+		$postFun = new CommonController;
+		$res2 = $postFun->postsend("http://swap.5067.org/admin/form_userdata_delete.php", $param);
+//		$res2 = DB::table('form_data_' . $form_id % 10)->where('form_id', $form_id)->delete();
 		$res3 = DB::table('form')->where('id', $form_id)->delete();
 		//返回数据
 		if ($res3) {
@@ -137,9 +149,9 @@ class FormController extends BaseController {
 		$data = DB::table('form_element')->where('status', 1)->get();
 		//===返回数据===
 		if ($data != NULL) {
-			$res = Response::json(['err' => 0, 'msg' => '获取组件元素列表成功', 'data' => $data]);
+			$res = Response::json(['err' => 0, 'msg' => '组件元素列表获取成功', 'data' => $data]);
 		} else {
-			$res = Response::json(['err' => 0, 'msg' => '获取组件元素列表失败', 'data' => '']);
+			$res = Response::json(['err' => 0, 'msg' => '组件元素列表为空', 'data' => null]);
 		}
 		return $res;
 	}
@@ -151,7 +163,7 @@ class FormController extends BaseController {
 		$form_id = Input::get('form_id');
 		$res = DB::table('form_column_' . $form_id % 10)->where('form_id', $form_id)->orderBy('order', 'asc')->get();
 		foreach ($res as &$v) {
-			$v->config = json_decode($v->config);
+			$v->config = unserialize($v->config);
 			$v->column_id = $v->id;
 		}
 		if ($res != NULL) {
@@ -169,12 +181,10 @@ class FormController extends BaseController {
 		//===获取参数===
 		$form_id = Input::get('form_id');
 		$column_id = Input::get('column_id');
-
-		//===获取数据===
+		//===获取数据、处理数据===
 		$column_data = DB::table('form_column_' . $form_id % 10)->orderBy('order', 'asc')->where('id', $column_id)->first();
 		$column_data->column_id = $column_data->id;
-		$column_data->config = json_decode($column_data->config);
-
+		$column_data->config = unserialize($column_data->config);
 		//===返回数据===
 		if ($column_data != NULL) {
 			$res = Response::json(['err' => 0, 'msg' => '获取组件元素成功', 'data' => $column_data]);
@@ -195,6 +205,7 @@ class FormController extends BaseController {
 
 		//===获取元素===
 		$element_data = DB::table('form_element')->where('id', $element_id)->first();
+//		var_dump($element_data);
 		//===添加数据===
 		$time = date('Y-m-d H:i:s');
 		$column_data = array(
@@ -209,7 +220,7 @@ class FormController extends BaseController {
 			'updated_at' => $time
 		);
 		$column_id = DB::table('form_column_' . $form_id % 10)->insertGetId($column_data);
-		$column_data['config'] = json_decode($element_data->config);
+		$column_data['config'] = unserialize($element_data->config);
 		$column_data['column_id'] = $column_id;
 		//===返回数据===
 		if ($column_id != NULL) {
@@ -236,7 +247,11 @@ class FormController extends BaseController {
 			} else {
 				$redata[$v['name']] = $redata[$v['name']] . ',' . $v['value']; //合并checkbox选项值
 			}
+			if (preg_match('/^option_/', $v['name'])) {
+				$option_key[] = preg_replace('/^option_/', '', $v['name']);
+			}
 		}
+
 		//===赋值config===
 		/*
 		 * [text]
@@ -271,6 +286,7 @@ class FormController extends BaseController {
 		 * align 对齐方式？ left-左对齐 center-居中 right-右对齐
 		 * 
 		 */
+
 		if ($redata['type'] == 'text') {
 			$config['text_type'] = $redata['config_text_type'];
 			$config['text_rules'] = isset($redata['config_rules']) ? $redata['config_rules'] : 'no';
@@ -310,20 +326,25 @@ class FormController extends BaseController {
 		//===option_type 选项类型 1-文字 2-图片
 		//===option_$i 选项值 i项
 		if ($redata['type'] == 'select' || $redata['type'] == 'radio' || $redata['type'] == 'checkbox') {
+			$config['option_key'] = implode(',', $option_key);
 			$config['option_default'] = isset($redata['config_option_default']) ? $redata['config_option_default'] : '';
 			$config['option_count'] = intval($redata['config_option_count']);
-			$config['option_type'] = isset($redata['config_option_type']) ? $redata['config_option_type'] : 1;
-			for ($i = 0; $i < $config['option_count']; $i++) {
-				$config['option_' . $i] = $redata['option_' . $i];
-				if ($config['option_type'] == 2) {//===1-文字、2-图片===
-					$config['option_img_' . $i] = $redata['option_img' . $i];
-				}
+//			$config['option_type'] = isset($redata['config_option_type']) ? $redata['config_option_type'] : 0;
+			$config['option_key'] = implode(',', $option_key);
+			foreach ($option_key as $key => $value) {
+				$config['option_' . $value] = $redata['option_' . $value];
 			}
+//			for ($i = 0; $i < $config['option_count']; $i++) {
+//				$config['option_' . $i] = $redata['option_' . $i];
+////				if ($config['option_type'] == 2) {//===1-文字、2-图片===
+////					$config['option_img_' . $i] = $redata['option_img' . $i];
+////				}
+//			}
 		}
 		//===单选、多选===
-		if ($redata['type'] == 'radio' || $redata['type'] == 'checkbox') {
-			$config['option_layout'] = $redata['config_option_layout'];
-		}
+//		if ($redata['type'] == 'radio' || $redata['type'] == 'checkbox') {
+//			$config['option_layout'] = $redata['config_option_layout'] ? $redata['config_option_layout'] : 0;
+//		}
 		//===多选===
 		if ($redata['type'] == 'checkbox') {
 			$config['option_limit'] = 0;
@@ -345,9 +366,11 @@ class FormController extends BaseController {
 				}
 			}
 		}
+
 		if ($redata['type'] == 'date') {
 			//
 		}
+
 		//===图片===
 		if ($redata['type'] == 'image') {
 			$config['img_type'] = isset($redata['config_img_type']) ? $redata['config_img_type'] : '';
@@ -360,21 +383,19 @@ class FormController extends BaseController {
 		if ($redata['type'] == 'file') {
 			$config['file_type'] = isset($redata['config_file_type']) ? $redata['config_file_type'] : '';
 		}
+
 		//===?===
 		//$config['align'] = $redata['config_align'];
 		$time = date('Y-m-d H:i:s');
-
 		$column_data = array(
 			'title' => $redata['title'],
 			'description' => $redata['description'],
 			'required' => isset($redata['required']) ? 1 : 0,
-			'config' => json_encode($config),
+			'config' => serialize($config),
 			'order' => $redata['order'],
 			'updated_at' => $time
 		);
-
 		$column_id = DB::table('form_column_' . $form_id % 10)->where('id', $redata['column_id'])->update($column_data);
-
 		$column_data['column_id'] = $redata['column_id'];
 		$column_data['type'] = $redata['type'];
 		$column_data['config'] = $config;
@@ -404,50 +425,82 @@ class FormController extends BaseController {
 
 	/**
 	 * ===用户表单提交===
+	 * 提交数据到交互服务器180.76.148.39
 	 * 1、获取表单信息，看是否只允许用户提交一次
 	 * 2、查看用户是否已经提交
 	 * 3、提交
 	 */
 	public function submitFormUserdata() {
 		$Url = $_SERVER['HTTP_REFERER'];
-		$input = Input::all();
 		$cus_id = Auth::id();
-		$form_id = $input['form_id'];
+		$form_id = Input::get('form_id');
+		$input = Input::get('data');
 		$form_data = DB::table('form')->where('id', $form_id)->first();
-		$userdata = DB::table('form_data_' . $form_id % 10)->where('form_id', $form_id)->where('cus_id', $cus_id)->first();
+
+		$param['form_id'] = $form_id;
+//		$param['cus_id'] = Auth::id();
+		$postFun = new CommonController;
+//		$userdata = $postFun->postsend("http://swap.5067.org/admin/form_userdata_list.php", $param);
+		$userdata = $postFun->postsend("http://swap.5067.org/admin/form_userdata.php", $param);
+		$userdata = json_decode($userdata);
+//		$res = DB::table('form_data_' . $form_id % 10)->where('form_id', $form_id)->get();
+//		$userdata = DB::table('form_data_' . $form_id % 10)->where('form_id', $form_id)->where('cus_id', $cus_id)->first();
+
+
+
 		$column_data = DB::table('form_column_' . $form_id % 10)->where('form_id', $form_id)->orderBy('order', 'asc')->get();
 		if ($form_data->is_once == 1 && !empty($userdata)) {
 			return '请勿重复填写';
+//			header("Location:$Url");
 		}
-		$time = date('Y-m-d H:i:s');
+
+//		return $column_data;
+		//redata重置表单提交信息
+		foreach ($input as $k => $v) {
+			if (!isset($redata[$v['name']])) {
+				$redata[$v['name']] = $v['value'];
+			} else {
+				$redata[$v['name']] = $redata[$v['name']] . ',' . $v['value']; //合并checkbox选项值
+			}
+		}
 		$tdata = array();
-		foreach ($column_data as $v) {
-			if (isset($input["col_" . $v->id])) {
-				$config = json_decode($v->config);
+		//赋值。title->value
+		foreach ($column_data as $k => $v) {
+			$config = unserialize($v->config);
+			$tte = 'col_' . $v->id;
+//			return $tte;
+			if (!isset($redata['col_' . $v->id])) {
+				$tdata[$k]['name'] = $v->title;
+				$tdata[$k]['value'] = '';
+			} else {
+				$tdata[$k]['name'] = $v->title;
 				switch ($v->type) {
 					case 'radio':
 					case 'select':
-						$temp = 'option_' . $input["col_$v->id"];
-						$tdata[$v->title] = $config->$temp;
+						$temp = 'option_' . $redata[$tte];
+						$tdata[$k]['value'] = $config[$temp];
 						break;
 					case 'checkbox':
-						foreach ($input["col_$v->id"] as $childkv) {
+						$tc = explode(',', $redata[$tte]);
+//						return $tc;
+
+						foreach ($tc as $childkv) {
 							$temp = 'option_' . $childkv;
 							if (!isset($tdata[$v->title])) {
-								$tdata[$v->title] = $config->$temp;
+								$tdata[$k]['value'] = $config[$temp];
 							} else {
-								$tdata[$v->title] .= ',' . $config->$temp;
+								$tdata[$k]['value'] = ',' . $config[$temp];
 							}
 						}
 						break;
 					default:
-						$tdata[$v->title] = $input["col_" . $v->id];
+						$tdata[$k]['value'] = $redata[$tte];
 						break;
 				}
-			} else {
-				$tdata[$v->title] = null;
+//				$data['col_' . $v->id] = $redata['col_' . $v->id];
 			}
 		}
+		$time = date('Y-m-d H:i:s');
 		$data = array(
 			'form_id' => $form_id,
 			'cus_id' => $cus_id,
@@ -455,54 +508,56 @@ class FormController extends BaseController {
 			'created_at' => $time,
 			'updated_at' => $time
 		);
-		$res = DB::table('form_data_' . $form_id % 10)->insertGetId($data);
-		if (isset($res)) {
-			switch ($form_data->action_type) {
-				case 0://显示文字
-					echo $form_data->action_text;
-					if (isset($Url)) {
-						header("Location:$Url");
-						exit;
-					}
-					break;
-				case 1://跳转链接
-					header("Location:$form_data->action_text");
-					exit;
-					break;
-				default:
-					break;
-			}
+		$postFun = new CommonController;
+		$flag = $postFun->postsend("http://swap.5067.org/admin/form_userdata_submit.php", $data);
+		if ($flag == 1) {
+			$json = Response::json(['err' => 0, 'msg' => '提交成功', 'data' => $form_data]);
 		} else {
-			return '提交失败!';
+			$json = Response::json(['err' => 1, 'msg' => '数据提交失败', 'data' => null]);
 		}
+		return $json;
 	}
 
 	/**
 	 * 获取用户数据列表
+	 * 从交互服务器180.76.148.39中获取数据
 	 */
 	public function getFormUserdataList() {
 		$form_id = Input::get('form_id');
-		$res = DB::table('form_data_' . $form_id % 10)->where('form_id', $form_id)->get();
-		if ($res != NULL) {
+		$param['form_id'] = $form_id;
+//		$param['cus_id'] = Auth::id();
+		$postFun = new CommonController;
+		$res = $postFun->postsend("http://swap.5067.org/admin/form_userdata_list.php", $param);
+//		$res = DB::table('form_data_' . $form_id % 10)->where('form_id', $form_id)->get();
+		if (!empty($res)) {
+			$res = json_decode($res);
+			foreach ($res as $key => &$value) {
+				$value->data = unserialize($value->data);
+			}
 			$json = Response::json(['err' => 0, 'msg' => '用户数据获取成功', 'data' => $res]);
 		} else {
-			$json = Response::json(['err' => 1, 'msg' => '用户数据获取失败', 'data' => null]);
+			$json = Response::json(['err' => 0, 'msg' => '用户数据为空', 'data' => null]);
 		}
 		return $json;
 	}
 
 	/**
 	 * 获取用户数据
+	 * 从交互服务器180.76.148.39中获取数据
 	 */
 	public function getFormUserdata() {
 		$form_id = Input::get('form_id');
 		$id = Input::get('id');
-		$res = DB::table('form_data_' . $form_id % 10)->where('id', $id)->first();
-		$res->data = unserialize($res->data);
+		$param['form_id'] = $form_id;
+		$param['id'] = $id;
+		$postFun = new CommonController;
+		$res = $postFun->postsend("http://swap.5067.org/admin/form_userdata.php", $param);
+		$res = json_decode($res);
+
 		if ($res != NULL) {
-			$json = Response::json(['err' => 0, 'msg' => '用户详细数据成功', 'data' => $res]);
+			$json = Response::json(['err' => 0, 'msg' => '用户详细数据获取成功', 'data' => $res]);
 		} else {
-			$json = Response::json(['err' => 1, 'msg' => '用户详细数据失败', 'data' => '']);
+			$json = Response::json(['err' => 1, 'msg' => '用户详细数据获取失败', 'data' => '']);
 		}
 		return $json;
 	}
@@ -513,8 +568,13 @@ class FormController extends BaseController {
 	public function deleteFormUserdata() {
 		$form_id = Input::get('form_id');
 		$id = Input::get('id');
-		$res = DB::table('form_data_' . $form_id % 10)->where('id', $id)->delete();
-		if ($res != NULL) {
+		$param['form_id'] = $form_id;
+		$param['id'] = $id;
+		$param['flag'] = 1;
+//		$res = DB::table('form_data_' . $form_id % 10)->where('id', $id)->delete();
+		$postFun = new CommonController;
+		$res = $postFun->postsend("http://swap.5067.org/admin/form_userdata_delete.php", $param);
+		if ($res == 1) {
 			$json = Response::json(['err' => 0, 'msg' => '删除成功', 'data' => $res]);
 		} else {
 			$json = Response::json(['err' => 1, 'msg' => '删除失败', 'data' => '']);

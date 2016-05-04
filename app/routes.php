@@ -268,7 +268,7 @@ Route::group(array('before' => 'auth'), function() {
 		'as' => 'quickbar.rewrite',
 		'uses' => 'CommonController@quickBarRewrite'
 	]);
-        Route::post('getqrcode', [
+	Route::post('getqrcode', [
 		'as' => 'getqrcode',
 		'uses' => 'CommonController@getqrcode'
 	]);
@@ -336,7 +336,7 @@ Route::group(array('before' => 'auth'), function() {
 	Route::get('mobile/search-preview', [//搜索结果也数据
 		'uses' => 'TemplatesController@searchPreview'
 	]);
-	
+
 	//===万用表单start===
 	Route::get('form-list', [//获取表单列表
 		'as' => 'form-list',
@@ -414,7 +414,6 @@ Route::group(array('before' => 'auth'), function() {
 		'uses' => 'FormController@submitFormUserdata'
 	]);
 	//===万用表单end===
-	
 	//-----------万用表单--------
 	Route::get('feedback-data', [//获取表单数据
 		'uses' => 'FeedbackController@getFeedbackData'
