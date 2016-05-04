@@ -219,10 +219,8 @@ class UploadController extends BaseController{
                     }
                 }
                 @ftp_close($conn);
-                $this->deldirfile($dir);
                 return Response::json(['err' => 0, 'msg' => '','data'=>$data]);
             }else{
-                $this->deldirfile($dir);
                 return Response::json(['err' => 1001, 'msg' => '保存失败']);
             }
 	}
@@ -355,18 +353,5 @@ class UploadController extends BaseController{
         }
         imagedestroy($canvas);
     }
-        private function deldirfile($dir) {
-        //删除目录下的文件：
-        $dh=opendir($dir);
-        while ($file=readdir($dh)) {
-          if($file!="." && $file!="..") {
-            $fullpath=$dir."/".$file;
-            var_dump($fullpath);
-//            if(is_file($fullpath)) {
-//                @unlink($fullpath);
-//            }
-          }
-        }
-    }
-	
+       
 }
