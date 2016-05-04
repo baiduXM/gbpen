@@ -19,6 +19,8 @@ function formController($scope, $http, $location) {
 	//===表单列表===
 	function getFormList() {
 		$http.get('../form-list').success(function (json) {
+//			console.log(json);
+//			console.log('===form_list===');
 			checkJSON(json, function (json) {
 				var _div = '<tr>\n\
 							<th>表单名<div class="fr">|</div></th>\n\
