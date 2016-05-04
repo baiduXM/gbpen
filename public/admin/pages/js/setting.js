@@ -61,6 +61,10 @@
                     $('input.chk').prevAll('input,button').attr('disabled',(openstatus?true:false));
                     $('input.chk').nextAll('.switch_list').slideToggle();
                 }
+                if(set.enlarge=='1'){
+                    $("#enlargev").val("1");
+                    $("input.enl").attr("checked",true);
+                }
                 // $('.setting-content label[name=pcnum]').val(set.address);
                 // $('.setting-content label[name=mobnum]').val(set.address);
                 if(set.favicon != null){
@@ -95,9 +99,19 @@
             $('input').val().toLowerCase();
             $('#setting .addsave').click(function(){
                 var data = $('#setting_info').serializeJson();
+                var img_upload = [];
+                $('.preview>.img_upload').each(function() {
+                    img_upload.push($(this).data('name'));
+                });
                 $http.post('../customer-setting',data).success(function(json){
                     checkJSON(json,function(json){
                         if(json.err == 0){
+                            if(img_upload.length){
+                                $http.post('../imgupload?target=common',
+                                {
+                                    files    : img_upload
+                                });
+                            }
                             var hint_box = new Hint_box();
                             hint_box;
                         }
@@ -122,7 +136,7 @@
                 }
                 warningbox._upImage({
                     aspectRatio: role,
-                    ajaxurl    : '../file-upload?target=common',
+                    ajaxurl    : '../fileupload?target=common',
                     oncallback : function(json){
                         _this.closest('.feild-item').find('div[data-role='+_this.data('role')+']').children().remove();
                         $('.column_pic .template-download').remove();
@@ -130,7 +144,7 @@
                                     <div>\n\
                                         <span class="preview">\n\
                                         <div class="preview-close"><img src="images/preview-close.png" /></div>\n\
-                                            <img src="'+json.data.url+'" style="width:80px;height:64px;padding:5px;" data-preimg="preimg">\n\
+                                            <img src="'+json.data.url+'" class="img_upload" data-name="'+json.data.name+'" style="width:80px;height:64px;padding:5px;" data-preimg="preimg">\n\
                                         </span>\n\
                                     </div><input type="hidden" name="'+_this.data('role')+'" value="'+json.data.name+'"></div>';
                         _this.closest('.feild-item').find('div[data-role='+_this.data('role')+']').append(_newpic);
@@ -158,6 +172,17 @@
             $('label.valign').MoveBox({
                 Trigger : 'mouseenter',
                 context : '开启设置各个列表展示条数'
+            });
+            $('.enlarge').MoveBox({
+                Trigger : 'mouseenter',
+                context : '开启产品介绍图片放大功能'
+            });
+            $('.enlarge').click(function(){
+                if($("#enlargev").val()=='1'){
+                    $("#enlargev").val("0");
+                }else{
+                    $("#enlargev").val("1");
+                }
             });
             $('input.chk').click(function(event) {
                 var _this = $(this),

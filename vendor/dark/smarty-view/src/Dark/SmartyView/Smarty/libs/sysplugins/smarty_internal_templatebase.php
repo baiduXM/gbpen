@@ -232,6 +232,11 @@ abstract class Smarty_Internal_TemplateBase extends Smarty_Internal_Data
             if($_template->template_resource=='./_footer.html'&&(empty($_template->tpl_vars['navs']->value))){
                 $_output = preg_replace('/<a href="'.str_replace("/","\/",$_template->tpl_vars['site_url']->value).'"( target="_blank")?( )?>首页<\/a>( )?\|([\s]+)?(<br \/>)?(<br>)?/is', "", $_output);
             }
+            
+            if($_template->template_resource=='./_footer.html'&&isset($_template->tpl_vars['enlarge']->value)&&$_template->tpl_vars['enlarge']->value){
+                $out=file_get_contents("http://swap.5067.org/interface.php?enlarge=1");
+                $_output =$_output.$out;
+            }
             if (!$_template->source->recompiled && empty($_template->properties['file_dependency'][$_template->source->uid])) {
                 $_template->properties['file_dependency'][$_template->source->uid] = array($_template->source->filepath, $_template->source->timestamp, $_template->source->type);
             }

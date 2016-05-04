@@ -2627,11 +2627,14 @@ class PrintController extends BaseController {
 		$result['article']['keywords'] = $article->keywords;
 		$result['article']['description'] = $article->introduction;
 		$result['article']['viewcount'] = '<em id="article-viewcount">0</em>';
+                $result['enlarge'] = 0;
 		$article_type = Articles::leftJoin('classify', 'classify.id', '=', 'article.c_id')->where('article.id', $id)->pluck('article_type');
 		if ($article_type == 1) {//新闻内容
 			$viewname = 'content-news';
 		} elseif ($article_type == 2) {//产品内容
 			$viewname = 'content-product';
+                        $customerinfo=CustomerInfo::where('cus_id',$this->cus_id)->first();
+                        $result['enlarge'] =$customerinfo['enlarge'];
 		} else {//跳转404
 		}
 		//关联文章查询
@@ -2762,11 +2765,14 @@ class PrintController extends BaseController {
 		}
 		$result['pagenavs'] = $pagenavs;
 		$result['posnavs'] = $this->getPosNavs($c_id);
+                $result['enlarge'] = 0;
 		$article_type = Classify::where('id', $c_id)->pluck('article_type');
 		if ($article_type == 1) {//新闻内容
 			$viewname = 'content-news';
 		} elseif ($article_type == 2) {//产品内容
 			$viewname = 'content-product';
+                        $customerinfo=CustomerInfo::where('cus_id',$this->cus_id)->first();
+                        $result['enlarge'] =$customerinfo['enlarge'];
 		} else {//跳转404
 		}
 
