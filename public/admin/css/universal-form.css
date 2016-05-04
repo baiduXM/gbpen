@@ -242,13 +242,13 @@ button .square{
 }
 
 /*===前端表单样式，前缀fv（form-view）===*/
-.fv-add-show{background: none;}
-/*title*/
+/*.fv-add-show{background: none;}
+title
 .fv-as-title,.fv-as-description{ text-align: center; line-height: 22px;}
 .fv-as-title{ padding-top: 20px; font-weight: bold; font-size: 20px;}
 .fv-as-description{ padding-bottom: 20px;}
 
-/*main*/
+main
 .fv-unit-preview{ margin:0 auto; padding:1% 4%; max-width: 600px; min-width: 320px;}
 
 .fv-element-show{ padding-bottom:3%;}
@@ -258,9 +258,9 @@ button .square{
 
 .fv-option-item{ margin-right:6px;}
 
-/*提交、重置按钮*/
+提交、重置按钮
 .fv-unit-preview input[type="submit"]{ width: 70px; height: 30px; line-height: 15px; margin-right:1%; text-align: center; vertical-align: middle;}
-.fv-unit-preview .button{ width: 70px; height: 30px; line-height: 15px; margin: 0 1%;text-align: center; vertical-align: middle;}
+.fv-unit-preview .button{ width: 70px; height: 30px; line-height: 15px; margin: 0 1%;text-align: center; vertical-align: middle;}*/
 
 .article_con .about p{text-indent: 0;}
 /*.as-title {
