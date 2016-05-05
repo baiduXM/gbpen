@@ -201,7 +201,7 @@ function addformController($scope, $http, $location) {
 				break;
 			case 'radio':
 				option_key = _config.option_key.split(',');
-				_div += '<p class="content-l">' + data.title + '：(' + data.description + ')</p>';
+				_div += '<p class="content-l">' + data.title + '：(' + data.description + ')';
 				$.each(option_key, function (tk, tv) {
 					to = "option_" + tv;
 					_div += '<span class="option-item">';
@@ -213,7 +213,7 @@ function addformController($scope, $http, $location) {
 				break;
 			case 'checkbox':
 				option_key = _config.option_key.split(',');
-				_div += data.title + '：(' + data.description + ')<br />';
+				_div += '<p class="content-l">' + data.title + '：(' + data.description + ')</p>';
 				$.each(option_key, function (tk, tv) {
 					to = "option_" + tv;
 					_div += '<span class="option-item">';
@@ -231,7 +231,7 @@ function addformController($scope, $http, $location) {
 				temp = _config.option_default.split(',');
 				break;
 			case 'select':
-				_div += data.title + '：(' + data.description + ')<br />';
+				_div += '<p class="content-l">' + data.title + '：(' + data.description + ')</p>';
 				_div += '<select name="col_' + data.column_id + '" disabled="disabled">';
 				var to = '';
 				option_key = _config.option_key.split(',');
