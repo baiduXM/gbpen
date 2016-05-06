@@ -91,7 +91,7 @@ class HtmlController1 extends BaseController{
      */
 
     private function categoryhtml($ids=[],$type ='pc'){
-        $result = [];
+        $result = array();
         $template = new PrintController('online',$type);
         $per_page = CustomerInfo::where('cus_id',$this->cus_id)->pluck($type."_page_count");
         foreach((array)$ids as $id){
@@ -135,7 +135,7 @@ class HtmlController1 extends BaseController{
 //            }
             $paths=$template->categoryPush($id,$page_count,$this->last_html_precent,$this->html_precent);
             $this->last_html_precent +=($this->html_precent*count($paths));
-            $result=array_merge($result,$paths);
+            $result=array_merge((array)$result,(array)$paths);
         }
 
         return $result;
@@ -149,11 +149,11 @@ class HtmlController1 extends BaseController{
      */
     private function articlehtml($ids=[],$type ='pc'){
         $template = new PrintController('online',$type);
-        $result = [];
+        $result =array();
         foreach((array)$ids as $id){
             $paths=$template->articlepush($id,$this->last_html_precent,$this->html_precent);
             $this->last_html_precent +=($this->html_precent*count($paths));
-            $result=array_merge($result,(array)$paths);
+            $result=array_merge((array)$result,(array)$paths);
         }
         return $result;
     }
