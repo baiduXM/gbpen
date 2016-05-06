@@ -480,7 +480,7 @@ function columnController($scope, $http) {
 					var vkeywords = $('.keyword').val();
 					var icons = $('.icon_input').val();
 					var vdescription = $('.txts').val();
-					var vform_id = $('#form_select').val();
+					var vform_id = $('#form_select').val() ? $('#form_select').val() : 0;
 					var s_t = new Array();
 					var j = 0;
 					$('.sites input[type="checkbox"]').each(function (i) {
@@ -507,8 +507,6 @@ function columnController($scope, $http) {
 					$('.preview>.img_upload').each(function () {
 						img_upload.push($(this).data('name'));
 					});
-					console.log(vform_id);
-					console.log('vform_id');
 					var savePostRequest = function (first) {
 						$http.post('../classify-modify', {id: id,
 							p_id: vpid,
