@@ -106,7 +106,7 @@ class CommonController extends BaseController {
 		$customer_info = Customer::where('id', $id)->first();
 		$domain = $customer_info->$barcode;
 		if ($domain == "") {
-			$customer_info = CustomerInfo::where('id', $id)->first();
+			$customer_info = CustomerInfo::where('cus_id', $id)->first();
 			$domain = $customer_info->$barcode;
 			return '';
 		}
