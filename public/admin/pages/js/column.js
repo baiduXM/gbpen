@@ -196,6 +196,8 @@ function columnController($scope, $http) {
 			columnicon.clicks();
 			// 栏目编辑提交
 			this.column_edit(editor);
+                        // 栏目多选
+                        this.column_check();
 			// 栏目删除
 			this.column_del();
 			// 栏目提交移动
@@ -637,6 +639,43 @@ function columnController($scope, $http) {
 				}
 			});
 		},
+                column_check : function(){
+                    //栏目多选
+                    function column_children_check(aid,check){
+                            $('tr[data-parent='+aid+']').each(function(){
+                                if(check){
+                                    $(this).find('input').attr('checked','false');
+                                    $(this).find('.label').removeClass('nchecked');
+                                }else{ 
+                                    $(this).find('input').attr('checked','true');
+                                    $(this).find('.label').addClass('nchecked');
+                                }
+                                child_aid=$(this).data('aid');
+                                if(child_aid){
+                                   column_children_check(child_aid,check); 
+                                }
+                            });
+                    }
+                    function column_parent_check(aid,check){
+                            $('tr[data-aid='+aid+']').each(function(){
+                                if(check){
+                                    $(this).find('input').attr('checked','false');
+                                    $(this).find('.label').removeClass('nchecked');
+                                }
+                                parent_aid=$(this).data('parent');
+                                if(parent_aid){
+                                   column_parent_check(parent_aid,check); 
+                                }
+                            });
+                    }
+                    $('.checkclass').on('click','.label',function(){
+                        aid=$(this).parents('tr').data('aid');
+                        p_aid=$(this).parents('tr').data('parent');
+                        check=$(this).hasClass('nchecked');
+                        column_children_check(aid,check);
+                        column_parent_check(p_aid,check);
+                    });
+                },
 		column_del: function () {
 			var r_this = this;
 			//栏目删除

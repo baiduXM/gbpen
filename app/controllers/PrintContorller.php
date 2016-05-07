@@ -2120,7 +2120,7 @@ class PrintController extends BaseController {
 						<hr>";
 				$_div.="<form class='fv-unit-preview' name='box_show' action='http://swap.5067.org/userdata/" . $form_id . "'  onsubmit='return CheckPost();' method='post'>"
 					. "<ul class='fv-element-show'>";
-				foreach ($column_data as $item) {
+				foreach ((array)$column_data as $item) {
 					$_div .= "<li class='list-item' data-type=$item->type data-id=$item->id >";
 					$config = $item->config;
 //					var_dump($config);

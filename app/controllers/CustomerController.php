@@ -87,6 +87,8 @@ class CustomerController extends BaseController{
 	 */
 	public function customerSetting(){
 		$cus_id = Auth::id();
+                $logo=CustomerInfo::where('cus_id',$cus_id)->pluck('logo');
+                $logo_small=CustomerInfo::where('cus_id',$cus_id)->pluck('logo_small');
 		$data['company'] = strtolower(Input::get('company_name'));
 		$pc_domain = Input::get('domain_pc');
 		$data['pc_domain'] = strstr($pc_domain,'http') ? $pc_domain : 'http://'.$pc_domain;
@@ -122,6 +124,14 @@ class CustomerController extends BaseController{
                 $data['enlarge'] = Input::get('enlargev');
 		$update = CustomerInfo::where('cus_id',$cus_id)->update($data);
 		if($update){
+                    if($logo!=$data['logo']){
+                        $imgdel=new ImgDel();
+                        $imgdel->mysave($logo,'common');
+                    }
+                    if($logo_small!=$data['logo_small']){
+                        $imgdel=new ImgDel();
+                        $imgdel->mysave($logo_small,'common');
+                    }
             Articles::where('cus_id',$cus_id)->where('pushed',0)->update(array('pushed'=>1));
             Classify::where('cus_id',$cus_id)->where('pushed',0)->update(array('pushed'=>1));
 			$result = ['err' => 0, 'msg' => '','data'=>''];

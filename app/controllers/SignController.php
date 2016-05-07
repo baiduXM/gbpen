@@ -17,6 +17,11 @@ class SignController extends BaseController {
 	{
 		$name = Input::get('name');
         $password = Input::get('password');
+        $cus_id=Customer::where('name',$name)->where('status','1')->pluck('id');
+         if (!$cus_id){
+             echo '<meta charset="UTF-8"><script language="javascript">alert("用户不存在!");window.history.back(-1);</script> ';
+            exit();
+         }
         if (Auth::attempt(array('name' => $name, 'password' => $password)))
         {   
             $customername =  Auth::user()->name;

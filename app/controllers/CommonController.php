@@ -67,7 +67,21 @@ class CommonController extends BaseController {
 
 	public function quickBarJsonModify() {
 		$Mobile = new PrintController('preview', 'mobile');
-		$QuickBar = serialize(Input::get('QuickBar'));
+                $org_img='';
+                $vx_bar_img='';
+                $data=Input::get('QuickBar');
+		$QuickBar = serialize($data);
+                foreach((array)$data as $v){
+                    if($v['for']==='vx_barcode'){
+                        $vx_bar_img=basename($v['data']);
+                    }
+                }
+                $websiteconfig = WebsiteConfig::where('cus_id', $Mobile->cus_id)->where('type', 2)->where('template_id', '0')->where('key', 'quickbar')->pluck('value');
+                foreach((array)  unserialize($websiteconfig) as $v){
+                    if($v['for']==='vx_barcode'){
+                        $org_img=  basename($v['data']);
+                    }
+                }
 		$id = WebsiteConfig::where('cus_id', $Mobile->cus_id)->where('type', 2)->where('template_id', '0')->where('key', 'quickbar')->pluck('id');
 		if ($id) {
 			$QuickData = WebsiteConfig::find($id);
@@ -81,6 +95,10 @@ class CommonController extends BaseController {
 		$QuickData->value = $QuickBar;
 		$result = $QuickData->save();
 		if ($result) {
+                        if($org_img!=$vx_bar_img){
+                            $imgdel=new ImgDel();
+                            $imgdel->mysave($org_img,'common');
+                        }
 			$json_result = ['err' => 0, 'msg' => '保存成功'];
 		} else {
 			$json_result = ['err' => 1001, 'msg' => '该栏目存在文章，需转移才能创建子栏目', 'data' => []];

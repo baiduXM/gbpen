@@ -91,7 +91,7 @@ class HtmlController1 extends BaseController{
      */
 
     private function categoryhtml($ids=[],$type ='pc'){
-        $result = [];
+        $result = array();;
         $template = new PrintController('online',$type);
         $per_page = CustomerInfo::where('cus_id',$this->cus_id)->pluck($type."_page_count");
         foreach((array)$ids as $id){
@@ -135,7 +135,7 @@ class HtmlController1 extends BaseController{
 //            }
             $paths=$template->categoryPush($id,$page_count,$this->last_html_precent,$this->html_precent);
             $this->last_html_precent +=($this->html_precent*count($paths));
-            $result=array_merge($result,$paths);
+            $result=array_merge((array)$result,(array)$paths);
         }
 
         return $result;
@@ -149,11 +149,11 @@ class HtmlController1 extends BaseController{
      */
     private function articlehtml($ids=[],$type ='pc'){
         $template = new PrintController('online',$type);
-        $result = [];
+        $result = array();
         foreach((array)$ids as $id){
             $paths=$template->articlepush($id,$this->last_html_precent,$this->html_precent);
             $this->last_html_precent +=($this->html_precent*count($paths));
-            $result=array_merge($result,(array)$paths);
+            $result=array_merge((array)$result,(array)$paths);
         }
         return $result;
     }
@@ -360,6 +360,7 @@ class HtmlController1 extends BaseController{
             else{
                 CustomerPushfile::where('cus_id',$this->cus_id)->update(['files'=>$data]);
             }
+            $customer=Auth::user()->name;
             $customerinfo = Customer::find($this->cus_id);
             $ftp_array = explode(':',$customerinfo->ftp_address);
             $port= $customerinfo->ftp_port;
@@ -367,6 +368,9 @@ class HtmlController1 extends BaseController{
             $ftp=$customerinfo->ftp;
             $ftp_array[1] = isset($ftp_array[1])?$ftp_array[1]:$port;
             $conn = ftp_connect($ftp_array[0],$ftp_array[1]);
+            $del_imgs=ImgDel::where('cus_id',$this->cus_id)->get()->toArray();
+            $pc_Path = public_path('customers/'.$customer.'/images/');
+            $mobile_Path=public_path('customers/'.$customer.'/mobile/images/');
             if(trim($ftp)=='1'){
                 if($conn){
                 ftp_login($conn,$customerinfo->ftp_user,$customerinfo->ftp_pwd);
@@ -376,6 +380,32 @@ class HtmlController1 extends BaseController{
                 ftp_mkdir($conn,$this->customer);  
                 //ftp_cdup($conn);
                 }
+                foreach((array)$del_imgs as $v){
+                    $filepath=$pc_Path.'/s/'.$v['target'].'/'.$v['img'];
+                    echo $filepath.'<br />';
+                    ob_flush();
+                    flush();
+                    if(file_exists($filepath)){
+                        @unlink($filepath);
+                    }
+                    $filepath=$pc_Path.'/l/'.$v['target'].'/'.$v['img'];
+                    if(file_exists($filepath)){
+                        @unlink($filepath);
+                    }
+                    $filepath=$mobile_Path.'/s/'.$v['target'].'/'.$v['img'];
+                    if(file_exists($filepath)){
+                        @unlink($filepath);
+                    }
+                    $filepath=$mobile_Path.'/l/'.$v['target'].'/'.$v['img'];
+                    if(file_exists($filepath)){
+                        @unlink($filepath);
+                    }
+                    @ftp_delete($conn,$customer.'/images/l/'.$v['target'].'/'.$v['img']);
+                    @ftp_delete($conn,$customer.'/images/s/'.$v['target'].'/'.$v['img']);
+                    @ftp_delete($conn,$customer.'/mobile/images/l/'.$v['target'].'/'.$v['img']);
+                    @ftp_delete($conn,$customer.'/mobile/images/s/'.$v['target'].'/'.$v['img']);
+                }
+                ImgDel::where('cus_id',$this->cus_id)->delete();
                 ftp_put($conn,"/".$this->customer."/site.zip",$path,FTP_BINARY);
                 ftp_put($conn,"/".$this->customer."/unzip.php",public_path("packages/unzip.php"),FTP_ASCII);
                 ftp_put($conn,"/".$this->customer."/search.php",public_path("packages/search.php"),FTP_ASCII);
@@ -395,6 +425,32 @@ class HtmlController1 extends BaseController{
                  if($conn){
                 ftp_login($conn,$customerinfo->ftp_user,$customerinfo->ftp_pwd);
                 ftp_pasv($conn, 1);
+                foreach((array)$del_imgs as $v){
+                    $filepath=$pc_Path.'/s/'.$v['target'].'/'.$v['img'];
+                    echo $filepath.'<br />';
+                    ob_flush();
+                    flush();
+                    if(file_exists($filepath)){
+                        @unlink($filepath);
+                    }
+                    $filepath=$pc_Path.'/l/'.$v['target'].'/'.$v['img'];
+                    if(file_exists($filepath)){
+                        @unlink($filepath);
+                    }
+                    $filepath=$mobile_Path.'/s/'.$v['target'].'/'.$v['img'];
+                    if(file_exists($filepath)){
+                        @unlink($filepath);
+                    }
+                    $filepath=$mobile_Path.'/l/'.$v['target'].'/'.$v['img'];
+                    if(file_exists($filepath)){
+                        @unlink($filepath);
+                    }
+                    @ftp_delete($conn,$ftpdir.'/images/l/'.$v['target'].'/'.$v['img']);
+                    @ftp_delete($conn,$ftpdir.'/images/s/'.$v['target'].'/'.$v['img']);
+                    @ftp_delete($conn,$ftpdir.'/mobile/images/l/'.$v['target'].'/'.$v['img']);
+                    @ftp_delete($conn,$ftpdir.'/mobile/images/s/'.$v['target'].'/'.$v['img']);
+                }
+                ImgDel::where('cus_id',$this->cus_id)->delete();
                 ftp_put($conn,$ftpdir."/site.zip",$path,FTP_BINARY);
                 ftp_put($conn,$ftpdir."/unzip.php",public_path("packages/unzip.php"),FTP_ASCII);
                 ftp_put($conn,$ftpdir."/search.php",public_path("packages/search.php"),FTP_ASCII);
@@ -405,7 +461,17 @@ class HtmlController1 extends BaseController{
             }
             }
            
-            
+            //删除目录下的文件：
+            $dir=public_path('customers/'.$customer.'/cache_images/');
+            $opendir=opendir($dir);
+            while ($file=readdir($opendir)) {
+              if($file!="." && $file!="..") {
+                $fullpath=$dir."/".$file;
+                if(is_file($fullpath)) {
+                    @unlink($fullpath);
+                }
+              }
+            }
             echo '100%<script type="text/javascript">parent.refresh(100);</script><br />';
             Classify::where('cus_id',$this->cus_id)->where('pushed',1)->update(['pushed'=>0]);
             Articles::where('cus_id',$this->cus_id)->where('pushed',1)->update(['pushed'=>0]);

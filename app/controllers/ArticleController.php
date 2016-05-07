@@ -18,10 +18,18 @@ class ArticleController extends BaseController{
     |articleBatchAdd   文章批量添加
 	*/ 
     public function articleAdd(){
+        $org_imgs=array();
+        $del_imgs=array();
         $id=Input::get('id');
         if($id){
             //修改操作
             $article=Articles::find($id);
+            $data=MoreImg::where('a_id',$id)->get()->toArray();
+            foreach((array)$data as $v){
+                $org_imgs[]=$v["img"];
+            }
+            $org_imgs[]=$article->img;
+            
         }else{
             //新增操作
             $article=new Articles();
@@ -42,6 +50,11 @@ class ArticleController extends BaseController{
         }
         $article->pushed=1;
         $img_arr=explode(',',Input::get('src'));
+        foreach((array)$org_imgs as $v){
+            if(!in_array($v, (array)$img_arr)){
+                $del_imgs[]=$v;
+            }
+        }
         if(count($img_arr)){
             $article->img=$img_arr[0];
             unset($img_arr[0]);
@@ -64,6 +77,10 @@ class ArticleController extends BaseController{
         if($result){
             if($id){
                 MoreImg::where('a_id',$id)->delete();
+                foreach ((array)$del_imgs as $v){
+                    $imgdel=new ImgDel();
+                    $imgdel->mysave($v,'articles');
+                }
             }
             if(count($img_arr)){
                 foreach($img_arr as $img){
@@ -84,17 +101,28 @@ class ArticleController extends BaseController{
     }
     
     public function articleDelete(){
+        $del_imgs=array();
+        $cus_id=Auth::id();
         $ids=explode(',',Input::get('id'));
         if(count($ids) > 1){
             //执行批量删除
             $failed=0;
             foreach($ids as $id){
+                $article=Articles::find($id);
+                $data=MoreImg::where('a_id',$id)->get()->toArray();
                 $result=Articles::where('id','=',$id)->delete(); 
                 if(!$result){
                     $failed++;
                 }else{
-                    
+                    foreach((array)$data as $v){
+                        $del_imgs[]=$v["img"];
+                    }
+                    $del_imgs[]=$article->img;
                 }
+            }
+            foreach ((array)$del_imgs as $v){
+                $imgdel=new ImgDel();
+                $imgdel->mysave($v,'articles');
             }
             if($failed){
                  $return_msg=array('err'=>3001,'msg'=>$failed.'条记录删除失败');
@@ -103,8 +131,18 @@ class ArticleController extends BaseController{
             }
         }else{
             //单条删除
+            $article=Articles::find($ids[0]);
+            $data=MoreImg::where('a_id',$ids[0])->get()->toArray();
             $result=Articles::where('id','=',$ids[0])->delete();
             if($result){
+                foreach((array)$data as $v){
+                        $del_imgs[]=$v["img"];
+                }
+                $del_imgs[]=$article->img;
+                foreach ((array)$del_imgs as $v){
+                    $imgdel=new ImgDel();
+                    $imgdel->mysave($v,'articles');
+                }
                  $return_msg=array('err'=>0,'msg'=>'');
             }else{
                  $return_msg=array('err'=>3001,'msg'=>'文章删除失败');
