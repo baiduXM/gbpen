@@ -586,16 +586,20 @@ class FormController extends BaseController {
 	/**
 	 * 获取表单信息 for PrintContorller
 	 */
-	public function getFormdataForPrint($form_id = null) {
-		$form_data = DB::table('form')->where('id', $form_id)->first();
-		$jsform = json_encode($form_data);
-		$column_data = DB::table('form_column_' . $form_id % 10)->where('form_id', $form_id)->get();
-		foreach ($column_data as &$v) {
-			$v->config = unserialize($v->config);
+	public function getFormdataForPrint($form_id = 0) {
+		$form_data = DB::table('form')->where('id', $form_id)->where('status', 1)->first();
+		if (empty($form_data)) {
+			$data = array();
+		} else {
+//			$jsform = json_encode($form_data);
+			$column_data = DB::table('form_column_' . $form_id % 10)->where('form_id', $form_id)->get();
+			foreach ($column_data as &$v) {
+				$v->config = unserialize($v->config);
+			}
+//			$jscolumn = json_encode($column_data);
+			$data['form'] = $form_data;
+			$data['column'] = $column_data;
 		}
-		$jscolumn = json_encode($column_data);
-		$data['form'] = $form_data;
-		$data['column'] = $column_data;
 		return $data;
 	}
 
@@ -603,10 +607,20 @@ class FormController extends BaseController {
 	 * 显示表单前端
 	 */
 	public function showFormHtmlForPrint($data = null) {
-		$form_data = $data['form'];
-		$form_id = $form_data->id;
-		$column_data = $data['column'];
-		$_div = "<div class='fv-add-show'>
+		if (empty($data)) {
+			$_div = "<div class='fv-add-show'>
+						<div class='fv-as-description'>
+							表单已停用
+						</div>
+						<hr></div>";
+		} else {
+			$form_data = $data['form'];
+			$tempform['action_type'] = $form_data->action_type;
+			$tempform['action_text'] = $form_data->action_text;
+			$jsform = json_encode($tempform);
+			$form_id = $form_data->id;
+			$column_data = $data['column'];
+			$_div = "<div class='fv-add-show'>
 						<div class='fv-as-title'>
 							$form_data->title
 						</div>
@@ -615,96 +629,96 @@ class FormController extends BaseController {
 						</div>
 						<hr>";
 //		$_div.="<form class='fv-unit-preview' name='box_show'  method='post'><ul class='fv-element-show'>";
-		$_div.="<form class='fv-unit-preview' name='box_show' action='http://swap.5067.org/userdata/" . $form_id . "'  onsubmit='return CheckPost();' method='post'><ul class='fv-element-show'>";
-		foreach ($column_data as $item) {
-			$_div .= "<li class='list-item' data-type=$item->type data-id=$item->id >";
-			$config = $item->config;
+			$_div.="<form class='fv-unit-preview' name='box_show' action='http://swap.5067.org/userdata/" . $form_id . "'  onsubmit='return CheckPost();' method='post'><ul class='fv-element-show'>";
+			foreach ($column_data as $item) {
+				$_div .= "<li class='list-item' data-type=$item->type data-id=$item->id >";
+				$config = $item->config;
 //					var_dump($config);
 //					echo '<br>===config===<br>';
-			switch ($item->type) {
-				case 'text':
-					$_div .= "<p class='content-l'>$item->title";
-					if ($item->required == 1) {
-						$_div .= "<span style='color:red;'>*</span></p>";
-					} else {
-						$_div .= "</p>";
-					}
-					$_div .= "<input  type=" . $config['text_type'] . " name='$item->title'   placeholder='$item->description' />";
-					break;
-				case 'textarea':
-					$_div .= "<p class='content-l'>$item->title";
-					if ($item->required == 1) {
-						$_div .= "<span style='color:red;'>*</span></p>";
-					} else {
-						$_div .= "</p>";
-					}
-					$_div .= "<textarea name = '$item->title' placeholder = '$item->description' ></textarea>";
-					break;
-				case 'radio':
-					$_div .= "<p class='content-l'>$item->title";
-					if ($item->required == 1) {
-						$_div .= "<span style='color:red;'>*</span>：（ $item->description ）</p>";
-					} else {
-						$_div .= "：（ $item->description ）</p>";
-					}
-					$option_key = explode(',', $config['option_key']);
-					foreach ($option_key as $key => $value) {
-						$to = "option_$value";
-						$_div .= '<span class="option-item">';
-						$_div .= "<input type = 'radio' name = '$item->title' value = '$config[$to]' data-value='$value'  /><label>" . $config[$to] . " </label>";
-						$_div .= '</span>';
-					}
-					break;
-				case 'checkbox':
-					$_div .= "<p class='content-l'>$item->title";
-					if ($item->required == 1) {
-						$_div .= "<span style='color:red;'>*</span>：（ $item->description ）</p>";
-					} else {
-						$_div .= "：（ $item->description ）</p>";
-					}
-					$option_key = explode(',', $config['option_key']);
-					foreach ($option_key as $key => $value) {
-						$to = "option_$value";
-						$_div .= '<span class="option-item">';
-						$_div .= "<input type = 'checkbox' name = '$item->title[]' value = '$config[$to]' data-value='$value'  /><label>" . $config[$to] . " </label>";
-						$_div .= '</span>';
-					}
-					break;
-				case 'select':
-					$_div .= "<p class='content-l'>$item->title";
-					if ($item->required == 1) {
-						$_div .= "<span style='color:red;'>*</span>：（ $item->description ）</p>";
-					} else {
-						$_div .= "：（ $item->description ）</p>";
-					}
-					$_div .= "<select name=$item->title >";
-					$option_key = explode(',', $config['option_key']);
-					foreach ($option_key as $key => $value) {
-						$to = "option_$value";
-						$_div .= "<option  value='$config[$to]' data-value='$value'  />" . $config[$to] . "</option>";
-					}
-					$_div .= '</select>';
-					break;
-				case 'date':
-					$_div .="<p class='content-l'>$item->title</p>";
-					$_div .= '日期date';
-					break;
-				case 'image':
-					$_div .="<p class='content-l'>$item->title</p>";
-					break;
-				case 'file':
-					$_div .="<p class='content-l'>$item->title(  $item->description )：</p>";
-					$_div.= "<input type='file' name='$item->title'  />";
-					break;
-				default :
-					break;
+				switch ($item->type) {
+					case 'text':
+						$_div .= "<p class='content-l'>$item->title";
+						if ($item->required == 1) {
+							$_div .= "<span style='color:red;'>*</span></p>";
+						} else {
+							$_div .= "</p>";
+						}
+						$_div .= "<input  type=" . $config['text_type'] . " name='$item->title'   placeholder='$item->description' />";
+						break;
+					case 'textarea':
+						$_div .= "<p class='content-l'>$item->title";
+						if ($item->required == 1) {
+							$_div .= "<span style='color:red;'>*</span></p>";
+						} else {
+							$_div .= "</p>";
+						}
+						$_div .= "<textarea name = '$item->title' placeholder = '$item->description' ></textarea>";
+						break;
+					case 'radio':
+						$_div .= "<p class='content-l'>$item->title";
+						if ($item->required == 1) {
+							$_div .= "<span style='color:red;'>*</span>：（ $item->description ）</p>";
+						} else {
+							$_div .= "：（ $item->description ）</p>";
+						}
+						$option_key = explode(',', $config['option_key']);
+						foreach ($option_key as $key => $value) {
+							$to = "option_$value";
+							$_div .= '<span class="option-item">';
+							$_div .= "<input type = 'radio' name = '$item->title' value = '$config[$to]' data-value='$value'  /><label>" . $config[$to] . " </label>";
+							$_div .= '</span>';
+						}
+						break;
+					case 'checkbox':
+						$_div .= "<p class='content-l'>$item->title";
+						if ($item->required == 1) {
+							$_div .= "<span style='color:red;'>*</span>：（ $item->description ）</p>";
+						} else {
+							$_div .= "：（ $item->description ）</p>";
+						}
+						$option_key = explode(',', $config['option_key']);
+						foreach ($option_key as $key => $value) {
+							$to = "option_$value";
+							$_div .= '<span class="option-item">';
+							$_div .= "<input type = 'checkbox' name = '$item->title[]' value = '$config[$to]' data-value='$value'  /><label>" . $config[$to] . " </label>";
+							$_div .= '</span>';
+						}
+						break;
+					case 'select':
+						$_div .= "<p class='content-l'>$item->title";
+						if ($item->required == 1) {
+							$_div .= "<span style='color:red;'>*</span>：（ $item->description ）</p>";
+						} else {
+							$_div .= "：（ $item->description ）</p>";
+						}
+						$_div .= "<select name=$item->title >";
+						$option_key = explode(',', $config['option_key']);
+						foreach ($option_key as $key => $value) {
+							$to = "option_$value";
+							$_div .= "<option  value='$config[$to]' data-value='$value'  />" . $config[$to] . "</option>";
+						}
+						$_div .= '</select>';
+						break;
+					case 'date':
+						$_div .="<p class='content-l'>$item->title</p>";
+						$_div .= '日期date';
+						break;
+					case 'image':
+						$_div .="<p class='content-l'>$item->title</p>";
+						break;
+					case 'file':
+						$_div .="<p class='content-l'>$item->title(  $item->description )：</p>";
+						$_div.= "<input type='file' name='$item->title'  />";
+						break;
+					default :
+						break;
+				}
+				$_div.="</li>";
 			}
-			$_div.="</li>";
+			$_div .= "</ul>"
+				. "<input type='submit' value='提交' class='button submit-form' name='submit' /><input type='reset' value='重置' class='button' />"
+				. "<input type='hidden' name='form_id' value='$form_id' /><input type='hidden' name='form_data' value='$jsform' /></form></div>";
 		}
-		$_div .= "</ul>"
-			. "<input type='submit' value='提交' class='button submit-form' name='submit' /><input type='reset' value='重置' class='button' />"
-			. "<input type='hidden' name='form_id' value=$form_id></form></div>";
-
 		return $_div;
 	}
 
@@ -748,6 +762,8 @@ class FormController extends BaseController {
 						var jscolumn=$jscolumn;
 						var column=eval(jscolumn);
 						var tt='';
+						var str='';
+						var flagchb=true;
 						$.each(column,function(k,v){
 							tt=v.title;
 							if(v.type=='checkbox'){
@@ -756,35 +772,32 @@ class FormController extends BaseController {
 							if(v.required==1){
 								switch(v.type){
 									case 'checkbox':
+										flagchb=false;
 										var chb=box_show[tt];
-										var flagchb=false;
 										for(i=0;i<chb.length;i++){
 											if(chb[i].checked){
-												flagchb=true;
+												flagchb=flagchb || true;
 											}
 										}
 										if(flagchb==false){
-											alert(tt+'不能为空');
-											return false;
-											alert('false');
+											str==''?str=v.title:str+=','+v.title;
 										}
-										console.log(box_show[tt].checked);
-										console.log('===checkbox===');
 										break;
 									default:
 										if(box_show[tt].value==''){
-											alert(tt+'不能为空');
-											return false;
-											alert('false');
+											flagchb=flagchb && false;
 										}
-										console.log(box_show[tt].value);
-										console.log('===default===');
+										if(flagchb==false){
+											str==''?str=v.title:str+=','+v.title;
+										}
 										break;
 								}
 							}
 						});
-						alert('提交');
-						return false;
+						if(flagchb==false){
+							alert(str+'不能为空');
+							return false;
+						}
 					}
 				</SCRIPT>";
 

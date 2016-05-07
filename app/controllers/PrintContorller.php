@@ -1975,34 +1975,6 @@ class PrintController extends BaseController {
 			} elseif ($classify->type == 9) {
 
 				$result['footscript'].=$formC->assignFormCSSandJSForPrint($formCdata);
-//				$jscolumn = json_encode($formCdata['column']);
-//				$js = "<SCRIPT language=javascript>
-//					function CheckPost(){
-//						var jscolumn=$jscolumn;
-//						var column=eval(jscolumn);
-//						$.each(column,function(k,v){
-//						console.log(v);
-//						console.log('===v===');
-//							var tt=v.title;
-//							console.log(box_show[tt].value);
-//							console.log('=========box_show[tt].value========');
-//							if(v.required==1){
-//							alert(1);
-//							console.log(box_show[tt].value);
-//								if (box_show[tt].value=='')
-//								{
-//									alert('请填写'+tt);
-//									return false;
-//								}
-//							}
-//						});
-//						return false;
-//					}
-//				</SCRIPT>";
-//				$result['footscript'].=$js;
-//				$result['footscript'].='<link rel="stylesheet" href="../admin/css/universal-form.css">';
-//				$result['footscript'].='';
-//				$result['footscript'].="";
 			}
 			$smarty->assign($result);
 			$smarty->display($viewname . '.html');
@@ -2058,14 +2030,7 @@ class PrintController extends BaseController {
 			$viewname = 'list-page';
 			$form_id = $classify->form_id;
 			$formC = new FormController();
-			$formC->getFormdataForPrint($form_id);
-//			$form_data = DB::table('form')->where('id', $form_id)->first();
-//			$jsform = json_encode($form_data);
-//			$column_data = DB::table('form_column_' . $form_id % 10)->where('form_id', $form_id)->get();
-//			foreach ($column_data as &$v) {
-//				$v->config = unserialize($v->config);
-//			}
-//			$jscolumn = json_encode($column_data);
+			$formCdata = $formC->getFormdataForPrint($form_id);
 		} else {//跳转404
 		}
 		//echo $viewname;exit;
@@ -2209,6 +2174,7 @@ class PrintController extends BaseController {
 					. "<input type='submit' value='提交' class='button submit-form' name='submit' /><input type='reset' value='重置' class='button' />"
 					. "<input type='hidden' name='form_id' value=$form_id></form></div>";
 				$result['list']['content'] = $_div;
+				$result['list']['content'] = $formC->showFormHtmlForPrint($formCdata);
 			}
 			$json_keys = $this->getJsonKey($viewname . '.html');
 			if (count($json_keys)) {
@@ -2330,52 +2296,7 @@ class PrintController extends BaseController {
                 </SCRIPT>';
 			}
 			if ($classify->type == 9) {
-//				$result['footscript'].='<link rel="stylesheet" href="../admin/css/universal-form.css">';
-				$result['footscript'].='<style TYPE="text/css">
-					.list-item span.option-item{
-						margin-right: 30px;
-						font-size: 12px;
-						min-height: 20px;
-						line-height: 20px;
-						display: inline-block;
-					}
-					.fv-add-show{background: none;}
-					/*title*/
-					.fv-as-title,.fv-as-description{ text-align: center; line-height: 22px;}
-					.fv-as-title{ padding-top: 20px; font-weight: bold; font-size: 20px;}
-					.fv-as-description{ padding-bottom: 20px;}
-
-					/*main*/
-					.fv-unit-preview{ margin:0 auto; padding:1% 4%; max-width: 600px; min-width: 320px;}
-
-					.fv-element-show{ padding-bottom:3%;}
-					.fv-element-show p{ width: 100%; line-height: 30px; font-size:16px; font-weight: bold; padding-top: 6px;}
-					.fv-element-show input[type="text"],.fv-element-show input[type="password"]{height: 26px; line-height: 26px; border:1px solid #cccccc;}
-					.fv-element-show textarea{ width: 100%;height:80px; border:1px solid #cccccc;}
-
-					.fv-option-item{ margin-right:6px;}
-
-					/*提交、重置按钮*/
-					.fv-unit-preview input[type="submit"]{ width: 70px; height: 30px; line-height: 15px; margin-right:1%; text-align: center; vertical-align: middle;}
-					.fv-unit-preview .button{ width: 70px; height: 30px; line-height: 15px; margin: 0 1%;text-align: center; vertical-align: middle;}
-					</style>';
-				$result['footscript'].="<SCRIPT language=javascript>
-					function CheckPost(){
-						var jscolumn=$jscolumn;
-						var column=eval(jscolumn);
-						$.each(column,function(k,v){
-							var tt=v.title;
-							if(v.required==1){
-								if (box_show[tt].value=='')
-								{
-									alert('请填写'+tt);
-									return false;
-								}
-							}
-						});
-//						return false;
-					}
-				</SCRIPT>";
+				$result['footscript'].=$formC->assignFormCSSandJSForPrint($formCdata);
 			}
 			$the_result = $result;
 			$index_list = $this->pageList($id, 1);

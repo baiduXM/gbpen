@@ -91,7 +91,7 @@ class HtmlController1 extends BaseController{
      */
 
     private function categoryhtml($ids=[],$type ='pc'){
-        $result = array();;
+        $result = array();
         $template = new PrintController('online',$type);
         $per_page = CustomerInfo::where('cus_id',$this->cus_id)->pluck($type."_page_count");
         foreach((array)$ids as $id){
@@ -149,7 +149,7 @@ class HtmlController1 extends BaseController{
      */
     private function articlehtml($ids=[],$type ='pc'){
         $template = new PrintController('online',$type);
-        $result = array();
+        $result =array();
         foreach((array)$ids as $id){
             $paths=$template->articlepush($id,$this->last_html_precent,$this->html_precent);
             $this->last_html_precent +=($this->html_precent*count($paths));
