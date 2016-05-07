@@ -400,10 +400,10 @@ class HtmlController1 extends BaseController{
                     if(file_exists($filepath)){
                         @unlink($filepath);
                     }
-                    @ftp_delete($conn,$customer.'/images/l/'.$v['target'].'/'.$v['img']);
-                    @ftp_delete($conn,$customer.'/images/s/'.$v['target'].'/'.$v['img']);
-                    @ftp_delete($conn,$customer.'/mobile/images/l/'.$v['target'].'/'.$v['img']);
-                    @ftp_delete($conn,$customer.'/mobile/images/s/'.$v['target'].'/'.$v['img']);
+                    @ftp_delete($conn,"/".$this->customer.'/images/l/'.$v['target'].'/'.$v['img']);
+                    @ftp_delete($conn,"/".$this->customer.'/images/s/'.$v['target'].'/'.$v['img']);
+                    @ftp_delete($conn,"/".$this->customer.'/mobile/images/l/'.$v['target'].'/'.$v['img']);
+                    @ftp_delete($conn,"/".$this->customer.'/mobile/images/s/'.$v['target'].'/'.$v['img']);
                 }
                 ImgDel::where('cus_id',$this->cus_id)->delete();
                 ftp_put($conn,"/".$this->customer."/site.zip",$path,FTP_BINARY);
