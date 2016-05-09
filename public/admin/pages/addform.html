@@ -42,9 +42,8 @@
 							</li>
 							<li class="list-item">
 								<p class="content-l">提交表单后动作：</p>
-								<span class="option-item"><input name="action_type" type="radio" value="0" />显示文字</span>
-								<span class="option-item"><input name="action_type" type="radio" value="1" />跳转链接</span>
-								<input name="action_text" type="text" value="" />
+								<span class="option-item"><input name="action_type[]" type="checkbox" value="0" />显示文字<input name="action_text" type="text" value="" /></span>
+								<span class="option-item"><input name="action_type[]" type="checkbox" value="1" />跳转链接<input name="action_url" type="text" value="" /></span>
 							</li>
 							<li class="list-item">
 								<p class="content-l">停用启用：</p>
@@ -85,6 +84,8 @@
 			</div>
 			<div class="add-info">
 				<a class="f-btn inline-block addcancle all_button" href="#/form">返回</a>
+				<!--<a class="f-btn inline-block addsave all_button" name="writeform" href="javascript:;">预览</a>-->
+				<!--<a class="f-btn inline-block addsave all_button" href="javascript:;" >保存</a>-->
 			</div>
 		</div>
 	</div>

@@ -3,7 +3,12 @@
 /**
  * 万用表单控制器
  * @author xieqixiang
- * createForm
+ * 
+ * 数据库存储原理
+ * form 表单名
+ * form_element 表单元素
+ * form_column_n (n=0,..,9) 表单列名，根据表单id尾数存储在对于表中，例：form_id=5,添加的列名存储在form_column_5表中
+ * form_data_n (n=0,...,9) 表单数据 原理同上，存储在交互服务器上
  */
 class FormController extends BaseController {
 
@@ -592,7 +597,7 @@ class FormController extends BaseController {
 			$data = array();
 		} else {
 //			$jsform = json_encode($form_data);
-			$column_data = DB::table('form_column_' . $form_id % 10)->where('form_id', $form_id)->get();
+			$column_data = DB::table('form_column_' . $form_id % 10)->where('form_id', $form_id)->orderBy('order', 'asc')->get();
 			foreach ($column_data as &$v) {
 				$v->config = unserialize($v->config);
 			}

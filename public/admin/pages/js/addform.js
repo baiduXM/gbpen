@@ -51,6 +51,23 @@ function addformController($scope, $http, $location) {
 		$('.tab-content-item').hide();
 		$('div[name=' + name + ']').show();
 	});
+	console.log($('[name="action_type[]"]'));
+	console.log('===sdaf===');
+	$('[name="action_type[]"]').click(function () {
+		if ($(this).checked == true) {
+			console.log($(this).is(':checked'));
+			console.log('===this===');
+		}
+	});
+//	$('[name="action_type[]"]').toggle(
+//			function () {
+//				$(this).attr("checked");
+//			},
+//			function () {
+//				$(this).removeAttr("checked");
+//			}
+//	);
+
 	//===预览表单===
 	$('[name="writeform"]').click(function () {
 		window.open('#/writeform?form_id=' + form_id);
@@ -161,7 +178,23 @@ function addformController($scope, $http, $location) {
 			$('[name="platform"]:eq(' + tv + ')').attr('checked', true);
 		});
 		$('[name="showmodel"]:eq(' + data.showmodel + ')').attr('checked', true);
-		$('[name="action_type"]:eq(' + data.action_type + ')').attr('checked', true);
+		//===显示文字、链接===
+		var ac_t = data.action_type.split(',');
+		$('[name="action_text"]').attr('disabled', 'disabled');
+		$('[name="action_url"]').attr('disabled', 'disabled');
+		$('[name="action_text"]').val(data.action_text);
+		$('[name="action_url"]').val(data.action_url);
+		$.each(ac_t, function (k, v) {
+			if (v == 0) {//显示文字
+				$('[name="action_text"]').removeAttr('disabled');
+				$('[name="action_type[]"]:eq(0)').attr('checked', 'checked');
+			}
+			if (v == 1) {//显示链接
+				$('[name="action_url"]').removeAttr('disabled');
+				$('[name="action_type[]"]:eq(1)').attr('checked', 'checked');
+			}
+		});
+
 		$('[name="action_text"]').val(data.action_text);
 		if (data.is_once == 1) {
 			$('[name="is_once"]').attr('checked', true);
@@ -201,7 +234,7 @@ function addformController($scope, $http, $location) {
 				break;
 			case 'radio':
 				option_key = _config.option_key.split(',');
-				_div += '<p class="content-l">' + data.title + '：(' + data.description + ')';
+				_div += '<p class="content-l">' + data.title + '：(' + data.description + ')</p>';
 				$.each(option_key, function (tk, tv) {
 					to = "option_" + tv;
 					_div += '<span class="option-item">';
