@@ -695,8 +695,9 @@ class PrintController extends BaseController {
 				} else {
 					if ($this->type == 'pc') {
 						file_put_contents(public_path("customers/" . $this->customer . '/quickbar.json'), "quickbarCallback(" . json_encode($quickbarCallback) . ")");
-					}
-					file_put_contents(public_path("customers/" . $this->customer . '/mobile' . '/quickbar.json'), "quickbarCallback(" . json_encode($quickbarCallback) . ")");
+					}else{
+                                            file_put_contents(public_path("customers/" . $this->customer . '/mobile' . '/quickbar.json'), "quickbarCallback(" . json_encode($quickbarCallback) . ")");
+                                        }
 				}
 			} else {
 				$config_arr[1] = '#AAA,#BBB,#FFF|tel';
@@ -801,8 +802,9 @@ class PrintController extends BaseController {
 				} else {
 					if ($this->type == 'pc') {
 						file_put_contents(public_path("customers/" . $this->customer . '/quickbar.json'), "quickbarCallback(" . json_encode($quickbarCallback) . ")");
-					}
-					file_put_contents(public_path("customers/" . $this->customer . '/mobile' . '/quickbar.json'), "quickbarCallback(" . json_encode($quickbarCallback) . ")");
+					}else{
+                                            file_put_contents(public_path("customers/" . $this->customer . '/mobile' . '/quickbar.json'), "quickbarCallback(" . json_encode($quickbarCallback) . ")");
+                                        }
 				}
 			}
 		}
