@@ -1872,7 +1872,6 @@ class PrintController extends BaseController {
                 max-width: 500px;
                 /*background: #D2E9FF;*/
                 padding: 20px 20px 20px 20px;
-                font: 12px Arial, Helvetica, sans-serif;
                 color: #666;
                 }
                 .input[placeholder]{color:#5c5c5c;}
@@ -1899,22 +1898,24 @@ class PrintController extends BaseController {
                 }
                 .elegant-aero label>span {
                 float: left;
-                width: 20%;
+                width: 25%;
                 text-align: right;
                 padding-right: 15px;
                 margin-top: 10px;
                 font-weight: bold;
+                text-overflow: ellipsis;
+                overflow: hidden;
+				white-space: nowrap;
                 }
                 .elegant-aero input[type="text"], .elegant-aero input[type="tel"], .elegant-aero input[type="email"], .elegant-aero textarea, .elegant-aero select {
                 color: #888;
-                width: 70%;
+                width: 60%;
                 padding: 0px 0px 0px 5px;
                 border: 1px solid #C5E2FF;
                 background: #FBFBFB;
                 outline: 0;
                 -webkit-box-shadow:inset 0px 1px 6px #ECF3F5;
                 box-shadow: inset 0px 1px 6px #ECF3F5;
-                font: 200 12px/25px Arial, Helvetica, sans-serif;
                 height: 30px;
                 line-height:15px;
                 margin: 2px 6px 16px 0px;
@@ -1922,7 +1923,7 @@ class PrintController extends BaseController {
                 .elegant-aero textarea{
                 height:100px;
                 padding: 5px 0px 0px 5px;
-                width: 70%;
+                width: 60%;
                 }
                 .elegant-aero select {
                 background: #fbfbfb url(\'down-arrow.png\') no-repeat right;
@@ -1932,7 +1933,7 @@ class PrintController extends BaseController {
                 -moz-appearance: none;
                 text-indent: 0.01px;
                 text-overflow: \'\';
-                width: 70%;
+                width: 60%;
                 }
                 .elegant-aero .button{
                 padding: 10px 30px 10px 30px;
