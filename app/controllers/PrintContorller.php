@@ -1588,8 +1588,10 @@ class PrintController extends BaseController {
 		$result['posnavs'] = false;
 		$data = $this->pagedata('index');
 		$index = $this->detailList($data);
+		
 		$result = array_add($result, 'index', $index);
 		$json_keys = $this->getJsonKey('index.html');
+		
 		if (count($json_keys)) {
 			foreach ($json_keys as $key) {
 				$result[$key] = $this->detailList($this->pagedata($key));
@@ -1974,7 +1976,6 @@ class PrintController extends BaseController {
 		}
                 </SCRIPT>';
 			} elseif ($classify->type == 9) {
-
 				$result['footscript'].=$formC->assignFormCSSandJSForPrint($formCdata);
 			}
 			$smarty->assign($result);
@@ -2075,106 +2076,6 @@ class PrintController extends BaseController {
                     </label>
                     </form>';
 			} elseif ($classify->type == 9) {
-				$_div_li = '';
-				$_div = "<div class='fv-add-show'>
-						<div class='fv-as-title'>
-							$form_data->title
-						</div>
-						<div class='fv-as-description'>
-							$form_data->description
-						</div>
-						<hr>";
-				$_div.="<form class='fv-unit-preview' name='box_show' action='http://swap.5067.org/userdata/" . $form_id . "'  onsubmit='return CheckPost();' method='post'>"
-					. "<ul class='fv-element-show'>";
-				foreach ((array)$column_data as $item) {
-					$_div .= "<li class='list-item' data-type=$item->type data-id=$item->id >";
-					$config = $item->config;
-//					var_dump($config);
-//					echo '<br>===config===<br>';
-					switch ($item->type) {
-						case 'text':
-							$_div .= "<p class='content-l'>$item->title";
-							if ($item->required == 1) {
-								$_div .= "<span style='color:red;'>*</span></p>";
-							} else {
-								$_div .= "</p>";
-							}
-							$_div .= "<input  type=" . $config['text_type'] . " name='$item->title'   placeholder='$item->description' />";
-							break;
-						case 'textarea':
-							$_div .= "<p class='content-l'>$item->title";
-							if ($item->required == 1) {
-								$_div .= "<span style='color:red;'>*</span></p>";
-							} else {
-								$_div .= "</p>";
-							}
-							$_div .= "<textarea name = '$item->title' placeholder = '$item->description' ></textarea>";
-							break;
-						case 'radio':
-							$_div .= "<p class='content-l'>$item->title";
-							if ($item->required == 1) {
-								$_div .= "<span style='color:red;'>*</span>：（ $item->description ）</p>";
-							} else {
-								$_div .= "：（ $item->description ）</p>";
-							}
-							$option_key = explode(',', $config['option_key']);
-							foreach ($option_key as $key => $value) {
-								$to = "option_$value";
-								$_div .= '<span class="option-item">';
-								$_div .= "<input type = 'radio' name = '$item->title' value = '$config[$to]' data-value='$value'  /><label>" . $config[$to] . " </label>";
-								$_div .= '</span>';
-							}
-							break;
-						case 'checkbox':
-							$_div .= "<p class='content-l'>$item->title";
-							if ($item->required == 1) {
-								$_div .= "<span style='color:red;'>*</span>：（ $item->description ）</p>";
-							} else {
-								$_div .= "：（ $item->description ）</p>";
-							}
-							$option_key = explode(',', $config['option_key']);
-							foreach ($option_key as $key => $value) {
-								$to = "option_$value";
-								$_div .= '<span class="option-item">';
-								$_div .= "<input type = 'checkbox' name = '$item->title[]' value = '$config[$to]' data-value='$value'  /><label>" . $config[$to] . " </label>";
-								$_div .= '</span>';
-							}
-							break;
-						case 'select':
-							$_div .= "<p class='content-l'>$item->title";
-							if ($item->required == 1) {
-								$_div .= "<span style='color:red;'>*</span>：（ $item->description ）</p>";
-							} else {
-								$_div .= "：（ $item->description ）</p>";
-							}
-							$_div .= "<select name=$item->title >";
-							$option_key = explode(',', $config['option_key']);
-							foreach ($option_key as $key => $value) {
-								$to = "option_$value";
-								$_div .= "<option  value='$config[$to]' data-value='$value'  />" . $config[$to] . "</option>";
-							}
-							$_div .= '</select>';
-							break;
-						case 'date':
-							$_div .="<p class='content-l'>$item->title</p>";
-							$_div .= '日期date';
-							break;
-						case 'image':
-							$_div .="<p class='content-l'>$item->title</p>";
-							break;
-						case 'file':
-							$_div .="<p class='content-l'>$item->title(  $item->description )：</p>";
-							$_div.= "<input type='file' name='$item->title'  />";
-							break;
-						default :
-							break;
-					}
-					$_div.="</li>";
-				}
-				$_div .= "</ul>"
-					. "<input type='submit' value='提交' class='button submit-form' name='submit' /><input type='reset' value='重置' class='button' />"
-					. "<input type='hidden' name='form_id' value=$form_id></form></div>";
-				$result['list']['content'] = $_div;
 				$result['list']['content'] = $formC->showFormHtmlForPrint($formCdata);
 			}
 			$json_keys = $this->getJsonKey($viewname . '.html');
