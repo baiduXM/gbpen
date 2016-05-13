@@ -14,9 +14,10 @@ class StatsController extends BaseController {
 	public function getCount() {
 		$cus_id = Auth::id();
 		$param['cus_id'] = $cus_id;
-		$postFun = new CommonController;
-		$res2 = $postFun->postsend("http://swap.5067.org/admin/stats.php", $param);
-		$data=  json_decode($res2);
+		$data = DB::table('stats')->where('cus_id', $cus_id)->first();
+//		$postFun = new CommonController;
+//		$res2 = $postFun->postsend("http://swap.5067.org/admin/stats.php", $param);
+//		$data=  json_decode($res2);
 //		var_dump($data);
 //		echo '<br>---data---<br>';
 		if ($data != NULL) {

@@ -231,11 +231,104 @@ abstract class Smarty_Internal_TemplateBase extends Smarty_Internal_Data {
 				$out = file_get_contents("http://swap.5067.org/interface.php?enlarge=1");
 				$_output = $_output . $out;
 			}
-			//===调用交互服务器接口文件中js==
+			//===调用交互服务器接口文件中js,加载访问统计===
+			/**
+			 * 获取域名->获取ip
+			 * 根据IP和域名获取数据库信息（交互服务器上）
+			 * ->判断ip是否登录过
+			 * 
+			 */
 			if ($_template->template_resource == './_footer.html') {
-				$out = file_get_contents("http://swap.5067.org/stats.php?stats=1");
-				$_output = $_output . $out;
+				$postFun = new CommonController;
+
+				$domain = $_SERVER['HTTP_HOST'] ? 'http://' . $_SERVER['HTTP_HOST'] : '';
+				$ip_address = ($_SERVER['REMOTE_ADDR']);
+//				$param['domain'] = $domain;
+//				$param['ip_address'] = $ip_address;
+				$flag = true;
+//				$stats_log_info = DB::table('stats_log')->where('ip_address', $ip_address)->where('pc_domain', $domain)->orWhere('mobile_domain', $domain)->first();
+				$stats_log_info = $postFun->postsend("http://swap.5067.org/stats.php?key=get_stats_log");
+				var_dump($stats_log_info);
+				echo '<br>---$stats_log_info---<br>';
+
+				$today = date('Y-m-d');
+				if (empty($stats_log_info) || $stats_log_info == 'null') {//新增
+//					$customer_info = DB::table('customer_info')->where('pc_domain', $domain)->orWhere('mobile_domain', $domain)->select('cus_id', 'pc_domain', 'mobile_domain')->first();
+					$customer_info = $postFun->postsend("http://swap.5067.org/stats.php?key=get_customer_info");
+					var_dump($customer_info);
+					echo '<br>---$customer_info---<br>';
+
+//					exit;
+					$data = array(
+//						'ip_address' => $ip_address,
+						'pc_domain' => $customer_info->pc_domain,
+						'mobile_domain' => $customer_info->mobile_domain,
+//						'lasttime' => $today
+					);
+//					$stats_log_id = DB::table('stats_log')->insertGetId($data);
+					$stats_log_id = $postFun->postsend("http://swap.5067.org/stats.php?key=insert_stats_log",$data);
+					var_dump($stats_log_id);
+					echo '<br>---$stats_log_id---<br>';
+//					$queries = DB::getQueryLog();
+//					$last_query = end($queries);
+//					var_dump($last_query);
+//					echo '<br>---$last_query---<br>';
+				} else {//判断单日是否已经登录过
+					if ($stats_log_info->lasttime != $today) {//不是当日更新为今天日期、并且计数+1
+						$data = array(
+							'lasttime' => $today
+						);
+						DB::table('stats_log')->where('id', $stats_log_info->id)->update($data);
+						$stats_log_id = $stats_log_info->id;
+					} else {//当日已登录
+						$flag = FALSE; //不做操作
+					}
+				}
+				if ($flag) {
+					$stats_info = DB::table('stats')->where('cus_id', $customer_info->cus_id)->first();
+					if (empty($stats_info)) {//统计为空，新增数据
+						$data3 = array(
+							'cus_id' => $customer_info->cus_id,
+							'pc_domain' => $customer_info->pc_domain,
+							'mobile_domain' => $customer_info->mobile_domain,
+							'lasttime' => $today
+						);
+						$stats_id = DB::table('stats')->insertGetId($data3);
+						$data2 = array(
+							'page_count_num' => 1,
+							'page_today_num' => 1,
+							'lasttime' => $today
+						);
+						$res1 = DB::table('stats')->where('id', $stats_id)->update($data2);
+					} else {//统计不为空，累加数据
+						if ($stats_info->lasttime != $today) {//查看lasttime是否为今天，不是今天更新lasttime，并重新统计当日访问数
+							$data2 = array(
+								'page_count_num' => $stats_info->page_count_num + 1,
+								'page_today_num' => 1,
+								'lasttime' => $today
+							);
+						} else {//是当日，累加访问数
+							$data2 = array(
+								'page_count_num' => $stats_info->page_count_num + 1,
+								'page_today_num' => $stats_info->page_today_num + 1
+							);
+						}
+						$stats_id = $stats_info->id;
+					}
+					$res1 = DB::table('stats')->where('id', $stats_id)->update($data2);
+				}
+//				
+//				$out = file_get_contents("http://swap.5067.org/stats.php?stats=1");
+//				var_dump($out);
+//				echo '<br>---out---<br>';
+//				$_output = $_output . $out;
 			}
+
+
+
+
+
+
 			if (!$_template->source->recompiled && empty($_template->properties['file_dependency'][$_template->source->uid])) {
 				$_template->properties['file_dependency'][$_template->source->uid] = array($_template->source->filepath, $_template->source->timestamp, $_template->source->type);
 			}
