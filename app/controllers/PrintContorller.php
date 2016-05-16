@@ -1517,6 +1517,7 @@ class PrintController extends BaseController {
         </div>' . "\n";
 		// 显示类型
 		$s.="<script>status = 1;\n";
+                $s.="url=window.location.href;\n";
 		$params['style'] = isset($params['style']) ? $params['style'] : "1";
 		$s.="window._bd_share_config = {
           common : {
@@ -1527,9 +1528,9 @@ class PrintController extends BaseController {
             bdDesc : \"";
 		$s.=isset($params['shareDesc']) ? $params['shareDesc'] : '';
 		$s.="\", 
-            bdUrl : \"";
-		$s.=isset($params['shareUrl']) ? $params['shareUrl'] : rtrim(self::$cus_domain, '/') . $_SERVER['REQUEST_URI'] . '.html';
-		$s.="\",   
+            bdUrl : ";
+		$s.=isset($params['shareUrl']) ? $params['shareUrl'] : "url";
+		$s.=",   
             bdPic : \"";
 		$s.=isset($params['sharePic']) ? $params['sharePic'] : '';
 		$s.="\",
