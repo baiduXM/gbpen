@@ -35,7 +35,7 @@
 				<!-- 顶部主导航 -->
 				<nav class="pr clearfix">
 					<ul>
-						<!--<li class="nav selected" style="display:none"><a href="#/visit">数据统计</a><em></em></li>-->
+						<li class="nav selected" style="display:none"><a href="#/visit">数据统计</a><em></em></li>
 						<!--保留display:none，用于其他js选择.selected-->
 						<!--<li class="nav selected"><a href="#/visit">数据统计</a><em></em></li>--> 
 						<li class="nav"><a href="#/home" class="homes">页面编辑</a><em></em></li>
@@ -233,16 +233,19 @@
 	<script type="text/javascript" src="js/script.js"></script>						<!-- 公共脚本文件 --> 
 	<!--<script type="text/javascript" src="js/jquery.select.js"></script> -->
 	<script type="text/javascript">
-	$(function(){
-		$.get('../count',function(json){
-			if(json.err==0){
-				var data=json.data;
-				$(".cxb_list_n2").children(".cxb_list_m").html(data.page_today_num);
-				$(".cxb_list_n3").children(".cxb_list_m").html(data.page_count_num);
-				$(".cxb_list_n4").children(".cxb_list_m").html(data.wx_count_num);
-			}
-		});
-	});
+				$(function(){
+				alert(1)
+						$.get('../count', function(json){
+						console.log(json);
+						console.log('---json---');
+						if (json.err == 0){
+						var data = json.data;
+						$(".cxb_list_n2").children(".cxb_list_m").html(data.page_today_num);
+						$(".cxb_list_n3").children(".cxb_list_m").html(data.page_count_num);
+						$(".cxb_list_n4").children(".cxb_list_m").html(data.wx_count_num);
+						}
+						});
+				});
 	</script>
 	<!--[if lte IE 7]>
 	<script type="text/javascript">
