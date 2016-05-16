@@ -51,22 +51,22 @@ function addformController($scope, $http, $location) {
 		$('.tab-content-item').hide();
 		$('div[name=' + name + ']').show();
 	});
-	console.log($('[name="action_type[]"]'));
-	console.log('===sdaf===');
-	$('[name="action_type[]"]').click(function () {
-		if ($(this).checked == true) {
-			console.log($(this).is(':checked'));
-			console.log('===this===');
-		}
-	});
-//	$('[name="action_type[]"]').toggle(
-//			function () {
-//				$(this).attr("checked");
-//			},
-//			function () {
-//				$(this).removeAttr("checked");
-//			}
-//	);
+//	var ss = data.action_type.split(',');
+//	$('[name="action_type"]:eq(' + data.action_type + ')').attr('checked', true);
+	//===选择提交表单后动作===
+//	$('[name="action_type"]').click(function () {
+//		if ($(this).val() == 0){
+//			$('[name="action_text"]').html('disabled');
+//		}
+////		$('[name="action_type[]"]:checked').each(function (k, v) {
+////			if ($(this).val() == 0 || $('[name="action_text"]').attr('disabled') == 'disabled') {
+////				$('[name="action_text"]').removeAttr('disabled');
+////			}
+////			if ($(this).val() == 1 || $('[name="action_url"]').attr('disabled') == 'disabled') {
+////				$('[name="action_url"]').removeAttr('disabled');
+////			}
+////		});
+//	});
 
 	//===预览表单===
 	$('[name="writeform"]').click(function () {
@@ -82,6 +82,7 @@ function addformController($scope, $http, $location) {
 			});
 		});
 	});
+	
 	//===保存表单（column数据）===
 	$('.addsave').click(function () {
 		Hint_box('保存成功');
@@ -101,6 +102,7 @@ function addformController($scope, $http, $location) {
 			});
 		});
 	}
+
 	/**
 	 * 获取组件元素
 	 * @returns {undefined}
@@ -108,7 +110,6 @@ function addformController($scope, $http, $location) {
 	function getFormElement() {
 		$http.get('../form-element-list').success(function (json) {
 			checkJSON(json, function (json) {
-
 				var form_element = json.data;
 				var _div = '';
 				if (form_element != null) {
@@ -129,6 +130,7 @@ function addformController($scope, $http, $location) {
 			});
 		});
 	}
+
 	/**
 	 * 获取表单列
 	 * @returns {undefined}
@@ -178,24 +180,16 @@ function addformController($scope, $http, $location) {
 			$('[name="platform"]:eq(' + tv + ')').attr('checked', true);
 		});
 		$('[name="showmodel"]:eq(' + data.showmodel + ')').attr('checked', true);
-		//===显示文字、链接===
-		var ac_t = data.action_type.split(',');
-		$('[name="action_text"]').attr('disabled', 'disabled');
-		$('[name="action_url"]').attr('disabled', 'disabled');
-		$('[name="action_text"]').val(data.action_text);
-		$('[name="action_url"]').val(data.action_url);
-		$.each(ac_t, function (k, v) {
-			if (v == 0) {//显示文字
-				$('[name="action_text"]').removeAttr('disabled');
-				$('[name="action_type[]"]:eq(0)').attr('checked', 'checked');
-			}
-			if (v == 1) {//显示链接
-				$('[name="action_url"]').removeAttr('disabled');
-				$('[name="action_type[]"]:eq(1)').attr('checked', 'checked');
-			}
-		});
 
-		$('[name="action_text"]').val(data.action_text);
+		//===显示文字、链接===
+		$('[name="action_type"]:eq(' + data.action_type + ')').attr('checked', true);
+		if (data.action_type == 0) {
+			$('[name="action_text"]').val(data.action_text);
+		}
+		if (data.action_type == 1) {
+			$('[name="action_text"]').val(data.action_url);
+		}
+
 		if (data.is_once == 1) {
 			$('[name="is_once"]').attr('checked', true);
 		}
@@ -207,6 +201,15 @@ function addformController($scope, $http, $location) {
 		//===显示区域===
 		$('.as-title').html(data.title);
 		$('.as-description').html(data.description);
+		//===选择提交表单后动作===
+		$('[name="action_type"]').click(function () {
+			if ($(this).val() == 0) {
+				$('[name="action_text"]').val(data.action_text);
+			}
+			if ($(this).val() == 1) {
+				$('[name="action_text"]').val(data.action_url);
+			}
+		});
 	}
 	/**
 	 * 显示组件/更新组件信息
