@@ -99,15 +99,34 @@ class FormController extends BaseController {
 		$form_data = Input::get('box_info');
 		$time = date('Y-m-d H:i:s');
 		$data = array();
+		$tag = 'text';
 		foreach ($form_data as $v) {
 			if (!isset($data[$v['name']])) {
-				$data[$v['name']] = $v['value'];
+				if ($v['name'] == 'action_type') {
+					if ($v['value'] == 0) {
+						$tag = 'text';
+					}
+					if ($v['value'] == 1) {
+						$tag = 'url';
+					}
+					$data[$v['name']] = $v['value'];
+				} else if ($v['name'] == 'action_text') {
+					if ($tag == 'text') {
+						$data['action_text'] = $v['value'];
+					}
+					if ($tag == 'url') {
+						$data['action_url'] = $v['value'];
+					}
+				} else {
+					$data[$v['name']] = $v['value'];
+				}
 			} else {
 				$data[$v['name']] = $data[$v['name']] . ',' . $v['value']; //合并checkbox选项值
 			}
 		}
 		$data['is_once'] = isset($data['is_once']) ? 1 : 0;
 		$data['updated_at'] = $time;
+
 		$res = DB::table('form')->where('id', $form_id)->update($data);
 		//===返回数据===
 		if ($res != NULL) {

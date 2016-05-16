@@ -19,30 +19,10 @@
 		"scriptUrl": "pages/js/column.js",
 		"controller": "columnController"
 	}, {
-		"router": "/quota",
-		"templateUrl": "pages/quota.html",
-		"scriptUrl": "pages/js/quota.js",
-		"controller": "quotaController"
-	}, {
-		"router": "/ercode",
-		"templateUrl": "pages/ercode.html",
-		"scriptUrl": "pages/js/ercode.js",
-		"controller": "ercodeController"
-	}, {
 		"router": "/home",
 		"templateUrl": "pages/home.html",
 		"scriptUrl": "pages/js/home.js",
 		"controller": "homeController"
-	}, {
-		"router": "/visit",
-		"templateUrl": "pages/visit.html",
-		"scriptUrl": "pages/js/visit.js",
-		"controller": "visitController"
-	}, {
-		"router": "/contact",
-		"templateUrl": "pages/contact.html",
-		"scriptUrl": "pages/js/contact.js",
-		"controller": "contactController"
 	}, {
 		"router": "/menu",
 		"templateUrl": "pages/menu.html",
@@ -133,5 +113,25 @@
 		"templateUrl": "pages/viewform.html",
 		"scriptUrl": "pages/js/viewform.js",
 		"controller": "viewformController"
+	}, {
+		"router": "/visit",
+		"templateUrl": "pages/visit.html",
+		"scriptUrl": "pages/js/visit.js",
+		"controller": "visitController"
+	}, {
+		"router": "/ercode",
+		"templateUrl": "pages/ercode.html",
+		"scriptUrl": "pages/js/ercode.js",
+		"controller": "ercodeController"
+	}, {
+		"router": "/quota",
+		"templateUrl": "pages/quota.html",
+		"scriptUrl": "pages/js/quota.js",
+		"controller": "quotaController"
+	}, {
+		"router": "/contact",
+		"templateUrl": "pages/contact.html",
+		"scriptUrl": "pages/js/contact.js",
+		"controller": "contactController"
 	}
 ]
