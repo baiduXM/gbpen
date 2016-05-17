@@ -118,9 +118,9 @@
                                     </div>\
                                     <label class="floatxy" style="height: 20px;">X:<input type="text" class="settingpos" style="width: 30px;height: 20px;" name="posx['+subscript+']" value="0">PX</label>\n\
                                     <label class="floatxy" style="height: 20px;">Y:<input type="text" class="settingpos" style="width: 30px;height: 20px;" name="posy['+subscript+']" value="0">PX</label>\n\
-                                    <label class="floatxy" style="height: 20px;">宽:<input type="text" class="settingpos" style="width: 30px;height: 20px;" name="posw['+subscript+']" value="0">PX</label>\n\
+                                    <label class="floatxy" style="height: 20px;">图宽:<input type="text" class="settingpos" style="width: 30px;height: 20px;" name="posw['+subscript+']" value="0">PX</label>\n\
                                     <label class="floatxy" style="height: 20px;">位置:<select name="position['+subscript+']"><option value ="1">上</option><option value ="3">下</option><option value ="2">左</option><option value ="4">右</option></select></label>\n\
-                                    <label class="floatxy" style="position: relative;width:300px;height: 20px;">href:<input type="text" class="settingpos" name="href['+subscript+']" style="width: 250px;height: 20px;" value=""></label>\n\
+                                    <label class="floatxy" style="position: relative;width:300px;height: 20px;">链接:<input type="text" class="settingpos" name="href['+subscript+']" style="width: 250px;height: 20px;" value=""></label>\n\
                                     <a><i class="fa iconfont icon-delete"></i></a>\n\
                                   </li>';
                         $('ul.adv').append(html);
