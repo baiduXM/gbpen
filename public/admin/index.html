@@ -36,14 +36,15 @@
 				<nav class="pr clearfix">
 					<ul>
 						<li class="nav selected" style="display:none"><a href="#/visit">数据统计</a><em></em></li>
-						<!-- <li class="nav"><a href="#/visit">数据统计</a><em></em></li> -->
+						<!--保留display:none，用于其他js选择.selected-->
+						<!--<li class="nav selected"><a href="#/visit">数据统计</a><em></em></li>--> 
 						<li class="nav"><a href="#/home" class="homes">页面编辑</a><em></em></li>
 						<!-- <li class="nav"><a href="#/member">会员管理</a><em></em></li> -->
 						<li class="nav"><a href="#/column">栏目管理</a><em></em></li>
 						<li class="nav"><a href="#/article">文章管理</a><em></em></li>
 						<!-- <li class="nav"><a href="#/menu">微信运用</a><em></em></li> -->
 						<li class="nav"><a href="#/message">留&nbsp;言&nbsp;板</a><em></em></li>
-<!--						<li class="nav"><a href="#/form">万用表单</a><em></em></li>-->
+						<!--<li class="nav"><a href="#/form">万用表单</a><em></em></li>-->
 						<li class="nav"><a href="#/phone_index?Area=quickbar">快捷导航</a><em></em></li>
 					</ul>
 				</nav>
@@ -57,9 +58,9 @@
 				<div class="cxb_home">
 					<div class="cxb_Label">
 						<!--<dl class="cxb_Label_list cxb_list_n1"><dd class="cxb_list_m">12322</dd><dt class="cxb_list_title">今日访问次数</dt></dl>-->
-						<dl class="cxb_Label_list cxb_list_n2"><dd class="cxb_list_m">12322</dd><dt class="cxb_list_title">今日访问数量</dt></dl>
-						<dl class="cxb_Label_list cxb_list_n3"><dd class="cxb_list_m">12322</dd><dt class="cxb_list_title">总访客数量</dt></dl>
-						<!--<dl class="cxb_Label_list cxb_list_n4"><dd class="cxb_list_m">12322</dd><dt class="cxb_list_title">微信新增粉数</dt></dl>-->
+						<dl class="cxb_Label_list cxb_list_n2"><dd class="cxb_list_m">0</dd><dt class="cxb_list_title">今日访问数量</dt></dl>
+						<dl class="cxb_Label_list cxb_list_n3"><dd class="cxb_list_m">0</dd><dt class="cxb_list_title">总访客数量</dt></dl>
+						<dl class="cxb_Label_list cxb_list_n4"><dd class="cxb_list_m">0</dd><dt class="cxb_list_title">微信新增粉数</dt></dl>
 						<!--<dl class="cxb_Label_list cxb_list_n6"><dd class="cxb_list_m">12322</dd><dt class="cxb_list_title">总访问次数</dt></dl>-->
 						<!--<dl class="cxb_Label_list cxb_list_n7"><dd class="cxb_list_m">12322</dd><dt class="cxb_list_title">微信请求数</dt></dl>-->
 						<dl class="cxb_gangbi"><img src="images/gangbi.png"></dl>
@@ -206,10 +207,10 @@
 		</div>
 		<!-- 底部 -->
 		<footer class="cb">
-			<div style="display: none;"><script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1259033526'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1259033526%26online%3D1%26show%3Dline' type='text/javascript'%3E%3C/script%3E"));</script></div>
+			<div style="display: none;"><script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://"); document.write(unescape("%3Cspan id='cnzz_stat_icon_1259033526'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1259033526%26online%3D1%26show%3Dline' type='text/javascript'%3E%3C/script%3E"));</script></div>
 			copyright 厦门易尔通网络科技有限公司 版权所有</footer>
 		<div class="background"><img src="images/bg_light.png" /><img class="bg_thumb" src="images/bg_thumb.jpg" /></div>
-		
+
 	</body>
 	<!--[if lt IE 8]>
 		<script src="js/json3.min.js"></script>
@@ -231,6 +232,20 @@
 	<script type="text/javascript" src="js/jquery.uploadify.min.js"></script>       <!-- 图片上传控件 -->
 	<script type="text/javascript" src="js/script.js"></script>						<!-- 公共脚本文件 --> 
 	<!--<script type="text/javascript" src="js/jquery.select.js"></script> -->
+	<script type="text/javascript">
+				$(function(){
+						$.get('../count', function(json){
+						console.log(json);
+						console.log('---json---');
+						if (json.err == 0){
+						var data = json.data;
+						$(".cxb_list_n2").children(".cxb_list_m").html(data.page_today_num);
+						$(".cxb_list_n3").children(".cxb_list_m").html(data.page_count_num);
+						$(".cxb_list_n4").children(".cxb_list_m").html(data.wx_count_num);
+						}
+						});
+				});
+	</script>
 	<!--[if lte IE 7]>
 	<script type="text/javascript">
 		mainApp.config(function($sceProvider) {

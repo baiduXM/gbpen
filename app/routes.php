@@ -1,8 +1,11 @@
 <?php
 
 Route::get('/', function() {//登录
+//	return 1;
+//	Redirect::route('IndexController');
 	return View::make('login');
 })->before('guest');
+
 
 Route::get('get-remind', [//忘记密码
 	'as' => 'get-remind',
@@ -25,8 +28,6 @@ Route::post('post-reset', [//密码重置处理
 	'uses' => 'RemindersController@postReset'
 ]);
 
-
-
 Route::post('login-post', [//登录处理
 	'as' => 'login-post',
 	'before' => 'csrf',
@@ -45,6 +46,15 @@ Route::get('login-info', [//用户名称
 
 //路由组--所有登录后的操作放入本组
 Route::group(array('before' => 'auth'), function() {
+
+	//===获取用户统计数据-start===
+	Route::get('count', [//首页统计数据
+		'as' => 'stasts',
+		'uses' => 'StatsController@getCount'
+	]);
+
+	//===获取用户统计数据-end===
+
 	Route::get('log-out', [//用户登出
 		'as' => 'log-out',
 		'uses' => 'SignController@logOut'
@@ -61,14 +71,12 @@ Route::group(array('before' => 'auth'), function() {
 		'uses' => 'CustomerController@customerSetting'
 	]);
 
-
 	//-----------------------------------------------
 	//--------------------栏目路由--------------------
 	Route::post('classify-create', [//栏目添加
 		'as' => 'classify-list',
 		'uses' => 'ClassifyController@classifyCreate'
 	]);
-
 
 	Route::get('classify-list', [//栏目列表
 		'as' => 'classify-list',

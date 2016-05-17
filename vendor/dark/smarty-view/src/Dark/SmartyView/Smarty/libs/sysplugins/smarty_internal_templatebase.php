@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Smarty Internal Plugin Smarty Template  Base
  * This file contains the basic shared methods for template handling
@@ -14,310 +15,399 @@
  * @package    Smarty
  * @subpackage Template
  */
-abstract class Smarty_Internal_TemplateBase extends Smarty_Internal_Data
-{
-    /**
-     * fetches a rendered Smarty template
-     *
-     * @param  string $template         the resource handle of the template file or template object
-     * @param  mixed  $cache_id         cache id to be used with this template
-     * @param  mixed  $compile_id       compile id to be used with this template
-     * @param  object $parent           next higher level of Smarty variables
-     * @param  bool   $display          true: display, false: fetch
-     * @param  bool   $merge_tpl_vars   if true parent template variables merged in to local scope
-     * @param  bool   $no_output_filter if true do not run output filter
-     *
-     * @throws Exception
-     * @throws SmartyException
-     * @return string rendered template output
-     */
-    public function fetch($template = null, $cache_id = null, $compile_id = null, $parent = null, $display = false, $merge_tpl_vars = true, $no_output_filter = false)
-    {
-        if ($template === null && $this instanceof $this->template_class) {
-            $template = $this;
-        }
-        if ($cache_id !== null && is_object($cache_id)) {
-            $parent = $cache_id;
-            $cache_id = null;
-        }
-        if ($parent === null && ($this instanceof Smarty || is_string($template))) {
-            $parent = $this;
-        }
-        // create template object if necessary
-        $_template = ($template instanceof $this->template_class)
-            ? $template
-            : $this->smarty->createTemplate($template, $cache_id, $compile_id, $parent, false);
-        // if called by Smarty object make sure we use current caching status
-        if ($this instanceof Smarty) {
-            $_template->caching = $this->caching;
-        }
-       
-        // merge all variable scopes into template
-        if ($merge_tpl_vars) {
-            // save local variables
-            $save_tpl_vars = $_template->tpl_vars;
-            $save_config_vars = $_template->config_vars;
-            $ptr_array = array($_template);
-            $ptr = $_template;
-            while (isset($ptr->parent)) {
-                $ptr_array[] = $ptr = $ptr->parent;
-            }
-            $ptr_array = array_reverse($ptr_array);
-            $parent_ptr = reset($ptr_array);
-            $tpl_vars = $parent_ptr->tpl_vars;
-            $config_vars = $parent_ptr->config_vars;
-            while ($parent_ptr = next($ptr_array)) {
-                if (!empty($parent_ptr->tpl_vars)) {
-                    $tpl_vars = array_merge($tpl_vars, $parent_ptr->tpl_vars);
-                }
-                if (!empty($parent_ptr->config_vars)) {
-                    $config_vars = array_merge($config_vars, $parent_ptr->config_vars);
-                }
-            }
-            if (!empty(Smarty::$global_tpl_vars)) {
-                $tpl_vars = array_merge(Smarty::$global_tpl_vars, $tpl_vars);
-            }
-            $_template->tpl_vars = $tpl_vars;
-            $_template->config_vars = $config_vars;
-        }
-        // dummy local smarty variable
-        if (!isset($_template->tpl_vars['smarty'])) {
-            $_template->tpl_vars['smarty'] = new Smarty_Variable;
-        }
-        if (isset($this->smarty->error_reporting)) {
-            $_smarty_old_error_level = error_reporting($this->smarty->error_reporting);
-        }
-        // check URL debugging control
-        if (!$this->smarty->debugging && $this->smarty->debugging_ctrl == 'URL') {
-            if (isset($_SERVER['QUERY_STRING'])) {
-                $_query_string = $_SERVER['QUERY_STRING'];
-            } else {
-                $_query_string = '';
-            }
-            if (false !== strpos($_query_string, $this->smarty->smarty_debug_id)) {
-                if (false !== strpos($_query_string, $this->smarty->smarty_debug_id . '=on')) {
-                    // enable debugging for this browser session
-                    setcookie('SMARTY_DEBUG', true);
-                    $this->smarty->debugging = true;
-                } elseif (false !== strpos($_query_string, $this->smarty->smarty_debug_id . '=off')) {
-                    // disable debugging for this browser session
-                    setcookie('SMARTY_DEBUG', false);
-                    $this->smarty->debugging = false;
-                } else {
-                    // enable debugging for this page
-                    $this->smarty->debugging = true;
-                }
-            } else {
-                if (isset($_COOKIE['SMARTY_DEBUG'])) {
-                    $this->smarty->debugging = true;
-                }
-            }
-        }
-        // must reset merge template date
-        $_template->smarty->merged_templates_func = array();
-        // get rendered template
-        // disable caching for evaluated code
-        if ($_template->source->recompiled) {
-            $_template->caching = false;
-        }
-        // checks if template exists
-        if (!$_template->source->exists) {
-            if ($_template->parent instanceof Smarty_Internal_Template) {
-                $parent_resource = " in '{$_template->parent->template_resource}'";
-            } else {
-                $parent_resource = '';
-            }
-            throw new SmartyException("Unable to load template {$_template->source->type} '{$_template->source->name}'{$parent_resource}");
-        }
-        // read from cache or render
-        if (!($_template->caching == Smarty::CACHING_LIFETIME_CURRENT || $_template->caching == Smarty::CACHING_LIFETIME_SAVED) || !$_template->cached->valid) {
-            // render template (not loaded and not in cache)
-            if (!$_template->source->uncompiled) {
-                /** @var Smarty_Internal_Template $_smarty_tpl
-                 * used in evaluated code
-                 */
-                $_smarty_tpl = $_template;
-                if ($_template->source->recompiled) {
-                    $code = $_template->compiler->compileTemplate($_template);
-                    if ($this->smarty->debugging) {
-                        Smarty_Internal_Debug::start_render($_template);
-                    }
-                    try {
-                        ob_start();
-						
+abstract class Smarty_Internal_TemplateBase extends Smarty_Internal_Data {
+
+	/**
+	 * fetches a rendered Smarty template
+	 *
+	 * @param  string $template         the resource handle of the template file or template object
+	 * @param  mixed  $cache_id         cache id to be used with this template
+	 * @param  mixed  $compile_id       compile id to be used with this template
+	 * @param  object $parent           next higher level of Smarty variables
+	 * @param  bool   $display          true: display, false: fetch
+	 * @param  bool   $merge_tpl_vars   if true parent template variables merged in to local scope
+	 * @param  bool   $no_output_filter if true do not run output filter
+	 *
+	 * @throws Exception
+	 * @throws SmartyException
+	 * @return string rendered template output
+	 */
+	public function fetch($template = null, $cache_id = null, $compile_id = null, $parent = null, $display = false, $merge_tpl_vars = true, $no_output_filter = false) {
+		if ($template === null && $this instanceof $this->template_class) {
+			$template = $this;
+		}
+		if ($cache_id !== null && is_object($cache_id)) {
+			$parent = $cache_id;
+			$cache_id = null;
+		}
+		if ($parent === null && ($this instanceof Smarty || is_string($template))) {
+			$parent = $this;
+		}
+		// create template object if necessary
+		$_template = ($template instanceof $this->template_class) ? $template : $this->smarty->createTemplate($template, $cache_id, $compile_id, $parent, false);
+		// if called by Smarty object make sure we use current caching status
+		if ($this instanceof Smarty) {
+			$_template->caching = $this->caching;
+		}
+
+		// merge all variable scopes into template
+		if ($merge_tpl_vars) {
+			// save local variables
+			$save_tpl_vars = $_template->tpl_vars;
+			$save_config_vars = $_template->config_vars;
+			$ptr_array = array($_template);
+			$ptr = $_template;
+			while (isset($ptr->parent)) {
+				$ptr_array[] = $ptr = $ptr->parent;
+			}
+			$ptr_array = array_reverse($ptr_array);
+			$parent_ptr = reset($ptr_array);
+			$tpl_vars = $parent_ptr->tpl_vars;
+			$config_vars = $parent_ptr->config_vars;
+			while ($parent_ptr = next($ptr_array)) {
+				if (!empty($parent_ptr->tpl_vars)) {
+					$tpl_vars = array_merge($tpl_vars, $parent_ptr->tpl_vars);
+				}
+				if (!empty($parent_ptr->config_vars)) {
+					$config_vars = array_merge($config_vars, $parent_ptr->config_vars);
+				}
+			}
+			if (!empty(Smarty::$global_tpl_vars)) {
+				$tpl_vars = array_merge(Smarty::$global_tpl_vars, $tpl_vars);
+			}
+			$_template->tpl_vars = $tpl_vars;
+			$_template->config_vars = $config_vars;
+		}
+		// dummy local smarty variable
+		if (!isset($_template->tpl_vars['smarty'])) {
+			$_template->tpl_vars['smarty'] = new Smarty_Variable;
+		}
+		if (isset($this->smarty->error_reporting)) {
+			$_smarty_old_error_level = error_reporting($this->smarty->error_reporting);
+		}
+		// check URL debugging control
+		if (!$this->smarty->debugging && $this->smarty->debugging_ctrl == 'URL') {
+			if (isset($_SERVER['QUERY_STRING'])) {
+				$_query_string = $_SERVER['QUERY_STRING'];
+			} else {
+				$_query_string = '';
+			}
+			if (false !== strpos($_query_string, $this->smarty->smarty_debug_id)) {
+				if (false !== strpos($_query_string, $this->smarty->smarty_debug_id . '=on')) {
+					// enable debugging for this browser session
+					setcookie('SMARTY_DEBUG', true);
+					$this->smarty->debugging = true;
+				} elseif (false !== strpos($_query_string, $this->smarty->smarty_debug_id . '=off')) {
+					// disable debugging for this browser session
+					setcookie('SMARTY_DEBUG', false);
+					$this->smarty->debugging = false;
+				} else {
+					// enable debugging for this page
+					$this->smarty->debugging = true;
+				}
+			} else {
+				if (isset($_COOKIE['SMARTY_DEBUG'])) {
+					$this->smarty->debugging = true;
+				}
+			}
+		}
+		// must reset merge template date
+		$_template->smarty->merged_templates_func = array();
+		// get rendered template
+		// disable caching for evaluated code
+		if ($_template->source->recompiled) {
+			$_template->caching = false;
+		}
+		// checks if template exists
+		if (!$_template->source->exists) {
+			if ($_template->parent instanceof Smarty_Internal_Template) {
+				$parent_resource = " in '{$_template->parent->template_resource}'";
+			} else {
+				$parent_resource = '';
+			}
+			throw new SmartyException("Unable to load template {$_template->source->type} '{$_template->source->name}'{$parent_resource}");
+		}
+		// read from cache or render
+		if (!($_template->caching == Smarty::CACHING_LIFETIME_CURRENT || $_template->caching == Smarty::CACHING_LIFETIME_SAVED) || !$_template->cached->valid) {
+			// render template (not loaded and not in cache)
+			if (!$_template->source->uncompiled) {
+				/** @var Smarty_Internal_Template $_smarty_tpl
+				 * used in evaluated code
+				 */
+				$_smarty_tpl = $_template;
+				if ($_template->source->recompiled) {
+					$code = $_template->compiler->compileTemplate($_template);
+					if ($this->smarty->debugging) {
+						Smarty_Internal_Debug::start_render($_template);
+					}
+					try {
+						ob_start();
+
 						/// dark edit
-                        \Dark\SmartyView\SmartyEngine::integrateViewComposers($_template);               
-                        /// end edit      
-						
-                        eval("?>" . $code);
-                        unset($code);
-                    }
-                    catch (Exception $e) {
-                        ob_get_clean();
-                        throw $e;
-                    }
-                } else {
-                    if (!$_template->compiled->exists || ($_template->smarty->force_compile && !$_template->compiled->isCompiled)) {
-                        $_template->compileTemplateSource();
-                        $code = file_get_contents($_template->compiled->filepath);
-                        eval("?>" . $code);
-                        unset($code);
-                        $_template->compiled->loaded = true;
-                        $_template->compiled->isCompiled = true;
-                    }
-                    if ($this->smarty->debugging) {
-                        Smarty_Internal_Debug::start_render($_template);
-                    }
-                    if (!$_template->compiled->loaded) {
-                        include($_template->compiled->filepath);
-                        if ($_template->mustCompile) {
-                            // recompile and load again
-                            $_template->compileTemplateSource();
-                            $code = file_get_contents($_template->compiled->filepath);
-                            eval("?>" . $code);
-                            unset($code);
-                            $_template->compiled->isCompiled = true;
-                        }
-                        $_template->compiled->loaded = true;
-                    } else {
-                        $_template->decodeProperties($_template->compiled->_properties, false);
-                    }
-                    try {
-                        ob_start();
-                        if (empty($_template->properties['unifunc']) || !is_callable($_template->properties['unifunc'])) {
-                            throw new SmartyException("Invalid compiled template for '{$_template->template_resource}'");
-                        }
-                        array_unshift($_template->_capture_stack, array());		
+						\Dark\SmartyView\SmartyEngine::integrateViewComposers($_template);
+						/// end edit      
+
+						eval("?>" . $code);
+						unset($code);
+					} catch (Exception $e) {
+						ob_get_clean();
+						throw $e;
+					}
+				} else {
+					if (!$_template->compiled->exists || ($_template->smarty->force_compile && !$_template->compiled->isCompiled)) {
+						$_template->compileTemplateSource();
+						$code = file_get_contents($_template->compiled->filepath);
+						eval("?>" . $code);
+						unset($code);
+						$_template->compiled->loaded = true;
+						$_template->compiled->isCompiled = true;
+					}
+					if ($this->smarty->debugging) {
+						Smarty_Internal_Debug::start_render($_template);
+					}
+					if (!$_template->compiled->loaded) {
+						include($_template->compiled->filepath);
+						if ($_template->mustCompile) {
+							// recompile and load again
+							$_template->compileTemplateSource();
+							$code = file_get_contents($_template->compiled->filepath);
+							eval("?>" . $code);
+							unset($code);
+							$_template->compiled->isCompiled = true;
+						}
+						$_template->compiled->loaded = true;
+					} else {
+						$_template->decodeProperties($_template->compiled->_properties, false);
+					}
+					try {
+						ob_start();
+						if (empty($_template->properties['unifunc']) || !is_callable($_template->properties['unifunc'])) {
+							throw new SmartyException("Invalid compiled template for '{$_template->template_resource}'");
+						}
+						array_unshift($_template->_capture_stack, array());
 						/// dark edit
-                        \Dark\SmartyView\SmartyEngine::integrateViewComposers($_template);               
-                        /// end edit   
-						
-                        //
-                        // render compiled template
-                        //
-                        $_template->properties['unifunc']($_template);
-                        // any unclosed {capture} tags ?
-                        if (isset($_template->_capture_stack[0][0])) {
-                            $_template->capture_error();
-                        }
-                        array_shift($_template->_capture_stack);
-                    }
-                    catch (Exception $e) {
-                        ob_get_clean();
-                        throw $e;
-                    }
-                }
-            } else {
-                if ($_template->source->uncompiled) {
-                    if ($this->smarty->debugging) {
-                        Smarty_Internal_Debug::start_render($_template);
-                    }
-                    try {
-                        ob_start();
-						
+						\Dark\SmartyView\SmartyEngine::integrateViewComposers($_template);
+						/// end edit   
+						//
+							// render compiled template
+						//
+							$_template->properties['unifunc']($_template);
+						// any unclosed {capture} tags ?
+						if (isset($_template->_capture_stack[0][0])) {
+							$_template->capture_error();
+						}
+						array_shift($_template->_capture_stack);
+					} catch (Exception $e) {
+						ob_get_clean();
+						throw $e;
+					}
+				}
+			} else {
+				if ($_template->source->uncompiled) {
+					if ($this->smarty->debugging) {
+						Smarty_Internal_Debug::start_render($_template);
+					}
+					try {
+						ob_start();
+
 						/// dark edit
-                        \Dark\SmartyView\SmartyEngine::integrateViewComposers($_template);               
-                        /// end edit   	
-                        $_template->source->renderUncompiled($_template);
-                    }
-                    catch (Exception $e) {
-                        ob_get_clean();
-                        throw $e;
-                    }
-                } else {
-                    throw new SmartyException("Resource '$_template->source->type' must have 'renderUncompiled' method");
-                }
-            }
-            $_output = ob_get_clean();
-            if($_template->template_resource=='./_footer.html'&&(empty($_template->tpl_vars['navs']->value))){
-                $_output = preg_replace('/<a href="'.str_replace("/","\/",$_template->tpl_vars['site_url']->value).'"( target="_blank")?( )?>首页<\/a>( )?\|([\s]+)?(<br \/>)?(<br>)?/is', "", $_output);
-            }
-            
-            if($_template->template_resource=='./_footer.html'&&isset($_template->tpl_vars['enlarge']->value)&&$_template->tpl_vars['enlarge']->value){
-                $out=file_get_contents("http://swap.5067.org/interface.php?enlarge=1");
-                $_output =$_output.$out;
-            }
-            if (!$_template->source->recompiled && empty($_template->properties['file_dependency'][$_template->source->uid])) {
-                $_template->properties['file_dependency'][$_template->source->uid] = array($_template->source->filepath, $_template->source->timestamp, $_template->source->type);
-            }
-            if ($_template->parent instanceof Smarty_Internal_Template) {
-                $_template->parent->properties['file_dependency'] = array_merge($_template->parent->properties['file_dependency'], $_template->properties['file_dependency']);
-                foreach ($_template->required_plugins as $code => $tmp1) {
-                    foreach ($tmp1 as $name => $tmp) {
-                        foreach ($tmp as $type => $data) {
-                            $_template->parent->required_plugins[$code][$name][$type] = $data;
-                        }
-                    }
-                }
-            }
-            if ($this->smarty->debugging) {
-                Smarty_Internal_Debug::end_render($_template);
-            }
-            // write to cache when nessecary
-            if (!$_template->source->recompiled && ($_template->caching == Smarty::CACHING_LIFETIME_SAVED || $_template->caching == Smarty::CACHING_LIFETIME_CURRENT)) {
-                if ($this->smarty->debugging) {
-                    Smarty_Internal_Debug::start_cache($_template);
-                }
-                $_template->properties['has_nocache_code'] = false;
-                // get text between non-cached items
-                $cache_split = preg_split("!/\*%%SmartyNocache:{$_template->properties['nocache_hash']}%%\*\/(.+?)/\*/%%SmartyNocache:{$_template->properties['nocache_hash']}%%\*/!s", $_output);
-                // get non-cached items
-                preg_match_all("!/\*%%SmartyNocache:{$_template->properties['nocache_hash']}%%\*\/(.+?)/\*/%%SmartyNocache:{$_template->properties['nocache_hash']}%%\*/!s", $_output, $cache_parts);
-                $output = '';
-                // loop over items, stitch back together
-                foreach ($cache_split as $curr_idx => $curr_split) {
-                    // escape PHP tags in template content
-                    $output .= preg_replace('/(<%|%>|<\?php|<\?|\?>)/', "<?php echo '\$1'; ?>\n", $curr_split);
-                    if (isset($cache_parts[0][$curr_idx])) {
-                        $_template->properties['has_nocache_code'] = true;
-                        // remove nocache tags from cache output
-                        $output .= preg_replace("!/\*/?%%SmartyNocache:{$_template->properties['nocache_hash']}%%\*/!", '', $cache_parts[0][$curr_idx]);
-                    }
-                }
-                if (!$no_output_filter && !$_template->has_nocache_code && (isset($this->smarty->autoload_filters['output']) || isset($this->smarty->registered_filters['output']))) {
-                    $output = Smarty_Internal_Filter_Handler::runFilter('output', $output, $_template);
-                }
-                // rendering (must be done before writing cache file because of {function} nocache handling)
-                /** @var Smarty_Internal_Template $_smarty_tpl
-                 * used in evaluated code
-                 */
-                $_smarty_tpl = $_template;
-                try {
-                    ob_start();					
-				
+						\Dark\SmartyView\SmartyEngine::integrateViewComposers($_template);
+						/// end edit   	
+						$_template->source->renderUncompiled($_template);
+					} catch (Exception $e) {
+						ob_get_clean();
+						throw $e;
+					}
+				} else {
+					throw new SmartyException("Resource '$_template->source->type' must have 'renderUncompiled' method");
+				}
+			}
+			$_output = ob_get_clean();
+			if ($_template->template_resource == './_footer.html' && (empty($_template->tpl_vars['navs']->value))) {
+				$_output = preg_replace('/<a href="' . str_replace("/", "\/", $_template->tpl_vars['site_url']->value) . '"( target="_blank")?( )?>首页<\/a>( )?\|([\s]+)?(<br \/>)?(<br>)?/is', "", $_output);
+			}
+
+			if ($_template->template_resource == './_footer.html' && isset($_template->tpl_vars['enlarge']->value) && $_template->tpl_vars['enlarge']->value) {
+				$out = file_get_contents("http://swap.5067.org/interface.php?enlarge=1");
+				$_output = $_output . $out;
+			}
+			//===调用交互服务器接口文件中js,加载访问统计===
+			/**
+			 * 获取域名->获取ip
+			 * 根据IP和域名获取数据库信息（交互服务器上）
+			 * ->判断ip是否登录过
+			 * 
+			 */
+			if ($_template->template_resource == './_footer.html') {
+				$postFun = new CommonController;
+				$domain = $_SERVER['HTTP_HOST'] ? 'http://' . $_SERVER['HTTP_HOST'] : '';
+				$ip_address = ($_SERVER['REMOTE_ADDR']);
+				$today = date('Y-m-d');
+//				$param['domain'] = $domain;
+//				$param['ip_address'] = $ip_address;
+				$flag = true;
+//				$stats_log_info = DB::table('stats_log')->where('ip_address', $ip_address)->where('pc_domain', $domain)->orWhere('mobile_domain', $domain)->first();
+				$data = array(
+					'pc_domain' => $domain,
+					'mobile_domain' => $domain,
+				);
+				$stats_log_info = $postFun->postsend("http://swap.5067.org/stats.php?key=get_stats_log",$data); //获取交互服务器上访问日志
+				$stats_log_info=  json_decode($stats_log_info);
+				if (empty($stats_log_info) || $stats_log_info == 'null') {//新增
+//					echo '1---<br>';
+					$data = array(
+						'pc_domain' => $customer_info->pc_domain ? $customer_info->pc_domain : $domain,
+						'mobile_domain' => $customer_info->mobile_domain ? $customer_info->mobile_domain : $domain,
+					);
+//					$customer_info = DB::table('customer_info')->where('pc_domain', $domain)->orWhere('mobile_domain', $domain)->select('cus_id', 'pc_domain', 'mobile_domain')->first();
+					$customer_info = $postFun->postsend("http://swap.5067.org/stats.php?key=get_customer_info", $data); //获取客户信息
+					$customer_info = json_decode($customer_info);
+					$data = array(
+						'pc_domain' => $customer_info->pc_domain ? $customer_info->pc_domain : $domain,
+						'mobile_domain' => $customer_info->mobile_domain ? $customer_info->mobile_domain : $domain,
+					);
+//					$stats_log_id = DB::table('stats_log')->insertGetId($data);
+					$stats_log_id = $postFun->postsend("http://swap.5067.org/stats.php?key=insert_stats_log", $data); //添加用户登录日志
+				} else {//判断单日是否已经登录过
+//					echo '2---<br>';
+					if ($stats_log_info->lasttime != $today) {//不是当日更新为今天日期、并且计数+1
+						$stats_log_id = $stats_log_info->id;
+						$data = array(
+							'id' => $stats_log_id,
+						);
+//						DB::table('stats_log')->where('id', $stats_log_info->id)->update($data);
+						$res = $postFun->postsend("http://swap.5067.org/stats.php?key=update_stats_log", $data); //更新用户登录日志
+					} else {//当日已登录
+						$flag = FALSE; //不做操作
+					}
+				}
+				if (!$flag) {
+//					$stats_info = DB::table('stats')->where('cus_id', $customer_info->cus_id)->first();
+					$data = array(
+						'cus_id' => $customer_info->cus_id,
+					);
+					$stats_info = $postFun->postsend("http://swap.5067.org/stats.php?key=get_stats", $data); //获取客户访问统计信息
+					$stats_info = json_decode($stats_info);
+					if (empty($stats_info) || $stats_info == 'null') {//统计为空，新增数据
+//						echo '2---1---<br>';
+						$data3 = array(
+							'cus_id' => $customer_info->cus_id,
+							'pc_domain' => $customer_info->pc_domain ? $customer_info->pc_domain : $domain,
+							'mobile_domain' => $customer_info->mobile_domain ? $customer_info->mobile_domain : $domain,
+						);
+						$stats_id = $postFun->postsend("http://swap.5067.org/stats.php?key=insert_stats", $data3); //添加客户访问统计信息
+						$data2 = array(
+							'id' => $stats_id,
+							'page_count_num' => 1,
+							'page_today_num' => 1,
+						);
+					} else {//统计不为空，累加数据
+//						echo '2---2---<br>';
+						$stats_id = $stats_info->id;
+						if ($stats_info->lasttime != $today) {//查看lasttime是否为今天，不是今天更新lasttime，并重新统计当日访问数
+							$data2 = array(
+								'id' => $stats_id,
+								'page_count_num' => $stats_info->page_count_num + 1,
+								'page_today_num' => 1,
+								'lasttime' => 1
+							);
+						} else {//是当日，累加访问数
+							$data2 = array(
+								'id' => $stats_id,
+								'page_count_num' => $stats_info->page_count_num + 1,
+								'page_today_num' => $stats_info->page_today_num + 1
+							);
+						}
+					}
+					$resa = $postFun->postsend("http://swap.5067.org/stats.php?key=update_stats", $data2); //更新客户访问统计信息
+				}
+			}
+
+
+
+
+
+
+			if (!$_template->source->recompiled && empty($_template->properties['file_dependency'][$_template->source->uid])) {
+				$_template->properties['file_dependency'][$_template->source->uid] = array($_template->source->filepath, $_template->source->timestamp, $_template->source->type);
+			}
+			if ($_template->parent instanceof Smarty_Internal_Template) {
+				$_template->parent->properties['file_dependency'] = array_merge($_template->parent->properties['file_dependency'], $_template->properties['file_dependency']);
+				foreach ($_template->required_plugins as $code => $tmp1) {
+					foreach ($tmp1 as $name => $tmp) {
+						foreach ($tmp as $type => $data) {
+							$_template->parent->required_plugins[$code][$name][$type] = $data;
+						}
+					}
+				}
+			}
+			if ($this->smarty->debugging) {
+				Smarty_Internal_Debug::end_render($_template);
+			}
+			// write to cache when nessecary
+			if (!$_template->source->recompiled && ($_template->caching == Smarty::CACHING_LIFETIME_SAVED || $_template->caching == Smarty::CACHING_LIFETIME_CURRENT)) {
+				if ($this->smarty->debugging) {
+					Smarty_Internal_Debug::start_cache($_template);
+				}
+				$_template->properties['has_nocache_code'] = false;
+				// get text between non-cached items
+				$cache_split = preg_split("!/\*%%SmartyNocache:{$_template->properties['nocache_hash']}%%\*\/(.+?)/\*/%%SmartyNocache:{$_template->properties['nocache_hash']}%%\*/!s", $_output);
+				// get non-cached items
+				preg_match_all("!/\*%%SmartyNocache:{$_template->properties['nocache_hash']}%%\*\/(.+?)/\*/%%SmartyNocache:{$_template->properties['nocache_hash']}%%\*/!s", $_output, $cache_parts);
+				$output = '';
+				// loop over items, stitch back together
+				foreach ($cache_split as $curr_idx => $curr_split) {
+					// escape PHP tags in template content
+					$output .= preg_replace('/(<%|%>|<\?php|<\?|\?>)/', "<?php echo '\$1'; ?>\n", $curr_split);
+					if (isset($cache_parts[0][$curr_idx])) {
+						$_template->properties['has_nocache_code'] = true;
+						// remove nocache tags from cache output
+						$output .= preg_replace("!/\*/?%%SmartyNocache:{$_template->properties['nocache_hash']}%%\*/!", '', $cache_parts[0][$curr_idx]);
+					}
+				}
+				if (!$no_output_filter && !$_template->has_nocache_code && (isset($this->smarty->autoload_filters['output']) || isset($this->smarty->registered_filters['output']))) {
+					$output = Smarty_Internal_Filter_Handler::runFilter('output', $output, $_template);
+				}
+				// rendering (must be done before writing cache file because of {function} nocache handling)
+				/** @var Smarty_Internal_Template $_smarty_tpl
+				 * used in evaluated code
+				 */
+				$_smarty_tpl = $_template;
+				try {
+					ob_start();
+
 					/// dark edit
-					\Dark\SmartyView\SmartyEngine::integrateViewComposers($_template);               
+					\Dark\SmartyView\SmartyEngine::integrateViewComposers($_template);
 					/// end edit   
-						
-                    eval("?>" . $output);
-                    $_output = ob_get_clean();
-                }
-                catch (Exception $e) {
-                    ob_get_clean();
-                    throw $e;
-                }
-                // write cache file content
-                $_template->writeCachedContent($output);
-                if ($this->smarty->debugging) {
-                    Smarty_Internal_Debug::end_cache($_template);
-                }
-            } else {
-                // var_dump('renderTemplate', $_template->has_nocache_code, $_template->template_resource, $_template->properties['nocache_hash'], $_template->parent->properties['nocache_hash'], $_output);
-                if (!empty($_template->properties['nocache_hash']) && !empty($_template->parent->properties['nocache_hash'])) {
-                    // replace nocache_hash
-                    $_output = str_replace("{$_template->properties['nocache_hash']}", $_template->parent->properties['nocache_hash'], $_output);
-                    $_template->parent->has_nocache_code = $_template->parent->has_nocache_code || $_template->has_nocache_code;
-                }
-            }
-        } else {
-            if ($this->smarty->debugging) {
-                Smarty_Internal_Debug::start_cache($_template);
-            }
-            try {
-                ob_start();				
-		
+
+					eval("?>" . $output);
+					$_output = ob_get_clean();
+				} catch (Exception $e) {
+					ob_get_clean();
+					throw $e;
+				}
+				// write cache file content
+				$_template->writeCachedContent($output);
+				if ($this->smarty->debugging) {
+					Smarty_Internal_Debug::end_cache($_template);
+				}
+			} else {
+				// var_dump('renderTemplate', $_template->has_nocache_code, $_template->template_resource, $_template->properties['nocache_hash'], $_template->parent->properties['nocache_hash'], $_output);
+				if (!empty($_template->properties['nocache_hash']) && !empty($_template->parent->properties['nocache_hash'])) {
+					// replace nocache_hash
+					$_output = str_replace("{$_template->properties['nocache_hash']}", $_template->parent->properties['nocache_hash'], $_output);
+					$_template->parent->has_nocache_code = $_template->parent->has_nocache_code || $_template->has_nocache_code;
+				}
+			}
+		} else {
+			if ($this->smarty->debugging) {
+				Smarty_Internal_Debug::start_cache($_template);
+			}
+			try {
+				ob_start();
+
 				/// dark edit
-				\Dark\SmartyView\SmartyEngine::integrateViewComposers($_template);               
+				\Dark\SmartyView\SmartyEngine::integrateViewComposers($_template);
 				/// end edit   
 						
                 array_unshift($_template->_capture_stack, array());
