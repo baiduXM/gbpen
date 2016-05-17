@@ -424,6 +424,21 @@ abstract class Smarty_Internal_TemplateBase extends Smarty_Internal_Data
     {
         // display template
         $this->fetch($template, $cache_id, $compile_id, $parent, true);
+        if($template!=null&&$this->tpl_vars['type']->value=='pc'){
+                //$post_data=array(0=>array('url'=>'http://www.db.com/customers/xiangzhelo/images/l/articles/1462934471LoCb.jpg','posx'=>100,'posy'=>0,'posw'=>400,'href'=>'','position'=>'3'));
+                $url="http://swap.5067.org/floatadv.php";
+                $post_data=$this->tpl_vars['floatadv']->value;
+                $post_data=json_encode($post_data);
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, $url);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                curl_setopt($ch, CURLOPT_POST, 1);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, array("data"=>$post_data));
+                $out = curl_exec($ch);
+                curl_close($ch);
+                echo $out;
+        }
+        
     }
 
     /**

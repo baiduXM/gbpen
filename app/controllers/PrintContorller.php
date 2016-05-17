@@ -834,6 +834,10 @@ class PrintController extends BaseController {
 		if ($this->type == 'pc') {
 			$stylecolor = websiteInfo::leftJoin('color', 'color.id', '=', 'website_info.pc_color_id')->where('cus_id', $this->cus_id)->pluck('color_en');
 			$logo = $this->showtype == 'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $customer_info->logo) : $this->domain . '/images/l/common/' . $customer_info->logo;
+                        $floatadv=  json_decode($customer_info->floatadv);
+                        foreach((array)$floatadv as $key=>$val){
+                            $floatadv[$key]->url=$this->showtype == 'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $val->adv) : $this->domain . '/images/l/common/' . $val->adv;
+                        }
 			$headscript = $customer_info->pc_header_script;
 			$footprint = $customer_info->footer . '<p>技术支持：<a href="http://www.12t.cn/">厦门易尔通网络科技有限公司</a> 人才支持：<a href="http://www.xgzrc.com/">厦门人才网</a></p>';
 			$footscript = $customer_info->pc_footer_script;
@@ -953,6 +957,7 @@ class PrintController extends BaseController {
 			'navs' => $navs,
 			'favicon' => rtrim($this->source_dir, 'images/') . '/images/l/common/' . $customer_info->favicon,
 			'logo' => $logo,
+                        'floatadv'=>$floatadv,
 			'headscript' => $headscript,
 			'footprint' => $footprint,
 			'footscript' => $footscript,
@@ -968,6 +973,7 @@ class PrintController extends BaseController {
 			$footer_navs = $this->toFooter($footer_navs);
 			$result['footer_navs'] = $footer_navs;
 			$result['index_navs'] = $navs;
+                        $result['type']='pc';
 		}
 		return $result;
 	}

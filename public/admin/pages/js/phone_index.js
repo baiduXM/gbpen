@@ -855,8 +855,9 @@ function phone_indexController($scope,$http ,$location) {
                                                 }
 					});
                 });
-                $('.preview-close').click(function(){
+                $('.feild-item').on('click','.preview-close',function(){
                     $(this).parents('.template-download').remove();
+                    return false;
                 });
                 $('.flush').on('click',function(){
                     var _this = $(this);
