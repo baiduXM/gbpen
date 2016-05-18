@@ -819,7 +819,7 @@ class FormController extends BaseController {
 							}
 						});
 						if(flagchb==false){
-							alert(str+'不能为空');
+							alert('标注*号的为必填项');
 							return false;
 						}
 					}
