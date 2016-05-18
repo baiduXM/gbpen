@@ -695,9 +695,9 @@ class PrintController extends BaseController {
 				} else {
 					if ($this->type == 'pc') {
 						file_put_contents(public_path("customers/" . $this->customer . '/quickbar.json'), "quickbarCallback(" . json_encode($quickbarCallback) . ")");
-					}else{
-                                            file_put_contents(public_path("customers/" . $this->customer . '/mobile' . '/quickbar.json'), "quickbarCallback(" . json_encode($quickbarCallback) . ")");
-                                        }
+					} else {
+						file_put_contents(public_path("customers/" . $this->customer . '/mobile' . '/quickbar.json'), "quickbarCallback(" . json_encode($quickbarCallback) . ")");
+					}
 				}
 			} else {
 				$config_arr[1] = '#AAA,#BBB,#FFF|tel';
@@ -802,9 +802,9 @@ class PrintController extends BaseController {
 				} else {
 					if ($this->type == 'pc') {
 						file_put_contents(public_path("customers/" . $this->customer . '/quickbar.json'), "quickbarCallback(" . json_encode($quickbarCallback) . ")");
-					}else{
-                                            file_put_contents(public_path("customers/" . $this->customer . '/mobile' . '/quickbar.json'), "quickbarCallback(" . json_encode($quickbarCallback) . ")");
-                                        }
+					} else {
+						file_put_contents(public_path("customers/" . $this->customer . '/mobile' . '/quickbar.json'), "quickbarCallback(" . json_encode($quickbarCallback) . ")");
+					}
 				}
 			}
 		}
@@ -834,10 +834,10 @@ class PrintController extends BaseController {
 		if ($this->type == 'pc') {
 			$stylecolor = websiteInfo::leftJoin('color', 'color.id', '=', 'website_info.pc_color_id')->where('cus_id', $this->cus_id)->pluck('color_en');
 			$logo = $this->showtype == 'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $customer_info->logo) : $this->domain . '/images/l/common/' . $customer_info->logo;
-                        $floatadv=  json_decode($customer_info->floatadv);
-                        foreach((array)$floatadv as $key=>$val){
-                            $floatadv[$key]->url=$this->showtype == 'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $val->adv) : $this->domain . '/images/l/common/' . $val->adv;
-                        }
+			$floatadv = json_decode($customer_info->floatadv);
+			foreach ((array) $floatadv as $key => $val) {
+				$floatadv[$key]->url = $this->showtype == 'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $val->adv) : $this->domain . '/images/l/common/' . $val->adv;
+			}
 			$headscript = $customer_info->pc_header_script;
 			$footprint = $customer_info->footer . '<p>技术支持：<a href="http://www.12t.cn/">厦门易尔通网络科技有限公司</a> 人才支持：<a href="http://www.xgzrc.com/">厦门人才网</a></p>';
 			$footscript = $customer_info->pc_footer_script;
@@ -957,7 +957,7 @@ class PrintController extends BaseController {
 			'navs' => $navs,
 			'favicon' => rtrim($this->source_dir, 'images/') . '/images/l/common/' . $customer_info->favicon,
 			'logo' => $logo,
-                        'floatadv'=>$floatadv,
+			'floatadv' => $floatadv,
 			'headscript' => $headscript,
 			'footprint' => $footprint,
 			'footscript' => $footscript,
@@ -973,7 +973,7 @@ class PrintController extends BaseController {
 			$footer_navs = $this->toFooter($footer_navs);
 			$result['footer_navs'] = $footer_navs;
 			$result['index_navs'] = $navs;
-                        $result['type']='pc';
+			$result['type'] = 'pc';
 		}
 		return $result;
 	}
@@ -1523,7 +1523,7 @@ class PrintController extends BaseController {
         </div>' . "\n";
 		// 显示类型
 		$s.="<script>status = 1;\n";
-                $s.="url=window.location.href;\n";
+		$s.="url=window.location.href;\n";
 		$params['style'] = isset($params['style']) ? $params['style'] : "1";
 		$s.="window._bd_share_config = {
           common : {
@@ -1627,10 +1627,6 @@ class PrintController extends BaseController {
 		$data = $this->pagedata('index');
 		$show_navs = DB::table('mobile_homepage')->leftJoin('classify', 'classify.id', '=', 'mobile_homepage.c_id')->where('mobile_homepage.index_show', 1)->where('classify.mobile_show', 1)->where('mobile_homepage.cus_id', '=', $this->cus_id)->orderBy('mobile_homepage.s_sort', 'asc')->select('classify.id', 'classify.p_id', 'classify.name', 'classify.en_name', 'classify.type', 'classify.meta_description', 'classify.page_id', 'classify.url', 'classify.img', 'classify.icon', 'mobile_homepage.star_only', 'mobile_homepage.show_num', 'mobile_homepage.m_index_showtype')->get();
 		//===调试测试账号===
-//		if ($this->cus_id == 1) {
-//			var_dump($show_navs);
-//			echo '<br>---$show_navs---<br>';
-//		}
 		$mIndexCats = array();
 		if (count($show_navs) > 0) {
 			if ($this->showtype == 'preview') {
@@ -1810,6 +1806,7 @@ class PrintController extends BaseController {
 		} elseif ($classify->type == 5) {//留言板
 			$viewname = 'list-page';
 		} elseif ($classify->type == 9) {//万用表单
+			//===获取数据===
 			$viewname = 'list-page';
 			$form_id = $classify->form_id;
 			$formC = new FormController();
@@ -1858,6 +1855,7 @@ class PrintController extends BaseController {
                     </label>
                     </form>';
 			} elseif ($classify->type == 9) {
+				//===显示前端===
 				$result['list']['content'] = $formC->showFormHtmlForPrint($formCdata);
 			} else {
 				$result['list']['data'] = $index_list['data'];
@@ -1988,7 +1986,7 @@ class PrintController extends BaseController {
 		}
                 </SCRIPT>';
 			} elseif ($classify->type == 9) {
-
+				//===加载css\js===
 				$result['footscript'].=$formC->assignFormCSSandJSForPrint($formCdata);
 			}
 			$smarty->assign($result);
@@ -2042,6 +2040,7 @@ class PrintController extends BaseController {
 		} elseif ($classify->type == 5) {//留言板
 			$viewname = 'list-page';
 		} elseif ($classify->type == 9) {//万用表单
+			//===获取数据===
 			$viewname = 'list-page';
 			$form_id = $classify->form_id;
 			$formC = new FormController();
@@ -2089,106 +2088,7 @@ class PrintController extends BaseController {
                     </label>
                     </form>';
 			} elseif ($classify->type == 9) {
-				$_div_li = '';
-				$_div = "<div class='fv-add-show'>
-						<div class='fv-as-title'>
-							$form_data->title
-						</div>
-						<div class='fv-as-description'>
-							$form_data->description
-						</div>
-						<hr>";
-				$_div.="<form class='fv-unit-preview' name='box_show' action='http://swap.5067.org/userdata/" . $form_id . "'  onsubmit='return CheckPost();' method='post'>"
-					. "<ul class='fv-element-show'>";
-				foreach ((array)$column_data as $item) {
-					$_div .= "<li class='list-item' data-type=$item->type data-id=$item->id >";
-					$config = $item->config;
-//					var_dump($config);
-//					echo '<br>===config===<br>';
-					switch ($item->type) {
-						case 'text':
-							$_div .= "<p class='content-l'>$item->title";
-							if ($item->required == 1) {
-								$_div .= "<span style='color:red;'>*</span></p>";
-							} else {
-								$_div .= "</p>";
-							}
-							$_div .= "<input  type=" . $config['text_type'] . " name='$item->title'   placeholder='$item->description' />";
-							break;
-						case 'textarea':
-							$_div .= "<p class='content-l'>$item->title";
-							if ($item->required == 1) {
-								$_div .= "<span style='color:red;'>*</span></p>";
-							} else {
-								$_div .= "</p>";
-							}
-							$_div .= "<textarea name = '$item->title' placeholder = '$item->description' ></textarea>";
-							break;
-						case 'radio':
-							$_div .= "<p class='content-l'>$item->title";
-							if ($item->required == 1) {
-								$_div .= "<span style='color:red;'>*</span>：（ $item->description ）</p>";
-							} else {
-								$_div .= "：（ $item->description ）</p>";
-							}
-							$option_key = explode(',', $config['option_key']);
-							foreach ($option_key as $key => $value) {
-								$to = "option_$value";
-								$_div .= '<span class="option-item">';
-								$_div .= "<input type = 'radio' name = '$item->title' value = '$config[$to]' data-value='$value'  /><label>" . $config[$to] . " </label>";
-								$_div .= '</span>';
-							}
-							break;
-						case 'checkbox':
-							$_div .= "<p class='content-l'>$item->title";
-							if ($item->required == 1) {
-								$_div .= "<span style='color:red;'>*</span>：（ $item->description ）</p>";
-							} else {
-								$_div .= "：（ $item->description ）</p>";
-							}
-							$option_key = explode(',', $config['option_key']);
-							foreach ($option_key as $key => $value) {
-								$to = "option_$value";
-								$_div .= '<span class="option-item">';
-								$_div .= "<input type = 'checkbox' name = '$item->title[]' value = '$config[$to]' data-value='$value'  /><label>" . $config[$to] . " </label>";
-								$_div .= '</span>';
-							}
-							break;
-						case 'select':
-							$_div .= "<p class='content-l'>$item->title";
-							if ($item->required == 1) {
-								$_div .= "<span style='color:red;'>*</span>：（ $item->description ）</p>";
-							} else {
-								$_div .= "：（ $item->description ）</p>";
-							}
-							$_div .= "<select name=$item->title >";
-							$option_key = explode(',', $config['option_key']);
-							foreach ($option_key as $key => $value) {
-								$to = "option_$value";
-								$_div .= "<option  value='$config[$to]' data-value='$value'  />" . $config[$to] . "</option>";
-							}
-							$_div .= '</select>';
-							break;
-						case 'date':
-							$_div .="<p class='content-l'>$item->title</p>";
-							$_div .= '日期date';
-							break;
-						case 'image':
-							$_div .="<p class='content-l'>$item->title</p>";
-							break;
-						case 'file':
-							$_div .="<p class='content-l'>$item->title(  $item->description )：</p>";
-							$_div.= "<input type='file' name='$item->title'  />";
-							break;
-						default :
-							break;
-					}
-					$_div.="</li>";
-				}
-				$_div .= "</ul>"
-					. "<input type='submit' value='提交' class='button submit-form' name='submit' /><input type='reset' value='重置' class='button' />"
-					. "<input type='hidden' name='form_id' value=$form_id></form></div>";
-				$result['list']['content'] = $_div;
+				//===显示前端===
 				$result['list']['content'] = $formC->showFormHtmlForPrint($formCdata);
 			}
 			$json_keys = $this->getJsonKey($viewname . '.html');
@@ -2311,12 +2211,13 @@ class PrintController extends BaseController {
                 </SCRIPT>';
 			}
 			if ($classify->type == 9) {
+				//===加载css\js===			
 				$result['footscript'].=$formC->assignFormCSSandJSForPrint($formCdata);
 			}
 			$the_result = $result;
 			$index_list = $this->pageList($id, 1);
 			$the_result['page_links'] = $index_list['page_links'];
-			if ($classify->type != 5 && $classify->type != 4) {
+			if ($classify->type != 5 && $classify->type != 4 && $classify->type != 9) {
 				$the_result['list']['data'] = $index_list['data'];
 			}
 			$path = $this->type == 'pc' ? public_path('customers/' . $this->customer . '/category/' . $id . '.html') : public_path('customers/' . $this->customer . '/mobile/category/' . $id . '.html');
@@ -2330,7 +2231,7 @@ class PrintController extends BaseController {
 				flush();
 			}
 			$last_html_precent +=$html_precent;
-			if ($classify->type != 5 && $classify->type != 4) {
+			if ($classify->type != 5 && $classify->type != 4 && $classify->type != 9) {
 				for ($i = 1; $i <= $page; $i++) {
 					$the_result = $result;
 					$index_list = $this->pageList($id, $i);
