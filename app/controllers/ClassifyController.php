@@ -35,61 +35,61 @@ class ClassifyController extends BaseController {
 		$result['data'] = $this->toTree($classify);
 		return Response::json($result);
 	}
-        
-        public function classifyDelete() {
+
+	public function classifyDelete() {
 		$failed = '';
 		$cus_id = Auth::id();
 		$id = explode(',', ltrim(Input::get('id'), ','));
 		(count($id) > 1) ? $id : $id = $id[0];
 		if (is_array($id)) {
 			foreach ($id as $v) {
-                                $classify=Classify::find($v);
-                                $c_del_img=$classify->img;
-                                $ids=Articles::where('c_id', $v)->lists('id');
-                                $a_del_imgs=Articles::where('c_id', $v)->lists('img');
-                                if(count($ids)){
-                                    $m_del_imgs=MoreImg::whereIn('a_id', (array)$ids)->lists('img');
-                                }else{
-                                    $m_del_imgs=array();
-                                }
-                                $del_imgs=array_merge((array)$a_del_imgs,(array)$m_del_imgs);
+				$classify = Classify::find($v);
+				$c_del_img = $classify->img;
+				$ids = Articles::where('c_id', $v)->lists('id');
+				$a_del_imgs = Articles::where('c_id', $v)->lists('img');
+				if (count($ids)) {
+					$m_del_imgs = MoreImg::whereIn('a_id', (array) $ids)->lists('img');
+				} else {
+					$m_del_imgs = array();
+				}
+				$del_imgs = array_merge((array) $a_del_imgs, (array) $m_del_imgs);
 				$d_c_result = Classify::where('id', $v)->where('cus_id', $cus_id)->delete();
 				Articles::where('c_id', $v)->where('cus_id', $cus_id)->delete();
 				$this->delMobileHomepage($v); //删除手机首页配置
 				if ($d_c_result) {
-                                    foreach ((array)$del_imgs as $val){
-                                        $imgdel=new ImgDel();
-                                        $imgdel->mysave($val);
-                                    }
-                                    $imgdel=new ImgDel();
-                                    $imgdel->mysave($c_del_img,'category');
+					foreach ((array) $del_imgs as $val) {
+						$imgdel = new ImgDel();
+						$imgdel->mysave($val);
+					}
+					$imgdel = new ImgDel();
+					$imgdel->mysave($c_del_img, 'category');
 					$success[] = $v;
 				} else {
 					$failed .= $v . ',';
 				}
 			}
 		} else {
-                        $classify=Classify::find($id);
-                        $c_del_img=$classify->img;
-                        $ids=Articles::where('c_id', $id)->lists('id');
-                        $a_del_imgs=Articles::where('c_id', $id)->lists('img');
-                        if(count($ids)){
-                            $m_del_imgs=MoreImg::whereIn('a_id', (array)$ids)->lists('img');
-                        }else{
-                            $m_del_imgs=array();
-                        }
-                        $del_imgs=array_merge((array)$a_del_imgs,(array)$m_del_imgs);
+			$classify = Classify::find($id);
+			$c_del_img = $classify->img;
+			$ids = Articles::where('c_id', $id)->lists('id');
+			$a_del_imgs = Articles::where('c_id', $id)->lists('img');
+			if (count($ids)) {
+				$m_del_imgs = MoreImg::whereIn('a_id', (array) $ids)->lists('img');
+			} else {
+				$m_del_imgs = array();
+			}
+			$del_imgs = array_merge((array) $a_del_imgs, (array) $m_del_imgs);
 			$d_c_result = Classify::where('id', $id)->where('cus_id', $cus_id)->delete();
 			Articles::where('c_id', $id)->where('cus_id', $cus_id)->delete();
 			$this->delMobileHomepage($id);
 			$this->delChildClassify($id);
 			if ($d_c_result) {
-                                foreach ((array)$del_imgs as $val){
-                                    $imgdel=new ImgDel();
-                                    $imgdel->mysave($val);
-                                }
-                                $imgdel=new ImgDel();
-                                $imgdel->mysave($c_del_img,'category');
+				foreach ((array) $del_imgs as $val) {
+					$imgdel = new ImgDel();
+					$imgdel->mysave($val);
+				}
+				$imgdel = new ImgDel();
+				$imgdel->mysave($c_del_img, 'category');
 				$success[] = $id;
 			} else {
 				return Response::json(['err' => 1001, 'msg' => '栏目' . $id . '存在子目录或文章,删除失败']);
@@ -124,13 +124,13 @@ class ClassifyController extends BaseController {
 
 	public function classifyModify() {
 		$cus_id = Auth::id();
-                $c_imgs='';
+		$c_imgs = '';
 		$is_forced = Input::get('force');
 		$is_passed = true;
 		$id = Input::get('id');
 		if ($id != NULL) {
 			$classify = Classify::find($id);
-                        $c_imgs=$classify->img;
+			$c_imgs = $classify->img;
 			$page_id = Classify::where('cus_id', $cus_id)->where('id', $id)->pluck('page_id');
 		} else {
 			$classify = new Classify();
@@ -177,9 +177,9 @@ class ClassifyController extends BaseController {
 			$images = Input::get('img');
 			if (!empty($images) && $images != 'undefined') {
 				$classify->img = $images;
-                                if($c_imgs!=$images){
-                                    $del_img=$c_imgs;
-                                }
+				if ($c_imgs != $images) {
+					$del_img = $c_imgs;
+				}
 			} else {
 				$classify->img = ''; //需要删除图片
 			}
@@ -233,10 +233,10 @@ class ClassifyController extends BaseController {
 				}
 			}
 			if ($classify->save()) {
-                                if(isset($del_img)){
-                                    $imgdel=new ImgDel();
-                                    $imgdel->mysave($del_img,'category');
-                                }
+				if (isset($del_img)) {
+					$imgdel = new ImgDel();
+					$imgdel->mysave($del_img, 'category');
+				}
 				$data['id'] = $classify->id;
 				if ($is_forced) {
 					Articles::where('cus_id', $cus_id)->whereIn('id', $a_ids)->update(array('c_id' => $classify->id));
@@ -244,7 +244,9 @@ class ClassifyController extends BaseController {
 				if ($id != NULL) {
 					$result = ['err' => 0, 'msg' => '栏目修改成功', 'data' => $data];
 				} else {
-					if (in_array($classify->type, array(1, 2, 3, 4)) && $classify->p_id == 0) {
+					
+					if (in_array($classify->type, array(1, 2, 3, 4, 9)) && $classify->p_id == 0) {
+						//===添加type:9万用表单===
 						$mhomepage_config = new MobileHomepage();
 						$mhomepage_config->c_id = $data['id'];
 						$mhomepage_config->index_show = 1;
@@ -387,28 +389,28 @@ class ClassifyController extends BaseController {
 	//删除分类及其子类
 	private function delChildClassify($c_id) {
 		$cus_id = Auth::id();
-                $del_imgs=array();
+		$del_imgs = array();
 		$child_ids = Classify::where('p_id', $c_id)->where('cus_id', $cus_id)->lists('id');
 		if (count($child_ids)) {
 			foreach ($child_ids as $id) {
-                                $classify=Classify::find($id);
-                                $c_del_img=$classify->img;
-                                $ids=Articles::where('c_id', $id)->lists('id');
-                                $a_del_imgs=Articles::where('c_id', $id)->lists('img');
-                                if(count($ids)){
-                                    $m_del_imgs=MoreImg::whereIn('a_id', (array)$ids)->lists('img');
-                                }else{
-                                    $m_del_imgs=array();
-                                }
-                                $del_imgs=array_merge((array)$a_del_imgs,(array)$m_del_imgs);
+				$classify = Classify::find($id);
+				$c_del_img = $classify->img;
+				$ids = Articles::where('c_id', $id)->lists('id');
+				$a_del_imgs = Articles::where('c_id', $id)->lists('img');
+				if (count($ids)) {
+					$m_del_imgs = MoreImg::whereIn('a_id', (array) $ids)->lists('img');
+				} else {
+					$m_del_imgs = array();
+				}
+				$del_imgs = array_merge((array) $a_del_imgs, (array) $m_del_imgs);
 				Classify::where('id', $id)->where('cus_id', $cus_id)->delete();
 				Articles::where('c_id', $id)->where('cus_id', $cus_id)->delete();
-                                foreach ((array)$del_imgs as $val){
-                                    $imgdel=new ImgDel();
-                                    $imgdel->mysave($val);
-                                }
-                                $imgdel=new ImgDel();
-                                $imgdel->mysave($c_del_img,'category');
+				foreach ((array) $del_imgs as $val) {
+					$imgdel = new ImgDel();
+					$imgdel->mysave($val);
+				}
+				$imgdel = new ImgDel();
+				$imgdel->mysave($c_del_img, 'category');
 				$this->delMobileHomepage($id);
 				$this->delChildClassify($id);
 			}
