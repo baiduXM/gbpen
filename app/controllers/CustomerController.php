@@ -15,7 +15,7 @@ class CustomerController extends BaseController{
      */
 	public function customerInfo(){
 		$cus_id = Auth::id();
-        $customer = Auth::user()->name;
+                $customer = Auth::user()->name;
 		$customer_info = CustomerInfo::where('cus_id',$cus_id)->first();
 		$data['company_name'] = $customer_info->company;
 		$domain_pc = $customer_info->pc_domain;
@@ -59,6 +59,10 @@ class CustomerController extends BaseController{
 		$data['qq'] = $customer_info->qq;
 		$data['address'] = $customer_info->address;
                 $data['enlarge'] = $customer_info->enlarge;
+                $data['floatadv'] =  json_decode($customer_info->floatadv);
+               foreach((array)$data['floatadv'] as $key=>$val){
+                    $data['floatadv'][$key]->url=asset('customers/'.$customer.'/images/l/common/'.$val->adv);
+               }
         $websiteinfo=WebsiteInfo::where('cus_id',$cus_id)->select('pc_tpl_id','mobile_tpl_id')->first();
         $pc_tpl_name=Template::where('id',$websiteinfo->pc_tpl_id)->pluck('name');
         if($pc_tpl_name!=null){
@@ -86,9 +90,15 @@ class CustomerController extends BaseController{
 	 * 用户修改设置
 	 */
 	public function customerSetting(){
-		$cus_id = Auth::id();
+		$cus_id = Auth::id(); 
                 $logo=CustomerInfo::where('cus_id',$cus_id)->pluck('logo');
                 $logo_small=CustomerInfo::where('cus_id',$cus_id)->pluck('logo_small');
+                $org_floatadv=CustomerInfo::where('cus_id',$cus_id)->pluck('floatadv');
+                $org_floatadv=  json_decode($org_floatadv);
+                $org_imgs=array();
+                foreach((array)$org_floatadv as $v){
+                    $org_imgs[]=$v->adv;
+                }
 		$data['company'] = strtolower(Input::get('company_name'));
 		$pc_domain = Input::get('domain_pc');
 		$data['pc_domain'] = strstr($pc_domain,'http') ? $pc_domain : 'http://'.$pc_domain;
@@ -122,6 +132,25 @@ class CustomerController extends BaseController{
                 $data['pc_page_img_count'] = (Input::get('pc_img_per_page')>0)?Input::get('pc_img_per_page'):3;
                 $data['pc_page_count_switch'] = Input::get('pc_page_count_switch');
                 $data['enlarge'] = Input::get('enlargev');
+                
+                $float_adv=Input::get('float_adv')?Input::get('float_adv'):array();
+                $posx=Input::get('posx')?Input::get('posx'):array();
+                $posy=Input::get('posy')?Input::get('posy'):array();
+                $posw=Input::get('posw')?Input::get('posw'):array();
+                $href=Input::get('href')?Input::get('href'):array();
+                $position=Input::get('position')?Input::get('position'):array();
+                $floatadv=array();
+                $num=0;
+                foreach((array)$float_adv as $key=>$val){
+                    $floatadv[$num]['adv']=$val;
+                    $floatadv[$num]['posx']=$posx[$key];
+                    $floatadv[$num]['posy']=$posy[$key];
+                    $floatadv[$num]['posw']=$posw[$key];
+                    $floatadv[$num]['href']=$href[$key];
+                    $floatadv[$num]['position']=$position[$key];
+                    $num++;
+                }
+                $data['floatadv']=json_encode($floatadv);
 		$update = CustomerInfo::where('cus_id',$cus_id)->update($data);
 		if($update){
                     if($logo!=$data['logo']){
@@ -131,6 +160,12 @@ class CustomerController extends BaseController{
                     if($logo_small!=$data['logo_small']){
                         $imgdel=new ImgDel();
                         $imgdel->mysave($logo_small,'common');
+                    }
+                    foreach((array)$org_imgs as $v){
+                        if(!in_array($v, $float_adv)){
+                            $imgdel=new ImgDel();
+                            $imgdel->mysave($v,'common');
+                        }
                     }
             Articles::where('cus_id',$cus_id)->where('pushed',0)->update(array('pushed'=>1));
             Classify::where('cus_id',$cus_id)->where('pushed',0)->update(array('pushed'=>1));
