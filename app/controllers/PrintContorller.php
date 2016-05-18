@@ -1627,10 +1627,10 @@ class PrintController extends BaseController {
 		$data = $this->pagedata('index');
 		$show_navs = DB::table('mobile_homepage')->leftJoin('classify', 'classify.id', '=', 'mobile_homepage.c_id')->where('mobile_homepage.index_show', 1)->where('classify.mobile_show', 1)->where('mobile_homepage.cus_id', '=', $this->cus_id)->orderBy('mobile_homepage.s_sort', 'asc')->select('classify.id', 'classify.p_id', 'classify.name', 'classify.en_name', 'classify.type', 'classify.meta_description', 'classify.page_id', 'classify.url', 'classify.img', 'classify.icon', 'mobile_homepage.star_only', 'mobile_homepage.show_num', 'mobile_homepage.m_index_showtype')->get();
 		//===调试测试账号===
-		if ($this->cus_id == 1) {
-			var_dump($show_navs);
-			echo '<br>---$show_navs---<br>';
-		}
+//		if ($this->cus_id == 1) {
+//			var_dump($show_navs);
+//			echo '<br>---$show_navs---<br>';
+//		}
 		$mIndexCats = array();
 		if (count($show_navs) > 0) {
 			if ($this->showtype == 'preview') {
