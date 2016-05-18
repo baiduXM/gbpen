@@ -55,24 +55,26 @@
                 $('.setting-content input[name=pc_txt_per_page]').val(set.pc_txt_per_page);
                 $('.setting-content input[name=pc_img_per_page]').val(set.pc_img_per_page);
                 $('.setting-content input[name=pc_page_count_switch]').val(set.pc_page_count_switch);
-                $.each(set.floatadv,function(k,v){
-                    var html='<li class="floatadv">\n\
-                                    <div class="template-download fade fl in">\n\
-                                        <div>\n\
-                                            <span class="preview">\n\
-                                                <img src="'+v.url+'" data-name="'+v.adv+'" style="width:80px;height:64px;padding:5px;" data-preimg="preimg">\n\
-                                            </span>\n\
-                                        </div><input type="hidden" name="float_adv['+k+']" value="'+v.adv+'">\n\
-                                    </div>\
-                                    <label class="floatxy" style="height: 20px;">X:<input type="text" class="settingpos" style="width: 30px;height: 20px;" name="posx['+k+']" value="'+v.posx+'">PX</label>\n\
-                                    <label class="floatxy" style="height: 20px;">Y:<input type="text" class="settingpos" style="width: 30px;height: 20px;" name="posy['+k+']" value="'+v.posy+'">PX</label>\n\
-                                    <label class="floatxy" style="height: 20px;">宽:<input type="text" class="settingpos" style="width: 30px;height: 20px;" name="posw['+k+']" value="'+v.posw+'">PX</label>\n\
-                                    <label class="floatxy" style="height: 20px;">位置:<select name="position['+k+']"><option value ="1" '+(v.position=='1'?'selected':'')+'>上</option><option value ="3" '+(v.position=='3'?'selected':'')+'>下</option><option value ="2" '+(v.position=='2'?'selected':'')+'>左</option><option value ="4" '+(v.position=='4'?'selected':'')+'>右</option></select></label>\n\
-                                    <label class="floatxy" style="position: relative;width:300px;height: 20px;">href:<input type="text" class="settingpos" name="href['+k+']" style="width: 250px;height: 20px;" value="'+v.href+'"></label>\n\
-                                    <a><i class="fa iconfont icon-delete"></i></a>\n\
-                                  </li>';
-                        $('ul.adv').append(html);
-                });
+                if($.isArray(set.floatadv)){
+                    $.each(set.floatadv,function(k,v){
+                        var html='<li class="floatadv">\n\
+                                        <div class="template-download fade fl in">\n\
+                                            <div>\n\
+                                                <span class="preview">\n\
+                                                    <img src="'+v.url+'" data-name="'+v.adv+'" style="width:80px;height:64px;padding:5px;" data-preimg="preimg">\n\
+                                                </span>\n\
+                                            </div><input type="hidden" name="float_adv['+k+']" value="'+v.adv+'">\n\
+                                        </div>\
+                                        <label class="floatxy" style="height: 20px;">X:<input type="text" class="settingpos" style="width: 30px;height: 20px;" name="posx['+k+']" value="'+v.posx+'">PX</label>\n\
+                                        <label class="floatxy" style="height: 20px;">Y:<input type="text" class="settingpos" style="width: 30px;height: 20px;" name="posy['+k+']" value="'+v.posy+'">PX</label>\n\
+                                        <label class="floatxy" style="height: 20px;">宽:<input type="text" class="settingpos" style="width: 30px;height: 20px;" name="posw['+k+']" value="'+v.posw+'">PX</label>\n\
+                                        <label class="floatxy" style="height: 20px;">位置:<select name="position['+k+']"><option value ="1" '+(v.position=='1'?'selected':'')+'>上</option><option value ="3" '+(v.position=='3'?'selected':'')+'>下</option><option value ="2" '+(v.position=='2'?'selected':'')+'>左</option><option value ="4" '+(v.position=='4'?'selected':'')+'>右</option></select></label>\n\
+                                        <label class="floatxy" style="position: relative;width:300px;height: 20px;">href:<input type="text" class="settingpos" name="href['+k+']" style="width: 250px;height: 20px;" value="'+v.href+'"></label>\n\
+                                        <a><i class="fa iconfont icon-delete"></i></a>\n\
+                                      </li>';
+                            $('ul.adv').append(html);
+                    });
+                }
                 $('#checkbox1').attr('checked',set.pc_page_count_switch?true:false);
                 var openstatus = $('input.chk').is(':checked');
                 if(openstatus){
