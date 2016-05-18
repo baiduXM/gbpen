@@ -47,16 +47,15 @@ class TemplatesController extends BaseController {
 					} elseif ($v['config']['filter'] == 'list') {
 						$value = $classify->toTree($value);
 						$type_arr = array(1, 2, 3);
-					}
-					/* 20151021添加feeback filter */ elseif ($v['config']['filter'] == 'feedback') {
+					} elseif ($v['config']['filter'] == 'feedback') {/* 20151021添加feeback filter */
 						$value = $classify->toTree($value);
-						$type_arr = array(5);
+						$type_arr = array(5, 9);
 					} elseif ($v['config']['filter'] == 'ALL') {
 						$value = $classify->toTree($value);
 						$type_arr = array(1, 2, 3, 4, 5, 6);
 					} else {
 						$value = $classify->toTree($value);
-						$type_arr = array(1, 2, 3, 4);
+						$type_arr = array(1, 2, 3, 4, 9);
 					}
 				}
 				$this->unsetFalseClassify($value, $type_arr);
@@ -277,30 +276,32 @@ class TemplatesController extends BaseController {
 		}
 		return $result;
 	}
-        public function getimage($arr,$type='image'){
-            $org_img=array();
-            foreach((array)$arr as $k=>$v){
-                if($k===$type){
-                    $org_img[]=$v;
-                }
-                if(is_array($v)){
-                    $child_imgs=$this->getimage($v);
-                    $org_img=array_merge((array)$org_img,(array)$child_imgs);
-                }
-            }
-            return $org_img;
-        }
+
+	public function getimage($arr, $type = 'image') {
+		$org_img = array();
+		foreach ((array) $arr as $k => $v) {
+			if ($k === $type) {
+				$org_img[] = $v;
+			}
+			if (is_array($v)) {
+				$child_imgs = $this->getimage($v);
+				$org_img = array_merge((array) $org_img, (array) $child_imgs);
+			}
+		}
+		return $org_img;
+	}
+
 	public function homepageModify() {
-                $org_imgs=array();
-                $mod_imgs=array();
+		$org_imgs = array();
+		$mod_imgs = array();
 		$cus_id = Auth::id();
 		$template_id = websiteInfo::where('cus_id', $cus_id)->pluck('pc_tpl_id');
 		$website_config = new WebsiteConfig();
 		$website_config->cus_id = $cus_id;
 		$page = Input::get('page');
 		$website_config->key = $page;
-                $websiteconfig=$website_config->where('cus_id', $cus_id)->where('template_id', $template_id)->where('key', $page)->pluck('value');
-                $org_imgs=$this->getimage(unserialize($websiteconfig));
+		$websiteconfig = $website_config->where('cus_id', $cus_id)->where('template_id', $template_id)->where('key', $page)->pluck('value');
+		$org_imgs = $this->getimage(unserialize($websiteconfig));
 		$count = $website_config->where('cus_id', $cus_id)->where('template_id', $template_id)->where('key', $page)->count();
 		$website_config->template_id = $template_id;
 		$data = Input::get('data');
@@ -319,7 +320,7 @@ class TemplatesController extends BaseController {
 				if (array_key_exists("href", $data[$key]) || array_key_exists("src", $data[$key])) {
 					$data[$key]['link'] = $data[$key]['href'];
 					$data[$key]['image'] = basename($data[$key]['src']);
-                                        $mod_imgs[]=$data[$key]['image'];
+					$mod_imgs[] = $data[$key]['image'];
 					unset($data[$key]['href']);
 					unset($data[$key]['src']);
 				} else {
@@ -328,7 +329,7 @@ class TemplatesController extends BaseController {
 							if (array_key_exists("href", $arr) || array_key_exists("src", $arr)) {
 								$arr['link'] = $arr['href'];
 								$arr['image'] = basename($arr['src']);
-                                                                $mod_imgs[]=$arr['image'];
+								$mod_imgs[] = $arr['image'];
 								unset($arr['href']);
 								unset($arr['src']);
 							}
@@ -347,13 +348,13 @@ class TemplatesController extends BaseController {
 			$result = $website_config->save();
 		}
 		if ($result) {
-                        foreach ((array)$org_imgs as $v){
-                            if(!in_array($v, (array)$mod_imgs)){
-                                    $imgdel=new ImgDel();
-                                    $imgdel->mysave($v,'page_index');
-                            }
-                        }
-                        
+			foreach ((array) $org_imgs as $v) {
+				if (!in_array($v, (array) $mod_imgs)) {
+					$imgdel = new ImgDel();
+					$imgdel->mysave($v, 'page_index');
+				}
+			}
+
 			return Response::json(['err' => 0, 'msg' => '', 'data' => null]);
 		} else {
 			return Response::json(['err' => 1001, 'msg' => '数据保存失败', 'data' => null]);
@@ -445,13 +446,13 @@ class TemplatesController extends BaseController {
 
 	public function mhomepageModify() {
 		$cus_id = Auth::id();
-                $org_imgs=array();
-                $mod_imgs=array();
+		$org_imgs = array();
+		$mod_imgs = array();
 		$template_id = WebsiteInfo::where('cus_id', $cus_id)->pluck('mobile_tpl_id');
 		$data = Input::all();
 		$input_keys = array_keys($data);
 		$config_str = WebsiteConfig::where('cus_id', $cus_id)->where('type', 2)->where('template_id', $template_id)->pluck('value');
-                $org_imgs=$this->getimage(unserialize($config_str));
+		$org_imgs = $this->getimage(unserialize($config_str));
 		if ($config_str) {
 			$config_arr = unserialize($config_str);
 			$output_keys = array_keys($config_arr);
@@ -502,7 +503,7 @@ class TemplatesController extends BaseController {
 			}
 			$config_arr[$input_keys[0]]['value'] = $data[$input_keys[0]];
 		}
-                $mod_imgs=$this->getimage($config_arr);
+		$mod_imgs = $this->getimage($config_arr);
 		$new_config_str = serialize($config_arr);
 		if ($config_str) {
 			$result = DB::table('website_config')->where('cus_id', $cus_id)->where('type', 2)->where('template_id', $template_id)->update(array('value' => $new_config_str));
@@ -510,12 +511,12 @@ class TemplatesController extends BaseController {
 			$result = DB::table('website_config')->insert(array('cus_id' => $cus_id, 'type' => 2, 'template_id' => $template_id, 'key' => 'global', 'value' => $new_config_str));
 		}
 		if ($result) {
-                        foreach ((array)$org_imgs as $v){
-                            if(!in_array($v, (array)$mod_imgs)){
-                                    $imgdel=new ImgDel();
-                                    $imgdel->mysave($v,'page_index');
-                            }
-                        }
+			foreach ((array) $org_imgs as $v) {
+				if (!in_array($v, (array) $mod_imgs)) {
+					$imgdel = new ImgDel();
+					$imgdel->mysave($v, 'page_index');
+				}
+			}
 			$return_msg = array('err' => 0, 'msg' => '');
 		} else {
 			$return_msg = array('err' => 3001, 'msg' => '修改失败', 'data' => array());

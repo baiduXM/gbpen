@@ -190,10 +190,9 @@ class PrintController extends BaseController {
 								$templates->unsetLastClassify($c_arr);
 								$c_arr = array_merge($c_arr);
 								$v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
-							}
-							/* 20151021添加feeback filter */ elseif ($v['config']['filter'] == 'feedback') {
+							} elseif ($v['config']['filter'] == 'feedback') {/* 20151021添加feeback filter */
 								$c_arr = $classify->toTree($c_arr);
-								$templates->unsetFalseClassify($c_arr, array(5));
+								$templates->unsetFalseClassify($c_arr, array(5, 9));
 								$templates->unsetLastClassify($c_arr);
 								$c_arr = array_merge($c_arr);
 							} elseif ($v['config']['filter'] == 'ALL') {
@@ -228,9 +227,8 @@ class PrintController extends BaseController {
 							} elseif ($v['config']['filter'] == 'list') {
 								$v['config']['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3))->where('pc_show', 1)->pluck('id');
 								$v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
-							}
-							/* 20151021添加feeback filter */ elseif ($v['config']['filter'] == 'feedback') {
-								$v['config']['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(5))->where('pc_show', 1)->pluck('id');
+							} elseif ($v['config']['filter'] == 'feedback') {/* 20151021添加feeback filter */
+								$v['config']['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(5, 9))->where('pc_show', 1)->pluck('id');
 							} elseif ($v['config']['filter'] == 'ALL') {
 								$v['config']['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3, 4, 5, 6))->where('pc_show', 1)->pluck('id');
 								$v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
