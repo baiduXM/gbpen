@@ -25,7 +25,7 @@ class TemplatesController extends BaseController {
 		foreach ($data as $k => $v) {
 			if ($v['type'] == 'list') {
 				$type_arr = array(1, 2, 3);
-				$list = Classify::where('cus_id', '=', $pagedata->cus_id)->whereIn('type', array(1, 2, 3, 4, 5, 6))->where('pc_show', '=', 1)->get()->toArray();
+				$list = Classify::where('cus_id', '=', $pagedata->cus_id)->whereIn('type', array(1, 2, 3, 4, 5, 6, 9))->where('pc_show', '=', 1)->get()->toArray();
 				$value = array();
 				$selected = false;
 				foreach ($list as $key => $l) {
@@ -104,8 +104,8 @@ class TemplatesController extends BaseController {
 					$data_final[$k]['config']['star_only'] = "0";
 				}
 			} elseif ($v['type'] == 'navs') {
-				$type_arr = array(1, 2, 3, 4, 6);
-				$list = Classify::where('cus_id', '=', $pagedata->cus_id)->whereIn('type', array(1, 2, 3, 4, 6))->where('pc_show', '=', 1)->get()->toArray();
+				$type_arr = array(1, 2, 3, 4, 6, 9);
+				$list = Classify::where('cus_id', '=', $pagedata->cus_id)->whereIn('type', array(1, 2, 3, 4, 6, 9))->where('pc_show', '=', 1)->get()->toArray();
 				$value = array();
 				$selected = false;
 				foreach ($list as $key => $l) {

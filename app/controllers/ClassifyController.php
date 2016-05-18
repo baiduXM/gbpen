@@ -244,7 +244,6 @@ class ClassifyController extends BaseController {
 				if ($id != NULL) {
 					$result = ['err' => 0, 'msg' => '栏目修改成功', 'data' => $data];
 				} else {
-					
 					if (in_array($classify->type, array(1, 2, 3, 4, 9)) && $classify->p_id == 0) {
 						//===添加type:9万用表单===
 						$mhomepage_config = new MobileHomepage();
