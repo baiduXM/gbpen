@@ -1681,7 +1681,7 @@ class PrintController extends BaseController {
 					} elseif ($nav->type == 4) {
 						$content = Page::where('id', $nav->page_id)->pluck('content');
 						$mIndexCat['content'] = $content;
-					} elseif ($nav->type == 5 || $nav->type == 6 || $nav->type == 7 || $nav->type == 8) {
+					} elseif ($nav->type == 5 || $nav->type == 6 || $nav->type == 7 || $nav->type == 8 || $nav->type == 9) {
 						//暂时缺省
 					}
 					$mIndexCats[] = $mIndexCat;
@@ -1738,7 +1738,7 @@ class PrintController extends BaseController {
 					} elseif ($nav->type == 4) {
 						$content = Page::where('id', $nav->page_id)->pluck('content');
 						$mIndexCat['content'] = $content;
-					} elseif ($nav->type == 5 || $nav->type == 6 || $nav->type == 7 || $nav->type == 8) {
+					} elseif ($nav->type == 5 || $nav->type == 6 || $nav->type == 7 || $nav->type == 8 || $nav->type == 9) {
 						//暂时缺省
 					}
 					$mIndexCats[] = $mIndexCat;
@@ -2217,6 +2217,7 @@ class PrintController extends BaseController {
 			$the_result = $result;
 			$index_list = $this->pageList($id, 1);
 			$the_result['page_links'] = $index_list['page_links'];
+			//===显示类型不是'list-page'===
 			if ($classify->type != 5 && $classify->type != 4 && $classify->type != 9) {
 				$the_result['list']['data'] = $index_list['data'];
 			}
@@ -2231,6 +2232,7 @@ class PrintController extends BaseController {
 				flush();
 			}
 			$last_html_precent +=$html_precent;
+			//===显示类型不是'list-page'===
 			if ($classify->type != 5 && $classify->type != 4 && $classify->type != 9) {
 				for ($i = 1; $i <= $page; $i++) {
 					$the_result = $result;
