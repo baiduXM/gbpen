@@ -132,6 +132,7 @@ class CustomerController extends BaseController{
                 $data['pc_page_img_count'] = (Input::get('pc_img_per_page')>0)?Input::get('pc_img_per_page'):3;
                 $data['pc_page_count_switch'] = Input::get('pc_page_count_switch');
                 $data['enlarge'] = Input::get('enlargev');
+                $data['pushed'] = 1;
                 
                 $float_adv=Input::get('float_adv')?Input::get('float_adv'):array();
                 $posx=Input::get('posx')?Input::get('posx'):array();
@@ -167,8 +168,6 @@ class CustomerController extends BaseController{
                             $imgdel->mysave($v,'common');
                         }
                     }
-            Articles::where('cus_id',$cus_id)->where('pushed',0)->update(array('pushed'=>1));
-            Classify::where('cus_id',$cus_id)->where('pushed',0)->update(array('pushed'=>1));
 			$result = ['err' => 0, 'msg' => '','data'=>''];
 		}
 		else{

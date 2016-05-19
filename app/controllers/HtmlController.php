@@ -398,6 +398,7 @@ class HtmlController extends BaseController {
 			echo '100%<script type="text/javascript">parent.refresh(100);</script><br />';
 			Classify::where('cus_id', $this->cus_id)->where('pushed', 1)->update(['pushed' => 0]);
 			Articles::where('cus_id', $this->cus_id)->where('pushed', 1)->update(['pushed' => 0]);
+                        CustomerInfo::where('cus_id', $this->cus_id)->where('pushed', 1)->update(['pushed' => 0]);
 			//$pc_domain = CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_domain');
 			/**
 			 * pc使用本服务器自带域名推送，后期需要改进！
@@ -466,6 +467,7 @@ class HtmlController extends BaseController {
 	public function isNeedPush() {
 		$count = Classify::where('cus_id', $this->cus_id)->where('pushed', 1)->count();
 		$count += Articles::where('cus_id', $this->cus_id)->where('pushed', 1)->count();
+                $count +=CustomerInfo::where('cus_id', $this->cus_id)->where('pushed', 1)->count();
 		$data_final = ['err' => 0, 'msg' => '', 'data' => ['cache_num' => $count]];
 		return Response::json($data_final);
 	}

@@ -348,6 +348,7 @@ class TemplatesController extends BaseController {
 			$result = $website_config->save();
 		}
 		if ($result) {
+                        CustomerInfo::where('cus_id',$cus_id)->update(['pushed'=>1]);
 			foreach ((array) $org_imgs as $v) {
 				if (!in_array($v, (array) $mod_imgs)) {
 					$imgdel = new ImgDel();
