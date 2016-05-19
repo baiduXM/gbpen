@@ -105,10 +105,7 @@ function formController($scope, $http, $location) {
 		if (form_name == '') {
 			alert('表单名不能为空');
 			return false;
-		} else if (platform == '') {
-			alert('至少选择一个站点展示');
-			return false;
-		}
+		} 
 		$.post('../form-create', {name: form_name, platform: platform, showmodel: showmodel}, function (json) {
 			console.log(json);
 			console.log('===form-create===');
