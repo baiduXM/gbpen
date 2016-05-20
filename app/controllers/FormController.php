@@ -755,77 +755,76 @@ class FormController extends BaseController {
 //		exit;
         $jscolumn = json_encode($data['column']);
         $css = '<style TYPE="text/css">
-					.list-item span.option-item{
-						margin-right: 30px;
-						font-size: 12px;
-						min-height: 20px;
-						line-height: 20px;
-						display: inline-block;
-					}
-					.fv-add-show{background: none;}
-					/*title*/
-					.fv-as-title,.fv-as-description{ text-align: center; line-height: 22px;}
-					.fv-as-title{ padding-top: 20px; font-weight: bold; font-size: 20px;}
-					.fv-as-description{ padding-bottom: 20px;}
+                    .list-item span.option-item{
+                        margin-right: 30px;
+                        font-size: 12px;
+                        min-height: 20px;
+                        line-height: 20px;
+                        display: inline-block;
+                    }
+                    .fv-add-show{background: none;}
+                    /*title*/
+                    .fv-as-title,.fv-as-description{ text-align: center; line-height: 22px;}
+                    .fv-as-title{ padding-top: 20px; font-weight: bold; font-size: 20px;}
+                    .fv-as-description{ padding-bottom: 20px;}
 
-					/*main*/
-					.fv-unit-preview{ margin:0 auto; padding:1% 4%; max-width: 600px; min-width: 320px;}
+                    /*main*/
+                    .fv-unit-preview{ margin:0 auto; padding:1% 4%; max-width: 600px; min-width: 320px;}
 
-					.fv-element-show{ padding-bottom:3%;}
-					.fv-element-show p{ width: 100%; line-height: 30px !important;text-indent:0 !important; font-size:16px; font-weight: bold; padding-top: 6px;}
-					.fv-element-show input[type="text"],.fv-element-show input[type="password"]{height: 26px; line-height: 26px; border:1px solid #cccccc;}
-					.fv-element-show textarea{ width: 100%;height:80px; border:1px solid #cccccc;}
+                    .fv-element-show{ padding-bottom:3%;}
+                    .fv-element-show p{ width: 100%; line-height: 30px !important;text-indent:0 !important; font-size:16px; font-weight: bold; padding-top: 6px;}
+                    .fv-element-show input[type="text"],.fv-element-show input[type="password"]{height: 26px; line-height: 26px; border:1px solid #cccccc;}
+                    .fv-element-show textarea{ width: 100%;height:80px; border:1px solid #cccccc;}
 
-					.fv-option-item{ margin-right:6px;}
+                    .fv-option-item{ margin-right:6px;}
 
-					/*提交、重置按钮*/
-					.fv-unit-preview input[type="submit"]{ width: 70px; height: 30px; line-height: 15px; margin-right:1%; text-align: center; vertical-align: middle;}
-					.fv-unit-preview .button{ width: 70px; height: 30px; line-height: 15px; margin: 0 1%;text-align: center; vertical-align: middle;}
-					</style>';
+                    /*提交、重置按钮*/
+                    .fv-unit-preview input[type="submit"]{ width: 70px; height: 30px; line-height: 15px; margin-right:1%; text-align: center; vertical-align: middle;}
+                    .fv-unit-preview .button{ width: 70px; height: 30px; line-height: 15px; margin: 0 1%;text-align: center; vertical-align: middle;}
+                </style>';
         $js = "<SCRIPT language=javascript>
-					function CheckPost(){
-						var jscolumn=$jscolumn;
-						var column=eval(jscolumn);
-						var tt='';
-						var str='';
-						var flagchb=true;
-						$.each(column,function(k,v){
-							tt=v.title;
-							if(v.type=='checkbox'){
-								tt+='[]';
-							}
-							if(v.required==1){
-								switch(v.type){
-									case 'checkbox':
-										flagchb=false;
-										var chb=box_show[tt];
-										for(i=0;i<chb.length;i++){
-											if(chb[i].checked){
-												flagchb=flagchb || true;
-											}
-										}
-										if(flagchb==false){
-											str==''?str=v.title:str+=','+v.title;
-										}
-										break;
-									default:
-										if(box_show[tt].value==''){
-											flagchb=flagchb && false;
-										}
-										if(flagchb==false){
-											str==''?str=v.title:str+=','+v.title;
-										}
-										break;
-								}
-							}
-						});
-						if(flagchb==false){
-							alert('标注*号的为必填项');
-							return false;
-						}
-					}
-				</SCRIPT>";
-
+                    function CheckPost(){
+                        var jscolumn=$jscolumn;
+                        var column=eval(jscolumn);
+                        var tt='';
+                        var str='';
+                        var flagchb=true;
+                        $.each(column,function(k,v){
+                            tt=v.title;
+                            if(v.type=='checkbox'){
+                                    tt+='[]';
+                            }
+                            if(v.required==1){
+                                switch(v.type){
+                                    case 'checkbox':
+                                        flagchb=false;
+                                        var chb=box_show[tt];
+                                        for(i=0;i<chb.length;i++){
+                                            if(chb[i].checked){
+                                                flagchb=flagchb || true;
+                                            }
+                                        }
+                                        if(flagchb==false){
+                                            str==''?str=v.title:str+=','+v.title;
+                                        }
+                                        break;
+                                    default:
+                                        if(box_show[tt].value==''){
+                                            flagchb=flagchb && false;
+                                        }
+                                        if(flagchb==false){
+                                            str==''?str=v.title:str+=','+v.title;
+                                        }
+                                        break;
+                                }
+                            }
+                        });
+                        if(flagchb==false){
+                            alert('标注*号的为必填项');
+                            return false;
+                        }
+                    }
+            </SCRIPT>";
         return $css . $js;
     }
 
