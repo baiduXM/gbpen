@@ -14,11 +14,38 @@ function addformController($scope, $http, $location) {
     $scope.$parent.showbox = "main";
     $scope.$parent.homepreview = true;
     $scope.$parent.menu = [];
-
     var form_id = getUrlParam('form_id');
-
-
+    var _is_go = false;//用作判断是否继续执行代码
     init();//初始化
+//    operate();//操作
+//    sort();//表单列排序
+    /**
+     * 显示输出内容
+     * @param {string} type 类型：添加到表单，编辑组件，init_form初始化表单，init_column初始化组件,
+     * @param {array} data 传入数据
+     * @returns {undefined}
+     */
+//    function show_html(type, data) {
+//        var _type = type;
+//        var _data = data;
+//        switch (_type) {
+//            case 'info':
+//                _div_info(_data);//
+//                break;
+//            case 'element':
+//                _div_element(_data);//
+//                break;
+//            case 'edit':
+//                _div_edit(_data);//
+//                break;
+//            case 'show':
+//                _div_show(_data);//加载列表数据、更新单条数据
+//                break;
+//            default:
+//                break;
+//        }
+//    }
+
     //******************************
     //******操作事件（无ajax）******
     //******************************
@@ -71,8 +98,6 @@ function addformController($scope, $http, $location) {
 
 
 
-
-
     /**
      * 绑定组件事件
      * @param {type} _this 当前对象
@@ -92,51 +117,7 @@ function addformController($scope, $http, $location) {
             _div_edit(data);
         });
     }
-    /**
-     * 显示表单信息
-     * @param {type} data
-     * @returns {undefined}
-     */
-    function _div_info(data) {
-        $('[name="name"]').val(data.name);
-        $('[name="title"]').val(data.title);
-        $('[name="description"]').val(data.description);
-        var temp = data.platform.split(',');
-        $.each(temp, function (tk, tv) {
-            $('[name="platform"]:eq(' + tv + ')').attr('checked', true);
-        });
-        $('[name="showmodel"]:eq(' + data.showmodel + ')').attr('checked', true);
 
-        //===显示文字、链接===
-        $('[name="action_type"]:eq(' + data.action_type + ')').attr('checked', true);
-        if (data.action_type == 0) {
-            $('[name="action_text"]').val(data.action_text);
-        }
-        if (data.action_type == 1) {
-            $('[name="action_text"]').val(data.action_url);
-        }
-
-        if (data.is_once == 1) {
-            $('[name="is_once"]').attr('checked', true);
-        }
-        if (data.status == 1) {
-            $('[name="status"]:eq(0)').attr('checked', true);
-        } else {
-            $('[name="status"]:eq(1)').attr('checked', true);
-        }
-        //===显示区域===
-        $('.as-title').html(data.title);
-        $('.as-description').html(data.description);
-        //===选择提交表单后动作===
-        $('[name="action_type"]').click(function () {
-            if ($(this).val() == 0) {
-                $('[name="action_text"]').val(data.action_text);
-            }
-            if ($(this).val() == 1) {
-                $('[name="action_text"]').val(data.action_url);
-            }
-        });
-    }
     /**
      * 显示组件/更新组件信息
      * @param {type} data
@@ -154,8 +135,8 @@ function addformController($scope, $http, $location) {
         _div_li += '<li class="list-item" data-type="' + data.type + '" data-id="' + data.column_id + '" name="li_' + data.column_id + '" data-order="' + data.order + '">';
         switch (data.type) {
             case 'text':
-                _div += '<p class="content-l">' + data.title + '：</p>\n\
-					<input  type="text" name="col_' + data.column_id + '" value=""  disabled="disabled" placeholder="' + data.description + '"/>';
+                _div += '<p class="content-l">' + data.title + '：</p>';
+                _div += '<input  type="text" name="col_' + data.column_id + '" value=""  disabled="disabled" placeholder="' + data.description + '"/>';
                 break;
             case 'textarea':
                 _div += '<p class="content-l">' + data.title + '：</p>\n\
@@ -209,7 +190,8 @@ function addformController($scope, $http, $location) {
                 temp = _config.option_default;
                 break;
             case 'date':
-                _div += '日期date';
+                _div += '<label class="content-l">' + data.title + '(' + data.description + ')：</label>';
+                _div += '<input  type="text" name="col_' + data.column_id + '" value=""  disabled="disabled" />';
                 break;
             case 'image':
                 _div += '<label class="content-l">' + data.title + '(' + data.description + ')：</label>';
@@ -310,11 +292,11 @@ function addformController($scope, $http, $location) {
 					<span class="option-item"><input type = "radio" name="config_text_type" value = "password" />密码</span>\n\
 				</li>';
                 _div += '<hr /><li class="list-item"><p class="content-l">规则</p>\n\
-					<span class="option-item"><input type = "radio" name="config_rules" value = "no" />无</span>\n\
-					<span class="option-item"><input type = "radio" name="config_rules" value = "mail" />邮箱</span>\n\
-					<span class="option-item"><input type = "radio" name="config_rules" value = "mobile" />手机</span>\n\
-					<span class="option-item"><input type = "radio" name="config_rules" value = "number" />数字</span>\n\
-				</li>';
+                                <span class="option-item"><input type = "radio" name="config_rules" value = "no" />无</span>\n\
+                                <span class="option-item"><input type = "radio" name="config_rules" value = "mail" />邮箱</span>\n\
+                                <span class="option-item"><input type = "radio" name="config_rules" value = "mobile" />手机</span>\n\
+                                <span class="option-item"><input type = "radio" name="config_rules" value = "number" />数字</span>\n\
+                        </li>';
                 break;
             case 'textarea':
                 break;
@@ -597,16 +579,7 @@ function addformController($scope, $http, $location) {
             _this.remove();
         });
     }
-    /**
-     * 显示输出内容
-     * @param {string} type 类型：添加到表单，编辑组件，init_form初始化表单，init_column初始化组件,
-     * @param {array} data 传入数据
-     * @returns {undefined}
-     */
-    function show_html(type, data) {
-        var _type = type ? 1 : 0;
-        var _data = data ? 1 : 0;
-    }
+
 
     //==========================================================================
 
@@ -616,8 +589,11 @@ function addformController($scope, $http, $location) {
      */
     function init() {
         getFormData();
-        getFormElement();
-        getFormColumn();
+        if (_is_go) {
+            getFormElement();
+            getFormColumn();
+        }
+
     }
 
     /**
@@ -625,15 +601,27 @@ function addformController($scope, $http, $location) {
      * @returns {undefined}
      */
     function getFormData() {
-        $.get('../form-data', {form_id: form_id}, function (json) {
-            console.log(json);
-            console.log('---/form-data---');
-            checkJSON(json, function (json) {
-                _div_info(json.data);
-            }, function () {
-                location.href = "#/form";
-            });
+        $.ajax({
+            type: 'post',
+            url: '../form-data',
+            async: false,
+            data: {form_id: form_id},
+            success: function (json) {
+                console.log(json);
+                console.log('---/form-data---');
+                checkJSON(json, function (json) {
+                    _div_info(json.data);
+                    _is_go = true;
+                }, function () {
+                    location.href = "#/form";
+                });
+            }
         });
+//        $.get('../form-data', {form_id: form_id}, function (json) {
+//
+//        });
+
+
     }
     /**
      * 获取组件元素
@@ -679,6 +667,54 @@ function addformController($scope, $http, $location) {
                     });
                 }
             });
+        });
+    }
+
+
+    /**
+     * 显示表单信息
+     * @param {type} data
+     * @returns {undefined}
+     */
+    function _div_info(data) {
+        $('[name="name"]').val(data.name);
+
+        $('[name="title"]').val(data.title);
+        $('[name="description"]').val(data.description);
+        var temp = data.platform.split(',');
+        $.each(temp, function (tk, tv) {
+            $('[name="platform"]:eq(' + tv + ')').attr('checked', true);
+        });
+        $('[name="showmodel"]:eq(' + data.showmodel + ')').attr('checked', true);
+
+        //===显示文字、链接===
+        $('[name="action_type"]:eq(' + data.action_type + ')').attr('checked', true);
+        if (data.action_type == 0) {
+            $('[name="action_text"]').val(data.action_text);
+        }
+        if (data.action_type == 1) {
+            $('[name="action_text"]').val(data.action_url);
+        }
+
+        if (data.is_once == 1) {
+            $('[name="is_once"]').attr('checked', true);
+        }
+        if (data.status == 1) {
+            $('[name="status"]:eq(0)').attr('checked', true);
+        } else {
+            $('[name="status"]:eq(1)').attr('checked', true);
+        }
+        //===显示区域===
+        $('.as-title').html(data.title);
+        $('.as-description').html(data.description);
+        //===选择提交表单后动作===
+        $('[name="action_type"]').click(function () {
+            if ($(this).val() == 0) {
+                $('[name="action_text"]').val(data.action_text);
+            }
+            if ($(this).val() == 1) {
+                $('[name="action_text"]').val(data.action_url);
+            }
         });
     }
 
