@@ -192,7 +192,7 @@ class UploadController extends BaseController{
                                 case 3:$type='png';break;
                             }
                             $this->resizeImage($destinationPath.'/l/'.$target.'/'.$fileName,$type,$s_path,$img_size,$img_size);
-                            copy($destinationPath.'/s/'.$target.'/'.$fileName, public_path('customers/'.$customer.'/mobile/images/l/'.$target.'/'.$fileName));
+                            copy($destinationPath.'/l/'.$target.'/'.$fileName, public_path('customers/'.$customer.'/mobile/images/l/'.$target.'/'.$fileName));
                             $mobile_s_path=public_path('customers/'.$customer.'/mobile/images/s/').$target.'/'.$fileName;
                             $this->resizeImage(public_path('customers/'.$customer.'/mobile/images/l/').$target.'/'.$fileName,$type,$mobile_s_path,$img_size,$img_size);
                             if($conn){
