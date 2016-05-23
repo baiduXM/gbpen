@@ -376,7 +376,7 @@ class WebsiteController extends BaseController{
                 $num = $key;
             $title_num = 'tpl_'.$num;
             $filename['files'][$key] = $val;
-            $$title_num = array_merge($$title_num,$filename);
+            $$title_num = $this->superArrayMerge($$title_num,$filename);
             unset($filename);
         }
         $tpl_9['title'] = '模块文件';
@@ -525,6 +525,15 @@ class WebsiteController extends BaseController{
         }
     }
     
+    //高级定制中数组合并处理
+    public function superArrayMerge($a,$b){
+        if(isset($a['files']))
+            $a['files'] = array_merge($a['files'],$b['files']);
+        else
+            $a['files'] = $b['files'];
+        return $a;
+    }
+
     //获取文件列表
     public function getFile($dir) {
         $fileArray[]=NULL;
