@@ -602,7 +602,7 @@ function addformController($scope, $http, $location) {
      */
     function getFormData() {
         $.ajax({
-            type: 'post',
+            type: 'get',
             url: '../form-data',
             async: false,
             data: {form_id: form_id},
@@ -717,6 +717,126 @@ function addformController($scope, $http, $location) {
             }
         });
     }
+
+    /**
+     * _show_{type} 显示/更新表单组件
+     * _edit_{type} 编辑表单组件
+     * type={text, textarea, radio, checkbox, select, date, address, image, file}
+     */
+
+
+    function _show_text(data) {
+        var _data = data;
+        var _div = '<li class="list-item" data-type="' + data.type + '" data-id="' + data.column_id + '" data-order="' + data.order + '">';
+        _div += '<p class="content-l">' + _data.title + '：</p>';
+        _div += '<input  type="text" name="col_' + _data.column_id + '" value=""  disabled="disabled" placeholder="' + _data.description + '"/>';
+        _div += '</li>';
+        return _div;
+    }
+    function _edit_text(data) {
+        var _data = data;
+    }
+
+    function _show_textarea(data) {
+        var _data = data;
+        _div += '<p class="content-l">' + data.title + '：</p>\n\
+					<textarea name="col_' + data.column_id + '" disabled="disabled" placeholder=' + data.description + '></textarea>';
+    }
+    function _edit_textarea(data) {
+        var _data = data;
+    }
+
+    function _show_radio(data) {
+        var _data = data;
+        option_key = _config.option_key.split(',');
+        _div += '<p class="content-l">' + data.title + '：(' + data.description + ')</p>';
+        $.each(option_key, function (tk, tv) {
+            to = "option_" + tv;
+            _div += '<span class="option-item">';
+            _div += '<input type = "radio" name = "col_' + data.column_id + '" value = ' + tv + '  disabled="disabled"/>\n\
+						<label>' + _config[to] + '</label>';
+            _div += '</span>';
+        });
+        temp = _config.option_default;
+    }
+    function _edit_radio(data) {
+        var _data = data;
+    }
+    function _show_checkbox(data) {
+        var _data = data;
+        option_key = _config.option_key.split(',');
+        _div += '<p class="content-l">' + data.title + '：(' + data.description + ')</p>';
+        $.each(option_key, function (tk, tv) {
+            to = "option_" + tv;
+            _div += '<span class="option-item">';
+            _div += '<input type = "checkbox" name = "col_' + data.column_id + '" value = ' + tv + '  disabled="disabled"/>\n\
+						<label>' + _config[to] + '</label>';
+            _div += '</span>';
+        });
+//				for (var i = 0; i < _config.option_count; i++) {
+//					to = "option_" + i;
+//					_div += '<span class="option-item">';
+//					_div += '<input type = "checkbox" name = "col_' + data.column_id + '" value = ' + i + '  disabled="disabled"/><label>' + _config[to] + '</label>';
+//					_div += '</span>';
+//
+//				}
+        temp = _config.option_default.split(',');
+    }
+    function _edit_checkbox(data) {
+        var _data = data;
+    }
+    function _show_select(data) {
+        var _data = data;
+        _div += '<p class="content-l">' + data.title + '：(' + data.description + ')</p>';
+        _div += '<select name="col_' + data.column_id + '" disabled="disabled">';
+        var to = '';
+        option_key = _config.option_key.split(',');
+        $.each(option_key, function (tk, tv) {
+            to = "option_" + tv;
+            _div += '<option value=' + tv + '>' + _config[to] + '</option>';
+        });
+//				for (var i = 0; i < _config.option_count; i++) {
+//					to = "option_" + i;
+//					_div += '<option value=' + i + '>' + _config[to] + '</option>';
+//				}
+        _div += '</select>';
+        temp = _config.option_default;
+    }
+    function _edit_select(data) {
+        var _data = data;
+    }
+    function _show_date(data) {
+        var _data = data;
+        _div += '<label class="content-l">' + data.title + '(' + data.description + ')：</label>';
+        _div += '<input  type="text" name="col_' + data.column_id + '" value=""  disabled="disabled" />';
+    }
+    function _edit_date(data) {
+        var _data = data;
+    }
+    function _show_address(data) {
+        var _data = data;
+        _div += '<label class="content-l">' + data.title + '(' + data.description + ')：</label>';
+        _div += '<input  type="text" name="col_' + data.column_id + '" value=""  disabled="disabled" />';
+    }
+    function _edit_address(data) {
+        var _data = data;
+    }
+    function _show_image(data) {
+        var _data = data;
+        _div += '<label class="content-l">' + data.title + '(' + data.description + ')：</label>';
+        _div += '<a href="javascript:void(0);" ><img src=""  alt="上传图片" /></a>';
+    }
+    function _edit_image(data) {
+        var _data = data;
+    }
+    function _show_file(data) {
+        var _data = data;
+        _div += '<label class="content-l">' + data.title + '(' + data.description + ')：</label><input type="file" name="col_' + data.column_id + '" disabled="disabled"/>';
+    }
+    function _edit_file(data) {
+        var _data = data;
+    }
+
 
 
 }
