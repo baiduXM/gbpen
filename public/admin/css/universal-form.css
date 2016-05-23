@@ -1,130 +1,130 @@
 /*万用表单*/
 #bomb-box .box_info{
-	margin-left:0px;
+    margin-left:0px;
 }
 /*===选项卡标题部分===*/
 .af-left{
-	width: 39%;
-	min-width: 198px;
+    width: 39%;
+    min-width: 198px;
 }
 .af-right{
-	width: 59%;
-	min-width: 298px;
+    width: 59%;
+    min-width: 298px;
 }
 .tab-head{
-	/*border-bottom: 2px grey solid;*/
-	height: 40px;
-	background: #cfccc8;
-	text-align: center;
+    /*border-bottom: 2px grey solid;*/
+    height: 40px;
+    background: #cfccc8;
+    text-align: center;
 }
 .tab-head-item{
-	overflow: hidden;
-	text-align: center;
-	display: inline-block;
-	height: 30px;
-	line-height: 30px;
-	margin: 5px;
-	width: 25%;
+    overflow: hidden;
+    text-align: center;
+    display: inline-block;
+    height: 30px;
+    line-height: 30px;
+    margin: 5px;
+    width: 25%;
 }
 .tab-head-item-active, .tab-head-item:hover{
-	cursor: pointer;
-	background: grey;
+    cursor: pointer;
+    background: grey;
 }
 
 li{
-	list-style-type:none;
+    list-style-type:none;
 }
 
 
 /*===选项卡内容部分===*/
 .tab-content{
-	text-align: center;
-	margin: 0 auto;
-	width: 80%;
+    text-align: center;
+    margin: 0 auto;
+    width: 80%;
 }
 .tab-content-item{
-	margin-top: 20px;
+    margin-top: 20px;
 }
 /*项目列表加样式*/
 .list-item{
-	margin-top: 5px;
-	overflow: hidden;
-	padding: 5px 10px;
-	text-align: left;
+    margin-top: 5px;
+    overflow: hidden;
+    padding: 5px 10px;
+    text-align: left;
 }
 .list-item .content-l{	
-	font-weight: bold;
-	font-size: 12px;
-	min-height: 20px;
-	line-height: 20px;
-	margin-bottom: 5px;
+    font-weight: bold;
+    font-size: 12px;
+    min-height: 20px;
+    line-height: 20px;
+    margin-bottom: 5px;
 }
 .list-item span.option-item{
-	margin-right: 30px;
-	font-size: 12px;
-	min-height: 20px;
-	line-height: 20px;
-	display: inline-block;
+    margin-right: 30px;
+    font-size: 12px;
+    min-height: 20px;
+    line-height: 20px;
+    display: inline-block;
 }
 .list-item p.option-item{
-	margin-right: 30px;
-	font-size: 12px;
-	min-height: 20px;
-	line-height: 20px;
+    margin-right: 30px;
+    font-size: 12px;
+    min-height: 20px;
+    line-height: 20px;
 }
 input[type="submit"],input[type="reset"],input[type="button"]{
-	width: 100px;
-	height: 30px;
+    width: 100px;
+    height: 30px;
 }
 input[type="text"],input[type="password"]{
-	height: 30px;
-	border-radius: 5px;
-	width: 60%;
-	padding: 0 10px;
-	margin-top: 5px;
-	border: 1px solid #ccc;
+    height: 30px;
+    border-radius: 5px;
+    width: 60%;
+    padding: 0 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
 }
 textarea{
-	height: 100px;
-	width: 75%;
-	padding: 10px;
-	overflow: auto;
-	border-radius: 5px;
+    height: 100px;
+    width: 75%;
+    padding: 10px;
+    overflow: auto;
+    border-radius: 5px;
 }
 input[type="checkbox"]{
-	-webkit-appearance: none;
-	border: 1px solid #ccc;
-	background: #fff;
-	width: 15px;
-	height: 15px;
-	outline:none;
-	cursor:pointer;
-	vertical-align: middle;
-	margin-right: 10px;
+    -webkit-appearance: none;
+    border: 1px solid #ccc;
+    background: #fff;
+    width: 15px;
+    height: 15px;
+    outline:none;
+    cursor:pointer;
+    vertical-align: middle;
+    margin-right: 10px;
 }
 input[type="checkbox"]:checked{
-	border-color: #ccc;
-	background: url(../images/check02.jpg) center center no-repeat;
-	vertical-align: middle;
-	margin-right: 10px;
+    border-color: #ccc;
+    background: url(../images/check02.jpg) center center no-repeat;
+    vertical-align: middle;
+    margin-right: 10px;
 }
 input[type="radio"]{
-	-webkit-appearance:none;
-	border:1px solid #ccc;
-	background:#fff;
-	width:15px;
-	height:15px;
-	margin-right:0px;
-	border-radius:100%;
-	outline:none;
-	cursor:pointer;
-	vertical-align: middle;
-	margin-right: 10px;
+    -webkit-appearance:none;
+    border:1px solid #ccc;
+    background:#fff;
+    width:15px;
+    height:15px;
+    margin-right:0px;
+    border-radius:100%;
+    outline:none;
+    cursor:pointer;
+    vertical-align: middle;
+    margin-right: 10px;
 }
 input[type="radio"]:checked {
-	border-color: #ccc;
-	background: url(../images/radioico.jpg) center center no-repeat;
-	margin-right: 10px;
+    border-color: #ccc;
+    background: url(../images/radioico.jpg) center center no-repeat;
+    margin-right: 10px;
 }
 /*组件样式*/
 .utility{transition: all 0.3s ease 0s;width: 26.5%;margin: 6px 2%;background: #FFF;padding: 5px 0.6% 5px 1.4%;z-index: 10;border: 1px dashed #999;border-radius: 3px;cursor: pointer;float: left;}
@@ -133,28 +133,28 @@ input[type="radio"]:checked {
 
 /*右边*/
 .add-show{
-	width: 80%;
-	background: #AAAAAA;
-	/*border: 1px #57A5CA solid;*/
-	margin: 0 auto;
-	padding: 20px;
+    width: 80%;
+    background: #AAAAAA;
+    /*border: 1px #57A5CA solid;*/
+    margin: 0 auto;
+    padding: 20px;
 }
 .add-show .as-title{
-	text-align: center;
-	font-size: 20px;
-	font-weight: bold;
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
 }
 
 .add-show .as-description{
-	text-align: center;
-	font-size: 14px;
-	overflow: hidden;
-	margin: 10px;
-	word-wrap: break-word;
+    text-align: center;
+    font-size: 14px;
+    overflow: hidden;
+    margin: 10px;
+    word-wrap: break-word;
 }
 
 .add-show .unit-preview{
-	margin: 10px 20px;
+    margin: 10px 20px;
 
 }
 .add-show .unit-preview .element-show{
@@ -162,83 +162,87 @@ input[type="radio"]:checked {
 }
 
 .add-info{
-	text-align: center;
-	margin: 10px auto;
-	max-width: 100%;
+    text-align: center;
+    margin: 10px auto;
+    max-width: 100%;
 }
 .add-info .f-btn{
-	margin: 5px 20px;
+    margin: 5px 20px;
 
 }
 
 /*浏览用户表单数据页面*/
 .vf-left{
-	width:49%;
+    width:49%;
 }
 .vf-right{
-	width: 49%;
+    width: 49%;
 }
 
 .a-table{
 }
 .data-li{
-	border-bottom: 1px #ffffff dashed;
-	padding-bottom: 5px;
-	margin-bottom: 5px;
-	min-height: 30px;
-	line-height: 30px;
+    border-bottom: 1px #ffffff dashed;
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+    min-height: 30px;
+    line-height: 30px;
 }
 .data-litem{
-	float: left;
-	width: 30%;
-	text-align: right;
-	word-wrap: break-word;
-	word-break: normal; 
+    float: left;
+    width: 30%;
+    text-align: right;
+    word-wrap: break-word;
+    word-break: normal; 
 }
 .data-ritem{
-	float: right;
-	width: 60%;
-	text-align: left;
-	word-wrap: break-word;
-	word-break: normal; 
-	color: #5c5c5c;
-	font-size: 12px;
+    float: right;
+    width: 60%;
+    text-align: left;
+    word-wrap: break-word;
+    word-break: normal; 
+    color: #5c5c5c;
+    font-size: 12px;
 }
 
 
 /*用户填写表单页面*/
 .form-write{
-	width:80%;
-	margin:0 auto;
+    width:80%;
+    margin:0 auto;
 }
 
 
 .click{
-	background: #D0E2F3;
+    background: #D0E2F3;
 }
 .hover{
-	border: 1px #57A5CA dashed;
+    border: 1px #57A5CA dashed;
 }
 
 button{
-	display: inline-block;
-	width: 35px;
-	height: 25px;
-	margin: 0 5px;
+    display: inline-block;
+    width: 35px;
+    height: 25px;
+    margin: 0 5px;
 }
 
 button .square{
-	display: inline-block;
-	width: 20px;
-	height: 20px;
-	margin: 0 5px;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin: 0 5px;
 }
 .col-area{
-	margin:10px 0;
+    margin:10px 0;
 }
 
 .boxs{
-	overflow-y:auto; 
+    overflow-y:auto; 
+}
+
+.red-asterisk{
+    color: red;
 }
 
 /*===前端表单样式，前缀fv（form-view）===*/
