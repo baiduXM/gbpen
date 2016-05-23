@@ -1105,10 +1105,10 @@ class PrintController extends BaseController {
                 $v['value']['link'] = '';
                 if ($this->showtype == 'preview') {
                     $v['value']['image'] = ($c_info ? $this->source_dir . 'l/category/' . $c_info->img : '');
-                    $v['value']['link'] = ($c_info ? $this->domain . '/category/' . $c_info->id : '');
+                    $v['value']['link'] = ($c_info ? ($c_info->type == 6) ? $c_info->url ? $c_info->url : '' : $this->domain . '/category/' . $c_info->id : '');
                 } else {
                     $v['value']['image'] = ($c_info ? $this->domain . '/images/l/category/' . $c_info->img : '');
-                    $v['value']['link'] = ($c_info ? $this->domain . '/category/' . $c_info->id . '.html' : '');
+                    $v['value']['link'] = ($c_info ? ($c_info->type == 6) ? $c_info->url ? $c_info->url : '' : $this->domain . '/category/' . $c_info->id . '.html' : '');
                 }
                 $v['value']['description'] = ($c_info ? $c_info->meta_description : '');
                 $v['value']['type'] = ($c_info ? $c_info->type : '');
