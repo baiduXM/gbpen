@@ -354,16 +354,16 @@ class WebsiteController extends BaseController{
             $file_type = explode('.', $tpl_v);
             if(array_key_exists($file_type[0], $astrict)){
                 $tpl_file_0[$astrict[$file_type[0]]] = $tpl_v;
-                if(array_search($file_type[0].'json',$json)!==false){
-                    $tpl_file_0[$astrict[$file_type[0]]+1] = $file_type[0].'json';
-                    $json_del = array_search($file_type[0].'json',$json);
+                if(array_search($file_type[0].'.json',$json)!==false){
+                    $tpl_file_0[$astrict[$file_type[0]]+1] = $file_type[0].'.json';
+                    $json_del = array_search($file_type[0].'.json',$json);
                     unset($json[$json_del]);
                 }
             }else{
                 $tpl_file_1[] = $tpl_v;
-                if(array_search($file_type[0].'json',$json)!==false){
-                    $tpl_file_1[] = $file_type[0].'json';
-                    $json_del = array_search($file_type[0].'json',$json);
+                if(array_search($file_type[0].'.json',$json)!==false){
+                    $tpl_file_1[] = $file_type[0].'.json';
+                    $json_del = array_search($file_type[0].'.json',$json);
                     unset($json[$json_del]);
                 }
             }
