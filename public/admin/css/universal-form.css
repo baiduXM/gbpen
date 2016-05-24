@@ -72,6 +72,11 @@ li{
     min-height: 20px;
     line-height: 20px;
 }
+.list-item .content-d{
+    color: #999;
+    font-size: 9px;
+}
+
 input[type="submit"],input[type="reset"],input[type="button"]{
     width: 100px;
     height: 30px;
