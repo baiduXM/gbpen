@@ -87,8 +87,8 @@ function addformController($scope, $http, $location) {
      */
     function getFormColumn() {
         $.get('../form-column-list', {form_id: form_id}, function (json) {
-//            console.log(json);
-//            console.log('---/form-column-list---');
+            console.log(json);
+            console.log('---/form-column-list---');
             checkJSON(json, function (json) {
                 var _data = json.data;
                 if (_data != null) {
@@ -287,38 +287,39 @@ function addformController($scope, $http, $location) {
 
     function _show_text(data) {
         var _data = data;
-
-
-
-
         var _div = '<li class="list-item" data-type="' + _data.type + '" data-id="' + _data.column_id + '" data-order="' + _data.order + '">';
         _div += '<p class="content-l">' + _data.title;
         if (_data.required == 1) {
             _div += '<i class="red-asterisk">*</i>';
         }
-        _div += '</p>';
         if (_data.description == null && _data.description == '') {
             _div += '<i class="content-d">' + data.description + '</i>';
         }
-        _div += '<input type="text" value="" disabled="disabled" placeholder="' + _data.description + '"/>';// name="col_' + _data.column_id + '"
+        _div += '</p>';
+        _div += '<input type="text" disabled="disabled" placeholder="' + _data.description + '"/>';// name="col_' + _data.column_id + '"
         _div += '</li>';
         return _div;
     }
-
 
     function _show_textarea(data) {
         var _data = data;
         var _div = '<li class="list-item" data-type="' + _data.type + '" data-id="' + _data.column_id + '" data-order="' + _data.order + '">';
-        _div += '<p class="content-l">' + _data.title + '：</p>';
-        _div += '<textarea name="col_' + _data.column_id + '" disabled="disabled" placeholder=' + _data.description + '></textarea>';
+        _div += '<p class="content-l">' + _data.title;
+        if (_data.required == 1) {
+            _div += '<i class="red-asterisk">*</i>';
+        }
+        if (_data.description == null && _data.description == '') {
+            _div += '<i class="content-d">' + data.description + '</i>';
+        }
+        _div += '</p>';
+        _div += '<textarea disabled="disabled" placeholder=' + _data.description + '></textarea>';
         _div += '</li>';
         return _div;
     }
 
-
     function _show_radio(data) {
         var _data = data;
-        var _config = _data.config;
+        var _config = _data.config;//直到世界尽头
         var _option_key = _config.option_key.split(',');
         var _div = '<li class="list-item" data-type="' + _data.type + '" data-id="' + _data.column_id + '" data-order="' + _data.order + '">';
         var _to = '';
@@ -346,13 +347,11 @@ function addformController($scope, $http, $location) {
         return _div;
     }
 
+
     function _show_checkbox(data) {
         var _data = data;
         var _config = _data.config;
-        var _option_key = _config.option_key.split(',');
         var _div = '<li class="list-item" data-type="' + _data.type + '" data-id="' + _data.column_id + '" data-order="' + _data.order + '">';
-        var _to = '';
-        var _option_default = _config.option_default.split(',');
         _div += '<p class="content-l">' + _data.title;
         if (_data.required == 1) {
             _div += '<i class="red-asterisk">*</i>';
@@ -361,16 +360,12 @@ function addformController($scope, $http, $location) {
             _div += '(' + data.description + ')';
         }
         _div += '</p>';
+        var _option_key = _config.option_key.split(',');
+        var _to = '';
         $.each(_option_key, function (tk, tv) {
             _to = "option_" + tv;
             _div += '<span class="option-item">';
-//            $.each(_option_default, function (k, v) {
-//                if (v == tv) {
-//                    _div += '<input type = "checkbox" disabled="disabled" checked />';
-//                } else {
             _div += '<input type = "checkbox" disabled="disabled"/>';
-//                }
-//            });
             _div += '<label>' + _config[_to] + '</label>';
             _div += '</span>';
         });
@@ -381,10 +376,8 @@ function addformController($scope, $http, $location) {
     function _show_select(data) {
         var _data = data;
         var _config = _data.config;
-        var _option_key = _config.option_key.split(',');
         var _div = '<li class="list-item" data-type="' + _data.type + '" data-id="' + _data.column_id + '" data-order="' + _data.order + '">';
-        var _to = '';
-        var _option_default = _config.option_default;
+//        var _option_default = _config.option_default;
         _div += '<p class="content-l">' + _data.title;
         if (_data.required == 1) {
             _div += '<i class="red-asterisk">*</i>';
@@ -394,33 +387,47 @@ function addformController($scope, $http, $location) {
         }
         _div += '</p>';
         _div += '<select name="col_' + data.column_id + '" disabled="disabled">';
+        var _option_key = _config.option_key.split(',');
+        var _to = '';
         $.each(_option_key, function (tk, tv) {
             _to = "option_" + tv;
             _div += '<option value=' + tv + '>' + _config[_to] + '</option>';
         });
         _div += '</select>';
+        _div += '</li>';
+        return _div;
     }
 
     function _show_date(data) {
         var _data = data;
+        var _div = '<li class="list-item" data-type="' + _data.type + '" data-id="' + _data.column_id + '" data-order="' + _data.order + '">';
         _div += '<label class="content-l">' + data.title + '(' + data.description + ')：</label>';
-        _div += '<input  type="text" name="col_' + data.column_id + '" value=""  disabled="disabled" />';
+        _div += '<input onclick="laydate({istime: true, format: \'YYYY-MM-DD hh:mm:ss\'})" name="col_' + data.column_id + '">';
+        _div += '</li>';
+        return _div;
+
     }
 
     function _show_address(data) {
         var _data = data;
+        var _div = '<li class="list-item" data-type="' + _data.type + '" data-id="' + _data.column_id + '" data-order="' + _data.order + '" ng-controller="appCtrl" id="address">';
         _div += '<label class="content-l">' + data.title + '(' + data.description + ')：</label>';
-        _div += '<input  type="text" name="col_' + data.column_id + '" value=""  disabled="disabled" />';
+//        _div += '<input select-address p="p" c="c" a="a" d="d" ng-model="xxx" placeholder="请选择所在地" type="text" class="form-control" name="col_' + data.column_id + '"  />';
+        _div += '</li>';
+        return _div;
     }
-
     function _show_image(data) {
         var _data = data;
-        alert('_show_image');
+        var _div = '<li class="list-item" data-type="' + _data.type + '" data-id="' + _data.column_id + '" data-order="' + _data.order + '">';
+        _div += '</li>';
+        return _div;
     }
 
     function _show_file(data) {
         var _data = data;
-        alert(_data.text);
+        var _div = '<li class="list-item" data-type="' + _data.type + '" data-id="' + _data.column_id + '" data-order="' + _data.order + '">';
+        _div += '</li>';
+        return _div;
     }
     function _edit_text(data) {
         var _data = data;
@@ -464,5 +471,5 @@ function addformController($scope, $http, $location) {
             return true;
         }
     }
-    
+
 }
