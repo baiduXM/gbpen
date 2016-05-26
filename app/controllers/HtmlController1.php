@@ -151,7 +151,10 @@ class HtmlController1 extends BaseController{
         $template = new PrintController('online',$type);
         $result =array();
         foreach((array)$ids as $id){
-            $paths=$template->articlepush($id,$this->last_html_precent,$this->html_precent);
+            $articles = Articles::where($type . '_show', '1')->where('c_id', $id)->where('use_url', '0')->orderBy('is_top', 'desc')->orderBy('sort', 'asc')->orderBy('created_at', 'desc')->get()->toArray();
+            if(count($articles)){
+                $paths=$template->articlepush($id,$this->last_html_precent,$this->html_precent);
+            }
             $this->last_html_precent +=($this->html_precent*count($paths));
             $result=array_merge((array)$result,(array)$paths);
         }
