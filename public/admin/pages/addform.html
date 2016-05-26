@@ -1,6 +1,6 @@
 <link rel="stylesheet" href="css/themes.css">
 <link rel="stylesheet" href="css/laydate.css">
-<link rel="stylesheet" href="css/bootstrap.min.css">
+<!--<link rel="stylesheet" href="css/bootstrap.min.css">-->
 <link rel="stylesheet" href="css/universal-form.css">
 <script src="js/colorpicker.min.js"></script>
 <!--添加自定义js/css-->
@@ -21,6 +21,7 @@
             </div>
             <div class="tab-content">
                 <div class="tab-content-item" style="display: block;" id="con_item_0">
+                    <!--_div_info表单信息-->
                     <form name="box_info">
                         <ul class="form-list">
                             <li class="list-item">
@@ -35,12 +36,12 @@
                                 <label for="description"><p class="content-l">描述</p></label>
                                 <input id="description" name="description" type="text"/>
                             </li>
-<!--                            <li class="list-item">
-                                <p class="content-l">显示模式：</p>
-                                <span class="option-item"><input name="showmodel" type="radio" value="0" />单页</span>
-                                <span class="option-item"><input name="showmodel" type="radio" value="1" />嵌入</span>
-                                <span class="option-item"><input name="showmodel" type="radio" value="2" />悬浮</span>
-                            </li>-->
+                            <!--<li class="list-item">
+                                    <p class="content-l">显示模式：</p>
+                                    <span class="option-item"><input name="showmodel" type="radio" value="0" />单页</span>
+                                    <span class="option-item"><input name="showmodel" type="radio" value="1" />嵌入</span>
+                                    <span class="option-item"><input name="showmodel" type="radio" value="2" />悬浮</span>
+                                </li>-->
                             <li class="list-item">
                                 <p class="content-l">提交表单后动作：</p>
                                 <span class="option-item"><input name="action_type" type="radio" value="0" />显示文字</span>
@@ -61,12 +62,14 @@
                 </div>
                 <div class="tab-content-item" style="display: none;" id="con_item_1">
                     <ul class="unit-list" id="element-box">
+                        <!--_div_element表单元素-->
                         数据为空
                     </ul>
                 </div>
                 <div class="tab-content-item" style="display: none;" id="con_item_2">
                     <form name="box_column">
                         <div class="home-list" id="element-edit">
+                            <!--_div_edit表单组件-->
                             未选择组件
                         </div>
                     </form>
@@ -84,7 +87,7 @@
                 <hr>
                 <form class="unit-preview" name="box_show">
                     <ul class="element-show">
-                        <!--组件显示区-->
+                        <!--_div_show表单预览-->
                     </ul>
                 </form>
             </div>
