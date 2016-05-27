@@ -269,19 +269,34 @@ class FormController extends BaseController {
         $redata = array();
         $config = array();
         foreach ($data as $v) {
-            if (!isset($redata[$v['name']])) {
-                $redata[$v['name']] = $v['value'];
-            } else {
-                $redata[$v['name']] = $redata[$v['name']] . ',' . $v['value']; //合并checkbox选项值
+            if (preg_match('/^config_option_/', $v['name'])) {
+                $option_key[] = preg_replace('/^config_option_/', '', $v['name']);
             }
-            if (preg_match('/^option_/', $v['name'])) {
-                $option_key[] = preg_replace('/^option_/', '', $v['name']);
+            if (strstr($v['name'], 'config_')) {
+                $ckey = substr($v['name'], 7);
+                if (!isset($config[$ckey])) {
+                    $config[$ckey] = $v['value'];
+                } else {
+                    $config[$ckey] .= ',' . $v['value']; //合并checkbox选项值
+                }
+            } else {
+                $redata[$v['name']] = $v['value'];
             }
         }
-        $aaa = 'edit_' . $type . '("123")';
-        eval('edit_text("123")');
-        var_dump($aaa);
-        exit;
+//        foreach ($redata as $key => $value) {
+//            if (strstr($key, 'config_')) {
+//                $ckey = substr($key, 7);
+//                $config[$ckey] = $value;
+//            }
+//        }
+//        var_dump($config);
+//        var_dump($redata);
+//        var_dump($config);
+//        exit;
+//        $aaa = 'edit_' . $type . '("123")';
+//        eval('edit_text("123")');
+//        var_dump($redata);
+//        exit;
         //===赋值config===
         /*
          * [text]
@@ -316,106 +331,102 @@ class FormController extends BaseController {
          * align 对齐方式？ left-左对齐 center-居中 right-右对齐
          * 
          */
-        if (!isset($redata['type'])) {
-            $redata['type'] = 'text';
-        }
-        if ($redata['type'] == 'text') {
-            $config['text_type'] = $redata['config_text_type'];
-            $config['text_rules'] = isset($redata['config_rules']) ? $redata['config_rules'] : 'no';
-            switch ($redata['config_rules']) {
-                case 'mail':
-                    $regex = '/^[0-9a-zA-Z]+@(([0-9a-zA-Z]+)[.])+[a-z]{2,4}$/i';
-                    $hint = '';
-
-                    break;
-                case 'mobile':
-                    $regex = '/^((13[0-9])|147|(15[0-35-9])|180|182|(18[45-9]))[0-9]{8}$/';
-                    $hint = '';
-                    break;
-                case 'number':
-                    $regex = '/^\d+$/';
-                    $hint = '';
-
-                    break;
-                case 'defined':
-                    $regex = $redata['config_regex'];
-                    $hint = $redata['config_hint'];
-                    break;
-                default:
-                    $regex = '';
-                    $hint = '';
-                    break;
-            }
-            $config['text_rules_regex'] = $regex;
-            $config['text_rules_hint'] = isset($hint) ? $hint : '';
-        }
-        if ($redata['type'] == 'textarea') {
-            $config = array();
-        }
-        //===下拉菜单、单选、多选===
-        //===option_default 选项默认值 0 or 0,1...
-        //===option_count 选项个数
-        //===option_type 选项类型 1-文字 2-图片
-        //===option_$i 选项值 i项
-        if ($redata['type'] == 'select' || $redata['type'] == 'radio' || $redata['type'] == 'checkbox') {
-            $config['option_key'] = implode(',', $option_key);
-            $config['option_default'] = isset($redata['config_option_default']) ? $redata['config_option_default'] : '';
-            $config['option_count'] = intval($redata['config_option_count']);
+//        if ($type == 'text') {
+//            $config['text_type'] = $redata['config_text_type'];
+//            $config['text_rules'] = isset($redata['config_rules']) ? $redata['config_rules'] : 'no';
+//            switch ($redata['config_rules']) {
+//                case 'mail':
+//                    $regex = '/^[0-9a-zA-Z]+@(([0-9a-zA-Z]+)[.])+[a-z]{2,4}$/i';
+//                    $hint = '';
+//
+//                    break;
+//                case 'mobile':
+//                    $regex = '/^((13[0-9])|147|(15[0-35-9])|180|182|(18[45-9]))[0-9]{8}$/';
+//                    $hint = '';
+//                    break;
+//                case 'number':
+//                    $regex = '/^\d+$/';
+//                    $hint = '';
+//
+//                    break;
+//                case 'defined':
+//                    $regex = $redata['config_regex'];
+//                    $hint = $redata['config_hint'];
+//                    break;
+//                default:
+//                    $regex = '';
+//                    $hint = '';
+//                    break;
+//            }
+//            $config['text_rules_regex'] = $regex;
+//            $config['text_rules_hint'] = isset($hint) ? $hint : '';
+//        }
+//        if ($type == 'textarea') {
+//            $config = array();
+//        }
+//        //===下拉菜单、单选、多选===
+//        //===option_default 选项默认值 0 or 0,1...
+//        //===option_count 选项个数
+//        //===option_type 选项类型 1-文字 2-图片
+//        //===option_$i 选项值 i项
+        if ($type == 'select' || $type == 'radio' || $type == 'checkbox') {
+//            $config['option_key'] = implode(',', $option_key);
+//            $config['option_default'] = isset($redata['config_option_default']) ? $redata['config_option_default'] : '';
+//            $config['option_count'] = intval($redata['config_option_count']);
 //			$config['option_type'] = isset($redata['config_option_type']) ? $redata['config_option_type'] : 0;
             $config['option_key'] = implode(',', $option_key);
-            foreach ($option_key as $key => $value) {
-                $config['option_' . $value] = $redata['option_' . $value];
-            }
-//			for ($i = 0; $i < $config['option_count']; $i++) {
-//				$config['option_' . $i] = $redata['option_' . $i];
-////				if ($config['option_type'] == 2) {//===1-文字、2-图片===
-////					$config['option_img_' . $i] = $redata['option_img' . $i];
-////				}
-//			}
+//            foreach ($option_key as $key => $value) {
+//                $config['option_' . $value] = $redata['option_' . $value];
+//            }
+////			for ($i = 0; $i < $config['option_count']; $i++) {
+////				$config['option_' . $i] = $redata['option_' . $i];
+//////				if ($config['option_type'] == 2) {//===1-文字、2-图片===
+//////					$config['option_img_' . $i] = $redata['option_img' . $i];
+//////				}
+////			}
         }
-        //===单选、多选===
-//		if ($redata['type'] == 'radio' || $redata['type'] == 'checkbox') {
-//			$config['option_layout'] = $redata['config_option_layout'] ? $redata['config_option_layout'] : 0;
-//		}
-        //===多选===
-        if ($redata['type'] == 'checkbox') {
-            $config['option_limit'] = 0;
-            if (isset($redata['config_control'])) {
-                $config['option_limit'] = 1;
-                $config['option_num'] = intval($redata['config_control_num']);
-                switch ($redata['config_control_type']) {
-                    case 0://===至少===
-                        $config['option_type'] = 0;
-                        break;
-                    case 1://===最多===
-                        $config['option_type'] = 1;
-                        break;
-                    case 2://===恰好===
-                        $config['option_type'] = 2;
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }
-
-        if ($redata['type'] == 'date') {
-            //
-        }
-
-        //===图片===
-        if ($redata['type'] == 'image') {
-            $config['img_type'] = isset($redata['config_img_type']) ? $redata['config_img_type'] : '';
-            $config['img_file'] = isset($redata['config_img_file']) ? $redata['config_img_file'] : '';
-            $config['img_src'] = isset($redata['config_img_src']) ? $redata['config_img_src'] : '';
-            $config['img_href'] = isset($redata['config_img_href']) ? $redata['config_img_href'] : '';
-            $config['img_align'] = isset($redata['config_img_align']) ? $redata['config_img_align'] : '';
-        }
-        //====文件===
-        if ($redata['type'] == 'file') {
-            $config['file_type'] = isset($redata['config_file_type']) ? $redata['config_file_type'] : '';
-        }
-
+//        //===单选、多选===
+////		if ($type == 'radio' || $type == 'checkbox') {
+////			$config['option_layout'] = $redata['config_option_layout'] ? $redata['config_option_layout'] : 0;
+////		}
+//        //===多选===
+//        if ($type == 'checkbox') {
+//            $config['option_limit'] = 0;
+//            if (isset($redata['config_control'])) {
+//                $config['option_limit'] = 1;
+//                $config['option_num'] = intval($redata['config_control_num']);
+//                switch ($redata['config_control_type']) {
+//                    case 0://===至少===
+//                        $config['option_type'] = 0;
+//                        break;
+//                    case 1://===最多===
+//                        $config['option_type'] = 1;
+//                        break;
+//                    case 2://===恰好===
+//                        $config['option_type'] = 2;
+//                        break;
+//                    default:
+//                        break;
+//                }
+//            }
+//        }
+//
+//        if ($type == 'date') {
+//            //
+//        }
+//
+//        //===图片===
+//        if ($type == 'image') {
+//            $config['img_type'] = isset($redata['config_img_type']) ? $redata['config_img_type'] : '';
+//            $config['img_file'] = isset($redata['config_img_file']) ? $redata['config_img_file'] : '';
+//            $config['img_src'] = isset($redata['config_img_src']) ? $redata['config_img_src'] : '';
+//            $config['img_href'] = isset($redata['config_img_href']) ? $redata['config_img_href'] : '';
+//            $config['img_align'] = isset($redata['config_img_align']) ? $redata['config_img_align'] : '';
+//        }
+//        //====文件===
+//        if ($type == 'file') {
+//            $config['file_type'] = isset($redata['config_file_type']) ? $redata['config_file_type'] : '';
+//        }
         //===?===
         //$config['align'] = $redata['config_align'];
         $time = date('Y-m-d H:i:s');
@@ -424,15 +435,16 @@ class FormController extends BaseController {
             'description' => $redata['description'],
             'required' => isset($redata['required']) ? 1 : 0,
             'config' => serialize($config),
-            'order' => $redata['order'],
             'updated_at' => $time
         );
-        $column_id = DB::table('form_column_' . $form_id % 10)->where('id', $redata['column_id'])->update($column_data);
-        $column_data['column_id'] = $redata['column_id'];
-        $column_data['type'] = $redata['type'];
+//        var_dump($config);
+//        exit;
+        $res = DB::table('form_column_' . $form_id % 10)->where('id', $column_id)->update($column_data);
+        $column_data['column_id'] = $column_id;
+        $column_data['type'] = $type;
         $column_data['config'] = $config;
 
-        if ($column_id != NULL) {
+        if ($res != NULL) {
             $json = Response::json(['err' => 0, 'msg' => '保存组件信息成功', 'data' => $column_data]);
         } else {
             $json = Response::json(['err' => 1, 'msg' => '保存组件信息失败', 'data' => null]);
