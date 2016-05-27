@@ -6,17 +6,18 @@
 			<div class="setting-feild">
 				<div class="setting-name">PC基本设置：</div>
 				<div class="feild-content">
-					<div class="feild-item"><label for="">公司名称：</label><input type="text" name="company_name" /></div>
-					<div class="feild-item"><label for="">PC域名：</label><input type="text" name="domain_pc" readonly="readonly" /></div>
-                                        <div class="feild-item"><label for="">PC默认域名：</label><input type="text" name="def_domain_pc" readonly="readonly" /></div>
-					<div class="feild-item"><label class="vt" for="">网站关键字：</label><textarea name="keywords" id="" cols="30" rows="10"></textarea></div>
+					<div class="feild-item"><label for="company_name">公司名称：</label><input type="text" name="company_name" /></div>
+					<div class="feild-item"><label for="domain_pc">PC域名：</label><a id="domain_pc" href="" target="_black"><input type="text" name="domain_pc" readonly="readonly" /></a></div>
+                                        <div class="feild-item"><label for="def_domain_pc">PC默认域名：</label><a id="def_domain_pc" href="" target="_black"><input type="text" name="def_domain_pc" readonly="readonly" /></a></div>
+                                        <div class="feild-item"><label for="lang">版权语言类型：</label><select name="lang" id="lang" style="margin-left: 10px;"><option value="cn">中文</option><option value="en">英文</option></select></div>
+					<div class="feild-item"><label class="vt" for="keywords">网站关键字：</label><textarea name="keywords"  cols="30" rows="10"></textarea></div>
 					<div class="feild-item">
-						<label for="">网站favicon：</label>
+						<label for="favicon">网站favicon：</label>
 						<div class="set_pic1 set_pic inline-block" data-role="favicon"></div>
 						<button class="up_load"><span class="set_up_name" data-role="favicon">上传</span></button>
 					</div>
 					<div class="feild-item">
-						<label for="">网站Logo：</label>
+						<label for="logo">网站Logo：</label>
 						<span class="red pr">PC_logo:<span class="pclogo_size logo_size"></span></span>
 						<div class="set_pic2 set_pic inline-block" data-role="logo_large"></div>
 						<span class="red pr">手机logo:<span class="moblogo_size logo_size"></span></span>
@@ -24,7 +25,7 @@
 						<button class="up_load"><span class="set_up_name" data-role="logo_large">PC_logo</span></button>
 						<button class="up_load"><span class="set_up_name" data-role="logo_small">手机logo</span></button>
 					</div>
-					<div class="feild-item"><label for="">网站标题：</label><input type="text" name="title" /></div>
+					<div class="feild-item"><label for="title">网站标题：</label><input type="text" name="title" /></div>
                                         <div class="switchfunc" style="margin-left: 15px;margin-bottom: 10px;"><label for="enlarge">产品图放大：</label><input type="hidden" id="enlargev" name="enlargev" value="0"><input type="checkbox" id="enlarge" name="enlarge" class="none enl"><label for="enlarge" class="enlarge"></label> </div>
 					<div class="switchfunc">
 						<span class="valign">pc列表页每页展示个数：</span><input type="text" class="switch_num" name="pc_num_per_page" />
@@ -50,7 +51,7 @@
     						</li>
     					</ul>
 					</div>
-					<div class="feild-item"><label for="">pc分页链接显示个数：</label><input type="text" name="pc_num_pagenav" /></div>
+					<div class="feild-item"><label for="pc_num_pagenav">pc分页链接显示个数：</label><input type="text" name="pc_num_pagenav" /></div>
 					<div class="switchfunc">
 						<span class="valign">手机每页个数：</span><input type="text" class="switch_num" name="m_num_per_page" />
 						<button class="add">+</button><button class="minus">-</button>
@@ -84,8 +85,8 @@
 			<div class="setting-feild">
 				<div class="setting-name">手机基本设置：</div>
 				<div class="feild-content">
-					<div class="feild-item"><label for="domain_m">手机域名：</label><input type="text" name="domain_m" readonly="readonly" /></div>
-                                        <div class="feild-item"><label for="def_domain_m">手机默认域名：</label><input type="text" name="def_domain_m" readonly="readonly" /></div>
+					<div class="feild-item"><label for="domain_m">手机域名：</label><input type="text" id="domain_m" name="domain_m" readonly="readonly" /></div>
+                                        <div class="feild-item"><label for="def_domain_m">手机默认域名：</label><input type="text" id="def_domain_m" name="def_domain_m" readonly="readonly" /></div>
 					<div class="feild-item"><label class="vt" for="description">网站描述：</label><textarea name="description"  cols="30" rows="10"></textarea></div>
 					<div class="feild-item"><label for="mobile_header_script" style="vertical-align:top;">手机头部脚本：</label><textarea placeholder="只在首页面有效" name="mobile_header_script"cols="30" rows="10"></textarea></div>
 					<div class="feild-item"><label class="vt" for="mobile_footer">手机底部版权：</label><textarea name="mobile_footer" cols="30" rows="10"></textarea></div>
