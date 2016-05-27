@@ -261,9 +261,11 @@ class FormController extends BaseController {
      */
     public function editFormColumn() {
         //===获取参数===
-        $input = Input::all();
         $form_id = Input::get('form_id');
-        $data = $input['data'];
+        $data = Input::get('data');
+        $column_id = Input::get('column_id');
+        $type = Input::get('type');
+
         $redata = array();
         $config = array();
         foreach ($data as $v) {
@@ -276,7 +278,10 @@ class FormController extends BaseController {
                 $option_key[] = preg_replace('/^option_/', '', $v['name']);
             }
         }
-
+        $aaa = 'edit_' . $type . '("123")';
+        eval('edit_text("123")');
+        var_dump($aaa);
+        exit;
         //===赋值config===
         /*
          * [text]
@@ -311,7 +316,9 @@ class FormController extends BaseController {
          * align 对齐方式？ left-左对齐 center-居中 right-右对齐
          * 
          */
-
+        if (!isset($redata['type'])) {
+            $redata['type'] = 'text';
+        }
         if ($redata['type'] == 'text') {
             $config['text_type'] = $redata['config_text_type'];
             $config['text_rules'] = isset($redata['config_rules']) ? $redata['config_rules'] : 'no';
@@ -431,6 +438,81 @@ class FormController extends BaseController {
             $json = Response::json(['err' => 1, 'msg' => '保存组件信息失败', 'data' => null]);
         }
         return $json;
+    }
+
+    /**
+     * text_type 文本类型 text-文本 password-密码
+     * text_rules_regex 正则规则 
+     * text_rules_hint 正则提示
+     */
+    public function edit_text($data) {
+        echo $data;
+    }
+
+    /**
+     * 
+     */
+    function edit_textarea() {
+        
+    }
+
+    /**
+     * option_layout 选项排版分布 1-单列 2-两列 3-三列 4-四列
+     * option_type 选项类型 1-文字 2-图片
+     * option_img_$i 选项图片 
+     */
+    function edit_radio() {
+        
+    }
+
+    /**
+     * option_limit 选项是否限制
+     * option_type 选项限制 >=至少 <=最多 =恰好
+     * option_num 选项限制数
+     */
+    function edit_checkbox() {
+        
+    }
+
+    /**
+     * option_default 选项默认值 0 or 0,1...
+     * option_$i 选项值 i项
+     * option_count 选项个数	
+     */
+    function edit_select() {
+        
+    }
+
+    /**
+     * 
+     */
+    function edit_date() {
+        
+    }
+
+    /**
+     * img_type 图片类型 1-本地图片 2-外链图片
+     * img_src 图片http地址
+     * img_file 图片路径
+     * img_href 图片点击跳转链接 http地址
+     * img_align 图片显示方式 1-拉伸 2-居中
+     */
+    function edit_image() {
+        
+    }
+
+    /**
+     * 
+     */
+    function edit_file() {
+        
+    }
+
+    /**
+     * 
+     */
+    function edit_address() {
+        
     }
 
     /**
