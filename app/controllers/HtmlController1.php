@@ -480,7 +480,7 @@ class HtmlController1 extends BaseController{
      * 
      */
     public function pushPrecent(){
-        if($_GET['test']){
+        if(isset($_GET['test'])){
             set_time_limit(0);
             $pc_classify_ids=array();
             $mobile_classify_ids=array();
@@ -535,21 +535,21 @@ class HtmlController1 extends BaseController{
         $this->html_precent= 70/$count;
         if($pc!=''){
             $categoryhtml = $this->categoryhtml($pc_classify_ids,'pc');
-            if($_GET['sleep']){
+            if(isset($_GET['sleep'])){
                 sleep(3);
             }
             $articlehtml = $this->articlehtml($pc_classify_ids,'pc');
-            if($_GET['sleep']){
+            if(isset($_GET['sleep'])){
                 sleep(3);
             }
         }
         if($mobile!=''){
             $mcategoryhtml = $this->categoryhtml($mobile_classify_ids,'mobile');
-            if($_GET['sleep']){
+            if(isset($_GET['sleep'])){
                 sleep(3);
             }
             $marticlehtml = $this->articlehtml($mobile_classify_ids,'mobile');
-            if($_GET['sleep']){
+            if(isset($_GET['sleep'])){
                 sleep(3);
             }
         }
