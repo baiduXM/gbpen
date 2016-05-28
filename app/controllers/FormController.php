@@ -634,10 +634,10 @@ class FormController extends BaseController {
     public function showFormHtmlForPrint($data = null) {
         if (empty($data)) {
             $_div = "<div class='fv-add-show'>
-						<div class='fv-as-description'>
-							表单已停用
-						</div>
-						<hr></div>";
+                    <div class='fv-as-description'>
+                            表单已停用
+                    </div>
+                    <hr></div>";
         } else {
             $form_data = $data['form'];
             $tempform['action_type'] = $form_data->action_type;
@@ -646,13 +646,13 @@ class FormController extends BaseController {
             $form_id = $form_data->id;
             $column_data = $data['column'];
             $_div = "<div class='fv-add-show'>
-						<div class='fv-as-title'>
-							$form_data->title
-						</div>
-						<div class='fv-as-description'>
-							$form_data->description
-						</div>
-						<hr>";
+                    <div class='fv-as-title'>
+                            $form_data->title
+                    </div>
+                    <div class='fv-as-description'>
+                            $form_data->description
+                    </div>
+                    <hr>";
 //		$_div.="<form class='fv-unit-preview' name='box_show'  method='post'><ul class='fv-element-show'>";
             $_div.="<form class='fv-unit-preview' name='box_show' action='http://swap.5067.org/userdata/" . $form_id . "'  onsubmit='return CheckPost();' method='post'><ul class='fv-element-show'>";
             foreach ($column_data as $item) {
@@ -726,7 +726,7 @@ class FormController extends BaseController {
                         break;
                     case 'date':
                         $_div .="<p class='content-l'>$item->title</p>";
-                        $_div .= '日期date';
+                        $_div .= '<input onclick="laydate({istime: true, format: \'YYYY-MM-DD hh:mm:ss\'})">';
                         break;
                     case 'image':
                         $_div .="<p class='content-l'>$item->title</p>";
@@ -754,8 +754,9 @@ class FormController extends BaseController {
 //		var_dump($data);
 //		exit;
         $jscolumn = json_encode($data['column']);
-        $css = '<style TYPE="text/css">
-                    .list-item span.option-item{
+        $postFun = new CommonController;
+        $css = '<style TYPE="text/css">';
+        $css .= '   .list-item span.option-item{
                         margin-right: 30px;
                         font-size: 12px;
                         min-height: 20px;
@@ -780,10 +781,12 @@ class FormController extends BaseController {
 
                     /*提交、重置按钮*/
                     .fv-unit-preview input[type="submit"]{ width: 70px; height: 30px; line-height: 15px; margin-right:1%; text-align: center; vertical-align: middle;}
-                    .fv-unit-preview .button{ width: 70px; height: 30px; line-height: 15px; margin: 0 1%;text-align: center; vertical-align: middle;}
-                </style>';
-        $js = "<SCRIPT language=javascript>
-                    function CheckPost(){
+                    .fv-unit-preview .button{ width: 70px; height: 30px; line-height: 15px; margin: 0 1%;text-align: center; vertical-align: middle;}';
+        $css .= $postFun->postsend("http://swap.5067.org/js/laydate/need/laydate.css");
+        $css .= '</style>';
+        $js = "<script>";
+        $js .= $postFun->postsend("http://swap.5067.org/js/laydate/laydate.js");
+        $js .= "function CheckPost(){
                         var jscolumn=$jscolumn;
                         var column=eval(jscolumn);
                         var tt='';
@@ -823,8 +826,9 @@ class FormController extends BaseController {
                             alert('标注*号的为必填项');
                             return false;
                         }
-                    }
-            </SCRIPT>";
+                    }";
+        $js .= "</script>";
+
         return $css . $js;
     }
 

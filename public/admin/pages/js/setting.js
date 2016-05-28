@@ -55,6 +55,17 @@
                 $('.setting-content input[name=pc_txt_per_page]').val(set.pc_txt_per_page);
                 $('.setting-content input[name=pc_img_per_page]').val(set.pc_img_per_page);
                 $('.setting-content input[name=pc_page_count_switch]').val(set.pc_page_count_switch);
+                $('#domain_pc').attr('href','http://'+set.domain_pc);
+                $('#def_domain_pc').attr('href','http://'+set.def_domain_pc);
+                $('#lang option[value='+set.lang+']').attr('selected',true);
+                $('#def_domain_m').MoveBox({
+                    Trigger : 'mouseenter',
+                    context : '<img src="http://s.jiathis.com/qrcode.php?url='+set.def_domain_m+'" />'
+                });
+                $('#domain_m').MoveBox({
+                    Trigger : 'mouseenter',
+                    context : '<img src="http://s.jiathis.com/qrcode.php?url='+set.domain_m+'" />'
+                });
                 if($.isArray(set.floatadv)){
                     $.each(set.floatadv,function(k,v){
                         var html='<li class="floatadv">\n\

@@ -59,6 +59,7 @@ class CustomerController extends BaseController{
 		$data['qq'] = $customer_info->qq;
 		$data['address'] = $customer_info->address;
                 $data['enlarge'] = $customer_info->enlarge;
+                $data['lang'] = $customer_info->lang;
                 $data['floatadv'] =  json_decode($customer_info->floatadv);
                foreach((array)$data['floatadv'] as $key=>$val){
                     $data['floatadv'][$key]->url=asset('customers/'.$customer.'/images/l/common/'.$val->adv);
@@ -132,6 +133,7 @@ class CustomerController extends BaseController{
                 $data['pc_page_img_count'] = (Input::get('pc_img_per_page')>0)?Input::get('pc_img_per_page'):3;
                 $data['pc_page_count_switch'] = Input::get('pc_page_count_switch');
                 $data['enlarge'] = Input::get('enlargev');
+                $data['lang'] = Input::get('lang');
                 $data['pushed'] = 1;
                 
                 $float_adv=Input::get('float_adv')?Input::get('float_adv'):array();

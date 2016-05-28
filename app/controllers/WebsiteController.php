@@ -354,16 +354,16 @@ class WebsiteController extends BaseController{
             $file_type = explode('.', $tpl_v);
             if(array_key_exists($file_type[0], $astrict)){
                 $tpl_file_0[$astrict[$file_type[0]]] = $tpl_v;
-                if(array_search($file_type[0].'json',$json)!==false){
-                    $tpl_file_0[$astrict[$file_type[0]]+1] = $file_type[0].'json';
-                    $json_del = array_search($file_type[0].'json',$json);
+                if(array_search($file_type[0].'.json',$json)!==false){
+                    $tpl_file_0[$astrict[$file_type[0]]+1] = $file_type[0].'.json';
+                    $json_del = array_search($file_type[0].'.json',$json);
                     unset($json[$json_del]);
                 }
             }else{
                 $tpl_file_1[] = $tpl_v;
-                if(array_search($file_type[0].'json',$json)!==false){
-                    $tpl_file_1[] = $file_type[0].'json';
-                    $json_del = array_search($file_type[0].'json',$json);
+                if(array_search($file_type[0].'.json',$json)!==false){
+                    $tpl_file_1[] = $file_type[0].'.json';
+                    $json_del = array_search($file_type[0].'.json',$json);
                     unset($json[$json_del]);
                 }
             }
@@ -376,7 +376,7 @@ class WebsiteController extends BaseController{
                 $num = $key;
             $title_num = 'tpl_'.$num;
             $filename['files'][$key] = $val;
-            $$title_num = array_merge($$title_num,$filename);
+            $$title_num = $this->superArrayMerge($$title_num,$filename);
             unset($filename);
         }
         $tpl_9['title'] = '模块文件';
@@ -525,6 +525,15 @@ class WebsiteController extends BaseController{
         }
     }
     
+    //高级定制中数组合并处理
+    public function superArrayMerge($a,$b){
+        if(isset($a['files']))
+            $a['files'] = array_merge($a['files'],$b['files']);
+        else
+            $a['files'] = $b['files'];
+        return $a;
+    }
+
     //获取文件列表
     public function getFile($dir) {
         $fileArray[]=NULL;

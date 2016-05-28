@@ -67,6 +67,7 @@ class CommonController extends BaseController {
 
 	public function quickBarJsonModify() {
 		$Mobile = new PrintController('preview', 'mobile');
+                $cus_id=Auth::id();
                 $org_img='';
                 $vx_bar_img='';
                 $data=Input::get('QuickBar');
