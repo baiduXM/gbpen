@@ -283,152 +283,12 @@ class FormController extends BaseController {
                 $redata[$v['name']] = $v['value'];
             }
         }
-//        foreach ($redata as $key => $value) {
-//            if (strstr($key, 'config_')) {
-//                $ckey = substr($key, 7);
-//                $config[$ckey] = $value;
-//            }
-//        }
-//        var_dump($config);
-//        var_dump($redata);
-//        var_dump($config);
-//        exit;
-//        $aaa = 'edit_' . $type . '("123")';
-//        eval('edit_text("123")');
-//        var_dump($redata);
-//        exit;
-        //===赋值config===
-        /*
-         * [text]
-         * text_type 文本类型 text-文本 password-密码
-         * text_rules_regex 正则规则 
-         * text_rules_hint 正则提示
-         * [textarea]
-         * -
-         * [select]
-         * option_default 选项默认值 0 or 0,1...
-         * option_$i 选项值 i项
-         * option_count 选项个数		 * 
-         * [+radio]
-         * option_layout 选项排版分布 1-单列 2-两列 3-三列 4-四列
-         * option_type 选项类型 1-文字 2-图片
-         * option_img_$i 选项图片
-         * [+checkbox]
-         * option_limit 选项是否限制
-         * option_type 选项限制 >=至少 <=最多 =恰好
-         * option_num 选项限制数
-         * [date]
-         * -
-         * [image]
-         * img_type 图片类型 1-本地图片 2-外链图片
-         * img_src 图片http地址
-         * img_file 图片路径
-         * img_href 图片点击跳转链接 http地址
-         * img_align 图片显示方式 1-拉伸 2-居中
-         * [file]
-         * file_type 文件类型 1,2...  1-文档 2-图片 3-视频 4-音频 5-其他(rar...)
-         * [?]
-         * align 对齐方式？ left-左对齐 center-居中 right-右对齐
-         * 
-         */
-//        if ($type == 'text') {
-//            $config['text_type'] = $redata['config_text_type'];
-//            $config['text_rules'] = isset($redata['config_rules']) ? $redata['config_rules'] : 'no';
-//            switch ($redata['config_rules']) {
-//                case 'mail':
-//                    $regex = '/^[0-9a-zA-Z]+@(([0-9a-zA-Z]+)[.])+[a-z]{2,4}$/i';
-//                    $hint = '';
-//
-//                    break;
-//                case 'mobile':
-//                    $regex = '/^((13[0-9])|147|(15[0-35-9])|180|182|(18[45-9]))[0-9]{8}$/';
-//                    $hint = '';
-//                    break;
-//                case 'number':
-//                    $regex = '/^\d+$/';
-//                    $hint = '';
-//
-//                    break;
-//                case 'defined':
-//                    $regex = $redata['config_regex'];
-//                    $hint = $redata['config_hint'];
-//                    break;
-//                default:
-//                    $regex = '';
-//                    $hint = '';
-//                    break;
-//            }
-//            $config['text_rules_regex'] = $regex;
-//            $config['text_rules_hint'] = isset($hint) ? $hint : '';
-//        }
-//        if ($type == 'textarea') {
-//            $config = array();
-//        }
-//        //===下拉菜单、单选、多选===
-//        //===option_default 选项默认值 0 or 0,1...
-//        //===option_count 选项个数
-//        //===option_type 选项类型 1-文字 2-图片
-//        //===option_$i 选项值 i项
+
+//        $fun_name = 'edit_' . $type;
+//        $config = $this->$fun_name('data'); //动态调用方法
         if ($type == 'select' || $type == 'radio' || $type == 'checkbox') {
-//            $config['option_key'] = implode(',', $option_key);
-//            $config['option_default'] = isset($redata['config_option_default']) ? $redata['config_option_default'] : '';
-//            $config['option_count'] = intval($redata['config_option_count']);
-//			$config['option_type'] = isset($redata['config_option_type']) ? $redata['config_option_type'] : 0;
             $config['option_key'] = implode(',', $option_key);
-//            foreach ($option_key as $key => $value) {
-//                $config['option_' . $value] = $redata['option_' . $value];
-//            }
-////			for ($i = 0; $i < $config['option_count']; $i++) {
-////				$config['option_' . $i] = $redata['option_' . $i];
-//////				if ($config['option_type'] == 2) {//===1-文字、2-图片===
-//////					$config['option_img_' . $i] = $redata['option_img' . $i];
-//////				}
-////			}
         }
-//        //===单选、多选===
-////		if ($type == 'radio' || $type == 'checkbox') {
-////			$config['option_layout'] = $redata['config_option_layout'] ? $redata['config_option_layout'] : 0;
-////		}
-//        //===多选===
-//        if ($type == 'checkbox') {
-//            $config['option_limit'] = 0;
-//            if (isset($redata['config_control'])) {
-//                $config['option_limit'] = 1;
-//                $config['option_num'] = intval($redata['config_control_num']);
-//                switch ($redata['config_control_type']) {
-//                    case 0://===至少===
-//                        $config['option_type'] = 0;
-//                        break;
-//                    case 1://===最多===
-//                        $config['option_type'] = 1;
-//                        break;
-//                    case 2://===恰好===
-//                        $config['option_type'] = 2;
-//                        break;
-//                    default:
-//                        break;
-//                }
-//            }
-//        }
-//
-//        if ($type == 'date') {
-//            //
-//        }
-//
-//        //===图片===
-//        if ($type == 'image') {
-//            $config['img_type'] = isset($redata['config_img_type']) ? $redata['config_img_type'] : '';
-//            $config['img_file'] = isset($redata['config_img_file']) ? $redata['config_img_file'] : '';
-//            $config['img_src'] = isset($redata['config_img_src']) ? $redata['config_img_src'] : '';
-//            $config['img_href'] = isset($redata['config_img_href']) ? $redata['config_img_href'] : '';
-//            $config['img_align'] = isset($redata['config_img_align']) ? $redata['config_img_align'] : '';
-//        }
-//        //====文件===
-//        if ($type == 'file') {
-//            $config['file_type'] = isset($redata['config_file_type']) ? $redata['config_file_type'] : '';
-//        }
-        //===?===
-        //$config['align'] = $redata['config_align'];
         $time = date('Y-m-d H:i:s');
         $column_data = array(
             'title' => $redata['title'],
@@ -437,8 +297,6 @@ class FormController extends BaseController {
             'config' => serialize($config),
             'updated_at' => $time
         );
-//        var_dump($config);
-//        exit;
         $res = DB::table('form_column_' . $form_id % 10)->where('id', $column_id)->update($column_data);
         $column_data['column_id'] = $column_id;
         $column_data['type'] = $type;
@@ -458,14 +316,16 @@ class FormController extends BaseController {
      * text_rules_hint 正则提示
      */
     public function edit_text($data) {
-        echo $data;
+        $config = array();
+        return $config;
     }
 
     /**
      * 
      */
-    function edit_textarea() {
-        
+    function edit_textarea($data) {
+        $config = array();
+        return $config;
     }
 
     /**
@@ -473,8 +333,9 @@ class FormController extends BaseController {
      * option_type 选项类型 1-文字 2-图片
      * option_img_$i 选项图片 
      */
-    function edit_radio() {
-        
+    function edit_radio($data) {
+        $config = array();
+        return $config;
     }
 
     /**
@@ -482,8 +343,9 @@ class FormController extends BaseController {
      * option_type 选项限制 >=至少 <=最多 =恰好
      * option_num 选项限制数
      */
-    function edit_checkbox() {
-        
+    function edit_checkbox($data) {
+        $config = array();
+        return $config;
     }
 
     /**
@@ -491,15 +353,17 @@ class FormController extends BaseController {
      * option_$i 选项值 i项
      * option_count 选项个数	
      */
-    function edit_select() {
-        
+    function edit_select($data) {
+        $config = array();
+        return $config;
     }
 
     /**
      * 
      */
-    function edit_date() {
-        
+    function edit_date($data) {
+        $config = array();
+        return $config;
     }
 
     /**
@@ -509,22 +373,25 @@ class FormController extends BaseController {
      * img_href 图片点击跳转链接 http地址
      * img_align 图片显示方式 1-拉伸 2-居中
      */
-    function edit_image() {
-        
+    function edit_image($data) {
+        $config = array();
+        return $config;
     }
 
     /**
      * 
      */
-    function edit_file() {
-        
+    function edit_file($data) {
+        $config = array();
+        return $config;
     }
 
     /**
      * 
      */
-    function edit_address() {
-        
+    function edit_address($data) {
+        $config = array();
+        return $config;
     }
 
     /**
@@ -845,8 +712,6 @@ class FormController extends BaseController {
      * 赋值表单前端css/js
      */
     public function assignFormCSSandJSForPrint($data) {
-//		var_dump($data);
-//		exit;
         $jscolumn = json_encode($data['column']);
         $postFun = new CommonController;
         $css = '<style TYPE="text/css">';

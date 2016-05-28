@@ -206,13 +206,9 @@ function addformController($scope, $http, $location) {
      * @returns {undefined}
      */
     function _html_show(data) {
-        console.log(data);
         var _data = data;
-//        var _config = _data.config;
-//        var _temp = _config.option_default;
         var _div_li = '<li class="list-item" data-type="' + _data.type + '" data-id="' + _data.column_id + '" data-order="' + _data.order + '">';
         var _div = eval('_show_' + _data.type + '(_data)');//eval调用方法
-        
         _div_li += _div + '</li>';
         if ($('li[data-id="' + data.column_id + '"').length > 0) {
             $('li[data-id="' + data.column_id + '"').html(_div);
@@ -384,7 +380,6 @@ function addformController($scope, $http, $location) {
 
 
     function _html_edit(data) {
-        console.log(data);
         var _data = data;
         var _div = '';
         _div += '<li class="list-item"><p class="content-l">标题：</p><input name="title" type="text" value="' + _data.title + '" /></li>';
@@ -422,8 +417,6 @@ function addformController($scope, $http, $location) {
         $('.save_column').unbind('click').click(function () {
             var form_data = $('form[name="box_column"]').serializeArray();
             $.post('../form-column-edit', {form_id: form_id, data: form_data, column_id: _data.column_id, type: _data.type}, function (json) {
-                console.log(json);
-                console.log('form-column-edit');
                 checkJSON(json, function (json) {
                     _html_show(json.data);
                     Hint_box(json.msg);
