@@ -151,8 +151,16 @@ class HtmlController1 extends BaseController{
         $template = new PrintController('online',$type);
         $result =array();
         foreach((array)$ids as $id){
-            var_dump($id);
-            $articles = Articles::where($type . '_show', '1')->where('c_id', $id)->where('use_url', '0')->orderBy('is_top', 'desc')->orderBy('sort', 'asc')->orderBy('created_at', 'desc')->get()->toArray();
+            if($_GET['test'])
+                var_dump($id);
+            $articles = Articles::where($type . '_show', '1')->where('c_id', $id)->where('use_url', '0')->lists('id');
+            if($_GET['test']){
+                echo 'articles:';
+                var_dump($articles);
+
+                    ob_flush();
+                    flush();
+            }
             $paths=array();
             if(count($articles)){
                 $paths=@$template->articlepush($id,$this->last_html_precent,$this->html_precent);
@@ -472,7 +480,19 @@ class HtmlController1 extends BaseController{
      * 
      */
     public function pushPrecent(){
-        
+        if($_GET['test']){
+            set_time_limit(0);
+            $pc_classify_ids=array();
+            $mobile_classify_ids=array();
+            $pc_article_ids=array();
+            $mobile_article_ids=array();
+            $mobile_classify_ids = Classify::where('cus_id',$this->cus_id)->where('mobile_show',1)->lists('id');
+            $mobile_article_ids = Articles::where('cus_id',$this->cus_id)->where('mobile_show',1)->lists('id');
+            $count = $this->htmlPagecount($pc_classify_ids,$mobile_classify_ids,$pc_article_ids,$mobile_article_ids);
+            $this->html_precent= 70/$count;
+            $marticlehtml = $this->articlehtml($mobile_classify_ids,'mobile');
+            exit();
+        }
         $pc_domain=CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_domain');
         $mobile_domain=CustomerInfo::where('cus_id',$this->cus_id)->pluck('mobile_domain');
         $pc=str_replace('http://', '', $pc_domain);
