@@ -152,11 +152,12 @@ class HtmlController1 extends BaseController{
         $result =array();
         foreach((array)$ids as $id){
             $articles = Articles::where($type . '_show', '1')->where('c_id', $id)->where('use_url', '0')->orderBy('is_top', 'desc')->orderBy('sort', 'asc')->orderBy('created_at', 'desc')->get()->toArray();
+            $paths=array();
             if(count($articles)){
                 $paths=$template->articlepush($id,$this->last_html_precent,$this->html_precent);
+                $this->last_html_precent +=($this->html_precent*count($paths));
+                $result=array_merge((array)$result,(array)$paths);
             }
-            $this->last_html_precent +=($this->html_precent*count($paths));
-            $result=array_merge((array)$result,(array)$paths);
         }
         return $result;
     }
