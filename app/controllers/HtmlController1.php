@@ -491,6 +491,7 @@ class HtmlController1 extends BaseController{
             $count = $this->htmlPagecount($pc_classify_ids,$mobile_classify_ids,$pc_article_ids,$mobile_article_ids);
             $this->html_precent= 70/$count;
             $marticlehtml = $this->articlehtml($mobile_classify_ids,'mobile');
+            echo '100%';
             exit();
         }
         $pc_domain=CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_domain');
@@ -534,11 +535,23 @@ class HtmlController1 extends BaseController{
         $this->html_precent= 70/$count;
         if($pc!=''){
             $categoryhtml = $this->categoryhtml($pc_classify_ids,'pc');
+            if($_GET['sleep']){
+                sleep(3);
+            }
             $articlehtml = $this->articlehtml($pc_classify_ids,'pc');
+            if($_GET['sleep']){
+                sleep(3);
+            }
         }
         if($mobile!=''){
             $mcategoryhtml = $this->categoryhtml($mobile_classify_ids,'mobile');
+            if($_GET['sleep']){
+                sleep(3);
+            }
             $marticlehtml = $this->articlehtml($mobile_classify_ids,'mobile');
+            if($_GET['sleep']){
+                sleep(3);
+            }
         }
         $this->percent = 20/$count;
         $path = public_path('customers/'.$this->customer.'/'.$this->customer.'.zip');
