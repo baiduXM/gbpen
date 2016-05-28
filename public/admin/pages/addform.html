@@ -1,5 +1,6 @@
 <link rel="stylesheet" href="css/themes.css">
 <link rel="stylesheet" href="css/laydate.css">
+<!--<link rel="stylesheet" href="css/bootstrap.min.css">-->
 <link rel="stylesheet" href="css/universal-form.css">
 <script src="js/colorpicker.min.js"></script>
 <!--添加自定义js/css-->
@@ -8,46 +9,44 @@
         <!--左边选项卡-->
         <div class="fl clearfix af-left" >
             <div class="tab-head">
-                <div class="tab-head-item tab-head-item-active" name="item_0">
+                <div class="tab-head-item tab-head-item-active" id="item_0">
                     表单设置
                 </div>
-                <div class="tab-head-item " name="item_1">
+                <div class="tab-head-item " id="item_1">
                     添加组件
                 </div>
-                <div class="tab-head-item" name="item_2">
+                <div class="tab-head-item" id="item_2">
                     编辑组件
                 </div>
             </div>
             <div class="tab-content">
-                <div class="tab-content-item" style="display: block;" name="item_0">
+                <div class="tab-content-item" style="display: block;" id="con_item_0">
+                    <!--_div_info表单信息-->
                     <form name="box_info">
-
                         <ul class="form-list">
                             <li class="list-item">
-                                <label for="name"><p class="content-l">表单名</p></label>
+                                <label for="name"><p class="content-l">表单名<i class="red-asterisk">*</i></p></label>
                                 <input id="name" name="name" type="text" />
                             </li>
                             <li class="list-item">
-                                <label for="title"><p class="content-l">标题</p></label>
+                                <label for="title"><p class="content-l">标题<i class="red-asterisk">*</i></p></label>
                                 <input id="title" name="title" type="text" />
                             </li>
                             <li class="list-item">
                                 <label for="description"><p class="content-l">描述</p></label>
                                 <input id="description" name="description" type="text"/>
                             </li>
-                            <li class="list-item">
-                                <p class="content-l">显示模式：</p>
-                                <span class="option-item"><input name="showmodel" type="radio" value="0" />单页</span>
-                                <!--								<span class="option-item"><input name="showmodel" type="radio" value="1" />嵌入</span>
-                                                                                                <span class="option-item"><input name="showmodel" type="radio" value="2" />悬浮</span>-->
-                            </li>
+                            <!--<li class="list-item">
+                                    <p class="content-l">显示模式：</p>
+                                    <span class="option-item"><input name="showmodel" type="radio" value="0" />单页</span>
+                                    <span class="option-item"><input name="showmodel" type="radio" value="1" />嵌入</span>
+                                    <span class="option-item"><input name="showmodel" type="radio" value="2" />悬浮</span>
+                                </li>-->
                             <li class="list-item">
                                 <p class="content-l">提交表单后动作：</p>
                                 <span class="option-item"><input name="action_type" type="radio" value="0" />显示文字</span>
                                 <span class="option-item"><input name="action_type" type="radio" value="1" />跳转链接</span>
                                 <input name="action_text" type="text" value="" />
-                                <!--								<span class="option-item"><input name="action_type[]" type="checkbox" value="0" />显示文字<input name="action_text" type="text" value="" /></span>
-                                                                                                <span class="option-item"><input name="action_type[]" type="checkbox" value="1" />跳转链接<input name="action_url" type="text" value="" /></span>-->
                             </li>
                             <li class="list-item">
                                 <p class="content-l">停用启用：</p>
@@ -55,19 +54,23 @@
                                 <span class="option-item"><input name="status" type="radio" value="0"/>停用</span>
                             </li>
                             <li class="list-item">
-                                <span class="option-item"><input type="submit" name="save_form" value="保存"/></span>
+                                <span class="option-item"><input type="submit" id="save_form" value="保存"/></span>
                             </li>
 
                         </ul>
                     </form> 
                 </div>
-                <div class="tab-content-item" style="display: none;" name="item_1">
-                    <ul class="unit-list" name="element-box">
+                <div class="tab-content-item" style="display: none;" id="con_item_1">
+                    <ul class="unit-list" id="element-box">
+                        <!--_div_element表单元素-->
+                        数据为空
                     </ul>
                 </div>
-                <div class="tab-content-item" style="display: none;" name="item_2">
+                <div class="tab-content-item" style="display: none;" id="con_item_2">
                     <form name="box_column">
-                        <div class="home-list" name="element-edit">
+                        <div class="home-list" id="element-edit">
+                            <!--_div_edit表单组件-->
+                            未选择组件
                         </div>
                     </form>
                 </div>
@@ -84,13 +87,13 @@
                 <hr>
                 <form class="unit-preview" name="box_show">
                     <ul class="element-show">
+                        <!--_div_show表单预览-->
                     </ul>
                 </form>
             </div>
             <div class="add-info">
                 <a class="f-btn inline-block addcancle all_button" href="#/form">返回</a>
-                <a class="f-btn inline-block addsave all_button" name="writeform" href="javascript:">预览</a>
-                <!--<a class="f-btn inline-block addsave all_button" href=";" >保存</a>-->
+                <a class="f-btn inline-block addsave all_button" id="writeform" href="javascript:">预览</a>
             </div>
         </div>
     </div>
