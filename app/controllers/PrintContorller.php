@@ -2471,6 +2471,7 @@ class PrintController extends BaseController {
      * @param int $id 文章id
      */
     public function articlepush($c_id, $last_html_precent, $html_precent) {
+        set_time_limit(0);
         $paths = [];
         $result = $this->pagePublic($c_id);
         if (is_array($result['navs']) && !empty($result['navs'])) {
