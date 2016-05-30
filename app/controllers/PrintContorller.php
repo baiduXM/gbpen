@@ -2509,27 +2509,10 @@ class PrintController extends BaseController {
         }
         $articles = Articles::where($this->type . '_show', '1')->where('c_id', $c_id)->where('use_url', '0')->orderBy('is_top', 'desc')->orderBy('sort', 'asc')->orderBy('created_at', 'desc')->get()->toArray();
         foreach ((array) $articles as $key => $article) {
-            if(isset($_GET['memory'])){
-                var_dump(memory_get_usage());
-                ob_flush();
-                    flush();
-            }
-            if(isset($the_result))
-            {
-                unset($the_result);
-            }
             $the_result=array();
             $the_result = $result;
-            if(isset($a_moreimg))
-            {
-                unset($a_moreimg);
-            }
             $a_moreimg = Moreimg::where('a_id', $article['id'])->get()->toArray();
             array_unshift($a_moreimg, array('title' => $article['title'], 'img' => $article['img']));
-            if(isset($images))
-            {
-                unset($images);
-            }
             $images = array();
             if (count($a_moreimg)) {
                 $i = 0;
@@ -2569,10 +2552,6 @@ class PrintController extends BaseController {
             $the_result['article']['pubdate'] = $article['created_at'];
             $the_result['article']['pubtimestamp'] = strtotime($article['created_at']);
             //关联文章查询
-            if(isset($pa))
-            {
-                unset($pa);
-            }
             $pa = new PhpAnalysis();
 
             $pa->SetSource($article['title']);
@@ -2583,16 +2562,8 @@ class PrintController extends BaseController {
             $pa->StartAnalysis();
 
             //获取你想要的结果
-            if(isset($keywords))
-            {
-                unset($keywords);
-            }
             $keywords = $pa->GetFinallyIndex();
             if (count($keywords)) {
-                if(isset($relation_where))
-                {
-                    unset($relation_where);
-                }
                 $relation_where = "";
                 foreach ((array) $keywords as $key => $word) {
                     $relation_where.="or title like '%$key%' ";
@@ -2621,27 +2592,16 @@ class PrintController extends BaseController {
                         $temp_arr['category']['en_name'] = $a_c_info->en_name;
                         $temp_arr['category']['icon'] = '<i class="iconfont">' . $a_c_info->icon . '</i>';
                         $related[] = $temp_arr;
-                        unset($temp_arr);
                     }
                 }
             }
             $the_result['related'] = $related;
-            unset($related);
             $output = $this->articledisplay($the_result, $viewname);
-            if(isset($_GET['this'])){
-                var_dump($this);
-            }
             $path = $this->type == 'pc' ? public_path('customers/' . $this->customer . '/detail/' . $article['id'] . '.html') : public_path('customers/' . $this->customer . '/mobile/detail/' . $article['id'] . '.html');
             file_put_contents($path, $output);
-            unset($output);
             $paths[] = $path;
             $nowpercent = $last_html_precent + $html_precent;
             if (floor($nowpercent) !== floor($last_html_precent)) {
-                if(isset($_GET['memory'])){
-                    var_dump(memory_get_usage());
-                    ob_flush();
-                        flush();
-                }
                 echo floor($nowpercent) . '%<script type="text/javascript">parent.refresh(' . floor($nowpercent) . ');</script><br />';
                 ob_flush();
                 flush();
@@ -2662,7 +2622,6 @@ class PrintController extends BaseController {
         $smarty->display($viewname . '.html');
         $output = ob_get_contents();
         ob_end_clean();
-        unset($smarty);
         return $output;
     }
 
