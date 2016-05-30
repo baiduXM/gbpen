@@ -230,7 +230,6 @@ class FormController extends BaseController {
 
         //===获取元素===
         $element_data = DB::table('form_element')->where('id', $element_id)->first();
-//		var_dump($element_data);
         //===添加数据===
         $time = date('Y-m-d H:i:s');
         $column_data = array(
@@ -418,6 +417,26 @@ class FormController extends BaseController {
      * 3、提交
      */
     public function submitFormUserdata() {
+        $data = $_POST;
+        var_dump($data);
+        echo "<br>---dta---<br>";
+        exit;
+        $form_id = $data[form_id];
+        $condata = array();
+        foreach ($data as $k => &$v) {
+            if ($k != 'submit' && $k != 'form_id' && $k != 'action_type' && $k != 'action_type') {
+                if (is_array($v)) {
+                    $v = implode(',', $v); //合并checkbox选项
+                }
+//		$condata['name']=$k;
+//		$condata['value']=$v;
+                $condata[$k] = $v;
+            }
+        }
+        $action = json_decode($data[form_data]);
+        $condata = serialize($condata);
+
+
         $Url = $_SERVER['HTTP_REFERER'];
         $cus_id = Auth::id();
         $form_id = Input::get('form_id');
@@ -430,15 +449,9 @@ class FormController extends BaseController {
 //		$userdata = $postFun->postsend("http://swap.5067.org/admin/form_userdata_list.php", $param);
         $userdata = $postFun->postsend("http://swap.5067.org/admin/form_userdata.php", $param);
         $userdata = json_decode($userdata);
-//		$res = DB::table('form_data_' . $form_id % 10)->where('form_id', $form_id)->get();
-//		$userdata = DB::table('form_data_' . $form_id % 10)->where('form_id', $form_id)->where('cus_id', $cus_id)->first();
-
-
-
         $column_data = DB::table('form_column_' . $form_id % 10)->where('form_id', $form_id)->orderBy('order', 'asc')->get();
         if ($form_data->is_once == 1 && !empty($userdata)) {
             return '请勿重复填写';
-//			header("Location:$Url");
         }
 
 //		return $column_data;
@@ -450,53 +463,8 @@ class FormController extends BaseController {
                 $redata[$v['name']] = $redata[$v['name']] . ',' . $v['value']; //合并checkbox选项值
             }
         }
-        $tdata = array();
-        //赋值。title->value
-        foreach ($column_data as $k => $v) {
-            $config = unserialize($v->config);
-            $tte = 'col_' . $v->id;
-//			return $tte;
-            if (!isset($redata['col_' . $v->id])) {
-                $tdata[$k]['name'] = $v->title;
-                $tdata[$k]['value'] = '';
-            } else {
-                $tdata[$k]['name'] = $v->title;
-                switch ($v->type) {
-                    case 'radio':
-                    case 'select':
-                        $temp = 'option_' . $redata[$tte];
-                        $tdata[$k]['value'] = $config[$temp];
-                        break;
-                    case 'checkbox':
-                        $tc = explode(',', $redata[$tte]);
-//						return $tc;
 
-                        foreach ($tc as $childkv) {
-                            $temp = 'option_' . $childkv;
-                            if (!isset($tdata[$v->title])) {
-                                $tdata[$k]['value'] = $config[$temp];
-                            } else {
-                                $tdata[$k]['value'] = ',' . $config[$temp];
-                            }
-                        }
-                        break;
-                    default:
-                        $tdata[$k]['value'] = $redata[$tte];
-                        break;
-                }
-//				$data['col_' . $v->id] = $redata['col_' . $v->id];
-            }
-        }
-        $time = date('Y-m-d H:i:s');
-        $data = array(
-            'form_id' => $form_id,
-            'cus_id' => $cus_id,
-            'data' => serialize($tdata),
-            'created_at' => $time,
-            'updated_at' => $time
-        );
-        $postFun = new CommonController;
-        $flag = $postFun->postsend("http://swap.5067.org/admin/form_userdata_submit.php", $data);
+
         if ($flag == 1) {
             $json = Response::json(['err' => 0, 'msg' => '提交成功', 'data' => $form_data]);
         } else {
@@ -577,12 +545,10 @@ class FormController extends BaseController {
         if (empty($form_data)) {
             $data = array();
         } else {
-//			$jsform = json_encode($form_data);
             $column_data = DB::table('form_column_' . $form_id % 10)->where('form_id', $form_id)->orderBy('order', 'asc')->get();
             foreach ($column_data as &$v) {
                 $v->config = unserialize($v->config);
             }
-//			$jscolumn = json_encode($column_data);
             $data['form'] = $form_data;
             $data['column'] = $column_data;
         }
@@ -594,7 +560,7 @@ class FormController extends BaseController {
      */
     public function showFormHtmlForPrint($data = null) {
         if (empty($data)) {
-            $_div = "<div class='fv-add-show'>
+            $_form = "<div class='fv-add-show'>
                     <div class='fv-as-description'>
                             表单已停用
                     </div>
@@ -602,11 +568,14 @@ class FormController extends BaseController {
         } else {
             $form_data = $data['form'];
             $tempform['action_type'] = $form_data->action_type;
-            $tempform['action_text'] = $form_data->action_text;
-            $jsform = json_encode($tempform);
+            if ($form_data->action_type == 1) {
+                $tempform['action_text'] = $form_data->action_url;
+            } else if ($form_data->action_type == 0) {
+                $tempform['action_text'] = $form_data->action_text;
+            }
             $form_id = $form_data->id;
             $column_data = $data['column'];
-            $_div = "<div class='fv-add-show'>
+            $_form = "<div class='fv-add-show'>
                     <div class='fv-as-title'>
                             $form_data->title
                     </div>
@@ -614,181 +583,158 @@ class FormController extends BaseController {
                             $form_data->description
                     </div>
                     <hr>";
-//		$_div.="<form class='fv-unit-preview' name='box_show'  method='post'><ul class='fv-element-show'>";
-            $_div.="<form class='fv-unit-preview' name='box_show' action='http://swap.5067.org/userdata/" . $form_id . "'  onsubmit='return CheckPost();' method='post'><ul class='fv-element-show'>";
             foreach ($column_data as $item) {
                 $_div .= "<li class='list-item' data-type=$item->type data-id=$item->id >";
-                $config = $item->config;
-//					var_dump($config);
-//					echo '<br>===config===<br>';
-                switch ($item->type) {
-                    case 'text':
-                        $_div .= "<p class='content-l'>$item->title";
-                        if ($item->required == 1) {
-                            $_div .= "<span style='color:red;'>*</span></p>";
-                        } else {
-                            $_div .= "</p>";
-                        }
-                        $_div .= "<input  type=" . $config['text_type'] . " name='$item->title'   placeholder='$item->description' />";
-                        break;
-                    case 'textarea':
-                        $_div .= "<p class='content-l'>$item->title";
-                        if ($item->required == 1) {
-                            $_div .= "<span style='color:red;'>*</span></p>";
-                        } else {
-                            $_div .= "</p>";
-                        }
-                        $_div .= "<textarea name = '$item->title' placeholder = '$item->description' ></textarea>";
-                        break;
-                    case 'radio':
-                        $_div .= "<p class='content-l'>$item->title";
-                        if ($item->required == 1) {
-                            $_div .= "<span style='color:red;'>*</span>：（ $item->description ）</p>";
-                        } else {
-                            $_div .= "：（ $item->description ）</p>";
-                        }
-                        $option_key = explode(',', $config['option_key']);
-                        foreach ($option_key as $key => $value) {
-                            $to = "option_$value";
-                            $_div .= '<span class="option-item">';
-                            $_div .= "<input type = 'radio' name = '$item->title' value = '$config[$to]' data-value='$value'  /><label>" . $config[$to] . " </label>";
-                            $_div .= '</span>';
-                        }
-                        break;
-                    case 'checkbox':
-                        $_div .= "<p class='content-l'>$item->title";
-                        if ($item->required == 1) {
-                            $_div .= "<span style='color:red;'>*</span>：（ $item->description ）</p>";
-                        } else {
-                            $_div .= "：（ $item->description ）</p>";
-                        }
-                        $option_key = explode(',', $config['option_key']);
-                        foreach ($option_key as $key => $value) {
-                            $to = "option_$value";
-                            $_div .= '<span class="option-item">';
-                            $_div .= "<input type = 'checkbox' name = '$item->title[]' value = '$config[$to]' data-value='$value'  /><label>" . $config[$to] . " </label>";
-                            $_div .= '</span>';
-                        }
-                        break;
-                    case 'select':
-                        $_div .= "<p class='content-l'>$item->title";
-                        if ($item->required == 1) {
-                            $_div .= "<span style='color:red;'>*</span>：（ $item->description ）</p>";
-                        } else {
-                            $_div .= "：（ $item->description ）</p>";
-                        }
-                        $_div .= "<select name=$item->title >";
-                        $option_key = explode(',', $config['option_key']);
-                        foreach ($option_key as $key => $value) {
-                            $to = "option_$value";
-                            $_div .= "<option  value='$config[$to]' data-value='$value'  />" . $config[$to] . "</option>";
-                        }
-                        $_div .= '</select>';
-                        break;
-                    case 'date':
-                        $_div .="<p class='content-l'>$item->title</p>";
-                        $_div .= '<input onclick="laydate({istime: true, format: \'YYYY-MM-DD hh:mm:ss\'})">';
-                        break;
-                    case 'image':
-                        $_div .="<p class='content-l'>$item->title</p>";
-                        break;
-                    case 'file':
-                        $_div .="<p class='content-l'>$item->title(  $item->description )：</p>";
-                        $_div.= "<input type='file' name='$item->title'  />";
-                        break;
-                    default :
-                        break;
-                }
+                $func = 'show_html_' . $item->type;
+                $_div .= $this->$func($item);
                 $_div.="</li>";
             }
+            $jscol_name = json_encode($column_data);
             $_div .= "</ul>"
                     . "<input type='submit' value='提交' class='button submit-form' name='submit' /><input type='reset' value='重置' class='button' />"
-                    . "<input type='hidden' name='form_id' value='$form_id' /><input type='hidden' name='form_data' value='$jsform' /></form></div>";
+                    . "<input type='hidden' name='form_id' value='$form_id' />"
+                    . "<input type='hidden' name='action_type' value='$form_data->action_type' />"
+                    . "<input type='hidden' name='action_text' value=" . $tempform['action_text'] . " />";
+            
+//            $_form.="<form class='fv-unit-preview' id='box_show' action='../form-userdata-submit' onsubmit='return verify($jscol_name);' method='post'><ul class='fv-element-show'>";
+            $_form.="<form class='fv-unit-preview' id='box_show' action='http://swap.5067.org/userdata/' onsubmit='return verify();' method='post'><ul class='fv-element-show'>";
+            $_form.=$_div . "</form></div>";
         }
-        return $_div;
+        return $_form;
     }
 
     /**
      * 赋值表单前端css/js
      */
-    public function assignFormCSSandJSForPrint($data) {
-        $jscolumn = json_encode($data['column']);
-        $postFun = new CommonController;
-        $css = '<style TYPE="text/css">';
-        $css .= '   .list-item span.option-item{
-                        margin-right: 30px;
-                        font-size: 12px;
-                        min-height: 20px;
-                        line-height: 20px;
-                        display: inline-block;
-                    }
-                    .fv-add-show{background: none;}
-                    /*title*/
-                    .fv-as-title,.fv-as-description{ text-align: center; line-height: 22px;}
-                    .fv-as-title{ padding-top: 20px; font-weight: bold; font-size: 20px;}
-                    .fv-as-description{ padding-bottom: 20px;}
-
-                    /*main*/
-                    .fv-unit-preview{ margin:0 auto; padding:1% 4%; max-width: 600px; min-width: 320px;}
-
-                    .fv-element-show{ padding-bottom:3%;}
-                    .fv-element-show p{ width: 100%; line-height: 30px !important;text-indent:0 !important; font-size:16px; font-weight: bold; padding-top: 6px;}
-                    .fv-element-show input[type="text"],.fv-element-show input[type="password"]{height: 26px; line-height: 26px; border:1px solid #cccccc;}
-                    .fv-element-show textarea{ width: 100%;height:80px; border:1px solid #cccccc;}
-
-                    .fv-option-item{ margin-right:6px;}
-
-                    /*提交、重置按钮*/
-                    .fv-unit-preview input[type="submit"]{ width: 70px; height: 30px; line-height: 15px; margin-right:1%; text-align: center; vertical-align: middle;}
-                    .fv-unit-preview .button{ width: 70px; height: 30px; line-height: 15px; margin: 0 1%;text-align: center; vertical-align: middle;}';
-        $css .= $postFun->postsend("http://swap.5067.org/js/laydate/need/laydate.css");
-        $css .= '</style>';
-        $js = "<script>";
-        $js .= $postFun->postsend("http://swap.5067.org/js/laydate/laydate.js");
-        $js .= "function CheckPost(){
-                        var jscolumn=$jscolumn;
-                        var column=eval(jscolumn);
-                        var tt='';
-                        var str='';
-                        var flagchb=true;
-                        $.each(column,function(k,v){
-                            tt=v.title;
-                            if(v.type=='checkbox'){
-                                    tt+='[]';
-                            }
-                            if(v.required==1){
-                                switch(v.type){
-                                    case 'checkbox':
-                                        flagchb=false;
-                                        var chb=box_show[tt];
-                                        for(i=0;i<chb.length;i++){
-                                            if(chb[i].checked){
-                                                flagchb=flagchb || true;
-                                            }
-                                        }
-                                        if(flagchb==false){
-                                            str==''?str=v.title:str+=','+v.title;
-                                        }
-                                        break;
-                                    default:
-                                        if(box_show[tt].value==''){
-                                            flagchb=flagchb && false;
-                                        }
-                                        if(flagchb==false){
-                                            str==''?str=v.title:str+=','+v.title;
-                                        }
-                                        break;
-                                }
-                            }
-                        });
-                        if(flagchb==false){
-                            alert('标注*号的为必填项');
-                            return false;
-                        }
-                    }";
-        $js .= "</script>";
-
+    public function assignFormCSSandJSForPrint() {
+        $css = '<link rel="stylesheet" href="http://swap.5067.org/js/laydate/need/laydate.css">';
+        $css .='<link rel="stylesheet" href="http://swap.5067.org/css/universal-form.css">';
+        $js = '<script src="http://swap.5067.org/js/laydate/laydate.js"></script>';
+//        $js .= '<script src="http://swap.5067.org/js/universal-form.js"></script>';
+//        $js .= '<script src="/public/admin/js/universal-form.js"></script>';
+//        $js .= '<script>';
+//        $js .= "function verify() {
+//            var box_show = $('#box_show').serializeArray();
+//            console.log(box_show);
+//            console.log('---form---');
+//                return false;
+//                }";
+//        $js .= '</script>';
         return $css . $js;
+    }
+
+    function show_html_text($data) {
+        $item = $data;
+        $config = $data->config;
+        $_div = "<p class='content-l'>$item->title";
+        if ($item->required == 1) {
+            $_div .= "<span style='color:red;'>*</span>";
+        }
+        $_div .= "</p>";
+        $_div .= "<input type='text' name='$item->title' placeholder='$item->description'";
+        $_div .= $item->required == 1 ? "required='required'" : '';
+        $_div .= "/>";
+        return $_div;
+    }
+
+    function show_html_textarea($data) {
+        $item = $data;
+        $config = $data->config;
+        $_div = "<p class='content-l'>$item->title";
+        if ($item->required == 1) {
+            $_div .= "<span style='color:red;'>*</span>";
+        }
+        $_div .= "</p>";
+        $_div .= "<textarea name = '$item->title' placeholder = '$item->description'";
+        $_div .= $item->required == 1 ? "required='required'" : '';
+        $_div .= "></textarea>";
+        return $_div;
+    }
+
+    function show_html_radio($data) {
+        $item = $data;
+        $config = $data->config;
+        $_div = "<p class='content-l'>$item->title";
+        if ($item->required == 1) {
+            $_div .= "<span style='color:red;'>*</span>";
+        }
+        if ($item->description != '' && $item->description != null) {
+            $_div .= '<i class="content-d">' . $item->description . '</i>';
+        }
+        $_div .="</p>";
+        $option_key = explode(',', $config['option_key']);
+        foreach ($option_key as $key => $value) {
+            $to = "option_$value";
+            $_div .= '<span class="option-item">';
+            $_div .= "<input type = 'radio' name = '$item->title' value = '$config[$to]' data-value='$value'";
+            $_div .= $item->required == 1 ? "required='required'" : '';
+            $_div .= " /><label>" . $config[$to] . " </label>";
+            $_div .= '</span>';
+        }
+        return $_div;
+    }
+
+    function show_html_checkbox($data) {
+        $item = $data;
+        $config = $data->config;
+        $_div = "<p class='content-l'>$item->title";
+        if ($item->required == 1) {
+            $_div .= "<span style='color:red;'>*</span>";
+        }
+        if ($item->description != '' && $item->description != null) {
+            $_div .= '<i class="content-d">' . $item->description . '</i>';
+        }
+        $_div .="</p>";
+        $option_key = explode(',', $config['option_key']);
+        $_div .= "<input type='hidden' name = '$item->title' value = '' data-value='' />";
+        foreach ($option_key as $key => $value) {
+            $to = "option_$value";
+            $_div .= '<span class="option-item">';
+            $_div .= "<input type = 'checkbox' name = '$item->title[]' value = '$config[$to]' data-value='$value' /><label>" . $config[$to] . " </label>";
+            $_div .= '</span>';
+        }
+        return $_div;
+    }
+
+    function show_html_select($data) {
+        $item = $data;
+        $config = $data->config;
+        $_div = "<p class='content-l'>$item->title";
+        if ($item->required == 1) {
+            $_div .= "<span style='color:red;'>*</span>";
+        }
+        if ($item->description != '' && $item->description != null) {
+            $_div .= '<i class="content-d">' . $item->description . '</i>';
+        }
+        $_div .="</p>";
+        $_div .= "<select name='$item->title'";
+        $_div .= $item->required == 1 ? "required='required'" : '';
+        $_div .=" >";
+        $_div .= "<option value='' selected >===请选择===</option>";
+        $option_key = explode(',', $config['option_key']);
+        foreach ($option_key as $key => $value) {
+            $to = "option_$value";
+            $_div .= "<option  value='$config[$to]' data-value='$value'>" . $config[$to] . "</option>";
+        }
+        $_div .= '</select>';
+        return $_div;
+    }
+
+    function show_html_date($data) {
+        $item = $data;
+        $config = $data->config;
+        $_div = "<p class='content-l'>$item->title";
+        if ($item->required == 1) {
+            $_div .= "<span style='color:red;'>*</span>";
+        }
+        if ($item->description != '' && $item->description != null) {
+            $_div .= '<i class="content-d">' . $item->description . '</i>';
+        }
+        $_div .="</p>";
+        $_div .= '<input type="text" name="' . $item->title . '" onclick="laydate({istime: true, format: \'YYYY-MM-DD hh:mm:ss\'})" ';
+        $_div .= $item->required == 1 ? "required='required'" : '';
+        $_div .= ' />';
+        return $_div;
     }
 
 }

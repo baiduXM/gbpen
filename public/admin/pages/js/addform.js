@@ -338,6 +338,7 @@ function addformController($scope, $http, $location) {
         _div += '<select name="col_' + data.column_id + '" disabled="disabled">';
         var _option_key = _config.option_key.split(',');
         var _to = '';
+        _div += '<option value="">===请选择===</option>';
         $.each(_option_key, function (tk, tv) {
             _to = "option_" + tv;
             _div += '<option value=' + tv + '>' + _config[_to] + '</option>';
@@ -357,7 +358,7 @@ function addformController($scope, $http, $location) {
             _div += '<i class="content-d">' + data.description + '</i>';
         }
         _div += '</p>';
-        _div += '<input onclick="laydate({istime: true, format: \'YYYY-MM-DD hh:mm:ss\'})" name="col_' + data.column_id + '" />';
+        _div += '<input onclick="laydate({istime: true, format: \'YYYY-MM-DD hh:mm:ss\'})" name="col_' + data.column_id + '" disabled="disabled" />';
         return _div;
     }
 

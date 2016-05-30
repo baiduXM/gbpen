@@ -414,7 +414,7 @@ Route::group(array('before' => 'auth'), function() {
         'as' => 'form-list',
         'uses' => 'FormController@deleteFormUserdata'
     ]);
-    Route::post('form-userdata-submit', [//用户数据提交
+    Route::any('form-userdata-submit', [//用户数据提交
         'as' => 'form-list',
         'uses' => 'FormController@submitFormUserdata'
     ]);
@@ -495,3 +495,4 @@ Route::post('api/deleteuser', [//删除用户
 Route::get('test/{cid}', [
     'uses' => 'PrintController@getChirldenCid'
 ]);
+
