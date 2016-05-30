@@ -135,9 +135,9 @@ class HtmlController1 extends BaseController{
 //            }
             $paths=$template->categoryPush($id,$page_count,$this->last_html_precent,$this->html_precent);
             $this->last_html_precent +=($this->html_precent*count($paths));
-            unset($template);
             $result=array_merge((array)$result,(array)$paths);
         }
+            unset($template);
 
         return $result;
     }
