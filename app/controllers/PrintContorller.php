@@ -2516,9 +2516,22 @@ class PrintController extends BaseController {
                 ob_flush();
                     flush();
             }
+            if(isset($the_result))
+            {
+                unset($the_result);
+            }
+            $the_result=array();
             $the_result = $result;
+            if(isset($a_moreimg))
+            {
+                unset($a_moreimg);
+            }
             $a_moreimg = Moreimg::where('a_id', $article['id'])->get()->toArray();
             array_unshift($a_moreimg, array('title' => $article['title'], 'img' => $article['img']));
+            if(isset($images))
+            {
+                unset($images);
+            }
             $images = array();
             if (count($a_moreimg)) {
                 $i = 0;
