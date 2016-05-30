@@ -142,8 +142,6 @@ class HtmlController1 extends BaseController{
             $this->last_html_precent +=($this->html_precent*count($paths));
             $result=array_merge((array)$result,(array)$paths);
         }
-            unset($template);
-
         return $result;
     }
     
@@ -161,11 +159,6 @@ class HtmlController1 extends BaseController{
                 unset($articles);
             }
             $articles = Articles::where($type . '_show', '1')->where('c_id', $id)->where('use_url', '0')->lists('id');
-            if(isset($_GET['memory'])){
-                var_dump(memory_get_usage());
-                ob_flush();
-                    flush();
-            }
             $paths=array();
             if(count($articles)){
                 $paths=@$template->articlepush($id,$this->last_html_precent,$this->html_precent);
@@ -173,7 +166,6 @@ class HtmlController1 extends BaseController{
                 $result=array_merge((array)$result,(array)$paths);
             }
         }
-        unset($template);
         return $result;
     }
 
@@ -486,20 +478,6 @@ class HtmlController1 extends BaseController{
      * 
      */
     public function pushPrecent(){
-        if(isset($_GET['test'])){
-            set_time_limit(0);
-            $pc_classify_ids=array();
-            $mobile_classify_ids=array();
-            $pc_article_ids=array();
-            $mobile_article_ids=array();
-            $mobile_classify_ids = Classify::where('cus_id',$this->cus_id)->where('mobile_show',1)->lists('id');
-            $mobile_article_ids = Articles::where('cus_id',$this->cus_id)->where('mobile_show',1)->lists('id');
-            $count = $this->htmlPagecount($pc_classify_ids,$mobile_classify_ids,$pc_article_ids,$mobile_article_ids);
-            $this->html_precent= 70/$count;
-            $marticlehtml = $this->articlehtml($mobile_classify_ids,'mobile');
-            echo '100%';
-            exit();
-        }
         $pc_domain=CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_domain');
         $mobile_domain=CustomerInfo::where('cus_id',$this->cus_id)->pluck('mobile_domain');
         $pc=str_replace('http://', '', $pc_domain);
@@ -542,12 +520,10 @@ class HtmlController1 extends BaseController{
         if($pc!=''){
             $categoryhtml = $this->categoryhtml($pc_classify_ids,'pc');
             $articlehtml = $this->articlehtml($pc_classify_ids,'pc');
-            unset($pc_classify_ids);
         }
         if($mobile!=''){
             $mcategoryhtml = $this->categoryhtml($mobile_classify_ids,'mobile');
             $marticlehtml = $this->articlehtml($mobile_classify_ids,'mobile');
-            unset($mobile_classify_ids);
         }
         $this->percent = 20/$count;
         $path = public_path('customers/'.$this->customer.'/'.$this->customer.'.zip');
