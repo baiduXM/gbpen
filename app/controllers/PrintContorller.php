@@ -1811,7 +1811,6 @@ class PrintController extends BaseController {
             $formCdata = $formC->getFormdataForPrint($form_id);
         } else {//跳转404
         }
-        //echo $viewname;exit;
         if (in_array($classify->type, array(1, 2, 3, 4, 5, 9))) {
             $sub = str_replace('-', '_', $viewname);
             $data = $this->pagedata($viewname);
@@ -1905,15 +1904,15 @@ class PrintController extends BaseController {
                 margin: 0px 0px 5px;
                 }
                 .elegant-aero label>span {
-                float: left;
-                width: 25%;
-                text-align: right;
-                padding-right: 15px;
-                margin-top: 10px;
-                font-weight: bold;
-                text-overflow: ellipsis;
-                overflow: hidden;
-				white-space: nowrap;
+                    float: left;
+                    width: 25%;
+                    text-align: right;
+                    padding-right: 15px;
+                    margin-top: 10px;
+                    font-weight: bold;
+                    text-overflow: ellipsis;
+                    overflow: hidden;
+                    white-space: nowrap;
                 }
                 .elegant-aero input[type="text"], .elegant-aero input[type="tel"], .elegant-aero input[type="email"], .elegant-aero textarea, .elegant-aero select {
                 color: #888;
@@ -2210,7 +2209,7 @@ class PrintController extends BaseController {
             }
             if ($classify->type == 9) {
                 //===加载css\js===			
-                $result['footscript'].=$formC->assignFormCSSandJSForPrint($formCdata);
+                $result['footscript'].=$formC->assignFormCSSandJSForPrint();
             }
             $the_result = $result;
             $index_list = $this->pageList($id, 1);
