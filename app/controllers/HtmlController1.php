@@ -95,6 +95,11 @@ class HtmlController1 extends BaseController{
         $template = new PrintController('online',$type);
         $per_page = CustomerInfo::where('cus_id',$this->cus_id)->pluck($type."_page_count");
         foreach((array)$ids as $id){
+            if(isset($_GET['memory'])){
+                var_dump(memory_get_usage());
+                ob_flush();
+                    flush();
+            }
 //            ob_start();
             $c_ids=explode(',',$template->getChirldenCid($id));
             $a_c_type = Classify::where('id',$id)->pluck('type');//取得栏目的type

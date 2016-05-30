@@ -2621,10 +2621,12 @@ class PrintController extends BaseController {
                         $temp_arr['category']['en_name'] = $a_c_info->en_name;
                         $temp_arr['category']['icon'] = '<i class="iconfont">' . $a_c_info->icon . '</i>';
                         $related[] = $temp_arr;
+                        unset($temp_arr);
                     }
                 }
             }
             $the_result['related'] = $related;
+            unset($related);
             $output = $this->articledisplay($the_result, $viewname);
             if(isset($_GET['this'])){
                 var_dump($this);
