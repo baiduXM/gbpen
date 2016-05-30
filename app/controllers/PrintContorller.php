@@ -2511,6 +2511,11 @@ class PrintController extends BaseController {
         foreach ((array) $articles as $key => $article) {
             if(isset($_GET['atest']))
             var_dump($article);
+            if(isset($_GET['memory'])){
+                var_dump(memory_get_usage());
+                ob_flush();
+                    flush();
+            }
             $the_result = $result;
             $a_moreimg = Moreimg::where('a_id', $article['id'])->get()->toArray();
             array_unshift($a_moreimg, array('title' => $article['title'], 'img' => $article['img']));
@@ -2603,6 +2608,11 @@ class PrintController extends BaseController {
             $paths[] = $path;
             $nowpercent = $last_html_precent + $html_precent;
             if (floor($nowpercent) !== floor($last_html_precent)) {
+                if(isset($_GET['memory'])){
+                    var_dump(memory_get_usage());
+                    ob_flush();
+                        flush();
+                }
                 echo floor($nowpercent) . '%<script type="text/javascript">parent.refresh(' . floor($nowpercent) . ');</script><br />';
                 ob_flush();
                 flush();
@@ -2613,16 +2623,20 @@ class PrintController extends BaseController {
     }
 
     private function articledisplay($the_result, $viewname) {
-        ob_start();
-        $smarty = new Smarty;
-        $smarty->setTemplateDir(app_path('views/templates/' . $this->themename));
-        $smarty->setCompileDir(app_path('storage/views/compile'));
-        $smarty->registerPlugin('function', 'mapExt', array('PrintController', 'createMap'));
-        $smarty->registerPlugin('function', 'shareExt', array('PrintController', 'createShare'));
-        $smarty->assign($the_result);
-        $smarty->display($viewname . '.html');
-        $output = ob_get_contents();
-        ob_end_clean();
+        if(isset($_GET['tg'])){
+            $output='111';
+        }else{
+            ob_start();
+            $smarty = new Smarty;
+            $smarty->setTemplateDir(app_path('views/templates/' . $this->themename));
+            $smarty->setCompileDir(app_path('storage/views/compile'));
+            $smarty->registerPlugin('function', 'mapExt', array('PrintController', 'createMap'));
+            $smarty->registerPlugin('function', 'shareExt', array('PrintController', 'createShare'));
+            $smarty->assign($the_result);
+            $smarty->display($viewname . '.html');
+            $output = ob_get_contents();
+            ob_end_clean();
+        }
         return $output;
     }
 

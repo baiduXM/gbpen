@@ -151,14 +151,19 @@ class HtmlController1 extends BaseController{
         $template = new PrintController('online',$type);
         $result =array();
         foreach((array)$ids as $id){
-            if($_GET['test'])
+            if(isset($_GET['test']))
                 var_dump($id);
             $articles = Articles::where($type . '_show', '1')->where('c_id', $id)->where('use_url', '0')->lists('id');
-            if($_GET['test']){
+            if(isset($_GET['test'])){
                 echo 'articles:';
                 var_dump($articles);
 
                     ob_flush();
+                    flush();
+            }
+            if(isset($_GET['memory'])){
+                var_dump(memory_get_usage());
+                ob_flush();
                     flush();
             }
             $paths=array();
