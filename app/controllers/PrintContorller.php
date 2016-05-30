@@ -2509,8 +2509,6 @@ class PrintController extends BaseController {
         }
         $articles = Articles::where($this->type . '_show', '1')->where('c_id', $c_id)->where('use_url', '0')->orderBy('is_top', 'desc')->orderBy('sort', 'asc')->orderBy('created_at', 'desc')->get()->toArray();
         foreach ((array) $articles as $key => $article) {
-            if(isset($_GET['atest']))
-            var_dump($article);
             if(isset($_GET['memory'])){
                 var_dump(memory_get_usage());
                 ob_flush();
@@ -2628,8 +2626,12 @@ class PrintController extends BaseController {
             }
             $the_result['related'] = $related;
             $output = $this->articledisplay($the_result, $viewname);
+            if(isset($_GET['this'])){
+                var_dump($this);
+            }
             $path = $this->type == 'pc' ? public_path('customers/' . $this->customer . '/detail/' . $article['id'] . '.html') : public_path('customers/' . $this->customer . '/mobile/detail/' . $article['id'] . '.html');
             file_put_contents($path, $output);
+            unset($output);
             $paths[] = $path;
             $nowpercent = $last_html_precent + $html_precent;
             if (floor($nowpercent) !== floor($last_html_precent)) {
@@ -2648,20 +2650,17 @@ class PrintController extends BaseController {
     }
 
     private function articledisplay($the_result, $viewname) {
-        if(isset($_GET['tg'])){
-            $output='111';
-        }else{
-            ob_start();
-            $smarty = new Smarty;
-            $smarty->setTemplateDir(app_path('views/templates/' . $this->themename));
-            $smarty->setCompileDir(app_path('storage/views/compile'));
-            $smarty->registerPlugin('function', 'mapExt', array('PrintController', 'createMap'));
-            $smarty->registerPlugin('function', 'shareExt', array('PrintController', 'createShare'));
-            $smarty->assign($the_result);
-            $smarty->display($viewname . '.html');
-            $output = ob_get_contents();
-            ob_end_clean();
-        }
+        ob_start();
+        $smarty = new Smarty;
+        $smarty->setTemplateDir(app_path('views/templates/' . $this->themename));
+        $smarty->setCompileDir(app_path('storage/views/compile'));
+        $smarty->registerPlugin('function', 'mapExt', array('PrintController', 'createMap'));
+        $smarty->registerPlugin('function', 'shareExt', array('PrintController', 'createShare'));
+        $smarty->assign($the_result);
+        $smarty->display($viewname . '.html');
+        $output = ob_get_contents();
+        ob_end_clean();
+        unset($smarty);
         return $output;
     }
 

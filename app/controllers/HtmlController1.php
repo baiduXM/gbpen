@@ -135,6 +135,7 @@ class HtmlController1 extends BaseController{
 //            }
             $paths=$template->categoryPush($id,$page_count,$this->last_html_precent,$this->html_precent);
             $this->last_html_precent +=($this->html_precent*count($paths));
+            unset($template);
             $result=array_merge((array)$result,(array)$paths);
         }
 
@@ -151,8 +152,6 @@ class HtmlController1 extends BaseController{
         $template = new PrintController('online',$type);
         $result =array();
         foreach((array)$ids as $id){
-            if(isset($_GET['test']))
-                var_dump($id);
             if(isset($articles)){
                 unset($articles);
             }
@@ -169,6 +168,7 @@ class HtmlController1 extends BaseController{
                 $result=array_merge((array)$result,(array)$paths);
             }
         }
+        unset($template);
         return $result;
     }
 
