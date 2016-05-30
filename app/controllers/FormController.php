@@ -417,9 +417,17 @@ class FormController extends BaseController {
      * 3、提交
      */
     public function submitFormUserdata() {
-        $data = $_POST;
-        var_dump($data);
-        echo "<br>---dta---<br>";
+        $domain = $_SERVER['HTTP_HOST']; //"http://swap.5067.org" 
+        if (preg_match('/example\.com$/', $domain)){
+            echo 1;
+        }
+        echo 2;
+        
+        
+//        
+//            $data = $_POST;
+//        var_dump($data);
+//        echo "<br>---dta---<br>";
         exit;
         $form_id = $data[form_id];
         $condata = array();
@@ -595,8 +603,8 @@ class FormController extends BaseController {
                     . "<input type='hidden' name='form_id' value='$form_id' />"
                     . "<input type='hidden' name='action_type' value='$form_data->action_type' />"
                     . "<input type='hidden' name='action_text' value=" . $tempform['action_text'] . " />";
-            
-//            $_form.="<form class='fv-unit-preview' id='box_show' action='../form-userdata-submit' onsubmit='return verify($jscol_name);' method='post'><ul class='fv-element-show'>";
+
+            //$_form.="<form class='fv-unit-preview' id='box_show' action='../form-userdata-submit' onsubmit='return verify();' method='post'><ul class='fv-element-show'>";
             $_form.="<form class='fv-unit-preview' id='box_show' action='http://swap.5067.org/userdata/' onsubmit='return verify();' method='post'><ul class='fv-element-show'>";
             $_form.=$_div . "</form></div>";
         }
