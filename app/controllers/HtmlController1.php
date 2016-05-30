@@ -153,14 +153,10 @@ class HtmlController1 extends BaseController{
         foreach((array)$ids as $id){
             if(isset($_GET['test']))
                 var_dump($id);
-            $articles = Articles::where($type . '_show', '1')->where('c_id', $id)->where('use_url', '0')->lists('id');
-            if(isset($_GET['test'])){
-                echo 'articles:';
-                var_dump($articles);
-
-                    ob_flush();
-                    flush();
+            if(isset($articles)){
+                unset($articles);
             }
+            $articles = Articles::where($type . '_show', '1')->where('c_id', $id)->where('use_url', '0')->lists('id');
             if(isset($_GET['memory'])){
                 var_dump(memory_get_usage());
                 ob_flush();
@@ -540,23 +536,13 @@ class HtmlController1 extends BaseController{
         $this->html_precent= 70/$count;
         if($pc!=''){
             $categoryhtml = $this->categoryhtml($pc_classify_ids,'pc');
-            if(isset($_GET['sleep'])){
-                sleep(3);
-            }
             $articlehtml = $this->articlehtml($pc_classify_ids,'pc');
-            if(isset($_GET['sleep'])){
-                sleep(3);
-            }
+            unset($pc_classify_ids);
         }
         if($mobile!=''){
             $mcategoryhtml = $this->categoryhtml($mobile_classify_ids,'mobile');
-            if(isset($_GET['sleep'])){
-                sleep(3);
-            }
             $marticlehtml = $this->articlehtml($mobile_classify_ids,'mobile');
-            if(isset($_GET['sleep'])){
-                sleep(3);
-            }
+            unset($mobile_classify_ids);
         }
         $this->percent = 20/$count;
         $path = public_path('customers/'.$this->customer.'/'.$this->customer.'.zip');

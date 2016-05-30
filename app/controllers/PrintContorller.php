@@ -2571,6 +2571,10 @@ class PrintController extends BaseController {
             $the_result['article']['pubdate'] = $article['created_at'];
             $the_result['article']['pubtimestamp'] = strtotime($article['created_at']);
             //关联文章查询
+            if(isset($pa))
+            {
+                unset($pa);
+            }
             $pa = new PhpAnalysis();
 
             $pa->SetSource($article['title']);
@@ -2581,8 +2585,16 @@ class PrintController extends BaseController {
             $pa->StartAnalysis();
 
             //获取你想要的结果
+            if(isset($keywords))
+            {
+                unset($keywords);
+            }
             $keywords = $pa->GetFinallyIndex();
             if (count($keywords)) {
+                if(isset($relation_where))
+                {
+                    unset($relation_where);
+                }
                 $relation_where = "";
                 foreach ((array) $keywords as $key => $word) {
                     $relation_where.="or title like '%$key%' ";
@@ -2593,7 +2605,7 @@ class PrintController extends BaseController {
                 $related = array();
                 if (count($related_data)) {
                     foreach ((array) $related_data as $val) {
-                        $temp_arr = [];
+                        $temp_arr = array();
                         $temp_arr['title'] = $val->title;
                         $temp_arr['description'] = $val->introduction;
                         $temp_arr['image'] = $this->source_dir . 'l/articles/' . $val->image;
