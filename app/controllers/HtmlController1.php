@@ -95,12 +95,6 @@ class HtmlController1 extends BaseController{
         $template = new PrintController('online',$type);
         $per_page = CustomerInfo::where('cus_id',$this->cus_id)->pluck($type."_page_count");
         foreach((array)$ids as $id){
-            if(isset($_GET['memory'])){
-                var_dump(memory_get_usage());
-                ob_flush();
-                    flush();
-            }
-//            ob_start();
             $c_ids=explode(',',$template->getChirldenCid($id));
             $a_c_type = Classify::where('id',$id)->pluck('type');//取得栏目的type
             $pc_page_count_switch = CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_count_switch');//页面图文列表图文显示个数是否分开控制开关
@@ -124,20 +118,6 @@ class HtmlController1 extends BaseController{
                 $total = Articles::whereIn('c_id',$c_ids)->where('cus_id',$this->cus_id)->where($type.'_show','1')->count();
                 $page_count = ceil($total/$per_page);
             }   
-//            $path = $type =='pc' ? public_path('customers/'.$this->customer.'/category/'.$id.'.html') : public_path('customers/'.$this->customer.'/mobile/category/'.$id.'.html');
-//            echo $template->categoryPreview($id,1);
-//            file_put_contents($path, ob_get_contents());
-//            ob_end_clean();        
-//            $result[] = $path;
-//            for($i=1;$i<=$page_count;$i++){
-//                $this->getPrecent();
-//                ob_start();
-//                $path = $type =='pc' ? public_path('customers/'.$this->customer.'/category/'.$id.'_'.$i.'.html') : public_path('customers/'.$this->customer.'/mobile/category/'.$id.'_'.$i.'.html');
-//                echo $template->categoryPreview($id,$i);
-//                file_put_contents($path, ob_get_contents());
-//                ob_end_clean();
-//                $result[] = $path;
-//            }
             $paths=$template->categoryPush($id,$page_count,$this->last_html_precent,$this->html_precent);
             $this->last_html_precent +=($this->html_precent*count($paths));
             $result=array_merge((array)$result,(array)$paths);
