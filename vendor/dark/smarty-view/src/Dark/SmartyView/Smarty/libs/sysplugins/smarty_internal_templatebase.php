@@ -238,94 +238,90 @@ abstract class Smarty_Internal_TemplateBase extends Smarty_Internal_Data {
 			 * ->判断ip是否登录过
 			 * 
 			 */
-			if ($_template->template_resource == './_footer.html') {
-				$postFun = new CommonController;
-				$domain = $_SERVER['HTTP_HOST'] ? 'http://' . $_SERVER['HTTP_HOST'] : '';
-				$ip_address = ($_SERVER['REMOTE_ADDR']);
-				$today = date('Y-m-d');
-//				$param['domain'] = $domain;
-//				$param['ip_address'] = $ip_address;
-				$flag = true;
-//				$stats_log_info = DB::table('stats_log')->where('ip_address', $ip_address)->where('pc_domain', $domain)->orWhere('mobile_domain', $domain)->first();
-				$data = array(
-					'pc_domain' => $domain,
-					'mobile_domain' => $domain,
-				);
-				$stats_log_info = $postFun->postsend("http://swap.5067.org/stats.php?key=get_stats_log",$data); //获取交互服务器上访问日志
-				$stats_log_info=  json_decode($stats_log_info);
-				if (empty($stats_log_info) || $stats_log_info == 'null') {//新增
-//					echo '1---<br>';
-					$data = array(
-						'pc_domain' => $customer_info->pc_domain ? $customer_info->pc_domain : $domain,
-						'mobile_domain' => $customer_info->mobile_domain ? $customer_info->mobile_domain : $domain,
-					);
-//					$customer_info = DB::table('customer_info')->where('pc_domain', $domain)->orWhere('mobile_domain', $domain)->select('cus_id', 'pc_domain', 'mobile_domain')->first();
-					$customer_info = $postFun->postsend("http://swap.5067.org/stats.php?key=get_customer_info", $data); //获取客户信息
-					$customer_info = json_decode($customer_info);
-					$data = array(
-						'pc_domain' => $customer_info->pc_domain ? $customer_info->pc_domain : $domain,
-						'mobile_domain' => $customer_info->mobile_domain ? $customer_info->mobile_domain : $domain,
-					);
-//					$stats_log_id = DB::table('stats_log')->insertGetId($data);
-					$stats_log_id = $postFun->postsend("http://swap.5067.org/stats.php?key=insert_stats_log", $data); //添加用户登录日志
-				} else {//判断单日是否已经登录过
-//					echo '2---<br>';
-					if ($stats_log_info->lasttime != $today) {//不是当日更新为今天日期、并且计数+1
-						$stats_log_id = $stats_log_info->id;
-						$data = array(
-							'id' => $stats_log_id,
-						);
-//						DB::table('stats_log')->where('id', $stats_log_info->id)->update($data);
-						$res = $postFun->postsend("http://swap.5067.org/stats.php?key=update_stats_log", $data); //更新用户登录日志
-					} else {//当日已登录
-						$flag = FALSE; //不做操作
-					}
-				}
-				if (!$flag) {
-//					$stats_info = DB::table('stats')->where('cus_id', $customer_info->cus_id)->first();
-					$data = array(
-						'cus_id' => $customer_info->cus_id,
-					);
-					$stats_info = $postFun->postsend("http://swap.5067.org/stats.php?key=get_stats", $data); //获取客户访问统计信息
-					$stats_info = json_decode($stats_info);
-					if (empty($stats_info) || $stats_info == 'null') {//统计为空，新增数据
-//						echo '2---1---<br>';
-						$data3 = array(
-							'cus_id' => $customer_info->cus_id,
-							'pc_domain' => $customer_info->pc_domain ? $customer_info->pc_domain : $domain,
-							'mobile_domain' => $customer_info->mobile_domain ? $customer_info->mobile_domain : $domain,
-						);
-						$stats_id = $postFun->postsend("http://swap.5067.org/stats.php?key=insert_stats", $data3); //添加客户访问统计信息
-						$data2 = array(
-							'id' => $stats_id,
-							'page_count_num' => 1,
-							'page_today_num' => 1,
-						);
-					} else {//统计不为空，累加数据
-//						echo '2---2---<br>';
-						$stats_id = $stats_info->id;
-						if ($stats_info->lasttime != $today) {//查看lasttime是否为今天，不是今天更新lasttime，并重新统计当日访问数
-							$data2 = array(
-								'id' => $stats_id,
-								'page_count_num' => $stats_info->page_count_num + 1,
-								'page_today_num' => 1,
-								'lasttime' => 1
-							);
-						} else {//是当日，累加访问数
-							$data2 = array(
-								'id' => $stats_id,
-								'page_count_num' => $stats_info->page_count_num + 1,
-								'page_today_num' => $stats_info->page_today_num + 1
-							);
-						}
-					}
-					$resa = $postFun->postsend("http://swap.5067.org/stats.php?key=update_stats", $data2); //更新客户访问统计信息
-				}
-			}
-
-
-
-
+//			if ($_template->template_resource == './_footer.html') {
+//				$postFun = new CommonController;
+//				$domain = $_SERVER['HTTP_HOST'] ? 'http://' . $_SERVER['HTTP_HOST'] : '';
+//				$ip_address = ($_SERVER['REMOTE_ADDR']);
+//				$today = date('Y-m-d');
+////				$param['domain'] = $domain;
+////				$param['ip_address'] = $ip_address;
+//				$flag = true;
+////				$stats_log_info = DB::table('stats_log')->where('ip_address', $ip_address)->where('pc_domain', $domain)->orWhere('mobile_domain', $domain)->first();
+//				$data = array(
+//					'pc_domain' => $domain,
+//					'mobile_domain' => $domain,
+//				);
+//				$stats_log_info = $postFun->postsend("http://swap.5067.org/stats.php?key=get_stats_log",$data); //获取交互服务器上访问日志
+//				$stats_log_info=  json_decode($stats_log_info);
+//				if (empty($stats_log_info) || $stats_log_info == 'null') {//新增
+////					echo '1---<br>';
+//					$data = array(
+//						'pc_domain' => $customer_info->pc_domain ? $customer_info->pc_domain : $domain,
+//						'mobile_domain' => $customer_info->mobile_domain ? $customer_info->mobile_domain : $domain,
+//					);
+////					$customer_info = DB::table('customer_info')->where('pc_domain', $domain)->orWhere('mobile_domain', $domain)->select('cus_id', 'pc_domain', 'mobile_domain')->first();
+//					$customer_info = $postFun->postsend("http://swap.5067.org/stats.php?key=get_customer_info", $data); //获取客户信息
+//					$customer_info = json_decode($customer_info);
+//					$data = array(
+//						'pc_domain' => $customer_info->pc_domain ? $customer_info->pc_domain : $domain,
+//						'mobile_domain' => $customer_info->mobile_domain ? $customer_info->mobile_domain : $domain,
+//					);
+////					$stats_log_id = DB::table('stats_log')->insertGetId($data);
+//					$stats_log_id = $postFun->postsend("http://swap.5067.org/stats.php?key=insert_stats_log", $data); //添加用户登录日志
+//				} else {//判断单日是否已经登录过
+////					echo '2---<br>';
+//					if ($stats_log_info->lasttime != $today) {//不是当日更新为今天日期、并且计数+1
+//						$stats_log_id = $stats_log_info->id;
+//						$data = array(
+//							'id' => $stats_log_id,
+//						);
+////						DB::table('stats_log')->where('id', $stats_log_info->id)->update($data);
+//						$res = $postFun->postsend("http://swap.5067.org/stats.php?key=update_stats_log", $data); //更新用户登录日志
+//					} else {//当日已登录
+//						$flag = FALSE; //不做操作
+//					}
+//				}
+//				if (!$flag) {
+////					$stats_info = DB::table('stats')->where('cus_id', $customer_info->cus_id)->first();
+//					$data = array(
+//						'cus_id' => $customer_info->cus_id,
+//					);
+//					$stats_info = $postFun->postsend("http://swap.5067.org/stats.php?key=get_stats", $data); //获取客户访问统计信息
+//					$stats_info = json_decode($stats_info);
+//					if (empty($stats_info) || $stats_info == 'null') {//统计为空，新增数据
+////						echo '2---1---<br>';
+//						$data3 = array(
+//							'cus_id' => $customer_info->cus_id,
+//							'pc_domain' => $customer_info->pc_domain ? $customer_info->pc_domain : $domain,
+//							'mobile_domain' => $customer_info->mobile_domain ? $customer_info->mobile_domain : $domain,
+//						);
+//						$stats_id = $postFun->postsend("http://swap.5067.org/stats.php?key=insert_stats", $data3); //添加客户访问统计信息
+//						$data2 = array(
+//							'id' => $stats_id,
+//							'page_count_num' => 1,
+//							'page_today_num' => 1,
+//						);
+//					} else {//统计不为空，累加数据
+////						echo '2---2---<br>';
+//						$stats_id = $stats_info->id;
+//						if ($stats_info->lasttime != $today) {//查看lasttime是否为今天，不是今天更新lasttime，并重新统计当日访问数
+//							$data2 = array(
+//								'id' => $stats_id,
+//								'page_count_num' => $stats_info->page_count_num + 1,
+//								'page_today_num' => 1,
+//								'lasttime' => 1
+//							);
+//						} else {//是当日，累加访问数
+//							$data2 = array(
+//								'id' => $stats_id,
+//								'page_count_num' => $stats_info->page_count_num + 1,
+//								'page_today_num' => $stats_info->page_today_num + 1
+//							);
+//						}
+//					}
+//					$resa = $postFun->postsend("http://swap.5067.org/stats.php?key=update_stats", $data2); //更新客户访问统计信息
+//				}
+//			}
 
 
 			if (!$_template->source->recompiled && empty($_template->properties['file_dependency'][$_template->source->uid])) {
