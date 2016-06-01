@@ -847,7 +847,7 @@ class PrintController extends BaseController {
                 $floatadvprint = curl_exec($ch);
                 curl_close($ch);
             }
-            $enlargeprint = @file_get_contents("http://swap.5067.org/interface.php?enlarge=1");
+            
             $headscript = $customer_info->pc_header_script;
             if ($customer_info->lang == 'en') {
                 $footprint = $customer_info->footer . '<p>Technology support：<a href="http://www.12t.cn/">Xiamen 12t network technology co.ltd</a> Talent support：<a href="http://www.xgzrc.com/">www.xgzrc.com.cn</a></p>';
@@ -978,7 +978,6 @@ class PrintController extends BaseController {
             'footprint' => $footprint,
             'footscript' => $footscript,
             'global' => $global_data,
-            'enlargeprint'=>isset($enlargeprint)?$enlargeprint:'',
             'site_url' => $this->site_url,
             'site_another_url' => $site_another_url,
             'contact' => $contact,
@@ -2423,8 +2422,10 @@ class PrintController extends BaseController {
             $viewname = 'content-news';
         } elseif ($article_type == 2) {//产品内容
             $viewname = 'content-product';
-            $customerinfo = CustomerInfo::where('cus_id', $this->cus_id)->first();
-            $result['enlarge'] = $customerinfo['enlarge'];
+            $result['enlarge'] = $customer_info->enlarge;
+            if($result['enlarge']){
+                $result['enlargeprint'] = @file_get_contents("http://swap.5067.org/interface.php?enlarge=1");
+            }
         } else {//跳转404
         }
         //关联文章查询
@@ -2581,8 +2582,10 @@ class PrintController extends BaseController {
             $viewname = 'content-news';
         } elseif ($article_type == 2) {//产品内容
             $viewname = 'content-product';
-            $customerinfo = CustomerInfo::where('cus_id', $this->cus_id)->first();
-            $result['enlarge'] = $customerinfo['enlarge'];
+            $result['enlarge'] = $customer_info->enlarge;
+            if($result['enlarge']){
+                $result['enlargeprint'] = @file_get_contents("http://swap.5067.org/interface.php?enlarge=1");
+            }
         } else {//跳转404
         }
 
