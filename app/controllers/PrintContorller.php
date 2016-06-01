@@ -847,7 +847,7 @@ class PrintController extends BaseController {
                 $floatadvprint = curl_exec($ch);
                 curl_close($ch);
             }
-            $enlargeprint = file_get_contents("http://swap.5067.org/interface.php?enlarge=1");
+            
             $headscript = $customer_info->pc_header_script;
             if ($customer_info->lang == 'en') {
                 $footprint = $customer_info->footer . '<p>Technology support：<a href="http://www.12t.cn/">Xiamen 12t network technology co.ltd</a> Talent support：<a href="http://www.xgzrc.com/">www.xgzrc.com.cn</a></p>';
@@ -978,7 +978,6 @@ class PrintController extends BaseController {
             'footprint' => $footprint,
             'footscript' => $footscript,
             'global' => $global_data,
-            'enlargeprint'=>isset($enlargeprint)?$enlargeprint:'',
             'site_url' => $this->site_url,
             'site_another_url' => $site_another_url,
             'contact' => $contact,
@@ -1528,7 +1527,7 @@ class PrintController extends BaseController {
      * 
      */
     public static function createShare($params) {
-        $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
+        $customer_info = CustomerInfo::where('cus_id', Auth::id())->first();
         if ($customer_info->lang == 'en'){
              $s = '<div class="bdsharebuttonbox" data-tag="share_1">
           <a class="bds_mshare" data-cmd="mshare"></a>
@@ -1884,7 +1883,7 @@ class PrintController extends BaseController {
                     </label>
                     <label>
                     <span>&nbsp;</span>
-                    <input type="submit" class="button" name="submit" value="提交" />
+                    <input type="submit" class="button" name="submit" value="Submit" />
                     </label>
                     </form>';
                 }else{
@@ -2359,7 +2358,14 @@ class PrintController extends BaseController {
      */
     public function articlePreview($id) {
         $article = Articles::find($id);
-
+        $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
+        if($customer_info->lang=='en'){
+            $lang['the_last']='The last one';
+            $lang['the_first']='The first one';
+        }else{
+            $lang['the_last']='已经是最后一篇';
+            $lang['the_first']='已经是第一篇';
+        }
         $a_moreimg = Moreimg::where('a_id', $id)->get()->toArray();
         array_unshift($a_moreimg, array('title' => $article->title, 'img' => $article->img));
         $images = array();
@@ -2416,76 +2422,88 @@ class PrintController extends BaseController {
             $viewname = 'content-news';
         } elseif ($article_type == 2) {//产品内容
             $viewname = 'content-product';
-            $customerinfo = CustomerInfo::where('cus_id', $this->cus_id)->first();
-            $result['enlarge'] = $customerinfo['enlarge'];
+            $result['enlarge'] = $customer_info->enlarge;
+            if($result['enlarge']){
+                $result['enlargeprint'] = @file_get_contents("http://swap.5067.org/interface.php?enlarge=1");
+            }
         } else {//跳转404
         }
         //关联文章查询
-        $pa = new PhpAnalysis();
-
-        $pa->SetSource($article->title);
-
-        //设置分词属性
-        $pa->resultType = 2;
-        $pa->differMax = true;
-        $pa->StartAnalysis();
-
-        //获取你想要的结果
-        $keywords = $pa->GetFinallyIndex();
-        if (count($keywords)) {
-            $relation_where = "";
-            foreach ((array) $keywords as $key => $word) {
-                $relation_where.="or title like '%$key%' ";
-            }
-            $relation_where = ltrim($relation_where, 'or');
-            $prefix = Config::get('database.connections.mysql.prefix');
-            $related_data = DB::select("select id,title,img as image,introduction,created_at,c_id from {$prefix}article where cus_id={$this->cus_id} and ($relation_where)");
-            $related = array();
-            if (count($related_data)) {
-                foreach ((array) $related_data as $val) {
-                    $temp_arr = [];
-                    $temp_arr['title'] = $val->title;
-                    $temp_arr['description'] = $val->introduction;
-                    $temp_arr['image'] = $this->source_dir . 'l/articles/' . $val->image;
-                    if ($this->showtype == 'preview') {
-                        $temp_arr['link'] = $this->domain . '/detail/' . $val->id;
-                        $temp_arr['category']['link'] = $this->domain . '/category/' . $val->id . '.html';
-                    } else {
-                        $temp_arr['link'] = $this->domain . '/detail/' . $val->id . '.html';
-                        $temp_arr['category']['link'] = $this->domain . '/category/' . $val->id . '.html';
-                    }
-                    $temp_arr['pubdate'] = $val->created_at;
-                    $temp_arr['pubtimestamp'] = strtotime($val->created_at);
-                    $a_c_info = Classify::where('id', $val->c_id)->first();
-                    $temp_arr['category']['name'] = $a_c_info->name;
-                    $temp_arr['category']['en_name'] = $a_c_info->en_name;
-                    $temp_arr['category']['icon'] = '<i class="iconfont">' . $a_c_info->icon . '</i>';
-                    $related[] = $temp_arr;
-                }
-            }
-        }
-//        $articles = Articles::where($this->type . '_show', '1')->where('c_id', $article->c_id)->where('use_url', '0')->orderBy('is_top', 'desc')->orderBy('sort', 'asc')->orderBy('created_at', 'desc')->get()->toArray();
-//        $related = array();
-//            for(;count($related)<6&&count($related)<  count($articles);){
-//                $k=rand(0, count($articles)-1);
-//                if ($this->showtype == 'preview') {
-//                    $related[$k]['link']=$this->domain . '/detail/' . $articles[$k]['id'];
-//                }else{
-//                    $related[$k]['link']=$this->domain . '/detail/' . $articles[$k]['id'].'.html';
-//                }
-//                $related[$k]['title']=$articles[$k]['title'];
+//        $pa = new PhpAnalysis();
+//
+//        $pa->SetSource($article->title);
+//
+//        //设置分词属性
+//        $pa->resultType = 2;
+//        $pa->differMax = true;
+//        $pa->StartAnalysis();
+//
+//        //获取你想要的结果
+//        $keywords = $pa->GetFinallyIndex();
+//        if (count($keywords)) {
+//            $relation_where = "";
+//            foreach ((array) $keywords as $key => $word) {
+//                $relation_where.="or title like '%$key%' ";
 //            }
+//            $relation_where = ltrim($relation_where, 'or');
+//            $prefix = Config::get('database.connections.mysql.prefix');
+//            $related_data = DB::select("select id,title,img as image,introduction,created_at,c_id from {$prefix}article where cus_id={$this->cus_id} and ($relation_where)");
+//            $related = array();
+//            if (count($related_data)) {
+//                foreach ((array) $related_data as $val) {
+//                    $temp_arr = [];
+//                    $temp_arr['title'] = $val->title;
+//                    $temp_arr['description'] = $val->introduction;
+//                    $temp_arr['image'] = $this->source_dir . 'l/articles/' . $val->image;
+//                    if ($this->showtype == 'preview') {
+//                        $temp_arr['link'] = $this->domain . '/detail/' . $val->id;
+//                        $temp_arr['category']['link'] = $this->domain . '/category/' . $val->id . '.html';
+//                    } else {
+//                        $temp_arr['link'] = $this->domain . '/detail/' . $val->id . '.html';
+//                        $temp_arr['category']['link'] = $this->domain . '/category/' . $val->id . '.html';
+//                    }
+//                    $temp_arr['pubdate'] = $val->created_at;
+//                    $temp_arr['pubtimestamp'] = strtotime($val->created_at);
+//                    $a_c_info = Classify::where('id', $val->c_id)->first();
+//                    $temp_arr['category']['name'] = $a_c_info->name;
+//                    $temp_arr['category']['en_name'] = $a_c_info->en_name;
+//                    $temp_arr['category']['icon'] = '<i class="iconfont">' . $a_c_info->icon . '</i>';
+//                    $related[] = $temp_arr;
+//                }
+//            }
+//        }
+        $articles = Articles::where($this->type . '_show', '1')->where('c_id', $article->c_id)->where('use_url', '0')->orderBy('is_top', 'desc')->orderBy('sort', 'asc')->orderBy('created_at', 'desc')->get()->toArray();
+        $related = array();
+            for(;count($related)<6&&count($related)<  count($articles);){
+                $k=rand(0, count($articles)-1);
+                if ($this->showtype == 'preview') {
+                    $related[$k]['link']=$this->domain . '/detail/' . $articles[$k]['id'];
+                    $related[$k]['category']['link']=$this->domain . '/category/' .$articles[$k]['id']. '.html';
+                }else{
+                    $related[$k]['link']=$this->domain . '/detail/' . $articles[$k]['id'].'.html';
+                    $related[$k]['category']['link']=$this->domain . '/category/' .$articles[$k]['id']. '.html';
+                }
+                $related[$k]['title']=$articles[$k]['title'];
+                $related[$k]['description']=$articles[$k]['introduction'];
+                $related[$k]['image']=$this->source_dir . 'l/articles/' .$articles[$k]['image'];
+                $related[$k]['pubdate']=$articles[$k]['created_at'];
+                $related[$k]['pubtimestamp']=strtotime($articles[$k]['created_at']);
+                $a_c_info = Classify::where('id',$articles[$k]['c_id'])->first();
+                $related[$k]['category']['name'] = $a_c_info->name;
+                $related[$k]['category']['en_name'] = $a_c_info->en_name;
+                $related[$k]['category']['icon'] = '<i class="iconfont">' . $a_c_info->icon . '</i>';
+            }
         //dd($article_prev);
         if ($this->showtype == 'preview') {
             if ($article_next === NULL) {
-                $result['article']['next']['title'] = '已经是最后一篇';
+                $result['article']['next']['title'] = $lang['the_last'];
                 $result['article']['next']['link'] = '';
             } else {
                 $result['article']['next']['title'] = $article_next->title;
                 $result['article']['next']['link'] = $this->domain . '/detail/' . $article_next->id;
             }
             if ($article_prev === NULL) {
-                $result['article']['prev']['title'] = '已经是第一篇';
+                $result['article']['prev']['title'] = $lang['the_first'];
                 $result['article']['prev']['link'] = '';
             } else {
                 $result['article']['prev']['title'] = $article_prev->title;
@@ -2496,14 +2514,14 @@ class PrintController extends BaseController {
             $result['article']['content'] = $article->content;
         } else {
             if ($article_next === NULL) {
-                $result['article']['next']['title'] = '已经是最后一篇';
+                $result['article']['next']['title'] = $lang['the_last'];
                 $result['article']['next']['link'] = '';
             } else {
                 $result['article']['next']['title'] = $article_next->title;
                 $result['article']['next']['link'] = $this->domain . '/detail/' . $article_next->id . '.html';
             }
             if ($article_prev === NULL) {
-                $result['article']['prev']['title'] = '已经是第一篇';
+                $result['article']['prev']['title'] = $lang['the_first'];
                 $result['article']['prev']['link'] = '';
             } else {
                 $result['article']['prev']['title'] = $article_prev->title;
@@ -2545,6 +2563,14 @@ class PrintController extends BaseController {
         set_time_limit(0);
         $paths = [];
         $result = $this->pagePublic($c_id);
+        $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
+        if($customer_info->lang=='en'){
+            $lang['the_last']='The last one';
+            $lang['the_first']='The first one';
+        }else{
+            $lang['the_last']='已经是最后一篇';
+            $lang['the_first']='已经是第一篇';
+        }
         if (is_array($result['navs']) && !empty($result['navs'])) {
             foreach ($result['navs'] as $nav) {
                 if ($nav['current'] == 1) {
@@ -2566,8 +2592,10 @@ class PrintController extends BaseController {
             $viewname = 'content-news';
         } elseif ($article_type == 2) {//产品内容
             $viewname = 'content-product';
-            $customerinfo = CustomerInfo::where('cus_id', $this->cus_id)->first();
-            $result['enlarge'] = $customerinfo['enlarge'];
+            $result['enlarge'] = $customer_info->enlarge;
+            if($result['enlarge']){
+                $result['enlargeprint'] = @file_get_contents("http://swap.5067.org/interface.php?enlarge=1");
+            }
         } else {//跳转404
         }
 
@@ -2602,7 +2630,7 @@ class PrintController extends BaseController {
             $the_result['article']['viewcount'] = '<em id="article-viewcount">0</em>';
 
             if (!isset($articles[$key + 1])) {
-                $the_result['article']['next']['title'] = '已经是最后一篇';
+                $the_result['article']['next']['title'] = $lang['the_last'];
                 $the_result['article']['next']['link'] = '';
             } else {
                 $the_result['article']['next']['title'] = $articles[$key + 1]['title'];
@@ -2610,7 +2638,7 @@ class PrintController extends BaseController {
             }
 
             if (!isset($articles[$key - 1])) {
-                $the_result['article']['prev']['title'] = '已经是第一篇';
+                $the_result['article']['prev']['title'] =$lang['the_first'];
                 $the_result['article']['prev']['link'] = '';
             } else {
                 $the_result['article']['prev']['title'] = $articles[$key - 1]['title'];
@@ -2623,61 +2651,63 @@ class PrintController extends BaseController {
             $the_result['article']['pubdate'] = $article['created_at'];
             $the_result['article']['pubtimestamp'] = strtotime($article['created_at']);
             //关联文章查询
-            if(!isset($_GET['np'])){
-                if(!isset($_GET['rand'])){
-                    $pa = new PhpAnalysis();
-
-                    $pa->SetSource($article['title']);
-
-                    //设置分词属性
-                    $pa->resultType = 2;
-                    $pa->differMax = true;
-                    $pa->StartAnalysis();
-
-                    //获取你想要的结果
-                    $keywords = $pa->GetFinallyIndex();
-                    if (count($keywords)) {
-                        $relation_where = "";
-                        foreach ((array) $keywords as $key => $word) {
-                            $relation_where.="or title like '%$key%' ";
-                        }
-                        $relation_where = ltrim($relation_where, 'or');
-                        $prefix = Config::get('database.connections.mysql.prefix');
-                        $related_data = DB::select("select id,title,img as image,introduction,created_at,c_id from {$prefix}article where cus_id={$this->cus_id} and ($relation_where)");
-                        $related = array();
-                        if (count($related_data)) {
-                            foreach ((array) $related_data as $val) {
-                                $temp_arr = array();
-                                $temp_arr['title'] = $val->title;
-                                $temp_arr['description'] = $val->introduction;
-                                $temp_arr['image'] = $this->source_dir . 'l/articles/' . $val->image;
-                                if ($this->showtype == 'preview') {
-                                    $temp_arr['link'] = $this->domain . '/detail/' . $val->id;
-                                    $temp_arr['category']['link'] = $this->domain . '/category/' . $val->id . '.html';
-                                } else {
-                                    $temp_arr['link'] = $this->domain . '/detail/' . $val->id . '.html';
-                                    $temp_arr['category']['link'] = $this->domain . '/category/' . $val->id . '.html';
-                                }
-                                $temp_arr['pubdate'] = $val->created_at;
-                                $temp_arr['pubtimestamp'] = strtotime($val->created_at);
-                                $a_c_info = Classify::where('id', $val->c_id)->first();
-                                $temp_arr['category']['name'] = $a_c_info->name;
-                                $temp_arr['category']['en_name'] = $a_c_info->en_name;
-                                $temp_arr['category']['icon'] = '<i class="iconfont">' . $a_c_info->icon . '</i>';
-                                $related[] = $temp_arr;
-                            }
-                        }
-                    }
-                }else{
-                    $related = array();
-                    for(;count($related)<6&&count($related)<  count($articles);){
-                        $k=rand(0, count($articles)-1);
-                        $related[$k]['link']=$this->domain . '/detail/' . $articles[$k]['id'].'.html';
-                        $related[$k]['title']=$articles[$k]['title'];
-                    }
-                }
-            }else{
-               $related = array(); 
+//                    $pa = new PhpAnalysis();
+//
+//                    $pa->SetSource($article['title']);
+//
+//                    //设置分词属性
+//                    $pa->resultType = 2;
+//                    $pa->differMax = true;
+//                    $pa->StartAnalysis();
+//
+//                    //获取你想要的结果
+//                    $keywords = $pa->GetFinallyIndex();
+//                    if (count($keywords)) {
+//                        $relation_where = "";
+//                        foreach ((array) $keywords as $key => $word) {
+//                            $relation_where.="or title like '%$key%' ";
+//                        }
+//                        $relation_where = ltrim($relation_where, 'or');
+//                        $prefix = Config::get('database.connections.mysql.prefix');
+//                        $related_data = DB::select("select id,title,img as image,introduction,created_at,c_id from {$prefix}article where cus_id={$this->cus_id} and ($relation_where)");
+//                        $related = array();
+//                        if (count($related_data)) {
+//                            foreach ((array) $related_data as $val) {
+//                                $temp_arr = array();
+//                                $temp_arr['title'] = $val->title;
+//                                $temp_arr['description'] = $val->introduction;
+//                                $temp_arr['image'] = $this->source_dir . 'l/articles/' . $val->image;
+//                                if ($this->showtype == 'preview') {
+//                                    $temp_arr['link'] = $this->domain . '/detail/' . $val->id;
+//                                    $temp_arr['category']['link'] = $this->domain . '/category/' . $val->id . '.html';
+//                                } else {
+//                                    $temp_arr['link'] = $this->domain . '/detail/' . $val->id . '.html';
+//                                    $temp_arr['category']['link'] = $this->domain . '/category/' . $val->id . '.html';
+//                                }
+//                                $temp_arr['pubdate'] = $val->created_at;
+//                                $temp_arr['pubtimestamp'] = strtotime($val->created_at);
+//                                $a_c_info = Classify::where('id', $val->c_id)->first();
+//                                $temp_arr['category']['name'] = $a_c_info->name;
+//                                $temp_arr['category']['en_name'] = $a_c_info->en_name;
+//                                $temp_arr['category']['icon'] = '<i class="iconfont">' . $a_c_info->icon . '</i>';
+//                                $related[] = $temp_arr;
+//                            }
+//                        }
+//                    }
+            $related = array();
+            for(;count($related)<6&&count($related)<  count($articles);){
+                $k=rand(0, count($articles)-1);
+                $related[$k]['link']=$this->domain . '/detail/' . $articles[$k]['id'].'.html';
+                $related[$k]['category']['link']=$this->domain . '/category/' .$articles[$k]['id']. '.html';
+                $related[$k]['title']=$articles[$k]['title'];
+                $related[$k]['description']=$articles[$k]['introduction'];
+                $related[$k]['image']=$this->source_dir . 'l/articles/' .$articles[$k]['image'];
+                $related[$k]['pubdate']=$articles[$k]['created_at'];
+                $related[$k]['pubtimestamp']=strtotime($articles[$k]['created_at']);
+                $a_c_info = Classify::where('id',$articles[$k]['c_id'])->first();
+                $related[$k]['category']['name'] = $a_c_info->name;
+                $related[$k]['category']['en_name'] = $a_c_info->en_name;
+                $related[$k]['category']['icon'] = '<i class="iconfont">' . $a_c_info->icon . '</i>';
             }
             $the_result['related'] = $related;
             if (isset($_GET['memory'])) {
@@ -2690,9 +2720,6 @@ class PrintController extends BaseController {
             file_put_contents($path, $output);
             $paths[] = $path;
             $nowpercent = $last_html_precent + $html_precent;
-            if(isset($_GET['msleep'])){
-                    sleep($_GET['msleep']);
-                }
             if (floor($nowpercent) !== floor($last_html_precent)) {
                 if(isset($_GET['sleep'])){
                     sleep($_GET['sleep']);
