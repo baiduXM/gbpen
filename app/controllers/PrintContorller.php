@@ -2954,46 +2954,48 @@ class PrintController extends BaseController {
         $result['posnavs'] = array(0 => array('en_name' => 'Search', 'name' => '搜索', 'link' => 'javascript:;', 'icon' => ''));
 
         //搜索数据替换
-        //搜索数据标记与替换
-        if (file_exists(app_path('views/templates/' . $this->themename . '/searchresult.html'))) {
-            $file_content = file_get_contents(app_path('views/templates/' . $this->themename . '/searchresult.html'));
-        } else {
-            $file_content = file_get_contents(public_path("packages/searchresult.html"));
-        }
-        //匹配搜索循环
-        preg_match('/(\{foreach[^\}]*from[\s]*=[\s]*\$search\.data[^\}]*\})([\s\S]*?)\{\/foreach\}/', $file_content, $search_foreach);
-        $search_content = str_replace($search_foreach[2], '<!--search_content_start-->' . $search_foreach[2] . '<!--search_content_end-->', $file_content);
-        //匹配foreach中的item值
-        preg_match('/item[\s]*=[\s]*([\S]*)/', $search_foreach[1], $search_view);
-        $search_view = $search_view[1];
-        //匹配所有查询中循环的值
-        preg_match_all('/{[\s]*\$' . $search_view . '[.|\[]([a-z]*)[\]]*}/', $search_foreach[2], $date_replace);
-        $search_view = array('title' => '$title', 'image' => '$image', 'link' => '$link', 'description' => '$description', 'pubdate' => '$pubdate', 'pubtimestamp' => '$pubtimestamp');
-        foreach ((array) $date_replace[0] as $k => $v) {
-            $search_content = str_replace($v, 'search_' . $search_view[$date_replace[1][$k]], $search_content);
-        }
-        //分页匹配
-        $page_content = $search_content;
-        $page_link_array = array('100-8_search' => '100-9_search');
-        preg_match('/(\{foreach[^\}]*from[\s]*=[\s]*\$page_links\.nears_link[^\}]*\})[\s\S]*?(\{if[^\}]*==[\s]*\$page_links\.current_page[^\}]*\})([\s\S]*?)\{else\}([\s\S]*?)\{\/if\}[\s\S]*?\{\/foreach\}/', $page_content, $page_foreach);
-        if ($page_foreach) {
-            $page_content = str_replace($page_foreach[3], '<!--page_corrent_link_start-->' . $page_foreach[3] . '<!--page_corrent_link_end-->', $page_content);
-            $page_content = str_replace($page_foreach[4], '<!--page_uncorrent_link_start-->' . $page_foreach[4] . '<!--page_uncorrent_link_end-->', $page_content);
-            $page_link_array = array('100-8_search' => '100-9_search', '100-1_search' => 'javascript::');
-        } else {
-            preg_match('/(\{foreach[^\}]*from[\s]*=[\s]*\$page_links\.nears_link[^\}]*\})([\s\S]*?)\{\/foreach\}/', $page_content, $page_foreach);
-            if ($page_foreach) {
-                $page_content = str_replace($page_foreach[2], '<!--page_uncorrent_link_start-->' . $page_foreach[2] . '<!--page_uncorrent_link_end-->', $page_content);
+        if(is_file(app_path('views/templates/' . $this->themename . '/searchresult_do.html'))){
+            //搜索数据标记与替换
+            if (is_file(app_path('views/templates/' . $this->themename . '/searchresult.html'))) {
+                $file_content = file_get_contents(app_path('views/templates/' . $this->themename . '/searchresult.html'));
+            } else {
+                $file_content = file_get_contents(public_path("packages/searchresult.html"));
             }
+            //匹配搜索循环
+            preg_match('/(\{foreach[^\}]*from[\s]*=[\s]*\$search\.data[^\}]*\})([\s\S]*?)\{\/foreach\}/', $file_content, $search_foreach);
+            $search_content = str_replace($search_foreach[2], '<!--search_content_start-->' . $search_foreach[2] . '<!--search_content_end-->', $file_content);
+            //匹配foreach中的item值
+            preg_match('/item[\s]*=[\s]*([\S]*)/', $search_foreach[1], $search_view);
+            $search_view = $search_view[1];
+            //匹配所有查询中循环的值
+            preg_match_all('/{[\s]*\$' . $search_view . '[.|\[]([a-z]*)[\]]*}/', $search_foreach[2], $date_replace);
+            $search_view = array('title' => '$title', 'image' => '$image', 'link' => '$link', 'description' => '$description', 'pubdate' => '$pubdate', 'pubtimestamp' => '$pubtimestamp');
+            foreach ((array) $date_replace[0] as $k => $v) {
+                $search_content = str_replace($v, 'search_' . $search_view[$date_replace[1][$k]], $search_content);
+            }
+            //分页匹配
+            $page_content = $search_content;
+            $page_link_array = array('100-8_search' => '100-9_search');
+            preg_match('/(\{foreach[^\}]*from[\s]*=[\s]*\$page_links\.nears_link[^\}]*\})[\s\S]*?(\{if[^\}]*==[\s]*\$page_links\.current_page[^\}]*\})([\s\S]*?)\{else\}([\s\S]*?)\{\/if\}[\s\S]*?\{\/foreach\}/', $page_content, $page_foreach);
+            if ($page_foreach) {
+                $page_content = str_replace($page_foreach[3], '<!--page_corrent_link_start-->' . $page_foreach[3] . '<!--page_corrent_link_end-->', $page_content);
+                $page_content = str_replace($page_foreach[4], '<!--page_uncorrent_link_start-->' . $page_foreach[4] . '<!--page_uncorrent_link_end-->', $page_content);
+                $page_link_array = array('100-8_search' => '100-9_search', '100-1_search' => 'javascript::');
+            } else {
+                preg_match('/(\{foreach[^\}]*from[\s]*=[\s]*\$page_links\.nears_link[^\}]*\})([\s\S]*?)\{\/foreach\}/', $page_content, $page_foreach);
+                if ($page_foreach) {
+                    $page_content = str_replace($page_foreach[2], '<!--page_uncorrent_link_start-->' . $page_foreach[2] . '<!--page_uncorrent_link_end-->', $page_content);
+                }
+            }
+            //分页结束
+            file_put_contents(app_path('views/templates/' . $this->themename . '/searchresult_do.html'), $page_content);
         }
-        //分页结束
-        file_put_contents(app_path('views/templates/' . $this->themename . '/searchresult_do.html'), $page_content);
         $result['search'] = array('total' => '-1000_search', 'keyword' => 'search_$keyword', 'data' => array(0 => array('link' => '', 'title' => '', 'pubdate' => '', 'description' => '')));
         $result['page_links'] = array('current_page' => '100-1_search', 'per_page' => '100-2_search', 'page_count' => '100-3_search', 'first_link' => '100-4_search', 'prev_link' => '100-5_search', 'next_link' => '100-6_search', 'last_link' => '100-7_search', 'nears_link' => $page_link_array);
         //替换结束
 
         if ($this->type != 'mobile') {
-            if (file_exists(app_path('views/templates/' . $this->themename . '/searchresult.html'))) {
+            if (is_file(app_path('views/templates/' . $this->themename . '/searchresult.html'))) {
                 $json_keys = $this->getJsonKey('searchresult.html');
                 if (count($json_keys)) {
                     foreach ($json_keys as $key) {
