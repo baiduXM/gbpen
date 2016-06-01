@@ -847,7 +847,7 @@ class PrintController extends BaseController {
                 $floatadvprint = curl_exec($ch);
                 curl_close($ch);
             }
-            $enlargeprint = file_get_contents("http://swap.5067.org/interface.php?enlarge=1");
+            $enlargeprint = @file_get_contents("http://swap.5067.org/interface.php?enlarge=1");
             $headscript = $customer_info->pc_header_script;
             if ($customer_info->lang == 'en') {
                 $footprint = $customer_info->footer . '<p>Technology support：<a href="http://www.12t.cn/">Xiamen 12t network technology co.ltd</a> Talent support：<a href="http://www.xgzrc.com/">www.xgzrc.com.cn</a></p>';
@@ -1528,7 +1528,7 @@ class PrintController extends BaseController {
      * 
      */
     public static function createShare($params) {
-        $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
+        $customer_info = CustomerInfo::where('cus_id', Auth::id())->first();
         if ($customer_info->lang == 'en'){
              $s = '<div class="bdsharebuttonbox" data-tag="share_1">
           <a class="bds_mshare" data-cmd="mshare"></a>
