@@ -836,6 +836,18 @@ class PrintController extends BaseController {
             foreach ((array) $floatadv as $key => $val) {
                 $floatadv[$key]->url = $this->showtype == 'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $val->adv) : $this->domain . '/images/l/common/' . $val->adv;
             }
+            if(count($floatadv)){
+                $url="http://swap.5067.org/floatadv.php";
+                $post_data=json_encode($floatadv);
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, $url);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                curl_setopt($ch, CURLOPT_POST, 1);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, array("data"=>$post_data));
+                $floatadvprint = curl_exec($ch);
+                curl_close($ch);
+            }
+            $enlargeprint = file_get_contents("http://swap.5067.org/interface.php?enlarge=1");
             $headscript = $customer_info->pc_header_script;
             if($customer_info->lang=='en'){
                 $footprint = $customer_info->footer . '<p>Technology support：<a href="http://www.12t.cn/">Xiamen 12t network technology co.ltd</a> Talent support：<a href="http://www.xgzrc.com/">www.xgzrc.com.cn</a></p>';
@@ -959,11 +971,12 @@ class PrintController extends BaseController {
             'navs' => $navs,
             'favicon' => rtrim($this->source_dir, 'images/') . '/images/l/common/' . $customer_info->favicon,
             'logo' => $logo,
-            'floatadv' => $floatadv,
+            'floatadvprint' => isset($floatadvprint)?$floatadvprint:'',
             'headscript' => $headscript,
             'footprint' => $footprint,
             'footscript' => $footscript,
             'global' => $global_data,
+            'enlargeprint'=>isset($enlargeprint)?$enlargeprint:'',
             'site_url' => $this->site_url,
             'site_another_url' => $site_another_url,
             'contact' => $contact,

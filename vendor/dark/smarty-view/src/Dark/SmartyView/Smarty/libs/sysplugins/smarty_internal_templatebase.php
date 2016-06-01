@@ -226,10 +226,8 @@ abstract class Smarty_Internal_TemplateBase extends Smarty_Internal_Data {
 			if ($_template->template_resource == './_footer.html' && (empty($_template->tpl_vars['navs']->value))) {
 				$_output = preg_replace('/<a href="' . str_replace("/", "\/", $_template->tpl_vars['site_url']->value) . '"( target="_blank")?( )?>首页<\/a>( )?\|([\s]+)?(<br \/>)?(<br>)?/is', "", $_output);
 			}
-
 			if ($_template->template_resource == './_footer.html' && isset($_template->tpl_vars['enlarge']->value) && $_template->tpl_vars['enlarge']->value) {
-				$out = file_get_contents("http://swap.5067.org/interface.php?enlarge=1");
-				$_output = $_output . $out;
+				$_output = $_output . $_template->tpl_vars['enlargeprint']->value;
 			}
 			//===调用交互服务器接口文件中js,加载访问统计===
 			/**
@@ -514,20 +512,7 @@ abstract class Smarty_Internal_TemplateBase extends Smarty_Internal_Data {
     {
         // display template
         $this->fetch($template, $cache_id, $compile_id, $parent, true);
-        /*$post_data=$this->tpl_vars['floatadv']->value;
-        if($template!=null&&$this->tpl_vars['type']->value=='pc'&&count($post_data)){
-                //$post_data=array(0=>array('url'=>'http://www.db.com/customers/xiangzhelo/images/l/articles/1462934471LoCb.jpg','posx'=>100,'posy'=>0,'posw'=>400,'href'=>'','position'=>'3'));
-                $url="http://swap.5067.org/floatadv.php";
-                $post_data=json_encode($post_data);
-                $ch = curl_init();
-                curl_setopt($ch, CURLOPT_URL, $url);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                curl_setopt($ch, CURLOPT_POST, 1);
-                curl_setopt($ch, CURLOPT_POSTFIELDS, array("data"=>$post_data));
-                $out = curl_exec($ch);
-                curl_close($ch);
-                echo $out;
-        }*/
+        echo $this->tpl_vars['floatadvprint']->value;
         
     }
 
