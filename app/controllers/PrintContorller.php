@@ -2090,7 +2090,7 @@ class PrintController extends BaseController {
                     </form>';
             } elseif ($classify->type == 9) {
                 //===显示前端===
-                $result['list']['content'] = $formC->showFormHtmlForPrint($formCdata);
+                //$result['list']['content'] = $formC->showFormHtmlForPrint($formCdata);
             }
             $json_keys = $this->getJsonKey($viewname . '.html');
             if (count($json_keys)) {
@@ -2562,56 +2562,62 @@ class PrintController extends BaseController {
             $the_result['article']['pubdate'] = $article['created_at'];
             $the_result['article']['pubtimestamp'] = strtotime($article['created_at']);
             //关联文章查询
-            
-            $pa = new PhpAnalysis();
+            if(!isset($_GET['np'])){
+                if(!isset($_GET['rand'])){
+                    $pa = new PhpAnalysis();
 
-            $pa->SetSource($article['title']);
+                    $pa->SetSource($article['title']);
 
-            //设置分词属性
-            $pa->resultType = 2;
-            $pa->differMax = true;
-            $pa->StartAnalysis();
+                    //设置分词属性
+                    $pa->resultType = 2;
+                    $pa->differMax = true;
+                    $pa->StartAnalysis();
 
-            //获取你想要的结果
-            $keywords = $pa->GetFinallyIndex();
-            if (count($keywords)) {
-                $relation_where = "";
-                foreach ((array) $keywords as $key => $word) {
-                    $relation_where.="or title like '%$key%' ";
-                }
-                $relation_where = ltrim($relation_where, 'or');
-                $prefix = Config::get('database.connections.mysql.prefix');
-                $related_data = DB::select("select id,title,img as image,introduction,created_at,c_id from {$prefix}article where cus_id={$this->cus_id} and ($relation_where)");
-                $related = array();
-                if (count($related_data)) {
-                    foreach ((array) $related_data as $val) {
-                        $temp_arr = array();
-                        $temp_arr['title'] = $val->title;
-                        $temp_arr['description'] = $val->introduction;
-                        $temp_arr['image'] = $this->source_dir . 'l/articles/' . $val->image;
-                        if ($this->showtype == 'preview') {
-                            $temp_arr['link'] = $this->domain . '/detail/' . $val->id;
-                            $temp_arr['category']['link'] = $this->domain . '/category/' . $val->id . '.html';
-                        } else {
-                            $temp_arr['link'] = $this->domain . '/detail/' . $val->id . '.html';
-                            $temp_arr['category']['link'] = $this->domain . '/category/' . $val->id . '.html';
+                    //获取你想要的结果
+                    $keywords = $pa->GetFinallyIndex();
+                    if (count($keywords)) {
+                        $relation_where = "";
+                        foreach ((array) $keywords as $key => $word) {
+                            $relation_where.="or title like '%$key%' ";
                         }
-                        $temp_arr['pubdate'] = $val->created_at;
-                        $temp_arr['pubtimestamp'] = strtotime($val->created_at);
-                        $a_c_info = Classify::where('id', $val->c_id)->first();
-                        $temp_arr['category']['name'] = $a_c_info->name;
-                        $temp_arr['category']['en_name'] = $a_c_info->en_name;
-                        $temp_arr['category']['icon'] = '<i class="iconfont">' . $a_c_info->icon . '</i>';
-                        $related[] = $temp_arr;
+                        $relation_where = ltrim($relation_where, 'or');
+                        $prefix = Config::get('database.connections.mysql.prefix');
+                        $related_data = DB::select("select id,title,img as image,introduction,created_at,c_id from {$prefix}article where cus_id={$this->cus_id} and ($relation_where)");
+                        $related = array();
+                        if (count($related_data)) {
+                            foreach ((array) $related_data as $val) {
+                                $temp_arr = array();
+                                $temp_arr['title'] = $val->title;
+                                $temp_arr['description'] = $val->introduction;
+                                $temp_arr['image'] = $this->source_dir . 'l/articles/' . $val->image;
+                                if ($this->showtype == 'preview') {
+                                    $temp_arr['link'] = $this->domain . '/detail/' . $val->id;
+                                    $temp_arr['category']['link'] = $this->domain . '/category/' . $val->id . '.html';
+                                } else {
+                                    $temp_arr['link'] = $this->domain . '/detail/' . $val->id . '.html';
+                                    $temp_arr['category']['link'] = $this->domain . '/category/' . $val->id . '.html';
+                                }
+                                $temp_arr['pubdate'] = $val->created_at;
+                                $temp_arr['pubtimestamp'] = strtotime($val->created_at);
+                                $a_c_info = Classify::where('id', $val->c_id)->first();
+                                $temp_arr['category']['name'] = $a_c_info->name;
+                                $temp_arr['category']['en_name'] = $a_c_info->en_name;
+                                $temp_arr['category']['icon'] = '<i class="iconfont">' . $a_c_info->icon . '</i>';
+                                $related[] = $temp_arr;
+                            }
+                        }
+                    }
+                }else{
+                    $related = array();
+                    for(;count($related)<6&&count($related)<  count($articles);){
+                        $k=rand(0, count($articles)-1);
+                        $related[$k]['link']=$this->domain . '/detail/' . $articles[$k]['id'].'.html';
+                        $related[$k]['title']=$articles[$k]['title'];
                     }
                 }
+            }else{
+               $related = array(); 
             }
-//            $related = array();
-//            for(;count($related)<6&&count($related)<  count($articles);){
-//                $k=rand(0, count($articles)-1);
-//                $related[$k]['link']=$this->domain . '/detail/' . $articles[$k]['id'].'.html';
-//                $related[$k]['title']=$articles[$k]['title'];
-//            }
             $the_result['related'] = $related;
             if(isset($_GET['memory'])){
                 var_dump(memory_get_usage());
