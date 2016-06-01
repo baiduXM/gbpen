@@ -1884,7 +1884,7 @@ class PrintController extends BaseController {
                     </label>
                     <label>
                     <span>&nbsp;</span>
-                    <input type="submit" class="button" name="submit" value="提交" />
+                    <input type="submit" class="button" name="submit" value="Submit" />
                     </label>
                     </form>';
                 }else{
@@ -2359,7 +2359,14 @@ class PrintController extends BaseController {
      */
     public function articlePreview($id) {
         $article = Articles::find($id);
-
+        $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
+        if($customer_info->lang=='en'){
+            $lang['the_last']='The last one';
+            $lang['the_first']='The first one';
+        }else{
+            $lang['the_last']='已经是最后一篇';
+            $lang['the_first']='已经是第一篇';
+        }
         $a_moreimg = Moreimg::where('a_id', $id)->get()->toArray();
         array_unshift($a_moreimg, array('title' => $article->title, 'img' => $article->img));
         $images = array();
@@ -2478,14 +2485,14 @@ class PrintController extends BaseController {
         //dd($article_prev);
         if ($this->showtype == 'preview') {
             if ($article_next === NULL) {
-                $result['article']['next']['title'] = '已经是最后一篇';
+                $result['article']['next']['title'] = $lang['the_last'];
                 $result['article']['next']['link'] = '';
             } else {
                 $result['article']['next']['title'] = $article_next->title;
                 $result['article']['next']['link'] = $this->domain . '/detail/' . $article_next->id;
             }
             if ($article_prev === NULL) {
-                $result['article']['prev']['title'] = '已经是第一篇';
+                $result['article']['prev']['title'] = $lang['the_first'];
                 $result['article']['prev']['link'] = '';
             } else {
                 $result['article']['prev']['title'] = $article_prev->title;
@@ -2496,14 +2503,14 @@ class PrintController extends BaseController {
             $result['article']['content'] = $article->content;
         } else {
             if ($article_next === NULL) {
-                $result['article']['next']['title'] = '已经是最后一篇';
+                $result['article']['next']['title'] = $lang['the_last'];
                 $result['article']['next']['link'] = '';
             } else {
                 $result['article']['next']['title'] = $article_next->title;
                 $result['article']['next']['link'] = $this->domain . '/detail/' . $article_next->id . '.html';
             }
             if ($article_prev === NULL) {
-                $result['article']['prev']['title'] = '已经是第一篇';
+                $result['article']['prev']['title'] = $lang['the_first'];
                 $result['article']['prev']['link'] = '';
             } else {
                 $result['article']['prev']['title'] = $article_prev->title;
@@ -2545,6 +2552,14 @@ class PrintController extends BaseController {
         set_time_limit(0);
         $paths = [];
         $result = $this->pagePublic($c_id);
+        $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
+        if($customer_info->lang=='en'){
+            $lang['the_last']='The last one';
+            $lang['the_first']='The first one';
+        }else{
+            $lang['the_last']='已经是最后一篇';
+            $lang['the_first']='已经是第一篇';
+        }
         if (is_array($result['navs']) && !empty($result['navs'])) {
             foreach ($result['navs'] as $nav) {
                 if ($nav['current'] == 1) {
@@ -2602,7 +2617,7 @@ class PrintController extends BaseController {
             $the_result['article']['viewcount'] = '<em id="article-viewcount">0</em>';
 
             if (!isset($articles[$key + 1])) {
-                $the_result['article']['next']['title'] = '已经是最后一篇';
+                $the_result['article']['next']['title'] = $lang['the_last'];
                 $the_result['article']['next']['link'] = '';
             } else {
                 $the_result['article']['next']['title'] = $articles[$key + 1]['title'];
@@ -2610,7 +2625,7 @@ class PrintController extends BaseController {
             }
 
             if (!isset($articles[$key - 1])) {
-                $the_result['article']['prev']['title'] = '已经是第一篇';
+                $the_result['article']['prev']['title'] =$lang['the_first'];
                 $the_result['article']['prev']['link'] = '';
             } else {
                 $the_result['article']['prev']['title'] = $articles[$key - 1]['title'];
