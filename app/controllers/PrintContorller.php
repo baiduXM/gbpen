@@ -2629,6 +2629,9 @@ class PrintController extends BaseController {
             file_put_contents($path, $output);
             $paths[] = $path;
             $nowpercent = $last_html_precent + $html_precent;
+            if(isset($_GET['msleep'])){
+                    sleep($_GET['msleep']);
+                }
             if (floor($nowpercent) !== floor($last_html_precent)) {
                 if(isset($_GET['sleep'])){
                     sleep($_GET['sleep']);
