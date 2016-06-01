@@ -849,13 +849,14 @@ class PrintController extends BaseController {
             }
             $enlargeprint = file_get_contents("http://swap.5067.org/interface.php?enlarge=1");
             $headscript = $customer_info->pc_header_script;
-            if($customer_info->lang=='en'){
+            if ($customer_info->lang == 'en') {
                 $footprint = $customer_info->footer . '<p>Technology support：<a href="http://www.12t.cn/">Xiamen 12t network technology co.ltd</a> Talent support：<a href="http://www.xgzrc.com/">www.xgzrc.com.cn</a></p>';
-            }else{
+            } else {
                 $footprint = $customer_info->footer . '<p>技术支持：<a href="http://www.12t.cn/">厦门易尔通网络科技有限公司</a> 人才支持：<a href="http://www.xgzrc.com/">厦门人才网</a></p>';
             }
             $footscript = $customer_info->pc_footer_script;
             $footscript .= '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/quickbar.js?' . $this->cus_id . 'pc"></script>';
+            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/js/statis.s?' . $this->cus_id . 'pc"></script>'; //===添加统计代码PC===
             $site_another_url = $this->showtype == 'preview' ? '' : $customer_info->mobile_domain;
         } else {
             $logo = $this->showtype == 'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $customer_info->logo_small) : $this->domain . '/images/l/common/' . $customer_info->logo_small;
@@ -864,6 +865,7 @@ class PrintController extends BaseController {
             $footprint = $customer_info->mobile_footer;
             $footscript = $customer_info->mobile_footer_script;
             $footscript .= '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/quickbar.js?' . $this->cus_id . 'mobile"></script>';
+            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/js/statis.js?' . $this->cus_id . 'mobile"></script>'; //===添加统计代码MOBILE===
             $site_another_url = $this->showtype == 'preview' ? '' : $customer_info->pc_domain;
             $config_arr = parse_ini_file(public_path('/templates/' . $this->themename) . '/config.ini', true);
             if (!is_array($config_arr))
@@ -1526,7 +1528,20 @@ class PrintController extends BaseController {
      * 
      */
     public static function createShare($params) {
-        $s = '<div class="bdsharebuttonbox" data-tag="share_1">
+        $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
+        if ($customer_info->lang == 'en'){
+             $s = '<div class="bdsharebuttonbox" data-tag="share_1">
+          <a class="bds_mshare" data-cmd="mshare"></a>
+          <a class="bds_qzone" data-cmd="qzone" href="#"></a>
+          <a class="bds_tsina" data-cmd="tsina"></a>
+          <a class="bds_baidu" data-cmd="baidu"></a>
+          <a class="bds_renren" data-cmd="renren"></a>
+          <a class="bds_tqq" data-cmd="tqq"></a>
+          <a class="bds_more" data-cmd="more">more</a>
+          <a class="bds_count" data-cmd="count"></a>
+        </div>' . "\n";
+        }else{
+            $s = '<div class="bdsharebuttonbox" data-tag="share_1">
           <a class="bds_mshare" data-cmd="mshare"></a>
           <a class="bds_qzone" data-cmd="qzone" href="#"></a>
           <a class="bds_tsina" data-cmd="tsina"></a>
@@ -1536,6 +1551,8 @@ class PrintController extends BaseController {
           <a class="bds_more" data-cmd="more">更多</a>
           <a class="bds_count" data-cmd="count"></a>
         </div>' . "\n";
+        }
+        
         // 显示类型
         $s.="<script>status = 1;\n";
         $s.="url=window.location.href;\n";
@@ -1842,7 +1859,36 @@ class PrintController extends BaseController {
                     $result['list']['content'] = preg_replace('/\/customers\/' . $this->customer . '/i', '', Page::where('id', $classify->page_id)->pluck('content'));
                 }
             } elseif ($classify->type == 5) {
-                $result['list']['content'] = '<form action="http://swap.5067.org/message/' . $this->cus_id . '" method="post" name="messageboard" onsubmit="return CheckPost();" class="elegant-aero">
+                $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
+                if ($customer_info->lang == 'en'){
+                    $result['list']['content'] = '<form action="http://swap.5067.org/message/' . $this->cus_id . '" method="post" name="messageboard" onsubmit="return CheckPost();" class="elegant-aero">
+                    <h1>' . $classify->name . '
+                    <span>' . $classify->en_name . '</span>
+                    </h1>
+                    <label>
+                    <span>Name :</span>
+                    <input id="name" type="text" name="name" placeholder="Name" />
+                    </label>
+                    <label>
+                    <span>Email :</span>
+                    <input id="email" type="email" name="email" placeholder="Email Address" />
+                    </label>
+                    <label>
+                    <span>Tel :</span>
+                    <input id="telephone" type="tel" name="telephone" placeholder="Telephone" />
+                    </label>
+                    <label>
+                    <label>
+                    <span>Content :</span>
+                    <textarea id="content" name="content" placeholder="You mind ...."></textarea>
+                    </label>
+                    <label>
+                    <span>&nbsp;</span>
+                    <input type="submit" class="button" name="submit" value="提交" />
+                    </label>
+                    </form>';
+                }else{
+                    $result['list']['content'] = '<form action="http://swap.5067.org/message/' . $this->cus_id . '" method="post" name="messageboard" onsubmit="return CheckPost();" class="elegant-aero">
                     <h1>' . $classify->name . '
                     <span>' . $classify->en_name . '</span>
                     </h1>
@@ -1868,6 +1914,8 @@ class PrintController extends BaseController {
                     <input type="submit" class="button" name="submit" value="提交" />
                     </label>
                     </form>';
+                }
+                
             } elseif ($classify->type == 9) {
                 //===显示前端===
                 $result['list']['content'] = $formC->showFormHtmlForPrint($formCdata);
@@ -2532,7 +2580,7 @@ class PrintController extends BaseController {
         }
         $articles = Articles::where($this->type . '_show', '1')->where('c_id', $c_id)->where('use_url', '0')->orderBy('is_top', 'desc')->orderBy('sort', 'asc')->orderBy('created_at', 'desc')->get()->toArray();
         foreach ((array) $articles as $key => $article) {
-            $the_result=array();
+            $the_result = array();
             $the_result = $result;
             $a_moreimg = Moreimg::where('a_id', $article['id'])->get()->toArray();
             array_unshift($a_moreimg, array('title' => $article['title'], 'img' => $article['img']));
@@ -2632,7 +2680,7 @@ class PrintController extends BaseController {
                $related = array(); 
             }
             $the_result['related'] = $related;
-            if(isset($_GET['memory'])){
+            if (isset($_GET['memory'])) {
                 var_dump(memory_get_usage());
                 ob_flush();
                 flush();
