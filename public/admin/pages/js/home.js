@@ -144,8 +144,8 @@ function homeController($scope, $http) {
                                                 if(typeof v.config.width!='undefined'){
                                                     v.prompt='<div class="ratio">（文章图片：'+v.config.width+'*'+v.config.height+'）</div>';
                                                 }
-                                                if(typeof v.config.navwidth!='undefined'){
-                                                    v.prompt +='<div class="ratio">（栏目图片：'+v.config.navwidth+'*'+v.config.navheight+'）</div>';
+                                                if(typeof v.config.nav_width!='undefined'){
+                                                    v.prompt +='<div class="ratio">（栏目图片：'+v.config.nav_width+'*'+v.config.nav_height+'）</div>';
                                                 }
 						sign = (sign == '' ? '<input class="selectBox_val" type="hidden" value="" name="data['+rootNodeName+'][id]" />' : sign);
 						_rel += '<div class="dropdown" style="display:block;">\
