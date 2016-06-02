@@ -141,6 +141,7 @@ function homeController($scope, $http) {
 						}else{
 							list1 += '<li><a >暂无内容！</a></li>'
 						}
+                                                v.prompt='';
                                                 if(typeof v.config.width!='undefined'){
                                                     v.prompt='<div class="ratio">（文章图片：'+v.config.width+'*'+v.config.height+'）</div>';
                                                 }
