@@ -599,8 +599,16 @@ class HtmlController1 extends BaseController{
                     }
                     ImgDel::where('cus_id',$this->cus_id)->delete();
                     if($pc!=''){
-                        ftp_put($conn,"/".$this->customer."/search.php",public_path("packages/search.php"),FTP_ASCII);
-                        ftp_put($conn,"/".$this->customer."/quickbar.json",public_path('customers/'.$this->customer.'/quickbar.json'),FTP_ASCII);
+                        @ftp_put($conn,"/".$this->customer."/search.php",public_path("packages/search.php"),FTP_ASCII);
+                        if(isset($_GET['test'])){
+                            var_dump(public_path('customers/'.$this->customer.'/quickbar.json'));
+                            if(file_exists(public_path('customers/'.$this->customer.'/quickbar.json'))){
+                                var_dump(1);
+                            }
+                            ob_flush();
+                            flush();
+                        }
+                        @ftp_put($conn,"/".$this->customer."/quickbar.json",public_path('customers/'.$this->customer.'/quickbar.json'),FTP_ASCII);
                     }
                     ftp_put($conn,"/".$this->customer."/site.zip",$path,FTP_BINARY);
                     ftp_put($conn,"/".$this->customer."/unzip.php",public_path("packages/unzip.php"),FTP_ASCII);
