@@ -83,7 +83,7 @@ var ercodeDrop = {
 	},
 	_mouseenter: function (difheight) {
 		var _this = this;
-		this.selector.find('img').attr('src', 'http://s.jiathis.com/qrcode.php?url=' + this.mobileurl);
+		this.selector.find('img').attr('src', 'http://s.jiathis.com/qrcode.php?url=http://' + this.mobileurl);
 		this.selector.hover(function (event) {
 			$(this).children().not('img').fadeIn();
 			$(this).height(40);

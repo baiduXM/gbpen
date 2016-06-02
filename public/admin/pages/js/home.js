@@ -141,6 +141,13 @@ function homeController($scope, $http) {
 						}else{
 							list1 += '<li><a >暂无内容！</a></li>'
 						}
+                                                v.prompt='';
+                                                if(typeof v.config.width!='undefined'){
+                                                    v.prompt='<div class="ratio">（文章图片：'+v.config.width+'*'+v.config.height+'）</div>';
+                                                }
+                                                if(typeof v.config.nav_width!='undefined'){
+                                                    v.prompt +='<div class="ratio">（栏目图片：'+v.config.nav_width+'*'+v.config.nav_height+'）</div>';
+                                                }
 						sign = (sign == '' ? '<input class="selectBox_val" type="hidden" value="" name="data['+rootNodeName+'][id]" />' : sign);
 						_rel += '<div class="dropdown" style="display:block;">\
 	                            <div class="selectBox" type="text">'+pname+'</div><span class="arrow"></span>'+sign+'\
@@ -190,7 +197,7 @@ function homeController($scope, $http) {
 						}
 						break;		
 				}// switch结束
-				_rt += '<li><dl class="homeed-left">'+v.description+'：'+(typeof v.config == 'undefined' ? '' : v.type == 'images' || v.type == 'image' ? '<div class="ratio">'+(v.config.width == undefined ? '自适应':v.config.width)+'*'+(v.config.height == 'undefined' ? '自适应':v.config.height)+'</div>'+(v.type=='image'?'':'<div>限制数量：<span class="pic_limit">'+(v.config.limit == undefined ? '0': v.config.limit)+'</span></div>') : '')+'</dl><dl class="homeed-right">'+(v.type == 'navs' ? '<div id="move_navs">'+_rel+'</div>': ''+_rel+'')+'</dl></li>';
+				_rt += '<li><dl class="homeed-left">'+v.description+'：'+(typeof v.prompt == 'undefined' ?'':v.prompt)+(typeof v.config == 'undefined' ? '' : v.type == 'images' || v.type == 'image' ? '<div class="ratio">'+(v.config.width == undefined ? '自适应':v.config.width)+'*'+(v.config.height == 'undefined' ? '自适应':v.config.height)+'</div>'+(v.type=='image'?'':'<div>限制数量：<span class="pic_limit">'+(v.config.limit == undefined ? '0': v.config.limit)+'</span></div>') : '')+'</dl><dl class="homeed-right">'+(v.type == 'navs' ? '<div id="move_navs">'+_rel+'</div>': ''+_rel+'')+'</dl></li>';
 			}); // each结束
 			
 			$('.home-edite').html('<form id="temple-data">' + _rt + '<input type="hidden" name="page" value="'+templePage+'" /><input type="hidden" name="type" value="'+templeType+'" /></form>');
