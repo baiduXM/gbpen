@@ -454,6 +454,35 @@ class HtmlController1 extends BaseController{
         }
         ob_end_flush();
     }
+     /**
+     * quickbar推送
+     * 
+     * 
+     */
+    public function pushQuickbar(){
+        $customerinfo = Customer::find($this->cus_id);
+        $ftp_array = explode(':',$customerinfo->ftp_address);
+        $port= $customerinfo->ftp_port;
+        $ftpdir=$customerinfo->ftp_dir;
+        $ftp=$customerinfo->ftp;
+        $ftp_array[1] = isset($ftp_array[1])?$ftp_array[1]:$port;
+        $conn = ftp_connect($ftp_array[0],$ftp_array[1]);
+        $template = new PrintController('push', 'mobile');
+        $m_template = new PrintController('push', 'pc');
+        $template->quickBarJson();
+        $m_template->quickBarJson();
+        if(trim($ftp)=='1'){
+            if($conn){
+                ftp_login($conn,$customerinfo->ftp_user,$customerinfo->ftp_pwd);
+                    ftp_pasv($conn, 1);
+                    if(@ftp_chdir($conn,$this->customer) == FALSE){
+                        ftp_mkdir($conn,$this->customer);  
+                    }
+                ftp_put($conn,"/".$this->customer."/quickbar.json",public_path('customers/'.$this->customer.'/quickbar.json'),FTP_ASCII);
+                ftp_put($conn,"/".$this->customer."/mobile/quickbar.json",public_path('customers/'.$this->customer.'/mobile/quickbar.json'),FTP_ASCII);
+            }
+        }
+    } 
     /**
      * 推送
      * 

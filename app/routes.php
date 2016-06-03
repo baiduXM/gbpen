@@ -261,6 +261,10 @@ Route::group(array('before' => 'auth'), function() {
         'as' => 'quickbar.json',
         'uses' => 'TemplatesController@quickBarJson'
     ]);
+    Route::get('pushquickbar', [
+        'as' => 'pushquickbar',
+        'uses' => 'HtmlController1@pushQuickbar'
+    ]);
     Route::get('quickbar.jsoninit', [
         'as' => 'quickbar.jsoninit',
         'uses' => 'CommonController@quickBarJsonInit'
