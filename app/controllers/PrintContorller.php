@@ -856,7 +856,8 @@ class PrintController extends BaseController {
             }
             $footscript = $customer_info->pc_footer_script;
             $footscript .= '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/quickbar.js?' . $this->cus_id . 'pc"></script>';
-            $footscript .=require_once('../public/admin/statis.php');
+            $footscript .=file_get_contents("http://unify.example.com/public/admin/statis.php?cus_id=$this->cus_id&platform=pc");
+//            $footscript .=file_get_contents("http://swap.5067.org/statis.php?cus_id=$this->cus_id&platform=pc");
 //            $footscript .=Route::('StatisController.php';
             $footscript .= '<script type="text/javascript" src="http://swap.5067.org/js/statis.js?' . $this->cus_id . 'pc"></script>'; //===添加统计代码PC===
             $site_another_url = $this->showtype == 'preview' ? '' : $customer_info->mobile_domain;
