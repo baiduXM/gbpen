@@ -458,6 +458,10 @@ function articleController($scope, $http ,$location) {
                                 var pc_show = $('.classify input[value=pc_show][checked]').val()?'1':'0';
                                 var mobile_show = $('.classify input[value=mobile_show][checked]').val()?'1':'0';
                                 var c_id=$('.classify input[name=column_name]').val();
+                                if(!$('.tpl_mask').attr('class')){
+                                    var fade = '<div class="tpl_mask" style="display: block;"></div><div class="text_tishi">努力保存中<i class="icon-spin4 iconfont icon-shuaxin"></i></div>';
+                                    $('body').append(fade);
+                                }
                                 $('.tpl_mask').show();
                                 $('.text_tishi').show();
                                 $('.batch_title .article').each(function(){
