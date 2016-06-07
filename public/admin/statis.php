@@ -25,7 +25,7 @@ $expires = date("Y-m-d H:i:s", time() + 60 * 30); //30分钟
 $now = date("Y-m-d H:i:s");
 $date = date("Y-m-d");
 $sessid = session_id();
-$log = findLog($cus_id, $db);
+$log = findLog($cus_id, $ip, $db);
 //查找日志是否存在
 if (empty($log)) {
     //如果不存在添加    
@@ -70,8 +70,8 @@ if (empty($counter)) {
  * @param type $db
  * @return type
  */
-function findLog($cus_id, $db) {
-    $res = $db->query("select * from up_statis_log where cus_id=$cus_id limit 1", PDO::FETCH_ASSOC);
+function findLog($cus_id, $ip, $db) {
+    $res = $db->query("select * from up_statis_log where cus_id=$cus_id and ip='$ip' limit 1", PDO::FETCH_ASSOC);
     foreach ($res as $v) {
         $row = $v;
     }
