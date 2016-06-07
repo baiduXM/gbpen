@@ -1,14 +1,4 @@
-//window.onload = function () {
-//    var ahref;
-//    ahref = $(".selected>a").attr('href');
-////    var ahref = $(".selected>a").attr('href');
-////    var ahref = window.location.hash;
-////    if (ahref != '#/visit') {
-////        return false;
-////    }
-//    console.log(ahref);
-//    
-//}
+
 $(function () {
     $.get('../statis-get', function (json) {
         var data = json.data;
