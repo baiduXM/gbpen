@@ -815,6 +815,8 @@ class PrintController extends BaseController {
      * @return array 返回一个包含公共数据的数组
      */
     private function pagePublic($c_id = 0) {
+
+
         error_reporting(E_ALL ^ E_NOTICE);
         //===whereIN(type:9) 万用表单===
         if ($this->type == 'pc') {
@@ -829,6 +831,7 @@ class PrintController extends BaseController {
             $navs = $this->addCurrent($navs, $current_arr);
         }
         $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
+        $postFun = new CommonController;
         if ($this->type == 'pc') {
             $stylecolor = websiteInfo::leftJoin('color', 'color.id', '=', 'website_info.pc_color_id')->where('cus_id', $this->cus_id)->pluck('color_en');
             $logo = $this->showtype == 'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $customer_info->logo) : $this->domain . '/images/l/common/' . $customer_info->logo;
@@ -856,12 +859,7 @@ class PrintController extends BaseController {
             }
             $footscript = $customer_info->pc_footer_script;
             $footscript .= '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/quickbar.js?' . $this->cus_id . 'pc"></script>';
-//            $postFun = new CommonController;
-//            $param['cus_id'] = $this->cus_id;
-//            $param['platform'] = 'pc';
-//            $res = $postFun->postsend("http://swap.5067.org/admin/test.php", $param); //===添加统计代码PC===
-//            $footscript .=$res;
-//            $footscript .=file_get_contents("http://swap.5067.org/admin/statis.php?cus_id=$this->cus_id&platform=pc"); 
+            $postFun->postsend("http://swap.5067.org/admin/statis.php?cus_id=$this->cus_id&platform=pc"); //===添加统计代码PC===
             $site_another_url = $this->showtype == 'preview' ? '' : $customer_info->mobile_domain;
         } else {
             $logo = $this->showtype == 'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $customer_info->logo_small) : $this->domain . '/images/l/common/' . $customer_info->logo_small;
@@ -870,8 +868,7 @@ class PrintController extends BaseController {
             $footprint = $customer_info->mobile_footer;
             $footscript = $customer_info->mobile_footer_script;
             $footscript .= '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/quickbar.js?' . $this->cus_id . 'mobile"></script>';
-//            $footscript .=file_get_contents("http://swap.5067.org/admin/statis.php?cus_id=$this->cus_id&platform=mobile"); //===添加统计代码MOBILE===
-//            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/js/statis.js?' . $this->cus_id . 'mobile"></script>'; //===添加统计代码MOBILE===
+            $postFun->postsend("http://swap.5067.org/admin/statis.php?cus_id=$this->cus_id&platform=mobile"); //===添加统计代码MOBILE===
             $site_another_url = $this->showtype == 'preview' ? '' : $customer_info->pc_domain;
             $config_arr = parse_ini_file(public_path('/templates/' . $this->themename) . '/config.ini', true);
             if (!is_array($config_arr))

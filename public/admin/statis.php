@@ -6,26 +6,34 @@
  * 不存在-->访问统计+1，
  */
 session_start();
+$db = new PDO("mysql:host=localhost;dbname=unify", "root", ""); //链接数据库
+//$db = new PDO("mysql:host=localhost;dbname=db_swap", "root", ""); //链接数据库
+
 $query = $_SERVER['QUERY_STRING'];
 if (empty($query)) {//===参数为空===
     echo "param is null";
     exit;
 }
-$db = new PDO("mysql:host=localhost;dbname=unify", "root", ""); //链接数据库
 $array = explode('&', $query);
 foreach ($array as $k => $v) {
     $t = explode('=', $v);
     $param[$t[0]] = $t[1];
 }
-
 $cus_id = $param['cus_id'];
 $platform = $param['platform'];
+//$cus_id = $_POST['cus_id'];
+//$platform = $_POST['platform'];
+
 $ip = $_SERVER['REMOTE_ADDR'];
 $expires = date("Y-m-d H:i:s", time() + 60 * 30); //30分钟
 $now = date("Y-m-d H:i:s");
 $date = date("Y-m-d");
+$_SESSION['cus_id'] = $cus_id;
+$_SESSION['sessid'] = session_id();
 $sessid = session_id();
-$log = findLog($cus_id, $ip, $db);
+$log = findLog($cus_id, $ip, $sessid, $db);
+//var_dump($_SESSION);
+
 //查找日志是否存在
 if (empty($log)) {
     //如果不存在添加    
@@ -53,15 +61,12 @@ if (empty($counter)) {
         'record_date' => $date
     );
     $insertCount = insertCount($dataCount, $db);
+}
+if (isset($insertLog)) {
     $updateCount = updateCount($cus_id, $platform, $counter, $db);
+    echo 'update statis succeed';
 } else {
-    if ($log['sessid'] == $sessid && $log['expires'] >= $now) {//不更新统计数据
-        echo 'not need update statis';
-    } else {//更新
-        $updateCount = updateCount($cus_id, $platform, $counter, $db);
-        echo 'update statis succeed';
-    }
-    //更新记录
+    echo 'not need update statis';
 }
 
 /**
@@ -70,13 +75,13 @@ if (empty($counter)) {
  * @param type $db
  * @return type
  */
-function findLog($cus_id, $ip, $db) {
-    $res = $db->query("select * from up_statis_log where cus_id=$cus_id and ip='$ip' limit 1", PDO::FETCH_ASSOC);
+function findLog($cus_id, $ip, $sessid, $db) {
+    $res = $db->query("select * from up_statis_log where cus_id=$cus_id and ip='$ip' and sessid='$sessid' limit 1", PDO::FETCH_ASSOC);
     foreach ($res as $v) {
         $row = $v;
     }
     if (empty($row)) {
-        return 0;
+        return null;
     } else {
         return $row;
     }
@@ -116,7 +121,7 @@ function findCount($cus_id, $db) {
         $row = $v;
     }
     if (empty($row)) {
-        return 0;
+        return null;
     } else {
         return $row;
     }
