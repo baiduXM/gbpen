@@ -165,6 +165,8 @@ class UploadController extends BaseController{
         $dir=public_path('customers/'.$customer.'/cache_images/');
         $img_size=Input::get('imgsize')?Input::get('imgsize'):400;
         $destinationPath = public_path('customers/'.$customer.'/images/');
+        $weburl=Customer::where('id',$cus_id)->pluck('weburl');
+        $suf_url=str_replace('http://c', '', $weburl);
         if($files){
                 $data=array();
                 $i=0;
@@ -174,11 +176,10 @@ class UploadController extends BaseController{
                 $port= $customerinfo->ftp_port;
                 $ftpdir=$customerinfo->ftp_dir;
                 $ftp=$customerinfo->ftp;
-                $domain=$customerinfo->pc_domain?$customerinfo->pc_domain:($customer.".n01.5067.org");
+                $domain=$customerinfo->pc_domain?$customerinfo->pc_domain:($customer.$weburl);
                 $ftp_array[1] = isset($ftp_array[1])?$ftp_array[1]:$port;
                 $conn = ftp_connect($ftp_array[0],$ftp_array[1]);
                 foreach((array)$files as $fileName){
-                    var_dump($fileName);
                     if(file_exists(public_path('customers/'.$customer.'/cache_images/'.$fileName))){
                         $file = explode('.',$fileName);
                         $type=  end($file);
@@ -232,7 +233,8 @@ class UploadController extends BaseController{
         $files=Input::file();
         $dir=public_path('customers/'.$customer.'/cache_images/');
         $customerinfo = Customer::find($cus_id);
-        $domain=$customerinfo->pc_domain?$customerinfo->pc_domain:($customer.".n01.5067.org");
+        $suf_url=str_replace('http://c', '', $customerinfo->weburl);
+        $domain=$customerinfo->pc_domain?$customerinfo->pc_domain:($customer.$suf_url);
         if(!is_dir($dir)){
             mkdir($dir,0777,true);
         }

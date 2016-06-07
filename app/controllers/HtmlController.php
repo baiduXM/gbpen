@@ -403,9 +403,11 @@ class HtmlController extends BaseController {
 			/**
 			 * pc使用本服务器自带域名推送，后期需要改进！
 			 */
+                        $weburl=Customer::where('id',$this->cus_id)->pluck('weburl');
+                        $suf_url=str_replace('http://c', '', $weburl);
 			$cus_name = strtolower(Customer::where('id', $this->cus_id)->pluck('name'));
 			if (trim($ftp) == '1') {
-				$ftp_pcdomain = "http://" . $cus_name . ".n01.5067.org";
+				$ftp_pcdomain = "http://" . $cus_name .$suf_url;
 			} else {
 				$ftp_pcdomain = $customerinfo->pc_domain;
 			}
