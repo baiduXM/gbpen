@@ -348,9 +348,9 @@ function pushtimer() {
     });
 }
 pushtimer();
-setInterval(function(){
-	pushtimer();
-}, 10000);
+//setInterval(function(){
+//	pushtimer();
+//}, 60000);
 window.onbeforeunload=function(event){
 	if(cache_num){
 		return "你更改的文件尚未推送！";
