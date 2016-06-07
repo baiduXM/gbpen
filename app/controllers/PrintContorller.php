@@ -829,6 +829,7 @@ class PrintController extends BaseController {
             $navs = $this->addCurrent($navs, $current_arr);
         }
         $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
+        $postFun = new CommonController;
         if ($this->type == 'pc') {
             $stylecolor = websiteInfo::leftJoin('color', 'color.id', '=', 'website_info.pc_color_id')->where('cus_id', $this->cus_id)->pluck('color_en');
             $logo = $this->showtype == 'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $customer_info->logo) : $this->domain . '/images/l/common/' . $customer_info->logo;
@@ -836,18 +837,18 @@ class PrintController extends BaseController {
             foreach ((array) $floatadv as $key => $val) {
                 $floatadv[$key]->url = $this->showtype == 'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $val->adv) : $this->domain . '/images/l/common/' . $val->adv;
             }
-            if(count($floatadv)){
-                $url="http://swap.5067.org/floatadv.php";
-                $post_data=json_encode($floatadv);
+            if (count($floatadv)) {
+                $url = "http://swap.5067.org/floatadv.php";
+                $post_data = json_encode($floatadv);
                 $ch = curl_init();
                 curl_setopt($ch, CURLOPT_URL, $url);
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
                 curl_setopt($ch, CURLOPT_POST, 1);
-                curl_setopt($ch, CURLOPT_POSTFIELDS, array("data"=>$post_data));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, array("data" => $post_data));
                 $floatadvprint = curl_exec($ch);
                 curl_close($ch);
             }
-            
+
             $headscript = $customer_info->pc_header_script;
             if ($customer_info->lang == 'en') {
                 $footprint = $customer_info->footer . '<p>Technology support：<a href="http://www.12t.cn/">Xiamen 12t network technology co.ltd</a> Talent support：<a href="http://www.xgzrc.com/">www.xgzrc.com.cn</a></p>';
@@ -856,7 +857,8 @@ class PrintController extends BaseController {
             }
             $footscript = $customer_info->pc_footer_script;
             $footscript .= '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/quickbar.js?' . $this->cus_id . 'pc"></script>';
-            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/js/statis.s?' . $this->cus_id . 'pc"></script>'; //===添加统计代码PC===
+            $postFun->postsend("http://swap.5067.org/admin/statis.php?cus_id=$this->cus_id&platform=pc"); //===添加统计代码PC===
+//            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/js/statis.s?' . $this->cus_id . 'pc"></script>'; //===添加统计代码PC===
             $site_another_url = $this->showtype == 'preview' ? '' : $customer_info->mobile_domain;
         } else {
             $logo = $this->showtype == 'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $customer_info->logo_small) : $this->domain . '/images/l/common/' . $customer_info->logo_small;
@@ -865,6 +867,7 @@ class PrintController extends BaseController {
             $footprint = $customer_info->mobile_footer;
             $footscript = $customer_info->mobile_footer_script;
             $footscript .= '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/quickbar.js?' . $this->cus_id . 'mobile"></script>';
+            $postFun->postsend("http://swap.5067.org/admin/statis.php?cus_id=$this->cus_id&platform=mobile"); //===添加统计代码MOBILE===
             $footscript .= '<script type="text/javascript" src="http://swap.5067.org/js/statis.js?' . $this->cus_id . 'mobile"></script>'; //===添加统计代码MOBILE===
             $site_another_url = $this->showtype == 'preview' ? '' : $customer_info->pc_domain;
             $config_arr = parse_ini_file(public_path('/templates/' . $this->themename) . '/config.ini', true);
@@ -973,7 +976,7 @@ class PrintController extends BaseController {
             'navs' => $navs,
             'favicon' => rtrim($this->source_dir, 'images/') . '/images/l/common/' . $customer_info->favicon,
             'logo' => $logo,
-            'floatadvprint' => isset($floatadvprint)?$floatadvprint:'',
+            'floatadvprint' => isset($floatadvprint) ? $floatadvprint : '',
             'headscript' => $headscript,
             'footprint' => $footprint,
             'footscript' => $footscript,
@@ -993,8 +996,8 @@ class PrintController extends BaseController {
         }
         return $result;
     }
-    
-    public function pushpublicpage(){
+
+    public function pushpublicpage() {
         $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
         if ($this->type == 'pc') {
             $stylecolor = websiteInfo::leftJoin('color', 'color.id', '=', 'website_info.pc_color_id')->where('cus_id', $this->cus_id)->pluck('color_en');
@@ -1003,18 +1006,18 @@ class PrintController extends BaseController {
             foreach ((array) $floatadv as $key => $val) {
                 $floatadv[$key]->url = $this->showtype == 'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $val->adv) : $this->domain . '/images/l/common/' . $val->adv;
             }
-            if(count($floatadv)){
-                $url="http://swap.5067.org/floatadv.php";
-                $post_data=json_encode($floatadv);
+            if (count($floatadv)) {
+                $url = "http://swap.5067.org/floatadv.php";
+                $post_data = json_encode($floatadv);
                 $ch = curl_init();
                 curl_setopt($ch, CURLOPT_URL, $url);
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
                 curl_setopt($ch, CURLOPT_POST, 1);
-                curl_setopt($ch, CURLOPT_POSTFIELDS, array("data"=>$post_data));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, array("data" => $post_data));
                 $floatadvprint = curl_exec($ch);
                 curl_close($ch);
             }
-            
+
             $headscript = $customer_info->pc_header_script;
             if ($customer_info->lang == 'en') {
                 $footprint = $customer_info->footer . '<p>Technology support：<a href="http://www.12t.cn/">Xiamen 12t network technology co.ltd</a> Talent support：<a href="http://www.xgzrc.com/">www.xgzrc.com.cn</a></p>';
@@ -1139,7 +1142,7 @@ class PrintController extends BaseController {
             'stylecolor' => $stylecolor,
             'favicon' => rtrim($this->source_dir, 'images/') . '/images/l/common/' . $customer_info->favicon,
             'logo' => $logo,
-            'floatadvprint' => isset($floatadvprint)?$floatadvprint:'',
+            'floatadvprint' => isset($floatadvprint) ? $floatadvprint : '',
             'headscript' => $headscript,
             'footprint' => $footprint,
             'footscript' => $footscript,
@@ -1158,7 +1161,8 @@ class PrintController extends BaseController {
         }
         return $result;
     }
-     public function pushnav($c_id = 0) {
+
+    public function pushnav($c_id = 0) {
         error_reporting(E_ALL ^ E_NOTICE);
         //===whereIN(type:9) 万用表单===
         if ($this->type == 'pc') {
@@ -1173,7 +1177,8 @@ class PrintController extends BaseController {
             $navs = $this->addCurrent($navs, $current_arr);
         }
         return $navs;
-     }
+    }
+
     /**
      * 获取首页数据，包括logo、path、stylecolor、navs、logo、footprint等
      *
@@ -1708,8 +1713,8 @@ class PrintController extends BaseController {
      */
     public static function createShare($params) {
         $customer_info = CustomerInfo::where('cus_id', Auth::id())->first();
-        if ($customer_info->lang == 'en'){
-             $s = '<div class="bdsharebuttonbox" data-tag="share_1">
+        if ($customer_info->lang == 'en') {
+            $s = '<div class="bdsharebuttonbox" data-tag="share_1">
           <a class="bds_mshare" data-cmd="mshare"></a>
           <a class="bds_qzone" data-cmd="qzone" href="#"></a>
           <a class="bds_tsina" data-cmd="tsina"></a>
@@ -1719,7 +1724,7 @@ class PrintController extends BaseController {
           <a class="bds_more" data-cmd="more">more</a>
           <a class="bds_count" data-cmd="count"></a>
         </div>' . "\n";
-        }else{
+        } else {
             $s = '<div class="bdsharebuttonbox" data-tag="share_1">
           <a class="bds_mshare" data-cmd="mshare"></a>
           <a class="bds_qzone" data-cmd="qzone" href="#"></a>
@@ -1731,7 +1736,7 @@ class PrintController extends BaseController {
           <a class="bds_count" data-cmd="count"></a>
         </div>' . "\n";
         }
-        
+
         // 显示类型
         $s.="<script>status = 1;\n";
         $s.="url=window.location.href;\n";
@@ -1798,8 +1803,8 @@ class PrintController extends BaseController {
     /**
      * PC显示首页
      */
-    public function homepagePreview($result=0) {
-        if($result==0){
+    public function homepagePreview($result = 0) {
+        if ($result == 0) {
             $result = $this->pagePublic();
         }
         $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
@@ -1830,8 +1835,8 @@ class PrintController extends BaseController {
     /**
      * 手机首页
      */
-    public function mhomepagePreview($result=0) {
-        if($result==0){
+    public function mhomepagePreview($result = 0) {
+        if ($result == 0) {
             $result = $this->pagePublic();
         }
         $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
@@ -2043,7 +2048,7 @@ class PrintController extends BaseController {
                 }
             } elseif ($classify->type == 5) {
                 $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
-                if ($customer_info->lang == 'en'){
+                if ($customer_info->lang == 'en') {
                     $result['list']['content'] = '<form action="http://swap.5067.org/message/' . $this->cus_id . '" method="post" name="messageboard" onsubmit="return CheckPost();" class="elegant-aero">
                     <h1>' . $classify->name . '
                     <span>' . $classify->en_name . '</span>
@@ -2070,7 +2075,7 @@ class PrintController extends BaseController {
                     <input type="submit" class="button" name="submit" value="Submit" />
                     </label>
                     </form>';
-                }else{
+                } else {
                     $result['list']['content'] = '<form action="http://swap.5067.org/message/' . $this->cus_id . '" method="post" name="messageboard" onsubmit="return CheckPost();" class="elegant-aero">
                     <h1>' . $classify->name . '
                     <span>' . $classify->en_name . '</span>
@@ -2098,7 +2103,6 @@ class PrintController extends BaseController {
                     </label>
                     </form>';
                 }
-                
             } elseif ($classify->type == 9) {
                 //===显示前端===
                 $result['list']['content'] = $formC->showFormHtmlForPrint($formCdata);
@@ -2246,10 +2250,10 @@ class PrintController extends BaseController {
      * @param int $id 栏目id
      * @param int $page 总页码
      */
-    public function categoryPush($id, $page,$result,$last_html_precent, $html_precent) {
+    public function categoryPush($id, $page, $result, $last_html_precent, $html_precent) {
         $paths = [];
         $result['navs'] = $this->pushnav($id);
-        $result['index_navs']=$result['navs'];
+        $result['index_navs'] = $result['navs'];
         foreach ((array) $result['navs'] as $nav) {
             if ($nav['current'] == 1) {
                 $pagenavs = $nav['childmenu'];
@@ -2544,12 +2548,12 @@ class PrintController extends BaseController {
     public function articlePreview($id) {
         $article = Articles::find($id);
         $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
-        if($customer_info->lang=='en'){
-            $lang['the_last']='The last one';
-            $lang['the_first']='The first one';
-        }else{
-            $lang['the_last']='已经是最后一篇';
-            $lang['the_first']='已经是第一篇';
+        if ($customer_info->lang == 'en') {
+            $lang['the_last'] = 'The last one';
+            $lang['the_first'] = 'The first one';
+        } else {
+            $lang['the_last'] = '已经是最后一篇';
+            $lang['the_first'] = '已经是第一篇';
         }
         $a_moreimg = Moreimg::where('a_id', $id)->get()->toArray();
         array_unshift($a_moreimg, array('title' => $article->title, 'img' => $article->img));
@@ -2608,7 +2612,7 @@ class PrintController extends BaseController {
         } elseif ($article_type == 2) {//产品内容
             $viewname = 'content-product';
             $result['enlarge'] = $customer_info->enlarge;
-            if($result['enlarge']){
+            if ($result['enlarge']) {
                 $result['enlargeprint'] = @file_get_contents("http://swap.5067.org/interface.php?enlarge=1");
             }
         } else {//跳转404
@@ -2659,25 +2663,25 @@ class PrintController extends BaseController {
 //        }
         $articles = Articles::where($this->type . '_show', '1')->where('c_id', $article->c_id)->where('use_url', '0')->orderBy('is_top', 'desc')->orderBy('sort', 'asc')->orderBy('created_at', 'desc')->get()->toArray();
         $related = array();
-            for(;count($related)<6&&count($related)<  count($articles);){
-                $k=rand(0, count($articles)-1);
-                if ($this->showtype == 'preview') {
-                    $related[$k]['link']=$this->domain . '/detail/' . $articles[$k]['id'];
-                    $related[$k]['category']['link']=$this->domain . '/category/' .$articles[$k]['id']. '.html';
-                }else{
-                    $related[$k]['link']=$this->domain . '/detail/' . $articles[$k]['id'].'.html';
-                    $related[$k]['category']['link']=$this->domain . '/category/' .$articles[$k]['id']. '.html';
-                }
-                $related[$k]['title']=$articles[$k]['title'];
-                $related[$k]['description']=$articles[$k]['introduction'];
-                $related[$k]['image']=$this->source_dir . 'l/articles/' .$articles[$k]['image'];
-                $related[$k]['pubdate']=$articles[$k]['created_at'];
-                $related[$k]['pubtimestamp']=strtotime($articles[$k]['created_at']);
-                $a_c_info = Classify::where('id',$articles[$k]['c_id'])->first();
-                $related[$k]['category']['name'] = $a_c_info->name;
-                $related[$k]['category']['en_name'] = $a_c_info->en_name;
-                $related[$k]['category']['icon'] = '<i class="iconfont">' . $a_c_info->icon . '</i>';
+        for (; count($related) < 6 && count($related) < count($articles);) {
+            $k = rand(0, count($articles) - 1);
+            if ($this->showtype == 'preview') {
+                $related[$k]['link'] = $this->domain . '/detail/' . $articles[$k]['id'];
+                $related[$k]['category']['link'] = $this->domain . '/category/' . $articles[$k]['id'] . '.html';
+            } else {
+                $related[$k]['link'] = $this->domain . '/detail/' . $articles[$k]['id'] . '.html';
+                $related[$k]['category']['link'] = $this->domain . '/category/' . $articles[$k]['id'] . '.html';
             }
+            $related[$k]['title'] = $articles[$k]['title'];
+            $related[$k]['description'] = $articles[$k]['introduction'];
+            $related[$k]['image'] = $this->source_dir . 'l/articles/' . $articles[$k]['image'];
+            $related[$k]['pubdate'] = $articles[$k]['created_at'];
+            $related[$k]['pubtimestamp'] = strtotime($articles[$k]['created_at']);
+            $a_c_info = Classify::where('id', $articles[$k]['c_id'])->first();
+            $related[$k]['category']['name'] = $a_c_info->name;
+            $related[$k]['category']['en_name'] = $a_c_info->en_name;
+            $related[$k]['category']['icon'] = '<i class="iconfont">' . $a_c_info->icon . '</i>';
+        }
         //dd($article_prev);
         if ($this->showtype == 'preview') {
             if ($article_next === NULL) {
@@ -2744,18 +2748,18 @@ class PrintController extends BaseController {
      *
      * @param int $id 文章id
      */
-    public function articlepush($c_id,$result,$last_html_precent, $html_precent) {
+    public function articlepush($c_id, $result, $last_html_precent, $html_precent) {
         set_time_limit(0);
         $paths = [];
         $result['navs'] = $this->pushnav($c_id);
-        $result['index_navs']=$result['navs'];
+        $result['index_navs'] = $result['navs'];
         $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
-        if($customer_info->lang=='en'){
-            $lang['the_last']='The last one';
-            $lang['the_first']='The first one';
-        }else{
-            $lang['the_last']='已经是最后一篇';
-            $lang['the_first']='已经是第一篇';
+        if ($customer_info->lang == 'en') {
+            $lang['the_last'] = 'The last one';
+            $lang['the_first'] = 'The first one';
+        } else {
+            $lang['the_last'] = '已经是最后一篇';
+            $lang['the_first'] = '已经是第一篇';
         }
         if (is_array($result['navs']) && !empty($result['navs'])) {
             foreach ($result['navs'] as $nav) {
@@ -2779,7 +2783,7 @@ class PrintController extends BaseController {
         } elseif ($article_type == 2) {//产品内容
             $viewname = 'content-product';
             $result['enlarge'] = $customer_info->enlarge;
-            if($result['enlarge']){
+            if ($result['enlarge']) {
                 $result['enlargeprint'] = @file_get_contents("http://swap.5067.org/interface.php?enlarge=1");
             }
         } else {//跳转404
@@ -2824,7 +2828,7 @@ class PrintController extends BaseController {
             }
 
             if (!isset($articles[$key - 1])) {
-                $the_result['article']['prev']['title'] =$lang['the_first'];
+                $the_result['article']['prev']['title'] = $lang['the_first'];
                 $the_result['article']['prev']['link'] = '';
             } else {
                 $the_result['article']['prev']['title'] = $articles[$key - 1]['title'];
@@ -2881,16 +2885,16 @@ class PrintController extends BaseController {
 //                        }
 //                    }
             $related = array();
-            for(;count($related)<6&&count($related)<  count($articles);){
-                $k=rand(0, count($articles)-1);
-                $related[$k]['link']=$this->domain . '/detail/' . $articles[$k]['id'].'.html';
-                $related[$k]['category']['link']=$this->domain . '/category/' .$articles[$k]['id']. '.html';
-                $related[$k]['title']=$articles[$k]['title'];
-                $related[$k]['description']=$articles[$k]['introduction'];
-                $related[$k]['image']=$this->source_dir . 'l/articles/' .$articles[$k]['image'];
-                $related[$k]['pubdate']=$articles[$k]['created_at'];
-                $related[$k]['pubtimestamp']=strtotime($articles[$k]['created_at']);
-                $a_c_info = Classify::where('id',$articles[$k]['c_id'])->first();
+            for (; count($related) < 6 && count($related) < count($articles);) {
+                $k = rand(0, count($articles) - 1);
+                $related[$k]['link'] = $this->domain . '/detail/' . $articles[$k]['id'] . '.html';
+                $related[$k]['category']['link'] = $this->domain . '/category/' . $articles[$k]['id'] . '.html';
+                $related[$k]['title'] = $articles[$k]['title'];
+                $related[$k]['description'] = $articles[$k]['introduction'];
+                $related[$k]['image'] = $this->source_dir . 'l/articles/' . $articles[$k]['image'];
+                $related[$k]['pubdate'] = $articles[$k]['created_at'];
+                $related[$k]['pubtimestamp'] = strtotime($articles[$k]['created_at']);
+                $a_c_info = Classify::where('id', $articles[$k]['c_id'])->first();
                 $related[$k]['category']['name'] = $a_c_info->name;
                 $related[$k]['category']['en_name'] = $a_c_info->en_name;
                 $related[$k]['category']['icon'] = '<i class="iconfont">' . $a_c_info->icon . '</i>';
@@ -2907,7 +2911,7 @@ class PrintController extends BaseController {
             $paths[] = $path;
             $nowpercent = $last_html_precent + $html_precent;
             if (floor($nowpercent) !== floor($last_html_precent)) {
-                if(isset($_GET['sleep'])){
+                if (isset($_GET['sleep'])) {
                     sleep($_GET['sleep']);
                 }
                 echo floor($nowpercent) . '%<script type="text/javascript">parent.refresh(' . floor($nowpercent) . ');</script><br />';
@@ -3140,7 +3144,7 @@ class PrintController extends BaseController {
         $result['posnavs'] = array(0 => array('en_name' => 'Search', 'name' => '搜索', 'link' => 'javascript:;', 'icon' => ''));
 
         //搜索数据替换
-        if(!is_file(app_path('views/templates/' . $this->themename . '/searchresult_do.html'))){
+        if (!is_file(app_path('views/templates/' . $this->themename . '/searchresult_do.html'))) {
             //搜索数据标记与替换
             if (is_file(app_path('views/templates/' . $this->themename . '/searchresult.html'))) {
                 $file_content = file_get_contents(app_path('views/templates/' . $this->themename . '/searchresult.html'));
