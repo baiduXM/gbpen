@@ -6,8 +6,8 @@
  * 不存在-->访问统计+1，
  */
 session_start();
-$db = new PDO("mysql:host=localhost;dbname=unify", "root", ""); //链接数据库
-//$db = new PDO("mysql:host=localhost;dbname=db_swap", "root", ""); //链接数据库
+//$db = new PDO("mysql:host=localhost;dbname=unify", "root", ""); //链接数据库
+$db = new PDO("mysql:host=localhost;dbname=db_swap", "root", ""); //链接数据库
 
 $query = $_SERVER['QUERY_STRING'];
 if (empty($query)) {//===参数为空===
@@ -33,7 +33,6 @@ $_SESSION['sessid'] = session_id();
 $sessid = session_id();
 $log = findLog($cus_id, $ip, $sessid, $db);
 //var_dump($_SESSION);
-
 //查找日志是否存在
 if (empty($log)) {
     //如果不存在添加    
@@ -41,7 +40,8 @@ if (empty($log)) {
         'cus_id' => $cus_id,
         'ip' => $ip,
         'expires' => $expires,
-        'sessid' => $sessid
+        'sessid' => $sessid,
+        'platform' => $platform
     );
     $insertLog = insertLog($dataLog, $db);
 } else {
@@ -94,7 +94,7 @@ function findLog($cus_id, $ip, $sessid, $db) {
  * @return type
  */
 function insertLog($data, $db) {
-    $res = $db->query("insert into up_statis_log (cus_id, ip, sessid, expires) value ('$data[cus_id]', '$data[ip]', '$data[sessid]', '$data[expires]')");
+    $res = $db->query("insert into up_statis_log (cus_id, ip, sessid, expires, platform) value ('$data[cus_id]', '$data[ip]', '$data[sessid]', '$data[expires]', '$data[platform]')");
     return $res;
 }
 
