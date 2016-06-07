@@ -176,7 +176,7 @@ class UploadController extends BaseController{
                 $port= $customerinfo->ftp_port;
                 $ftpdir=$customerinfo->ftp_dir;
                 $ftp=$customerinfo->ftp;
-                $domain=$customerinfo->pc_domain?$customerinfo->pc_domain:($customer.$weburl);
+                $domain=$customerinfo->pc_domain?$customerinfo->pc_domain:($customer.$suf_url);
                 $ftp_array[1] = isset($ftp_array[1])?$ftp_array[1]:$port;
                 $conn = ftp_connect($ftp_array[0],$ftp_array[1]);
                 foreach((array)$files as $fileName){
