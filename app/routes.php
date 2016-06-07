@@ -45,9 +45,9 @@ Route::get('login-info', [//用户名称
 Route::group(array('before' => 'auth'), function() {
 
     //===获取用户统计数据-start===
-    Route::get('count', [//首页统计数据
-        'as' => 'stasts',
-        'uses' => 'StatsController@getCount'
+    Route::get('statis-get', [//首页统计数据
+        'as' => 'statis',
+        'uses' => 'StatisController@getCount'
     ]);
 
     //===获取用户统计数据-end===
