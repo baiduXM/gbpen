@@ -54,10 +54,8 @@ class HtmlController1 extends BaseController{
     private $customer;
     private $start;
     private $end;
-    private $pc_publicresult;
-    private $pc_publicnav;
-    private $mobile_publicresult;
-    private $mobile_publicnav;
+    private $pushpc;
+    private $pushmobile;
             
     
     function __construct(){
@@ -74,23 +72,19 @@ class HtmlController1 extends BaseController{
         $this->getPrecent();
         ob_start();
         if($type =='pc'){
-            $publicresult=$this->pc_publicresult;
-            $publicresult['index_navs'] = $this->pc_publicnav;
-            $publicresult['navs']=$this->pc_publicnav;
+            $publicdata=$this->pushpc;
         }else{
-            $publicresult=$this->mobile_publicresult;
-            $publicresult['navs']=$this->mobile_publicnav;
-            $publicresult['index_navs'] = $this->mobile_publicnav;
+            $publicdata=$this->pushmobile;
         }
         $path = $type =='pc' ? public_path('customers/'.$this->customer.'/index.html') : public_path('customers/'.$this->customer.'/mobile/index.html');
         $template = new PrintController('online',$type);
         if($type =='pc'){
-            echo $template->homepagePreview($publicresult);
+            echo $template->homepagePush($publicdata);
         }
         else{
-            echo $template->mhomepagePreview($publicresult);
+            echo $template->mhomepagePush($publicdata);
         }
-        file_put_contents($path, ob_get_contents());
+        file_put_contents($path, $ouput=ob_get_contents());
         ob_end_clean();
         $quickbar_json=$template->quickBarJson();
         return $path;
@@ -108,9 +102,9 @@ class HtmlController1 extends BaseController{
         $template = new PrintController('online',$type);
         $per_page = CustomerInfo::where('cus_id',$this->cus_id)->pluck($type."_page_count");
         if($type =='pc'){
-            $publicresult=$this->pc_publicresult;
+            $publicdata=$this->pushpc;
         }else{
-            $publicresult=$this->mobile_publicresult;
+            $publicdata=$this->pushmobile;
         }
         foreach((array)$ids as $id){
             $c_ids=explode(',',$template->getChirldenCid($id));
@@ -136,7 +130,7 @@ class HtmlController1 extends BaseController{
                 $total = Articles::whereIn('c_id',$c_ids)->where('cus_id',$this->cus_id)->where($type.'_show','1')->count();
                 $page_count = ceil($total/$per_page);
             }
-            $paths=$template->categoryPush($id,$page_count,$publicresult,$this->last_html_precent,$this->html_precent);
+            $paths=$template->categoryPush($id,$page_count,$publicdata,$this->last_html_precent,$this->html_precent);
             $this->last_html_precent +=($this->html_precent*count($paths));
             $result=array_merge((array)$result,(array)$paths);
         }
@@ -153,9 +147,9 @@ class HtmlController1 extends BaseController{
         $template = new PrintController('online',$type);
         $result =array();
         if($type =='pc'){
-            $publicresult=$this->pc_publicresult;
+            $publicdata=$this->pushpc;
         }else{
-            $publicresult=$this->mobile_publicresult;
+            $publicdata=$this->pushmobile;
         }
         foreach((array)$ids as $id){
             if(isset($articles)){
@@ -164,7 +158,7 @@ class HtmlController1 extends BaseController{
             $articles = Articles::where($type . '_show', '1')->where('c_id', $id)->where('use_url', '0')->lists('id');
             $paths=array();
             if(count($articles)){
-                $paths=@$template->articlepush($id,$publicresult,$this->last_html_precent,$this->html_precent);
+                $paths=@$template->articlepush($id,$publicdata,$this->last_html_precent,$this->html_precent);
                 $this->last_html_precent +=($this->html_precent*count($paths));
                 $result=array_merge((array)$result,(array)$paths);
             }
@@ -507,18 +501,56 @@ class HtmlController1 extends BaseController{
         }
     }
     /**
+     * 推送初始化
+     * 
+     * 
+     */
+    private function pushinit(){
+        $pc_template = new PrintController('online','pc');
+        $this->pushpc['result']=$pc_template->pushpublicpage();
+        $this->pushpc['navs']=$pc_template->pushnav();
+        $m_template = new PrintController('online','mobile');
+        $this->pushmobile['result']=$m_template->pushpublicpage();
+        $this->pushmobile['navs']=$m_template->pushnav();
+//        var_dump($pc_template->themename);
+//        exit();
+        $dir=app_path('views/templates/' . $pc_template->themename);
+        if(is_dir($dir)){
+            if ($dh = opendir($dir)){
+                while(($file=readdir($dh))!=FALSE){
+                    if(strpos($file,'.html')){
+                        $this->pushpc['repleace'][$file]=file_get_contents($dir.'/'.$file);
+                        $this->pushpc['pattern'][$file]="#{include((\s)+)?file=[\',\"].\/".$file."[\',\"]}#";
+                        if($file=='_footer.html'){
+                            $this->pushpc['repleace'][$file]=preg_replace('/navs/', 'footer_navs', $this->pushpc['repleace'][$file]).'{$enlargeprint}';
+                        }
+                    }
+                }
+            }
+        }
+        $dir=app_path('views/templates/' . $m_template->themename);
+        if(is_dir($dir)){
+            if ($dh = opendir($dir)){
+                while(($file=readdir($dh))!=FALSE){
+                    if(strpos($file,'.html')){
+                        $this->pushmobile['repleace'][$file]=file_get_contents($dir.'/'.$file);
+                        $this->pushmobile['pattern'][$file]="#{include((\s)+)?file=[\',\"].\/".$file."[\',\"]}#";
+                        if($file=='_footer.html'){
+                            $this->pushmobile['repleace'][$file]=preg_replace('/navs/', 'footer_navs', $this->pushmobile['repleace'][$file]).'{$enlargeprint}';
+                        }
+                    }
+                }
+            }
+        }
+    }
+    /**
      * 推送
      * 
      * 
      */
     public function pushPrecent(){
         set_time_limit(0);
-        $pc_template = new PrintController('online','pc');
-        $this->pc_publicresult=$pc_template->pushpublicpage();
-        $this->pc_publicnav=$pc_template->pushnav();
-        $m_template = new PrintController('online','mobile');
-        $this->mobile_publicresult=$m_template->pushpublicpage();
-        $this->mobile_publicnav=$m_template->pushnav();
+        $this->pushinit();
         $pc_domain=CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_domain');
         $mobile_domain=CustomerInfo::where('cus_id',$this->cus_id)->pluck('mobile_domain');
         $pc=str_replace('http://', '', $pc_domain);
@@ -795,17 +827,13 @@ class HtmlController1 extends BaseController{
     public function sendData($type='pc'){
         $template = new PrintController('online',$type);
         if($type =='pc'){
-            $publicresult=$this->pc_publicresult;
-            $publicresult['index_navs'] = $this->pc_publicnav;
-            $publicresult['navs']=$this->pc_publicnav;
+            $publicdata=$this->pushpc;
         }else{
-            $publicresult=$this->mobile_publicresult;
-            $publicresult['navs']=$this->mobile_publicnav;
-            $publicresult['index_navs'] = $this->mobile_publicnav;
+            $publicdata=$this->pushmobile;
         }
         ob_start();
         $path = $type =='pc' ? public_path('customers/'.$this->customer.'/search.html') : public_path('customers/'.$this->customer.'/mobile/search.html');
-        echo $template->searchPreview();
+        echo $template->searchPush($publicdata);
         file_put_contents($path, ob_get_contents());
         ob_end_clean();
         return $path;

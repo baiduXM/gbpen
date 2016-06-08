@@ -1803,10 +1803,8 @@ class PrintController extends BaseController {
     /**
      * PC显示首页
      */
-    public function homepagePreview($result = 0) {
-        if ($result == 0) {
-            $result = $this->pagePublic();
-        }
+    public function homepagePreview() {
+        $result = $this->pagePublic();
         $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
         $result['title'] = $customer_info->title;
         $result['keywords'] = $customer_info->keywords;
@@ -1831,14 +1829,51 @@ class PrintController extends BaseController {
         $smarty->display('index.html');
         //return View::make('templates.'.$this->themename.'.index',$result);
     }
+    /**
+     * PC推送首页
+     */
+    public function homepagePush($publicdata) {
+        $result=$publicdata['result'];
+        $result['navs']=$publicdata['navs'];
+        $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
+        $result['title'] = $customer_info->title;
+        $result['keywords'] = $customer_info->keywords;
+        $result['description'] = $customer_info->description;
+        $result['pagenavs'] = false;
+        $result['posnavs'] = false;
+        $data = $this->pagedata('index');
+        $index = $this->detailList($data);
+        $result = array_add($result, 'index', $index);
+        $json_keys = $this->getJsonKey('index.html');
+        if (count($json_keys)) {
+            foreach ($json_keys as $key) {
+                $result[$key] = $this->detailList($this->pagedata($key));
+            }
+        }
+        $content = $publicdata['repleace']['index.html'];
+        $content= preg_replace($publicdata['pattern'],$publicdata['repleace'],$content);
+        $smarty = new Smarty;
+        $smarty->setCompileDir(app_path('storage/views/compile'));
+        $smarty->setTemplateDir(app_path('views/templates/' . $this->themename));
+        $smarty->registerPlugin('function', 'mapExt', array('PrintController', 'createMap'));
+        $smarty->registerPlugin('function', 'shareExt', array('PrintController', 'createShare'));
+        $smarty->assign($result);
+        ob_start();
+        $smarty->display('string:'.$content);
+        $output=  ob_get_contents();
+        ob_end_clean();
+        if(!count($result['footer_navs'])){
+            $output = preg_replace('/<a href="' . str_replace("/", "\/", $result['site_url']) . '"( target="_blank")?( )?>首页<\/a>( )?\|([\s]+)?(<br \/>)?(<br>)?/is', "", $output);
+        }
+        return $output;
+        //return View::make('templates.'.$this->themename.'.index',$result);
+    }
 
     /**
      * 手机首页
      */
-    public function mhomepagePreview($result = 0) {
-        if ($result == 0) {
-            $result = $this->pagePublic();
-        }
+    public function mhomepagePreview() {
+        $result = $this->pagePublic();
         $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
         $result['title'] = $customer_info->title;
         $result['keywords'] = $customer_info->keywords;
@@ -1980,6 +2015,162 @@ class PrintController extends BaseController {
         $smarty->assign($result);
         $smarty->display('index.html');
         //return View::make('templates.'.$this->themename.'.index',$result);
+    }
+     /**
+     * 手机首页
+     */
+    public function mhomepagePush($publicdata) {
+        $result = $publicdata['result'];
+        $result['navs'] = $publicdata['navs'];
+        $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
+        $result['title'] = $customer_info->title;
+        $result['keywords'] = $customer_info->keywords;
+        $result['description'] = $customer_info->description;
+        //获取模板目录
+        $data = $this->pagedata('index');
+        $show_navs = DB::table('mobile_homepage')->leftJoin('classify', 'classify.id', '=', 'mobile_homepage.c_id')->where('mobile_homepage.index_show', 1)->where('classify.mobile_show', 1)->where('mobile_homepage.cus_id', '=', $this->cus_id)->orderBy('mobile_homepage.s_sort', 'asc')->select('classify.id', 'classify.p_id', 'classify.name', 'classify.en_name', 'classify.type', 'classify.meta_description', 'classify.page_id', 'classify.url', 'classify.img', 'classify.icon', 'mobile_homepage.star_only', 'mobile_homepage.show_num', 'mobile_homepage.m_index_showtype')->get();
+        //===调试测试账号===
+        $mIndexCats = array();
+        if (count($show_navs) > 0) {
+            if ($this->showtype == 'preview') {
+                foreach ($show_navs as $nav) {
+                    $mIndexCat = array();
+                    $mIndexCat['id'] = $nav->id;
+                    $mIndexCat['p_id'] = $nav->p_id;
+                    $mIndexCat['name'] = $nav->name;
+                    $mIndexCat['en_name'] = $nav->en_name;
+                    $mIndexCat['icon'] = '<i class="iconfont">' . $nav->icon . '</i>';
+                    $mIndexCat['image'] = $this->source_dir . 'l/category/' . $nav->img;
+                    if ($nav->url) {
+                        $mIndexCat['link'] = $nav->url;
+                    } else {
+                        $mIndexCat['link'] = $this->domain . "/category/" . $nav->id;
+                    }
+                    $mIndexCat['type'] = $nav->type;
+                    $mIndexCat['showtype'] = $nav->m_index_showtype;
+                    $mIndexCat['description'] = $nav->meta_description;
+                    $id_arr = explode(',', $this->getChildrenClassify($nav->id));
+                    if ($nav->type == 1 || $nav->type == 2 || $nav->type == 3) {
+                        $art_arr = array();
+                        if ($nav->star_only) {
+                            //是否只显示推荐
+                            $articles = Articles::whereIn('c_id', $id_arr)->where('mobile_show', 1)->where('is_star', 1)->take($nav->show_num)->get();
+                        } else {
+                            $articles = Articles::whereIn('c_id', $id_arr)->where('mobile_show', 1)->take($nav->show_num)->get();
+                        }
+                        if (count($articles) > 0) {
+                            $i = 0;
+                            foreach ($articles as &$article) {
+                                $art_arr[$i]['title'] = $article->title;
+                                $art_arr[$i]['image'] = $this->source_dir . 's/articles/' . $article->img;
+                                $art_arr[$i]['link'] = $this->domain . "/detail/" . $article->id;
+                                if ($article->use_url) {
+                                    $art_arr[$i]['link'] = $article->url;
+                                }
+                                $art_arr[$i]['description'] = $article->introduction;
+                                $art_arr[$i]['pubdate'] = $article->created_at;
+                                $art_arr[$i]['pubtimestamp'] = strtotime($article->created_at);
+                                $art_arr[$i]['category']['name'] = $nav->name;
+                                $art_arr[$i]['category']['en_name'] = $nav->name;
+                                if ($nav->url) {
+                                    $art_arr[$i]['category']['link'] = $nav->url;
+                                } else {
+                                    $art_arr[$i]['category']['link'] = $this->domain . "/category/" . $nav->id;
+                                }
+                                $i++;
+                            }
+                        }
+                        $mIndexCat['data'] = $art_arr;
+                    } elseif ($nav->type == 4) {
+                        $content = Page::where('id', $nav->page_id)->pluck('content');
+                        $mIndexCat['content'] = $content;
+                    } elseif ($nav->type == 5 || $nav->type == 6 || $nav->type == 7 || $nav->type == 8 || $nav->type == 9) {
+                        //暂时缺省
+                    }
+                    $mIndexCats[] = $mIndexCat;
+                }
+            } else {
+                foreach ($show_navs as $nav) {
+                    $mIndexCat = array();
+                    $mIndexCat['id'] = $nav->id;
+                    $mIndexCat['p_id'] = $nav->p_id;
+                    $mIndexCat['name'] = $nav->name;
+                    $mIndexCat['en_name'] = $nav->en_name;
+                    $mIndexCat['icon'] = '<i class="iconfont">' . $nav->icon . '</i>';
+                    $mIndexCat['image'] = $this->source_dir . "/l/category/" . $nav->img;
+                    if ($nav->url) {
+                        $mIndexCat['link'] = $nav->url;
+                    } else {
+                        $mIndexCat['link'] = $this->domain . "/category/" . $nav->id . ".html";
+                    }
+                    $mIndexCat['type'] = $nav->type;
+                    $mIndexCat['showtype'] = $nav->m_index_showtype;
+                    $mIndexCat['description'] = $nav->meta_description;
+                    $id_arr = explode(',', $this->getChildrenClassify($nav->id));
+                    if ($nav->type == 1 || $nav->type == 2 || $nav->type == 3) {
+                        $art_arr = array();
+                        if ($nav->star_only) {
+                            //是否只显示推荐
+                            $articles = Articles::whereIn('c_id', $id_arr)->where('mobile_show', 1)->where('is_star', 1)->take($nav->show_num)->get();
+                        } else {
+                            $articles = Articles::whereIn('c_id', $id_arr)->where('mobile_show', 1)->take($nav->show_num)->get();
+                        }
+                        if (count($articles) > 0) {
+                            $i = 0;
+                            foreach ($articles as &$article) {
+                                $art_arr[$i]['title'] = $article->title;
+                                $art_arr[$i]['image'] = $this->source_dir . "/s/articles/" . $article->img;
+                                $art_arr[$i]['link'] = $this->domain . "/detail/" . $article->id . ".html";
+                                if ($article->use_url) {
+                                    $art_arr[$i]['link'] = $article->url;
+                                }
+                                $art_arr[$i]['description'] = $article->introduction;
+                                $art_arr[$i]['pubdate'] = $article->created_at;
+                                $art_arr[$i]['pubtimestamp'] = strtotime($article->created_at);
+                                $art_arr[$i]['category']['name'] = $nav->name;
+                                $art_arr[$i]['category']['en_name'] = $nav->name;
+                                if ($nav->url) {
+                                    $art_arr[$i]['category']['link'] = $nav->url;
+                                } else {
+                                    $art_arr[$i]['category']['link'] = $this->domain . "/category/" . $nav->id;
+                                }
+                                $i++;
+                            }
+                        }
+                        $mIndexCat['data'] = $art_arr;
+                    } elseif ($nav->type == 4) {
+                        $content = Page::where('id', $nav->page_id)->pluck('content');
+                        $mIndexCat['content'] = $content;
+                    } elseif ($nav->type == 5 || $nav->type == 6 || $nav->type == 7 || $nav->type == 8 || $nav->type == 9) {
+                        //暂时缺省
+                    }
+                    $mIndexCats[] = $mIndexCat;
+                }
+            }
+        }
+        $classify = new Classify;
+        foreach ($mIndexCats as $key => $val) {
+            $mIndexCats[$key]['childmenu'] = $classify->toTree($mIndexCats, $mIndexCats[$key]['id']);
+        }
+        $result['mIndexCats'] = $mIndexCats;
+        //print_r($mIndexCats);
+        //exit;
+        $content = $publicdata['repleace']['index.html'];
+        $content= preg_replace($publicdata['pattern'],$publicdata['repleace'],$content);
+        $smarty = new Smarty;
+        $smarty->setCompileDir(app_path('storage/views/compile'));
+        $smarty->setTemplateDir(app_path('views/templates/' . $this->themename));
+        $smarty->registerPlugin('function', 'mapExt', array('PrintController', 'createMap'));
+        $smarty->registerPlugin('function', 'shareExt', array('PrintController', 'createShare'));
+        $smarty->assign($result);
+        ob_start();
+        $smarty->display('string:'.$content);
+        $output=  ob_get_contents();
+        ob_end_clean();
+        if(!count($result['footer_navs'])){
+            $output = preg_replace('/<a href="' . str_replace("/", "\/", $result['site_url']) . '"( target="_blank")?( )?>首页<\/a>( )?\|([\s]+)?(<br \/>)?(<br>)?/is', "", $output);
+        }
+        return $output;
     }
 
     /**
@@ -2250,8 +2441,9 @@ class PrintController extends BaseController {
      * @param int $id 栏目id
      * @param int $page 总页码
      */
-    public function categoryPush($id, $page, $result, $last_html_precent, $html_precent) {
+    public function categoryPush($id, $page,$publicdata, $last_html_precent, $html_precent) {
         $paths = [];
+        $result=$publicdata['result'];
         $result['navs'] = $this->pushnav($id);
         $result['index_navs'] = $result['navs'];
         foreach ((array) $result['navs'] as $nav) {
@@ -2472,7 +2664,10 @@ class PrintController extends BaseController {
                 $the_result['list']['data'] = $index_list['data'];
             }
             $path = $this->type == 'pc' ? public_path('customers/' . $this->customer . '/category/' . $id . '.html') : public_path('customers/' . $this->customer . '/mobile/category/' . $id . '.html');
-            $output = $this->categoryDisplay($the_result, $viewname);
+            $content = $publicdata['repleace'][$viewname.'.html'];
+            $content= preg_replace($publicdata['pattern'],$publicdata['repleace'],$content);
+            $output = $this->pushdisplay($the_result, $content);
+            $output = preg_replace('/<a href="' . str_replace("/", "\/", $result['site_url']) . '"( target="_blank")?( )?>首页<\/a>( )?\|([\s]+)?(<br \/>)?(<br>)?/is', "", $output);
             file_put_contents($path, $output);
             $paths[] = $path;
             $nowpercent = $last_html_precent + $html_precent;
@@ -2490,7 +2685,8 @@ class PrintController extends BaseController {
                     $the_result['page_links'] = $index_list['page_links'];
                     $the_result['list']['data'] = $index_list['data'];
                     $path = $this->type == 'pc' ? public_path('customers/' . $this->customer . '/category/' . $id . '_' . $i . '.html') : public_path('customers/' . $this->customer . '/mobile/category/' . $id . '_' . $i . '.html');
-                    $output = $this->categoryDisplay($the_result, $viewname);
+                    $output = $this->pushdisplay($the_result, $content);
+                    $output = preg_replace('/<a href="' . str_replace("/", "\/", $result['site_url']) . '"( target="_blank")?( )?>首页<\/a>( )?\|([\s]+)?(<br \/>)?(<br>)?/is', "", $output);
                     file_put_contents($path, $output);
                     $paths[] = $path;
                     $nowpercent = $last_html_precent + $html_precent;
@@ -2507,7 +2703,7 @@ class PrintController extends BaseController {
         }
     }
 
-    private function categoryDisplay($result, $viewname) {
+    private function pushdisplay($result, $content) {
         ob_start();
         $smarty = new Smarty;
         $smarty->setTemplateDir(app_path('views/templates/' . $this->themename));
@@ -2515,7 +2711,7 @@ class PrintController extends BaseController {
         $smarty->registerPlugin('function', 'mapExt', array('PrintController', 'createMap'));
         $smarty->registerPlugin('function', 'shareExt', array('PrintController', 'createShare'));
         $smarty->assign($result);
-        $smarty->display($viewname . '.html');
+        $smarty->display('string:'.$content);
         $output = ob_get_contents();
         ob_end_clean();
         return $output;
@@ -2740,7 +2936,6 @@ class PrintController extends BaseController {
         $smarty->registerPlugin('function', 'shareExt', array('PrintController', 'createShare'));
         $smarty->assign($result);
         $smarty->display($viewname . '.html');
-        //return View::make('templates.'.$this->themename.'.'.$viewname,$result); 
     }
 
     /**
@@ -2748,9 +2943,10 @@ class PrintController extends BaseController {
      *
      * @param int $id 文章id
      */
-    public function articlepush($c_id, $result, $last_html_precent, $html_precent) {
+    public function articlepush($c_id, $publicdata, $last_html_precent, $html_precent) {
         set_time_limit(0);
         $paths = [];
+        $result=$publicdata['result'];
         $result['navs'] = $this->pushnav($c_id);
         $result['index_navs'] = $result['navs'];
         $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
@@ -2777,6 +2973,7 @@ class PrintController extends BaseController {
         $result['pagenavs'] = $pagenavs;
         $result['posnavs'] = $this->getPosNavs($c_id);
         $result['enlarge'] = 0;
+        $result['enlargeprint']='';
         $article_type = Classify::where('id', $c_id)->pluck('article_type');
         if ($article_type == 1) {//新闻内容
             $viewname = 'content-news';
@@ -2797,6 +2994,8 @@ class PrintController extends BaseController {
             }
         }
         $articles = Articles::where($this->type . '_show', '1')->where('c_id', $c_id)->where('use_url', '0')->orderBy('is_top', 'desc')->orderBy('sort', 'asc')->orderBy('created_at', 'desc')->get()->toArray();
+        $content = $publicdata['repleace'][$viewname.'.html'];
+        $content= preg_replace($publicdata['pattern'],$publicdata['repleace'],$content);
         foreach ((array) $articles as $key => $article) {
             $the_result = array();
             $the_result = $result;
@@ -2905,7 +3104,8 @@ class PrintController extends BaseController {
                 ob_flush();
                 flush();
             }
-            $output = $this->articledisplay($the_result, $viewname);
+            $output = $this->pushdisplay($the_result, $content);
+            $output = preg_replace('/<a href="' . str_replace("/", "\/", $result['site_url']) . '"( target="_blank")?( )?>首页<\/a>( )?\|([\s]+)?(<br \/>)?(<br>)?/is', "", $output);
             $path = $this->type == 'pc' ? public_path('customers/' . $this->customer . '/detail/' . $article['id'] . '.html') : public_path('customers/' . $this->customer . '/mobile/detail/' . $article['id'] . '.html');
             file_put_contents($path, $output);
             $paths[] = $path;
@@ -2921,20 +3121,6 @@ class PrintController extends BaseController {
             $last_html_precent +=$html_precent;
         }
         return $paths;
-    }
-
-    private function articledisplay($the_result, $viewname) {
-        ob_start();
-        $smarty = new Smarty;
-        $smarty->setTemplateDir(app_path('views/templates/' . $this->themename));
-        $smarty->setCompileDir(app_path('storage/views/compile'));
-        $smarty->registerPlugin('function', 'mapExt', array('PrintController', 'createMap'));
-        $smarty->registerPlugin('function', 'shareExt', array('PrintController', 'createShare'));
-        $smarty->assign($the_result);
-        $smarty->display($viewname . '.html');
-        $output = ob_get_contents();
-        ob_end_clean();
-        return $output;
     }
 
     /**
@@ -3120,7 +3306,8 @@ class PrintController extends BaseController {
      */
     public function searchPreview() {
         error_reporting(E_ALL ^ E_NOTICE);
-        $result = $this->pagePublic();
+        $result =$this->pagePublic();
+        $result['navs'] = $publicdata['navs'];
         $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
         $result['title'] = $customer_info->title;
         $result['keywords'] = $customer_info->keywords;
@@ -3227,12 +3414,140 @@ class PrintController extends BaseController {
 
         //print_r($result['search']);exit;
         $smarty = new Smarty;
-        $smarty->setTemplateDir(app_path('views/templates/' . $this->themename));
         $smarty->setCompileDir(app_path('storage/views/compile'));
+        $smarty->setTemplateDir(app_path('views/templates/' . $this->themename));
         $smarty->registerPlugin('function', 'mapExt', array('PrintController', 'createMap'));
         $smarty->registerPlugin('function', 'shareExt', array('PrintController', 'createShare'));
         $smarty->assign($result);
         $smarty->display('searchresult_do.html');
+    }/*
+     * pushtest搜索页面数据
+     */
+    public function searchPush($publicdata) {
+        error_reporting(E_ALL ^ E_NOTICE);
+        $result = $publicdata['result'];
+        $result['navs'] = $publicdata['navs'];
+        $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
+        $result['title'] = $customer_info->title;
+        $result['keywords'] = $customer_info->keywords;
+        $result['description'] = $customer_info->description;
+        $c_id = Classify::where('type', 4)->where($this->type . '_show', 1)->where('cus_id', $this->cus_id)->pluck('id');
+        if ($c_id) {
+            $current_arr = $this->currentCidArray($c_id);
+            $result['navs'] = $this->addCurrent($result['navs'], $current_arr);
+        }
+        if (is_array($result['navs'])) {
+            foreach ($result['navs'] as $nav) {
+                if ($nav['current'] == 1) {
+                    $pagenavs = $nav['childmenu'];
+                    break;
+                } else {
+                    $pagenavs = [];
+                }
+            }
+        }
+        $result['pagenavs'] = $pagenavs;
+        $result['posnavs'] = array(0 => array('en_name' => 'Search', 'name' => '搜索', 'link' => 'javascript:;', 'icon' => ''));
+
+        //搜索数据替换
+        if (!is_file(app_path('views/templates/' . $this->themename . '/searchresult_do.html'))) {
+            //搜索数据标记与替换
+            if (is_file(app_path('views/templates/' . $this->themename . '/searchresult.html'))) {
+                $file_content = file_get_contents(app_path('views/templates/' . $this->themename . '/searchresult.html'));
+            } else {
+                $file_content = file_get_contents(public_path("packages/searchresult.html"));
+            }
+            //匹配搜索循环
+            preg_match('/(\{foreach[^\}]*from[\s]*=[\s]*\$search\.data[^\}]*\})([\s\S]*?)\{\/foreach\}/', $file_content, $search_foreach);
+            $search_content = str_replace($search_foreach[2], '<!--search_content_start-->' . $search_foreach[2] . '<!--search_content_end-->', $file_content);
+            //匹配foreach中的item值
+            preg_match('/item[\s]*=[\s]*([\S]*)/', $search_foreach[1], $search_view);
+            $search_view = $search_view[1];
+            //匹配所有查询中循环的值
+            preg_match_all('/{[\s]*\$' . $search_view . '[.|\[]([a-z]*)[\]]*}/', $search_foreach[2], $date_replace);
+            $search_view = array('title' => '$title', 'image' => '$image', 'link' => '$link', 'description' => '$description', 'pubdate' => '$pubdate', 'pubtimestamp' => '$pubtimestamp');
+            foreach ((array) $date_replace[0] as $k => $v) {
+                $search_content = str_replace($v, 'search_' . $search_view[$date_replace[1][$k]], $search_content);
+            }
+            //分页匹配
+            $page_content = $search_content;
+            $page_link_array = array('100-8_search' => '100-9_search');
+            preg_match('/(\{foreach[^\}]*from[\s]*=[\s]*\$page_links\.nears_link[^\}]*\})[\s\S]*?(\{if[^\}]*==[\s]*\$page_links\.current_page[^\}]*\})([\s\S]*?)\{else\}([\s\S]*?)\{\/if\}[\s\S]*?\{\/foreach\}/', $page_content, $page_foreach);
+            if ($page_foreach) {
+                $page_content = str_replace($page_foreach[3], '<!--page_corrent_link_start-->' . $page_foreach[3] . '<!--page_corrent_link_end-->', $page_content);
+                $page_content = str_replace($page_foreach[4], '<!--page_uncorrent_link_start-->' . $page_foreach[4] . '<!--page_uncorrent_link_end-->', $page_content);
+                $page_link_array = array('100-8_search' => '100-9_search', '100-1_search' => 'javascript::');
+            } else {
+                preg_match('/(\{foreach[^\}]*from[\s]*=[\s]*\$page_links\.nears_link[^\}]*\})([\s\S]*?)\{\/foreach\}/', $page_content, $page_foreach);
+                if ($page_foreach) {
+                    $page_content = str_replace($page_foreach[2], '<!--page_uncorrent_link_start-->' . $page_foreach[2] . '<!--page_uncorrent_link_end-->', $page_content);
+                }
+            }
+            //分页结束
+            file_put_contents(app_path('views/templates/' . $this->themename . '/searchresult_do.html'), $page_content);
+        }
+        $result['search'] = array('total' => '-1000_search', 'keyword' => 'search_$keyword', 'data' => array(0 => array('link' => '', 'title' => '', 'pubdate' => '', 'description' => '')));
+        $result['page_links'] = array('current_page' => '100-1_search', 'per_page' => '100-2_search', 'page_count' => '100-3_search', 'first_link' => '100-4_search', 'prev_link' => '100-5_search', 'next_link' => '100-6_search', 'last_link' => '100-7_search', 'nears_link' => $page_link_array);
+        //替换结束
+
+        if ($this->type != 'mobile') {
+            if (is_file(app_path('views/templates/' . $this->themename . '/searchresult.html'))) {
+                $json_keys = $this->getJsonKey('searchresult.html');
+                if (count($json_keys)) {
+                    foreach ($json_keys as $key) {
+                        $result[$key] = $this->detailList($this->pagedata($key));
+                    }
+                }
+            }
+        }
+        if ($this->type == 'pc') {
+            $page_count = $customer_info->pc_page_count;
+            $page_link_count = $customer_info->pc_page_links;
+        } else {
+            $page_count = $customer_info->mobile_page_count;
+            $page_link_count = $customer_info->mobile_page_links;
+        }
+
+        //文章数据json保存
+        $article_data = Articles::where('cus_id', $this->cus_id)->where($this->type . '_show', '1')->orderBy('is_top', 'desc')->orderBy('created_at', 'desc')->select('id', 'title', 'img', 'introduction', 'created_at', 'use_url', 'url')->get()->toArray();
+        $article = array();
+        foreach ((array) $article_data as $article_img) {
+            $article[$article_img['id']]['id'] = $article_img['id'];
+            $article[$article_img['id']]['title'] = $article_img['title'];
+            $article[$article_img['id']]['img'] = $this->source_dir . 'l/articles/' . $article_img['img'];
+            $article[$article_img['id']]['introduction'] = $article_img['introduction'];
+            $article[$article_img['id']]['created_at'] = strtotime($article_img['created_at']);
+            $article[$article_img['id']]['link'] = $this->domain . '/detail/' . $article_img['id'] . '.html';
+            if ($article_img['use_url']) {
+                $article[$article_img['id']]['link'] = $article_img['url'];
+            }
+        }
+        $article['count'] = $page_count;
+        $article['page_link'] = $page_link_count;
+        $article_json = json_encode($article);
+        if ($this->type == 'pc') {
+            file_put_contents(public_path('customers/' . $this->customer . '/article_data.json'), $article_json);
+        } else {
+            file_put_contents(public_path('customers/' . $this->customer . '/mobile/article_data.json'), $article_json);
+        }
+
+        //print_r($result['search']);exit;
+        $content = $publicdata['repleace']['searchresult_do.html'];
+        $content= preg_replace($publicdata['pattern'],$publicdata['repleace'],$content);
+        $smarty = new Smarty;
+        $smarty->setCompileDir(app_path('storage/views/compile'));
+        $smarty->setTemplateDir(app_path('views/templates/' . $this->themename));
+        $smarty->registerPlugin('function', 'mapExt', array('PrintController', 'createMap'));
+        $smarty->registerPlugin('function', 'shareExt', array('PrintController', 'createShare'));
+        $smarty->assign($result);
+        ob_start();
+        $smarty->display('string:'.$content);
+        $output=  ob_get_contents();
+        ob_end_clean();
+        if(!count($result['footer_navs'])){
+            $output = preg_replace('/<a href="' . str_replace("/", "\/", $result['site_url']) . '"( target="_blank")?( )?>首页<\/a>( )?\|([\s]+)?(<br \/>)?(<br>)?/is', "", $output);
+        }
+        return $output;
     }
 
     public function array_merge_recursive_new($old_arr, $new_arr) {
