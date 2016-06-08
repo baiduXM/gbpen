@@ -575,17 +575,26 @@ class HtmlController1 extends BaseController{
         $mobile_classify_ids=array();
         $pc_article_ids=array();
         $mobile_article_ids=array();
+        if(isset($_GET['sleep'])){
+            sleep($_GET['sleep']);
+        }
         if($mobile!=''){
             $mindexhtml = $this->homgepagehtml('mobile');
             $msearchhtml = $this->sendData('mobile');
             $mobile_classify_ids = Classify::where('cus_id',$this->cus_id)->where('mobile_show',1)->lists('id');
             $mobile_article_ids = Articles::where('cus_id',$this->cus_id)->where('mobile_show',1)->lists('id');
         }
+        if(isset($_GET['sleep'])){
+            sleep($_GET['sleep']);
+        }
         if($pc!=''){
             $indexhtml = $this->homgepagehtml('pc');
             $searchhtml = $this->sendData('pc');
             $pc_classify_ids = Classify::where('cus_id',$this->cus_id)->where('pc_show',1)->lists('id');
             $pc_article_ids = Articles::where('cus_id',$this->cus_id)->where('pc_show',1)->lists('id');
+        }
+        if(isset($_GET['sleep'])){
+            sleep($_GET['sleep']);
         }
         $count = $this->htmlPagecount($pc_classify_ids,$mobile_classify_ids,$pc_article_ids,$mobile_article_ids);
         $this->html_precent= 70/$count;
