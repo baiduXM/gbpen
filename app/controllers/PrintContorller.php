@@ -1829,12 +1829,13 @@ class PrintController extends BaseController {
         $smarty->display('index.html');
         //return View::make('templates.'.$this->themename.'.index',$result);
     }
+
     /**
      * PC推送首页
      */
     public function homepagePush($publicdata) {
-        $result=$publicdata['result'];
-        $result['navs']=$publicdata['navs'];
+        $result = $publicdata['result'];
+        $result['navs'] = $publicdata['navs'];
         $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
         $result['title'] = $customer_info->title;
         $result['keywords'] = $customer_info->keywords;
@@ -1851,7 +1852,7 @@ class PrintController extends BaseController {
             }
         }
         $content = $publicdata['repleace']['index.html'];
-        $content= preg_replace($publicdata['pattern'],$publicdata['repleace'],$content);
+        $content = preg_replace($publicdata['pattern'], $publicdata['repleace'], $content);
         $smarty = new Smarty;
         $smarty->setCompileDir(app_path('storage/views/compile'));
         $smarty->setTemplateDir(app_path('views/templates/' . $this->themename));
@@ -1859,10 +1860,10 @@ class PrintController extends BaseController {
         $smarty->registerPlugin('function', 'shareExt', array('PrintController', 'createShare'));
         $smarty->assign($result);
         ob_start();
-        $smarty->display('string:'.$content);
-        $output=  ob_get_contents();
+        $smarty->display('string:' . $content);
+        $output = ob_get_contents();
         ob_end_clean();
-        if(!count($result['footer_navs'])){
+        if (!count($result['footer_navs'])) {
             $output = preg_replace('/<a href="' . str_replace("/", "\/", $result['site_url']) . '"( target="_blank")?( )?>首页<\/a>( )?\|([\s]+)?(<br \/>)?(<br>)?/is', "", $output);
         }
         return $output;
@@ -2016,7 +2017,8 @@ class PrintController extends BaseController {
         $smarty->display('index.html');
         //return View::make('templates.'.$this->themename.'.index',$result);
     }
-     /**
+
+    /**
      * 手机首页
      */
     public function mhomepagePush($publicdata) {
@@ -2156,7 +2158,7 @@ class PrintController extends BaseController {
         //print_r($mIndexCats);
         //exit;
         $content = $publicdata['repleace']['index.html'];
-        $content= preg_replace($publicdata['pattern'],$publicdata['repleace'],$content);
+        $content = preg_replace($publicdata['pattern'], $publicdata['repleace'], $content);
         $smarty = new Smarty;
         $smarty->setCompileDir(app_path('storage/views/compile'));
         $smarty->setTemplateDir(app_path('views/templates/' . $this->themename));
@@ -2164,10 +2166,10 @@ class PrintController extends BaseController {
         $smarty->registerPlugin('function', 'shareExt', array('PrintController', 'createShare'));
         $smarty->assign($result);
         ob_start();
-        $smarty->display('string:'.$content);
-        $output=  ob_get_contents();
+        $smarty->display('string:' . $content);
+        $output = ob_get_contents();
         ob_end_clean();
-        if(!count($result['footer_navs'])){
+        if (!count($result['footer_navs'])) {
             $output = preg_replace('/<a href="' . str_replace("/", "\/", $result['site_url']) . '"( target="_blank")?( )?>首页<\/a>( )?\|([\s]+)?(<br \/>)?(<br>)?/is', "", $output);
         }
         return $output;
@@ -2441,9 +2443,9 @@ class PrintController extends BaseController {
      * @param int $id 栏目id
      * @param int $page 总页码
      */
-    public function categoryPush($id, $page,$publicdata, $last_html_precent, $html_precent) {
+    public function categoryPush($id, $page, $publicdata, $last_html_precent, $html_precent) {
         $paths = [];
-        $result=$publicdata['result'];
+        $result = $publicdata['result'];
         $result['navs'] = $this->pushnav($id);
         $result['index_navs'] = $result['navs'];
         foreach ((array) $result['navs'] as $nav) {
@@ -2664,17 +2666,17 @@ class PrintController extends BaseController {
                 $the_result['list']['data'] = $index_list['data'];
             }
             $path = $this->type == 'pc' ? public_path('customers/' . $this->customer . '/category/' . $id . '.html') : public_path('customers/' . $this->customer . '/mobile/category/' . $id . '.html');
-            $content = $publicdata['repleace'][$viewname.'.html'];
-            $content= preg_replace($publicdata['pattern'],$publicdata['repleace'],$content);
+            $content = $publicdata['repleace'][$viewname . '.html'];
+            $content = preg_replace($publicdata['pattern'], $publicdata['repleace'], $content);
             $output = $this->pushdisplay($the_result, $content);
             $output = preg_replace('/<a href="' . str_replace("/", "\/", $result['site_url']) . '"( target="_blank")?( )?>首页<\/a>( )?\|([\s]+)?(<br \/>)?(<br>)?/is', "", $output);
             file_put_contents($path, $output);
             $paths[] = $path;
             $nowpercent = $last_html_precent + $html_precent;
             if (floor($nowpercent) !== floor($last_html_precent)) {
-                if(isset($_GET['sleep'])){
-                            sleep($_GET['sleep']);
-                        }
+                if (isset($_GET['sleep'])) {
+                    sleep($_GET['sleep']);
+                }
                 echo floor($nowpercent) . '%<script type="text/javascript">parent.refresh(' . floor($nowpercent) . ');</script><br />';
                 ob_flush();
                 flush();
@@ -2694,7 +2696,7 @@ class PrintController extends BaseController {
                     $paths[] = $path;
                     $nowpercent = $last_html_precent + $html_precent;
                     if (floor($nowpercent) !== floor($last_html_precent)) {
-                        if(isset($_GET['sleep'])){
+                        if (isset($_GET['sleep'])) {
                             sleep($_GET['sleep']);
                         }
                         echo floor($nowpercent) . '%<script type="text/javascript">parent.refresh(' . floor($nowpercent) . ');</script><br />';
@@ -2717,7 +2719,7 @@ class PrintController extends BaseController {
         $smarty->registerPlugin('function', 'mapExt', array('PrintController', 'createMap'));
         $smarty->registerPlugin('function', 'shareExt', array('PrintController', 'createShare'));
         $smarty->assign($result);
-        $smarty->display('string:'.$content);
+        $smarty->display('string:' . $content);
         $output = ob_get_contents();
         ob_end_clean();
         return $output;
@@ -2952,7 +2954,7 @@ class PrintController extends BaseController {
     public function articlepush($c_id, $publicdata, $last_html_precent, $html_precent) {
         set_time_limit(0);
         $paths = [];
-        $result=$publicdata['result'];
+        $result = $publicdata['result'];
         $result['navs'] = $this->pushnav($c_id);
         $result['index_navs'] = $result['navs'];
         $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
@@ -2979,7 +2981,7 @@ class PrintController extends BaseController {
         $result['pagenavs'] = $pagenavs;
         $result['posnavs'] = $this->getPosNavs($c_id);
         $result['enlarge'] = 0;
-        $result['enlargeprint']='';
+        $result['enlargeprint'] = '';
         $article_type = Classify::where('id', $c_id)->pluck('article_type');
         if ($article_type == 1) {//新闻内容
             $viewname = 'content-news';
@@ -3000,8 +3002,8 @@ class PrintController extends BaseController {
             }
         }
         $articles = Articles::where($this->type . '_show', '1')->where('c_id', $c_id)->where('use_url', '0')->orderBy('is_top', 'desc')->orderBy('sort', 'asc')->orderBy('created_at', 'desc')->get()->toArray();
-        $content = $publicdata['repleace'][$viewname.'.html'];
-        $content= preg_replace($publicdata['pattern'],$publicdata['repleace'],$content);
+        $content = $publicdata['repleace'][$viewname . '.html'];
+        $content = preg_replace($publicdata['pattern'], $publicdata['repleace'], $content);
         foreach ((array) $articles as $key => $article) {
             $the_result = array();
             $the_result = $result;
@@ -3312,7 +3314,7 @@ class PrintController extends BaseController {
      */
     public function searchPreview() {
         error_reporting(E_ALL ^ E_NOTICE);
-        $result =$this->pagePublic();
+        $result = $this->pagePublic();
         $result['navs'] = $publicdata['navs'];
         $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
         $result['title'] = $customer_info->title;
@@ -3426,9 +3428,12 @@ class PrintController extends BaseController {
         $smarty->registerPlugin('function', 'shareExt', array('PrintController', 'createShare'));
         $smarty->assign($result);
         $smarty->display('searchresult_do.html');
-    }/*
+    }
+
+/*
      * pushtest搜索页面数据
      */
+
     public function searchPush($publicdata) {
         error_reporting(E_ALL ^ E_NOTICE);
         $result = $publicdata['result'];
@@ -3539,7 +3544,7 @@ class PrintController extends BaseController {
 
         //print_r($result['search']);exit;
         $content = $publicdata['repleace']['searchresult_do.html'];
-        $content= preg_replace($publicdata['pattern'],$publicdata['repleace'],$content);
+        $content = preg_replace($publicdata['pattern'], $publicdata['repleace'], $content);
         $smarty = new Smarty;
         $smarty->setCompileDir(app_path('storage/views/compile'));
         $smarty->setTemplateDir(app_path('views/templates/' . $this->themename));
@@ -3547,10 +3552,10 @@ class PrintController extends BaseController {
         $smarty->registerPlugin('function', 'shareExt', array('PrintController', 'createShare'));
         $smarty->assign($result);
         ob_start();
-        $smarty->display('string:'.$content);
-        $output=  ob_get_contents();
+        $smarty->display('string:' . $content);
+        $output = ob_get_contents();
         ob_end_clean();
-        if(!count($result['footer_navs'])){
+        if (!count($result['footer_navs'])) {
             $output = preg_replace('/<a href="' . str_replace("/", "\/", $result['site_url']) . '"( target="_blank")?( )?>首页<\/a>( )?\|([\s]+)?(<br \/>)?(<br>)?/is', "", $output);
         }
         return $output;
