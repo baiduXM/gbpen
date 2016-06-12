@@ -202,10 +202,10 @@ Route::group(array('before' => 'auth'), function() {
         'uses' => 'HTMLController@checkChange'
     ]);
 
-    Route::get('push', [
+    Route::get('pushold', [
         'uses' => 'HTMLController@pushPrecent'
     ]);
-    Route::get('pushtest', [
+    Route::get('push', [
         'uses' => 'HTMLController1@pushPrecent'
     ]);
     Route::get('isneedpush', [
