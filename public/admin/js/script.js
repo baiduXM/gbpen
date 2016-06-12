@@ -185,6 +185,8 @@ mainApp.controller('memberController', function ($scope, $http) {
     $http.get('../customer-info').success(function (json) {
         checkJSON(json, function (json) {
             $scope.companyname = json.data.company_name;
+            $scope.capacity = json.data.capacity;
+            $scope.capacityremain = json.data.capacityremain;
             $scope.$parent.domain_pc = json.data.domain_pc;
             if (json.data.domain_m == '' || json.data.domain_m == null) {
                 $scope.$parent.phonepreview = false;

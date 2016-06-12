@@ -29,8 +29,15 @@
             <div class="fr">
                 <!-- 登陆信息 -->
                 <div class="member_info clearfix" ng-controller="memberController">
-                    <div class="member_buttons fr"><a href="javascript:;"><img src="images/u_logo3.png" /></a><a href="#/setting"><img src="images/setting.png" /></a><a href="../log-out"><img src="images/loginout.png" /></a></div>
-                    <a href="#/user"><p class="fr" ng-bind-template="欢迎，{{ companyname}}" ></p></a>
+                    <div class="member_buttons fr clearfix"><a href="javascript:;"><img src="images/u_logo3.png" /></a><a href="#/setting"><img src="images/setting.png" /></a><a href="../log-out"><img src="images/loginout.png" /></a></div>
+                    <a href="#/user"><p class="fr clearfix" ng-bind-template="欢迎，{{ companyname}}" ></p></a>
+                    <!--容量条-->
+                    <div class="fr clearfix" style="font-size: 10px;color:#7c6154;margin-top: 0px;" >
+                        剩余容量/总容量：{{capacityremain}}MB/{{capacity}}MB
+                        <div style="width: 100px; height: 9px; background: red; display: inline-block;">
+                            <div style="width: 30%;background: blue; height: 9px;"></div>
+                        </div>
+                    </div>
                 </div>
                 <!-- 顶部主导航 -->
                 <nav class="pr clearfix">
