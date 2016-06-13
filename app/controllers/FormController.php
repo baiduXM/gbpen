@@ -15,18 +15,13 @@ class FormController extends BaseController {
 
     /**
      * 表单列表
-     * @param type $status
+     * @param type $param 参数可能是数组
      * @return type
      */
-    public function getFormList($status = null) {
-        $cus_id = Auth::id();
-        $status = Input::get('status') ? Input::get('status') : null;
-        //===根据用户id查找用户表单列表===
-        if (empty($status)) {
-            $data = DB::table('form')->where('cus_id', $cus_id)->get();
-        } else {
-            $data = DB::table('form')->where('cus_id', $cus_id)->where('status', $status)->get();
-        }
+    public function getFormList() {
+        $where = Input::all();
+        $where['cus_id'] = Auth::id();
+        $data = DB::table('form')->where($where)->get();
         //===返回数据===
         if ($data != NULL) {
             $res = Response::json(['err' => 0, 'msg' => '获取表单列表成功', 'data' => $data]);
@@ -79,7 +74,7 @@ class FormController extends BaseController {
         $param['form_id'] = $form_id;
         $param['id'] = $form_id;
         $param['flag'] = 2;
-        $param['host']=$_SERVER['HTTP_HOST'];
+        $param['host'] = $_SERVER['HTTP_HOST'];
         $postFun = new CommonController;
         $res2 = $postFun->postsend("http://swap.5067.org/admin/form_userdata_delete.php", $param);
 //		$res2 = DB::table('form_data_' . $form_id % 10)->where('form_id', $form_id)->delete();
@@ -419,12 +414,12 @@ class FormController extends BaseController {
      */
     public function submitFormUserdata() {
         $domain = $_SERVER['HTTP_HOST']; //"http://swap.5067.org" 
-        if (preg_match('/example\.com$/', $domain)){
+        if (preg_match('/example\.com$/', $domain)) {
             echo 1;
         }
         echo 2;
-        
-        
+
+
 //        
 //            $data = $_POST;
 //        var_dump($data);
@@ -453,7 +448,7 @@ class FormController extends BaseController {
         $form_data = DB::table('form')->where('id', $form_id)->first();
 
         $param['form_id'] = $form_id;
-        $param['host']=$_SERVER['HTTP_HOST'];
+        $param['host'] = $_SERVER['HTTP_HOST'];
 //		$param['cus_id'] = Auth::id();
         $postFun = new CommonController;
 //		$userdata = $postFun->postsend("http://swap.5067.org/admin/form_userdata_list.php", $param);
@@ -490,7 +485,7 @@ class FormController extends BaseController {
     public function getFormUserdataList() {
         $form_id = Input::get('form_id');
         $param['form_id'] = $form_id;
-        $param['host']=$_SERVER['HTTP_HOST'];
+        $param['host'] = $_SERVER['HTTP_HOST'];
         $postFun = new CommonController;
         $res = $postFun->postsend("http://swap.5067.org/admin/form_userdata_list.php", $param);
         if (!empty($res)) {
@@ -514,7 +509,7 @@ class FormController extends BaseController {
         $id = Input::get('id');
         $param['form_id'] = $form_id;
         $param['id'] = $id;
-        $param['host']=$_SERVER['HTTP_HOST'];
+        $param['host'] = $_SERVER['HTTP_HOST'];
         $postFun = new CommonController;
         $res = $postFun->postsend("http://swap.5067.org/admin/form_userdata.php", $param);
         $res = json_decode($res);
@@ -536,7 +531,7 @@ class FormController extends BaseController {
         $param['form_id'] = $form_id;
         $param['id'] = $id;
         $param['flag'] = 1;
-        $param['host']=$_SERVER['HTTP_HOST'];
+        $param['host'] = $_SERVER['HTTP_HOST'];
 //		$res = DB::table('form_data_' . $form_id % 10)->where('id', $id)->delete();
         $postFun = new CommonController;
         $res = $postFun->postsend("http://swap.5067.org/admin/form_userdata_delete.php", $param);
