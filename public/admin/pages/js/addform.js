@@ -103,7 +103,6 @@ function addformController($scope, $http, $location) {
     function _div_info(data) {
         var _data = data;
         //===表单数据加载===
-        console.log(_data);
         $('[name="name"]').val(_data.name);
         $('[name="title"]').val(_data.title);
         $('[name="description"]').val(_data.description);
