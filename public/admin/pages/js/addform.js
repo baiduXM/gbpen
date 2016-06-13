@@ -222,7 +222,7 @@ function addformController($scope, $http, $location) {
             $('.add-show').append(_div_li);
         }
         //===绑定元素点击响应事件===
-        $(".element-show>li").unbind('click').on('click', function () {
+        $(".add-show>li").unbind('click').on('click', function () {
             $('.tab-head-item').removeClass('tab-head-item-active');
             $('#item_2').addClass('tab-head-item-active');
             $('.tab-content-item').hide();
