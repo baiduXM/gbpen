@@ -103,10 +103,12 @@ function addformController($scope, $http, $location) {
     function _div_info(data) {
         var _data = data;
         //===表单数据加载===
+        console.log(_data);
         $('[name="name"]').val(_data.name);
         $('[name="title"]').val(_data.title);
         $('[name="description"]').val(_data.description);
         $('[name="action_type"]:eq(' + _data.action_type + ')').attr('checked', true);
+
         if (_data.action_type == 0) {
             $('[name="action_text"]').val(_data.action_text);
         } else {
@@ -116,6 +118,11 @@ function addformController($scope, $http, $location) {
             $('[name="status"]:eq(0)').attr('checked', true);
         } else {
             $('[name="status"]:eq(1)').attr('checked', true);
+        }
+        if (_data.showmodel == 0) {
+            $('[name="showmodel"]:eq(0)').attr('checked', true);
+        } else {
+            $('[name="showmodel"]:eq(1)').attr('checked', true);
         }
         $('.as-title').html(_data.title);
         $('.as-description').html(_data.description);
@@ -213,7 +220,7 @@ function addformController($scope, $http, $location) {
         if ($('li[data-id="' + data.column_id + '"').length > 0) {
             $('li[data-id="' + data.column_id + '"').html(_div);
         } else {
-            $('.element-show').append(_div_li);
+            $('.add-show').append(_div_li);
         }
         //===绑定元素点击响应事件===
         $(".element-show>li").unbind('click').on('click', function () {
@@ -514,11 +521,11 @@ function addformController($scope, $http, $location) {
         var _config = _data.config;
         var _option_key = _config.option_key.split(',');
         var _to;
-        $.each(_option_key, function (tk,tv) {
+        $.each(_option_key, function (tk, tv) {
             _to = "option_" + tv;
             _div += '<p class="option-item" data-num=' + tv + '><input type = "radio" name="config_default" value = "' + tv + '" />';
             _div += '<input type="text" name="config_option_' + tv + '" value="' + _config[_to] + '" /><button class="square option_del">-</button></p>';
-            
+
         });
         _div += '</li>';
 //        _div += '<input type = "hidden" name="config_option_count" value = "' + _config.option_count + '" />';
@@ -531,7 +538,7 @@ function addformController($scope, $http, $location) {
         _div += '<li class="list-item"><p class="content-l">选项设置<button class="square option_add">+</button></p>';
         var _option_key = _config.option_key.split(',');
         var _to;
-        $.each(_option_key, function (tk,tv) {
+        $.each(_option_key, function (tk, tv) {
             _to = "option_" + tv;
             _div += '<p class="option-item" data-num=' + tv + '><input type = "checkbox" name="config_default" value = "' + tv + '" />';
             _div += '<input type="text" name="config_option_' + tv + '" value="' + _config[_to] + '" /><button class="square option_del">-</button></p>';
@@ -547,7 +554,7 @@ function addformController($scope, $http, $location) {
         _div += '<li class="list-item"><p class="content-l">选项设置<button class="square option_add">+</button></p>';
         var _option_key = _config.option_key.split(',');
         var _to;
-        $.each(_option_key, function (tk,tv) {
+        $.each(_option_key, function (tk, tv) {
             _to = "option_" + tv;
             _div += '<p class="option-item" data-num=' + tv + '><input type = "radio" name="config_default" value = "' + tv + '" />';
             _div += '<input type="text" name="config_option_' + tv + '" value="' + _config[_to] + '" /><button class="square option_del">-</button></p>';
