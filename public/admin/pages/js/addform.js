@@ -235,7 +235,7 @@ function addformController($scope, $http, $location) {
             }, 'json');
         });
         //===绑定元素鼠标滑动事件===
-        $(".element-show>li").unbind('hover').hover(function () {
+        $(".add-show>li").unbind('hover').hover(function () {
             $(this).addClass("hover");
         }, function () {
             $(this).removeClass("hover");
@@ -406,7 +406,7 @@ function addformController($scope, $http, $location) {
         _div += '</li>';
         $('#element-edit').html(_div);
 
-        $(".element-show>li").siblings().removeClass("click");
+        $(".add-show>li").siblings().removeClass("click");
         $('li[data-id="' + _data.column_id + '"]').addClass("click");
         //===加载操作===
         save_column(_data);
