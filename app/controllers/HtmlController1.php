@@ -507,11 +507,11 @@ class HtmlController1 extends BaseController{
      */
     private function pushinit(){
         $pc_template = new PrintController('online','pc');
-        $this->pushpc['result']=$pc_template->pushpublicpage();
-        $this->pushpc['navs']=$pc_template->pushnav();
+        $this->pushpc['result']=$pc_template->publicdata();
+        $this->pushpc['navs']=$pc_template->publicnavs();
         $m_template = new PrintController('online','mobile');
-        $this->pushmobile['result']=$m_template->pushpublicpage();
-        $this->pushmobile['navs']=$m_template->pushnav();
+        $this->pushmobile['result']=$m_template->publicdata();
+        $this->pushmobile['navs']=$m_template->publicnavs();
         $dir=app_path('views/templates/' . $pc_template->themename);
         if(is_dir($dir)){
             if ($dh = opendir($dir)){
