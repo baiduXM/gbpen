@@ -119,17 +119,8 @@ class ApiController extends BaseController {
 				//print_r($_POST);exit;
 				//增加操作
 				$update['password'] = Hash::make($update['name']);
-                                if(strpos($update['name'],'test')){
-                                    var_dump($update);
-                                    //var_dump($insert_id);
-                                    exit();
-                                }
 				$insert_id = Customer::insertGetId($update);
-                                if(strpos($update['name'],'test')){
-                                    var_dump($update);
-                                    var_dump($insert_id);
-                                    exit();
-                                }
+
 				if ($insert_id) {
 					$pc_id = Template::where('tpl_num', $update['pc_tpl_num'])->where('type', 1)->pluck('id');
 					$mobile_id = Template::where('tpl_num', $update['mobile_tpl_num'])->where('type', 2)->pluck('id');
