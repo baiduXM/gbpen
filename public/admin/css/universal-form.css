@@ -250,6 +250,10 @@ button .square{
     color: red;
 }
 
+.icon-yidong::before {
+    content: "";
+}
+
 /*===前端表单样式，前缀fv（form-view）===*/
 .fv-add-show{background: none;}
 /*title*/

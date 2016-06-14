@@ -199,8 +199,6 @@ function addformController($scope, $http, $location) {
     }
 
 
-
-
     /**
      * 显示输出内容
      * _show_{type} 显示/更新表单组件
@@ -213,7 +211,7 @@ function addformController($scope, $http, $location) {
      */
     function _html_show(data) {
         var _data = data;
-        var _div_li = '<li class="list-item" data-type="' + _data.type + '" data-id="' + _data.column_id + '" data-order="' + _data.order + '">';
+        var _div_li = '<li class="list-item icon-yidong" data-type="' + _data.type + '" data-id="' + _data.column_id + '" data-order="' + _data.order + '">';
         var _div = eval('_show_' + _data.type + '(_data)');//eval调用方法
         _div_li += _div + '</li>';
         if ($('li[data-id="' + data.column_id + '"').length > 0) {
@@ -239,6 +237,20 @@ function addformController($scope, $http, $location) {
             $(this).addClass("hover");
         }, function () {
             $(this).removeClass("hover");
+        });
+        //===表单列移动===
+        $('.element-show li .icon-yidong').TreeList({
+            rootNode: 'list-item',
+            parentNode: 'element-show',
+            'oncallback': function (indexlist) {
+                console.log(indexlist);
+                console.log('indexlist');
+                $http.post('../mhomepage-sortmodify', {indexlist: indexlist}).success(function (json) {
+                    checkJSON(json, function (json) {
+                        Save_hint();
+                    });
+                });
+            }
         });
     }
 
@@ -432,7 +444,6 @@ function addformController($scope, $http, $location) {
 
     //===删除组件===
     function del_column(data) {
-
         $('.delete_column').unbind('click').click(function () {
             //===弹窗确认===
             (function column_delete(del_num) {

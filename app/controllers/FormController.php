@@ -603,7 +603,7 @@ class FormController extends BaseController {
                     . "<input type='hidden' name='action_text' value=" . $tempform['action_text'] . " />";
 
             //$_form.="<form class='fv-unit-preview' id='box_show' action='../form-userdata-submit' onsubmit='return verify();' method='post'><ul class='fv-element-show'>";
-            $_form.="<form class='fv-unit-preview' id='box_show' action='http://swap.5067.org/userdata/' onsubmit='return verify();' method='post'><ul class='fv-element-show'>";
+            $_form.="<form class='fv-unit-preview' id='box_show' action='http://swap.5067.org/userdata/' method='post'><ul class='fv-element-show'>";
             $_form.=$_div . "</form></div>";
         }
         return $_form;
@@ -618,14 +618,15 @@ class FormController extends BaseController {
         $js = '<script src="http://swap.5067.org/js/laydate/laydate.js"></script>';
 //        $js .= '<script src="http://swap.5067.org/js/universal-form.js"></script>';
 //        $js .= '<script src="/public/admin/js/universal-form.js"></script>';
-//        $js .= '<script>';
-//        $js .= "function verify() {
-//            var box_show = $('#box_show').serializeArray();
-//            console.log(box_show);
-//            console.log('---form---');
-//                return false;
-//                }";
-//        $js .= '</script>';
+        $js .= '<script src="/public/admin/js/jquery.validate.min.js"></script>';
+        $js .= '<script>';
+        $js .= "function verify() {
+            var box_show = serializeForm('box_show');
+            console.log(box_show);
+            console.log('---form---');
+                return false;
+                }";
+        $js .= '</script>';
         return $css . $js;
     }
 
@@ -637,7 +638,7 @@ class FormController extends BaseController {
             $_div .= "<span style='color:red;'>*</span>";
         }
         $_div .= "</p>";
-        $_div .= "<input type='text' name='$item->title' placeholder='$item->description'";
+        $_div .= "<input type='email' name='$item->title' placeholder='$item->description'";
         $_div .= $item->required == 1 ? "required='required'" : '';
         $_div .= "/>";
         return $_div;
@@ -692,11 +693,14 @@ class FormController extends BaseController {
         }
         $_div .="</p>";
         $option_key = explode(',', $config['option_key']);
-        $_div .= "<input type='hidden' name = '$item->title' value = '' data-value='' />";
+//        $_div .= "<input type='hidden' name = '$item->title' value = '' data-value='' />";
         foreach ($option_key as $key => $value) {
             $to = "option_$value";
             $_div .= '<span class="option-item">';
-            $_div .= "<input type = 'checkbox' name = '$item->title[]' value = '$config[$to]' data-value='$value' /><label>" . $config[$to] . " </label>";
+            $_div .= "<input type = 'checkbox' name = '$item->title[]' value = '$config[$to]' data-value='$value' ";
+            if ($key == 0)
+                $_div .= $item->required == 1 ? "class='{required:true}'" : '';
+            $_div .= "/><label>" . $config[$to] . " </label>";
             $_div .= '</span>';
         }
         return $_div;
