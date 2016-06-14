@@ -171,7 +171,7 @@ class PrintController extends BaseController {
             $result = $this->dataDeal($result);
             $classify = new Classify;
             $templates = new TemplatesController;
-            $c_arr = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3, 4, 5, 6, 9))->where('pc_show', '=', 1)->get()->toArray();
+            $c_arr = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3, 4, 5, 6, 9))->where($this->type.'_show', '=', 1)->get()->toArray();
             if (empty($c_arr)) {
                 $c_arr = array();
             }
@@ -223,27 +223,27 @@ class PrintController extends BaseController {
                     } else {
                         if (isset($v['config']['filter'])) {
                             if ($v['config']['filter'] == 'page') {
-                                $v['config']['id'] = Classify::where('cus_id', $this->cus_id)->where('type', 4)->where('pc_show', 1)->pluck('id');
+                                $v['config']['id'] = Classify::where('cus_id', $this->cus_id)->where('type', 4)->where($this->type.'_show', 1)->pluck('id');
                             } elseif ($v['config']['filter'] == 'list') {
-                                $v['config']['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3))->where('pc_show', 1)->pluck('id');
+                                $v['config']['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3))->where($this->type.'_show', 1)->pluck('id');
                                 $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
                             } elseif ($v['config']['filter'] == 'feedback') {/* 20151021添加feeback filter */
-                                $v['config']['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(5, 9))->where('pc_show', 1)->pluck('id');
+                                $v['config']['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(5, 9))->where($this->type.'_show', 1)->pluck('id');
                             } elseif ($v['config']['filter'] == 'ALL') {
-                                $v['config']['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3, 4, 5, 6))->where('pc_show', 1)->pluck('id');
+                                $v['config']['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3, 4, 5, 6))->where($this->type.'_show', 1)->pluck('id');
                                 $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
                             } else {
-                                $v['config']['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3, 4))->where('pc_show', 1)->pluck('id');
+                                $v['config']['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3, 4))->where($this->type.'_show', 1)->pluck('id');
                                 $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
                             }
                         } else {
-                            $v['config']['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3))->where('pc_show', 1)->pluck('id');
+                            $v['config']['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3))->where($this->type.'_show', 1)->pluck('id');
                             $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
                         }
                     }
                 } elseif ($v['type'] == 'page') {
                     if (isset($v['config']['mustchild']) && $v['config']['mustchild'] == true) {
-                        $c_arr = Classify::where('cus_id', $this->cus_id)->where('type', 4)->where('pc_show', 1)->get()->toArray();
+                        $c_arr = Classify::where('cus_id', $this->cus_id)->where('type', 4)->where($this->type.'_show', 1)->get()->toArray();
                         $c_arr = $classify->toTree($c_arr);
                         $templates->unsetLastClassify($c_arr);
                         $c_arr = array_merge($c_arr);
@@ -251,7 +251,7 @@ class PrintController extends BaseController {
                             $v['config']['id'] = $c_arr[0]['id'];
                         }
                     } else {
-                        $v['config']['id'] = Classify::where('cus_id', $this->cus_id)->where('type', 4)->where('pc_show', 1)->pluck('id');
+                        $v['config']['id'] = Classify::where('cus_id', $this->cus_id)->where('type', 4)->where($this->type.'_show', 1)->pluck('id');
                     }
                 } elseif ($v['type'] == 'navs') {
                     if (isset($v['config']['mustchild']) && $v['config']['mustchild'] == true) {
@@ -290,19 +290,19 @@ class PrintController extends BaseController {
                     } else {
                         if (isset($v['config']['filter'])) {
                             if ($v['config']['filter'] == 'page') {
-                                $c_arr[0]['id'] = Classify::where('cus_id', $this->cus_id)->where('type', 4)->where('pc_show', 1)->pluck('id');
+                                $c_arr[0]['id'] = Classify::where('cus_id', $this->cus_id)->where('type', 4)->where($this->type.'_show', 1)->pluck('id');
                             } elseif ($v['config']['filter'] == 'list') {
-                                $c_arr[0]['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3))->where('pc_show', 1)->pluck('id');
+                                $c_arr[0]['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3))->where($this->type.'_show', 1)->pluck('id');
                                 $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
                             } elseif ($v['config']['filter'] == 'ALL') {
-                                $c_arr[0]['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3, 4, 6))->where('pc_show', 1)->pluck('id');
+                                $c_arr[0]['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3, 4, 6))->where($this->type.'_show', 1)->pluck('id');
                                 $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
                             } else {
-                                $c_arr[0]['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3, 4))->where('pc_show', 1)->pluck('id');
+                                $c_arr[0]['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3, 4))->where($this->type.'_show', 1)->pluck('id');
                                 $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
                             }
                         } else {
-                            $c_arr[0]['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3))->where('pc_show', 1)->pluck('id');
+                            $c_arr[0]['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3))->where($this->type.'_show', 1)->pluck('id');
                             $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
                         }
                     }
@@ -1018,7 +1018,7 @@ class PrintController extends BaseController {
         foreach ($data as $k => $v) {
             if ($v['type'] == 'list') {
                 if (isset($v['config']['id']) && is_numeric($v['config']['id']) && $v['config']['id'] > 0) {
-                    $c_info = Classify::where('id', $v['config']['id'])->where('cus_id', $this->cus_id)->where('pc_show', 1)->first();
+                    $c_info = Classify::where('id', $v['config']['id'])->where('cus_id', $this->cus_id)->where($this->type.'_show', 1)->first();
                     $cids = explode(',', $this->getChirldenCid($v['config']['id'])); //取得所有栏目id
                 } else {
                     $c_info = false;
@@ -1028,15 +1028,15 @@ class PrintController extends BaseController {
                     if ($v['config']['filter'] == 'list') {
                         if (isset($v['config']['star_only']) && $v['config']['star_only']) {
                             if ($cids) {
-                                $articles = Articles::whereIn('c_id', $cids)->where('pc_show', '1')->where('cus_id', $this->cus_id)->where('is_star', '1')->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
+                                $articles = Articles::whereIn('c_id', $cids)->where($this->type.'_show', '1')->where('cus_id', $this->cus_id)->where('is_star', '1')->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
                             } else {
-                                $articles = Articles::where('pc_show', '1')->where('cus_id', $this->cus_id)->where('is_star', '1')->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
+                                $articles = Articles::where($this->type.'_show', '1')->where('cus_id', $this->cus_id)->where('is_star', '1')->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
                             }
                         } else {
                             if ($cids) {
-                                $articles = Articles::whereIn('c_id', $cids)->where('pc_show', '1')->where('cus_id', $this->cus_id)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
+                                $articles = Articles::whereIn('c_id', $cids)->where($this->type.'_show', '1')->where('cus_id', $this->cus_id)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
                             } else {
-                                $articles = Articles::where('pc_show', '1')->where('cus_id', $this->cus_id)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
+                                $articles = Articles::where($this->type.'_show', '1')->where('cus_id', $this->cus_id)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
                             }
                         }
                         if ($articles->count() != 0) {
@@ -1078,17 +1078,20 @@ class PrintController extends BaseController {
                         $v['value']['content'] = ($c_info ? $c_info->meta_description : '');
                     }
                 } else {
+                    if(!isset($v['config']['limit'])){
+                        $v['config']['limit']='';
+                    }
                     if (isset($v['config']['star_only']) && $v['config']['star_only']) {
                         if ($cids) {
-                            $articles = Articles::whereIn('c_id', $cids)->where('pc_show', '1')->where('cus_id', $this->cus_id)->where('is_star', '1')->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
+                            $articles = Articles::whereIn('c_id', $cids)->where($this->type.'_show', '1')->where('cus_id', $this->cus_id)->where('is_star', '1')->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
                         } else {
-                            $articles = Articles::where('pc_show', '1')->where('cus_id', $this->cus_id)->where('is_star', '1')->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
+                            $articles = Articles::where($this->type.'_show', '1')->where('cus_id', $this->cus_id)->where('is_star', '1')->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
                         }
                     } else {
                         if ($cids) {
-                            $articles = Articles::whereIn('c_id', $cids)->where('pc_show', '1')->where('cus_id', $this->cus_id)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
+                            $articles = Articles::whereIn('c_id', $cids)->where($this->type.'_show', '1')->where('cus_id', $this->cus_id)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
                         } else {
-                            $articles = Articles::where('pc_show', '1')->where('cus_id', $this->cus_id)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
+                            $articles = Articles::where($this->type.'_show', '1')->where('cus_id', $this->cus_id)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
                         }
                     }
                     if ($articles->count() != 0) {
@@ -1142,7 +1145,7 @@ class PrintController extends BaseController {
                 $childrenMenu = array();
                 if ($cids) {
                     foreach ($cids as $cid) {
-                        $c_c_info = Classify::where('id', $cid)->where('cus_id', $this->cus_id)->where('pc_show', 1)->select('id', 'name', 'en_name', 'img as image', 'icon', 'meta_description as description', 'p_id')->first();
+                        $c_c_info = Classify::where('id', $cid)->where('cus_id', $this->cus_id)->where($this->type.'_show', 1)->select('id', 'name', 'en_name', 'img as image', 'icon', 'meta_description as description', 'p_id')->first();
                         if ($c_c_info) {
                             $c_c_info = $c_c_info->toArray();
                             if ($this->showtype == 'preview') {
@@ -1157,9 +1160,9 @@ class PrintController extends BaseController {
                             $c_c_info['selected'] = 0;
                             $c_cids = explode(',', $this->getChirldenCid($cid)); //取得所有栏目id
                             if (isset($v['config']['star_only']) && $v['config']['star_only']) {
-                                $articles = Articles::whereIn('c_id', $c_cids)->where('pc_show', '1')->where('cus_id', $this->cus_id)->where('is_star', '1')->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
+                                $articles = Articles::whereIn('c_id', $c_cids)->where($this->type.'_show', '1')->where('cus_id', $this->cus_id)->where('is_star', '1')->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
                             } else {
-                                $articles = Articles::whereIn('c_id', $c_cids)->where('pc_show', '1')->where('cus_id', $this->cus_id)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
+                                $articles = Articles::whereIn('c_id', $c_cids)->where($this->type.'_show', '1')->where('cus_id', $this->cus_id)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
                             }
                             if ($articles->count() != 0) {
                                 $abc = [];
@@ -1205,7 +1208,7 @@ class PrintController extends BaseController {
                 $v['value']['childmenu'] = isset($v['config']['id']) ? $classify->toTree($childrenMenu, $v['config']['id']) : NULL;
             } elseif ($v['type'] == 'page') {
                 if (isset($v['config']['id'])) {
-                    $c_info = Classify::where('id', $v['config']['id'])->where('cus_id', $this->cus_id)->where('pc_show', 1)->first();
+                    $c_info = Classify::where('id', $v['config']['id'])->where('cus_id', $this->cus_id)->where($this->type.'_show', 1)->first();
                     $cids = explode(',', $this->getChirldenCid($v['config']['id'])); //取得所有栏目id
                 } else {
                     $c_info = false;
@@ -1231,7 +1234,7 @@ class PrintController extends BaseController {
                 $childrenMenu = array();
                 if ($cids) {
                     foreach ($cids as $cid) {
-                        $c_c_info = Classify::where('id', $cid)->where('cus_id', $this->cus_id)->where('pc_show', 1)->select('id', 'name', 'en_name', 'img as image', 'icon', 'meta_description as description', 'p_id')->first();
+                        $c_c_info = Classify::where('id', $cid)->where('cus_id', $this->cus_id)->where($this->type.'_show', 1)->select('id', 'name', 'en_name', 'img as image', 'icon', 'meta_description as description', 'p_id')->first();
                         if ($c_c_info) {
                             $c_c_info = $c_c_info->toArray();
                             if ($this->showtype == 'preview') {
@@ -1257,7 +1260,7 @@ class PrintController extends BaseController {
                     unset($v['value']);
                     $i = 0;
                     foreach ($v['config']['ids'] as $id) {
-                        $c_info = Classify::where('id', $id)->where('cus_id', $this->cus_id)->where('pc_show', 1)->first();
+                        $c_info = Classify::where('id', $id)->where('cus_id', $this->cus_id)->where($this->type.'_show', 1)->first();
                         $v['value'][$i]['name'] = $c_info ? $c_info->name : '';
                         $v['value'][$i]['en_name'] = $c_info ? $c_info->en_name : '';
                         $v['value'][$i]['icon'] = $c_info ? '<i class="iconfont">' . $c_info->icon . '</i>' : '';
@@ -1315,8 +1318,8 @@ class PrintController extends BaseController {
             }
             $links_count = CustomerInfo::where('cus_id', $this->cus_id)->pluck('pc_page_links'); //分页链接显示个数
             $offset = ($page - 1) * $page_number;
-            $total = Articles::whereIn('c_id', $cids)->where('pc_show', '1')->select('id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color')->count();
-            $list = Articles::whereIn('c_id', $cids)->where('pc_show', '1')->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'c_id', 'url', 'use_url')->skip($offset)->take($page_number)->get();
+            $total = Articles::whereIn('c_id', $cids)->where($this->type.'_show', '1')->select('id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color')->count();
+            $list = Articles::whereIn('c_id', $cids)->where($this->type.'_show', '1')->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'c_id', 'url', 'use_url')->skip($offset)->take($page_number)->get();
         }
         $page_count = ceil($total / $page_number);
         $article = [];
