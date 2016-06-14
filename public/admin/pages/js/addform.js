@@ -103,7 +103,6 @@ function addformController($scope, $http, $location) {
     function _div_info(data) {
         var _data = data;
         //===表单数据加载===
-        console.log(_data);
         $('[name="name"]').val(_data.name);
         $('[name="title"]').val(_data.title);
         $('[name="description"]').val(_data.description);
@@ -168,7 +167,7 @@ function addformController($scope, $http, $location) {
         var _data = data;
         var _div = '';
         $.each(_data, function (k, v) {
-            _div += '<li class="utility" data-id="' + v.id + '">\
+            _div += '<li class="utility" id="' + v.id + '">\
                         <span class="title">' + v.title + '</span>\
                         <i class="iconfont icon-liebiao grey tpl_info"></i>\
                     </li>';
@@ -186,7 +185,7 @@ function addformController($scope, $http, $location) {
      * @returns {undefined}
      */
     function bindElementEvent(_this) {
-        var element_id = _this.data('id');
+        var element_id = _this.attr('id');
         //===添加组件===
         $.post('../form-column-add', {form_id: form_id, element_id: element_id}, function (json) {
             var _data = json.data;
@@ -220,7 +219,7 @@ function addformController($scope, $http, $location) {
         if ($('li[data-id="' + data.column_id + '"').length > 0) {
             $('li[data-id="' + data.column_id + '"').html(_div);
         } else {
-            $('.add-show').append(_div_li);
+            $('.element-show').append(_div_li);
         }
         //===绑定元素点击响应事件===
         $(".element-show>li").unbind('click').on('click', function () {
@@ -241,7 +240,6 @@ function addformController($scope, $http, $location) {
         }, function () {
             $(this).removeClass("hover");
         });
-
     }
 
     function _show_text(data) {
@@ -406,7 +404,6 @@ function addformController($scope, $http, $location) {
         _div += '<span class="option-item"><input type="button" class="delete_column" value="删除"/></span>';
         _div += '</li>';
         $('#element-edit').html(_div);
-
         $(".element-show>li").siblings().removeClass("click");
         $('li[data-id="' + _data.column_id + '"]').addClass("click");
         //===加载操作===

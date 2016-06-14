@@ -815,189 +815,13 @@ class PrintController extends BaseController {
      * @return array 返回一个包含公共数据的数组
      */
     private function pagePublic($c_id = 0) {
-        error_reporting(E_ALL ^ E_NOTICE);
-        //===whereIN(type:9) 万用表单===
-        if ($this->type == 'pc') {
-            $navs = Classify::where('cus_id', $this->cus_id)->where('pc_show', 1)->whereIN('type', [1, 2, 3, 4, 5, 6, 9])->select('id', 'type', 'img', 'icon', 'name', 'url', 'p_id', 'en_name', 'meta_description as description')->OrderBy('sort', 'asc')->get()->toArray();
-        } else {
-            $navs = Classify::where('cus_id', $this->cus_id)->where('mobile_show', 1)->select('id', 'type', 'img', 'icon', 'name', 'url', 'p_id', 'en_name', 'meta_description as description')->OrderBy('sort', 'asc')->get()->toArray();
-        }
-        $navs = $this->toTree($navs, 0, TRUE);
-
-        if ($c_id) {
-            $current_arr = $this->currentCidArray($c_id);
-            $navs = $this->addCurrent($navs, $current_arr);
-        }
-        $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
-        $postFun = new CommonController;
-        if ($this->type == 'pc') {
-            $stylecolor = websiteInfo::leftJoin('color', 'color.id', '=', 'website_info.pc_color_id')->where('cus_id', $this->cus_id)->pluck('color_en');
-            $logo = $this->showtype == 'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $customer_info->logo) : $this->domain . '/images/l/common/' . $customer_info->logo;
-            $floatadv = json_decode($customer_info->floatadv);
-            foreach ((array) $floatadv as $key => $val) {
-                $floatadv[$key]->url = $this->showtype == 'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $val->adv) : $this->domain . '/images/l/common/' . $val->adv;
-            }
-            if (count($floatadv)) {
-                $url = "http://swap.5067.org/floatadv.php";
-                $post_data = json_encode($floatadv);
-                $ch = curl_init();
-                curl_setopt($ch, CURLOPT_URL, $url);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                curl_setopt($ch, CURLOPT_POST, 1);
-                curl_setopt($ch, CURLOPT_POSTFIELDS, array("data" => $post_data));
-                $floatadvprint = curl_exec($ch);
-                curl_close($ch);
-            }
-
-            $headscript = $customer_info->pc_header_script;
-            if ($customer_info->lang == 'en') {
-                $footprint = $customer_info->footer . '<p>Technology support：<a href="http://www.12t.cn/">Xiamen 12t network technology co.ltd</a> Talent support：<a href="http://www.xgzrc.com/">www.xgzrc.com.cn</a></p>';
-            } else {
-                $footprint = $customer_info->footer . '<p>技术支持：<a href="http://www.12t.cn/">厦门易尔通网络科技有限公司</a> 人才支持：<a href="http://www.xgzrc.com/">厦门人才网</a></p>';
-            }
-            $footscript = $customer_info->pc_footer_script;
-            $footscript .= '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/quickbar.js?' . $this->cus_id . 'pc"></script>';
-            $postFun->postsend("http://swap.5067.org/admin/statis.php?cus_id=$this->cus_id&platform=pc"); //===添加统计代码PC===
-//            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/js/statis.s?' . $this->cus_id . 'pc"></script>'; //===添加统计代码PC===
-            $site_another_url = $this->showtype == 'preview' ? '' : $customer_info->mobile_domain;
-        } else {
-            $logo = $this->showtype == 'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $customer_info->logo_small) : $this->domain . '/images/l/common/' . $customer_info->logo_small;
-            $stylecolor = websiteInfo::leftJoin('color', 'color.id', '=', 'website_info.mobile_color_id')->where('cus_id', $this->cus_id)->pluck('color_en');
-            $headscript = $customer_info->mobile_header_script;
-            $footprint = $customer_info->mobile_footer;
-            $footscript = $customer_info->mobile_footer_script;
-            $footscript .= '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/quickbar.js?' . $this->cus_id . 'mobile"></script>';
-            $postFun->postsend("http://swap.5067.org/admin/statis.php?cus_id=$this->cus_id&platform=mobile"); //===添加统计代码MOBILE===
-            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/js/statis.js?' . $this->cus_id . 'mobile"></script>'; //===添加统计代码MOBILE===
-            $site_another_url = $this->showtype == 'preview' ? '' : $customer_info->pc_domain;
-            $config_arr = parse_ini_file(public_path('/templates/' . $this->themename) . '/config.ini', true);
-            if (!is_array($config_arr))
-                dd('【config.ini】文件不存在！文件格式说明详见：http://pme/wiki/doku.php?id=ued:template:config');
-        }
-        //获取global信息
-        if ($this->type == 'pc') {
-            $global_data = $this->pagedata('global');
-            $global_data = $this->detailList($global_data);
-        } else {
-            $global_data = WebsiteConfig::where('cus_id', $this->cus_id)->where('type', 2)->where('template_id', $this->tpl_id)->pluck('value');
-            if ($global_data) {
-                $global_data = unserialize($global_data);
-            } else {
-                $global_data = $this->mobilePageList('global', true);
-            }
-            if (count($global_data) > 0) {
-                $quickbarKey = false;
-                foreach ($global_data as $gkey => $gval) {
-                    if ($global_data[$gkey]['type'] == 'quickbar') {
-                        $quickbar = WebsiteConfig::where('cus_id', $this->cus_id)->where('key', 'quickbar')->pluck('value');
-                        if ($quickbar) {
-                            $quickbar = unserialize($quickbar);
-                            foreach ($quickbar as $key => $val) {
-                                $quickbar[$key]['enable'] = intval($quickbar[$key]['enable_mobile']);
-                                if ($quickbar[$key]['type'] == 'tel') {
-                                    $quickbar[$key]['link'] = "tel:" . $quickbar[$key]['data'];
-                                } elseif ($quickbar[$key]['type'] == 'sms') {
-                                    $quickbar[$key]['link'] = "sms:" . $quickbar[$key]['data'];
-                                } elseif ($quickbar[$key]['type'] == 'im') {
-                                    $qq = explode('|', $quickbar[$key]['data']);
-                                    $qq = explode(':', $qq[0]);
-                                    $qq = explode('@', $qq[1]);
-                                    $quickbar[$key]['link'] = 'http://wpd.b.qq.com/cgi/get_m_sign.php?uin=' . $qq[0];
-                                } elseif ($quickbar[$key]['type'] == 'map') {
-                                    if ($quickbar[$key]['data'] != null) {
-                                        $location = explode('|', $quickbar[$key]['data']);
-                                        $address = explode(',', $location[1]);
-                                        $quickbar[$key]['link'] = 'http://api.map.baidu.com/marker?location=' . $address[1] . ',' . $address[0] . '&title=目标位置&content=' . $location[0] . '&output=html';
-                                    } else {
-                                        $address = CustomerInfo::where('cus_id', $this->cus_id)->pluck('address');
-                                        $quickbar[$key]['link'] = 'http://api.map.baidu.com/geocoder?address=' . $address . '&output=html';
-                                    }
-                                } elseif ($quickbar[$key]['type'] == 'link') {
-                                    if ($quickbar[$key]['data'] != null) {
-                                        $url_arr = explode('|', $quickbar[$key]['data']);
-                                        $quickbar[$key]['link'] = $url_arr[0];
-                                    }
-                                }
-                                //TODO:删除enable_pc/enable_mobile键值
-                                unset($quickbar[$key]['enable_pc']);
-                                unset($quickbar[$key]['enable_mobile']);
-                            }
-                            $quickbarKey = $gkey;
-                            ;
-                        } else {
-                            foreach ($global_data[$gkey]['value'] as $key => $val) {
-                                if ($global_data[$gkey]['value'][$key]['type'] == 'tel') {
-                                    $global_data[$gkey]['value'][$key]['link'] = "tel:" . $global_data[$gkey]['value'][$key]['data'];
-                                } elseif ($global_data[$gkey]['value'][$key]['type'] == 'sms') {
-                                    $global_data[$gkey]['value'][$key]['link'] = "sms:" . $global_data[$gkey]['value'][$key]['data'];
-                                } elseif ($global_data[$gkey]['value'][$key]['type'] == 'im') {
-                                    $qq = explode('|', $global_data[$gkey]['value'][$key]['data']);
-                                    $qq = explode(':', $qq[0]);
-                                    $qq = explode('@', $qq[1]);
-                                    $global_data[$gkey]['value'][$key]['link'] = 'http://wpd.b.qq.com/cgi/get_m_sign.php?uin=' . $qq[0];
-                                } elseif ($global_data[$gkey]['value'][$key]['type'] == 'link') {
-                                    $address = CustomerInfo::where('cus_id', $this->cus_id)->pluck('address');
-                                    $global_data[$gkey]['value'][$key]['link'] = 'http://api.map.baidu.com/geocoder?address=' . $address . '&output=html';
-                                }
-                            }
-                            $quickbarKey = $gkey;
-                            $quickbar = $global_data[$gkey]['value'];
-                        }
-                    } elseif ($global_data[$gkey]['type'] == 'images' or $global_data[$gkey]['type'] == 'image') {
-                        $img = 1;
-                        foreach ($global_data[$gkey]['value'] as $img_key => $img_value) {
-                            if ($img_value) {
-                                $img = 0;
-                            }
-                        }
-                        if ($img) {
-                            $global_data[$gkey]['value'] = array();
-                        }
-                    }
-                }
-            }
-            $global_data = $this->detailList($global_data);
-            $this->replaceUrl($global_data);
-            if ($quickbarKey)
-                $global_data[$quickbarKey] = $quickbar;
-        }
-        $contact = CustomerInfo::where('cus_id', $this->cus_id)->select('company', 'contact_name as name', 'mobile', 'telephone', 'fax', 'email as mail', 'qq', 'address')->first()->toArray();
-        if ($this->showtype == 'preview') {
-            if ($this->type == 'pc') {
-                $pc_domain = 'http://' . $_SERVER['HTTP_HOST'] . '/search-preview';
-            } else {
-                $pc_domain = 'http://' . $_SERVER['HTTP_HOST'] . '/mobile/search-preview';
-            }
-        } else {
-            $pc_domain = $this->domain . '/search.php';
-        }
-        $result = [
-            'stylecolor' => $stylecolor,
-            'navs' => $navs,
-            'favicon' => rtrim($this->source_dir, 'images/') . '/images/l/common/' . $customer_info->favicon,
-            'logo' => $logo,
-            'floatadvprint' => isset($floatadvprint) ? $floatadvprint : '',
-            'headscript' => $headscript,
-            'footprint' => $footprint,
-            'footscript' => $footscript,
-            'global' => $global_data,
-            'site_url' => $this->site_url,
-            'site_another_url' => $site_another_url,
-            'contact' => $contact,
-            'search_action' => $pc_domain //'http://swap.gbpen.com'
-        ];
-
-        if ($this->type == 'pc') {
-            $footer_navs = Classify::where('cus_id', $this->cus_id)->where('footer_show', 1)->select('id', 'type', 'img', 'icon', 'name', 'url', 'p_id', 'en_name', 'meta_description as description')->OrderBy('sort', 'asc')->get()->toArray();
-            $footer_navs = $this->toFooter($footer_navs);
-            $result['footer_navs'] = $footer_navs;
-            $result['index_navs'] = $navs;
-            $result['type'] = 'pc';
-        }
+        $result=$this->publicdata();
+        $result['navs']=$this->publicnavs($c_id);
+        $result['index_navs'] = $result['navs'];
         return $result;
     }
 
-    public function pushpublicpage() {
+    public function publicdata() {
         $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
         if ($this->type == 'pc') {
             $stylecolor = websiteInfo::leftJoin('color', 'color.id', '=', 'website_info.pc_color_id')->where('cus_id', $this->cus_id)->pluck('color_en');
@@ -1162,7 +986,7 @@ class PrintController extends BaseController {
         return $result;
     }
 
-    public function pushnav($c_id = 0) {
+    public function publicnavs($c_id = 0) {
         error_reporting(E_ALL ^ E_NOTICE);
         //===whereIN(type:9) 万用表单===
         if ($this->type == 'pc') {
@@ -2444,7 +2268,7 @@ class PrintController extends BaseController {
     public function categoryPush($id, $page,$publicdata, $last_html_precent, $html_precent) {
         $paths = [];
         $result=$publicdata['result'];
-        $result['navs'] = $this->pushnav($id);
+        $result['navs'] = $this->publicnavs($id);
         $result['index_navs'] = $result['navs'];
         foreach ((array) $result['navs'] as $nav) {
             if ($nav['current'] == 1) {
@@ -2953,7 +2777,7 @@ class PrintController extends BaseController {
         set_time_limit(0);
         $paths = [];
         $result=$publicdata['result'];
-        $result['navs'] = $this->pushnav($c_id);
+        $result['navs'] = $this->publicnavs($c_id);
         $result['index_navs'] = $result['navs'];
         $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
         if ($customer_info->lang == 'en') {

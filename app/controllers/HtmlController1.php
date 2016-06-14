@@ -507,13 +507,11 @@ class HtmlController1 extends BaseController{
      */
     private function pushinit(){
         $pc_template = new PrintController('online','pc');
-        $this->pushpc['result']=$pc_template->pushpublicpage();
-        $this->pushpc['navs']=$pc_template->pushnav();
+        $this->pushpc['result']=$pc_template->publicdata();
+        $this->pushpc['navs']=$pc_template->publicnavs();
         $m_template = new PrintController('online','mobile');
-        $this->pushmobile['result']=$m_template->pushpublicpage();
-        $this->pushmobile['navs']=$m_template->pushnav();
-//        var_dump($pc_template->themename);
-//        exit();
+        $this->pushmobile['result']=$m_template->publicdata();
+        $this->pushmobile['navs']=$m_template->publicnavs();
         $dir=app_path('views/templates/' . $pc_template->themename);
         if(is_dir($dir)){
             if ($dh = opendir($dir)){
@@ -522,7 +520,7 @@ class HtmlController1 extends BaseController{
                         $this->pushpc['repleace'][$file]=file_get_contents($dir.'/'.$file);
                         $this->pushpc['pattern'][$file]="#{include((\s)+)?file=[\',\"].\/".$file."[\',\"]}#";
                         if($file=='_footer.html'){
-                            $this->pushpc['repleace'][$file]=preg_replace('/$navs/', '$footer_navs', $this->pushpc['repleace'][$file]).'{$enlargeprint}';
+                            $this->pushpc['repleace'][$file]=preg_replace('/\$navs/', '\$footer_navs', $this->pushpc['repleace'][$file]).'{$enlargeprint}';
                         }
                     }
                 }
@@ -535,9 +533,6 @@ class HtmlController1 extends BaseController{
                     if(strpos($file,'.html')){
                         $this->pushmobile['repleace'][$file]=file_get_contents($dir.'/'.$file);
                         $this->pushmobile['pattern'][$file]="#{include((\s)+)?file=[\',\"].\/".$file."[\',\"]}#";
-//                        if($file=='_footer.html'){
-//                            $this->pushmobile['repleace'][$file]=preg_replace('/navs/', 'footer_navs', $this->pushmobile['repleace'][$file]).'{$enlargeprint}';
-//                        }
                     }
                 }
             }
