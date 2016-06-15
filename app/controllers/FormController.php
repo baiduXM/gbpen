@@ -589,8 +589,8 @@ class FormController extends BaseController {
                 $_div.="</li>";
             }
             $_div .= "</ul>"
-//                    . "<input type='submit' value='提交' class='button submit-form' name='submit' />"
-                    . "<button id='sbok'>提交</button>"
+                    . "<input type='submit' value='提交' class='button submit-form' name='submit' />"
+//                    . "<button id='sbok'>提交</button>"
                     . "<input type='reset' value='重置' class='button' />"
                     . "<input type='hidden' name='form_id' value='$form_id' />"
                     . "<input type='hidden' name='action_type' value='$form_data->action_type' />"
