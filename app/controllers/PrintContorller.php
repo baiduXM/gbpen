@@ -2708,7 +2708,7 @@ class PrintController extends BaseController {
             }
             $related[$k]['title'] = $articles[$k]['title'];
             $related[$k]['description'] = $articles[$k]['introduction'];
-            $related[$k]['image'] = $this->source_dir . 'l/articles/' . $articles[$k]['image'];
+            $related[$k]['image'] = $this->source_dir . 'l/articles/' . $articles[$k]['img'];
             $related[$k]['pubdate'] = $articles[$k]['created_at'];
             $related[$k]['pubtimestamp'] = strtotime($articles[$k]['created_at']);
             $a_c_info = Classify::where('id', $articles[$k]['c_id'])->first();
@@ -2928,7 +2928,7 @@ class PrintController extends BaseController {
                 $related[$k]['category']['link'] = $this->domain . '/category/' . $articles[$k]['id'] . '.html';
                 $related[$k]['title'] = $articles[$k]['title'];
                 $related[$k]['description'] = $articles[$k]['introduction'];
-                $related[$k]['image'] = $this->source_dir . 'l/articles/' . $articles[$k]['image'];
+                $related[$k]['image'] = $this->source_dir . 'l/articles/' . $articles[$k]['img'];
                 $related[$k]['pubdate'] = $articles[$k]['created_at'];
                 $related[$k]['pubtimestamp'] = strtotime($articles[$k]['created_at']);
                 $a_c_info = Classify::where('id', $articles[$k]['c_id'])->first();
