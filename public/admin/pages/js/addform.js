@@ -434,6 +434,7 @@ function addformController($scope, $http, $location) {
         $('.save_column').unbind('click').click(function () {
             var form_data = $('form[name="box_column"]').serializeArray();
             $.post('../form-column-edit', {form_id: form_id, data: form_data, column_id: _data.column_id, type: _data.type}, function (json) {
+                console.log(json);
                 checkJSON(json, function (json) {
                     _html_show(json.data);
                     Hint_box(json.msg);
@@ -510,11 +511,23 @@ function addformController($scope, $http, $location) {
         var _data = data;
         var _config = _data.config;
         var _div = '';
-        _div += '<li class="list-item"><p class="content-l">规则</p>\n\
-                    <span class="option-item"><input type = "radio" name="config_rules" value = "no" checked />无</span>\n\
-                    <span class="option-item"><input type = "radio" name="config_rules" value = "mail" />邮箱</span>\n\
-                    <span class="option-item"><input type = "radio" name="config_rules" value = "number" />数字</span>\n\
-                </li>';
+        _div += '<li class="list-item"><p class="content-l">规则</p>';
+        _div += '<span class="option-item"><input type = "radio" name="config_rules" value = "text" ';
+        if (_config.rules == 'text') {
+            _div += 'checked = "checked"';
+        }
+        _div += '/>无</span>';
+        _div += '<span class="option-item"><input type = "radio" name="config_rules" value = "email" ';
+        if (_config.rules == 'email') {
+            _div += 'checked = "checked"';
+        }
+        _div += '/>邮箱</span>';
+        _div += '<span class="option-item"><input type = "radio" name="config_rules" value = "number" ';
+        if (_config.rules == 'number') {
+            _div += 'checked = "checked"';
+        }
+        _div += '/>数字</span>';
+        _div += '</li>';
         return _div;
     }
     function _edit_textarea(data) {

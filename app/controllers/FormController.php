@@ -278,7 +278,6 @@ class FormController extends BaseController {
                 $redata[$v['name']] = $v['value'];
             }
         }
-
 //        $fun_name = 'edit_' . $type;
 //        $config = $this->$fun_name('data'); //动态调用方法
         if ($type == 'select' || $type == 'radio' || $type == 'checkbox') {
@@ -418,12 +417,6 @@ class FormController extends BaseController {
             echo 1;
         }
         echo 2;
-
-
-//        
-//            $data = $_POST;
-//        var_dump($data);
-//        echo "<br>---dta---<br>";
         exit;
         $form_id = $data[form_id];
         $condata = array();
@@ -581,7 +574,7 @@ class FormController extends BaseController {
             }
             $form_id = $form_data->id;
             $column_data = $data['column'];
-            $_form = "<div class='fv-add-show'>
+            $_form .= "<div class='fv-add-show'>
                     <div class='fv-as-title'>
                             $form_data->title
                     </div>
@@ -595,18 +588,38 @@ class FormController extends BaseController {
                 $_div .= $this->$func($item);
                 $_div.="</li>";
             }
-            $jscol_name = json_encode($column_data);
             $_div .= "</ul>"
-                    . "<input type='submit' value='提交' class='button submit-form' name='submit' /><input type='reset' value='重置' class='button' />"
+//                    . "<input type='submit' value='提交' class='button submit-form' name='submit' />"
+                    . "<button id='sbok'>提交</button>"
+                    . "<input type='reset' value='重置' class='button' />"
                     . "<input type='hidden' name='form_id' value='$form_id' />"
                     . "<input type='hidden' name='action_type' value='$form_data->action_type' />"
                     . "<input type='hidden' name='action_text' value=" . $tempform['action_text'] . " />";
-
-            //$_form.="<form class='fv-unit-preview' id='box_show' action='../form-userdata-submit' onsubmit='return verify();' method='post'><ul class='fv-element-show'>";
+//            $_form.="<form class='fv-unit-preview' id='box_show' action='../form-userdata-submit' onsumbit='return verify()' method='post'><ul class='fv-element-show'>";
             $_form.="<form class='fv-unit-preview' id='box_show' action='http://swap.5067.org/userdata/' method='post'><ul class='fv-element-show'>";
             $_form.=$_div . "</form></div>";
+            $_form.=$js;
         }
         return $_form;
+    }
+
+    /**
+     * 验证表单项
+     * @param type $item
+     * @return type
+     */
+    function validata($item) {
+//        var_dump($item);
+//        echo '<br>';
+        $config = $item->config;
+        $_vali = '';
+        if ($item->required) {
+            $_vali['required'] = true;
+        }
+        if (!empty($config[rules])) {
+            $_vali[$config[rules]] = true;
+        }
+        return $_vali;
     }
 
     /**
@@ -617,29 +630,28 @@ class FormController extends BaseController {
         $css .='<link rel="stylesheet" href="http://swap.5067.org/css/universal-form.css">';
         $js = '<script src="http://swap.5067.org/js/laydate/laydate.js"></script>';
 //        $js .= '<script src="http://swap.5067.org/js/universal-form.js"></script>';
-//        $js .= '<script src="/public/admin/js/universal-form.js"></script>';
-        $js .= '<script src="/public/admin/js/jquery.validate.min.js"></script>';
-        $js .= '<script>';
-        $js .= "function verify() {
-            var box_show = serializeForm('box_show');
-            console.log(box_show);
-            console.log('---form---');
-                return false;
-                }";
-        $js .= '</script>';
+//        $js .= '<script src="/public/admin/js/jquery.validate.min.js"></script>';
+        $js .= '<script src="/public/admin/js/universal-form.js"></script>';
+//        $js .= '<script>';
+//        $js .= "function verify() {
+//           alert(1)
+//                return false;
+//                }";
+//        $js .= '</script>';
         return $css . $js;
     }
 
     function show_html_text($data) {
         $item = $data;
         $config = $data->config;
-        $_div = "<p class='content-l'>$item->title";
+        $_div = '';
+        $_div .= "<p class='content-l'>$item->title";
         if ($item->required == 1) {
             $_div .= "<span style='color:red;'>*</span>";
         }
         $_div .= "</p>";
-        $_div .= "<input type='email' name='$item->title' placeholder='$item->description'";
-        $_div .= $item->required == 1 ? "required='required'" : '';
+        $_div .= "<input type='$config[rules]' name='$item->title' placeholder='$item->description'";
+        $_div .= $item->required == 1 ? "required" : '';
         $_div .= "/>";
         return $_div;
     }
@@ -647,7 +659,8 @@ class FormController extends BaseController {
     function show_html_textarea($data) {
         $item = $data;
         $config = $data->config;
-        $_div = "<p class='content-l'>$item->title";
+        $_div = '';
+        $_div .= "<p class='content-l'>$item->title";
         if ($item->required == 1) {
             $_div .= "<span style='color:red;'>*</span>";
         }
@@ -661,7 +674,8 @@ class FormController extends BaseController {
     function show_html_radio($data) {
         $item = $data;
         $config = $data->config;
-        $_div = "<p class='content-l'>$item->title";
+        $_div = '';
+        $_div .= "<p class='content-l'>$item->title";
         if ($item->required == 1) {
             $_div .= "<span style='color:red;'>*</span>";
         }
@@ -684,7 +698,8 @@ class FormController extends BaseController {
     function show_html_checkbox($data) {
         $item = $data;
         $config = $data->config;
-        $_div = "<p class='content-l'>$item->title";
+        $_div = '';
+        $_div .= "<p class='content-l'>$item->title";
         if ($item->required == 1) {
             $_div .= "<span style='color:red;'>*</span>";
         }
@@ -693,14 +708,12 @@ class FormController extends BaseController {
         }
         $_div .="</p>";
         $option_key = explode(',', $config['option_key']);
-//        $_div .= "<input type='hidden' name = '$item->title' value = '' data-value='' />";
+        $_div .= "<input type='hidden' name = '$item->title' value = '' data-value='' />";
         foreach ($option_key as $key => $value) {
             $to = "option_$value";
             $_div .= '<span class="option-item">';
             $_div .= "<input type = 'checkbox' name = '$item->title[]' value = '$config[$to]' data-value='$value' ";
-            if ($key == 0)
-                $_div .= $item->required == 1 ? "class='{required:true}'" : '';
-            $_div .= "/><label>" . $config[$to] . " </label>";
+            $_div .= " /><label>" . $config[$to] . " </label>";
             $_div .= '</span>';
         }
         return $_div;
@@ -709,7 +722,8 @@ class FormController extends BaseController {
     function show_html_select($data) {
         $item = $data;
         $config = $data->config;
-        $_div = "<p class='content-l'>$item->title";
+        $_div = '';
+        $_div .= "<p class='content-l'>$item->title";
         if ($item->required == 1) {
             $_div .= "<span style='color:red;'>*</span>";
         }
@@ -733,7 +747,8 @@ class FormController extends BaseController {
     function show_html_date($data) {
         $item = $data;
         $config = $data->config;
-        $_div = "<p class='content-l'>$item->title";
+        $_div = '';
+        $_div .= "<p class='content-l'>$item->title";
         if ($item->required == 1) {
             $_div .= "<span style='color:red;'>*</span>";
         }
