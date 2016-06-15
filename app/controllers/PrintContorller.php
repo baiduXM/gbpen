@@ -1075,7 +1075,12 @@ class PrintController extends BaseController {
                         }
                     } elseif ($v['config']['filter'] == 'page') {
                         unset($v['value']);
-                        $v['value']['content'] = ($c_info ? $c_info->meta_description : '');
+                        if($k=='about'){
+                            $page=  Page::where('id',$c_info->page_id)->first();
+                            $v['value']['content'] = ($page ? $page->content : '');
+                        }else{
+                            $v['value']['content'] = ($c_info ? $c_info->meta_description : '');
+                        }
                     }
                 } else {
                     if(!isset($v['config']['limit'])){
