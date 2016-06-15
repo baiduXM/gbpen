@@ -250,6 +250,10 @@ button .square{
     color: red;
 }
 
+.icon-yidong::before {
+    content: "";
+}
+
 /*===前端表单样式，前缀fv（form-view）===*/
 .fv-add-show{background: none;}
 /*title*/
@@ -262,7 +266,7 @@ button .square{
 
 .fv-element-show{ padding-bottom:3%;}
 .fv-element-show p{ width: 100%; line-height: 30px; font-size:16px; font-weight: bold; padding-top: 6px;}
-.fv-element-show input[type="text"],.fv-element-show input[type="password"]{width:70%;height: 26px; line-height: 26px; border:1px solid #cccccc;}
+.fv-element-show input[type="text"],.fv-element-show input[type="password"],.fv-element-show input[type="email"],.fv-element-show input[type="number"]{width:70%;height: 26px; line-height: 26px; border:1px solid #cccccc;}
 .fv-element-show textarea{ width:70%;height:80px; border:1px solid #cccccc;}
 
 .fv-option-item{ margin-right:6px;}
