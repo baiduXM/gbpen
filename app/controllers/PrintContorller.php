@@ -2500,6 +2500,7 @@ class PrintController extends BaseController {
             $content= preg_replace($publicdata['pattern'],$publicdata['repleace'],$content);
             $output = $this->pushdisplay($the_result, $content);
             $output = preg_replace('/<a href="' . str_replace("/", "\/", $result['site_url']) . '"( target="_blank")?( )?>首页<\/a>( )?\|([\s]+)?(<br \/>)?(<br>)?/is', "", $output);
+            if(!isset($_GET['ig_file_put']))
             file_put_contents($path, $output);
             $paths[] = $path;
             $nowpercent = $last_html_precent + $html_precent;
@@ -2522,6 +2523,7 @@ class PrintController extends BaseController {
                     $path = $this->type == 'pc' ? public_path('customers/' . $this->customer . '/category/' . $id . '_' . $i . '.html') : public_path('customers/' . $this->customer . '/mobile/category/' . $id . '_' . $i . '.html');
                     $output = $this->pushdisplay($the_result, $content);
                     $output = preg_replace('/<a href="' . str_replace("/", "\/", $result['site_url']) . '"( target="_blank")?( )?>首页<\/a>( )?\|([\s]+)?(<br \/>)?(<br>)?/is', "", $output);
+                    if(!isset($_GET['ig_file_put']))
                     file_put_contents($path, $output);
                     $paths[] = $path;
                     $nowpercent = $last_html_precent + $html_precent;
@@ -2945,6 +2947,7 @@ class PrintController extends BaseController {
             $output = $this->pushdisplay($the_result, $content);
             $output = preg_replace('/<a href="' . str_replace("/", "\/", $result['site_url']) . '"( target="_blank")?( )?>首页<\/a>( )?\|([\s]+)?(<br \/>)?(<br>)?/is', "", $output);
             $path = $this->type == 'pc' ? public_path('customers/' . $this->customer . '/detail/' . $article['id'] . '.html') : public_path('customers/' . $this->customer . '/mobile/detail/' . $article['id'] . '.html');
+            if(!isset($_GET['ig_file_put']))
             file_put_contents($path, $output);
             $paths[] = $path;
             $nowpercent = $last_html_precent + $html_precent;

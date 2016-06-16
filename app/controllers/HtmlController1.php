@@ -84,6 +84,7 @@ class HtmlController1 extends BaseController{
         else{
             echo $template->mhomepagePush($publicdata);
         }
+        if(!isset($_GET['ig_file_put']))
         file_put_contents($path, $ouput=ob_get_contents());
         ob_end_clean();
         $quickbar_json=$template->quickBarJson();
@@ -606,6 +607,8 @@ class HtmlController1 extends BaseController{
         if(file_exists($path)){
             @unlink($path);
         }
+        if(isset($_GET['ig_file_put']))
+           exit(); 
         $zip = new ZipArchive;
         if ($zip->open($path, ZipArchive::CREATE) === TRUE) {
             if($pc!=''){
