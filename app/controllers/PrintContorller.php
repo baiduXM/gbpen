@@ -138,6 +138,9 @@ class PrintController extends BaseController {
         $website_confige_value = unserialize($website_confige);
         $json_path = public_path('templates/' . $this->themename . '/json/' . $pagename . '.json');
         $json = file_exists($json_path) ? file_get_contents($json_path) : '{}';
+        if(isset($_GET['ig_pagedata'])){
+            return json_decode(trim($json), TRUE);
+        }
         if ($website_confige_value) {
             $default = json_decode(trim($json), TRUE);
             $result = $this->array_merge_recursive_new($default, $website_confige_value);
@@ -1010,6 +1013,10 @@ class PrintController extends BaseController {
      * @return array 返回一个包含公共数据的数组
      */
     private function detailList($data) {
+        if(isset($_GET['ig_detail']))
+        {
+            return $data;
+        }
         $index = [];
         $list = [];
         if ($data == NULL) {
