@@ -710,10 +710,7 @@ class HtmlController1 extends BaseController{
             PushQueue::where('cus_id',  $this->cus_id)->delete();
             $nextpush=PushQueue::where('push',0)->first();
             if($nextpush){
-                $pushqueue = new PushQueue();
-                $pushqueue->id=$nextpush->id;
-                $pushqueue->push=1;
-                $pushqueue->save();
+                PushQueue::where('id',$nextpush->id)->update(['push' => 1]);
             }
         }
         if ($zip->open($path, ZipArchive::CREATE) === TRUE) {
