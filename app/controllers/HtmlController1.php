@@ -84,7 +84,6 @@ class HtmlController1 extends BaseController{
         else{
             echo $template->mhomepagePush($publicdata);
         }
-        if(!isset($_GET['ig_file_put']))
         file_put_contents($path, $ouput=ob_get_contents());
         ob_end_clean();
         $quickbar_json=$template->quickBarJson();
@@ -272,6 +271,7 @@ class HtmlController1 extends BaseController{
             echo floor($nowpercent) . '%<script type="text/javascript">parent.refresh(' . floor($nowpercent) . ');</script><br />';
             ob_flush();
             flush();
+            $this->clearpushqueue();
         }
         $this->last_html_precent +=$this->html_precent;
     }
@@ -539,6 +539,12 @@ class HtmlController1 extends BaseController{
             }
         }
     }
+    private function clearpushqueue(){
+        if(isset($_GET['pushqueue'])){
+            PushQueue::where('pushtime','<',time()-20)->delete();
+            PushQueue::where('cus_id',$this->cus_id)->update(['pushtime' => time()]);
+        }
+    }
     /**
      * 推送
      * 
@@ -546,6 +552,43 @@ class HtmlController1 extends BaseController{
      */
     public function pushPrecent(){
         set_time_limit(0);
+        if(isset($_GET['pushqueue'])){
+            PushQueue::where('cus_id',  $this->cus_id)->delete();
+            PushQueue::where('pushtime','<',time()-20)->delete();
+            $maxpushid=PushQueue::max('id');
+            $pushqueuecount=PushQueue::where('push',1)->count();
+            $pushqueue = new PushQueue();
+            $pushqueue->id=$maxpushid?$maxpushid+1:1;
+            $pushqueue->pushtime=time();
+//            var_dump($pushqueue->pushtime);
+//            exit();
+            $pushqueue->cus_id=$this->cus_id;
+            if($pushqueuecount<3){
+                $pushqueue->push=1;
+                $pushqueue->save();
+            }else{
+                $pushqueue->push=0;
+                $pushqueue->save();
+                while(1){
+                    sleep(1);
+                    var_dump('繁忙等待.......');
+                    ob_flush();
+                    flush();
+                    $push_table=  PushQueue::where('cus_id',$this->cus_id)->first();
+                    if($push_table->push==1){
+                        break;
+                    }else{
+                        $pushqueuecount=PushQueue::where('push',1)->count();
+                        if($pushqueuecount<3){
+                            PushQueue::where('cus_id',$this->cus_id)->update(['push' => 1]);
+                            break;
+                        }
+                    }
+                    $this->clearpushqueue();
+                }
+            }
+            
+        }
         $this->pushinit();
         $pc_domain=CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_domain');
         $mobile_domain=CustomerInfo::where('cus_id',$this->cus_id)->pluck('mobile_domain');
@@ -607,8 +650,6 @@ class HtmlController1 extends BaseController{
         if(file_exists($path)){
             @unlink($path);
         }
-        if(isset($_GET['ig_file_put']))
-           exit(); 
         $zip = new ZipArchive;
         if ($zip->open($path, ZipArchive::CREATE) === TRUE) {
             if($pc!=''){
@@ -620,6 +661,7 @@ class HtmlController1 extends BaseController{
                     echo floor($nowpercent) . '%<script type="text/javascript">parent.refresh(' . floor($nowpercent) . ');</script><br />';
                     ob_flush();
                     flush();
+                    $this->clearpushqueue();
                 }
             }
             $this->lastpercent += 70+$this->percent;
@@ -632,6 +674,7 @@ class HtmlController1 extends BaseController{
                     echo floor($nowpercent) . '%<script type="text/javascript">parent.refresh(' . floor($nowpercent) . ');</script><br />';
                     ob_flush();
                     flush();
+                    $this->clearpushqueue();
                 }
             }
             $this->lastpercent += $this->percent;
@@ -651,7 +694,18 @@ class HtmlController1 extends BaseController{
                 echo '90%<script type="text/javascript">parent.refresh(90);</script><br />';
                 ob_flush();
                 flush();
+                $this->clearpushqueue();
             }
+        if(isset($_GET['pushqueue'])){
+            PushQueue::where('cus_id',  $this->cus_id)->delete();
+            $nextpush=PushQueue::where('push',0)->first();
+            if($nextpush){
+                $pushqueue = new PushQueue();
+                $pushqueue->id=$nextpush->id;
+                $pushqueue->push=1;
+                $pushqueue->save();
+            }
+        }
         if ($zip->open($path, ZipArchive::CREATE) === TRUE) {
             if($pc!=''){
                 $pc_dir=  Template::where('website_info.cus_id',$this->cus_id)->Leftjoin('website_info','website_info.pc_tpl_id','=','template.id')->pluck('name');
@@ -699,14 +753,6 @@ class HtmlController1 extends BaseController{
                     ImgDel::where('cus_id',$this->cus_id)->delete();
                     if($pc!=''){
                         @ftp_put($conn,"/".$this->customer."/search.php",public_path("packages/search.php"),FTP_ASCII);
-                        if(isset($_GET['test'])){
-                            var_dump(public_path('customers/'.$this->customer.'/quickbar.json'));
-                            if(file_exists(public_path('customers/'.$this->customer.'/quickbar.json'))){
-                                var_dump(1);
-                            }
-                            ob_flush();
-                            flush();
-                        }
                         @ftp_put($conn,"/".$this->customer."/quickbar.json",public_path('customers/'.$this->customer.'/quickbar.json'),FTP_ASCII);
                     }
                     ftp_put($conn,"/".$this->customer."/site.zip",$path,FTP_BINARY);

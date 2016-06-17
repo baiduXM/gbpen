@@ -138,9 +138,6 @@ class PrintController extends BaseController {
         $website_confige_value = unserialize($website_confige);
         $json_path = public_path('templates/' . $this->themename . '/json/' . $pagename . '.json');
         $json = file_exists($json_path) ? file_get_contents($json_path) : '{}';
-        if(isset($_GET['ig_pagedata'])){
-            return json_decode(trim($json), TRUE);
-        }
         if ($website_confige_value) {
             $default = json_decode(trim($json), TRUE);
             $result = $this->array_merge_recursive_new($default, $website_confige_value);
@@ -1013,10 +1010,6 @@ class PrintController extends BaseController {
      * @return array 返回一个包含公共数据的数组
      */
     private function detailList($data) {
-        if(isset($_GET['ig_detail']))
-        {
-            return $data;
-        }
         $index = [];
         $list = [];
         if ($data == NULL) {
@@ -2507,7 +2500,6 @@ class PrintController extends BaseController {
             $content= preg_replace($publicdata['pattern'],$publicdata['repleace'],$content);
             $output = $this->pushdisplay($the_result, $content);
             $output = preg_replace('/<a href="' . str_replace("/", "\/", $result['site_url']) . '"( target="_blank")?( )?>首页<\/a>( )?\|([\s]+)?(<br \/>)?(<br>)?/is', "", $output);
-            if(!isset($_GET['ig_file_put']))
             file_put_contents($path, $output);
             $paths[] = $path;
             $nowpercent = $last_html_precent + $html_precent;
@@ -2518,6 +2510,10 @@ class PrintController extends BaseController {
                 echo floor($nowpercent) . '%<script type="text/javascript">parent.refresh(' . floor($nowpercent) . ');</script><br />';
                 ob_flush();
                 flush();
+                if(isset($_GET['pushqueue'])){
+                    PushQueue::where('pushtime','<',time()-20)->delete();
+                    PushQueue::where('cus_id',$this->cus_id)->update(['pushtime' => time()]);
+                }
             }
             $last_html_precent +=$html_precent;
             //===显示类型不是'list-page'===
@@ -2530,7 +2526,6 @@ class PrintController extends BaseController {
                     $path = $this->type == 'pc' ? public_path('customers/' . $this->customer . '/category/' . $id . '_' . $i . '.html') : public_path('customers/' . $this->customer . '/mobile/category/' . $id . '_' . $i . '.html');
                     $output = $this->pushdisplay($the_result, $content);
                     $output = preg_replace('/<a href="' . str_replace("/", "\/", $result['site_url']) . '"( target="_blank")?( )?>首页<\/a>( )?\|([\s]+)?(<br \/>)?(<br>)?/is', "", $output);
-                    if(!isset($_GET['ig_file_put']))
                     file_put_contents($path, $output);
                     $paths[] = $path;
                     $nowpercent = $last_html_precent + $html_precent;
@@ -2541,6 +2536,10 @@ class PrintController extends BaseController {
                         echo floor($nowpercent) . '%<script type="text/javascript">parent.refresh(' . floor($nowpercent) . ');</script><br />';
                         ob_flush();
                         flush();
+                        if(isset($_GET['pushqueue'])){
+                            PushQueue::where('pushtime','<',time()-20)->delete();
+                            PushQueue::where('cus_id',$this->cus_id)->update(['pushtime' => time()]);
+                        }
                     }
                     $last_html_precent +=$html_precent;
                 }
@@ -2946,15 +2945,9 @@ class PrintController extends BaseController {
                 $related[$k]['category']['icon'] = '<i class="iconfont">' . $a_c_info->icon . '</i>';
             }
             $the_result['related'] = $related;
-            if (isset($_GET['memory'])) {
-                var_dump(memory_get_usage());
-                ob_flush();
-                flush();
-            }
             $output = $this->pushdisplay($the_result, $content);
             $output = preg_replace('/<a href="' . str_replace("/", "\/", $result['site_url']) . '"( target="_blank")?( )?>首页<\/a>( )?\|([\s]+)?(<br \/>)?(<br>)?/is', "", $output);
             $path = $this->type == 'pc' ? public_path('customers/' . $this->customer . '/detail/' . $article['id'] . '.html') : public_path('customers/' . $this->customer . '/mobile/detail/' . $article['id'] . '.html');
-            if(!isset($_GET['ig_file_put']))
             file_put_contents($path, $output);
             $paths[] = $path;
             $nowpercent = $last_html_precent + $html_precent;
@@ -2965,6 +2958,10 @@ class PrintController extends BaseController {
                 echo floor($nowpercent) . '%<script type="text/javascript">parent.refresh(' . floor($nowpercent) . ');</script><br />';
                 ob_flush();
                 flush();
+                if(isset($_GET['pushqueue'])){
+                    PushQueue::where('pushtime','<',time()-20)->delete();
+                    PushQueue::where('cus_id',$this->cus_id)->update(['pushtime' => time()]);
+                }
             }
             $last_html_precent +=$html_precent;
         }

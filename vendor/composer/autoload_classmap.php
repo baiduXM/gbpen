@@ -50,6 +50,8 @@ return array(
     'MobileHomepage' => $baseDir . '/app/models/MobileHomepage.php',
     'Moreimg' => $baseDir . '/app/models/Moreimg.php',
     'Page' => $baseDir . '/app/models/page.php',
+    'ImgDel' => $baseDir . '/app/models/ImgDel.php',
+    'PushQueue' => $baseDir . '/app/models/PushQueue.php',
     'PrintController' => $baseDir . '/app/controllers/PrintContorller.php',
     'RemindersController' => $baseDir . '/app/controllers/RemindersController.php',
     'SessionHandlerInterface' => $vendorDir . '/symfony/http-foundation/Symfony/Component/HttpFoundation/Resources/stubs/SessionHandlerInterface.php',
