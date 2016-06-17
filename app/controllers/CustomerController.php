@@ -160,8 +160,6 @@ class CustomerController extends BaseController {
             $floatadv[$num]['position'] = $position[$key];
             $num++;
         }
-//        var_dump($floatadv);
-//        exit;
         $data['floatadv'] = json_encode($floatadv);
         $update = CustomerInfo::where('cus_id', $cus_id)->update($data);
         if ($update) {

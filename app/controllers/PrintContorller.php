@@ -823,6 +823,7 @@ class PrintController extends BaseController {
 
     public function publicdata() {
         $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
+        $formC = new FormController();
         if ($this->type == 'pc') {
             $stylecolor = websiteInfo::leftJoin('color', 'color.id', '=', 'website_info.pc_color_id')->where('cus_id', $this->cus_id)->pluck('color_en');
             $logo = $this->showtype == 'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $customer_info->logo) : $this->domain . '/images/l/common/' . $customer_info->logo;
@@ -837,14 +838,19 @@ class PrintController extends BaseController {
                 }
                 if ($val->type == 'form') {
                     $form_id = $val->adv;
-                    $res1 = DB::table('form_column_' . $form_id % 10)->where('form_id', $form_id)->first();
-                    var_dump($res1);
+                    $formCdata = $formC->getFormdataForPrint($form_id);
+                    $content== $formC->showFormHtmlForPrint($formCdata);
+                    var_dump($content);
+                    echo '<br>---$formCdata---<br>';
+                    exit;
+                    $floatadv[$key]->content = $formC->showFormHtmlForPrint($formCdata);
+                    $floatadv[$key]->cssjs = $formC->assignFormCSSandJSForPrint();
                 }
             }
-//            exit;
 
             if (count($floatadv)) {
-                $url = "http://swap.5067.org/floatadv.php";
+                $url = "http://swap.5067.org/floatadv_new.php";
+//                $url = "http://swap.5067.org/floatadv.php";
                 $post_data = json_encode($floatadv);
                 $ch = curl_init();
                 curl_setopt($ch, CURLOPT_URL, $url);
@@ -854,7 +860,6 @@ class PrintController extends BaseController {
                 $floatadvprint = curl_exec($ch);
                 curl_close($ch);
             }
-
             $headscript = $customer_info->pc_header_script;
             if ($customer_info->lang == 'en') {
                 $footprint = $customer_info->footer . '<p>Technology support：<a href="http://www.12t.cn/">Xiamen 12t network technology co.ltd</a> Talent support：<a href="http://www.xgzrc.com/">www.xgzrc.com.cn</a></p>';
@@ -2131,7 +2136,6 @@ class PrintController extends BaseController {
                     <input id="telephone" type="tel" name="telephone" placeholder="Telephone" />
                     </label>
                     <label>
-                    <label>
                     <span>内容 :</span>
                     <textarea id="content" name="content" placeholder="You mind ...."></textarea>
                     </label>
@@ -2274,7 +2278,7 @@ class PrintController extends BaseController {
                 </SCRIPT>';
             } elseif ($classify->type == 9) {
                 //===加载css\js===
-                $result['footscript'].=$formC->assignFormCSSandJSForPrint($formCdata);
+                $result['footscript'].=$formC->assignFormCSSandJSForPrint();
             }
             $smarty->assign($result);
             $smarty->display($viewname . '.html');

@@ -151,8 +151,8 @@ function settingController($scope, $http) {
             });
         },
         _Addadv: function () {
-            var subscript = $('ul .floatadv').length;
             $(".addfloatadv").click(function () {
+                var subscript = $('ul .floatadv').length;
                 subscript++;
                 var warningbox = new WarningBox();
                 warningbox._upImage({
@@ -185,8 +185,8 @@ function settingController($scope, $http) {
 
         },
         _Addform: function () {
-            var subscript = $('ul .floatadv').length;
             $(".addfloatform").click(function () {
+                var subscript = $('ul .floatadv').length;
                 subscript++;
                 var _div = '';
                 var html = '<li class="floatadv">\n\

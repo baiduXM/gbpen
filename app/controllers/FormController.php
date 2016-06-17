@@ -558,8 +558,9 @@ class FormController extends BaseController {
      * 显示表单前端
      */
     public function showFormHtmlForPrint($data = null) {
+        $_form = '';
         if (empty($data)) {
-            $_form = "<div class='fv-add-show'>
+            $_form .= "<div class='fv-add-show'>
                     <div class='fv-as-description'>
                             表单已停用
                     </div>
@@ -574,6 +575,7 @@ class FormController extends BaseController {
             }
             $form_id = $form_data->id;
             $column_data = $data['column'];
+            $_div = '';
             $_form .= "<div class='fv-add-show'>
                     <div class='fv-as-title'>
                             $form_data->title
@@ -598,7 +600,7 @@ class FormController extends BaseController {
 //            $_form.="<form class='fv-unit-preview' id='box_show' action='../form-userdata-submit' onsumbit='return verify()' method='post'><ul class='fv-element-show'>";
             $_form.="<form class='fv-unit-preview' id='box_show' action='http://swap.5067.org/userdata/' method='post'><ul class='fv-element-show'>";
             $_form.=$_div . "</form></div>";
-            $_form.=$js;
+//            $_form.=$js;
         }
         return $_form;
     }
@@ -631,7 +633,7 @@ class FormController extends BaseController {
         $js = '<script src="http://swap.5067.org/js/laydate/laydate.js"></script>';
 //        $js .= '<script src="http://swap.5067.org/js/universal-form.js"></script>';
 //        $js .= '<script src="/public/admin/js/jquery.validate.min.js"></script>';
-        $js .= '<script src="/public/admin/js/universal-form.js"></script>';
+//        $js .= '<script src="/public/admin/js/universal-form.js"></script>';
 //        $js .= '<script>';
 //        $js .= "function verify() {
 //           alert(1)
@@ -644,6 +646,9 @@ class FormController extends BaseController {
     function show_html_text($data) {
         $item = $data;
         $config = $data->config;
+        var_dump($config);
+        exit;
+        
         $_div = '';
         $_div .= "<p class='content-l'>$item->title";
         if ($item->required == 1) {
@@ -762,6 +767,42 @@ class FormController extends BaseController {
         return $_div;
     }
 
-}
+    function test() {
+        $data = json_decode($_POST['data']);
+        $css = '<link rel="stylesheet" type="text/css" href="http://chanpin.xm12t.com.cn/css/floatadv.css">';
+        $div = '';
+        $js = '';
+        foreach ((array) $data as $k => $v) {
+            $div .= '<div class="popContent float floatAdv' . $k . '" style="';
+            if ($v->position == '4') {
+                $div.='right';
+            } else {
+                $div.='left';
+            }
+            $div.=':' . $v->posx . 'px;width:' . $v->posw . 'px;';
+            if ($v->position == '3') {
+                $div.='bottom';
+            } else {
+                $div.='top';
+            }
+            $div.=':' . $v->posy . 'px;">';
+            $div.='<a class="popClose" title="关闭" >关闭</a>';
+            if ($v->type == "form") {
+                $div .= $v->content;
+                $js .= $v->cssjs;
+            }
+            if ($v->type == "adv") {
+                $div.='<a href="' . $v->href . '" target="_blank"><img class="float_adv" src="' . $v->url . '"></a>';
+            }
+            $div.='</div>';
+        }
+        $js .= '<script>';
+        $js.='$(".popClose").click(function(){
+                $(this).parent(".float").stop();
+                $(this).parent(".float").slideUp();
+            });';
+        $js.='</script>';
+        echo $css . $div . $js;
+    }
 
-?>
+}
