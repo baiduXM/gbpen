@@ -2511,7 +2511,7 @@ class PrintController extends BaseController {
                 ob_flush();
                 flush();
                 if(isset($_GET['pushqueue'])){
-                    PushQueue::where('pushtime','<',time()-20)->delete();
+                    PushQueue::where('pushtime','<',time()-60)->delete();
                     PushQueue::where('cus_id',$this->cus_id)->update(['pushtime' => time()]);
                 }
             }
@@ -2537,7 +2537,7 @@ class PrintController extends BaseController {
                         ob_flush();
                         flush();
                         if(isset($_GET['pushqueue'])){
-                            PushQueue::where('pushtime','<',time()-20)->delete();
+                            PushQueue::where('pushtime','<',time()-60)->delete();
                             PushQueue::where('cus_id',$this->cus_id)->update(['pushtime' => time()]);
                         }
                     }
@@ -2959,7 +2959,7 @@ class PrintController extends BaseController {
                 ob_flush();
                 flush();
                 if(isset($_GET['pushqueue'])){
-                    PushQueue::where('pushtime','<',time()-20)->delete();
+                    PushQueue::where('pushtime','<',time()-60)->delete();
                     PushQueue::where('cus_id',$this->cus_id)->update(['pushtime' => time()]);
                 }
             }

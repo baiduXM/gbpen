@@ -551,7 +551,7 @@ class HtmlController1 extends BaseController{
     }
     private function clearpushqueue(){
         if(isset($_GET['pushqueue'])){
-            PushQueue::where('pushtime','<',time()-20)->delete();
+            PushQueue::where('pushtime','<',time()-60)->delete();
             PushQueue::where('cus_id',$this->cus_id)->update(['pushtime' => time()]);
         }
     }
@@ -564,7 +564,7 @@ class HtmlController1 extends BaseController{
         set_time_limit(0);
         if(isset($_GET['pushqueue'])){
             PushQueue::where('cus_id',  $this->cus_id)->delete();
-            PushQueue::where('pushtime','<',time()-20)->delete();
+            PushQueue::where('pushtime','<',time()-60)->delete();
             $maxpushid=PushQueue::max('id');
             $pushqueuecount=PushQueue::where('push',1)->count();
             $pushqueue = new PushQueue();
