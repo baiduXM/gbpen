@@ -378,6 +378,16 @@ class HtmlController1 extends BaseController{
             ob_flush();
             flush();
         }
+        if(isset($_GET['pushqueue'])){
+            PushQueue::where('cus_id',  $this->cus_id)->delete();
+            $nextpush=PushQueue::where('push',0)->first();
+            if($nextpush){
+                $pushqueue = new PushQueue();
+                $pushqueue->id=$nextpush->id;
+                $pushqueue->push=1;
+                $pushqueue->save();
+            }
+        }
         if ($zip->open($path, ZipArchive::CREATE) === TRUE) {
             $mobile_dir=  Template::where('website_info.cus_id',$this->cus_id)->Leftjoin('website_info','template.id','=','website_info.mobile_tpl_id')->pluck('name');
             $maim_dir=public_path("templates/$mobile_dir/");
