@@ -563,6 +563,7 @@ class HtmlController1 extends BaseController{
     public function pushPrecent(){
         set_time_limit(0);
         if(isset($_GET['pushqueue'])){
+            echo '<meta charset="UTF-8">';
             PushQueue::where('cus_id',  $this->cus_id)->delete();
             PushQueue::where('pushtime','<',time()-60)->delete();
             $maxpushid=PushQueue::max('id');
@@ -570,8 +571,6 @@ class HtmlController1 extends BaseController{
             $pushqueue = new PushQueue();
             $pushqueue->id=$maxpushid?$maxpushid+1:1;
             $pushqueue->pushtime=time();
-//            var_dump($pushqueue->pushtime);
-//            exit();
             $pushqueue->cus_id=$this->cus_id;
             if($pushqueuecount<3){
                 $pushqueue->push=1;
