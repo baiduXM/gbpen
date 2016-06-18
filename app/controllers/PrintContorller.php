@@ -828,20 +828,22 @@ class PrintController extends BaseController {
             $stylecolor = websiteInfo::leftJoin('color', 'color.id', '=', 'website_info.pc_color_id')->where('cus_id', $this->cus_id)->pluck('color_en');
             $logo = $this->showtype == 'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $customer_info->logo) : $this->domain . '/images/l/common/' . $customer_info->logo;
             $floatadv = json_decode($customer_info->floatadv);
-            foreach ((array) $floatadv as $key => $val) {
-                if ($val->type == 'adv') {
-                    if ($this->showtype == 'preview') {
-                        $floatadv[$key]->url = asset('customers/' . $this->customer . '/images/l/common/' . $val->adv);
-                    } else {
-                        $floatadv[$key]->url = $this->domain . '/images/l/common/' . $val->adv;
+            if (!empty($floatadv)) {
+                foreach ((array) $floatadv as $key => $val) {
+                    if ($val->type == 'adv' || !isset($val->type)) {
+                        if ($this->showtype == 'preview') {
+                            $floatadv[$key]->url = asset('customers/' . $this->customer . '/images/l/common/' . $val->adv);
+                        } else {
+                            $floatadv[$key]->url = $this->domain . '/images/l/common/' . $val->adv;
+                        }
                     }
-                }
-                if ($val->type == 'form') {
-                    $form_id = $val->adv;
-                    $formCdata = $formC->getFormdataForPrint($form_id);
-                    $content = $formC->showFormHtmlForPrint($formCdata, 'float');
-                    $floatadv[$key]->content = $content;
-                    $floatadv[$key]->cssjs = $formC->assignFormCSSandJSForPrint();
+                    if ($val->type == 'form') {
+                        $form_id = $val->adv;
+                        $formCdata = $formC->getFormdataForPrint($form_id);
+                        $content = $formC->showFormHtmlForPrint($formCdata, 'float');
+                        $floatadv[$key]->content = $content;
+                        $floatadv[$key]->cssjs = $formC->assignFormCSSandJSForPrint();
+                    }
                 }
             }
 
