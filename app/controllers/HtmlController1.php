@@ -592,7 +592,7 @@ class HtmlController1 extends BaseController{
             $pushqueue->id=$maxpushid?$maxpushid+1:1;
             $pushqueue->pushtime=time();
             $pushqueue->cus_id=$this->cus_id;
-            if($pushqueuecount<6){
+            if($pushqueuecount<3){
                 $pushqueue->push=1;
                 $pushqueue->save();
             }else{
@@ -608,7 +608,7 @@ class HtmlController1 extends BaseController{
                         break;
                     }else{
                         $pushqueuecount=PushQueue::where('push',1)->count();
-                        if($pushqueuecount<6){
+                        if($pushqueuecount<3){
                             PushQueue::where('cus_id',$this->cus_id)->update(['push' => 1]);
                             break;
                         }
