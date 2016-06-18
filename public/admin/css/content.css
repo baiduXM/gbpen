@@ -152,7 +152,7 @@ i.fa-mobile{font-size: 25px;}
 .tit_info{word-break: break-all;white-space: nowrap;word-wrap: break-word;}
 .sapces{height: 25px;}
 .Level2 td,.Level3 td,.Level4 td{text-align: center;color: #666666;border-bottom: 0!important;height: 25px!important;}
-.Level2 td img,.Level3 td img,,.Level4 td img{margin-right: 15px;margin-left: 1px;}
+.Level2 td img,.Level3 td img,.Level4 td img{margin-right: 15px;margin-left: 1px;}
 .article-tb .a-table .article-check .tit_info .tit_pic{cursor: pointer;background: url(../images/recommend.png) no-repeat;width: 20px;height: 20px;vertical-align: middle;margin-left:15px;}
 .article-tb .tit_info{min-width: 300px;}
 .cancle_star{background-position: 0 -34px;}
@@ -478,7 +478,7 @@ ul.made_style li.list_a .list_box a.cu{ background:none; color:#d91f1f}
 .switchfunc button.add{ top: -8px;left: -5px;}
 .switchfunc button.minus{ top: 8px;left: -30px;}
 .setting-feild{clear:both;}
-.floatadv{clear:both;margin-left: 105px;}
+.floatadv{min-height: 80px; clear:both;margin-left: 105px;}
 .floatxy{padding-top: 10px;float:left;height:20px;text-align: left;}
 .settingpos{width:30px;}
 .floathref{position: relative;width:300px;height: 20px;}

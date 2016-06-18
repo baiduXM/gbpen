@@ -69,13 +69,47 @@ function settingController($scope, $http) {
                 });
                 if ($.isArray(set.floatadv)) {
                     $.each(set.floatadv, function (k, v) {
-                        var html = '<li class="floatadv">\n\
+                        var _div = '';
+                        if (v.type == 'form') {
+                            var html = '<li class="floatadv">\n\
+                                        <div>\n\
+                                            关联表单：<select id="form_select' + k + '" name="float_adv[' + k + ']">\n\
+                                                <option selected="selected" value="0">请选择</option>\n\
+                                            </select>\n\
+                                            <input type="hidden" name="float_type[' + k + ']" value="' + v.type + '">\n\
+                                        </div>\n\
+                                        <div>\n\
+                                            <label class="floatxy" style="height: 20px;">X:<input type="text" class="settingpos" style="width: 30px;height: 20px;" name="posx[' + k + ']" value="0">PX</label>\n\
+                                            <label class="floatxy" style="height: 20px;">Y:<input type="text" class="settingpos" style="width: 30px;height: 20px;" name="posy[' + k + ']" value="0">PX</label>\n\
+                                            <label class="floatxy" style="height: 20px;">图宽:<input type="text" class="settingpos" style="width: 30px;height: 20px;" name="posw[' + k + ']" value="0">PX</label>\n\
+                                            <label class="floatxy" style="height: 20px;">位置:<select name="position[' + k + ']"><option value ="1">上</option><option value ="3">下</option><option value ="2">左</option><option value ="4">右</option></select></label>\n\
+                                        </div>\n\
+                                        <a><i class="fa iconfont icon-delete"></i></a>\n\
+                                        </li>';
+                            $.get('../form-list', {status: '1', showmodel: '2'}, function (json) {
+                                checkJSON(json, function (json) {
+                                    if (json.data != null) {
+                                        $.each(json.data, function (kt, vt) {
+                                            if (v.adv == vt.id) {
+                                                _div += '<option value="' + vt.id + '" selected>' + vt.name + '</option>';
+                                            } else {
+                                                _div += '<option value="' + vt.id + '">' + vt.name + '</option>';
+                                            }
+                                        });
+                                        $('#form_select' + k).append(_div);
+                                    }
+                                });
+                            });
+                        }
+                        if (v.type == 'adv') {
+                            var html = '<li class="floatadv">\n\
                                         <div class="template-download fade fl in">\n\
                                             <div>\n\
                                                 <span class="preview">\n\
                                                     <img src="' + v.url + '" data-name="' + v.adv + '" style="width:80px;height:64px;padding:5px;" data-preimg="preimg">\n\
                                                 </span>\n\
                                             </div><input type="hidden" name="float_adv[' + k + ']" value="' + v.adv + '">\n\
+                                                 <input type="hidden" name="float_type[' + k + ']" value="' + v.type + '">\n\
                                         </div>\
                                         <label class="floatxy" style="height: 20px;">X:<input type="text" class="settingpos" style="width: 30px;height: 20px;" name="posx[' + k + ']" value="' + v.posx + '">PX</label>\n\
                                         <label class="floatxy" style="height: 20px;">Y:<input type="text" class="settingpos" style="width: 30px;height: 20px;" name="posy[' + k + ']" value="' + v.posy + '">PX</label>\n\
@@ -84,6 +118,8 @@ function settingController($scope, $http) {
                                         <label class="floatxy" style="position: relative;width:300px;height: 20px;">href:<input type="text" class="settingpos" name="href[' + k + ']" style="width: 250px;height: 20px;" value="' + v.href + '"></label>\n\
                                         <a><i class="fa iconfont icon-delete"></i></a>\n\
                                       </li>';
+                        }
+
                         $('ul.adv').append(html);
                     });
                 }
@@ -115,8 +151,8 @@ function settingController($scope, $http) {
             });
         },
         _Addadv: function () {
-            var subscript = $('ul .floatadv').length;
             $(".addfloatadv").click(function () {
+                var subscript = $('ul .floatadv').length;
                 subscript++;
                 var warningbox = new WarningBox();
                 warningbox._upImage({
@@ -129,6 +165,7 @@ function settingController($scope, $http) {
                                                 <img src="' + json.data.url + '" class="img_upload" data-name="' + json.data.name + '" style="width:80px;height:64px;padding:5px;" data-preimg="preimg">\n\
                                             </span>\n\
                                         </div><input type="hidden" name="float_adv[' + subscript + ']" value="' + json.data.name + '">\n\
+                                                <input type="hidden" name="float_type[' + subscript + ']" value="adv">\n\
                                     </div>\
                                     <label class="floatxy" style="height: 20px;">X:<input type="text" class="settingpos" style="width: 30px;height: 20px;" name="posx[' + subscript + ']" value="0">PX</label>\n\
                                     <label class="floatxy" style="height: 20px;">Y:<input type="text" class="settingpos" style="width: 30px;height: 20px;" name="posy[' + subscript + ']" value="0">PX</label>\n\
@@ -148,15 +185,16 @@ function settingController($scope, $http) {
 
         },
         _Addform: function () {
-            var subscript = $('ul .floatadv').length;
             $(".addfloatform").click(function () {
+                var subscript = $('ul .floatadv').length;
                 subscript++;
-                var _div;
+                var _div = '';
                 var html = '<li class="floatadv">\n\
                             <div>\n\
-                                关联表单：<select id="form_select' + subscript + '" name="form_select' + subscript + '">\n\
+                                关联表单：<select id="form_select' + subscript + '" name="float_adv[' + subscript + ']">\n\
                                     <option selected="selected" value="0">请选择</option>\n\
                                 </select>\n\
+                                <input type="hidden" name="float_type[' + subscript + ']" value="form">\n\
                             </div>\n\
                             <div>\n\
                                 <label class="floatxy" style="height: 20px;">X:<input type="text" class="settingpos" style="width: 30px;height: 20px;" name="posx[' + subscript + ']" value="0">PX</label>\n\
@@ -176,7 +214,6 @@ function settingController($scope, $http) {
                         }
                     });
                 });
-
                 $('ul.adv').append(html);
             });
         },
