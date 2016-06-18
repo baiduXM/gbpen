@@ -839,11 +839,8 @@ class PrintController extends BaseController {
                 if ($val->type == 'form') {
                     $form_id = $val->adv;
                     $formCdata = $formC->getFormdataForPrint($form_id);
-                    $content== $formC->showFormHtmlForPrint($formCdata);
-                    var_dump($content);
-                    echo '<br>---$formCdata---<br>';
-                    exit;
-                    $floatadv[$key]->content = $formC->showFormHtmlForPrint($formCdata);
+                    $content = $formC->showFormHtmlForPrint($formCdata, 'float');
+                    $floatadv[$key]->content = $content;
                     $floatadv[$key]->cssjs = $formC->assignFormCSSandJSForPrint();
                 }
             }

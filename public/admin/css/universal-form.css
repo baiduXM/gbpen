@@ -81,7 +81,7 @@ input[type="submit"],input[type="reset"],input[type="button"]{
     width: 100px;
     height: 30px;
 }
-input[type="text"],input[type="password"]{
+input[type="text"],input[type="password"],input[type="email"],input[type="number"]{
     height: 30px;
     border-radius: 5px;
     width: 70%;
@@ -255,7 +255,7 @@ button .square{
 }
 
 /*===前端表单样式，前缀fv（form-view）===*/
-.fv-add-show{background: none;}
+.fv-add-show{background: wheat;}
 /*title*/
 .fv-as-title,.fv-as-description{ text-align: center; line-height: 22px;}
 .fv-as-title{ padding-top: 20px; font-weight: bold; font-size: 20px;}
@@ -266,7 +266,9 @@ button .square{
 
 .fv-element-show{ padding-bottom:3%;}
 .fv-element-show p{ width: 100%; line-height: 30px; font-size:16px; font-weight: bold; padding-top: 6px;}
-.fv-element-show input[type="text"],.fv-element-show input[type="password"],.fv-element-show input[type="email"],.fv-element-show input[type="number"]{width:70%;height: 26px; line-height: 26px; border:1px solid #cccccc;}
+.fv-element-show input[type="text"],.fv-element-show input[type="password"],.fv-element-show input[type="email"],.fv-element-show input[type="number"]{
+    width:70%;height: 26px; line-height: 26px; border:1px solid #cccccc;
+}
 .fv-element-show textarea{ width:70%;height:80px; border:1px solid #cccccc;}
 
 .fv-option-item{ margin-right:6px;}
@@ -276,3 +278,6 @@ button .square{
 .fv-unit-preview .button{ width: 70px; height: 30px; line-height: 15px; margin: 0 1%;text-align: center; vertical-align: middle;}
 
 .article_con .about p{text-indent: 0;}
+
+
+.adv-unit-preview{background: wheat;}
