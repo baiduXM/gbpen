@@ -548,6 +548,26 @@ class HtmlController1 extends BaseController{
                 }
             }
         }
+        $dir = public_path('templates/' . $m_template->themename . '/json/');
+        if(is_dir($dir)){
+            if ($dh = opendir($dir)){
+                while(($file=readdir($dh))!=FALSE){
+                    if(strpos($file,'.json')){
+                        $this->pushmobile['pagedata'][$file]=file_get_contents($dir.'/'.$file);
+                    }
+                }
+            }
+        }
+        $dir = public_path('templates/' . $pc_template->themename . '/json/');
+        if(is_dir($dir)){
+            if ($dh = opendir($dir)){
+                while(($file=readdir($dh))!=FALSE){
+                    if(strpos($file,'.json')){
+                        $this->pushpc['pagedata'][$file]=file_get_contents($dir.'/'.$file);
+                    }
+                }
+            }
+        }
     }
     private function clearpushqueue(){
         if(isset($_GET['pushqueue'])){

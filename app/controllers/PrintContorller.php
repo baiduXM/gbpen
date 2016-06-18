@@ -125,9 +125,10 @@ class PrintController extends BaseController {
      *
      * @param string $themename 模版名称
      * @param string $pagename 页面名称
+     *  @param string $jsondata 文件配置数据
      * @return array 合并后的数组
      */
-    public function pagedata($pagename) {
+    public function pagedata($pagename,$jsondata=array()) {
 
         if ($this->type == 'pc') {
             $tpl_id = websiteInfo::where('cus_id', $this->cus_id)->pluck('pc_tpl_id');
@@ -136,8 +137,12 @@ class PrintController extends BaseController {
         }
         $website_confige = WebsiteConfig::where('cus_id', $this->cus_id)->where('key', $pagename)->where('type', 1)->where('template_id', $tpl_id)->pluck('value');
         $website_confige_value = unserialize($website_confige);
-        $json_path = public_path('templates/' . $this->themename . '/json/' . $pagename . '.json');
-        $json = file_exists($json_path) ? file_get_contents($json_path) : '{}';
+        if(count($jsondata)&&isset($_GET['jsondata'])){
+            $json=isset($jsondata[$pagename.'.json'])?$jsondata[$pagename.'.json']:'{}';
+        }else{       
+            $json_path = public_path('templates/' . $this->themename . '/json/' . $pagename . '.json');
+            $json = file_exists($json_path) ? file_get_contents($json_path) : '{}';
+        }
         if ($website_confige_value) {
             $default = json_decode(trim($json), TRUE);
             $result = $this->array_merge_recursive_new($default, $website_confige_value);
@@ -1673,7 +1678,7 @@ class PrintController extends BaseController {
         $result['description'] = $customer_info->description;
         $result['pagenavs'] = false;
         $result['posnavs'] = false;
-        $data = $this->pagedata('index');
+        $data = $this->pagedata('index',$publicdata['pagedata']);
         $index = $this->detailList($data);
         $result = array_add($result, 'index', $index);
         $json_keys = $this->getJsonKey('index.html');
@@ -1859,7 +1864,7 @@ class PrintController extends BaseController {
         $result['keywords'] = $customer_info->keywords;
         $result['description'] = $customer_info->description;
         //获取模板目录
-        $data = $this->pagedata('index');
+        $data = $this->pagedata('index',$publicdata['pagedata']);
         $show_navs = DB::table('mobile_homepage')->leftJoin('classify', 'classify.id', '=', 'mobile_homepage.c_id')->where('mobile_homepage.index_show', 1)->where('classify.mobile_show', 1)->where('mobile_homepage.cus_id', '=', $this->cus_id)->orderBy('mobile_homepage.s_sort', 'asc')->select('classify.id', 'classify.p_id', 'classify.name', 'classify.en_name', 'classify.type', 'classify.meta_description', 'classify.page_id', 'classify.url', 'classify.img', 'classify.icon', 'mobile_homepage.star_only', 'mobile_homepage.show_num', 'mobile_homepage.m_index_showtype')->get();
         //===调试测试账号===
         $mIndexCats = array();
@@ -2324,7 +2329,7 @@ class PrintController extends BaseController {
         //echo $viewname;exit;
         if (in_array($classify->type, array(1, 2, 3, 4, 5, 9))) {
             $sub = str_replace('-', '_', $viewname);
-            $data = $this->pagedata($viewname);
+            $data = $this->pagedata($viewname,$publicdata['pagedata']);
             $index = $this->detailList($data);
             $result = array_add($result, $sub, $index);
             $data_index = $this->pagedata($viewname);
@@ -2836,7 +2841,7 @@ class PrintController extends BaseController {
         $json_keys = $this->getJsonKey($viewname . '.html');
         if (count($json_keys)) {
             foreach ((array) $json_keys as $key) {
-                $result[$key] = $this->detailList($this->pagedata($key));
+                $result[$key] = $this->detailList($this->pagedata($key,$publicdata['pagedata']));
             }
         }
         $articles = Articles::where($this->type . '_show', '1')->where('c_id', $c_id)->where('use_url', '0')->orderBy('is_top', 'desc')->orderBy('sort', 'asc')->orderBy('created_at', 'desc')->get()->toArray();
