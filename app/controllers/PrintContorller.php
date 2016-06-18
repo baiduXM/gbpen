@@ -829,14 +829,13 @@ class PrintController extends BaseController {
             $logo = $this->showtype == 'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $customer_info->logo) : $this->domain . '/images/l/common/' . $customer_info->logo;
             $floatadv = json_decode($customer_info->floatadv);
             foreach ((array) $floatadv as $key => $val) {
-                if ($val->type == 'adv') {
+                if (!isset($val->type) || $val->type == 'adv') {
                     if ($this->showtype == 'preview') {
                         $floatadv[$key]->url = asset('customers/' . $this->customer . '/images/l/common/' . $val->adv);
                     } else {
                         $floatadv[$key]->url = $this->domain . '/images/l/common/' . $val->adv;
                     }
-                }
-                if ($val->type == 'form') {
+                } elseif ($val->type == 'form') {
                     $form_id = $val->adv;
                     $formCdata = $formC->getFormdataForPrint($form_id);
                     $content = $formC->showFormHtmlForPrint($formCdata, 'float');
