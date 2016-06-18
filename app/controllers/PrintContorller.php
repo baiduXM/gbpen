@@ -171,7 +171,7 @@ class PrintController extends BaseController {
             $result = $this->dataDeal($result);
             $classify = new Classify;
             $templates = new TemplatesController;
-            $c_arr = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3, 4, 5, 6, 9))->where('pc_show', '=', 1)->get()->toArray();
+            $c_arr = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3, 4, 5, 6, 9))->where($this->type . '_show', '=', 1)->get()->toArray();
             if (empty($c_arr)) {
                 $c_arr = array();
             }
@@ -223,27 +223,27 @@ class PrintController extends BaseController {
                     } else {
                         if (isset($v['config']['filter'])) {
                             if ($v['config']['filter'] == 'page') {
-                                $v['config']['id'] = Classify::where('cus_id', $this->cus_id)->where('type', 4)->where('pc_show', 1)->pluck('id');
+                                $v['config']['id'] = Classify::where('cus_id', $this->cus_id)->where('type', 4)->where($this->type . '_show', 1)->pluck('id');
                             } elseif ($v['config']['filter'] == 'list') {
-                                $v['config']['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3))->where('pc_show', 1)->pluck('id');
+                                $v['config']['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3))->where($this->type . '_show', 1)->pluck('id');
                                 $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
                             } elseif ($v['config']['filter'] == 'feedback') {/* 20151021添加feeback filter */
-                                $v['config']['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(5, 9))->where('pc_show', 1)->pluck('id');
+                                $v['config']['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(5, 9))->where($this->type . '_show', 1)->pluck('id');
                             } elseif ($v['config']['filter'] == 'ALL') {
-                                $v['config']['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3, 4, 5, 6))->where('pc_show', 1)->pluck('id');
+                                $v['config']['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3, 4, 5, 6))->where($this->type . '_show', 1)->pluck('id');
                                 $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
                             } else {
-                                $v['config']['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3, 4))->where('pc_show', 1)->pluck('id');
+                                $v['config']['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3, 4))->where($this->type . '_show', 1)->pluck('id');
                                 $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
                             }
                         } else {
-                            $v['config']['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3))->where('pc_show', 1)->pluck('id');
+                            $v['config']['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3))->where($this->type . '_show', 1)->pluck('id');
                             $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
                         }
                     }
                 } elseif ($v['type'] == 'page') {
                     if (isset($v['config']['mustchild']) && $v['config']['mustchild'] == true) {
-                        $c_arr = Classify::where('cus_id', $this->cus_id)->where('type', 4)->where('pc_show', 1)->get()->toArray();
+                        $c_arr = Classify::where('cus_id', $this->cus_id)->where('type', 4)->where($this->type . '_show', 1)->get()->toArray();
                         $c_arr = $classify->toTree($c_arr);
                         $templates->unsetLastClassify($c_arr);
                         $c_arr = array_merge($c_arr);
@@ -251,7 +251,7 @@ class PrintController extends BaseController {
                             $v['config']['id'] = $c_arr[0]['id'];
                         }
                     } else {
-                        $v['config']['id'] = Classify::where('cus_id', $this->cus_id)->where('type', 4)->where('pc_show', 1)->pluck('id');
+                        $v['config']['id'] = Classify::where('cus_id', $this->cus_id)->where('type', 4)->where($this->type . '_show', 1)->pluck('id');
                     }
                 } elseif ($v['type'] == 'navs') {
                     if (isset($v['config']['mustchild']) && $v['config']['mustchild'] == true) {
@@ -290,19 +290,19 @@ class PrintController extends BaseController {
                     } else {
                         if (isset($v['config']['filter'])) {
                             if ($v['config']['filter'] == 'page') {
-                                $c_arr[0]['id'] = Classify::where('cus_id', $this->cus_id)->where('type', 4)->where('pc_show', 1)->pluck('id');
+                                $c_arr[0]['id'] = Classify::where('cus_id', $this->cus_id)->where('type', 4)->where($this->type . '_show', 1)->pluck('id');
                             } elseif ($v['config']['filter'] == 'list') {
-                                $c_arr[0]['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3))->where('pc_show', 1)->pluck('id');
+                                $c_arr[0]['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3))->where($this->type . '_show', 1)->pluck('id');
                                 $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
                             } elseif ($v['config']['filter'] == 'ALL') {
-                                $c_arr[0]['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3, 4, 6))->where('pc_show', 1)->pluck('id');
+                                $c_arr[0]['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3, 4, 6))->where($this->type . '_show', 1)->pluck('id');
                                 $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
                             } else {
-                                $c_arr[0]['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3, 4))->where('pc_show', 1)->pluck('id');
+                                $c_arr[0]['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3, 4))->where($this->type . '_show', 1)->pluck('id');
                                 $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
                             }
                         } else {
-                            $c_arr[0]['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3))->where('pc_show', 1)->pluck('id');
+                            $c_arr[0]['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3))->where($this->type . '_show', 1)->pluck('id');
                             $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
                         }
                     }
@@ -815,30 +815,39 @@ class PrintController extends BaseController {
      * @return array 返回一个包含公共数据的数组
      */
     private function pagePublic($c_id = 0) {
-        error_reporting(E_ALL ^ E_NOTICE);
-        //===whereIN(type:9) 万用表单===
-        if ($this->type == 'pc') {
-            $navs = Classify::where('cus_id', $this->cus_id)->where('pc_show', 1)->whereIN('type', [1, 2, 3, 4, 5, 6, 9])->select('id', 'type', 'img', 'icon', 'name', 'url', 'p_id', 'en_name', 'meta_description as description')->OrderBy('sort', 'asc')->get()->toArray();
-        } else {
-            $navs = Classify::where('cus_id', $this->cus_id)->where('mobile_show', 1)->select('id', 'type', 'img', 'icon', 'name', 'url', 'p_id', 'en_name', 'meta_description as description')->OrderBy('sort', 'asc')->get()->toArray();
-        }
-        $navs = $this->toTree($navs, 0, TRUE);
+        $result = $this->publicdata();
+        $result['navs'] = $this->publicnavs($c_id);
+        $result['index_navs'] = $result['navs'];
+        return $result;
+    }
 
-        if ($c_id) {
-            $current_arr = $this->currentCidArray($c_id);
-            $navs = $this->addCurrent($navs, $current_arr);
-        }
+    public function publicdata() {
         $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
-        $postFun = new CommonController;
+        $formC = new FormController();
         if ($this->type == 'pc') {
             $stylecolor = websiteInfo::leftJoin('color', 'color.id', '=', 'website_info.pc_color_id')->where('cus_id', $this->cus_id)->pluck('color_en');
             $logo = $this->showtype == 'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $customer_info->logo) : $this->domain . '/images/l/common/' . $customer_info->logo;
             $floatadv = json_decode($customer_info->floatadv);
             foreach ((array) $floatadv as $key => $val) {
-                $floatadv[$key]->url = $this->showtype == 'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $val->adv) : $this->domain . '/images/l/common/' . $val->adv;
+                if ($val->type == 'adv') {
+                    if ($this->showtype == 'preview') {
+                        $floatadv[$key]->url = asset('customers/' . $this->customer . '/images/l/common/' . $val->adv);
+                    } else {
+                        $floatadv[$key]->url = $this->domain . '/images/l/common/' . $val->adv;
+                    }
+                }
+                if ($val->type == 'form') {
+                    $form_id = $val->adv;
+                    $formCdata = $formC->getFormdataForPrint($form_id);
+                    $content = $formC->showFormHtmlForPrint($formCdata, 'float');
+                    $floatadv[$key]->content = $content;
+                    $floatadv[$key]->cssjs = $formC->assignFormCSSandJSForPrint();
+                }
             }
+
             if (count($floatadv)) {
-                $url = "http://swap.5067.org/floatadv.php";
+                $url = "http://swap.5067.org/floatadv_new.php";
+//                $url = "http://swap.5067.org/floatadv.php";
                 $post_data = json_encode($floatadv);
                 $ch = curl_init();
                 curl_setopt($ch, CURLOPT_URL, $url);
@@ -848,7 +857,6 @@ class PrintController extends BaseController {
                 $floatadvprint = curl_exec($ch);
                 curl_close($ch);
             }
-
             $headscript = $customer_info->pc_header_script;
             if ($customer_info->lang == 'en') {
                 $footprint = $customer_info->footer . '<p>Technology support：<a href="http://www.12t.cn/">Xiamen 12t network technology co.ltd</a> Talent support：<a href="http://www.xgzrc.com/">www.xgzrc.com.cn</a></p>';
@@ -857,7 +865,6 @@ class PrintController extends BaseController {
             }
             $footscript = $customer_info->pc_footer_script;
             $footscript .= '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/quickbar.js?' . $this->cus_id . 'pc"></script>';
-            $postFun->postsend("http://swap.5067.org/admin/statis.php?cus_id=$this->cus_id&platform=pc"); //===添加统计代码PC===
 //            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/js/statis.s?' . $this->cus_id . 'pc"></script>'; //===添加统计代码PC===
             $site_another_url = $this->showtype == 'preview' ? '' : $customer_info->mobile_domain;
         } else {
@@ -867,175 +874,7 @@ class PrintController extends BaseController {
             $footprint = $customer_info->mobile_footer;
             $footscript = $customer_info->mobile_footer_script;
             $footscript .= '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/quickbar.js?' . $this->cus_id . 'mobile"></script>';
-            $postFun->postsend("http://swap.5067.org/admin/statis.php?cus_id=$this->cus_id&platform=mobile"); //===添加统计代码MOBILE===
-            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/js/statis.js?' . $this->cus_id . 'mobile"></script>'; //===添加统计代码MOBILE===
-            $site_another_url = $this->showtype == 'preview' ? '' : $customer_info->pc_domain;
-            $config_arr = parse_ini_file(public_path('/templates/' . $this->themename) . '/config.ini', true);
-            if (!is_array($config_arr))
-                dd('【config.ini】文件不存在！文件格式说明详见：http://pme/wiki/doku.php?id=ued:template:config');
-        }
-        //获取global信息
-        if ($this->type == 'pc') {
-            $global_data = $this->pagedata('global');
-            $global_data = $this->detailList($global_data);
-        } else {
-            $global_data = WebsiteConfig::where('cus_id', $this->cus_id)->where('type', 2)->where('template_id', $this->tpl_id)->pluck('value');
-            if ($global_data) {
-                $global_data = unserialize($global_data);
-            } else {
-                $global_data = $this->mobilePageList('global', true);
-            }
-            if (count($global_data) > 0) {
-                $quickbarKey = false;
-                foreach ($global_data as $gkey => $gval) {
-                    if ($global_data[$gkey]['type'] == 'quickbar') {
-                        $quickbar = WebsiteConfig::where('cus_id', $this->cus_id)->where('key', 'quickbar')->pluck('value');
-                        if ($quickbar) {
-                            $quickbar = unserialize($quickbar);
-                            foreach ($quickbar as $key => $val) {
-                                $quickbar[$key]['enable'] = intval($quickbar[$key]['enable_mobile']);
-                                if ($quickbar[$key]['type'] == 'tel') {
-                                    $quickbar[$key]['link'] = "tel:" . $quickbar[$key]['data'];
-                                } elseif ($quickbar[$key]['type'] == 'sms') {
-                                    $quickbar[$key]['link'] = "sms:" . $quickbar[$key]['data'];
-                                } elseif ($quickbar[$key]['type'] == 'im') {
-                                    $qq = explode('|', $quickbar[$key]['data']);
-                                    $qq = explode(':', $qq[0]);
-                                    $qq = explode('@', $qq[1]);
-                                    $quickbar[$key]['link'] = 'http://wpd.b.qq.com/cgi/get_m_sign.php?uin=' . $qq[0];
-                                } elseif ($quickbar[$key]['type'] == 'map') {
-                                    if ($quickbar[$key]['data'] != null) {
-                                        $location = explode('|', $quickbar[$key]['data']);
-                                        $address = explode(',', $location[1]);
-                                        $quickbar[$key]['link'] = 'http://api.map.baidu.com/marker?location=' . $address[1] . ',' . $address[0] . '&title=目标位置&content=' . $location[0] . '&output=html';
-                                    } else {
-                                        $address = CustomerInfo::where('cus_id', $this->cus_id)->pluck('address');
-                                        $quickbar[$key]['link'] = 'http://api.map.baidu.com/geocoder?address=' . $address . '&output=html';
-                                    }
-                                } elseif ($quickbar[$key]['type'] == 'link') {
-                                    if ($quickbar[$key]['data'] != null) {
-                                        $url_arr = explode('|', $quickbar[$key]['data']);
-                                        $quickbar[$key]['link'] = $url_arr[0];
-                                    }
-                                }
-                                //TODO:删除enable_pc/enable_mobile键值
-                                unset($quickbar[$key]['enable_pc']);
-                                unset($quickbar[$key]['enable_mobile']);
-                            }
-                            $quickbarKey = $gkey;
-                            ;
-                        } else {
-                            foreach ($global_data[$gkey]['value'] as $key => $val) {
-                                if ($global_data[$gkey]['value'][$key]['type'] == 'tel') {
-                                    $global_data[$gkey]['value'][$key]['link'] = "tel:" . $global_data[$gkey]['value'][$key]['data'];
-                                } elseif ($global_data[$gkey]['value'][$key]['type'] == 'sms') {
-                                    $global_data[$gkey]['value'][$key]['link'] = "sms:" . $global_data[$gkey]['value'][$key]['data'];
-                                } elseif ($global_data[$gkey]['value'][$key]['type'] == 'im') {
-                                    $qq = explode('|', $global_data[$gkey]['value'][$key]['data']);
-                                    $qq = explode(':', $qq[0]);
-                                    $qq = explode('@', $qq[1]);
-                                    $global_data[$gkey]['value'][$key]['link'] = 'http://wpd.b.qq.com/cgi/get_m_sign.php?uin=' . $qq[0];
-                                } elseif ($global_data[$gkey]['value'][$key]['type'] == 'link') {
-                                    $address = CustomerInfo::where('cus_id', $this->cus_id)->pluck('address');
-                                    $global_data[$gkey]['value'][$key]['link'] = 'http://api.map.baidu.com/geocoder?address=' . $address . '&output=html';
-                                }
-                            }
-                            $quickbarKey = $gkey;
-                            $quickbar = $global_data[$gkey]['value'];
-                        }
-                    } elseif ($global_data[$gkey]['type'] == 'images' or $global_data[$gkey]['type'] == 'image') {
-                        $img = 1;
-                        foreach ($global_data[$gkey]['value'] as $img_key => $img_value) {
-                            if ($img_value) {
-                                $img = 0;
-                            }
-                        }
-                        if ($img) {
-                            $global_data[$gkey]['value'] = array();
-                        }
-                    }
-                }
-            }
-            $global_data = $this->detailList($global_data);
-            $this->replaceUrl($global_data);
-            if ($quickbarKey)
-                $global_data[$quickbarKey] = $quickbar;
-        }
-        $contact = CustomerInfo::where('cus_id', $this->cus_id)->select('company', 'contact_name as name', 'mobile', 'telephone', 'fax', 'email as mail', 'qq', 'address')->first()->toArray();
-        if ($this->showtype == 'preview') {
-            if ($this->type == 'pc') {
-                $pc_domain = 'http://' . $_SERVER['HTTP_HOST'] . '/search-preview';
-            } else {
-                $pc_domain = 'http://' . $_SERVER['HTTP_HOST'] . '/mobile/search-preview';
-            }
-        } else {
-            $pc_domain = $this->domain . '/search.php';
-        }
-        $result = [
-            'stylecolor' => $stylecolor,
-            'navs' => $navs,
-            'favicon' => rtrim($this->source_dir, 'images/') . '/images/l/common/' . $customer_info->favicon,
-            'logo' => $logo,
-            'floatadvprint' => isset($floatadvprint) ? $floatadvprint : '',
-            'headscript' => $headscript,
-            'footprint' => $footprint,
-            'footscript' => $footscript,
-            'global' => $global_data,
-            'site_url' => $this->site_url,
-            'site_another_url' => $site_another_url,
-            'contact' => $contact,
-            'search_action' => $pc_domain //'http://swap.gbpen.com'
-        ];
-
-        if ($this->type == 'pc') {
-            $footer_navs = Classify::where('cus_id', $this->cus_id)->where('footer_show', 1)->select('id', 'type', 'img', 'icon', 'name', 'url', 'p_id', 'en_name', 'meta_description as description')->OrderBy('sort', 'asc')->get()->toArray();
-            $footer_navs = $this->toFooter($footer_navs);
-            $result['footer_navs'] = $footer_navs;
-            $result['index_navs'] = $navs;
-            $result['type'] = 'pc';
-        }
-        return $result;
-    }
-
-    public function pushpublicpage() {
-        $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
-        if ($this->type == 'pc') {
-            $stylecolor = websiteInfo::leftJoin('color', 'color.id', '=', 'website_info.pc_color_id')->where('cus_id', $this->cus_id)->pluck('color_en');
-            $logo = $this->showtype == 'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $customer_info->logo) : $this->domain . '/images/l/common/' . $customer_info->logo;
-            $floatadv = json_decode($customer_info->floatadv);
-            foreach ((array) $floatadv as $key => $val) {
-                $floatadv[$key]->url = $this->showtype == 'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $val->adv) : $this->domain . '/images/l/common/' . $val->adv;
-            }
-            if (count($floatadv)) {
-                $url = "http://swap.5067.org/floatadv.php";
-                $post_data = json_encode($floatadv);
-                $ch = curl_init();
-                curl_setopt($ch, CURLOPT_URL, $url);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                curl_setopt($ch, CURLOPT_POST, 1);
-                curl_setopt($ch, CURLOPT_POSTFIELDS, array("data" => $post_data));
-                $floatadvprint = curl_exec($ch);
-                curl_close($ch);
-            }
-
-            $headscript = $customer_info->pc_header_script;
-            if ($customer_info->lang == 'en') {
-                $footprint = $customer_info->footer . '<p>Technology support：<a href="http://www.12t.cn/">Xiamen 12t network technology co.ltd</a> Talent support：<a href="http://www.xgzrc.com/">www.xgzrc.com.cn</a></p>';
-            } else {
-                $footprint = $customer_info->footer . '<p>技术支持：<a href="http://www.12t.cn/">厦门易尔通网络科技有限公司</a> 人才支持：<a href="http://www.xgzrc.com/">厦门人才网</a></p>';
-            }
-            $footscript = $customer_info->pc_footer_script;
-            $footscript .= '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/quickbar.js?' . $this->cus_id . 'pc"></script>';
-            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/js/statis.s?' . $this->cus_id . 'pc"></script>'; //===添加统计代码PC===
-            $site_another_url = $this->showtype == 'preview' ? '' : $customer_info->mobile_domain;
-        } else {
-            $logo = $this->showtype == 'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $customer_info->logo_small) : $this->domain . '/images/l/common/' . $customer_info->logo_small;
-            $stylecolor = websiteInfo::leftJoin('color', 'color.id', '=', 'website_info.mobile_color_id')->where('cus_id', $this->cus_id)->pluck('color_en');
-            $headscript = $customer_info->mobile_header_script;
-            $footprint = $customer_info->mobile_footer;
-            $footscript = $customer_info->mobile_footer_script;
-            $footscript .= '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/quickbar.js?' . $this->cus_id . 'mobile"></script>';
-            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/js/statis.js?' . $this->cus_id . 'mobile"></script>'; //===添加统计代码MOBILE===
+//            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/js/statis.js?' . $this->cus_id . 'mobile"></script>'; //===添加统计代码MOBILE===
             $site_another_url = $this->showtype == 'preview' ? '' : $customer_info->pc_domain;
             $config_arr = parse_ini_file(public_path('/templates/' . $this->themename) . '/config.ini', true);
             if (!is_array($config_arr))
@@ -1162,7 +1001,7 @@ class PrintController extends BaseController {
         return $result;
     }
 
-    public function pushnav($c_id = 0) {
+    public function publicnavs($c_id = 0) {
         error_reporting(E_ALL ^ E_NOTICE);
         //===whereIN(type:9) 万用表单===
         if ($this->type == 'pc') {
@@ -1194,7 +1033,7 @@ class PrintController extends BaseController {
         foreach ($data as $k => $v) {
             if ($v['type'] == 'list') {
                 if (isset($v['config']['id']) && is_numeric($v['config']['id']) && $v['config']['id'] > 0) {
-                    $c_info = Classify::where('id', $v['config']['id'])->where('cus_id', $this->cus_id)->where('pc_show', 1)->first();
+                    $c_info = Classify::where('id', $v['config']['id'])->where('cus_id', $this->cus_id)->where($this->type . '_show', 1)->first();
                     $cids = explode(',', $this->getChirldenCid($v['config']['id'])); //取得所有栏目id
                 } else {
                     $c_info = false;
@@ -1204,15 +1043,15 @@ class PrintController extends BaseController {
                     if ($v['config']['filter'] == 'list') {
                         if (isset($v['config']['star_only']) && $v['config']['star_only']) {
                             if ($cids) {
-                                $articles = Articles::whereIn('c_id', $cids)->where('pc_show', '1')->where('cus_id', $this->cus_id)->where('is_star', '1')->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
+                                $articles = Articles::whereIn('c_id', $cids)->where($this->type . '_show', '1')->where('cus_id', $this->cus_id)->where('is_star', '1')->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
                             } else {
-                                $articles = Articles::where('pc_show', '1')->where('cus_id', $this->cus_id)->where('is_star', '1')->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
+                                $articles = Articles::where($this->type . '_show', '1')->where('cus_id', $this->cus_id)->where('is_star', '1')->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
                             }
                         } else {
                             if ($cids) {
-                                $articles = Articles::whereIn('c_id', $cids)->where('pc_show', '1')->where('cus_id', $this->cus_id)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
+                                $articles = Articles::whereIn('c_id', $cids)->where($this->type . '_show', '1')->where('cus_id', $this->cus_id)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
                             } else {
-                                $articles = Articles::where('pc_show', '1')->where('cus_id', $this->cus_id)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
+                                $articles = Articles::where($this->type . '_show', '1')->where('cus_id', $this->cus_id)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
                             }
                         }
                         if ($articles->count() != 0) {
@@ -1251,20 +1090,28 @@ class PrintController extends BaseController {
                         }
                     } elseif ($v['config']['filter'] == 'page') {
                         unset($v['value']);
-                        $v['value']['content'] = ($c_info ? $c_info->meta_description : '');
+                        if ($k == 'about') {
+                            $page = Page::where('id', $c_info->page_id)->first();
+                            $v['value']['content'] = ($page ? $page->content : '');
+                        } else {
+                            $v['value']['content'] = ($c_info ? $c_info->meta_description : '');
+                        }
                     }
                 } else {
+                    if (!isset($v['config']['limit'])) {
+                        $v['config']['limit'] = '';
+                    }
                     if (isset($v['config']['star_only']) && $v['config']['star_only']) {
                         if ($cids) {
-                            $articles = Articles::whereIn('c_id', $cids)->where('pc_show', '1')->where('cus_id', $this->cus_id)->where('is_star', '1')->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
+                            $articles = Articles::whereIn('c_id', $cids)->where($this->type . '_show', '1')->where('cus_id', $this->cus_id)->where('is_star', '1')->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
                         } else {
-                            $articles = Articles::where('pc_show', '1')->where('cus_id', $this->cus_id)->where('is_star', '1')->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
+                            $articles = Articles::where($this->type . '_show', '1')->where('cus_id', $this->cus_id)->where('is_star', '1')->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
                         }
                     } else {
                         if ($cids) {
-                            $articles = Articles::whereIn('c_id', $cids)->where('pc_show', '1')->where('cus_id', $this->cus_id)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
+                            $articles = Articles::whereIn('c_id', $cids)->where($this->type . '_show', '1')->where('cus_id', $this->cus_id)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
                         } else {
-                            $articles = Articles::where('pc_show', '1')->where('cus_id', $this->cus_id)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
+                            $articles = Articles::where($this->type . '_show', '1')->where('cus_id', $this->cus_id)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
                         }
                     }
                     if ($articles->count() != 0) {
@@ -1318,7 +1165,7 @@ class PrintController extends BaseController {
                 $childrenMenu = array();
                 if ($cids) {
                     foreach ($cids as $cid) {
-                        $c_c_info = Classify::where('id', $cid)->where('cus_id', $this->cus_id)->where('pc_show', 1)->select('id', 'name', 'en_name', 'img as image', 'icon', 'meta_description as description', 'p_id')->first();
+                        $c_c_info = Classify::where('id', $cid)->where('cus_id', $this->cus_id)->where($this->type . '_show', 1)->select('id', 'name', 'en_name', 'img as image', 'icon', 'meta_description as description', 'p_id')->first();
                         if ($c_c_info) {
                             $c_c_info = $c_c_info->toArray();
                             if ($this->showtype == 'preview') {
@@ -1333,9 +1180,9 @@ class PrintController extends BaseController {
                             $c_c_info['selected'] = 0;
                             $c_cids = explode(',', $this->getChirldenCid($cid)); //取得所有栏目id
                             if (isset($v['config']['star_only']) && $v['config']['star_only']) {
-                                $articles = Articles::whereIn('c_id', $c_cids)->where('pc_show', '1')->where('cus_id', $this->cus_id)->where('is_star', '1')->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
+                                $articles = Articles::whereIn('c_id', $c_cids)->where($this->type . '_show', '1')->where('cus_id', $this->cus_id)->where('is_star', '1')->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
                             } else {
-                                $articles = Articles::whereIn('c_id', $c_cids)->where('pc_show', '1')->where('cus_id', $this->cus_id)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
+                                $articles = Articles::whereIn('c_id', $c_cids)->where($this->type . '_show', '1')->where('cus_id', $this->cus_id)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
                             }
                             if ($articles->count() != 0) {
                                 $abc = [];
@@ -1381,7 +1228,7 @@ class PrintController extends BaseController {
                 $v['value']['childmenu'] = isset($v['config']['id']) ? $classify->toTree($childrenMenu, $v['config']['id']) : NULL;
             } elseif ($v['type'] == 'page') {
                 if (isset($v['config']['id'])) {
-                    $c_info = Classify::where('id', $v['config']['id'])->where('cus_id', $this->cus_id)->where('pc_show', 1)->first();
+                    $c_info = Classify::where('id', $v['config']['id'])->where('cus_id', $this->cus_id)->where($this->type . '_show', 1)->first();
                     $cids = explode(',', $this->getChirldenCid($v['config']['id'])); //取得所有栏目id
                 } else {
                     $c_info = false;
@@ -1407,7 +1254,7 @@ class PrintController extends BaseController {
                 $childrenMenu = array();
                 if ($cids) {
                     foreach ($cids as $cid) {
-                        $c_c_info = Classify::where('id', $cid)->where('cus_id', $this->cus_id)->where('pc_show', 1)->select('id', 'name', 'en_name', 'img as image', 'icon', 'meta_description as description', 'p_id')->first();
+                        $c_c_info = Classify::where('id', $cid)->where('cus_id', $this->cus_id)->where($this->type . '_show', 1)->select('id', 'name', 'en_name', 'img as image', 'icon', 'meta_description as description', 'p_id')->first();
                         if ($c_c_info) {
                             $c_c_info = $c_c_info->toArray();
                             if ($this->showtype == 'preview') {
@@ -1433,7 +1280,7 @@ class PrintController extends BaseController {
                     unset($v['value']);
                     $i = 0;
                     foreach ($v['config']['ids'] as $id) {
-                        $c_info = Classify::where('id', $id)->where('cus_id', $this->cus_id)->where('pc_show', 1)->first();
+                        $c_info = Classify::where('id', $id)->where('cus_id', $this->cus_id)->where($this->type . '_show', 1)->first();
                         $v['value'][$i]['name'] = $c_info ? $c_info->name : '';
                         $v['value'][$i]['en_name'] = $c_info ? $c_info->en_name : '';
                         $v['value'][$i]['icon'] = $c_info ? '<i class="iconfont">' . $c_info->icon . '</i>' : '';
@@ -1491,8 +1338,8 @@ class PrintController extends BaseController {
             }
             $links_count = CustomerInfo::where('cus_id', $this->cus_id)->pluck('pc_page_links'); //分页链接显示个数
             $offset = ($page - 1) * $page_number;
-            $total = Articles::whereIn('c_id', $cids)->where('pc_show', '1')->select('id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color')->count();
-            $list = Articles::whereIn('c_id', $cids)->where('pc_show', '1')->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'c_id', 'url', 'use_url')->skip($offset)->take($page_number)->get();
+            $total = Articles::whereIn('c_id', $cids)->where($this->type . '_show', '1')->select('id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color')->count();
+            $list = Articles::whereIn('c_id', $cids)->where($this->type . '_show', '1')->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'c_id', 'url', 'use_url')->skip($offset)->take($page_number)->get();
         }
         $page_count = ceil($total / $page_number);
         $article = [];
@@ -2286,7 +2133,6 @@ class PrintController extends BaseController {
                     <input id="telephone" type="tel" name="telephone" placeholder="Telephone" />
                     </label>
                     <label>
-                    <label>
                     <span>内容 :</span>
                     <textarea id="content" name="content" placeholder="You mind ...."></textarea>
                     </label>
@@ -2429,7 +2275,7 @@ class PrintController extends BaseController {
                 </SCRIPT>';
             } elseif ($classify->type == 9) {
                 //===加载css\js===
-                $result['footscript'].=$formC->assignFormCSSandJSForPrint($formCdata);
+                $result['footscript'].=$formC->assignFormCSSandJSForPrint();
             }
             $smarty->assign($result);
             $smarty->display($viewname . '.html');
@@ -2446,7 +2292,7 @@ class PrintController extends BaseController {
     public function categoryPush($id, $page, $publicdata, $last_html_precent, $html_precent) {
         $paths = [];
         $result = $publicdata['result'];
-        $result['navs'] = $this->pushnav($id);
+        $result['navs'] = $this->publicnavs($id);
         $result['index_navs'] = $result['navs'];
         foreach ((array) $result['navs'] as $nav) {
             if ($nav['current'] == 1) {
@@ -2680,6 +2526,10 @@ class PrintController extends BaseController {
                 echo floor($nowpercent) . '%<script type="text/javascript">parent.refresh(' . floor($nowpercent) . ');</script><br />';
                 ob_flush();
                 flush();
+                if(isset($_GET['pushqueue'])){
+                    PushQueue::where('pushtime','<',time()-60)->delete();
+                    PushQueue::where('cus_id',$this->cus_id)->update(['pushtime' => time()]);
+                }
             }
             $last_html_precent +=$html_precent;
             //===显示类型不是'list-page'===
@@ -2702,6 +2552,10 @@ class PrintController extends BaseController {
                         echo floor($nowpercent) . '%<script type="text/javascript">parent.refresh(' . floor($nowpercent) . ');</script><br />';
                         ob_flush();
                         flush();
+                        if(isset($_GET['pushqueue'])){
+                            PushQueue::where('pushtime','<',time()-60)->delete();
+                            PushQueue::where('cus_id',$this->cus_id)->update(['pushtime' => time()]);
+                        }
                     }
                     $last_html_precent +=$html_precent;
                 }
@@ -2878,7 +2732,7 @@ class PrintController extends BaseController {
             }
             $related[$k]['title'] = $articles[$k]['title'];
             $related[$k]['description'] = $articles[$k]['introduction'];
-            $related[$k]['image'] = $this->source_dir . 'l/articles/' . $articles[$k]['image'];
+            $related[$k]['image'] = $this->source_dir . 'l/articles/' . $articles[$k]['img'];
             $related[$k]['pubdate'] = $articles[$k]['created_at'];
             $related[$k]['pubtimestamp'] = strtotime($articles[$k]['created_at']);
             $a_c_info = Classify::where('id', $articles[$k]['c_id'])->first();
@@ -2955,7 +2809,7 @@ class PrintController extends BaseController {
         set_time_limit(0);
         $paths = [];
         $result = $publicdata['result'];
-        $result['navs'] = $this->pushnav($c_id);
+        $result['navs'] = $this->publicnavs($c_id);
         $result['index_navs'] = $result['navs'];
         $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
         if ($customer_info->lang == 'en') {
@@ -3098,7 +2952,7 @@ class PrintController extends BaseController {
                 $related[$k]['category']['link'] = $this->domain . '/category/' . $articles[$k]['id'] . '.html';
                 $related[$k]['title'] = $articles[$k]['title'];
                 $related[$k]['description'] = $articles[$k]['introduction'];
-                $related[$k]['image'] = $this->source_dir . 'l/articles/' . $articles[$k]['image'];
+                $related[$k]['image'] = $this->source_dir . 'l/articles/' . $articles[$k]['img'];
                 $related[$k]['pubdate'] = $articles[$k]['created_at'];
                 $related[$k]['pubtimestamp'] = strtotime($articles[$k]['created_at']);
                 $a_c_info = Classify::where('id', $articles[$k]['c_id'])->first();
@@ -3107,11 +2961,6 @@ class PrintController extends BaseController {
                 $related[$k]['category']['icon'] = '<i class="iconfont">' . $a_c_info->icon . '</i>';
             }
             $the_result['related'] = $related;
-            if (isset($_GET['memory'])) {
-                var_dump(memory_get_usage());
-                ob_flush();
-                flush();
-            }
             $output = $this->pushdisplay($the_result, $content);
             $output = preg_replace('/<a href="' . str_replace("/", "\/", $result['site_url']) . '"( target="_blank")?( )?>首页<\/a>( )?\|([\s]+)?(<br \/>)?(<br>)?/is', "", $output);
             $path = $this->type == 'pc' ? public_path('customers/' . $this->customer . '/detail/' . $article['id'] . '.html') : public_path('customers/' . $this->customer . '/mobile/detail/' . $article['id'] . '.html');
@@ -3125,6 +2974,10 @@ class PrintController extends BaseController {
                 echo floor($nowpercent) . '%<script type="text/javascript">parent.refresh(' . floor($nowpercent) . ');</script><br />';
                 ob_flush();
                 flush();
+                if(isset($_GET['pushqueue'])){
+                    PushQueue::where('pushtime','<',time()-60)->delete();
+                    PushQueue::where('cus_id',$this->cus_id)->update(['pushtime' => time()]);
+                }
             }
             $last_html_precent +=$html_precent;
         }
@@ -3430,7 +3283,7 @@ class PrintController extends BaseController {
         $smarty->display('searchresult_do.html');
     }
 
-/*
+    /*
      * pushtest搜索页面数据
      */
 

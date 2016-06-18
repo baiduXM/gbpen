@@ -15,18 +15,13 @@ class FormController extends BaseController {
 
     /**
      * 表单列表
-     * @param type $status
+     * @param type $param 参数可能是数组
      * @return type
      */
-    public function getFormList($status = null) {
-        $cus_id = Auth::id();
-        $status = Input::get('status') ? Input::get('status') : null;
-        //===根据用户id查找用户表单列表===
-        if (empty($status)) {
-            $data = DB::table('form')->where('cus_id', $cus_id)->get();
-        } else {
-            $data = DB::table('form')->where('cus_id', $cus_id)->where('status', $status)->get();
-        }
+    public function getFormList() {
+        $where = Input::all();
+        $where['cus_id'] = Auth::id();
+        $data = DB::table('form')->where($where)->get();
         //===返回数据===
         if ($data != NULL) {
             $res = Response::json(['err' => 0, 'msg' => '获取表单列表成功', 'data' => $data]);
@@ -79,7 +74,7 @@ class FormController extends BaseController {
         $param['form_id'] = $form_id;
         $param['id'] = $form_id;
         $param['flag'] = 2;
-        $param['host']=$_SERVER['HTTP_HOST'];
+        $param['host'] = $_SERVER['HTTP_HOST'];
         $postFun = new CommonController;
         $res2 = $postFun->postsend("http://swap.5067.org/admin/form_userdata_delete.php", $param);
 //		$res2 = DB::table('form_data_' . $form_id % 10)->where('form_id', $form_id)->delete();
@@ -283,7 +278,6 @@ class FormController extends BaseController {
                 $redata[$v['name']] = $v['value'];
             }
         }
-
 //        $fun_name = 'edit_' . $type;
 //        $config = $this->$fun_name('data'); //动态调用方法
         if ($type == 'select' || $type == 'radio' || $type == 'checkbox') {
@@ -419,16 +413,10 @@ class FormController extends BaseController {
      */
     public function submitFormUserdata() {
         $domain = $_SERVER['HTTP_HOST']; //"http://swap.5067.org" 
-        if (preg_match('/example\.com$/', $domain)){
+        if (preg_match('/example\.com$/', $domain)) {
             echo 1;
         }
         echo 2;
-        
-        
-//        
-//            $data = $_POST;
-//        var_dump($data);
-//        echo "<br>---dta---<br>";
         exit;
         $form_id = $data[form_id];
         $condata = array();
@@ -453,7 +441,7 @@ class FormController extends BaseController {
         $form_data = DB::table('form')->where('id', $form_id)->first();
 
         $param['form_id'] = $form_id;
-        $param['host']=$_SERVER['HTTP_HOST'];
+        $param['host'] = $_SERVER['HTTP_HOST'];
 //		$param['cus_id'] = Auth::id();
         $postFun = new CommonController;
 //		$userdata = $postFun->postsend("http://swap.5067.org/admin/form_userdata_list.php", $param);
@@ -490,7 +478,7 @@ class FormController extends BaseController {
     public function getFormUserdataList() {
         $form_id = Input::get('form_id');
         $param['form_id'] = $form_id;
-        $param['host']=$_SERVER['HTTP_HOST'];
+        $param['host'] = $_SERVER['HTTP_HOST'];
         $postFun = new CommonController;
         $res = $postFun->postsend("http://swap.5067.org/admin/form_userdata_list.php", $param);
         if (!empty($res)) {
@@ -514,7 +502,7 @@ class FormController extends BaseController {
         $id = Input::get('id');
         $param['form_id'] = $form_id;
         $param['id'] = $id;
-        $param['host']=$_SERVER['HTTP_HOST'];
+        $param['host'] = $_SERVER['HTTP_HOST'];
         $postFun = new CommonController;
         $res = $postFun->postsend("http://swap.5067.org/admin/form_userdata.php", $param);
         $res = json_decode($res);
@@ -536,7 +524,7 @@ class FormController extends BaseController {
         $param['form_id'] = $form_id;
         $param['id'] = $id;
         $param['flag'] = 1;
-        $param['host']=$_SERVER['HTTP_HOST'];
+        $param['host'] = $_SERVER['HTTP_HOST'];
 //		$res = DB::table('form_data_' . $form_id % 10)->where('id', $id)->delete();
         $postFun = new CommonController;
         $res = $postFun->postsend("http://swap.5067.org/admin/form_userdata_delete.php", $param);
@@ -569,9 +557,10 @@ class FormController extends BaseController {
     /**
      * 显示表单前端
      */
-    public function showFormHtmlForPrint($data = null) {
+    public function showFormHtmlForPrint($data = null, $site = null) {
+        $_form = '';
         if (empty($data)) {
-            $_form = "<div class='fv-add-show'>
+            $_form .= "<div class='fv-add-show'>
                     <div class='fv-as-description'>
                             表单已停用
                     </div>
@@ -586,8 +575,13 @@ class FormController extends BaseController {
             }
             $form_id = $form_data->id;
             $column_data = $data['column'];
-            $_form = "<div class='fv-add-show'>
-                    <div class='fv-as-title'>
+            $_div = '';
+            if (empty($site)) {
+                $_form.="<div class='fv-add-show' >";
+            } else {
+                $_form.="<div class='adv-add-show' >";
+            }
+            $_form .= "<div class='fv-as-title'>
                             $form_data->title
                     </div>
                     <div class='fv-as-description'>
@@ -600,18 +594,41 @@ class FormController extends BaseController {
                 $_div .= $this->$func($item);
                 $_div.="</li>";
             }
-            $jscol_name = json_encode($column_data);
             $_div .= "</ul>"
-                    . "<input type='submit' value='提交' class='button submit-form' name='submit' /><input type='reset' value='重置' class='button' />"
+                    . "<input type='submit' value='提交' class='button submit-form' name='submit' />"
+//                    . "<button id='sbok'>提交</button>"
+                    . "<input type='reset' value='重置' class='button' />"
                     . "<input type='hidden' name='form_id' value='$form_id' />"
                     . "<input type='hidden' name='action_type' value='$form_data->action_type' />"
                     . "<input type='hidden' name='action_text' value=" . $tempform['action_text'] . " />";
-
-            //$_form.="<form class='fv-unit-preview' id='box_show' action='../form-userdata-submit' onsubmit='return verify();' method='post'><ul class='fv-element-show'>";
-            $_form.="<form class='fv-unit-preview' id='box_show' action='http://swap.5067.org/userdata/' onsubmit='return verify();' method='post'><ul class='fv-element-show'>";
+            if (empty($site)) {
+                $_form.="<form class='fv-unit-preview' id='box_show' action='../form-userdata-submit' onsumbit='return verify()' method='post'><ul class='fv-element-show'>";
+            } else {
+                $_form.="<form class='adv-unit-preview' id='box_show' action='http://swap.5067.org/userdata/' method='post'><ul class='fv-element-show'>";
+            }
             $_form.=$_div . "</form></div>";
+//            $_form.=$js;
         }
         return $_form;
+    }
+
+    /**
+     * 验证表单项
+     * @param type $item
+     * @return type
+     */
+    function validata($item) {
+//        var_dump($item);
+//        echo '<br>';
+        $config = $item->config;
+        $_vali = '';
+        if ($item->required) {
+            $_vali['required'] = true;
+        }
+        if (!empty($config[rules])) {
+            $_vali[$config[rules]] = true;
+        }
+        return $_vali;
     }
 
     /**
@@ -620,14 +637,14 @@ class FormController extends BaseController {
     public function assignFormCSSandJSForPrint() {
         $css = '<link rel="stylesheet" href="http://swap.5067.org/js/laydate/need/laydate.css">';
         $css .='<link rel="stylesheet" href="http://swap.5067.org/css/universal-form.css">';
+//        $css .='<link rel="stylesheet" href="/public/admin/css/universal-form.css">';
         $js = '<script src="http://swap.5067.org/js/laydate/laydate.js"></script>';
 //        $js .= '<script src="http://swap.5067.org/js/universal-form.js"></script>';
 //        $js .= '<script src="/public/admin/js/universal-form.js"></script>';
+//        $js .= '<script src="/public/admin/js/jquery.validate.min.js"></script>';
 //        $js .= '<script>';
 //        $js .= "function verify() {
-//            var box_show = $('#box_show').serializeArray();
-//            console.log(box_show);
-//            console.log('---form---');
+//           alert(1)
 //                return false;
 //                }";
 //        $js .= '</script>';
@@ -637,13 +654,15 @@ class FormController extends BaseController {
     function show_html_text($data) {
         $item = $data;
         $config = $data->config;
-        $_div = "<p class='content-l'>$item->title";
+
+        $_div = '';
+        $_div .= "<p class='content-l'>$item->title";
         if ($item->required == 1) {
             $_div .= "<span style='color:red;'>*</span>";
         }
         $_div .= "</p>";
-        $_div .= "<input type='text' name='$item->title' placeholder='$item->description'";
-        $_div .= $item->required == 1 ? "required='required'" : '';
+        $_div .= "<input type='$config[rules]' name='$item->title' placeholder='$item->description'";
+        $_div .= $item->required == 1 ? "required" : '';
         $_div .= "/>";
         return $_div;
     }
@@ -651,7 +670,8 @@ class FormController extends BaseController {
     function show_html_textarea($data) {
         $item = $data;
         $config = $data->config;
-        $_div = "<p class='content-l'>$item->title";
+        $_div = '';
+        $_div .= "<p class='content-l'>$item->title";
         if ($item->required == 1) {
             $_div .= "<span style='color:red;'>*</span>";
         }
@@ -665,7 +685,8 @@ class FormController extends BaseController {
     function show_html_radio($data) {
         $item = $data;
         $config = $data->config;
-        $_div = "<p class='content-l'>$item->title";
+        $_div = '';
+        $_div .= "<p class='content-l'>$item->title";
         if ($item->required == 1) {
             $_div .= "<span style='color:red;'>*</span>";
         }
@@ -688,7 +709,8 @@ class FormController extends BaseController {
     function show_html_checkbox($data) {
         $item = $data;
         $config = $data->config;
-        $_div = "<p class='content-l'>$item->title";
+        $_div = '';
+        $_div .= "<p class='content-l'>$item->title";
         if ($item->required == 1) {
             $_div .= "<span style='color:red;'>*</span>";
         }
@@ -701,7 +723,8 @@ class FormController extends BaseController {
         foreach ($option_key as $key => $value) {
             $to = "option_$value";
             $_div .= '<span class="option-item">';
-            $_div .= "<input type = 'checkbox' name = '$item->title[]' value = '$config[$to]' data-value='$value' /><label>" . $config[$to] . " </label>";
+            $_div .= "<input type = 'checkbox' name = '$item->title[]' value = '$config[$to]' data-value='$value' ";
+            $_div .= " /><label>" . $config[$to] . " </label>";
             $_div .= '</span>';
         }
         return $_div;
@@ -710,7 +733,8 @@ class FormController extends BaseController {
     function show_html_select($data) {
         $item = $data;
         $config = $data->config;
-        $_div = "<p class='content-l'>$item->title";
+        $_div = '';
+        $_div .= "<p class='content-l'>$item->title";
         if ($item->required == 1) {
             $_div .= "<span style='color:red;'>*</span>";
         }
@@ -734,7 +758,8 @@ class FormController extends BaseController {
     function show_html_date($data) {
         $item = $data;
         $config = $data->config;
-        $_div = "<p class='content-l'>$item->title";
+        $_div = '';
+        $_div .= "<p class='content-l'>$item->title";
         if ($item->required == 1) {
             $_div .= "<span style='color:red;'>*</span>";
         }
@@ -748,6 +773,42 @@ class FormController extends BaseController {
         return $_div;
     }
 
-}
+    function test() {
+        $data = json_decode($_POST['data']);
+        $css = '<link rel="stylesheet" type="text/css" href="http://chanpin.xm12t.com.cn/css/floatadv.css">';
+        $div = '';
+        $js = '';
+        foreach ((array) $data as $k => $v) {
+            $div .= '<div class="popContent float floatAdv' . $k . '" style="';
+            if ($v->position == '4') {
+                $div.='right';
+            } else {
+                $div.='left';
+            }
+            $div.=':' . $v->posx . 'px;width:' . $v->posw . 'px;';
+            if ($v->position == '3') {
+                $div.='bottom';
+            } else {
+                $div.='top';
+            }
+            $div.=':' . $v->posy . 'px;">';
+            $div.='<a class="popClose" title="关闭" >关闭</a>';
+            if ($v->type == "form") {
+                $div .= $v->content;
+                $js .= $v->cssjs;
+            }
+            if ($v->type == "adv") {
+                $div.='<a href="' . $v->href . '" target="_blank"><img class="float_adv" src="' . $v->url . '"></a>';
+            }
+            $div.='</div>';
+        }
+        $js .= '<script>';
+        $js.='$(".popClose").click(function(){
+                $(this).parent(".float").stop();
+                $(this).parent(".float").slideUp();
+            });';
+        $js.='</script>';
+        echo $css . $div . $js;
+    }
 
-?>
+}

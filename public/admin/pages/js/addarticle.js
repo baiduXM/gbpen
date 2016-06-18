@@ -252,7 +252,7 @@ function addarticleController($scope, $http, $location) {
             var use_url = $("input[name=use][checked]").val()?'1':'0';
             var url = $("input[name=url]").val();
             var title_bold;
-            if($('#addarticle-con .art_tit').css('font-weight') == '600' || 'bold'){    
+            if($('#addarticle-con .art_tit').css('font-weight') == '600' || $('#addarticle-con .art_tit').css('font-weight') == 'bold'){    
                 title_bold = 1;
             }else{
                 title_bold = 0;

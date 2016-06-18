@@ -107,6 +107,7 @@ function addformController($scope, $http, $location) {
         $('[name="title"]').val(_data.title);
         $('[name="description"]').val(_data.description);
         $('[name="action_type"]:eq(' + _data.action_type + ')').attr('checked', true);
+
         if (_data.action_type == 0) {
             $('[name="action_text"]').val(_data.action_text);
         } else {
@@ -116,6 +117,11 @@ function addformController($scope, $http, $location) {
             $('[name="status"]:eq(0)').attr('checked', true);
         } else {
             $('[name="status"]:eq(1)').attr('checked', true);
+        }
+        if (_data.showmodel == 0) {
+            $('[name="showmodel"]:eq(0)').attr('checked', true);
+        } else {
+            $('[name="showmodel"]:eq(1)').attr('checked', true);
         }
         $('.as-title').html(_data.title);
         $('.as-description').html(_data.description);
@@ -161,7 +167,7 @@ function addformController($scope, $http, $location) {
         var _data = data;
         var _div = '';
         $.each(_data, function (k, v) {
-            _div += '<li class="utility" data-id="' + v.id + '">\
+            _div += '<li class="utility" id="' + v.id + '">\
                         <span class="title">' + v.title + '</span>\
                         <i class="iconfont icon-liebiao grey tpl_info"></i>\
                     </li>';
@@ -179,7 +185,7 @@ function addformController($scope, $http, $location) {
      * @returns {undefined}
      */
     function bindElementEvent(_this) {
-        var element_id = _this.data('id');
+        var element_id = _this.attr('id');
         //===添加组件===
         $.post('../form-column-add', {form_id: form_id, element_id: element_id}, function (json) {
             var _data = json.data;
@@ -191,8 +197,6 @@ function addformController($scope, $http, $location) {
             _html_edit(_data);//编辑组件
         });
     }
-
-
 
 
     /**
@@ -207,7 +211,7 @@ function addformController($scope, $http, $location) {
      */
     function _html_show(data) {
         var _data = data;
-        var _div_li = '<li class="list-item" data-type="' + _data.type + '" data-id="' + _data.column_id + '" data-order="' + _data.order + '">';
+        var _div_li = '<li class="list-item icon-yidong" data-type="' + _data.type + '" data-id="' + _data.column_id + '" data-order="' + _data.order + '">';
         var _div = eval('_show_' + _data.type + '(_data)');//eval调用方法
         _div_li += _div + '</li>';
         if ($('li[data-id="' + data.column_id + '"').length > 0) {
@@ -234,7 +238,20 @@ function addformController($scope, $http, $location) {
         }, function () {
             $(this).removeClass("hover");
         });
-
+        //===表单列移动===
+        $('.element-show li .icon-yidong').TreeList({
+            rootNode: 'list-item',
+            parentNode: 'element-show',
+            'oncallback': function (indexlist) {
+                console.log(indexlist);
+                console.log('indexlist');
+                $http.post('../mhomepage-sortmodify', {indexlist: indexlist}).success(function (json) {
+                    checkJSON(json, function (json) {
+                        Save_hint();
+                    });
+                });
+            }
+        });
     }
 
     function _show_text(data) {
@@ -399,7 +416,6 @@ function addformController($scope, $http, $location) {
         _div += '<span class="option-item"><input type="button" class="delete_column" value="删除"/></span>';
         _div += '</li>';
         $('#element-edit').html(_div);
-
         $(".element-show>li").siblings().removeClass("click");
         $('li[data-id="' + _data.column_id + '"]').addClass("click");
         //===加载操作===
@@ -418,6 +434,7 @@ function addformController($scope, $http, $location) {
         $('.save_column').unbind('click').click(function () {
             var form_data = $('form[name="box_column"]').serializeArray();
             $.post('../form-column-edit', {form_id: form_id, data: form_data, column_id: _data.column_id, type: _data.type}, function (json) {
+                console.log(json);
                 checkJSON(json, function (json) {
                     _html_show(json.data);
                     Hint_box(json.msg);
@@ -428,7 +445,6 @@ function addformController($scope, $http, $location) {
 
     //===删除组件===
     function del_column(data) {
-
         $('.delete_column').unbind('click').click(function () {
             //===弹窗确认===
             (function column_delete(del_num) {
@@ -495,11 +511,23 @@ function addformController($scope, $http, $location) {
         var _data = data;
         var _config = _data.config;
         var _div = '';
-        _div += '<li class="list-item"><p class="content-l">规则</p>\n\
-                    <span class="option-item"><input type = "radio" name="config_rules" value = "no" checked />无</span>\n\
-                    <span class="option-item"><input type = "radio" name="config_rules" value = "mail" />邮箱</span>\n\
-                    <span class="option-item"><input type = "radio" name="config_rules" value = "number" />数字</span>\n\
-                </li>';
+        _div += '<li class="list-item"><p class="content-l">规则</p>';
+        _div += '<span class="option-item"><input type = "radio" name="config_rules" value = "text" ';
+        if (_config.rules == 'text') {
+            _div += 'checked = "checked"';
+        }
+        _div += '/>无</span>';
+        _div += '<span class="option-item"><input type = "radio" name="config_rules" value = "email" ';
+        if (_config.rules == 'email') {
+            _div += 'checked = "checked"';
+        }
+        _div += '/>邮箱</span>';
+        _div += '<span class="option-item"><input type = "radio" name="config_rules" value = "number" ';
+        if (_config.rules == 'number') {
+            _div += 'checked = "checked"';
+        }
+        _div += '/>数字</span>';
+        _div += '</li>';
         return _div;
     }
     function _edit_textarea(data) {
@@ -514,11 +542,11 @@ function addformController($scope, $http, $location) {
         var _config = _data.config;
         var _option_key = _config.option_key.split(',');
         var _to;
-        $.each(_option_key, function (tk,tv) {
+        $.each(_option_key, function (tk, tv) {
             _to = "option_" + tv;
             _div += '<p class="option-item" data-num=' + tv + '><input type = "radio" name="config_default" value = "' + tv + '" />';
             _div += '<input type="text" name="config_option_' + tv + '" value="' + _config[_to] + '" /><button class="square option_del">-</button></p>';
-            
+
         });
         _div += '</li>';
 //        _div += '<input type = "hidden" name="config_option_count" value = "' + _config.option_count + '" />';
@@ -531,7 +559,7 @@ function addformController($scope, $http, $location) {
         _div += '<li class="list-item"><p class="content-l">选项设置<button class="square option_add">+</button></p>';
         var _option_key = _config.option_key.split(',');
         var _to;
-        $.each(_option_key, function (tk,tv) {
+        $.each(_option_key, function (tk, tv) {
             _to = "option_" + tv;
             _div += '<p class="option-item" data-num=' + tv + '><input type = "checkbox" name="config_default" value = "' + tv + '" />';
             _div += '<input type="text" name="config_option_' + tv + '" value="' + _config[_to] + '" /><button class="square option_del">-</button></p>';
@@ -547,7 +575,7 @@ function addformController($scope, $http, $location) {
         _div += '<li class="list-item"><p class="content-l">选项设置<button class="square option_add">+</button></p>';
         var _option_key = _config.option_key.split(',');
         var _to;
-        $.each(_option_key, function (tk,tv) {
+        $.each(_option_key, function (tk, tv) {
             _to = "option_" + tv;
             _div += '<p class="option-item" data-num=' + tv + '><input type = "radio" name="config_default" value = "' + tv + '" />';
             _div += '<input type="text" name="config_option_' + tv + '" value="' + _config[_to] + '" /><button class="square option_del">-</button></p>';

@@ -21,7 +21,7 @@ class CustomerController extends BaseController {
         $suf_url = str_replace('http://c', '', $weburl);
         $customer_info = CustomerInfo::where('cus_id', $cus_id)->first();
         $data['company_name'] = $customer_info->company;
-        $data['capacity'] = $customer_info->capacity;
+        $data['capacity'] = $customer_info->capacity ? $customer_info->capacity : 0;
         $data['capacityremain'] = $customer_info->capacity - $customer_info->capacity_current;
         $domain_pc = $customer_info->pc_domain;
         $data['domain_pc'] = str_replace('http://', '', $domain_pc);
@@ -67,7 +67,9 @@ class CustomerController extends BaseController {
         $data['lang'] = $customer_info->lang;
         $data['floatadv'] = json_decode($customer_info->floatadv);
         foreach ((array) $data['floatadv'] as $key => $val) {
-            $data['floatadv'][$key]->url = asset('customers/' . $customer . '/images/l/common/' . $val->adv);
+            if ($val->type == 'adv') {
+                $data['floatadv'][$key]->url = asset('customers/' . $customer . '/images/l/common/' . $val->adv);
+            }
         }
         $websiteinfo = WebsiteInfo::where('cus_id', $cus_id)->select('pc_tpl_id', 'mobile_tpl_id')->first();
         $pc_tpl_name = Template::where('id', $websiteinfo->pc_tpl_id)->pluck('name');
@@ -101,7 +103,9 @@ class CustomerController extends BaseController {
         $org_floatadv = json_decode($org_floatadv);
         $org_imgs = array();
         foreach ((array) $org_floatadv as $v) {
-            $org_imgs[] = $v->adv;
+            if ($v->type == 'adv') {
+                $org_imgs[] = $v->adv;
+            }
         }
         $data['company'] = strtolower(Input::get('company_name'));
         $pc_domain = Input::get('domain_pc');
@@ -140,6 +144,7 @@ class CustomerController extends BaseController {
         $data['pushed'] = 1;
 
         $float_adv = Input::get('float_adv') ? Input::get('float_adv') : array();
+        $float_type = Input::get('float_type') ? Input::get('float_type') : array();
         $posx = Input::get('posx') ? Input::get('posx') : array();
         $posy = Input::get('posy') ? Input::get('posy') : array();
         $posw = Input::get('posw') ? Input::get('posw') : array();
@@ -149,10 +154,11 @@ class CustomerController extends BaseController {
         $num = 0;
         foreach ((array) $float_adv as $key => $val) {
             $floatadv[$num]['adv'] = $val;
+            $floatadv[$num]['type'] = $float_type[$key];
             $floatadv[$num]['posx'] = $posx[$key];
             $floatadv[$num]['posy'] = $posy[$key];
             $floatadv[$num]['posw'] = $posw[$key];
-            $floatadv[$num]['href'] = $href[$key];
+            $floatadv[$num]['href'] = !empty($href[$key]) ? $href[$key] : '';
             $floatadv[$num]['position'] = $position[$key];
             $num++;
         }

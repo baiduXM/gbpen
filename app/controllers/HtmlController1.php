@@ -271,6 +271,7 @@ class HtmlController1 extends BaseController{
             echo floor($nowpercent) . '%<script type="text/javascript">parent.refresh(' . floor($nowpercent) . ');</script><br />';
             ob_flush();
             flush();
+            $this->clearpushqueue();
         }
         $this->last_html_precent +=$this->html_precent;
     }
@@ -376,6 +377,16 @@ class HtmlController1 extends BaseController{
             echo '90%<script type="text/javascript">parent.refresh(90);</script><br />';
             ob_flush();
             flush();
+        }
+        if(isset($_GET['pushqueue'])){
+            PushQueue::where('cus_id',  $this->cus_id)->delete();
+            $nextpush=PushQueue::where('push',0)->first();
+            if($nextpush){
+                $pushqueue = new PushQueue();
+                $pushqueue->id=$nextpush->id;
+                $pushqueue->push=1;
+                $pushqueue->save();
+            }
         }
         if ($zip->open($path, ZipArchive::CREATE) === TRUE) {
             $mobile_dir=  Template::where('website_info.cus_id',$this->cus_id)->Leftjoin('website_info','template.id','=','website_info.mobile_tpl_id')->pluck('name');
@@ -507,13 +518,11 @@ class HtmlController1 extends BaseController{
      */
     private function pushinit(){
         $pc_template = new PrintController('online','pc');
-        $this->pushpc['result']=$pc_template->pushpublicpage();
-        $this->pushpc['navs']=$pc_template->pushnav();
+        $this->pushpc['result']=$pc_template->publicdata();
+        $this->pushpc['navs']=$pc_template->publicnavs();
         $m_template = new PrintController('online','mobile');
-        $this->pushmobile['result']=$m_template->pushpublicpage();
-        $this->pushmobile['navs']=$m_template->pushnav();
-//        var_dump($pc_template->themename);
-//        exit();
+        $this->pushmobile['result']=$m_template->publicdata();
+        $this->pushmobile['navs']=$m_template->publicnavs();
         $dir=app_path('views/templates/' . $pc_template->themename);
         if(is_dir($dir)){
             if ($dh = opendir($dir)){
@@ -522,7 +531,7 @@ class HtmlController1 extends BaseController{
                         $this->pushpc['repleace'][$file]=file_get_contents($dir.'/'.$file);
                         $this->pushpc['pattern'][$file]="#{include((\s)+)?file=[\',\"].\/".$file."[\',\"]}#";
                         if($file=='_footer.html'){
-                            $this->pushpc['repleace'][$file]=preg_replace('/$navs/', '$footer_navs', $this->pushpc['repleace'][$file]).'{$enlargeprint}';
+                            $this->pushpc['repleace'][$file]=preg_replace('/\$navs/', '\$footer_navs', $this->pushpc['repleace'][$file]).'{$enlargeprint}';
                         }
                     }
                 }
@@ -535,12 +544,15 @@ class HtmlController1 extends BaseController{
                     if(strpos($file,'.html')){
                         $this->pushmobile['repleace'][$file]=file_get_contents($dir.'/'.$file);
                         $this->pushmobile['pattern'][$file]="#{include((\s)+)?file=[\',\"].\/".$file."[\',\"]}#";
-//                        if($file=='_footer.html'){
-//                            $this->pushmobile['repleace'][$file]=preg_replace('/navs/', 'footer_navs', $this->pushmobile['repleace'][$file]).'{$enlargeprint}';
-//                        }
                     }
                 }
             }
+        }
+    }
+    private function clearpushqueue(){
+        if(isset($_GET['pushqueue'])){
+            PushQueue::where('pushtime','<',time()-60)->delete();
+            PushQueue::where('cus_id',$this->cus_id)->update(['pushtime' => time()]);
         }
     }
     /**
@@ -550,6 +562,42 @@ class HtmlController1 extends BaseController{
      */
     public function pushPrecent(){
         set_time_limit(0);
+        if(isset($_GET['pushqueue'])){
+            echo '<meta charset="UTF-8">';
+            PushQueue::where('cus_id',  $this->cus_id)->delete();
+            PushQueue::where('pushtime','<',time()-60)->delete();
+            $maxpushid=PushQueue::max('id');
+            $pushqueuecount=PushQueue::where('push',1)->count();
+            $pushqueue = new PushQueue();
+            $pushqueue->id=$maxpushid?$maxpushid+1:1;
+            $pushqueue->pushtime=time();
+            $pushqueue->cus_id=$this->cus_id;
+            if($pushqueuecount<6){
+                $pushqueue->push=1;
+                $pushqueue->save();
+            }else{
+                $pushqueue->push=0;
+                $pushqueue->save();
+                while(1){
+                    sleep(1);
+                    var_dump('繁忙等待.......');
+                    ob_flush();
+                    flush();
+                    $push_table=  PushQueue::where('cus_id',$this->cus_id)->first();
+                    if($push_table->push==1){
+                        break;
+                    }else{
+                        $pushqueuecount=PushQueue::where('push',1)->count();
+                        if($pushqueuecount<6){
+                            PushQueue::where('cus_id',$this->cus_id)->update(['push' => 1]);
+                            break;
+                        }
+                    }
+                    $this->clearpushqueue();
+                }
+            }
+            
+        }
         $this->pushinit();
         $pc_domain=CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_domain');
         $mobile_domain=CustomerInfo::where('cus_id',$this->cus_id)->pluck('mobile_domain');
@@ -622,6 +670,7 @@ class HtmlController1 extends BaseController{
                     echo floor($nowpercent) . '%<script type="text/javascript">parent.refresh(' . floor($nowpercent) . ');</script><br />';
                     ob_flush();
                     flush();
+                    $this->clearpushqueue();
                 }
             }
             $this->lastpercent += 70+$this->percent;
@@ -634,6 +683,7 @@ class HtmlController1 extends BaseController{
                     echo floor($nowpercent) . '%<script type="text/javascript">parent.refresh(' . floor($nowpercent) . ');</script><br />';
                     ob_flush();
                     flush();
+                    $this->clearpushqueue();
                 }
             }
             $this->lastpercent += $this->percent;
@@ -653,7 +703,15 @@ class HtmlController1 extends BaseController{
                 echo '90%<script type="text/javascript">parent.refresh(90);</script><br />';
                 ob_flush();
                 flush();
+                $this->clearpushqueue();
             }
+        if(isset($_GET['pushqueue'])){
+            PushQueue::where('cus_id',  $this->cus_id)->delete();
+            $nextpush=PushQueue::where('push',0)->first();
+            if($nextpush){
+                PushQueue::where('id',$nextpush->id)->update(['push' => 1]);
+            }
+        }
         if ($zip->open($path, ZipArchive::CREATE) === TRUE) {
             if($pc!=''){
                 $pc_dir=  Template::where('website_info.cus_id',$this->cus_id)->Leftjoin('website_info','website_info.pc_tpl_id','=','template.id')->pluck('name');
@@ -701,14 +759,6 @@ class HtmlController1 extends BaseController{
                     ImgDel::where('cus_id',$this->cus_id)->delete();
                     if($pc!=''){
                         @ftp_put($conn,"/".$this->customer."/search.php",public_path("packages/search.php"),FTP_ASCII);
-                        if(isset($_GET['test'])){
-                            var_dump(public_path('customers/'.$this->customer.'/quickbar.json'));
-                            if(file_exists(public_path('customers/'.$this->customer.'/quickbar.json'))){
-                                var_dump(1);
-                            }
-                            ob_flush();
-                            flush();
-                        }
                         @ftp_put($conn,"/".$this->customer."/quickbar.json",public_path('customers/'.$this->customer.'/quickbar.json'),FTP_ASCII);
                     }
                     ftp_put($conn,"/".$this->customer."/site.zip",$path,FTP_BINARY);
