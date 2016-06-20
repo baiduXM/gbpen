@@ -228,6 +228,8 @@ WarningBox.prototype = {
                 }
             };
             $image.cropper(options);
+            console.log(defaults);
+            console.log('===defaults===');
             this._UpFunction($image, defaults.ajaxurl, defaults.IsBaseShow, defaults.IsOneNatural, defaults.oncallback);
         } else {
             this._Schedule(defaults.oncallback);    // 带进度条
