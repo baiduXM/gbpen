@@ -7,15 +7,6 @@
  */
 class StatisController extends BaseController {
 
-    public function index() {
-
-        $_SESSION['cus_id'] = 1;
-        var_dump($_COOKIE);
-        echo '<br>===$_COOKIE===<br>';
-        var_dump($_SESSION);
-        echo '<br>===$_SESSION===<br>';
-    }
-
     public function getCount() {
         $cus_id = Auth::id();
         $param['cus_id'] = $cus_id;
