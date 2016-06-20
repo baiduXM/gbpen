@@ -248,6 +248,7 @@ WarningBox.prototype = {
                 if (files && files.length == 1 && !IsOneNatural) {
                     file = files[0];
                     _this.fileType = file.type;
+                    console.log(file.size);
                     if (file.size / 1024 > 600) {
                         alert('您这张"' + file.name + '"图片大小过大，应小于600k!');
                         return false;
@@ -258,7 +259,9 @@ WarningBox.prototype = {
                             URL.revokeObjectURL(blobURL); // Revoke when load complete
                         }).cropper('reset').cropper('replace', blobURL);
                         $inputImage.val('');
+                        console.log('123');
                         _this._save($image, ajaxurl, oncallback);
+                        console.log('++123+++');
                     } else {
                         $body.tooltip('请上传图片！', 'warning');
                     }

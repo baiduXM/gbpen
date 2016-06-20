@@ -740,8 +740,6 @@ function columnController($scope, $http) {
                     aspectRatio: proportion,
                     ajaxurl: '../fileupload?target=category',
                     oncallback: function (json) {
-                        console.log(json);
-                        console.log('fileupload?target=category');
                         $('.column_pic .template-download').remove();
                         _newpic = '<div class="template-download fade fl in">\n\
                                         <div>\n\
