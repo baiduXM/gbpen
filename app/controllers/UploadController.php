@@ -227,6 +227,9 @@ class UploadController extends BaseController {
         }
     }
 
+    /**
+     * 文件上传
+     */
     public function fileupload() {
         $customer = Auth::user()->name;
         $cus_id = Auth::id();
@@ -243,6 +246,9 @@ class UploadController extends BaseController {
             if ($target == 'imgcache') {
                 $id = $cus_id;
                 $filename = Input::get('filename');
+                var_dump($filename);
+                echo '<br>---filename---<br>';
+                exit;
                 $filename = explode('.', $filename);
                 $filetype = end($filename);
                 $name = WebsiteInfo::leftJoin('template', 'pc_tpl_id', '=', 'template.id')->where('website_info.cus_id', $id)->pluck('name');

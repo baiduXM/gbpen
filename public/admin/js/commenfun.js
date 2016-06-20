@@ -447,6 +447,7 @@ WarningBox.prototype = {
 				$('.tpl_mask').unbind();
 			},
 			'onUploadSuccess': function (file, data, response) {
+                            
 				var data = eval("(" + data + ")");
 				var html;
 				data.data[0].filename = file.name;
