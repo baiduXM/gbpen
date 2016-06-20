@@ -63,6 +63,7 @@ class CustomerController extends BaseController {
         $data['address'] = $customer_info->address;
         $data['enlarge'] = $customer_info->enlarge;
         $data['lang'] = $customer_info->lang;
+        $data['lastpushtime'] = strtotime($customer_info->lastpushtime);
         $data['floatadv'] = json_decode($customer_info->floatadv);
         foreach ((array) $data['floatadv'] as $key => $val) {
             if (!isset($val->type)||$val->type == 'adv') {

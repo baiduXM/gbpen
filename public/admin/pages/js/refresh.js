@@ -30,20 +30,30 @@
 	});
 	// 更新按钮效果
 	$('.refresh-content .refresh:not(.ed)').click(function(){
-		$(this).hide();
-		$('.progress_bar span').addClass('expand');
-		$('.refresh-content .ing').css('display','block');
-		$('.refresh-content .ing').find('img').addClass('rotate');
-		// $http.get('json/refresh.json').success(function(json){
-		// 	checkJSON(json,function(json){
-		// 		if(json.data.state != -1){
-		// 			setTimeout(function(){
-		// 				refresh(json.data.state);
-		// 			},1000);
-		// 		}
-		// 	});
-		// });
-		$('#refresh_iframe').attr('src','../push');
+            var _this=$(this);
+            $http.get('../customer-info').success(function (json) {
+                var  currenttime=(new Date().getTime())/1000;
+                var lasttime= json.data.lastpushtime;
+                if((currenttime-lasttime)>3600||lasttime==false){
+                    _this.hide();
+                    $('.progress_bar span').addClass('expand');
+                    $('.refresh-content .ing').css('display','block');
+                    $('.refresh-content .ing').find('img').addClass('rotate');
+                    // $http.get('json/refresh.json').success(function(json){
+                    // 	checkJSON(json,function(json){
+                    // 		if(json.data.state != -1){
+                    // 			setTimeout(function(){
+                    // 				refresh(json.data.state);
+                    // 			},1000);
+                    // 		}
+                    // 	});
+                    // });
+                    $('#refresh_iframe').attr('src','../push');
+                }else{
+                    alert('你推送过于频繁，一小时只允许推送一次');
+                    return false;
+                }
+            });
 	});
 	var loadPageSize = function(){
 		var mainMarginLeft = ($(window).width() - 840)/2;

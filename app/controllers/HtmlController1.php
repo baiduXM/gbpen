@@ -457,7 +457,7 @@ class HtmlController1 extends BaseController{
             echo '100%<script type="text/javascript">parent.refresh(100);</script><br />';
             Classify::where('cus_id',$this->cus_id)->where('pushed',1)->update(['pushed'=>0]);
             Articles::where('cus_id',$this->cus_id)->where('pushed',1)->update(['pushed'=>0]);
-            CustomerInfo::where('cus_id', $this->cus_id)->where('pushed', 1)->update(['pushed' => 0]);
+            CustomerInfo::where('cus_id', $this->cus_id)->update(['pushed' => 0,'lastpushtime'=>date('Y-m-d H:i:s',time())]);//date('Y-m-d H:i:s',time())
             //$pc_domain = CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_domain');
              /**
             * pc使用本服务器自带域名推送，后期需要改进！
@@ -592,7 +592,7 @@ class HtmlController1 extends BaseController{
             $pushqueue->push=0;
             $pushqueue->save();
             while(1){
-                sleep(1);
+                sleep(3);
                 echo  '繁忙等待.......<script type="text/javascript">parent.refresh("繁忙等待.......");</script><br />';
                 ob_flush();
                 flush();
@@ -812,7 +812,7 @@ class HtmlController1 extends BaseController{
             echo '100%<script type="text/javascript">parent.refresh(100);</script><br />';
             Classify::where('cus_id',$this->cus_id)->where('pushed',1)->update(['pushed'=>0]);
             Articles::where('cus_id',$this->cus_id)->where('pushed',1)->update(['pushed'=>0]);
-            CustomerInfo::where('cus_id', $this->cus_id)->where('pushed', 1)->update(['pushed' => 0]);
+            CustomerInfo::where('cus_id', $this->cus_id)->update(['pushed' => 0,'lastpushtime'=>date('Y-m-d H:i:s',time())]);//date('Y-m-d H:i:s',time())
              /**
             * pc使用本服务器自带域名推送，后期需要改进！
             */
