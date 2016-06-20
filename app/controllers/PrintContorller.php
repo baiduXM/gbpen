@@ -2532,10 +2532,8 @@ class PrintController extends BaseController {
                 echo floor($nowpercent) . '%<script type="text/javascript">parent.refresh(' . floor($nowpercent) . ');</script><br />';
                 ob_flush();
                 flush();
-                if(isset($_GET['pushqueue'])){
-                    PushQueue::where('pushtime','<',time()-60)->delete();
-                    PushQueue::where('cus_id',$this->cus_id)->update(['pushtime' => time()]);
-                }
+                PushQueue::where('pushtime','<',time()-60)->delete();
+                PushQueue::where('cus_id',$this->cus_id)->update(['pushtime' => time()]);
             }
             $last_html_precent +=$html_precent;
             //===显示类型不是'list-page'===
@@ -2558,10 +2556,8 @@ class PrintController extends BaseController {
                         echo floor($nowpercent) . '%<script type="text/javascript">parent.refresh(' . floor($nowpercent) . ');</script><br />';
                         ob_flush();
                         flush();
-                        if(isset($_GET['pushqueue'])){
-                            PushQueue::where('pushtime','<',time()-60)->delete();
-                            PushQueue::where('cus_id',$this->cus_id)->update(['pushtime' => time()]);
-                        }
+                        PushQueue::where('pushtime','<',time()-60)->delete();
+                        PushQueue::where('cus_id',$this->cus_id)->update(['pushtime' => time()]);
                     }
                     $last_html_precent +=$html_precent;
                 }
@@ -2980,10 +2976,8 @@ class PrintController extends BaseController {
                 echo floor($nowpercent) . '%<script type="text/javascript">parent.refresh(' . floor($nowpercent) . ');</script><br />';
                 ob_flush();
                 flush();
-                if(isset($_GET['pushqueue'])){
-                    PushQueue::where('pushtime','<',time()-60)->delete();
-                    PushQueue::where('cus_id',$this->cus_id)->update(['pushtime' => time()]);
-                }
+                PushQueue::where('pushtime','<',time()-60)->delete();
+                PushQueue::where('cus_id',$this->cus_id)->update(['pushtime' => time()]);
             }
             $last_html_precent +=$html_precent;
         }
