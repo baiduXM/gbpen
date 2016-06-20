@@ -576,9 +576,9 @@ class FormController extends BaseController {
             $form_id = $form_data->id;
             $column_data = $data['column'];
             $_div = '';
-            if (empty($site)) {
+            if (empty($site)) {//===普通表单===
                 $_form.="<div class='fv-add-show' >";
-            } else {
+            } else {//===悬浮表单===
                 $_form.="<div class='adv-add-show' >";
             }
             $_form .= "<div class='fv-as-title'>
@@ -601,9 +601,11 @@ class FormController extends BaseController {
                     . "<input type='hidden' name='form_id' value='$form_id' />"
                     . "<input type='hidden' name='action_type' value='$form_data->action_type' />"
                     . "<input type='hidden' name='action_text' value=" . $tempform['action_text'] . " />";
-            if (empty($site)) {
-                $_form.="<form class='fv-unit-preview' id='box_show' action='../form-userdata-submit' onsumbit='return verify()' method='post'><ul class='fv-element-show'>";
-            } else {
+            $_form.="<form class='fv-unit-preview' id='box_show' action='http://swap.5067.org/userdata/' method='post'><ul class='fv-element-show'>";
+            if (empty($site)) {//===普通表单===
+                $_form.="<form class='fv-unit-preview' id='box_show' action='http://swap.5067.org/userdata/' method='post'><ul class='fv-element-show'>";
+//                $_form.="<form class='fv-unit-preview' id='box_show' action='../form-userdata-submit' onsumbit='return verify()' method='post'><ul class='fv-element-show'>";
+            } else {//===普通表单===
                 $_form.="<form class='adv-unit-preview' id='box_show' action='http://swap.5067.org/userdata/' method='post'><ul class='fv-element-show'>";
             }
             $_form.=$_div . "</form></div>";
