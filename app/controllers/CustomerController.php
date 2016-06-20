@@ -65,7 +65,7 @@ class CustomerController extends BaseController {
         $data['lang'] = $customer_info->lang;
         $data['floatadv'] = json_decode($customer_info->floatadv);
         foreach ((array) $data['floatadv'] as $key => $val) {
-            if ($val->type == 'adv') {
+            if (!isset($val->type)||$val->type == 'adv') {
                 $data['floatadv'][$key]->url = asset('customers/' . $customer . '/images/l/common/' . $val->adv);
             }
         }

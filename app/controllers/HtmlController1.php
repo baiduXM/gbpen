@@ -382,10 +382,7 @@ class HtmlController1 extends BaseController{
             PushQueue::where('cus_id',  $this->cus_id)->delete();
             $nextpush=PushQueue::where('push',0)->first();
             if($nextpush){
-                $pushqueue = new PushQueue();
-                $pushqueue->id=$nextpush->id;
-                $pushqueue->push=1;
-                $pushqueue->save();
+                PushQueue::where('id',$nextpush->id)->update(['push' => 1]);
             }
         }
         if ($zip->open($path, ZipArchive::CREATE) === TRUE) {
@@ -583,7 +580,7 @@ class HtmlController1 extends BaseController{
     public function pushPrecent(){
         set_time_limit(0);
         if(isset($_GET['pushqueue'])){
-            echo '<meta charset="UTF-8">';
+            header("Content-type:text/html;charset=utf-8");
             PushQueue::where('cus_id',  $this->cus_id)->delete();
             PushQueue::where('pushtime','<',time()-60)->delete();
             $maxpushid=PushQueue::max('id');
