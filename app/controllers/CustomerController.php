@@ -67,7 +67,7 @@ class CustomerController extends BaseController {
         $data['lang'] = $customer_info->lang;
         $data['floatadv'] = json_decode($customer_info->floatadv);
         foreach ((array) $data['floatadv'] as $key => $val) {
-            if (!isset($val->type)||$val->type == 'adv') {
+            if (!isset($val->type) || $val->type == 'adv') {
                 $data['floatadv'][$key]->url = asset('customers/' . $customer . '/images/l/common/' . $val->adv);
             }
         }
@@ -103,7 +103,7 @@ class CustomerController extends BaseController {
         $org_floatadv = json_decode($org_floatadv);
         $org_imgs = array();
         foreach ((array) $org_floatadv as $v) {
-            if ($v->type == 'adv') {
+            if (!isset($v->type) || $v->type == 'adv') {
                 $org_imgs[] = $v->adv;
             }
         }

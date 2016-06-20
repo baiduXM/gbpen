@@ -871,7 +871,7 @@ class PrintController extends BaseController {
             }
             $footscript = $customer_info->pc_footer_script;
             $footscript .= '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/quickbar.js?' . $this->cus_id . 'pc"></script>';
-//            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/js/statis.s?' . $this->cus_id . 'pc"></script>'; //===添加统计代码PC===
+//            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/js/statis.js?' . $this->cus_id . 'pc"></script>'; //===添加统计代码PC===
             $site_another_url = $this->showtype == 'preview' ? '' : $customer_info->mobile_domain;
         } else {
             $logo = $this->showtype == 'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $customer_info->logo_small) : $this->domain . '/images/l/common/' . $customer_info->logo_small;
@@ -2532,10 +2532,8 @@ class PrintController extends BaseController {
                 echo floor($nowpercent) . '%<script type="text/javascript">parent.refresh(' . floor($nowpercent) . ');</script><br />';
                 ob_flush();
                 flush();
-                if(isset($_GET['pushqueue'])){
-                    PushQueue::where('pushtime','<',time()-60)->delete();
-                    PushQueue::where('cus_id',$this->cus_id)->update(['pushtime' => time()]);
-                }
+                PushQueue::where('pushtime','<',time()-60)->delete();
+                PushQueue::where('cus_id',$this->cus_id)->update(['pushtime' => time()]);
             }
             $last_html_precent +=$html_precent;
             //===显示类型不是'list-page'===
@@ -2558,10 +2556,8 @@ class PrintController extends BaseController {
                         echo floor($nowpercent) . '%<script type="text/javascript">parent.refresh(' . floor($nowpercent) . ');</script><br />';
                         ob_flush();
                         flush();
-                        if(isset($_GET['pushqueue'])){
-                            PushQueue::where('pushtime','<',time()-60)->delete();
-                            PushQueue::where('cus_id',$this->cus_id)->update(['pushtime' => time()]);
-                        }
+                        PushQueue::where('pushtime','<',time()-60)->delete();
+                        PushQueue::where('cus_id',$this->cus_id)->update(['pushtime' => time()]);
                     }
                     $last_html_precent +=$html_precent;
                 }
@@ -2980,10 +2976,8 @@ class PrintController extends BaseController {
                 echo floor($nowpercent) . '%<script type="text/javascript">parent.refresh(' . floor($nowpercent) . ');</script><br />';
                 ob_flush();
                 flush();
-                if(isset($_GET['pushqueue'])){
-                    PushQueue::where('pushtime','<',time()-60)->delete();
-                    PushQueue::where('cus_id',$this->cus_id)->update(['pushtime' => time()]);
-                }
+                PushQueue::where('pushtime','<',time()-60)->delete();
+                PushQueue::where('cus_id',$this->cus_id)->update(['pushtime' => time()]);
             }
             $last_html_precent +=$html_precent;
         }
