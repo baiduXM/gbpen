@@ -246,9 +246,6 @@ class UploadController extends BaseController {
             if ($target == 'imgcache') {
                 $id = $cus_id;
                 $filename = Input::get('filename');
-                var_dump($filename);
-                echo '<br>---filename---<br>';
-                exit;
                 $filename = explode('.', $filename);
                 $filetype = end($filename);
                 $name = WebsiteInfo::leftJoin('template', 'pc_tpl_id', '=', 'template.id')->where('website_info.cus_id', $id)->pluck('name');
@@ -285,7 +282,7 @@ class UploadController extends BaseController {
                         }
                     }
                 }
-                return Response::json(['err' => 0, 'msg' => '', 'data' => $data]);
+                return Response::json(['err' => 0, 'msg' => '$target!=imgcache', 'data' => $data]);
             }
         } else {
             $file = Input::get('image');
@@ -301,7 +298,7 @@ class UploadController extends BaseController {
                 $upload = file_put_contents($dir . '/' . $fileName, base64_decode(preg_replace('/data\:image\/png\;base64\,/i', '', $file)));
             }
             if ($upload) {
-                return Response::json(['err' => 0, 'msg' => '', 'data' => ['name' => $fileName, 'url' => asset('customers/' . $customer . '/cache_images/' . $fileName), 's_url' => ((strpos($domain, 'http://') === false) ? 'http://' : '') . $domain . '/' . 'images/s/' . $target . '/' . $fileName]]);
+                return Response::json(['err' => 0, 'msg' => '!$file&&$upload', 'data' => ['name' => $fileName, 'url' => asset('customers/' . $customer . '/cache_images/' . $fileName), 's_url' => ((strpos($domain, 'http://') === false) ? 'http://' : '') . $domain . '/' . 'images/s/' . $target . '/' . $fileName]]);
             } else {
                 return Response::json(['err' => 1001, 'msg' => '上传文件失败', 'data' => []]);
             }
