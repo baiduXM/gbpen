@@ -526,10 +526,7 @@ function columnController($scope, $http) {
                             page_content: editor.getContent()}).success(function (json) {
                             checkJSON(json, function (json) {
                                 if (img_upload.length) {
-                                    $http.post('../imgupload?target=category',
-                                            {
-                                                files: img_upload
-                                            });
+                                    $http.post('../imgupload?target=category', {files: img_upload});
                                 }
                                 _this.getJson();//重新获取列表
                                 var hint_box = new Hint_box();

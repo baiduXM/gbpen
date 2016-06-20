@@ -163,6 +163,8 @@ class UploadController extends BaseController {
         $files = explode(',', ltrim(Input::get('files'), ','));
         $dir = public_path('customers/' . $customer . '/cache_images/');
         $img_size = Input::get('imgsize') ? Input::get('imgsize') : 400;
+        var_dump($img_size);
+        exit;
         $destinationPath = public_path('customers/' . $customer . '/images/');
         $weburl = Customer::where('id', $cus_id)->pluck('weburl');
         $suf_url = str_replace('http://c', '', $weburl);
@@ -221,6 +223,9 @@ class UploadController extends BaseController {
                 }
             }
             @ftp_close($conn);
+            //===扣除用户空间容量===
+            //TODO
+
             return Response::json(['err' => 0, 'msg' => '', 'data' => $data]);
         } else {
             return Response::json(['err' => 1001, 'msg' => '保存失败']);

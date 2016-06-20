@@ -22,7 +22,7 @@ class CustomerController extends BaseController {
         $customer_info = CustomerInfo::where('cus_id', $cus_id)->first();
         $data['company_name'] = $customer_info->company;
         $data['capacity'] = $customer_info->capacity ? $customer_info->capacity : 0;
-        $data['capacityremain'] = $customer_info->capacity - $customer_info->capacity_current;
+        $data['capacityfree'] = $customer_info->capacity_free;
         $domain_pc = $customer_info->pc_domain;
         $data['domain_pc'] = str_replace('http://', '', $domain_pc);
         $domain_m = $customer_info->mobile_domain;
