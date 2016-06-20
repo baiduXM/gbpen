@@ -382,10 +382,7 @@ class HtmlController1 extends BaseController{
             PushQueue::where('cus_id',  $this->cus_id)->delete();
             $nextpush=PushQueue::where('push',0)->first();
             if($nextpush){
-                $pushqueue = new PushQueue();
-                $pushqueue->id=$nextpush->id;
-                $pushqueue->push=1;
-                $pushqueue->save();
+                PushQueue::where('id',$nextpush->id)->update(['push' => 1]);
             }
         }
         if ($zip->open($path, ZipArchive::CREATE) === TRUE) {
@@ -548,6 +545,26 @@ class HtmlController1 extends BaseController{
                 }
             }
         }
+        $dir = public_path('templates/' . $m_template->themename . '/json/');
+        if(is_dir($dir)){
+            if ($dh = opendir($dir)){
+                while(($file=readdir($dh))!=FALSE){
+                    if(strpos($file,'.json')){
+                        $this->pushmobile['pagedata'][$file]=file_get_contents($dir.'/'.$file);
+                    }
+                }
+            }
+        }
+        $dir = public_path('templates/' . $pc_template->themename . '/json/');
+        if(is_dir($dir)){
+            if ($dh = opendir($dir)){
+                while(($file=readdir($dh))!=FALSE){
+                    if(strpos($file,'.json')){
+                        $this->pushpc['pagedata'][$file]=file_get_contents($dir.'/'.$file);
+                    }
+                }
+            }
+        }
     }
     private function clearpushqueue(){
         if(isset($_GET['pushqueue'])){
@@ -563,7 +580,7 @@ class HtmlController1 extends BaseController{
     public function pushPrecent(){
         set_time_limit(0);
         if(isset($_GET['pushqueue'])){
-            echo '<meta charset="UTF-8">';
+            header("Content-type:text/html;charset=utf-8");
             PushQueue::where('cus_id',  $this->cus_id)->delete();
             PushQueue::where('pushtime','<',time()-60)->delete();
             $maxpushid=PushQueue::max('id');
@@ -572,7 +589,7 @@ class HtmlController1 extends BaseController{
             $pushqueue->id=$maxpushid?$maxpushid+1:1;
             $pushqueue->pushtime=time();
             $pushqueue->cus_id=$this->cus_id;
-            if($pushqueuecount<6){
+            if($pushqueuecount<3){
                 $pushqueue->push=1;
                 $pushqueue->save();
             }else{
@@ -588,7 +605,7 @@ class HtmlController1 extends BaseController{
                         break;
                     }else{
                         $pushqueuecount=PushQueue::where('push',1)->count();
-                        if($pushqueuecount<6){
+                        if($pushqueuecount<3){
                             PushQueue::where('cus_id',$this->cus_id)->update(['push' => 1]);
                             break;
                         }
