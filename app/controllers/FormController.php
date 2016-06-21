@@ -605,7 +605,7 @@ class FormController extends BaseController {
             if (empty($site)) {//===普通表单===
                 $_form.="<form class='fv-unit-preview' id='box_show' action='http://swap.5067.org/userdata/' method='post'><ul class='fv-element-show'>";
 //                $_form.="<form class='fv-unit-preview' id='box_show' action='../form-userdata-submit' onsumbit='return verify()' method='post'><ul class='fv-element-show'>";
-            } else {//===普通表单===
+            } else {//===悬浮表单===
                 $_form.="<form class='adv-unit-preview' id='box_show' action='http://swap.5067.org/userdata/' method='post'><ul class='fv-element-show'>";
             }
             $_form.=$_div . "</form></div>";
