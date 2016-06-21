@@ -527,6 +527,7 @@ class PrintController extends BaseController {
             $config_arr = array();
             $config_arr[1] = '#AAA,#BBB,#FFF|totop';
         }
+        $lang=CustomerInfo::where('cus_id',$this->cus_id)->pluck('lang');
         if ($result != 0) {
             if (trim($config_arr[1]) != "custom") {
                 $quickbar_arr = explode('|', $config_arr[1]);
@@ -535,6 +536,11 @@ class PrintController extends BaseController {
                     $config['type'] = 'p1';
                 } else {
                     $config['type'] = 'm1';
+                }
+                if ($lang == 'en') {
+                    $config['language'] = 'en';
+                } else {
+                    $config['language'] = 'cn';
                 }
                 $config['style'] = array();
                 $tmpStyleConfigQuickbar = explode(',', $quickbar_arr[0]);
