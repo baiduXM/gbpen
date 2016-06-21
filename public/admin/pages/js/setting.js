@@ -101,7 +101,7 @@ function settingController($scope, $http) {
                                 });
                             });
                         }
-                        if (v.type == 'adv') {
+                        if (v.type == 'adv'||typeof(v.type)=='undefined') {
                             var html = '<li class="floatadv">\n\
                                         <div class="template-download fade fl in">\n\
                                             <div>\n\

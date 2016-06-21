@@ -513,6 +513,39 @@ class HtmlController1 extends BaseController{
      * 
      */
     private function pushinit(){
+        header("Content-type:text/html;charset=utf-8");
+        PushQueue::where('cus_id',  $this->cus_id)->delete();
+        PushQueue::where('pushtime','<',time()-60)->delete();
+        $maxpushid=PushQueue::max('id');
+        $pushqueuecount=PushQueue::where('push',1)->count();
+        $pushqueue = new PushQueue();
+        $pushqueue->id=$maxpushid?$maxpushid+1:1;
+        $pushqueue->pushtime=time();
+        $pushqueue->cus_id=$this->cus_id;
+        if($pushqueuecount<6){
+            $pushqueue->push=1;
+            $pushqueue->save();
+        }else{
+            $pushqueue->push=0;
+            $pushqueue->save();
+            while(1){
+                sleep(3);
+                echo  '繁忙等待.......<script type="text/javascript">parent.refresh("繁忙等待.......");</script><br />';
+                ob_flush();
+                flush();
+                $push_table=  PushQueue::where('cus_id',$this->cus_id)->first();
+                if($push_table->push==1){
+                    break;
+                }else{
+                    $pushqueuecount=PushQueue::where('push',1)->count();
+                    if($pushqueuecount<6){
+                        PushQueue::where('cus_id',$this->cus_id)->update(['push' => 1]);
+                        break;
+                    }
+                }
+                $this->clearpushqueue();
+            }
+        }
         $pc_template = new PrintController('online','pc');
         $this->pushpc['result']=$pc_template->publicdata();
         $this->pushpc['navs']=$pc_template->publicnavs();
@@ -576,39 +609,7 @@ class HtmlController1 extends BaseController{
      */
     public function pushPrecent(){
         set_time_limit(0);
-        header("Content-type:text/html;charset=utf-8");
-        PushQueue::where('cus_id',  $this->cus_id)->delete();
-        PushQueue::where('pushtime','<',time()-60)->delete();
-        $maxpushid=PushQueue::max('id');
-        $pushqueuecount=PushQueue::where('push',1)->count();
-        $pushqueue = new PushQueue();
-        $pushqueue->id=$maxpushid?$maxpushid+1:1;
-        $pushqueue->pushtime=time();
-        $pushqueue->cus_id=$this->cus_id;
-        if($pushqueuecount<6){
-            $pushqueue->push=1;
-            $pushqueue->save();
-        }else{
-            $pushqueue->push=0;
-            $pushqueue->save();
-            while(1){
-                sleep(3);
-                echo  '繁忙等待.......<script type="text/javascript">parent.refresh("繁忙等待.......");</script><br />';
-                ob_flush();
-                flush();
-                $push_table=  PushQueue::where('cus_id',$this->cus_id)->first();
-                if($push_table->push==1){
-                    break;
-                }else{
-                    $pushqueuecount=PushQueue::where('push',1)->count();
-                    if($pushqueuecount<6){
-                        PushQueue::where('cus_id',$this->cus_id)->update(['push' => 1]);
-                        break;
-                    }
-                }
-                $this->clearpushqueue();
-            }
-        }
+        
             
         $this->pushinit();
         $pc_domain=CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_domain');
