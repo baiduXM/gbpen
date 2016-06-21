@@ -76,7 +76,7 @@ function settingController($scope, $http) {
                                             关联表单：<select id="form_select' + k + '" name="float_adv[' + k + ']">\n\
                                                 <option selected="selected" value="0">请选择</option>\n\
                                             </select>\n\
-                                            <input type="hidden" name="float_type[' + k + ']" value="' + v.type + '">\n\
+                                            <input type="hidden" name="float_type[' + k + ']" value="form">\n\
                                         </div>\n\
                                         <div>\n\
                                             <label class="floatxy" style="height: 20px;">X:<input type="text" class="settingpos" style="width: 30px;height: 20px;" name="posx[' + k + ']" value="0">PX</label>\n\
@@ -109,7 +109,7 @@ function settingController($scope, $http) {
                                                     <img src="' + v.url + '" data-name="' + v.adv + '" style="width:80px;height:64px;padding:5px;" data-preimg="preimg">\n\
                                                 </span>\n\
                                             </div><input type="hidden" name="float_adv[' + k + ']" value="' + v.adv + '">\n\
-                                                 <input type="hidden" name="float_type[' + k + ']" value="' + v.type + '">\n\
+                                                 <input type="hidden" name="float_type[' + k + ']" value="adv">\n\
                                         </div>\
                                         <label class="floatxy" style="height: 20px;">X:<input type="text" class="settingpos" style="width: 30px;height: 20px;" name="posx[' + k + ']" value="' + v.posx + '">PX</label>\n\
                                         <label class="floatxy" style="height: 20px;">Y:<input type="text" class="settingpos" style="width: 30px;height: 20px;" name="posy[' + k + ']" value="' + v.posy + '">PX</label>\n\
