@@ -45,17 +45,17 @@ class CommonController extends BaseController {
 		if ($QuickBar)
 			$MobileQuickBar = unserialize($QuickBar);
 		$DefaultQuickBar = [
-			['pc' => 0, 'mobile' => 0, 'name' => '电话', 'icon' => '&#xe602;', 'image' => 'icon/2.png', 'data' => '18459276266', 'link' => 'tel://', 'type' => 'tel', 'enable_pc' => 1, 'enable_mobile' => 1],
-			['pc' => 0, 'mobile' => 0, 'name' => '短信', 'icon' => '&#xe604;', 'image' => 'icon/3.png', 'data' => '18459276267', 'link' => 'sms://', 'type' => 'sms', 'enable_pc' => 1, 'enable_mobile' => 1],
-			['pc' => 0, 'mobile' => 0, 'name' => '咨询', 'icon' => '&#xe606;', 'image' => 'icon/5.png', 'data' => '小E:156568451@QQ|客服-XX:10000@QQ|客服-YY:10000@53kf', 'type' => 'im', 'enable_pc' => 1, 'enable_mobile' => 1],
-			['pc' => 0, 'mobile' => 0, 'name' => '地图', 'icon' => '&#xe605;', 'image' => 'icon/4.png', 'data' => '', 'type' => 'map', 'enable_pc' => 1, 'enable_mobile' => 1],
-			['pc' => 0, 'mobile' => 0, 'name' => '分享', 'icon' => '&#xe600;', 'image' => 'icon/8.png', 'data' => 'qzone,tqq,tsina,ibaidu', 'type' => 'share', 'enable_pc' => 1, 'enable_mobile' => 1],
-			['pc' => 0, 'mobile' => 0, 'name' => '外链', 'icon' => '&#xe632;', 'image' => 'icon/8.png', 'data' => 'http://www.gbpen.com/', 'type' => 'link', 'enable_pc' => 1, 'enable_mobile' => 1],
-			['pc' => 0, 'mobile' => 0, 'name' => '搜索', 'icon' => '&#xe636;', 'image' => 'icon/8.png', 'data' => '', 'type' => 'search', 'enable_pc' => 1, 'enable_mobile' => 1],
-			['pc' => 0, 'mobile' => 0, 'name' => '微信二维码', 'icon' => '&#xe61b;', 'image' => 'icon/a.png', 'data' => '', 'for' => 'vx_barcode', 'type' => 'follow', 'enable_pc' => 0, 'enable_mobile' => 0],
+			['pc' => 0, 'mobile' => 0, 'name' => '电话','enname' => 'Tel', 'icon' => '&#xe602;', 'image' => 'icon/2.png', 'data' => '18459276266', 'link' => 'tel://', 'type' => 'tel', 'enable_pc' => 1, 'enable_mobile' => 1],
+			['pc' => 0, 'mobile' => 0, 'name' => '短信','enname' => 'SMS', 'icon' => '&#xe604;', 'image' => 'icon/3.png', 'data' => '18459276267', 'link' => 'sms://', 'type' => 'sms', 'enable_pc' => 1, 'enable_mobile' => 1],
+			['pc' => 0, 'mobile' => 0, 'name' => '咨询','enname' => 'IM', 'icon' => '&#xe606;', 'image' => 'icon/5.png', 'data' => '小E:156568451@QQ|客服-XX:10000@QQ|客服-YY:10000@53kf', 'type' => 'im', 'enable_pc' => 1, 'enable_mobile' => 1],
+			['pc' => 0, 'mobile' => 0, 'name' => '地图','enname' => 'Map', 'icon' => '&#xe605;', 'image' => 'icon/4.png', 'data' => '', 'type' => 'map', 'enable_pc' => 1, 'enable_mobile' => 1],
+			['pc' => 0, 'mobile' => 0, 'name' => '分享','enname' => 'Share', 'icon' => '&#xe600;', 'image' => 'icon/8.png', 'data' => 'qzone,tqq,tsina,ibaidu', 'type' => 'share', 'enable_pc' => 1, 'enable_mobile' => 1],
+			['pc' => 0, 'mobile' => 0, 'name' => '外链','enname' => 'Link', 'icon' => '&#xe632;', 'image' => 'icon/8.png', 'data' => 'http://www.gbpen.com/', 'type' => 'link', 'enable_pc' => 1, 'enable_mobile' => 1],
+			['pc' => 0, 'mobile' => 0, 'name' => '搜索','enname' => 'Search', 'icon' => '&#xe636;', 'image' => 'icon/8.png', 'data' => '', 'type' => 'search', 'enable_pc' => 1, 'enable_mobile' => 1],
+			['pc' => 0, 'mobile' => 0, 'name' => '微信二维码','enname' => 'W-Qcode', 'icon' => '&#xe61b;', 'image' => 'icon/a.png', 'data' => '', 'for' => 'vx_barcode', 'type' => 'follow', 'enable_pc' => 0, 'enable_mobile' => 0],
 			//                ['pc'=>0,'mobile'=>0,'name'=>'qq二维码','icon'=>'&#xe60f;','image'=>'icon/a.png','data'=>'','for'=>'qq_barcode','type'=>'follow','enable_pc'=>0,'enable_mobile'=>0],
 			//                ['pc'=>0,'mobile'=>0,'name'=>'PC二维码','icon'=>'&#xe630;','image'=>'icon/a.png','data'=>$this->qrcode('pc_domain'),'for'=>'pc_barcode','type'=>'follow','enable_pc'=>0,'enable_mobile'=>0],
-			['pc' => 0, 'mobile' => 0, 'name' => '手机二维码', 'icon' => '&#xe64b;', 'image' => 'icon/a.png', 'data' => $this->qrcode('mobile_domain'), 'for' => 'm_barcode', 'type' => 'follow', 'enable_pc' => 0, 'enable_mobile' => 0],
+			['pc' => 0, 'mobile' => 0, 'name' => '手机二维码','enname' => 'M-Qcode', 'icon' => '&#xe64b;', 'image' => 'icon/a.png', 'data' => $this->qrcode('mobile_domain'), 'for' => 'm_barcode', 'type' => 'follow', 'enable_pc' => 0, 'enable_mobile' => 0],
 		];
 		if (!$QuickBar) {
 			$QuickBar = ['err' => 0, 'msg' => '获取成功！', 'data' => $DefaultQuickBar];
