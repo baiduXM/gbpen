@@ -594,19 +594,17 @@ class FormController extends BaseController {
                 $_div .= $this->$func($item);
                 $_div.="</li>";
             }
-            $_div .= "</ul>"
+            $_div .= "</ul><div style='text-align:center;'>"
                     . "<input type='submit' value='提交' class='button submit-form' name='submit' />"
 //                    . "<button id='sbok'>提交</button>"
-                    . "<input type='reset' value='重置' class='button' />"
+                    . "<input type='reset' value='重置' class='button' /></div>"
                     . "<input type='hidden' name='form_id' value='$form_id' />"
                     . "<input type='hidden' name='action_type' value='$form_data->action_type' />"
                     . "<input type='hidden' name='action_text' value=" . $tempform['action_text'] . " />";
-            $_form.="<form class='fv-unit-preview' id='box_show' action='http://swap.5067.org/userdata/' method='post'><ul class='fv-element-show'>";
             if (empty($site)) {//===普通表单===
-                $_form.="<form class='fv-unit-preview' id='box_show' action='http://swap.5067.org/userdata/' method='post'><ul class='fv-element-show'>";
-//                $_form.="<form class='fv-unit-preview' id='box_show' action='../form-userdata-submit' onsumbit='return verify()' method='post'><ul class='fv-element-show'>";
+                $_form.="<form class='fv-unit-preview' id='box_show' action='http://swap.5067.org/userdata/' method='post' ><ul class='fv-element-show'>";
             } else {//===悬浮表单===
-                $_form.="<form class='adv-unit-preview' id='box_show' action='http://swap.5067.org/userdata/' method='post'><ul class='fv-element-show'>";
+                $_form.="<form class='adv-unit-preview' id='box_show' action='http://swap.5067.org/userdata/' method='post' style='width:100%;'><ul class='fv-element-show'>";
             }
             $_form.=$_div . "</form></div>";
 //            $_form.=$js;
