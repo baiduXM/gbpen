@@ -424,7 +424,7 @@ Route::group(array('before' => 'auth'), function() {
     ]);
     //===万用表单end===
     //===容量条start===
-    Route::any('capacity-free', [//释放空间
+    Route::any('capacity-free/{param?}', [//释放空间
         'uses' => 'CapacityController@free'
     ]);
     Route::any('capacity-deduct', [//扣除空间
