@@ -137,7 +137,7 @@ class PrintController extends BaseController {
         }
         $website_confige = WebsiteConfig::where('cus_id', $this->cus_id)->where('key', $pagename)->where('type', 1)->where('template_id', $tpl_id)->pluck('value');
         $website_confige_value = unserialize($website_confige);
-        if(count($jsondata)&&isset($_GET['jsondata'])){
+        if(count($jsondata)){
             $json=isset($jsondata[$pagename.'.json'])?$jsondata[$pagename.'.json']:'{}';
         }else{       
             $json_path = public_path('templates/' . $this->themename . '/json/' . $pagename . '.json');
