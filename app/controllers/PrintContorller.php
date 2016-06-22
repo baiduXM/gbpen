@@ -853,7 +853,7 @@ class PrintController extends BaseController {
                         if (!empty($formCdata)) {
                             $content = $formC->showFormHtmlForPrint($formCdata, 'float');
                             $floatadv[$key]->content = $content;
-                            $floatadv[$key]->cssjs = $formC->assignFormCSSandJSForPrint();
+//                            $floatadv[$key]->cssjs = $formC->assignFormCSSandJSForPrint();
                         }
                     }
                 }

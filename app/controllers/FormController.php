@@ -577,9 +577,9 @@ class FormController extends BaseController {
             $column_data = $data['column'];
             $_div = '';
             if (empty($site) || $site == 'page') {//===普通表单===
-                $_form.="<div class='fv-add-show' >";
+                $_form.="<div class='fv-add-show add-show' >";
             } elseif ($site == 'float') {//===悬浮表单===
-                $_form.="<div class='adv-add-show' >";
+                $_form.="<div class='adv-add-show add-show' >";
             }
             $_form .= "<div class='fv-as-title'>
                             $form_data->title
@@ -595,17 +595,18 @@ class FormController extends BaseController {
                 $_div.="</li>";
             }
             $_div .= "</ul><div style='text-align:center;'>"
-                    . "<input type='submit' value='提交' class='button submit-form' name='submit' />"
+                    . "<input type='submit' value='提交' class='button form-btn' name='submit' />"
 //                    . "<button id='sbok'>提交</button>"
-                    . "<input type='reset' value='重置' class='button' /></div>"
+                    . "<input type='reset' value='重置' class='button form-btn' /></div>"
                     . "<input type='hidden' name='form_id' value='$form_id' />"
                     . "<input type='hidden' name='action_type' value='$form_data->action_type' />"
                     . "<input type='hidden' name='action_text' value=" . $tempform['action_text'] . " />";
 
             if (empty($site) || $site == 'page') {//===普通表单===
-                $_form.="<form class='fv-unit-preview' id='box_show' action='http://swap.5067.org/userdata/' method='post' ><ul class='fv-element-show'>";
+                $_form.="<form class='fv-unit-preview unit-preview' id='box_show' action='http://swap.5067.org/userdata/' method='post' ><ul class='fv-element-show'>";
             } elseif ($site == 'float') {//===悬浮表单===
-                $_form.="<form class='adv-unit-preview' id='box_show' action='http://swap.5067.org/userdata/' method='post' style='width:100%;'><ul class='fv-element-show'>";
+                $_form.="<form class='adv-unit-preview unit-preview' id='box_show' action='http://swap.5067.org/userdata/' method='post' style='width:100%;'>"
+                        . "<ul class='fv-element-show'>";
             }
             $_form.=$_div . "</form></div>";
 //            $_form.=$js;
@@ -650,11 +651,7 @@ class FormController extends BaseController {
             $_div .= "<span style='color:red;'>*</span>";
         }
         $_div .= "</p>";
-//        if (!isset($config[rules])) {
-            $_div .= "<input type='$config[rules]' name='$item->title' placeholder='$item->description'";
-//        } else {
-//            $_div .= "<input type='text' name='$item->title' placeholder='$item->description'";
-//        }
+        $_div .= "<input type='$config[rules]' name='$item->title' placeholder='$item->description'";
         $_div .= $item->required == 1 ? "required" : '';
         $_div .= "/>";
         return $_div;
