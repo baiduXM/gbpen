@@ -260,7 +260,7 @@ class FormController extends BaseController {
         $data = Input::get('data');
         $column_id = Input::get('column_id');
         $type = Input::get('type');
-
+        Classify::where('form_id', $form_id)->update(['pushed'=>1]);
         $redata = array();
         $config = array();
         foreach ($data as $v) {
