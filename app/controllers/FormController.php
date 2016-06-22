@@ -650,11 +650,11 @@ class FormController extends BaseController {
             $_div .= "<span style='color:red;'>*</span>";
         }
         $_div .= "</p>";
-        if (!isset($config[rules])) {
+//        if (!isset($config[rules])) {
             $_div .= "<input type='$config[rules]' name='$item->title' placeholder='$item->description'";
-        } else {
-            $_div .= "<input type='text' name='$item->title' placeholder='$item->description'";
-        }
+//        } else {
+//            $_div .= "<input type='text' name='$item->title' placeholder='$item->description'";
+//        }
         $_div .= $item->required == 1 ? "required" : '';
         $_div .= "/>";
         return $_div;
