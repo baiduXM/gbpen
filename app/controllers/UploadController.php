@@ -8,6 +8,8 @@ class UploadController extends BaseController {
         $target = Input::get('target');
         $this->check_dir($target, $customer);
         $files = Input::file();
+        var_dump($files);
+        exit;
         $img_size = Input::get('imgsize') ? Input::get('imgsize') : 800;
         $destinationPath = public_path('customers/' . $customer . '/images/');
         if ($files) {
@@ -163,7 +165,7 @@ class UploadController extends BaseController {
         $files = explode(',', ltrim(Input::get('files'), ','));
         $dir = public_path('customers/' . $customer . '/cache_images/');
         $img_size = Input::get('imgsize') ? Input::get('imgsize') : 400;
-        var_dump($img_size);
+        var_dump($files);
         exit;
         $destinationPath = public_path('customers/' . $customer . '/images/');
         $weburl = Customer::where('id', $cus_id)->pluck('weburl');

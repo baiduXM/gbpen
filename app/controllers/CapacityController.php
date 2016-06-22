@@ -8,42 +8,52 @@
 class CapacityController extends BaseController {
 
     /**
-     * 获取信息
+     * 初始化空间
      */
-    public function getinfo() {
-        
-    }
-
-    /**
-     * 释放空间
-     * @param type $param
-     */
-    public function free($param = null) {
+    public function init($size = 0) {
         $cus_id = Auth::id();
         $customer = Auth::user()->name;
-        $customer_info = CustomerInfo::where('cus_id', $cus_id)->first();
-        var_dump($param);
-        echo '<br>---$param---<br>';
         $data = array(
-            "capacity_free" => $customer_info->capacity_free - $param
+            "capacity" => $size,
+            "capacity_free" => $size
         );
         $flag = CustomerInfo::where('cus_id', $cus_id)->update($data);
-        var_dump($flag);
-        echo '<br>---$flag---<br>';
-        var_dump($customer_info);
-        echo '<br>---customer_info---<br>';
-        var_dump($customer);
-        echo '<br>---$customer---<br>';
-        
     }
 
     /**
-     * 扣除空间
+     * 释放空间(删除图片)
+     * @param type $param
      */
-    public function deduct() {
+    public function free($size = 0) {
         $cus_id = Auth::id();
-        $customer = Auth::user()->name;
         $customer_info = CustomerInfo::where('cus_id', $cus_id)->first();
+        $capacity_free = $customer_info->capacity_free;
+        $data = array(
+            "capacity_free" => $capacity_free + $size,
+        );
+        $flag = CustomerInfo::where('cus_id', $cus_id)->update($data);
+        if ($flag) {
+            return true; //释放成功
+        }
+    }
+
+    /**
+     * 扣除空间（上传图片）
+     */
+    public function deduct($size = 0) {
+        $cus_id = Auth::id();
+        $customer_info = CustomerInfo::where('cus_id', $cus_id)->first();
+        $capacity_free = $customer_info->capacity_free;
+        if ($capacity_free - $size < 0) {
+            return false; //图片尺寸过大，无法上传
+        }
+        $data = array(
+            "capacity_free" => $capacity_free - $size,
+        );
+        $flag = CustomerInfo::where('cus_id', $cus_id)->update($data);
+        if ($flag) {
+            return true; //扣除成功
+        }
     }
 
 }
