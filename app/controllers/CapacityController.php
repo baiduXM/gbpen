@@ -7,9 +7,34 @@
  */
 class CapacityController extends BaseController {
 
-    
-    public function free($param) {
+    /**
+     * 获取信息
+     */
+    public function getinfo() {
         
+    }
+
+    /**
+     * 释放空间
+     * @param type $param
+     */
+    public function free($param = null) {
+        $cus_id = Auth::id();
+        $customer = Auth::user()->name;
+        $customer_info = CustomerInfo::where('cus_id', $cus_id)->first();
+        var_dump($customer_info);
+        echo '<br>---customer_info---<br>';
+        var_dump($customer);
+        echo '<br>---$customer---<br>';
+    }
+
+    /**
+     * 扣除空间
+     */
+    public function deduct() {
+        $cus_id = Auth::id();
+        $customer = Auth::user()->name;
+        $customer_info = CustomerInfo::where('cus_id', $cus_id)->first();
     }
 
 }
