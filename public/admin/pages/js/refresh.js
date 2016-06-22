@@ -34,7 +34,7 @@
             $http.get('../customer-info').success(function (json) {
                 var  currenttime=(new Date().getTime())/1000;
                 var lasttime= json.data.lastpushtime;
-                if((currenttime-lasttime)>3600||lasttime==false){
+                if(1||(currenttime-lasttime)>3600||lasttime==false){
                     _this.hide();
                     $('.progress_bar span').addClass('expand');
                     $('.refresh-content .ing').css('display','block');

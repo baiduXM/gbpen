@@ -559,7 +559,7 @@ class FormController extends BaseController {
     /**
      * 显示表单前端
      */
-    public function showFormHtmlForPrint($data = null, $site = null) {
+    public function showFormHtmlForPrint($data = null, $site = 'page') {
         $_form = '';
         if (empty($data)) {
             $_form .= "<div class='fv-add-show'>
@@ -578,10 +578,10 @@ class FormController extends BaseController {
             $form_id = $form_data->id;
             $column_data = $data['column'];
             $_div = '';
-            if (empty($site)) {//===普通表单===
-                $_form.="<div class='fv-add-show' >";
-            } else {//===悬浮表单===
-                $_form.="<div class='adv-add-show' >";
+            if (empty($site) || $site == 'page') {//===普通表单===
+                $_form.="<div class='fv-add-show add-show' >";
+            } elseif ($site == 'float') {//===悬浮表单===
+                $_form.="<div class='adv-add-show add-show' >";
             }
             $_form .= "<div class='fv-as-title'>
                             $form_data->title
@@ -597,16 +597,18 @@ class FormController extends BaseController {
                 $_div.="</li>";
             }
             $_div .= "</ul><div style='text-align:center;'>"
-                    . "<input type='submit' value='提交' class='button submit-form' name='submit' />"
+                    . "<input type='submit' value='提交' class='button form-btn' name='submit' />"
 //                    . "<button id='sbok'>提交</button>"
-                    . "<input type='reset' value='重置' class='button' /></div>"
+                    . "<input type='reset' value='重置' class='button form-btn' /></div>"
                     . "<input type='hidden' name='form_id' value='$form_id' />"
                     . "<input type='hidden' name='action_type' value='$form_data->action_type' />"
                     . "<input type='hidden' name='action_text' value=" . $tempform['action_text'] . " />";
-            if (empty($site)) {//===普通表单===
-                $_form.="<form class='fv-unit-preview' id='box_show' action='http://swap.5067.org/userdata/' method='post' ><ul class='fv-element-show'>";
-            } else {//===悬浮表单===
-                $_form.="<form class='adv-unit-preview' id='box_show' action='http://swap.5067.org/userdata/' method='post' style='width:100%;'><ul class='fv-element-show'>";
+
+            if (empty($site) || $site == 'page') {//===普通表单===
+                $_form.="<form class='fv-unit-preview unit-preview' id='box_show' action='http://swap.5067.org/userdata/' method='post' ><ul class='fv-element-show'>";
+            } elseif ($site == 'float') {//===悬浮表单===
+                $_form.="<form class='adv-unit-preview unit-preview' id='box_show' action='http://swap.5067.org/userdata/' method='post' style='width:100%;'>"
+                        . "<ul class='fv-element-show'>";
             }
             $_form.=$_div . "</form></div>";
 //            $_form.=$js;
@@ -620,8 +622,6 @@ class FormController extends BaseController {
      * @return type
      */
     function validata($item) {
-//        var_dump($item);
-//        echo '<br>';
         $config = $item->config;
         $_vali = '';
         if ($item->required) {
@@ -639,17 +639,7 @@ class FormController extends BaseController {
     public function assignFormCSSandJSForPrint() {
         $css = '<link rel="stylesheet" href="http://swap.5067.org/js/laydate/need/laydate.css">';
         $css .='<link rel="stylesheet" href="http://swap.5067.org/css/universal-form.css">';
-//        $css .='<link rel="stylesheet" href="/public/admin/css/universal-form.css">';
         $js = '<script src="http://swap.5067.org/js/laydate/laydate.js"></script>';
-//        $js .= '<script src="http://swap.5067.org/js/universal-form.js"></script>';
-//        $js .= '<script src="/public/admin/js/universal-form.js"></script>';
-//        $js .= '<script src="/public/admin/js/jquery.validate.min.js"></script>';
-//        $js .= '<script>';
-//        $js .= "function verify() {
-//           alert(1)
-//                return false;
-//                }";
-//        $js .= '</script>';
         return $css . $js;
     }
 
