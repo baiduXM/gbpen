@@ -2393,7 +2393,7 @@ class PrintController extends BaseController {
                     </form>';
             } elseif ($classify->type == 9) {
                 //===显示前端===
-                //$result['list']['content'] = $formC->showFormHtmlForPrint($formCdata);
+                $result['list']['content'] = $formC->showFormHtmlForPrint($formCdata);
             }
             $json_keys = $this->getJsonKey($viewname . '.html');
             if (count($json_keys)) {
