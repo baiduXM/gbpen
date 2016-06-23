@@ -170,6 +170,7 @@ class WebsiteController extends BaseController{
             }
             $update_result = WebsiteInfo::where('cus_id',$cus_id)->update($update);
             if($update_result){
+                WebsiteConfig::where('cus_id',$cus_id)->where('key','quickbar')->update(['pushed'=>1]);
                 $result = ['err' => 0, 'msg' => ''];
             }
             else{
