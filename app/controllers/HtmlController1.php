@@ -54,10 +54,24 @@ class HtmlController1 extends BaseController{
     private $customer;
     private $start;
     private $end;
+    /**
+     * 推送数据存储$pushpc $pushmobile
+     * 
+     * @var array
+     */
     private $pushpc;
     private $pushmobile;
-            
-    
+     /**
+     * $allpush:全站推送 $pcpush:pc推送 $mobilepush:手机推送 $quickbarpush:quickbar推送 $mobilehomepagepush:手机首页推送
+     * 
+     * @var int
+     */
+    private $allpush;
+    private $pcpush;
+    private $mobilepush;
+    private $quickbarpush;
+    private $mobilehomepagepush;
+             
     function __construct(){
         $this->cus_id = Auth::id();
         $this->customer = Auth::user()->name;
@@ -86,7 +100,7 @@ class HtmlController1 extends BaseController{
         }
         file_put_contents($path, $ouput=ob_get_contents());
         ob_end_clean();
-        $quickbar_json=$template->quickBarJson();
+       // $quickbar_json=$template->quickBarJson();
         return $path;
     }
     
@@ -321,6 +335,38 @@ class HtmlController1 extends BaseController{
             }
     }
     /**
+     * 手机首页推送
+     * 
+     * 
+     */
+    private function mobilehomepage_push(){
+        $mindexhtml=$this->homgepagehtml('mobile');
+        $customerinfo = Customer::find($this->cus_id);
+        $ftp_array = explode(':',$customerinfo->ftp_address);
+        $port= $customerinfo->ftp_port;
+        $ftpdir=$customerinfo->ftp_dir;
+        $ftp=$customerinfo->ftp;
+        $ftp_array[1] = isset($ftp_array[1])?$ftp_array[1]:$port;
+        $conn = ftp_connect($ftp_array[0],$ftp_array[1]);
+        if(trim($ftp)=='1'){
+            if($conn){
+                ftp_login($conn,$customerinfo->ftp_user,$customerinfo->ftp_pwd);
+                ftp_pasv($conn, 1);
+                if(@ftp_chdir($conn,$this->customer) == FALSE){
+                    ftp_mkdir($conn,$this->customer);  
+                }
+                ftp_put($conn,"/".$this->customer."/mobile/index.html",public_path('customers/'.$this->customer.'/mobile/index.html'),FTP_ASCII);
+                ftp_close($conn);
+            }
+        }else{
+            if($conn){
+                ftp_login($conn,$customerinfo->ftp_user,$customerinfo->ftp_pwd);
+                ftp_put($conn,$ftpdir."/mobile/index.html",public_path('customers/'.$this->customer.'/mobile/index.html'),FTP_ASCII);
+                ftp_close($conn);
+            }
+        }
+    }
+    /**
      * 手机推送
      * 
      * 
@@ -424,13 +470,13 @@ class HtmlController1 extends BaseController{
                         @ftp_delete($conn,"/".$this->customer.'/mobile/images/s/'.$v['target'].'/'.$v['img']);
                     }
                     ImgDel::where('cus_id',$this->cus_id)->delete();
-                    ftp_put($conn,$ftpdir."/mobile/m_unzip.php",public_path("packages/m_unzip.php"),FTP_ASCII);
-                    ftp_put($conn,$ftpdir."/mobile/site.zip",$path,FTP_BINARY);
+                    ftp_put($conn,"/".$this->customer."/mobile/m_unzip.php",public_path("packages/m_unzip.php"),FTP_ASCII);
+                    ftp_put($conn,"/".$this->customer."/mobile/site.zip",$path,FTP_BINARY);
                     ftp_put($conn,"/".$this->customer."/mobile/search.php",public_path("packages/search.php"),FTP_ASCII);
                     if(@ftp_chdir($conn,"/".$this->customer."/mobile") == FALSE){
                         ftp_mkdir($conn,"/".$this->customer."/mobile"); 
                     }
-                    ftp_put($conn,"/".$this->customer."/mobile/quickbar.json",public_path('customers/'.$this->customer.'/mobile/quickbar.json'),FTP_ASCII);
+                    //ftp_put($conn,"/".$this->customer."/mobile/quickbar.json",public_path('customers/'.$this->customer.'/mobile/quickbar.json'),FTP_ASCII);
                     ftp_close($conn);
                 }
             }else{
@@ -448,15 +494,18 @@ class HtmlController1 extends BaseController{
                     ftp_put($conn,$ftpdir."/mobile/m_unzip.php",public_path("packages/m_unzip.php"),FTP_ASCII);
                     ftp_put($conn,$ftpdir."/mobile/site.zip",$path,FTP_BINARY);
                     ftp_put($conn,$ftpdir."/mobile/search.php",public_path("packages/search.php"),FTP_ASCII);
-                    ftp_put($conn,$ftpdir."/mobile/quickbar.json",public_path('customers/'.$this->customer.'/mobile/quickbar.json'),FTP_ASCII);
+                    //ftp_put($conn,$ftpdir."/mobile/quickbar.json",public_path('customers/'.$this->customer.'/mobile/quickbar.json'),FTP_ASCII);
                     ftp_close($conn);
                 }
             }
            
             $this->folderClear();
             echo '100%<script type="text/javascript">parent.refresh(100);</script><br />';
-            Classify::where('cus_id',$this->cus_id)->where('pushed',1)->update(['pushed'=>0]);
-            Articles::where('cus_id',$this->cus_id)->where('pushed',1)->update(['pushed'=>0]);
+            Classify::where('cus_id',$this->cus_id)->where('pushed','>',0)->update(['pushed'=>0]);
+            Articles::where('cus_id',$this->cus_id)->where('pushed','>',0)->update(['pushed'=>0]);
+            WebsiteConfig::where('cus_id',$this->cus_id)->update(['pushed'=>0]);
+            WebsiteInfo::where('cus_id',$this->cus_id)->update(['pushed'=>0]);
+            MobileHomepage::where('cus_id',$this->cus_id)->update(['pushed'=>0]);
             CustomerInfo::where('cus_id', $this->cus_id)->update(['pushed' => 0,'lastpushtime'=>date('Y-m-d H:i:s',time())]);//date('Y-m-d H:i:s',time())
             //$pc_domain = CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_domain');
              /**
@@ -498,12 +547,78 @@ class HtmlController1 extends BaseController{
         if(trim($ftp)=='1'){
             if($conn){
                 ftp_login($conn,$customerinfo->ftp_user,$customerinfo->ftp_pwd);
-                    ftp_pasv($conn, 1);
-                    if(@ftp_chdir($conn,$this->customer) == FALSE){
-                        ftp_mkdir($conn,$this->customer);  
-                    }
+                ftp_pasv($conn, 1);
+                if(@ftp_chdir($conn,$this->customer) == FALSE){
+                    ftp_mkdir($conn,$this->customer);  
+                }
                 ftp_put($conn,"/".$this->customer."/quickbar.json",public_path('customers/'.$this->customer.'/quickbar.json'),FTP_ASCII);
                 ftp_put($conn,"/".$this->customer."/mobile/quickbar.json",public_path('customers/'.$this->customer.'/mobile/quickbar.json'),FTP_ASCII);
+                ftp_close($conn);
+            }
+        }else{
+            if($conn){
+                ftp_login($conn,$customerinfo->ftp_user,$customerinfo->ftp_pwd);
+                ftp_pasv($conn, 1);ftp_put($conn,$ftpdir."/quickbar.json",public_path('customers/'.$this->customer.'/quickbar.json'),FTP_ASCII);
+                ftp_put($conn,$ftpdir."/mobile/quickbar.json",public_path('customers/'.$this->customer.'/mobile/quickbar.json'),FTP_ASCII);
+                ftp_close($conn);
+            }
+        }
+    }
+    /**
+     * 修改内容-- $this->allpush:全站推送 $this->pcpush:pc推送 $this->mobilepush:手机推送 $this->quickbarpush:quickbar推送 $this->mobilehomepagepush:手机首页推送
+     * 
+     * 
+     */
+    private function needpush(){
+        $this->allpush=0;
+        $this->pcpush=0;
+        $this->mobilepush=0;
+        $this->quickbarpush=0;
+        $this->mobilehomepagepush=0;
+        $pc_domain=CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_domain');
+        $mobile_domain=CustomerInfo::where('cus_id',$this->cus_id)->pluck('mobile_domain');
+        $pc=str_replace('http://', '', $pc_domain);
+        $mobile=str_replace('http://', '', $mobile_domain);
+        $this->allpush=CustomerInfo::where('cus_id',$this->cus_id)->pluck('pushed');
+        if(!$this->allpush){
+            $this->quickbarpush=WebsiteConfig::where('cus_id',  $this->cus_id)->where('key','quickbar')->pluck('pushed');
+            $webinfo_pushed=WebsiteInfo::where('cus_id',  $this->cus_id)->pluck('pushed');
+            $article_pushed_count=Articles::where('cus_id',  $this->cus_id)->where('pushed',1)->count();
+            $classify_pushed_count=Classify::where('cus_id',  $this->cus_id)->where('pushed',1)->count();
+            if($webinfo_pushed==1||$article_pushed_count||$classify_pushed_count){
+                $this->pcpush=1;
+                $this->mobilepush=1;
+            }elseif($webinfo_pushed==2){
+                $this->pcpush=1;
+            }elseif($webinfo_pushed==3){
+                $this->mobilepush=1;
+            }
+            if(!$this->mobilepush){
+                $mobile_homepage_pushed_count=MobileHomepage::where('cus_id',  $this->cus_id)->where('pushed',1)->count();
+                if($mobile_homepage_pushed_count){
+                    $this->mobilehomepagepush=1;
+                }
+            }
+        }else{
+            $this->pcpush=1;
+            $this->mobilepush=1;
+            $this->quickbarpush=1;
+        }
+        if($pc==''){
+            if($this->allpush){
+                $this->mobilepush=1;
+                $this->quickbarpush=1;
+            }else{
+                $this->pcpush=0;
+            }
+        }
+        if($mobile==''){
+            if($this->allpush){
+                $this->pcpush=1;
+                $this->quickbarpush=1;
+            }else{
+                $this->mobilepush=0;
+                $this->mobilehomepagepush=0;
             }
         }
     }
@@ -513,7 +628,7 @@ class HtmlController1 extends BaseController{
      * 
      */
     private function pushinit(){
-        header("Content-type:text/html;charset=utf-8");
+        echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
         PushQueue::where('cus_id',  $this->cus_id)->delete();
         PushQueue::where('pushtime','<',time()-60)->delete();
         $maxpushid=PushQueue::max('id');
@@ -546,57 +661,61 @@ class HtmlController1 extends BaseController{
                 $this->clearpushqueue();
             }
         }
-        $pc_template = new PrintController('online','pc');
-        $this->pushpc['result']=$pc_template->publicdata();
-        $this->pushpc['navs']=$pc_template->publicnavs();
-        $m_template = new PrintController('online','mobile');
-        $this->pushmobile['result']=$m_template->publicdata();
-        $this->pushmobile['navs']=$m_template->publicnavs();
-        $dir=app_path('views/templates/' . $pc_template->themename);
-        if(is_dir($dir)){
-            if ($dh = opendir($dir)){
-                while(($file=readdir($dh))!=FALSE){
-                    if(strpos($file,'.html')){
-                        $this->pushpc['repleace'][$file]=file_get_contents($dir.'/'.$file);
-                        $this->pushpc['pattern'][$file]="#{include((\s)+)?file=[\',\"].\/".$file."[\',\"]}#";
-                        if($file=='_footer.html'){
-                            $this->pushpc['repleace'][$file]=preg_replace('/\$navs/', '\$footer_navs', $this->pushpc['repleace'][$file]).'{$enlargeprint}';
+        if($this->pcpush){
+            $pc_template = new PrintController('online','pc');
+            $this->pushpc['result']=$pc_template->publicdata();
+            $this->pushpc['navs']=$pc_template->publicnavs();
+            $dir=app_path('views/templates/' . $pc_template->themename);
+            if(is_dir($dir)){
+                if ($dh = opendir($dir)){
+                    while(($file=readdir($dh))!=FALSE){
+                        if(strpos($file,'.html')){
+                            $this->pushpc['repleace'][$file]=file_get_contents($dir.'/'.$file);
+                            $this->pushpc['pattern'][$file]="#{include((\s)+)?file=[\',\"].\/".$file."[\',\"]}#";
+                            if($file=='_footer.html'){
+                                $this->pushpc['repleace'][$file]=preg_replace('/\$navs/', '\$footer_navs', $this->pushpc['repleace'][$file]).'{$enlargeprint}';
+                            }
+                        }
+                    }
+                }
+            }
+            $dir = public_path('templates/' . $pc_template->themename . '/json/');
+            if(is_dir($dir)){
+                if ($dh = opendir($dir)){
+                    while(($file=readdir($dh))!=FALSE){
+                        if(strpos($file,'.json')){
+                            $this->pushpc['pagedata'][$file]=file_get_contents($dir.'/'.$file);
                         }
                     }
                 }
             }
         }
-        $dir=app_path('views/templates/' . $m_template->themename);
-        if(is_dir($dir)){
-            if ($dh = opendir($dir)){
-                while(($file=readdir($dh))!=FALSE){
-                    if(strpos($file,'.html')){
-                        $this->pushmobile['repleace'][$file]=file_get_contents($dir.'/'.$file);
-                        $this->pushmobile['pattern'][$file]="#{include((\s)+)?file=[\',\"].\/".$file."[\',\"]}#";
+        if($this->mobilepush||$this->mobilehomepagepush){
+            $m_template = new PrintController('online','mobile');
+            $this->pushmobile['result']=$m_template->publicdata();
+            $this->pushmobile['navs']=$m_template->publicnavs();
+            $dir=app_path('views/templates/' . $m_template->themename);
+            if(is_dir($dir)){
+                if ($dh = opendir($dir)){
+                    while(($file=readdir($dh))!=FALSE){
+                        if(strpos($file,'.html')){
+                            $this->pushmobile['repleace'][$file]=file_get_contents($dir.'/'.$file);
+                            $this->pushmobile['pattern'][$file]="#{include((\s)+)?file=[\',\"].\/".$file."[\',\"]}#";
+                        }
                     }
                 }
             }
-        }
-        $dir = public_path('templates/' . $m_template->themename . '/json/');
-        if(is_dir($dir)){
-            if ($dh = opendir($dir)){
-                while(($file=readdir($dh))!=FALSE){
-                    if(strpos($file,'.json')){
-                        $this->pushmobile['pagedata'][$file]=file_get_contents($dir.'/'.$file);
+            $dir = public_path('templates/' . $m_template->themename . '/json/');
+            if(is_dir($dir)){
+                if ($dh = opendir($dir)){
+                    while(($file=readdir($dh))!=FALSE){
+                        if(strpos($file,'.json')){
+                            $this->pushmobile['pagedata'][$file]=file_get_contents($dir.'/'.$file);
+                        }
                     }
                 }
             }
-        }
-        $dir = public_path('templates/' . $pc_template->themename . '/json/');
-        if(is_dir($dir)){
-            if ($dh = opendir($dir)){
-                while(($file=readdir($dh))!=FALSE){
-                    if(strpos($file,'.json')){
-                        $this->pushpc['pagedata'][$file]=file_get_contents($dir.'/'.$file);
-                    }
-                }
-            }
-        }
+        }   
     }
     private function clearpushqueue(){
         PushQueue::where('pushtime','<',time()-60)->delete();
@@ -609,229 +728,256 @@ class HtmlController1 extends BaseController{
      */
     public function pushPrecent(){
         set_time_limit(0);
-        
-            
+        if(isset($_GET['gradpush'])){
+            $this->needpush();
+        }else{
+            $pc_domain=CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_domain');
+            $mobile_domain=CustomerInfo::where('cus_id',$this->cus_id)->pluck('mobile_domain');
+            $pc=str_replace('http://', '', $pc_domain);
+            $mobile=str_replace('http://', '', $mobile_domain);
+            if($pc!=''){
+                $this->pcpush=1;
+            }
+            if($mobile!=''){
+                $this->mobilepush=1;
+            }
+            $this->quickbarpush=1;
+            $this->mobilehomepagepush=0;
+        }
+        var_dump('pcpush:'.$this->pcpush);
+        var_dump('mobilepush:'.$this->mobilepush);
+        var_dump('quickbarpush:'.$this->quickbarpush);
+        var_dump('mobilehomepagepush:'.$this->mobilehomepagepush);
         $this->pushinit();
-        $pc_domain=CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_domain');
-        $mobile_domain=CustomerInfo::where('cus_id',$this->cus_id)->pluck('mobile_domain');
-        $pc=str_replace('http://', '', $pc_domain);
-        $mobile=str_replace('http://', '', $mobile_domain);
-        if($pc==''&&$mobile!=''){
-            $this->mobile_push();
-            exit();
+        if($this->quickbarpush){
+            $this->pushQuickbar();
         }
-        if (ob_get_level() == 0){
-            ob_start();
-        }
-        $customer_data_get = CustomerPushfile::where('cus_id',$this->cus_id)->pluck('files');
-        if($customer_data_get){
-            $new_data = 0;
-            $customer_data = unserialize($customer_data_get);
-        }
-        else{
-            $new_data = 1;
-            $customer_data = [];
-        }
-        $pc_classify_ids=array();
-        $mobile_classify_ids=array();
-        $pc_article_ids=array();
-        $mobile_article_ids=array();
-        if(isset($_GET['sleep'])){
-            sleep($_GET['sleep']);
-        }
-        if($mobile!=''){
-            $mindexhtml = $this->homgepagehtml('mobile');
-            $msearchhtml = $this->sendData('mobile');
-            $mobile_classify_ids = Classify::where('cus_id',$this->cus_id)->where('mobile_show',1)->lists('id');
-            $mobile_article_ids = Articles::where('cus_id',$this->cus_id)->where('mobile_show',1)->lists('id');
-        }
-        if(isset($_GET['sleep'])){
-            sleep($_GET['sleep']);
-        }
-        if($pc!=''){
-            $indexhtml = $this->homgepagehtml('pc');
-            $searchhtml = $this->sendData('pc');
-            $pc_classify_ids = Classify::where('cus_id',$this->cus_id)->where('pc_show',1)->lists('id');
-            $pc_article_ids = Articles::where('cus_id',$this->cus_id)->where('pc_show',1)->lists('id');
-        }
-        if(isset($_GET['sleep'])){
-            sleep($_GET['sleep']);
-        }
-        $count = $this->htmlPagecount($pc_classify_ids,$mobile_classify_ids,$pc_article_ids,$mobile_article_ids);
-        $this->html_precent= 70/$count;
-        if($pc!=''){
-            $categoryhtml = $this->categoryhtml($pc_classify_ids,'pc');
-            $articlehtml = $this->articlehtml($pc_classify_ids,'pc');
-        }
-        if($mobile!=''){
-            $mcategoryhtml = $this->categoryhtml($mobile_classify_ids,'mobile');
-            $marticlehtml = $this->articlehtml($mobile_classify_ids,'mobile');
-        }
-        $this->percent = 20/$count;
-        $path = public_path('customers/'.$this->customer.'/'.$this->customer.'.zip');
-        if(file_exists($path)){
-            @unlink($path);
-        }
-        $zip = new ZipArchive;
-        if ($zip->open($path, ZipArchive::CREATE) === TRUE) {
-            if($pc!=''){
-                $zip->addFile($indexhtml,'index.html');
-                $zip->addFile($searchhtml,'search.html');
-                $zip->addFile(public_path('customers/'.$this->customer.'/article_data.json'),'article_data.json');
-                $nowpercent = $this->percent + $this->lastpercent;
-                if(floor($nowpercent)!=$this->lastpercent){
-                    echo floor($nowpercent) . '%<script type="text/javascript">parent.refresh(' . floor($nowpercent) . ');</script><br />';
-                    ob_flush();
-                    flush();
-                    $this->clearpushqueue();
-                }
+        if(!$this->mobilepush){
+            if($this->mobilehomepagepush){
+                $this->mobilehomepage_push();
             }
-            $this->lastpercent += 70+$this->percent;
-            if($mobile!=''){
-                $zip->addFile($mindexhtml,'mobile/index.html');
-                $zip->addFile($msearchhtml,'mobile/search.html');
-                $zip->addFile(public_path('customers/'.$this->customer.'/mobile/article_data.json'),'mobile/article_data.json');
-                $nowpercent = $this->percent + $this->lastpercent;
-                if(floor($nowpercent)!=floor($this->lastpercent)){
-                    echo floor($nowpercent) . '%<script type="text/javascript">parent.refresh(' . floor($nowpercent) . ');</script><br />';
-                    ob_flush();
-                    flush();
-                    $this->clearpushqueue();
-                }
-            }
-            $this->lastpercent += $this->percent;
-            $zip->close();
         }
-            if($pc!=''){
-                $this->compareZip($categoryhtml,$customer_data,'p','category',$path);
-                $this->compareZip($articlehtml,$customer_data,'pf','detail',$path);
+        if($this->pcpush||$this->mobilepush){
+            if(!$this->pcpush&&$this->mobilepush){
+                $this->mobile_push();
+                exit();
             }
-            if($mobile!=''){
-                $this->compareZip($mcategoryhtml,$customer_data,'m','mobile/category',$path);
-                $this->compareZip($marticlehtml,$customer_data,'mf','mobile/detail',$path);
+            if (ob_get_level() == 0){
+                ob_start();
             }
-             
-  
-            if(90 > floor($this->lastpercent)) {
-                echo '90%<script type="text/javascript">parent.refresh(90);</script><br />';
-                ob_flush();
-                flush();
-                $this->clearpushqueue();
-            }
-        PushQueue::where('cus_id',  $this->cus_id)->delete();
-        $nextpush=PushQueue::where('push',0)->first();
-        if($nextpush){
-            PushQueue::where('id',$nextpush->id)->update(['push' => 1]);
-        }
-        if ($zip->open($path, ZipArchive::CREATE) === TRUE) {
-            if($pc!=''){
-                $pc_dir=  Template::where('website_info.cus_id',$this->cus_id)->Leftjoin('website_info','website_info.pc_tpl_id','=','template.id')->pluck('name');
-                $aim_dir=public_path("templates/$pc_dir/");
-                $this->addDir($aim_dir,$zip);
-            }
-            if($mobile!=''){
-                $mobile_dir=  Template::where('website_info.cus_id',$this->cus_id)->Leftjoin('website_info','template.id','=','website_info.mobile_tpl_id')->pluck('name');
-                $maim_dir=public_path("templates/$mobile_dir/");
-                $this->addDir($maim_dir,$zip,'mobile/');
-            }
-            $zip->close();
-            $data = serialize($customer_data);
-            if($new_data){
-                $customerpushfile = new CustomerPushfile;
-                $customerpushfile->cus_id = $this->cus_id;
-                $customerpushfile->files = $data;
-                $customerpushfile->save();
+            $customer_data_get = CustomerPushfile::where('cus_id',$this->cus_id)->pluck('files');
+            if($customer_data_get){
+                $new_data = 0;
+                $customer_data = unserialize($customer_data_get);
             }
             else{
-                CustomerPushfile::where('cus_id',$this->cus_id)->update(['files'=>$data]);
+                $new_data = 1;
+                $customer_data = [];
             }
-            $customerinfo = Customer::find($this->cus_id);
-            $ftp_array = explode(':',$customerinfo->ftp_address);
-            $port= $customerinfo->ftp_port;
-            $ftpdir=$customerinfo->ftp_dir;
-            $ftp=$customerinfo->ftp;
-            $ftp_array[1] = isset($ftp_array[1])?$ftp_array[1]:$port;
-            $conn = ftp_connect($ftp_array[0],$ftp_array[1]);
-            $del_imgs=ImgDel::where('cus_id',$this->cus_id)->get()->toArray();
-            if(trim($ftp)=='1'){
-                if($conn){
-                    ftp_login($conn,$customerinfo->ftp_user,$customerinfo->ftp_pwd);
-                    ftp_pasv($conn, 1);
-                    if(@ftp_chdir($conn,$this->customer) == FALSE){
-                        ftp_mkdir($conn,$this->customer);  
+            $pc_classify_ids=array();
+            $mobile_classify_ids=array();
+            $pc_article_ids=array();
+            $mobile_article_ids=array();
+            if($this->mobilepush){
+                $mindexhtml = $this->homgepagehtml('mobile');
+                $msearchhtml = $this->sendData('mobile');
+                $mobile_classify_ids = Classify::where('cus_id',$this->cus_id)->where('mobile_show',1)->lists('id');
+                $mobile_article_ids = Articles::where('cus_id',$this->cus_id)->where('mobile_show',1)->lists('id');
+            }
+            if($this->pcpush){
+                $indexhtml = $this->homgepagehtml('pc');
+                $searchhtml = $this->sendData('pc');
+                $pc_classify_ids = Classify::where('cus_id',$this->cus_id)->where('pc_show',1)->lists('id');
+                $pc_article_ids = Articles::where('cus_id',$this->cus_id)->where('pc_show',1)->lists('id');
+            }
+            $count = $this->htmlPagecount($pc_classify_ids,$mobile_classify_ids,$pc_article_ids,$mobile_article_ids);
+            $this->html_precent= 70/$count;
+            if($this->pcpush){
+                $categoryhtml = $this->categoryhtml($pc_classify_ids,'pc');
+                $articlehtml = $this->articlehtml($pc_classify_ids,'pc');
+            }
+            if($this->mobilepush){
+                $mcategoryhtml = $this->categoryhtml($mobile_classify_ids,'mobile');
+                $marticlehtml = $this->articlehtml($mobile_classify_ids,'mobile');
+            }
+            $this->percent = 20/$count;
+            $path = public_path('customers/'.$this->customer.'/'.$this->customer.'.zip');
+            if(file_exists($path)){
+                @unlink($path);
+            }
+            $zip = new ZipArchive;
+            if ($zip->open($path, ZipArchive::CREATE) === TRUE) {
+                if($this->pcpush){
+                    $zip->addFile($indexhtml,'index.html');
+                    $zip->addFile($searchhtml,'search.html');
+                    $zip->addFile(public_path('customers/'.$this->customer.'/article_data.json'),'article_data.json');
+                    $nowpercent = $this->percent + $this->lastpercent;
+                    if(floor($nowpercent)!=$this->lastpercent){
+                        echo floor($nowpercent) . '%<script type="text/javascript">parent.refresh(' . floor($nowpercent) . ');</script><br />';
+                        ob_flush();
+                        flush();
+                        $this->clearpushqueue();
                     }
-                    foreach((array)$del_imgs as $v){
-                        $this->delimg($v);
-                        @ftp_delete($conn,"/".$this->customer.'/images/l/'.$v['target'].'/'.$v['img']);
-                        @ftp_delete($conn,"/".$this->customer.'/images/s/'.$v['target'].'/'.$v['img']);
-                        @ftp_delete($conn,"/".$this->customer.'/mobile/images/l/'.$v['target'].'/'.$v['img']);
-                        @ftp_delete($conn,"/".$this->customer.'/mobile/images/s/'.$v['target'].'/'.$v['img']);
+                }
+                $this->lastpercent += 70+$this->percent;
+                if($this->mobilepush){
+                    $zip->addFile($mindexhtml,'mobile/index.html');
+                    $zip->addFile($msearchhtml,'mobile/search.html');
+                    $zip->addFile(public_path('customers/'.$this->customer.'/mobile/article_data.json'),'mobile/article_data.json');
+                    $nowpercent = $this->percent + $this->lastpercent;
+                    if(floor($nowpercent)!=floor($this->lastpercent)){
+                        echo floor($nowpercent) . '%<script type="text/javascript">parent.refresh(' . floor($nowpercent) . ');</script><br />';
+                        ob_flush();
+                        flush();
+                        $this->clearpushqueue();
                     }
-                    ImgDel::where('cus_id',$this->cus_id)->delete();
-                    if($pc!=''){
-                        @ftp_put($conn,"/".$this->customer."/search.php",public_path("packages/search.php"),FTP_ASCII);
-                        @ftp_put($conn,"/".$this->customer."/quickbar.json",public_path('customers/'.$this->customer.'/quickbar.json'),FTP_ASCII);
-                    }
-                    ftp_put($conn,"/".$this->customer."/site.zip",$path,FTP_BINARY);
-                    ftp_put($conn,"/".$this->customer."/unzip.php",public_path("packages/unzip.php"),FTP_ASCII);
-                    if($mobile!=''){
-                        ftp_put($conn,"/".$this->customer."/mobile/search.php",public_path("packages/search.php"),FTP_ASCII);
-                        if(@ftp_chdir($conn,"/".$this->customer."/mobile") == FALSE){
-                            ftp_mkdir($conn,"/".$this->customer."/mobile"); 
+                }
+                $this->lastpercent += $this->percent;
+                $zip->close();
+            }
+                if($this->pcpush){
+                    $this->compareZip($categoryhtml,$customer_data,'p','category',$path);
+                    $this->compareZip($articlehtml,$customer_data,'pf','detail',$path);
+                }
+                if($this->mobilepush){
+                    $this->compareZip($mcategoryhtml,$customer_data,'m','mobile/category',$path);
+                    $this->compareZip($marticlehtml,$customer_data,'mf','mobile/detail',$path);
+                }
+
+
+                if(90 > floor($this->lastpercent)) {
+                    echo '90%<script type="text/javascript">parent.refresh(90);</script><br />';
+                    ob_flush();
+                    flush();
+                    $this->clearpushqueue();
+                }
+            PushQueue::where('cus_id',  $this->cus_id)->delete();
+            $nextpush=PushQueue::where('push',0)->first();
+            if($nextpush){
+                PushQueue::where('id',$nextpush->id)->update(['push' => 1]);
+            }
+            if ($zip->open($path, ZipArchive::CREATE) === TRUE) {
+                if($this->pcpush){
+                    $pc_dir=  Template::where('website_info.cus_id',$this->cus_id)->Leftjoin('website_info','website_info.pc_tpl_id','=','template.id')->pluck('name');
+                    $aim_dir=public_path("templates/$pc_dir/");
+                    $this->addDir($aim_dir,$zip);
+                }
+                if($this->mobilepush){
+                    $mobile_dir=  Template::where('website_info.cus_id',$this->cus_id)->Leftjoin('website_info','template.id','=','website_info.mobile_tpl_id')->pluck('name');
+                    $maim_dir=public_path("templates/$mobile_dir/");
+                    $this->addDir($maim_dir,$zip,'mobile/');
+                }
+                $zip->close();
+                $data = serialize($customer_data);
+                if($new_data){
+                    $customerpushfile = new CustomerPushfile;
+                    $customerpushfile->cus_id = $this->cus_id;
+                    $customerpushfile->files = $data;
+                    $customerpushfile->save();
+                }
+                else{
+                    CustomerPushfile::where('cus_id',$this->cus_id)->update(['files'=>$data]);
+                }
+                $customerinfo = Customer::find($this->cus_id);
+                $ftp_array = explode(':',$customerinfo->ftp_address);
+                $port= $customerinfo->ftp_port;
+                $ftpdir=$customerinfo->ftp_dir;
+                $ftp=$customerinfo->ftp;
+                $ftp_array[1] = isset($ftp_array[1])?$ftp_array[1]:$port;
+                $conn = ftp_connect($ftp_array[0],$ftp_array[1]);
+                $del_imgs=ImgDel::where('cus_id',$this->cus_id)->get()->toArray();
+                if(trim($ftp)=='1'){
+                    if($conn){
+                        ftp_login($conn,$customerinfo->ftp_user,$customerinfo->ftp_pwd);
+                        ftp_pasv($conn, 1);
+                        if(@ftp_chdir($conn,$this->customer) == FALSE){
+                            ftp_mkdir($conn,$this->customer);  
                         }
-                        ftp_put($conn,"/".$this->customer."/mobile/quickbar.json",public_path('customers/'.$this->customer.'/mobile/quickbar.json'),FTP_ASCII);
+                        foreach((array)$del_imgs as $v){
+                            $this->delimg($v);
+                            @ftp_delete($conn,"/".$this->customer.'/images/l/'.$v['target'].'/'.$v['img']);
+                            @ftp_delete($conn,"/".$this->customer.'/images/s/'.$v['target'].'/'.$v['img']);
+                            @ftp_delete($conn,"/".$this->customer.'/mobile/images/l/'.$v['target'].'/'.$v['img']);
+                            @ftp_delete($conn,"/".$this->customer.'/mobile/images/s/'.$v['target'].'/'.$v['img']);
+                        }
+                        ImgDel::where('cus_id',$this->cus_id)->delete();
+                        if($this->pcpush){
+                            @ftp_put($conn,"/".$this->customer."/search.php",public_path("packages/search.php"),FTP_ASCII);
+                            //@ftp_put($conn,"/".$this->customer."/quickbar.json",public_path('customers/'.$this->customer.'/quickbar.json'),FTP_ASCII);
+                        }
+                        ftp_put($conn,"/".$this->customer."/site.zip",$path,FTP_BINARY);
+                        ftp_put($conn,"/".$this->customer."/unzip.php",public_path("packages/unzip.php"),FTP_ASCII);
+                        if($this->mobilepush){
+                            ftp_put($conn,"/".$this->customer."/mobile/search.php",public_path("packages/search.php"),FTP_ASCII);
+                            if(@ftp_chdir($conn,"/".$this->customer."/mobile") == FALSE){
+                                ftp_mkdir($conn,"/".$this->customer."/mobile"); 
+                            }
+                            //ftp_put($conn,"/".$this->customer."/mobile/quickbar.json",public_path('customers/'.$this->customer.'/mobile/quickbar.json'),FTP_ASCII);
+                        }
+                        ftp_close($conn);
                     }
-                    ftp_close($conn);
+                }else{
+                    if($conn){
+                        ftp_login($conn,$customerinfo->ftp_user,$customerinfo->ftp_pwd);
+                        ftp_pasv($conn, 1);
+                        foreach((array)$del_imgs as $v){
+                            $this->delimg($v);
+                            @ftp_delete($conn,$ftpdir.'/images/l/'.$v['target'].'/'.$v['img']);
+                            @ftp_delete($conn,$ftpdir.'/images/s/'.$v['target'].'/'.$v['img']);
+                            @ftp_delete($conn,$ftpdir.'/mobile/images/l/'.$v['target'].'/'.$v['img']);
+                            @ftp_delete($conn,$ftpdir.'/mobile/images/s/'.$v['target'].'/'.$v['img']);
+                        }
+                        ImgDel::where('cus_id',$this->cus_id)->delete();
+                        if($this->pcpush){
+                            ftp_put($conn,$ftpdir."/search.php",public_path("packages/search.php"),FTP_ASCII);
+                            //ftp_put($conn,$ftpdir."/quickbar.json",public_path('customers/'.$this->customer.'/quickbar.json'),FTP_ASCII);
+                        }
+                        ftp_put($conn,$ftpdir."/unzip.php",public_path("packages/unzip.php"),FTP_ASCII);
+                        ftp_put($conn,$ftpdir."/site.zip",$path,FTP_BINARY);
+                        if($this->mobilepush){
+                            ftp_put($conn,$ftpdir."/mobile/search.php",public_path("packages/search.php"),FTP_ASCII);
+                            //ftp_put($conn,$ftpdir."/mobile/quickbar.json",public_path('customers/'.$this->customer.'/mobile/quickbar.json'),FTP_ASCII);
+                        }
+                        ftp_close($conn);
+                    }
                 }
-            }else{
-                if($conn){
-                    ftp_login($conn,$customerinfo->ftp_user,$customerinfo->ftp_pwd);
-                    ftp_pasv($conn, 1);
-                    foreach((array)$del_imgs as $v){
-                        $this->delimg($v);
-                        @ftp_delete($conn,$ftpdir.'/images/l/'.$v['target'].'/'.$v['img']);
-                        @ftp_delete($conn,$ftpdir.'/images/s/'.$v['target'].'/'.$v['img']);
-                        @ftp_delete($conn,$ftpdir.'/mobile/images/l/'.$v['target'].'/'.$v['img']);
-                        @ftp_delete($conn,$ftpdir.'/mobile/images/s/'.$v['target'].'/'.$v['img']);
-                    }
-                    ImgDel::where('cus_id',$this->cus_id)->delete();
-                    if($pc!=''){
-                        ftp_put($conn,$ftpdir."/search.php",public_path("packages/search.php"),FTP_ASCII);
-                        ftp_put($conn,$ftpdir."/quickbar.json",public_path('customers/'.$this->customer.'/quickbar.json'),FTP_ASCII);
-                    }
-                    ftp_put($conn,$ftpdir."/unzip.php",public_path("packages/unzip.php"),FTP_ASCII);
-                    ftp_put($conn,$ftpdir."/site.zip",$path,FTP_BINARY);
-                    if($mobile!=''){
-                        ftp_put($conn,$ftpdir."/mobile/search.php",public_path("packages/search.php"),FTP_ASCII);
-                        ftp_put($conn,$ftpdir."/mobile/quickbar.json",public_path('customers/'.$this->customer.'/mobile/quickbar.json'),FTP_ASCII);
-                    }
-                    ftp_close($conn);
+
+                $this->folderClear();
+                echo '100%<script type="text/javascript">parent.refresh(100);</script><br />';
+                Classify::where('cus_id',$this->cus_id)->where('pushed','>',0)->update(['pushed'=>0]);
+                Articles::where('cus_id',$this->cus_id)->where('pushed','>',0)->update(['pushed'=>0]);
+                WebsiteConfig::where('cus_id',$this->cus_id)->update(['pushed'=>0]);
+                WebsiteInfo::where('cus_id',$this->cus_id)->update(['pushed'=>0]);
+                MobileHomepage::where('cus_id',$this->cus_id)->update(['pushed'=>0]);
+                CustomerInfo::where('cus_id', $this->cus_id)->update(['pushed' => 0,'lastpushtime'=>date('Y-m-d H:i:s',time())]);//date('Y-m-d H:i:s',time())
+                 /**
+                * pc使用本服务器自带域名推送，后期需要改进！
+                */
+                $weburl=Customer::where('id',$this->cus_id)->pluck('weburl');
+                $suf_url=str_replace('http://c', '', $weburl);
+                $cus_name =strtolower( Customer::where('id',$this->cus_id)->pluck('name'));
+                if(trim($ftp)=='1'){
+                    $ftp_pcdomain="http://".$cus_name.$suf_url;
                 }
+                else{
+                    $ftp_pcdomain=$customerinfo->pc_domain;
+                }
+                @file_get_contents("$ftp_pcdomain/unzip.php");
+            } 
+            else {
+                echo '打包失败';
             }
-           
-            $this->folderClear();
+            ob_end_flush();
+        }else{
             echo '100%<script type="text/javascript">parent.refresh(100);</script><br />';
-            Classify::where('cus_id',$this->cus_id)->where('pushed',1)->update(['pushed'=>0]);
-            Articles::where('cus_id',$this->cus_id)->where('pushed',1)->update(['pushed'=>0]);
+            Classify::where('cus_id',$this->cus_id)->where('pushed','>',0)->update(['pushed'=>0]);
+            Articles::where('cus_id',$this->cus_id)->where('pushed','>',0)->update(['pushed'=>0]);
+            WebsiteConfig::where('cus_id',$this->cus_id)->update(['pushed'=>0]);
+            WebsiteInfo::where('cus_id',$this->cus_id)->update(['pushed'=>0]);
+            MobileHomepage::where('cus_id',$this->cus_id)->update(['pushed'=>0]);
             CustomerInfo::where('cus_id', $this->cus_id)->update(['pushed' => 0,'lastpushtime'=>date('Y-m-d H:i:s',time())]);//date('Y-m-d H:i:s',time())
-             /**
-            * pc使用本服务器自带域名推送，后期需要改进！
-            */
-            $weburl=Customer::where('id',$this->cus_id)->pluck('weburl');
-            $suf_url=str_replace('http://c', '', $weburl);
-            $cus_name =strtolower( Customer::where('id',$this->cus_id)->pluck('name'));
-            if(trim($ftp)=='1'){
-                $ftp_pcdomain="http://".$cus_name.$suf_url;
-            }
-            else{
-                $ftp_pcdomain=$customerinfo->pc_domain;
-            }
-            @file_get_contents("$ftp_pcdomain/unzip.php");
-        } 
-        else {
-            echo '打包失败';
+            ob_end_flush();
         }
-        ob_end_flush();
     }
     
     /**
@@ -884,12 +1030,16 @@ class HtmlController1 extends BaseController{
     /**
      * 判断一个用户是否需要推送并返回修改的次数
      */
-    public function isNeedPush(){
-        $count = Classify::where('cus_id',$this->cus_id)->where('pushed',1)->count();
-        $count += Articles::where('cus_id',$this->cus_id)->where('pushed',1)->count();
-        $data_final = ['err'=>0,'msg'=>'','data'=>['cache_num'=>$count]];
-        return Response::json($data_final);
-    }
+    public function isNeedPush() {
+		$count = Classify::where('cus_id', $this->cus_id)->where('pushed','>',0)->count();
+		$count += Articles::where('cus_id', $this->cus_id)->where('pushed','>',0)->count();
+                $count +=WebsiteConfig::where('cus_id', $this->cus_id)->where('pushed','>',0)->count();
+                $count +=WebsiteInfo::where('cus_id', $this->cus_id)->where('pushed','>',0)->count();
+                $count +=MobileHomepage::where('cus_id', $this->cus_id)->where('pushed','>',0)->count();
+                $count +=CustomerInfo::where('cus_id', $this->cus_id)->where('pushed','>',0)->count();
+		$data_final = ['err' => 0, 'msg' => '', 'data' => ['cache_num' => $count]];
+		return Response::json($data_final);
+	}
     
     /**
     * 生成搜索页面

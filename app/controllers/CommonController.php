@@ -93,10 +93,10 @@ class CommonController extends BaseController {
 			$QuickData->template_id = 0;
 			$QuickData->key = 'quickbar';
 		}
+                $QuickData->pushed=1;
 		$QuickData->value = $QuickBar;
 		$result = $QuickData->save();
 		if ($result) {
-                    CustomerInfo::where('cus_id',$cus_id)->update(['pushed'=>1]);
                         if($org_img!=$vx_bar_img){
                             $imgdel=new ImgDel();
                             $imgdel->mysave($org_img,'common');

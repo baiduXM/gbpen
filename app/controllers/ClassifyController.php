@@ -96,6 +96,7 @@ class ClassifyController extends BaseController {
 			}
 		}
 		if (!$failed) {
+                        CustomerInfo::where('cus_id',$cus_id)->update(['pushed'=>1]);
 			$result = ['err' => 0, 'msg' => '', 'data' => $success];
 		} else {
 			$result = ['err' => 1001, 'msg' => '删除栏目失败'];
@@ -292,6 +293,22 @@ class ClassifyController extends BaseController {
 		$classify = Classify::where('id', $id)->where('cus_id', $cus_id)->first();
 		if (in_array($operate, $operate_array)) {
 			$update = [$operate => $value];
+                        if($operate=='pc_show'){
+                            $pushed = websiteInfo::where('cus_id', $cus_id)->pluck('pushed');
+                            if($pushed==1||$pushed=='3'){
+                                $pushed=1;
+                            }else{
+                                $pushed=2;
+                            }
+                        }else if($operate=='mobile_show'){
+                            $pushed = websiteInfo::where('cus_id', $cus_id)->pluck('pushed');
+                            if($pushed==1||$pushed=='2'){
+                                $pushed=1;
+                            }else{
+                                $pushed=3;
+                            }
+                        }
+                        websiteInfo::where('cus_id', $cus_id)->update(['pushed'=>$pushed]);
 			if (!$value) {
 				$this->closeChildClassify($id, $update, $operate);
 				if (Classify::where('id', $id)->where('cus_id', $cus_id)->update($update)) {
