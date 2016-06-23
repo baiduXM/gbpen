@@ -154,6 +154,7 @@ class ArticleController extends BaseController {
 	}
 
 	public function articleManage() {
+                $customer=Auth::user()->name;
 		$data = [];
 		$classify = new classify;
 		$data['catlist'] = $classify->classifyList();
@@ -161,6 +162,7 @@ class ArticleController extends BaseController {
 		$c_id = Input::has('c_id') ? Input::get('c_id') : 0;
 		$is_star = Input::has('is_star') ? Input::get('is_star') : 0;
 		$data['aticlelist'] = $this->articleListData($c_id, $is_star, $per_page);
+                $data['source_dir'] = asset("customers/$customer/images/s/articles") . '/';
 		return Response::json(['err' => 0, 'msg' => '', 'data' => $data]);
 	}
 
