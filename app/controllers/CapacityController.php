@@ -18,6 +18,9 @@ class CapacityController extends BaseController {
             "capacity_free" => $size
         );
         $flag = CustomerInfo::where('cus_id', $cus_id)->update($data);
+        if ($flag) {
+            return true; //初始化成功
+        }
     }
 
     /**

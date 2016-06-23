@@ -165,8 +165,11 @@ class UploadController extends BaseController {
         $files = explode(',', ltrim(Input::get('files'), ','));
         $dir = public_path('customers/' . $customer . '/cache_images/');
         $img_size = Input::get('imgsize') ? Input::get('imgsize') : 400;
-        var_dump($files);
-        exit;
+        $capacityC = new CapacityController();
+        $flag = $capacityC->deduct($img_size); //===扣除空间容量===
+        if ($flag) {
+            
+        }
         $destinationPath = public_path('customers/' . $customer . '/images/');
         $weburl = Customer::where('id', $cus_id)->pluck('weburl');
         $suf_url = str_replace('http://c', '', $weburl);
