@@ -8,55 +8,40 @@
 class CapacityController extends BaseController {
 
     /**
-     * 初始化空间
+     * 改变空间容量
+     * @param type $capacity_free
+     * @param type $size
+     * @param type $way free/deduct
+     * @return boolean
      */
-    public function init($size = 0) {
+    public function change_capa($capacity_free = 0, $size = 0, $way = 'free') {
         $cus_id = Auth::id();
-        $customer = Auth::user()->name;
-        $data = array(
-            "capacity" => $size,
-            "capacity_free" => $size
-        );
-        $flag = CustomerInfo::where('cus_id', $cus_id)->update($data);
-        if ($flag) {
-            return true; //初始化成功
+        if ($way == 'free') {
+            $data = array(
+                "capacity_free" => $capacity_free + $size,
+            );
+        } elseif ($way == 'deduct') {
+            $data = array(
+                "capacity_free" => $capacity_free - $size,
+            );
         }
-    }
-
-    /**
-     * 释放空间(删除图片)
-     * @param type $param
-     */
-    public function free($size = 0) {
-        $cus_id = Auth::id();
-        $customer_info = CustomerInfo::where('cus_id', $cus_id)->first();
-        $capacity_free = $customer_info->capacity_free;
-        $data = array(
-            "capacity_free" => $capacity_free + $size,
-        );
-        $flag = CustomerInfo::where('cus_id', $cus_id)->update($data);
-        if ($flag) {
-            return true; //释放成功
-        }
-    }
-
-    /**
-     * 扣除空间（上传图片）
-     */
-    public function deduct($size = 0) {
-        $cus_id = Auth::id();
-        $customer_info = CustomerInfo::where('cus_id', $cus_id)->first();
-        $capacity_free = $customer_info->capacity_free;
-        if ($capacity_free - $size < 0) {
-            return false; //图片尺寸过大，无法上传
-        }
-        $data = array(
-            "capacity_free" => $capacity_free - $size,
-        );
         $flag = CustomerInfo::where('cus_id', $cus_id)->update($data);
         if ($flag) {
             return true; //扣除成功
         }
+    }
+
+    /**
+     * 格式转换
+     * b=>kb=>mb=>gb
+     * 1 2 3 4
+     */
+    public function format_bytes($size) {
+        $units = array(' B', ' KB', ' MB', ' GB', ' TB');
+        for ($i = 0; $size >= 1024 && $i < 4; $i++) {
+            $size /= 1024;
+        }
+        return round($size, 2) . $units[$i];
     }
 
 }

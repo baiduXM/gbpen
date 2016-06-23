@@ -73,6 +73,8 @@ class ApiController extends BaseController {
                 $update['mobile_tpl_num'] = trim(Input::get('mobile_tpl_id'));
             }
             $update['stage'] = trim(Input::get('stage'));
+            $update['capacity'] = Input::get('capacity') ? trim(Input::get('capacity')) : 0;
+            $update['capacity_free'] = Input::get('capacity') ? trim(Input::get('capacity')) : 0;
             $update['ftp'] = trim(Input::get('ftp'));
             $update['ftp_port'] = trim(Input::get('ftp_port'));
             $update['ftp_dir'] = trim(Input::get('ftp_dir'));
@@ -115,8 +117,6 @@ class ApiController extends BaseController {
                     $result = ['err' => 1002, 'msg' => '更新用户失败'];
                 }
             } else {
-
-                //print_r($_POST);exit;
                 //增加操作
                 $update['password'] = Hash::make($update['name']);
                 $insert_id = Customer::insertGetId($update);
