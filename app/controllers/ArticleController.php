@@ -33,7 +33,6 @@ class ArticleController extends BaseController {
 		} else {
 			//新增操作
 			$article = new Articles();
-                        $article->pushed = 1;
 		}
 		$cus_id = Auth::id();
 		$article->title = trim(Input::get('title'));
@@ -73,6 +72,7 @@ class ArticleController extends BaseController {
 			$article->created_at = date('Y-m-d H:i:s', strtotime($pubdate));
 		}
 		$article->cus_id = $cus_id;
+                $article->pushed = 1;
 		$result = $article->save();
 		if ($result) {
 			if ($id) {
