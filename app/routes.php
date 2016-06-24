@@ -423,14 +423,6 @@ Route::group(array('before' => 'auth'), function() {
         'uses' => 'FormController@submitFormUserdata'
     ]);
     //===万用表单end===
-    //===容量条start===
-    Route::any('capacity-free/{size?}', [//释放空间
-        'uses' => 'CustomerController@free'
-    ]);
-    Route::any('capacity/{size?}', [//扣除空间
-        'uses' => 'CustomerController@deduct'
-    ]);
-    //===容量条end===
     //-----------留言板--------
     Route::get('feedback-data', [//获取表单数据
         'uses' => 'FeedbackController@getFeedbackData'

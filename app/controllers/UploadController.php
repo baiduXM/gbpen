@@ -8,8 +8,6 @@ class UploadController extends BaseController {
         $target = Input::get('target');
         $this->check_dir($target, $customer);
         $files = Input::file();
-        var_dump($files);
-        exit;
         $img_size = Input::get('imgsize') ? Input::get('imgsize') : 800;
         $destinationPath = public_path('customers/' . $customer . '/images/');
         if ($files) {
@@ -180,8 +178,10 @@ class UploadController extends BaseController {
             $domain = $customerinfo->pc_domain ? $customerinfo->pc_domain : ($customer . $weburl);
             $ftp_array[1] = isset($ftp_array[1]) ? $ftp_array[1] : $port;
             $conn = ftp_connect($ftp_array[0], $ftp_array[1]);
+            $size = 0; //===文件大小
             foreach ((array) $files as $fileName) {
                 if (file_exists(public_path('customers/' . $customer . '/cache_images/' . $fileName))) {
+                    $size += filesize(public_path('customers/' . $customer . '/cache_images/' . $fileName)); //===累加文件大小
                     $file = explode('.', $fileName);
                     $type = end($file);
                     $up_result = copy(public_path('customers/' . $customer . '/cache_images/' . $fileName), $destinationPath . '/l/' . $target . '/' . $fileName);
@@ -224,9 +224,9 @@ class UploadController extends BaseController {
             }
             @ftp_close($conn);
             //===扣除用户空间容量===
-            //TODO
-
-            return Response::json(['err' => 0, 'msg' => '', 'data' => $data]);
+            $cus = new CustomerController;
+            $cus->change_capa($size, 'deduct');
+            return Response::json(['err' => 0, 'msg' => $size, 'data' => $data]);
         } else {
             return Response::json(['err' => 1001, 'msg' => '保存失败']);
         }

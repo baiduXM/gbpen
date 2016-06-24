@@ -21,8 +21,10 @@ class CustomerController extends BaseController {
         $suf_url = str_replace('http://c', '', $weburl);
         $customer_info = CustomerInfo::where('cus_id', $cus_id)->first();
         $data['company_name'] = $customer_info->company;
-        $data['capacity'] = $customer_info->capacity ? $customer_info->capacity : 0;
-        $data['capacityfree'] = $customer_info->capacity_free;
+        //===格式化容量===
+        $data['capacity'] = $this->format_bytes($customer_info->capacity);
+        $data['capacity_use'] = $this->format_bytes($customer_info->capacity_free);
+        $data['free_percent'] = round(($customer_info->capacity_free / $customer_info->capacity) * 100, 2);
         $domain_pc = $customer_info->pc_domain;
         $data['domain_pc'] = str_replace('http://', '', $domain_pc);
         $domain_m = $customer_info->mobile_domain;
@@ -188,18 +190,19 @@ class CustomerController extends BaseController {
 
     /**
      * 改变空间容量
-     * @param type $capacity_free
-     * @param type $size
-     * @param type $way free/deduct
+     * @param type $size    图片大小
+     * @param type $way     释放free/占用occupy
      * @return boolean
      */
-    public function change_capa($capacity_free = 0, $size = 0, $way = 'free') {
+    public function change_capa($size = 0, $way = 'free') {
         $cus_id = Auth::id();
+        $capacity_free = CustomerInfo::where('cus_id', $cus_id)->pluck('capacity_free');
+        var_dump($capacity_free)
         if ($way == 'free') {
             $data = array(
                 "capacity_free" => $capacity_free + $size,
             );
-        } elseif ($way == 'deduct') {
+        } elseif ($way == 'occupy') {
             $data = array(
                 "capacity_free" => $capacity_free - $size,
             );

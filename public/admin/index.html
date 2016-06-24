@@ -33,9 +33,9 @@
                     <a href="#/user"><p class="fr clearfix" ng-bind-template="欢迎，{{ companyname}}" ></p></a>
                     <!--容量条-->
                     <div class="fr clearfix" style="font-size: 10px;color:#7c6154;margin-top: 0px;" >
-                        剩余容量/总容量：{{capacityremain}}MB/{{capacity}}MB
+                        剩余容量/总容量：{{capacity_free}}/{{capacity}}
                         <div style="width: 100px; height: 9px; background: red; display: inline-block;">
-                            <div style="width: 30%;background: blue; height: 9px;"></div>
+                            <div style="width: {{free_percent}}%;background: blue; height: 9px;"></div>
                         </div>
                     </div>
                 </div>
