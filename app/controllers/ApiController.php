@@ -73,8 +73,8 @@ class ApiController extends BaseController {
                 $update['mobile_tpl_num'] = trim(Input::get('mobile_tpl_id'));
             }
             $update['stage'] = trim(Input::get('stage'));
-            $update['capacity'] = Input::get('capacity') ? trim(Input::get('capacity')) : 0;
-            $update['capacity_free'] = Input::get('capacity') ? trim(Input::get('capacity')) : 0;
+            $update['capacity'] = Input::get('capacity') ? trim(Input::get('capacity')) : 300 * 1024 * 1024; //300MB
+            $update['capacity_free'] = $update['capacity'];
             $update['ftp'] = trim(Input::get('ftp'));
             $update['ftp_port'] = trim(Input::get('ftp_port'));
             $update['ftp_dir'] = trim(Input::get('ftp_dir'));
@@ -120,13 +120,11 @@ class ApiController extends BaseController {
                 //增加操作
                 $update['password'] = Hash::make($update['name']);
                 $insert_id = Customer::insertGetId($update);
-
                 if ($insert_id) {
                     $pc_id = Template::where('tpl_num', $update['pc_tpl_num'])->where('type', 1)->pluck('id');
                     $mobile_id = Template::where('tpl_num', $update['mobile_tpl_num'])->where('type', 2)->pluck('id');
-
                     WebsiteInfo::insert(['cus_id' => $insert_id, 'pc_tpl_id' => $pc_id, 'mobile_tpl_id' => $mobile_id]);
-                    CustomerInfo::insert(['cus_id' => $insert_id, 'pc_domain' => $update['pc_domain'], 'mobile_domain' => $update['mobile_domain']]);
+                    CustomerInfo::insert(['cus_id' => $insert_id, 'pc_domain' => $update['pc_domain'], 'mobile_domain' => $update['mobile_domain'], 'capacity' => $update['capacity'], 'capacity_free' => $update['capacity_free']]);
 
                     //创建客户目录
                     mkdir(public_path('customers/' . $update['name']));

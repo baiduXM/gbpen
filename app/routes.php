@@ -425,10 +425,10 @@ Route::group(array('before' => 'auth'), function() {
     //===万用表单end===
     //===容量条start===
     Route::any('capacity-free/{size?}', [//释放空间
-        'uses' => 'CapacityController@free'
+        'uses' => 'CustomerController@free'
     ]);
-    Route::any('capacity-deduct/{size?}', [//扣除空间
-        'uses' => 'CapacityController@deduct'
+    Route::any('capacity/{size?}', [//扣除空间
+        'uses' => 'CustomerController@deduct'
     ]);
     //===容量条end===
     //-----------留言板--------
