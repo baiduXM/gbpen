@@ -131,7 +131,8 @@ function articleController($scope, $http ,$location) {
                 $('body').append('<img id="imgpre" style="display:none;width:100px;" src="images/logo.png" />');
                 $('tr .tit_info').mouseover(function(e){
                     var x = e.pageX;
-                    var y = e.pageY;
+                    var y = e.pageY-$('body').scrollTop();
+                    
                     var imgpre=$(this).children("input").val();
                     if(imgpre.length){
                          $('#imgpre').show();
