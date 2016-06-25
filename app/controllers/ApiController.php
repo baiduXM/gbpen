@@ -10,7 +10,7 @@ class ApiController extends BaseController {
         $timemap = Input::get('timemap');
         $data = md5(md5($timemap));
         $url = Config::get('url.DL_domain');
-        $token = file_get_contents('http://dl.5067.org/?module=ApiModel&action=GetHandShake&num=' . $data);
+        $token = file_get_contents('http://dl2.5067.org/?module=ApiModel&action=GetHandShake&num=' . $data);
         $taget = Input::get('taget');
         $string = $token . $data;
         if (md5($string) == $taget) {
@@ -82,8 +82,8 @@ class ApiController extends BaseController {
             $update['ended_at'] = trim(Input::get('ended_at'));
             $update['status'] = Input::get('status');
             $update['customization'] = Input::get('customization');
-            //===不能用update数组，因为Customer表中没有capacity/capacity_free字段===
-            $tmpdate['capacity'] = Input::get('capacity') ? trim(Input::get('capacity')) : 300 * 1024 * 1024; //默认100MB
+            //===不能用update数组，因为Customer表中没有capacity/capacity_use字段===
+            $capacity = Input::get('capacity') ? trim(Input::get('capacity')) : 100 * 1024 * 1024; //默认100MB
             $cus_id = Customer::where('name', $update['name'])->pluck('id');
             if ($cus_id) {
                 //修改操作
@@ -105,7 +105,7 @@ class ApiController extends BaseController {
                 }
                 //WebsiteInfo::where('cus_id',$cus_id)->update(['pc_tpl_id'=>$pc_id,'mobile_tpl_id'=>$mobile_id]);
                 //===更新CustomerInfo时，更新capacity字段===
-                CustomerInfo::where('cus_id', $cus_id)->update(['pc_domain' => $update['pc_domain'], 'mobile_domain' => $update['mobile_domain'], 'capacity' => $tmpdate['capacity']]);
+                CustomerInfo::where('cus_id', $cus_id)->update(['pc_domain' => $update['pc_domain'], 'mobile_domain' => $update['mobile_domain'], 'capacity' => $capacity]);
 
                 if ($update['stage'] != $coustomer_old['stage'] or $update['pc_domain'] != $coustomer_old['pc_domain'] or $update['mobile_domain'] != $coustomer_old['mobile_domain']) {
                     $common = new CommonController();
@@ -125,7 +125,7 @@ class ApiController extends BaseController {
                     $pc_id = Template::where('tpl_num', $update['pc_tpl_num'])->where('type', 1)->pluck('id');
                     $mobile_id = Template::where('tpl_num', $update['mobile_tpl_num'])->where('type', 2)->pluck('id');
                     WebsiteInfo::insert(['cus_id' => $insert_id, 'pc_tpl_id' => $pc_id, 'mobile_tpl_id' => $mobile_id]);
-                    CustomerInfo::insert(['cus_id' => $insert_id, 'pc_domain' => $update['pc_domain'], 'mobile_domain' => $update['mobile_domain'], 'capacity' => $tmpdate['capacity'], 'capacity_use' => 0]);
+                    CustomerInfo::insert(['cus_id' => $insert_id, 'pc_domain' => $update['pc_domain'], 'mobile_domain' => $update['mobile_domain'], 'capacity' => $capacity, 'capacity_use' => 0]);
 
                     //创建客户目录
                     mkdir(public_path('customers/' . $update['name']));
