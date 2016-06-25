@@ -162,7 +162,7 @@ class UploadController extends BaseController {
         $this->check_dir($target, $customer);
         $files = explode(',', ltrim(Input::get('files'), ','));
         $dir = public_path('customers/' . $customer . '/cache_images/');
-        $img_size = Input::get('imgsize') ? Input::get('imgsize') : 400;
+        $img_size = Input::get('imgsize') ? Input::get('imgsize') : 400;//===
         $destinationPath = public_path('customers/' . $customer . '/images/');
         $weburl = Customer::where('id', $cus_id)->pluck('weburl');
         $suf_url = str_replace('http://c', '', $weburl);
@@ -181,7 +181,7 @@ class UploadController extends BaseController {
             $size = 0; //===文件大小
             foreach ((array) $files as $fileName) {
                 if (file_exists(public_path('customers/' . $customer . '/cache_images/' . $fileName))) {
-                    $size += filesize(public_path('customers/' . $customer . '/cache_images/' . $fileName)); //===累加文件大小
+//                    $size += filesize(public_path('customers/' . $customer . '/cache_images/' . $fileName)); //===累加文件大小
                     $file = explode('.', $fileName);
                     $type = end($file);
                     $up_result = copy(public_path('customers/' . $customer . '/cache_images/' . $fileName), $destinationPath . '/l/' . $target . '/' . $fileName);
@@ -225,8 +225,12 @@ class UploadController extends BaseController {
             @ftp_close($conn);
             //===扣除用户空间容量===
             $cus = new CustomerController;
-            $cus->change_capa($size, 'deduct');
-            return Response::json(['err' => 0, 'msg' => $size, 'data' => $data]);
+            if ($cus->change_capa($size, 'use')) {
+                $msg = '';
+            } else {
+                $msg = '空间扣除失败';
+            }
+            return Response::json(['err' => 0, 'msg' => $msg, 'data' => $data]);
         } else {
             return Response::json(['err' => 1001, 'msg' => '保存失败']);
         }

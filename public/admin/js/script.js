@@ -189,7 +189,7 @@ mainApp.controller('memberController', function ($scope, $http) {
             $scope.companyname = json.data.company_name;
             $scope.capacity = json.data.capacity;
             $scope.capacity_free = json.data.capacity_free;
-            $scope.free_percent = json.data.free_percent;
+            $scope.use_percent = json.data.use_percent;
             $scope.$parent.domain_pc = json.data.domain_pc;
             if (json.data.domain_m == '' || json.data.domain_m == null) {
                 $scope.$parent.phonepreview = false;

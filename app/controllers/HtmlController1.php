@@ -282,6 +282,7 @@ class HtmlController1 extends BaseController{
      */
     private function delimg($v){
         $pc_Path = public_path('customers/'.$this->customer.'/images/');
+        
         $mobile_Path=public_path('customers/'.$this->customer.'/mobile/images/');
         $filepath=$pc_Path.'/s/'.$v['target'].'/'.$v['img'];
         if(file_exists($filepath)){
@@ -299,6 +300,7 @@ class HtmlController1 extends BaseController{
         if(file_exists($filepath)){
             @unlink($filepath);
         }
+        
     }
     /**
      * cache_images文件夹清空

@@ -23,8 +23,8 @@ class CustomerController extends BaseController {
         $data['company_name'] = $customer_info->company;
         //===格式化容量===
         $data['capacity'] = $this->format_bytes($customer_info->capacity);
-        $data['capacity_use'] = $this->format_bytes($customer_info->capacity_free);
-        $data['free_percent'] = round(($customer_info->capacity_free / $customer_info->capacity) * 100, 2);
+        $data['capacity_free'] = $this->format_bytes($customer_info->capacity - $customer_info->capacity_use);
+        $data['use_percent'] = round(($customer_info->capacity_use / $customer_info->capacity) * 100, 2);
         $domain_pc = $customer_info->pc_domain;
         $data['domain_pc'] = str_replace('http://', '', $domain_pc);
         $domain_m = $customer_info->mobile_domain;
@@ -191,25 +191,26 @@ class CustomerController extends BaseController {
     /**
      * 改变空间容量
      * @param type $size    图片大小
-     * @param type $way     释放free/占用occupy
+     * @param type $way     释放free/占用use
      * @return boolean
      */
-    public function change_capa($size = 0, $way = 'free') {
+    public function change_capa($size = 0, $way = 'use') {
         $cus_id = Auth::id();
-        $capacity_free = CustomerInfo::where('cus_id', $cus_id)->pluck('capacity_free');
-        var_dump($capacity_free)
+        $capacity_use = CustomerInfo::where('cus_id', $cus_id)->pluck('capacity_use');
         if ($way == 'free') {
             $data = array(
-                "capacity_free" => $capacity_free + $size,
+                "capacity_use" => $capacity_use - $size,
             );
-        } elseif ($way == 'occupy') {
+        } elseif ($way == 'use') {
             $data = array(
-                "capacity_free" => $capacity_free - $size,
+                "capacity_use" => $capacity_use + $size,
             );
         }
         $flag = CustomerInfo::where('cus_id', $cus_id)->update($data);
         if ($flag) {
             return true; //扣除成功
+        } else {
+            return false;
         }
     }
 
