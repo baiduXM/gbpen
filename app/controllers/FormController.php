@@ -640,6 +640,17 @@ class FormController extends BaseController {
         $css = '<link rel="stylesheet" href="http://swap.5067.org/js/laydate/need/laydate.css">';
         $css .='<link rel="stylesheet" href="http://swap.5067.org/css/universal-form.css">';
         $js = '<script src="http://swap.5067.org/js/laydate/laydate.js"></script>';
+        $js .= '<script src="http://swap.5067.org/js/universal-form.js"></script>';
+//        $js .= '<script src="/public/admin/js/universal-form.js"></script>';
+//        $js .= '<script src="/public/admin/js/jquery.validate.min.js"></script>';
+//        $js .= '<script>';
+//        $js .= "
+//               var element = $('.fv-as-description');
+//     var temp =  element.text().replace(//\n/g,'<br/>');
+//     element.html(temp);
+//                
+//                ";
+//        $js .= '</script>';
         return $css . $js;
     }
 
