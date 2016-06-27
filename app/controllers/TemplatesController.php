@@ -296,6 +296,13 @@ class TemplatesController extends BaseController {
         $mod_imgs = array();
         $cus_id = Auth::id();
         $template_id = websiteInfo::where('cus_id', $cus_id)->pluck('pc_tpl_id');
+        $pushed = websiteInfo::where('cus_id', $cus_id)->pluck('pushed');
+        if($pushed==1||$pushed=='3'){
+            $pushed=1;
+        }else{
+            $pushed=2;
+        }
+        websiteInfo::where('cus_id', $cus_id)->update(['pushed'=>$pushed]);
         $website_config = new WebsiteConfig();
         $website_config->cus_id = $cus_id;
         $page = Input::get('page');
@@ -348,7 +355,6 @@ class TemplatesController extends BaseController {
             $result = $website_config->save();
         }
         if ($result) {
-            CustomerInfo::where('cus_id', $cus_id)->update(['pushed' => 1]);
             foreach ((array) $org_imgs as $v) {
                 if (!in_array($v, (array) $mod_imgs)) {
                     $imgdel = new ImgDel();
@@ -450,6 +456,13 @@ class TemplatesController extends BaseController {
         $org_imgs = array();
         $mod_imgs = array();
         $template_id = WebsiteInfo::where('cus_id', $cus_id)->pluck('mobile_tpl_id');
+        $pushed = websiteInfo::where('cus_id', $cus_id)->pluck('pushed');
+        if($pushed==1||$pushed=='2'){
+            $pushed=1;
+        }else{
+            $pushed=3;
+        }
+        websiteInfo::where('cus_id', $cus_id)->update(['pushed'=>$pushed]);
         $data = Input::all();
         $input_keys = array_keys($data);
         $config_str = WebsiteConfig::where('cus_id', $cus_id)->where('type', 2)->where('template_id', $template_id)->pluck('value');
@@ -540,6 +553,7 @@ class TemplatesController extends BaseController {
                     $classify->cus_id = $cus_id;
                 }
                 $classify->s_sort = $list['indexs'];
+                $classify->pushed = 1;
                 $result = $classify->save();
                 if (!$result) {
                     $data[] = $list['id'];
@@ -584,6 +598,7 @@ class TemplatesController extends BaseController {
                 if ($show_type != NULL) {
                     $m_i_config->m_index_showtype = $show_type;
                 }
+                $m_i_config->pushed = 1;
                 $result = $m_i_config->save();
                 if ($result) {
                     $data[] = $id;
@@ -615,6 +630,7 @@ class TemplatesController extends BaseController {
             if ($star_only != NULL) {
                 $m_i_config->star_only = $star_only;
             }
+            $m_i_config->pushed = 1;
             $result = $m_i_config->save();
             if ($result) {
                 $return_msg = array('err' => 0, 'msg' => '操作成功');

@@ -2,23 +2,23 @@
 
 class ApiController extends BaseController {
 
-    //接口验证    authData
-    #参数    timemap	操作时间戳
-    #参数    taget    加密结果
-    #返回值   boole    TURE/FALSE
-    public function authData() {
-        $timemap = Input::get('timemap');
-        $data = md5(md5($timemap));
-        $url = Config::get('url.DL_domain');
-        $token = file_get_contents('http://dl2.5067.org/?module=ApiModel&action=GetHandShake&num=' . $data);
-        $taget = Input::get('taget');
-        $string = $token . $data;
-        if (md5($string) == $taget) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+	//接口验证    authData
+	#参数    timemap	操作时间戳
+	#参数    taget    加密结果
+	#返回值   boole    TURE/FALSE
+	public function authData() {
+		$timemap = Input::get('timemap');
+		$data = md5(md5($timemap));
+		$url = Config::get('url.DL_domain');
+		$token = file_get_contents('http://dl2.5067.org/?module=ApiModel&action=GetHandShake&num=' . $data);
+		$taget = Input::get('taget');
+		$string = $token . $data;
+		if (md5($string) == $taget) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 
     //用户登录    login
     #参数    id    用户id

@@ -76,14 +76,13 @@ function settingController($scope, $http) {
                                             关联表单：<select id="form_select' + k + '" name="float_adv[' + k + ']">\n\
                                                 <option selected="selected" value="0">请选择</option>\n\
                                             </select>\n\
-                                            <input type="hidden" name="float_type[' + k + ']" value="' + v.type + '">\n\
+                                            <input type="hidden" name="float_type[' + k + ']" value="form">\n\
                                         </div>\n\
                                         <div>\n\
-                                            <label class="floatxy" style="height: 20px;">X:<input type="text" class="settingpos" style="width: 30px;height: 20px;" name="posx[' + k + ']" value="0">PX</label>\n\
-                                            <label class="floatxy" style="height: 20px;">Y:<input type="text" class="settingpos" style="width: 30px;height: 20px;" name="posy[' + k + ']" value="0">PX</label>\n\
-                                            <label class="floatxy" style="height: 20px;">图宽:<input type="text" class="settingpos" style="width: 30px;height: 20px;" name="posw[' + k + ']" value="0">PX</label>\n\
-                                            <label class="floatxy" style="height: 20px;">位置:<select name="position[' + k + ']"><option value ="1">上</option><option value ="3">下</option><option value ="2">左</option><option value ="4">右</option></select></label>\n\
-                                        </div>\n\
+                                        <label class="floatxy" style="height: 20px;">X:<input type="text" class="settingpos" style="width: 30px;height: 20px;" name="posx[' + k + ']" value="' + v.posx + '">PX</label>\n\
+                                        <label class="floatxy" style="height: 20px;">Y:<input type="text" class="settingpos" style="width: 30px;height: 20px;" name="posy[' + k + ']" value="' + v.posy + '">PX</label>\n\
+                                        <label class="floatxy" style="height: 20px;">宽:<input type="text" class="settingpos" style="width: 30px;height: 20px;" name="posw[' + k + ']" value="' + v.posw + '">PX</label>\n\
+                                        <label class="floatxy" style="height: 20px;">位置:<select name="position[' + k + ']"><option value ="1" ' + (v.position == '1' ? 'selected' : '') + '>上</option><option value ="3" ' + (v.position == '3' ? 'selected' : '') + '>下</option><option value ="2" ' + (v.position == '2' ? 'selected' : '') + '>左</option><option value ="4" ' + (v.position == '4' ? 'selected' : '') + '>右</option></select></label>\n\
                                         <a><i class="fa iconfont icon-delete"></i></a>\n\
                                         </li>';
                             $.get('../form-list', {status: '1', showmodel: '2'}, function (json) {
@@ -101,7 +100,7 @@ function settingController($scope, $http) {
                                 });
                             });
                         }
-                        if (v.type == 'adv') {
+                        if (v.type == 'adv'||typeof(v.type)=='undefined') {
                             var html = '<li class="floatadv">\n\
                                         <div class="template-download fade fl in">\n\
                                             <div>\n\
@@ -109,7 +108,7 @@ function settingController($scope, $http) {
                                                     <img src="' + v.url + '" data-name="' + v.adv + '" style="width:80px;height:64px;padding:5px;" data-preimg="preimg">\n\
                                                 </span>\n\
                                             </div><input type="hidden" name="float_adv[' + k + ']" value="' + v.adv + '">\n\
-                                                 <input type="hidden" name="float_type[' + k + ']" value="' + v.type + '">\n\
+                                                 <input type="hidden" name="float_type[' + k + ']" value="adv">\n\
                                         </div>\
                                         <label class="floatxy" style="height: 20px;">X:<input type="text" class="settingpos" style="width: 30px;height: 20px;" name="posx[' + k + ']" value="' + v.posx + '">PX</label>\n\
                                         <label class="floatxy" style="height: 20px;">Y:<input type="text" class="settingpos" style="width: 30px;height: 20px;" name="posy[' + k + ']" value="' + v.posy + '">PX</label>\n\
@@ -240,6 +239,8 @@ function settingController($scope, $http) {
                     img_upload.push($(this).data('name'));
                 });
                 $http.post('../customer-setting', data).success(function (json) {
+                    console.log(json);
+                    console.log('customer-setting');
                     checkJSON(json, function (json) {
                         if (json.err == 0) {
                             if (img_upload.length) {

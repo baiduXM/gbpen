@@ -90,33 +90,33 @@ class PrintController extends BaseController {
         $this->cus_id = Auth::id();
         $this->customer = Auth::user()->name;
         if ($this->showtype == 'preview') {
-            $this->source_dir = asset('customers/' . $this->customer . '/images/') . '/';
+            $this->source_dir ='/customers/' . $this->customer . '/images/';//asset('customers/' . $this->customer . '/images/') . '/';
             if ($this->type == 'mobile') {
-                $this->domain = url() . '/mobile';
+                $this->domain = '/mobile';//url() . '/mobile';
                 $this->tpl_id = WebsiteInfo::where('cus_id', $this->cus_id)->pluck('mobile_tpl_id');
                 $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.mobile_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
-                $this->source_dir = asset('customers/' . $this->customer . '/mobile/images/') . '/';
-                self::$cus_domain = CustomerInfo::where('cus_id', $this->cus_id)->pluck('mobile_domain');
+                $this->source_dir = '/customers/' . $this->customer . '/mobile/images/';//asset('customers/' . $this->customer . '/mobile/images/') . '/';
+                self::$cus_domain = '';CustomerInfo::where('cus_id', $this->cus_id)->pluck('mobile_domain');
             } else {
-                $this->domain = url();
+                $this->domain = '';//url();
                 $this->tpl_id = WebsiteInfo::where('cus_id', $this->cus_id)->pluck('pc_tpl_id');
                 $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.pc_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
-                self::$cus_domain = CustomerInfo::where('cus_id', $this->cus_id)->pluck('pc_domain');
+                self::$cus_domain = '';//CustomerInfo::where('cus_id', $this->cus_id)->pluck('pc_domain');
             }
-            $this->site_url = url('/templates/' . $this->themename) . '/';
+            $this->site_url ='/templates/' . $this->themename.'/';url('/templates/' . $this->themename) . '/';
         } else {
             if ($this->type == 'mobile') {
                 $this->tpl_id = WebsiteInfo::where('cus_id', $this->cus_id)->pluck('mobile_tpl_id');
                 $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.mobile_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
-                $this->domain = CustomerInfo::where('cus_id', $this->cus_id)->pluck('mobile_domain');
+                $this->domain = '';//CustomerInfo::where('cus_id', $this->cus_id)->pluck('mobile_domain');
             } else {
                 $this->tpl_id = WebsiteInfo::where('cus_id', $this->cus_id)->pluck('pc_tpl_id');
                 $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.pc_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
-                $this->domain = CustomerInfo::where('cus_id', $this->cus_id)->pluck('pc_domain');
+                $this->domain ='';//CustomerInfo::where('cus_id', $this->cus_id)->pluck('pc_domain');
             }
-            self::$cus_domain = $this->domain;
-            $this->site_url = $this->domain . '/';
-            $this->source_dir = $this->domain . '/images/';
+            self::$cus_domain ='';// $this->domain;
+            $this->site_url = '/';//$this->domain . '/';
+            $this->source_dir = '/images/';//$this->domain . '/images/';
         }
     }
 
@@ -137,7 +137,7 @@ class PrintController extends BaseController {
         }
         $website_confige = WebsiteConfig::where('cus_id', $this->cus_id)->where('key', $pagename)->where('type', 1)->where('template_id', $tpl_id)->pluck('value');
         $website_confige_value = unserialize($website_confige);
-        if(count($jsondata)&&isset($_GET['jsondata'])){
+        if(count($jsondata)){
             $json=isset($jsondata[$pagename.'.json'])?$jsondata[$pagename.'.json']:'{}';
         }else{       
             $json_path = public_path('templates/' . $this->themename . '/json/' . $pagename . '.json');
@@ -527,6 +527,7 @@ class PrintController extends BaseController {
             $config_arr = array();
             $config_arr[1] = '#AAA,#BBB,#FFF|totop';
         }
+        $lang=CustomerInfo::where('cus_id',$this->cus_id)->pluck('lang');
         if ($result != 0) {
             if (trim($config_arr[1]) != "custom") {
                 $quickbar_arr = explode('|', $config_arr[1]);
@@ -535,6 +536,11 @@ class PrintController extends BaseController {
                     $config['type'] = 'p1';
                 } else {
                     $config['type'] = 'm1';
+                }
+                if ($lang == 'en') {
+                    $config['language'] = 'en';
+                } else {
+                    $config['language'] = 'cn';
                 }
                 $config['style'] = array();
                 $tmpStyleConfigQuickbar = explode(',', $quickbar_arr[0]);
@@ -831,22 +837,24 @@ class PrintController extends BaseController {
         $formC = new FormController();
         if ($this->type == 'pc') {
             $stylecolor = websiteInfo::leftJoin('color', 'color.id', '=', 'website_info.pc_color_id')->where('cus_id', $this->cus_id)->pluck('color_en');
-            $logo = $this->showtype == 'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $customer_info->logo) : $this->domain . '/images/l/common/' . $customer_info->logo;
+            $logo = $this->showtype == 'preview' ? '/customers/' . $this->customer . '/images/l/common/' . $customer_info->logo : $this->domain . '/images/l/common/' . $customer_info->logo;//'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $customer_info->logo) : $this->domain . '/images/l/common/' . $customer_info->logo;
             $floatadv = json_decode($customer_info->floatadv);
             if (!empty($floatadv)) {
                 foreach ((array) $floatadv as $key => $val) {
                     if (!isset($val->type) || $val->type == 'adv') {
                         if ($this->showtype == 'preview') {
-                            $floatadv[$key]->url = asset('customers/' . $this->customer . '/images/l/common/' . $val->adv);
+                            $floatadv[$key]->url = ('/customers/' . $this->customer . '/images/l/common/' . $val->adv);//asset('customers/' . $this->customer . '/images/l/common/' . $val->adv);
                         } else {
                             $floatadv[$key]->url = $this->domain . '/images/l/common/' . $val->adv;
                         }
                     } elseif ($val->type == 'form') {
                         $form_id = $val->adv;
                         $formCdata = $formC->getFormdataForPrint($form_id);
-                        $content = $formC->showFormHtmlForPrint($formCdata, 'float');
-                        $floatadv[$key]->content = $content;
-                        $floatadv[$key]->cssjs = $formC->assignFormCSSandJSForPrint();
+                        if (!empty($formCdata)) {
+                            $content = $formC->showFormHtmlForPrint($formCdata, 'float');
+                            $floatadv[$key]->content = $content;
+                            $floatadv[$key]->cssjs = $formC->assignFormCSSandJSForPrint();
+                        }
                     }
                 }
             }
@@ -874,7 +882,7 @@ class PrintController extends BaseController {
 //            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/js/statis.js?' . $this->cus_id . 'pc"></script>'; //===添加统计代码PC===
             $site_another_url = $this->showtype == 'preview' ? '' : $customer_info->mobile_domain;
         } else {
-            $logo = $this->showtype == 'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $customer_info->logo_small) : $this->domain . '/images/l/common/' . $customer_info->logo_small;
+            $logo = $this->showtype == 'preview' ? ('/customers/' . $this->customer . '/images/l/common/' . $customer_info->logo_small) : $this->domain . '/images/l/common/' . $customer_info->logo_small;//'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $customer_info->logo_small) : $this->domain . '/images/l/common/' . $customer_info->logo_small;
             $stylecolor = websiteInfo::leftJoin('color', 'color.id', '=', 'website_info.mobile_color_id')->where('cus_id', $this->cus_id)->pluck('color_en');
             $headscript = $customer_info->mobile_header_script;
             $footprint = $customer_info->mobile_footer;
@@ -2385,7 +2393,7 @@ class PrintController extends BaseController {
                     </form>';
             } elseif ($classify->type == 9) {
                 //===显示前端===
-                //$result['list']['content'] = $formC->showFormHtmlForPrint($formCdata);
+                $result['list']['content'] = $formC->showFormHtmlForPrint($formCdata);
             }
             $json_keys = $this->getJsonKey($viewname . '.html');
             if (count($json_keys)) {

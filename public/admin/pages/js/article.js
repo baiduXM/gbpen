@@ -84,7 +84,7 @@ function articleController($scope, $http ,$location) {
                                             <dl class="fl checkclass">\n\
                                                 <input type="checkbox" name="checks" value="Bike1" style=" display:none;">\n\
                                                 <label class="label"></label>\n\
-                                                </dl><div class="tit_info"><span class="sap_tit">'+v.title+(v.is_star?'</span><img class="tit_pic" />':'</span>')+(v.is_top?'<i class="fa iconfont icon-zhiding mr5 pos_bule"></i>':'')+'</div>\n\
+                                                </dl><div class="tit_info"><input type="hidden" class="imgpre" value="'+v.img[0]+'"><span class="sap_tit">'+v.title+(v.is_star?'</span><img class="tit_pic" />':'</span>')+(v.is_top?'<i class="fa iconfont icon-zhiding mr5 pos_bule"></i>':'')+'</div>\n\
                                         </td>\n\
                                         <td>'+v.c_name+'</td>\n\
                                         <td>'+v.viewcount+'</td>\n\
@@ -128,6 +128,26 @@ function articleController($scope, $http ,$location) {
                     page_num2 = 0;
                     $("#Pagination").pagination(page_num2);
                 } // if判断结束
+                $('body').append('<img id="imgpre" style="display:none;width:100px;" src="images/logo.png" />');
+                $('tr .tit_info').mouseover(function(e){
+                    var x = e.pageX;
+                    var y = e.pageY-$('body').scrollTop();
+                    
+                    var imgpre=$(this).children("input").val();
+                    if(imgpre.length){
+                         $('#imgpre').show();
+                        $('#imgpre').attr('src',json.data.source_dir+imgpre);
+                        $('#imgpre').css({
+                            "position":"fixed",
+                            "left":x+"px",
+                            "top":y+'px',
+                        });
+                    }
+                });
+                $('tr .tit_info').mouseout(function(){
+                    $('#imgpre').hide();
+                });
+                
             }); // checkJSON结束
         });
     };

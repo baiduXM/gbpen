@@ -467,9 +467,12 @@ class HtmlController extends BaseController {
 	 * 判断一个用户是否需要推送并返回修改的次数
 	 */
 	public function isNeedPush() {
-		$count = Classify::where('cus_id', $this->cus_id)->where('pushed', 1)->count();
-		$count += Articles::where('cus_id', $this->cus_id)->where('pushed', 1)->count();
-                $count +=CustomerInfo::where('cus_id', $this->cus_id)->where('pushed', 1)->count();
+		$count = Classify::where('cus_id', $this->cus_id)->where('pushed','>',0)->count();
+		$count += Articles::where('cus_id', $this->cus_id)->where('pushed','>',0)->count();
+                $count +=WebsiteConfig::where('cus_id', $this->cus_id)->where('pushed','>',0)->count();
+                $count +=WebsiteInfo::where('cus_id', $this->cus_id)->where('pushed','>',0)->count();
+                $count +=MobileHomepage::where('cus_id', $this->cus_id)->where('pushed','>',0)->count();
+                $count +=CustomerInfo::where('cus_id', $this->cus_id)->where('pushed','>',0)->count();
 		$data_final = ['err' => 0, 'msg' => '', 'data' => ['cache_num' => $count]];
 		return Response::json($data_final);
 	}

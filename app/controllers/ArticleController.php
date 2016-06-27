@@ -48,7 +48,6 @@ class ArticleController extends BaseController {
 		if ($article->title == "") {
 			return Response::json(array('err' => 3001, 'msg' => '标题不能为空'));
 		}
-		$article->pushed = 1;
 		$img_arr = explode(',', Input::get('src'));
 		foreach ((array) $org_imgs as $v) {
 			if (!in_array($v, (array) $img_arr)) {
@@ -73,6 +72,7 @@ class ArticleController extends BaseController {
 			$article->created_at = date('Y-m-d H:i:s', strtotime($pubdate));
 		}
 		$article->cus_id = $cus_id;
+                $article->pushed = 1;
 		$result = $article->save();
 		if ($result) {
 			if ($id) {
@@ -109,6 +109,7 @@ class ArticleController extends BaseController {
 			$failed = 0;
 			foreach ($ids as $id) {
 				$article = Articles::find($id);
+                                Classify::where('cus_id', $cus_id)->where('id',$article->c_id)->update(['pushed'=>1]);
 				$data = MoreImg::where('a_id', $id)->get()->toArray();
 				$result = Articles::where('id', '=', $id)->delete();
 				if (!$result) {
@@ -132,6 +133,7 @@ class ArticleController extends BaseController {
 		} else {
 			//单条删除
 			$article = Articles::find($ids[0]);
+                        Classify::where('cus_id', $cus_id)->where('id',$article->c_id)->update(['pushed'=>1]);
 			$data = MoreImg::where('a_id', $ids[0])->get()->toArray();
 			$result = Articles::where('id', '=', $ids[0])->delete();
 			if ($result) {
@@ -152,6 +154,7 @@ class ArticleController extends BaseController {
 	}
 
 	public function articleManage() {
+                $customer=Auth::user()->name;
 		$data = [];
 		$classify = new classify;
 		$data['catlist'] = $classify->classifyList();
@@ -159,6 +162,7 @@ class ArticleController extends BaseController {
 		$c_id = Input::has('c_id') ? Input::get('c_id') : 0;
 		$is_star = Input::has('is_star') ? Input::get('is_star') : 0;
 		$data['aticlelist'] = $this->articleListData($c_id, $is_star, $per_page);
+                $data['source_dir'] = asset("customers/$customer/images/s/articles") . '/';
 		return Response::json(['err' => 0, 'msg' => '', 'data' => $data]);
 	}
 
@@ -166,7 +170,7 @@ class ArticleController extends BaseController {
 		$cus_id = Auth::id();
 		$id = Input::get('id');
 		$sort = Input::get('sort');
-		$result = Articles::where('id', $id)->where('cus_id', $cus_id)->update(['sort' => $sort]);
+		$result = Articles::where('id', $id)->where('cus_id', $cus_id)->update(['sort' => $sort,'pushed'=>1]);
 		if ($result) {
 			return Response::json(['err' => 0, 'msg' => '修改成功']);
 		} else {
@@ -341,6 +345,7 @@ class ArticleController extends BaseController {
 		$ids = explode(',', Input::get('id'));
 		$action = Input::get('action');
 		$value = Input::get('values');
+                $cus_id=Auth::id();
 		$relation = array(
 			'set_star' => 'is_star',
 			'set_top' => 'is_top',
@@ -354,6 +359,25 @@ class ArticleController extends BaseController {
 			foreach ($ids as $id) {
 				$article = Articles::find($id);
 				$article->$relation[$action] = $value;
+                                if($relation[$action]=='pc_show'){
+                                    $pushed = websiteInfo::where('cus_id', $cus_id)->pluck('pushed');
+                                    if($pushed==1||$pushed=='3'){
+                                        $pushed=1;
+                                    }else{
+                                        $pushed=2;
+                                    }
+                                }else if($relation[$action]=='mobile_show'){
+                                    $pushed = websiteInfo::where('cus_id', $cus_id)->pluck('pushed');
+                                    if($pushed==1||$pushed=='2'){
+                                        $pushed=1;
+                                    }else{
+                                        $pushed=3;
+                                    }
+                                }else{
+                                    $pushed=1;
+                                    $article->pushed=1;
+                                }
+                                websiteInfo::where('cus_id', $cus_id)->update(['pushed'=>$pushed]);
 				$result = $article->save();
 				if ($result) {
 					$data[] = $id;
@@ -369,6 +393,25 @@ class ArticleController extends BaseController {
 		} else {
 			$article = Articles::find($ids[0]);
 			$article->$relation[$action] = $value;
+                        if($relation[$action]=='pc_show'){
+                            $pushed = websiteInfo::where('cus_id', $cus_id)->pluck('pushed');
+                            if($pushed==1||$pushed=='3'){
+                                $pushed=1;
+                            }else{
+                                $pushed=2;
+                            }
+                        }else if($relation[$action]=='mobile_show'){
+                            $pushed = websiteInfo::where('cus_id', $cus_id)->pluck('pushed');
+                            if($pushed==1||$pushed=='2'){
+                                $pushed=1;
+                            }else{
+                                $pushed=3;
+                            }
+                        }else{
+                            $pushed=1;
+                            $article->pushed=1;
+                        }
+                        websiteInfo::where('cus_id', $cus_id)->update(['pushed'=>$pushed]);
 			$result = $article->save();
 			if ($result) {
 				$return_msg = array('err' => 0, 'msg' => '');
@@ -397,6 +440,7 @@ class ArticleController extends BaseController {
 			$article->sort = 1000000;
 			$article->title = $Article['title'];
 			$article->img = $Article['img'];
+                        $article->pushed = 1;
 			$ret = $article->save();
 			if (!$ret) {
 				$return_mag = array('err' => 3001, 'msg' => '添加失败');

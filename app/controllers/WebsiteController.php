@@ -150,17 +150,27 @@ class WebsiteController extends BaseController{
         $color = Input::get('color');
         $color_id = Color::where('color_en',$color)->pluck('id');
         $template = Template::find($id);
+        $pushed = websiteInfo::where('cus_id', $cus_id)->pluck('pushed');
         if($template->type==$type){
             if($type==1){
-                $update = ['pc_tpl_id' => $id,'pc_color_id' => $color_id];
+                if($pushed==1||$pushed=='3'){
+                    $pushed=1;
+                }else{
+                    $pushed=2;
+                }
+                $update = ['pc_tpl_id' => $id,'pc_color_id' => $color_id,'pushed'=>$pushed];
             }
             else{
-                $update = ['mobile_tpl_id' => $id,'mobile_color_id' => $color_id];
+                if($pushed==1||$pushed=='2'){
+                    $pushed=1;
+                }else{
+                    $pushed=3;
+                }
+                $update = ['mobile_tpl_id' => $id,'mobile_color_id' => $color_id,'pushed'=>$pushed];
             }
             $update_result = WebsiteInfo::where('cus_id',$cus_id)->update($update);
             if($update_result){
-                Articles::where('cus_id',$cus_id)->where('pushed',0)->update(array('pushed'=>1));
-                Classify::where('cus_id',$cus_id)->where('pushed',0)->update(array('pushed'=>1));
+                WebsiteConfig::where('cus_id',$cus_id)->where('key','quickbar')->update(['pushed'=>1]);
                 $result = ['err' => 0, 'msg' => ''];
             }
             else{
