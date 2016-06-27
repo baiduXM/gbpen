@@ -162,7 +162,7 @@ class UploadController extends BaseController {
         $this->check_dir($target, $customer);
         $files = explode(',', ltrim(Input::get('files'), ','));
         $dir = public_path('customers/' . $customer . '/cache_images/');
-        $img_size = Input::get('imgsize') ? Input::get('imgsize') : 400;//===
+        $img_size = Input::get('imgsize') ? Input::get('imgsize') : 400; //===
         $destinationPath = public_path('customers/' . $customer . '/images/');
         $weburl = Customer::where('id', $cus_id)->pluck('weburl');
         $suf_url = str_replace('http://c', '', $weburl);
@@ -181,7 +181,6 @@ class UploadController extends BaseController {
             $size = 0; //===文件大小
             foreach ((array) $files as $fileName) {
                 if (file_exists(public_path('customers/' . $customer . '/cache_images/' . $fileName))) {
-//                    $size += filesize(public_path('customers/' . $customer . '/cache_images/' . $fileName)); //===累加文件大小
                     $file = explode('.', $fileName);
                     $type = end($file);
                     $up_result = copy(public_path('customers/' . $customer . '/cache_images/' . $fileName), $destinationPath . '/l/' . $target . '/' . $fileName);
@@ -200,6 +199,8 @@ class UploadController extends BaseController {
                         copy($destinationPath . '/l/' . $target . '/' . $fileName, public_path('customers/' . $customer . '/mobile/images/l/' . $target . '/' . $fileName));
                         $mobile_s_path = public_path('customers/' . $customer . '/mobile/images/s/') . $target . '/' . $fileName;
                         $this->resizeImage(public_path('customers/' . $customer . '/mobile/images/l/') . $target . '/' . $fileName, $type, $mobile_s_path, $img_size, $img_size);
+                        $size += filesize(public_path('customers/' . $customer . '/mobile/images/l/' . $target . '/' . $fileName)); //===累加文件大小
+                        $size += filesize(public_path('customers/' . $customer . '/mobile/images/s/' . $target . '/' . $fileName)); //===累加文件大小
                         if ($conn) {
                             ftp_login($conn, $customerinfo->ftp_user, $customerinfo->ftp_pwd);
                             ftp_pasv($conn, 1);
