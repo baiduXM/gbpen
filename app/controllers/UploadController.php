@@ -199,8 +199,16 @@ class UploadController extends BaseController {
                         copy($destinationPath . '/l/' . $target . '/' . $fileName, public_path('customers/' . $customer . '/mobile/images/l/' . $target . '/' . $fileName));
                         $mobile_s_path = public_path('customers/' . $customer . '/mobile/images/s/') . $target . '/' . $fileName;
                         $this->resizeImage(public_path('customers/' . $customer . '/mobile/images/l/') . $target . '/' . $fileName, $type, $mobile_s_path, $img_size, $img_size);
-                        $size += filesize(public_path('customers/' . $customer . '/mobile/images/l/' . $target . '/' . $fileName)); //===累加文件大小
-                        $size += filesize(public_path('customers/' . $customer . '/mobile/images/s/' . $target . '/' . $fileName)); //===累加文件大小
+                        //===扣除用户空间容量===
+                        $size += filesize(public_path('customers/' . $customer . '/images/l/' . $target . '/' . $fileName)); //===累加文件大小
+                        $size += filesize(public_path('customers/' . $customer . '/images/s/' . $target . '/' . $fileName)); //===累加文件大小
+                        $cus = new CustomerController;
+                        if (!$cus->change_capa($size, 'use')) {
+                            $msg = '';
+                        } else {
+                            $msg = '容量不足';
+                            return Response::json(['err' => 1001, 'msg' => $msg]);
+                        }
                         if ($conn) {
                             ftp_login($conn, $customerinfo->ftp_user, $customerinfo->ftp_pwd);
                             ftp_pasv($conn, 1);
@@ -224,13 +232,6 @@ class UploadController extends BaseController {
                 }
             }
             @ftp_close($conn);
-            //===扣除用户空间容量===
-            $cus = new CustomerController;
-            if ($cus->change_capa($size, 'use')) {
-                $msg = '';
-            } else {
-                $msg = '空间扣除失败';
-            }
             return Response::json(['err' => 0, 'msg' => $msg, 'data' => $data]);
         } else {
             return Response::json(['err' => 1001, 'msg' => '保存失败']);

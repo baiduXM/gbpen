@@ -240,19 +240,19 @@ function addformController($scope, $http, $location) {
             $(this).removeClass("hover");
         });
         //===表单列移动===
-        $('.element-show li .icon-yidong').TreeList({
-            rootNode: 'list-item',
-            parentNode: 'element-show',
-            'oncallback': function (indexlist) {
-                console.log(indexlist);
-                console.log('indexlist');
-                $http.post('../mhomepage-sortmodify', {indexlist: indexlist}).success(function (json) {
-                    checkJSON(json, function (json) {
-                        Save_hint();
-                    });
-                });
-            }
-        });
+//        $('.element-show li .icon-yidong').TreeList({
+//            rootNode: 'list-item',
+//            parentNode: 'element-show',
+//            'oncallback': function (indexlist) {
+//                console.log(indexlist);
+//                console.log('indexlist');
+//                $http.post('../mhomepage-sortmodify', {indexlist: indexlist}).success(function (json) {
+//                    checkJSON(json, function (json) {
+//                        Save_hint();
+//                    });
+//                });
+//            }
+//        });
     }
 
     function _show_text(data) {

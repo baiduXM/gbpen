@@ -197,18 +197,24 @@ class CustomerController extends BaseController {
      */
     public function change_capa($size = 0, $way = 'use') {
         $cus_id = Auth::id();
-        $capacity_use = CustomerInfo::where('cus_id', $cus_id)->pluck('capacity_use');
+        $cusinfo = CustomerInfo::where('cus_id', $cus_id)->first();
+        $capacity_use = $cusinfo->capacity_use;
+        $capacity = $cusinfo->capacity;
         if ($way == 'free') {
             $data = array(
                 "capacity_use" => $capacity_use - $size,
             );
         } elseif ($way == 'use') {
-            $data = array(
-                "capacity_use" => $capacity_use + $size,
-            );
+            if ($capacity >= ($capacity_use + $size)) {
+                $data = array(
+                    "capacity_use" => $capacity_use + $size,
+                );
+            } else {
+                return false; //容量不足
+            }
         }
         $flag = CustomerInfo::where('cus_id', $cus_id)->update($data);
-        if ($flag) {
+        if ($flag) {//是否更新成功
             return true; //扣除成功
         } else {
             return false;
