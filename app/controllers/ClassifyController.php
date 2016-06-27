@@ -176,13 +176,11 @@ class ClassifyController extends BaseController {
 			$classify->name = trim(Input::get('name'));
 			$classify->en_name = trim(Input::get('en_name'));
 			$images = Input::get('img');
-			if (!empty($images) && $images != 'undefined') {
-				$classify->img = $images;
+                        $classify->img = $images;
+			if (!empty($c_imgs) && $c_imgs != 'undefined') {
 				if ($c_imgs != $images) {
 					$del_img = $c_imgs;
 				}
-			} else {
-				$classify->img = ''; //需要删除图片
 			}
 			$icon = Input::get('icon');
 			if (!empty($icon) && $icon != 'undefined') {
@@ -235,8 +233,8 @@ class ClassifyController extends BaseController {
 			}
 			if ($classify->save()) {
 				if (isset($del_img)) {
-					$imgdel = new ImgDel();
-					$imgdel->mysave($del_img, 'category');
+                                        $imgdel = new ImgDel();
+                                        $imgdel->mysave($del_img, 'category');
 				}
 				$data['id'] = $classify->id;
 				if ($is_forced) {
