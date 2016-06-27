@@ -124,7 +124,8 @@ function addformController($scope, $http, $location) {
             $('[name="showmodel"]:eq(1)').attr('checked', true);
         }
         $('.as-title').html(_data.title);
-        $('.as-description').html(_data.description);
+        var temp_description = _data.description.replace(/\n/g, '</p><p>');
+        $('.as-description').html('<p>' + temp_description + '</p>');
         //===绑定动作===
         $('[name="title"]').blur(function () {
             $('.as-title').html($(this).val());

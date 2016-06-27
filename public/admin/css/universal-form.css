@@ -151,11 +151,12 @@ input[type="radio"]:checked {
 }
 
 .add-show .as-description{
-    text-align: center;
+/*    text-align: center;*/
     font-size: 14px;
     overflow: hidden;
     margin: 10px;
     word-wrap: break-word;
+    text-indent: 2em;
 }
 
 .add-show .unit-preview{
