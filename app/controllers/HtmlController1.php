@@ -662,6 +662,7 @@ class HtmlController1 extends BaseController{
         }
         
         if($this->quickbarpush&&!$this->mobilepush){
+            $m_template = new PrintController('online','mobile');
             $config_str = file_get_contents(public_path('/templates/' . $m_template->themename) . '/config.ini');
             $search = "/QuickBar=(.*)/i";
             $result = preg_match($search, $config_str, $config_arr);
