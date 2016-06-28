@@ -547,7 +547,9 @@ class HtmlController1 extends BaseController{
         $config_str = file_get_contents(public_path('/templates/' . $m_template->themename) . '/config.ini');
         $search = "/QuickBar=(.*)/i";
         $result = preg_match($search, $config_str, $config_arr);
+        var_dump( $m_template->themename);
         var_dump($result);
+        var_dump($config_arr);
         if(trim($ftp)=='1'){
             if($conn){
                 ftp_login($conn,$customerinfo->ftp_user,$customerinfo->ftp_pwd);
