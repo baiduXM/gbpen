@@ -544,6 +544,8 @@ class HtmlController1 extends BaseController{
         $m_template = new PrintController('push', 'pc');
         $template->quickBarJson();
         $m_template->quickBarJson();
+        $config_str = file_get_contents(public_path('/templates/' . $m_template->themename) . '/config.ini');
+        var_dump($config_str);
         if(trim($ftp)=='1'){
             if($conn){
                 ftp_login($conn,$customerinfo->ftp_user,$customerinfo->ftp_pwd);
