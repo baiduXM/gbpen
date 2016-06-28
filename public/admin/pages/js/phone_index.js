@@ -261,8 +261,8 @@ function phone_indexController($scope, $http, $location) {
                 rootNode: 'firsttab',
                 parentNode: 'phone_index-index',
                 'oncallback': function (indexlist) {
-                    console.log(indexlist);
-                    console.log('indexlist');
+//                    console.log(indexlist);
+//                    console.log('indexlist');
                     $http.post('../mhomepage-sortmodify', {indexlist: indexlist}).success(function (json) {
                         checkJSON(json, function (json) {
                             phoneindexinit.Save_hint();
@@ -832,6 +832,7 @@ function phone_indexController($scope, $http, $location) {
 							<i class="fa iconfont icon-yidong"></i>\n\
 							<span><i class="fa icon-pc iconfont btn btn-show btn-desktop ' + (v.enable_pc == 1 ? 'blue' : 'grey') + '"></i><i class="fa iconfont icon-snimicshouji btn btn-show btn-mobile ' + (v.enable_mobile == 1 ? 'blue' : 'grey') + '"></i></span>\n\
 							<label class="message-name" data-type="' + v.type + '">' + v.name + '</label>\
+                                            <label class="en-name none" >' + v.en_name + '</label>\
 							<span class="icon_box pr">\
 								<i class="iconfonts' + (v.icon ? '' : ' icon-dengpao') + '">' + (v.icon || '') + '</i>\
 								<input type="hidden" name="' + v.type + '_icons" value="' + v.icon.replace('&', '&amp;') + '" class="icon_input" />\
@@ -1064,6 +1065,7 @@ function phone_indexController($scope, $http, $location) {
                     }
                     navsArray.push({
                         name: $(this).find('.quicklist-l>.message-name').text(),
+                        en_name:$(this).find('.quicklist-l>.en-name').text(),
                         icon: icons,
                         data: data ? data.toString() : '',
                         enable_pc: $(this).find('.quicklist-l span:eq(0) i').eq(0).hasClass('blue') ? 1 : 0,
