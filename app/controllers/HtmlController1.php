@@ -540,8 +540,8 @@ class HtmlController1 extends BaseController{
         $ftp=$customerinfo->ftp;
         $ftp_array[1] = isset($ftp_array[1])?$ftp_array[1]:$port;
         $conn = ftp_connect($ftp_array[0],$ftp_array[1]);
-        $template = new PrintController('push', 'mobile');
-        $m_template = new PrintController('push', 'pc');
+        $m_template = new PrintController('push', 'mobile');
+        $template = new PrintController('push', 'pc');
         $template->quickBarJson();
         $m_template->quickBarJson();
         $config_str = file_get_contents(public_path('/templates/' . $m_template->themename) . '/config.ini');
