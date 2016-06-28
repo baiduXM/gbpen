@@ -228,6 +228,8 @@ WarningBox.prototype = {
                 }
             };
             $image.cropper(options);
+            console.log(defaults);
+            console.log('===defaults===');
             this._UpFunction($image, defaults.ajaxurl, defaults.IsBaseShow, defaults.IsOneNatural, defaults.oncallback);
         } else {
             this._Schedule(defaults.oncallback);    // 带进度条
@@ -248,6 +250,8 @@ WarningBox.prototype = {
                 if (files && files.length == 1 && !IsOneNatural) {
                     file = files[0];
                     _this.fileType = file.type;
+                    console.log(file.size);
+                    console.log('file.size');//30268
                     if (file.size / 1024 > 600) {
                         alert('您这张"' + file.name + '"图片大小过大，应小于600k!');
                         return false;
@@ -467,6 +471,8 @@ WarningBox.prototype = {
         });
     },
     _save: function ($image, ajaxurl, oncallback) {
+        console.log(ajaxurl);
+        console.log('ajaxurl');
         var _this = this;
         $('.warning_box .save').click(function () {
             var data = $image.cropper('getCroppedCanvas').toDataURL(_this.fileType);

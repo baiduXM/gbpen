@@ -181,6 +181,8 @@ class UploadController extends BaseController {
             $size = 0; //===文件大小
             foreach ((array) $files as $fileName) {
                 if (file_exists(public_path('customers/' . $customer . '/cache_images/' . $fileName))) {
+                    $showsize = filesize(public_path('customers/' . $customer . '/cache_images/' . $fileName)); 
+                    var_dump($showsize);//32302
                     $file = explode('.', $fileName);
                     $type = end($file);
                     $up_result = copy(public_path('customers/' . $customer . '/cache_images/' . $fileName), $destinationPath . '/l/' . $target . '/' . $fileName);
