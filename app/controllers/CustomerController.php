@@ -185,4 +185,61 @@ class CustomerController extends BaseController {
         return Response::json($result);
     }
 
+    public function getCapacity() {
+        //===格式化容量===
+        $cus_id = Auth::id();
+        $customer_info = CustomerInfo::where('cus_id', $cus_id)->first();
+        $data['capacity'] = $this->format_bytes($customer_info->capacity);
+        $data['capacity_free'] = $this->format_bytes($customer_info->capacity - $customer_info->capacity_use);
+        $data['use_percent'] = round(($customer_info->capacity_use / $customer_info->capacity) * 100, 2);
+        $result = ['err' => 0, 'msg' => '容量数据', 'data' => $data];
+        return Response::json($result);
+    }
+
+    /**
+     * 改变空间容量
+     * @param type $size    图片大小
+     * @param type $way     释放free/占用use
+     * @return boolean
+     */
+    public function change_capa($size = 0, $way = 'use') {
+        $cus_id = Auth::id();
+        $cusinfo = CustomerInfo::where('cus_id', $cus_id)->first();
+        $capacity_use = $cusinfo->capacity_use;
+        $capacity = $cusinfo->capacity;
+        if ($way == 'use') {
+            if ($capacity >= ($capacity_use + $size)) {
+                $data = array(
+                    "capacity_use" => $capacity_use + $size,
+                );
+            } else {
+                return false; //容量不足
+            }
+        }
+        if ($way == 'free') {
+            $data = array(
+                "capacity_use" => $capacity_use - $size,
+            );
+        }
+        $flag = CustomerInfo::where('cus_id', $cus_id)->update($data);
+        if ($flag) {//是否更新成功
+            return true; //扣除成功
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * 格式转换
+     * b=>kb=>mb=>gb=>tb
+     * 0 1 2 3 4
+     */
+    public function format_bytes($size) {
+        $units = array(' B', ' KB', ' MB', ' GB', ' TB');
+        for ($i = 0; $size >= 1024 && $i < 4; $i++) {
+            $size /= 1024;
+        }
+        return round($size, 2) . $units[$i];
+    }
+
 }

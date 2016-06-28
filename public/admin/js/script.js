@@ -99,9 +99,11 @@ mainApp.config(function ($routeProvider, $httpProvider) {
             if (ahref == "#/visit") {
                 $.get('../statis-get', function (json) {
                     var data = json.data;
-                    $(".cxb_list_n2>.cxb_list_m").html(data.count_today);//今日访问数量
-                    $(".cxb_list_n3>.cxb_list_m").html(data.count_all);//总访客数量
-                    $(".cxb_list_n4>.cxb_list_m").html(data.mobile_count);//移动端访问量
+                    if (data != null) {
+                        $(".cxb_list_n2>.cxb_list_m").html(data.count_today);//今日访问数量
+                        $(".cxb_list_n3>.cxb_list_m").html(data.count_all);//总访客数量
+                        $(".cxb_list_n4>.cxb_list_m").html(data.mobile_count);//移动端访问量
+                    }
                 });
             }
             locathash ? $('#blob').animate({left: $('nav .nav a[href="' + locathash + '"]').parent().position().left}, 1000, 'easeOutExpo').addClass('rotation') : '';
@@ -342,6 +344,15 @@ function width_resize(data) {
 $(window).resize(function () {
     width_resize()
 });
+//===获取容量信息===
+function get_capacity() {
+    $.get('../customer-capacity', function (json) {
+        var data = json.data;
+        $('#capacity_free').html(data.capacity_free);
+        $('#capacity').html(data.capacity);
+        $('#capacity_bar').css('width', data.use_percent + '%');
+    });
+}
 // 推送静态文件
 var cache_num;
 function pushtimer() {

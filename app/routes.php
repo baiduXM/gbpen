@@ -67,6 +67,11 @@ Route::group(array('before' => 'auth'), function() {
         'as' => 'customer-setting',
         'uses' => 'CustomerController@customerSetting'
     ]);
+    Route::get('customer-capacity', [//保存用户信息
+        'uses' => 'CustomerController@getCapacity'
+    ]);
+
+    
 
     //-----------------------------------------------
     //--------------------栏目路由--------------------
@@ -423,7 +428,7 @@ Route::group(array('before' => 'auth'), function() {
         'uses' => 'FormController@submitFormUserdata'
     ]);
     //===万用表单end===
-    //-----------万用表单--------
+    //-----------留言板--------
     Route::get('feedback-data', [//获取表单数据
         'uses' => 'FeedbackController@getFeedbackData'
     ]);
