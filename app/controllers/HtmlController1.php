@@ -608,18 +608,17 @@ class HtmlController1 extends BaseController{
             if($this->allpush){
                 $this->mobilepush=1;
                 $this->quickbarpush=1;
-            }else{
-                $this->pcpush=0;
             }
+            $this->pcpush=0;
+            
         }
         if($mobile==''){
             if($this->allpush){
                 $this->pcpush=1;
                 $this->quickbarpush=1;
-            }else{
-                $this->mobilepush=0;
-                $this->mobilehomepagepush=0;
             }
+            $this->mobilepush=0;
+            $this->mobilehomepagepush=0;s
         }
     }
     /**
