@@ -162,7 +162,7 @@ class UploadController extends BaseController {
         $this->check_dir($target, $customer);
         $files = explode(',', ltrim(Input::get('files'), ','));
         $dir = public_path('customers/' . $customer . '/cache_images/');
-        $img_size = Input::get('imgsize') ? Input::get('imgsize') : 400; //===
+        $img_size = Input::get('imgsize') ? Input::get('imgsize') : 400;
         $destinationPath = public_path('customers/' . $customer . '/images/');
         $weburl = Customer::where('id', $cus_id)->pluck('weburl');
         $suf_url = str_replace('http://c', '', $weburl);
@@ -178,11 +178,9 @@ class UploadController extends BaseController {
             $domain = $customerinfo->pc_domain ? $customerinfo->pc_domain : ($customer . $weburl);
             $ftp_array[1] = isset($ftp_array[1]) ? $ftp_array[1] : $port;
             $conn = ftp_connect($ftp_array[0], $ftp_array[1]);
-            $size = 0; //===文件大小
+
             foreach ((array) $files as $fileName) {
                 if (file_exists(public_path('customers/' . $customer . '/cache_images/' . $fileName))) {
-                    $showsize = filesize(public_path('customers/' . $customer . '/cache_images/' . $fileName)); 
-                    var_dump($showsize);//32302
                     $file = explode('.', $fileName);
                     $type = end($file);
                     $up_result = copy(public_path('customers/' . $customer . '/cache_images/' . $fileName), $destinationPath . '/l/' . $target . '/' . $fileName);
@@ -201,16 +199,7 @@ class UploadController extends BaseController {
                         copy($destinationPath . '/l/' . $target . '/' . $fileName, public_path('customers/' . $customer . '/mobile/images/l/' . $target . '/' . $fileName));
                         $mobile_s_path = public_path('customers/' . $customer . '/mobile/images/s/') . $target . '/' . $fileName;
                         $this->resizeImage(public_path('customers/' . $customer . '/mobile/images/l/') . $target . '/' . $fileName, $type, $mobile_s_path, $img_size, $img_size);
-                        //===扣除用户空间容量===
-                        $size += filesize(public_path('customers/' . $customer . '/images/l/' . $target . '/' . $fileName)); //===累加文件大小
-                        $size += filesize(public_path('customers/' . $customer . '/images/s/' . $target . '/' . $fileName)); //===累加文件大小
-                        $cus = new CustomerController;
-                        if (!$cus->change_capa($size, 'use')) {
-                            $msg = '';
-                        } else {
-                            $msg = '容量不足';
-                            return Response::json(['err' => 1001, 'msg' => $msg]);
-                        }
+
                         if ($conn) {
                             ftp_login($conn, $customerinfo->ftp_user, $customerinfo->ftp_pwd);
                             ftp_pasv($conn, 1);
@@ -255,6 +244,7 @@ class UploadController extends BaseController {
         if (!is_dir($dir)) {
             mkdir($dir, 0777, true);
         }
+        $size = 0; //===文件大小
         if ($files) {
             if ($target == 'imgcache') {
                 $id = $cus_id;
@@ -310,8 +300,14 @@ class UploadController extends BaseController {
             } else {
                 $upload = file_put_contents($dir . '/' . $fileName, base64_decode(preg_replace('/data\:image\/png\;base64\,/i', '', $file)));
             }
+            //===扣除用户空间容量===
+            $size = filesize(public_path('customers/' . $customer . '/cache_images/' . $fileName));
+            $cus = new CustomerController;
+            if (!$cus->change_capa($size, 'use')) {
+                return Response::json(['err' => 1001, 'msg' => '容量不足', 'data' => []]);
+            }
             if ($upload) {
-                return Response::json(['err' => 0, 'msg' => '!$file&&$upload', 'data' => ['name' => $fileName, 'url' => asset('customers/' . $customer . '/cache_images/' . $fileName), 's_url' => ((strpos($domain, 'http://') === false) ? 'http://' : '') . $domain . '/' . 'images/s/' . $target . '/' . $fileName]]);
+                return Response::json(['err' => 0, 'msg' => 'empty($file)&&$upload', 'data' => ['name' => $fileName, 'url' => asset('customers/' . $customer . '/cache_images/' . $fileName), 's_url' => ((strpos($domain, 'http://') === false) ? 'http://' : '') . $domain . '/' . 'images/s/' . $target . '/' . $fileName]]);
             } else {
                 return Response::json(['err' => 1001, 'msg' => '上传文件失败', 'data' => []]);
             }
@@ -371,5 +367,6 @@ class UploadController extends BaseController {
         }
         imagedestroy($canvas);
     }
+
 
 }

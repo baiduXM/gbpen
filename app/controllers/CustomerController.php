@@ -21,10 +21,6 @@ class CustomerController extends BaseController {
         $suf_url = str_replace('http://c', '', $weburl);
         $customer_info = CustomerInfo::where('cus_id', $cus_id)->first();
         $data['company_name'] = $customer_info->company;
-        //===格式化容量===
-        $data['capacity'] = $this->format_bytes($customer_info->capacity);
-        $data['capacity_free'] = $this->format_bytes($customer_info->capacity - $customer_info->capacity_use);
-        $data['use_percent'] = round(($customer_info->capacity_use / $customer_info->capacity) * 100, 2);
         $domain_pc = $customer_info->pc_domain;
         $data['domain_pc'] = str_replace('http://', '', $domain_pc);
         $domain_m = $customer_info->mobile_domain;
@@ -189,6 +185,17 @@ class CustomerController extends BaseController {
         return Response::json($result);
     }
 
+    public function getCapacity() {
+        //===格式化容量===
+        $cus_id = Auth::id();
+        $customer_info = CustomerInfo::where('cus_id', $cus_id)->first();
+        $data['capacity'] = $this->format_bytes($customer_info->capacity);
+        $data['capacity_free'] = $this->format_bytes($customer_info->capacity - $customer_info->capacity_use);
+        $data['use_percent'] = round(($customer_info->capacity_use / $customer_info->capacity) * 100, 2);
+        $result = ['err' => 0, 'msg' => '容量数据', 'data' => $data];
+        return Response::json($result);
+    }
+
     /**
      * 改变空间容量
      * @param type $size    图片大小
@@ -200,11 +207,7 @@ class CustomerController extends BaseController {
         $cusinfo = CustomerInfo::where('cus_id', $cus_id)->first();
         $capacity_use = $cusinfo->capacity_use;
         $capacity = $cusinfo->capacity;
-        if ($way == 'free') {
-            $data = array(
-                "capacity_use" => $capacity_use - $size,
-            );
-        } elseif ($way == 'use') {
+        if ($way == 'use') {
             if ($capacity >= ($capacity_use + $size)) {
                 $data = array(
                     "capacity_use" => $capacity_use + $size,
@@ -212,6 +215,11 @@ class CustomerController extends BaseController {
             } else {
                 return false; //容量不足
             }
+        }
+        if ($way == 'free') {
+            $data = array(
+                "capacity_use" => $capacity_use - $size,
+            );
         }
         $flag = CustomerInfo::where('cus_id', $cus_id)->update($data);
         if ($flag) {//是否更新成功

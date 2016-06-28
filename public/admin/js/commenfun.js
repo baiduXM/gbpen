@@ -228,8 +228,6 @@ WarningBox.prototype = {
                 }
             };
             $image.cropper(options);
-            console.log(defaults);
-            console.log('===defaults===');
             this._UpFunction($image, defaults.ajaxurl, defaults.IsBaseShow, defaults.IsOneNatural, defaults.oncallback);
         } else {
             this._Schedule(defaults.oncallback);    // 带进度条
@@ -250,12 +248,13 @@ WarningBox.prototype = {
                 if (files && files.length == 1 && !IsOneNatural) {
                     file = files[0];
                     _this.fileType = file.type;
-                    console.log(file.size);
-                    console.log('file.size');//30268
                     if (file.size / 1024 > 600) {
                         alert('您这张"' + file.name + '"图片大小过大，应小于600k!');
                         return false;
                     }
+                    //===检测空间容量是否充足===
+                    //file.size是要目标图片的大小，和裁剪后的保存图片大小不同
+                    //TODO
                     if (/^image\/\w+$/.test(file.type)) {
                         blobURL = URL.createObjectURL(file);
                         $image.one('built.cropper', function () {
@@ -263,6 +262,7 @@ WarningBox.prototype = {
                         }).cropper('reset').cropper('replace', blobURL);
                         $inputImage.val('');
                         _this._save($image, ajaxurl, oncallback);
+
                     } else {
                         $body.tooltip('请上传图片！', 'warning');
                     }
@@ -471,8 +471,6 @@ WarningBox.prototype = {
         });
     },
     _save: function ($image, ajaxurl, oncallback) {
-        console.log(ajaxurl);
-        console.log('ajaxurl');
         var _this = this;
         $('.warning_box .save').click(function () {
             var data = $image.cropper('getCroppedCanvas').toDataURL(_this.fileType);
@@ -483,7 +481,12 @@ WarningBox.prototype = {
                 dataType: 'json',
                 cache: false,
                 success: function (json) {
-                    oncallback(json);
+                    if (json.err) {//有错误
+                        alert(json.msg);
+                    } else {
+                        get_capacity();
+                        oncallback(json);
+                    }
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
                     alert(textStatus || errorThrown);

@@ -187,9 +187,6 @@ mainApp.controller('memberController', function ($scope, $http) {
     $http.get('../customer-info').success(function (json) {
         checkJSON(json, function (json) {
             $scope.companyname = json.data.company_name;
-            $scope.capacity = json.data.capacity;
-            $scope.capacity_free = json.data.capacity_free;
-            $scope.use_percent = json.data.use_percent;
             $scope.$parent.domain_pc = json.data.domain_pc;
             if (json.data.domain_m == '' || json.data.domain_m == null) {
                 $scope.$parent.phonepreview = false;
@@ -347,6 +344,15 @@ function width_resize(data) {
 $(window).resize(function () {
     width_resize()
 });
+//===获取容量信息===
+function get_capacity() {
+    $.get('../customer-capacity', function (json) {
+        var data = json.data;
+        $('#capacity_free').html(data.capacity_free);
+        $('#capacity').html(data.capacity);
+        $('#capacity_bar').css('width', data.use_percent + '%');
+    });
+}
 // 推送静态文件
 var cache_num;
 function pushtimer() {

@@ -67,6 +67,11 @@ Route::group(array('before' => 'auth'), function() {
         'as' => 'customer-setting',
         'uses' => 'CustomerController@customerSetting'
     ]);
+    Route::get('customer-capacity', [//保存用户信息
+        'uses' => 'CustomerController@getCapacity'
+    ]);
+
+    
 
     //-----------------------------------------------
     //--------------------栏目路由--------------------
