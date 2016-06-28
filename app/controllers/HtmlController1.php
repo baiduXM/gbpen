@@ -618,7 +618,7 @@ class HtmlController1 extends BaseController{
                 $this->quickbarpush=1;
             }
             $this->mobilepush=0;
-            $this->mobilehomepagepush=0;s
+            $this->mobilehomepagepush=0;
         }
     }
     /**
