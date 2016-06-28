@@ -667,7 +667,7 @@ class HtmlController1 extends BaseController{
             $search = "/QuickBar=(.*)/i";
             $result = preg_match($search, $config_str, $config_arr);
             if($result){
-                if($config_arr[1]=='custom'){
+                if(trim($config_arr[1])=='custom'){
                     $this->mobilepush=1;
                     $this->mobilehomepagepush=0;
                 } 
