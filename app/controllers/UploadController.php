@@ -223,7 +223,7 @@ class UploadController extends BaseController {
                 }
             }
             @ftp_close($conn);
-            return Response::json(['err' => 0, 'msg' => $msg, 'data' => $data]);
+            return Response::json(['err' => 0, 'msg' => '保存成功', 'data' => $data]);
         } else {
             return Response::json(['err' => 1001, 'msg' => '保存失败']);
         }
