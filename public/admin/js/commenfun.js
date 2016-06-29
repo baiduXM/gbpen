@@ -481,10 +481,10 @@ WarningBox.prototype = {
                 dataType: 'json',
                 cache: false,
                 success: function (json) {
-                    if (json.err) {//有错误
+                    if (json.err) {//有错误!=0
                         alert(json.msg);
                     } else {
-                        get_capacity();
+//                        get_capacity();
                         oncallback(json);
                     }
                 },

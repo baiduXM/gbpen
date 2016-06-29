@@ -8,10 +8,10 @@ class ImgDel extends Eloquent {
     public function mysave($img, $target = "articles") {
         if ($img != '') {
             //===释放用户空间容量===
-            $customer = Auth::user()->name;
-            $size = filesize(public_path('customers/' . $customer . '/cache_images/' . $img));
-            $cus = new CustomerController;
-            $cus->change_capa($size, 'free');
+//            $customer = Auth::user()->name;
+//            $size = filesize(public_path('customers/' . $customer . '/cache_images/' . $img));
+//            $cus = new CustomerController;
+//            $cus->change_capa($size, 'free');
 //            echo "<script>$(function(){
 //                        get_capacity();
 //                    })</script>";
