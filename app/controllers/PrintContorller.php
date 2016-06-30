@@ -2539,9 +2539,6 @@ class PrintController extends BaseController {
             $paths[] = $path;
             $nowpercent = $last_html_precent + $html_precent;
             if (floor($nowpercent) !== floor($last_html_precent)) {
-                if (isset($_GET['sleep'])) {
-                    sleep($_GET['sleep']);
-                }
                 echo floor($nowpercent) . '%<script type="text/javascript">parent.refresh(' . floor($nowpercent) . ');</script><br />';
                 ob_flush();
                 flush();
@@ -2563,9 +2560,6 @@ class PrintController extends BaseController {
                     $paths[] = $path;
                     $nowpercent = $last_html_precent + $html_precent;
                     if (floor($nowpercent) !== floor($last_html_precent)) {
-                        if (isset($_GET['sleep'])) {
-                            sleep($_GET['sleep']);
-                        }
                         echo floor($nowpercent) . '%<script type="text/javascript">parent.refresh(' . floor($nowpercent) . ');</script><br />';
                         ob_flush();
                         flush();
@@ -2685,7 +2679,7 @@ class PrintController extends BaseController {
         } elseif ($article_type == 2) {//产品内容
             $viewname = 'content-product';
             $result['enlarge'] = $customer_info->enlarge;
-            if ($result['enlarge']) {
+            if ($result['enlarge']&&$this->type == 'pc') {
                 $result['footscript'] .= '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/img.js"></script>';
             }
         } else {//跳转404
@@ -2850,14 +2844,13 @@ class PrintController extends BaseController {
         $result['pagenavs'] = $pagenavs;
         $result['posnavs'] = $this->getPosNavs($c_id);
         $result['enlarge'] = 0;
-        $result['enlargeprint'] = '';
         $article_type = Classify::where('id', $c_id)->pluck('article_type');
         if ($article_type == 1) {//新闻内容
             $viewname = 'content-news';
         } elseif ($article_type == 2) {//产品内容
             $viewname = 'content-product';
             $result['enlarge'] = $customer_info->enlarge;
-            if ($result['enlarge']) {
+            if ($result['enlarge']&&$this->type == 'pc') {
                 $result['footscript'] .= '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/img.js"></script>';
             }
         } else {//跳转404
@@ -2983,9 +2976,6 @@ class PrintController extends BaseController {
             $paths[] = $path;
             $nowpercent = $last_html_precent + $html_precent;
             if (floor($nowpercent) !== floor($last_html_precent)) {
-                if (isset($_GET['sleep'])) {
-                    sleep($_GET['sleep']);
-                }
                 echo floor($nowpercent) . '%<script type="text/javascript">parent.refresh(' . floor($nowpercent) . ');</script><br />';
                 ob_flush();
                 flush();

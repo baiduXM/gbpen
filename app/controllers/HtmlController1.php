@@ -742,7 +742,7 @@ class HtmlController1 extends BaseController{
      */
     public function pushPrecent(){
         set_time_limit(0);
-        if(isset($_GET['gradpush'])){
+        if(!isset($_GET['gradpush'])){
             $this->needpush();
         }else{
             $pc_domain=CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_domain');
