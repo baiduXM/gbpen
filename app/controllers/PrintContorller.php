@@ -110,9 +110,8 @@ class PrintController extends BaseController {
                 $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.mobile_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
                 $mobile_domain=CustomerInfo::where('cus_id', $this->cus_id)->pluck('mobile_domain');
                 $mobile_domain= str_replace('http://', '', $mobile_domain);
-                if(strpos($mobile_domain,'/')){
-                    $vars= explode('/',$mobile_domain);
-                    $this->domain='/'.$vars[1];
+                if(strpos($mobile_domain,'/mobile')){
+                    $this->domain='/mobile';
                 }
                 //$this->domain = '';//CustomerInfo::where('cus_id', $this->cus_id)->pluck('mobile_domain');
             } else {
