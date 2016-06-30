@@ -96,7 +96,7 @@ class PrintController extends BaseController {
                 $this->tpl_id = WebsiteInfo::where('cus_id', $this->cus_id)->pluck('mobile_tpl_id');
                 $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.mobile_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
                 $this->source_dir = '/customers/' . $this->customer . '/mobile/images/';//asset('customers/' . $this->customer . '/mobile/images/') . '/';
-                self::$cus_domain = '';CustomerInfo::where('cus_id', $this->cus_id)->pluck('mobile_domain');
+                self::$cus_domain = '';//CustomerInfo::where('cus_id', $this->cus_id)->pluck('mobile_domain');
             } else {
                 $this->domain = '';//url();
                 $this->tpl_id = WebsiteInfo::where('cus_id', $this->cus_id)->pluck('pc_tpl_id');
@@ -108,14 +108,20 @@ class PrintController extends BaseController {
             if ($this->type == 'mobile') {
                 $this->tpl_id = WebsiteInfo::where('cus_id', $this->cus_id)->pluck('mobile_tpl_id');
                 $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.mobile_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
-                $this->domain = '';//CustomerInfo::where('cus_id', $this->cus_id)->pluck('mobile_domain');
+                $mobile_domain=CustomerInfo::where('cus_id', $this->cus_id)->pluck('mobile_domain');
+                $mobile_domain= str_replace('http://', '', $mobile_domain);
+                if(strpos($mobile_domain,'/')){
+                    $vars= explode('/',$mobile_domain);
+                    $this->domain='/'.$vars[1];
+                }
+                //$this->domain = '';//CustomerInfo::where('cus_id', $this->cus_id)->pluck('mobile_domain');
             } else {
                 $this->tpl_id = WebsiteInfo::where('cus_id', $this->cus_id)->pluck('pc_tpl_id');
                 $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.pc_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
                 $this->domain ='';//CustomerInfo::where('cus_id', $this->cus_id)->pluck('pc_domain');
             }
             self::$cus_domain ='';// $this->domain;
-            $this->site_url = '/';//$this->domain . '/';
+            $this->site_url = $this->domain.'/';
             $this->source_dir = '/images/';//$this->domain . '/images/';
         }
     }
