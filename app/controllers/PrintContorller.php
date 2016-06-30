@@ -872,6 +872,19 @@ class PrintController extends BaseController {
                 curl_close($ch);
             }
             $headscript = $customer_info->pc_header_script;
+            $language_url = 'http://baidu.com';
+            $language = '<a href="' . $language_url . '">中文版</a>';
+//            $language = '中文版';
+            var_dump($language);
+            echo '<br>---language---<br>';
+            $headscript .='<script>'
+                    . '$(function(){'
+                    . '$("#language_div").html(\'' . $language . '\');'
+//                    . '$(".search_div").css("width","220px");'
+//                    . '$("#header .search").append("<div id=\'language_div\' style=\'float: right;\'>'.$language.'</div>");'
+                    . '});'
+                    . '</script>';
+//            <div id="language_div" style="float: right;"></div>
             if ($customer_info->lang == 'en') {
                 $footprint = $customer_info->footer . '<p>Technology support：<a href="http://www.12t.cn/">Xiamen 12t network technology co.ltd</a> Talent support：<a href="http://www.xgzrc.com/">www.xgzrc.com.cn</a></p>';
             } else {
