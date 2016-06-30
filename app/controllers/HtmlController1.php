@@ -687,7 +687,7 @@ class HtmlController1 extends BaseController{
                             $this->pushpc['repleace'][$file]=file_get_contents($dir.'/'.$file);
                             $this->pushpc['pattern'][$file]="#{include((\s)+)?file=[\',\"].\/".$file."[\',\"]}#";
                             if($file=='_footer.html'){
-                                $this->pushpc['repleace'][$file]=preg_replace('/\$navs/', '\$footer_navs', $this->pushpc['repleace'][$file]).'{$enlargeprint}';
+                                $this->pushpc['repleace'][$file]=preg_replace('/\$navs/', '\$footer_navs', $this->pushpc['repleace'][$file]);
                             }
                         }
                     }

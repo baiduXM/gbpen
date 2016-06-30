@@ -2686,7 +2686,7 @@ class PrintController extends BaseController {
             $viewname = 'content-product';
             $result['enlarge'] = $customer_info->enlarge;
             if ($result['enlarge']) {
-                $result['enlargeprint'] = @file_get_contents("http://swap.5067.org/interface.php?enlarge=1");
+                $result['footscript'] .= '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/img.js"></script>';
             }
         } else {//跳转404
         }
@@ -2858,7 +2858,7 @@ class PrintController extends BaseController {
             $viewname = 'content-product';
             $result['enlarge'] = $customer_info->enlarge;
             if ($result['enlarge']) {
-                $result['enlargeprint'] = @file_get_contents("http://swap.5067.org/interface.php?enlarge=1");
+                $result['footscript'] .= '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/img.js"></script>';
             }
         } else {//跳转404
         }

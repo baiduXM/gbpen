@@ -226,9 +226,6 @@ abstract class Smarty_Internal_TemplateBase extends Smarty_Internal_Data {
 			if ($_template->template_resource == './_footer.html' && (empty($_template->tpl_vars['navs']->value))) {
 				$_output = preg_replace('/<a href="' . str_replace("/", "\/", $_template->tpl_vars['site_url']->value) . '"( target="_blank")?( )?>首页<\/a>( )?\|([\s]+)?(<br \/>)?(<br>)?/is', "", $_output);
 			}
-			if ($_template->template_resource == './_footer.html' && isset($_template->tpl_vars['enlarge']->value) && $_template->tpl_vars['enlarge']->value) {
-				$_output = $_output . $_template->tpl_vars['enlargeprint']->value;
-			}
 			//===调用交互服务器接口文件中js,加载访问统计===
 			/**
 			 * 获取域名->获取ip
