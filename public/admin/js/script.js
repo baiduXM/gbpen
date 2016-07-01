@@ -353,6 +353,18 @@ function get_capacity() {
         $('#capacity_bar').css('width', data.use_percent + '%');
     });
 }
+//===获取绑定账号===
+function get_bind_account() {
+    $.post('../bind-auto-login', function (json) {
+        console.log(json);
+        console.log('bind-auto-login');
+        if (json.err) {
+            alert(json.msg);
+        } else {
+            location.href = json.msg;
+        }
+    });
+}
 // 推送静态文件
 var cache_num;
 function pushtimer() {

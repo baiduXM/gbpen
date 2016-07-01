@@ -738,6 +738,16 @@ class TemplatesController extends BaseController {
         //return $template->searchPreview();
     }
 
+    /**
+     * 获取模板名
+     */
+    public function getTemplatesName() {
+        $cus_id = Auth::id();
+        $pc_tpl_id = WebsiteInfo::where('cus_id', $cus_id)->pluck('pc_tpl_id');
+        $my_tpl_name = Template::where('id', $pc_tpl_id)->pluck('name');
+        return $my_tpl_name;
+    }
+
     /*
       public function searchPreview($url,$type='pc'){
       $template = new PrintController('online',$type);

@@ -2,27 +2,31 @@
 
 class ApiController extends BaseController {
 
-	//接口验证    authData
-	#参数    timemap	操作时间戳
-	#参数    taget    加密结果
-	#返回值   boole    TURE/FALSE
-	public function authData() {
-		$timemap = Input::get('timemap');
-		$data = md5(md5($timemap));
-		$url = Config::get('url.DL_domain');
-		$token = file_get_contents('http://dl2.5067.org/?module=ApiModel&action=GetHandShake&num=' . $data);
-		$taget = Input::get('taget');
-		$string = $token . $data;
-		if (md5($string) == $taget) {
-			return true;
-		} else {
-			return false;
-		}
-	}
+    /**
+     * 接口验证    authData
+     * @param type timemap      操作时间戳
+     * @param type taget        加密结果
+     * @return boolean
+     */
+    public function authData() {
+        $timemap = Input::get('timemap');
+        $data = md5(md5($timemap));
+        $url = Config::get('url.DL_domain');
+        $token = file_get_contents('http://dl2.5067.org/?module=ApiModel&action=GetHandShake&num=' . $data);
+        $taget = Input::get('taget');
+        $string = $token . $data;
+        if (md5($string) == $taget) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-    //用户登录    login
-    #参数    id    用户id
-    #返回值   无    跳转至管理页(标识为通过代理平台登录)
+    /**
+     * 用户登录    login
+     * @param type id       用户id
+     * @return type null    跳转至管理页(标识为通过代理平台登录)
+     */
     public function login() {
 
         if ($this->authData()) {
@@ -44,16 +48,17 @@ class ApiController extends BaseController {
         return Response::json($result);
     }
 
-    //创建用户    modifyCustomer
-    #参数    name    用户名
-    #参数    email   用户邮箱
-    #参数    ftp_address   ftp地址
-    #参数    ftp_user    ftp帐号
-    #参数    ftp_pwd    ftp密码
-    #参数    ended_at    用户终止时间
-    #参数    status    用户状态
-    #返回值   data    用户id
-
+    /**
+     * 创建用户    modifyCustomer
+     * @param type name             用户名
+     * @param type email            用户邮箱
+     * @param type ftp_address      ftp地址
+     * @param type ftp_user         ftp帐号
+     * @param type ftp_pwd          ftp密码
+     * @param type ended_at         用户终止时间
+     * @param type status           用户状态
+     * @return type data            用户id
+     */
     public function modifyCustomer() {
         if ($this->authData()) {
             $update['name'] = trim(Input::get('name'));
@@ -82,8 +87,9 @@ class ApiController extends BaseController {
             $update['ended_at'] = trim(Input::get('ended_at'));
             $update['status'] = Input::get('status');
             $update['customization'] = Input::get('customization');
+            $update['switch_cus_id'] = Input::get('switch_cus_id') ? trim(Input::get('switch_cus_id')) : 0; //绑定账户
             //===不能用update数组，因为Customer表中没有capacity/capacity_use字段===
-            $capacity = Input::get('capacity') ? trim(Input::get('capacity')) : 100 * 1024 * 1024; //默认100MB
+            $capacity = Input::get('capacity') ? trim(Input::get('capacity')) : 300 * 1024 * 1024; //默认100MB
             $cus_id = Customer::where('name', $update['name'])->pluck('id');
             if ($cus_id) {
                 //修改操作
@@ -106,12 +112,10 @@ class ApiController extends BaseController {
                 //WebsiteInfo::where('cus_id',$cus_id)->update(['pc_tpl_id'=>$pc_id,'mobile_tpl_id'=>$mobile_id]);
                 //===更新CustomerInfo时，更新capacity字段===
                 CustomerInfo::where('cus_id', $cus_id)->update(['pc_domain' => $update['pc_domain'], 'mobile_domain' => $update['mobile_domain'], 'capacity' => $capacity]);
-
                 if ($update['stage'] != $coustomer_old['stage'] or $update['pc_domain'] != $coustomer_old['pc_domain'] or $update['mobile_domain'] != $coustomer_old['mobile_domain']) {
                     $common = new CommonController();
                     @$common->postsend(trim($update['weburl'], '/') . "/urlbind.php", array('cus_name' => $update['name'], 'stage' => $update['stage'], 'pc_domain' => $update['pc_domain'], 'mobile_domain' => $update['mobile_domain'], 'stage_old' => $coustomer_old['stage'], 'pc_domain_old' => $coustomer_old['pc_domain'], 'mobile_domain_old' => $coustomer_old['mobile_domain']));
                 }
-
                 if ($save) {
                     $result = ['err' => 1000, 'msg' => '更新用户成功'];
                 } else {
@@ -245,9 +249,11 @@ class ApiController extends BaseController {
         return Response::json($result);
     }
 
-    //删除用户
-    #参数    name    用户名
-    #返回值   boole    TURE/FALSE
+    /**
+     * 删除用户
+     * @param type name 用户名
+     * @return boole TURE/FALSE
+     */
     public function deleteCustomer() {
         if ($this->authData()) {
 

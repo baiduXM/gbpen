@@ -185,8 +185,11 @@ class CustomerController extends BaseController {
         return Response::json($result);
     }
 
+    /**
+     * 获取容量数据
+     * @return type
+     */
     public function getCapacity() {
-        //===格式化容量===
         $cus_id = Auth::id();
         $customer_info = CustomerInfo::where('cus_id', $cus_id)->first();
         $data['capacity'] = $this->format_bytes($customer_info->capacity);
@@ -217,15 +220,21 @@ class CustomerController extends BaseController {
             }
         }
         if ($way == 'free') {
-            $data = array(
-                "capacity_use" => $capacity_use - $size,
-            );
+            if (0 < ($capacity_use - $size)) {
+                $data = array(
+                    "capacity_use" => 0,
+                );
+            } else {
+                $data = array(
+                    "capacity_use" => $capacity_use - $size,
+                );
+            }
         }
         $flag = CustomerInfo::where('cus_id', $cus_id)->update($data);
         if ($flag) {//是否更新成功
-            return true; //扣除成功
+            return true; //修改成功
         } else {
-            return false;
+            return false; //修改失败
         }
     }
 

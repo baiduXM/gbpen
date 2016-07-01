@@ -32,19 +32,27 @@
                 <div class="member_info clearfix" ng-controller="memberController">
                     <div class="member_buttons fr clearfix"><a href="javascript:;"><img src="images/u_logo3.png" /></a><a href="#/setting"><img src="images/setting.png" /></a><a href="../log-out"><img src="images/loginout.png" /></a></div>
                     <a href="#/user"><p class="fr clearfix" ng-bind-template="欢迎，{{ companyname}}" ></p></a>
-                    <!--容量条-->
+                    
                 </div>
+                <!--容量条-->
 <!--                <div class="fr clearfix" style="font-size: 12px;color:#7c6154;margin-top: 0px;" >
                     剩余容量/总容量：<span id="capacity_free"></span>/<span id="capacity"></span>
                     <div style="width: 100px; height: 10px; background: green; display: inline-block;">
                         <div id="capacity_bar" style="background: blue; height: 10px;"></div>
                     </div>
                 </div>-->
-<!--                <script>
+                <div class="fr clearfix" style="font-size: 12px;color:#7c6154;margin-top: 0px;margin-right: 10px;" >
+                    <a href="javascript:;" id="switch_bind">切换绑定账号</a>
+                </div>
+                <script>
                     $(function(){
-                        get_capacity();
-                    })
-                </script>-->
+//                        get_capacity();
+                        $('#switch_bind').click(function(){
+                            get_bind_account();
+                        });
+                    });
+                </script>
+
                 <!-- 顶部主导航 -->
                 <nav class="pr clearfix">
                     <ul>
