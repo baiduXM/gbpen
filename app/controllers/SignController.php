@@ -82,8 +82,13 @@ class SignController extends BaseController {
     public function autoLogin() {
         $cus_id = Auth::id();
         $bind_id = Customer::where('id', $cus_id)->pluck('switch_cus_id');
-        $user = Customer::find($bind_id);
-        Auth::login($user);
+        if ($bind_id) {
+            $user = Customer::find($bind_id);
+            Auth::login($user);
+        } else {
+            $result = ['err' => 1001, 'msg' => '未绑定'];
+            return Response::json($result);
+        }
         if (Auth::check()) {
             Session::put('isAdmin', TRUE);
             $result = ['err' => 0, 'msg' => '/admin/index.html'];
