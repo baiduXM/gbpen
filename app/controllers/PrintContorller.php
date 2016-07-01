@@ -96,7 +96,7 @@ class PrintController extends BaseController {
                 $this->tpl_id = WebsiteInfo::where('cus_id', $this->cus_id)->pluck('mobile_tpl_id');
                 $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.mobile_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
                 $this->source_dir = '/customers/' . $this->customer . '/mobile/images/';//asset('customers/' . $this->customer . '/mobile/images/') . '/';
-                self::$cus_domain = '';CustomerInfo::where('cus_id', $this->cus_id)->pluck('mobile_domain');
+                self::$cus_domain = '';//CustomerInfo::where('cus_id', $this->cus_id)->pluck('mobile_domain');
             } else {
                 $this->domain = '';//url();
                 $this->tpl_id = WebsiteInfo::where('cus_id', $this->cus_id)->pluck('pc_tpl_id');
@@ -108,14 +108,19 @@ class PrintController extends BaseController {
             if ($this->type == 'mobile') {
                 $this->tpl_id = WebsiteInfo::where('cus_id', $this->cus_id)->pluck('mobile_tpl_id');
                 $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.mobile_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
-                $this->domain = '';//CustomerInfo::where('cus_id', $this->cus_id)->pluck('mobile_domain');
+                $mobile_domain=CustomerInfo::where('cus_id', $this->cus_id)->pluck('mobile_domain');
+                $mobile_domain= str_replace('http://', '', $mobile_domain);
+                if(strpos($mobile_domain,'/mobile')){
+                    $this->domain='/mobile';
+                }
+                //$this->domain = '';//CustomerInfo::where('cus_id', $this->cus_id)->pluck('mobile_domain');
             } else {
                 $this->tpl_id = WebsiteInfo::where('cus_id', $this->cus_id)->pluck('pc_tpl_id');
                 $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.pc_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
                 $this->domain ='';//CustomerInfo::where('cus_id', $this->cus_id)->pluck('pc_domain');
             }
             self::$cus_domain ='';// $this->domain;
-            $this->site_url = '/';//$this->domain . '/';
+            $this->site_url = $this->domain.'/';
             $this->source_dir = '/images/';//$this->domain . '/images/';
         }
     }
@@ -2547,9 +2552,6 @@ class PrintController extends BaseController {
             $paths[] = $path;
             $nowpercent = $last_html_precent + $html_precent;
             if (floor($nowpercent) !== floor($last_html_precent)) {
-                if (isset($_GET['sleep'])) {
-                    sleep($_GET['sleep']);
-                }
                 echo floor($nowpercent) . '%<script type="text/javascript">parent.refresh(' . floor($nowpercent) . ');</script><br />';
                 ob_flush();
                 flush();
@@ -2571,9 +2573,6 @@ class PrintController extends BaseController {
                     $paths[] = $path;
                     $nowpercent = $last_html_precent + $html_precent;
                     if (floor($nowpercent) !== floor($last_html_precent)) {
-                        if (isset($_GET['sleep'])) {
-                            sleep($_GET['sleep']);
-                        }
                         echo floor($nowpercent) . '%<script type="text/javascript">parent.refresh(' . floor($nowpercent) . ');</script><br />';
                         ob_flush();
                         flush();
@@ -2693,8 +2692,8 @@ class PrintController extends BaseController {
         } elseif ($article_type == 2) {//产品内容
             $viewname = 'content-product';
             $result['enlarge'] = $customer_info->enlarge;
-            if ($result['enlarge']) {
-                $result['enlargeprint'] = @file_get_contents("http://swap.5067.org/interface.php?enlarge=1");
+            if ($result['enlarge']&&$this->type == 'pc') {
+                $result['footscript'] .= '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/img.js"></script>';
             }
         } else {//跳转404
         }
@@ -2858,15 +2857,14 @@ class PrintController extends BaseController {
         $result['pagenavs'] = $pagenavs;
         $result['posnavs'] = $this->getPosNavs($c_id);
         $result['enlarge'] = 0;
-        $result['enlargeprint'] = '';
         $article_type = Classify::where('id', $c_id)->pluck('article_type');
         if ($article_type == 1) {//新闻内容
             $viewname = 'content-news';
         } elseif ($article_type == 2) {//产品内容
             $viewname = 'content-product';
             $result['enlarge'] = $customer_info->enlarge;
-            if ($result['enlarge']) {
-                $result['enlargeprint'] = @file_get_contents("http://swap.5067.org/interface.php?enlarge=1");
+            if ($result['enlarge']&&$this->type == 'pc') {
+                $result['footscript'] .= '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/img.js"></script>';
             }
         } else {//跳转404
         }
@@ -2991,9 +2989,6 @@ class PrintController extends BaseController {
             $paths[] = $path;
             $nowpercent = $last_html_precent + $html_precent;
             if (floor($nowpercent) !== floor($last_html_precent)) {
-                if (isset($_GET['sleep'])) {
-                    sleep($_GET['sleep']);
-                }
                 echo floor($nowpercent) . '%<script type="text/javascript">parent.refresh(' . floor($nowpercent) . ');</script><br />';
                 ob_flush();
                 flush();

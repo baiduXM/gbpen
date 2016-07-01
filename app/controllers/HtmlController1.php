@@ -687,7 +687,7 @@ class HtmlController1 extends BaseController{
                             $this->pushpc['repleace'][$file]=file_get_contents($dir.'/'.$file);
                             $this->pushpc['pattern'][$file]="#{include((\s)+)?file=[\',\"].\/".$file."[\',\"]}#";
                             if($file=='_footer.html'){
-                                $this->pushpc['repleace'][$file]=preg_replace('/\$navs/', '\$footer_navs', $this->pushpc['repleace'][$file]).'{$enlargeprint}';
+                                $this->pushpc['repleace'][$file]=preg_replace('/\$navs/', '\$footer_navs', $this->pushpc['repleace'][$file]);
                             }
                         }
                     }
@@ -742,7 +742,7 @@ class HtmlController1 extends BaseController{
      */
     public function pushPrecent(){
         set_time_limit(0);
-        if(isset($_GET['gradpush'])){
+        if(!isset($_GET['gradpush'])){
             $this->needpush();
         }else{
             $pc_domain=CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_domain');
