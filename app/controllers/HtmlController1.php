@@ -742,6 +742,12 @@ class HtmlController1 extends BaseController{
      */
     public function pushPrecent(){
         set_time_limit(0);
+        $have_article=Articles::where('cus_id',$this->cus_id)->count();
+        if(!$have_article){
+            echo '没有文章不可推送<script type="text/javascript">alert("没有文章不可推送");parent.refresh("没有文章不可推送");</script><br />';
+            ob_flush();
+            flush();
+        }
         if(!isset($_GET['gradpush'])){
             $this->needpush();
         }else{
