@@ -251,4 +251,16 @@ class CustomerController extends BaseController {
         return round($size, 2) . $units[$i];
     }
 
+    /**
+     * 获取用户信息
+     */
+    public function getSwitchCustomer() {
+        $cus_id = Auth::id();
+        $switch_cus_id = Customer::where('id', $cus_id)->pluck('switch_cus_id');
+        $switch_cus_info = Customer::where('id', $switch_cus_id)->first();
+        $data['pc_domain'] = $switch_cus_info->pc_domain;
+        $data['mobile_domain'] = $switch_cus_info->mobile_domain;
+        return $data;
+    }
+
 }

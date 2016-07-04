@@ -1,4 +1,5 @@
 <?php
+
 /**
  * 上传附件和上传视频
  * User: Jinqn
@@ -6,14 +7,14 @@
  * Time: 上午10:17
  */
 include "Uploader.class.php";
-include __DIR__ .'/../../../../vendor/autoload.php';
-$laravel_app = include __DIR__ .'/../../../../bootstrap/start.php';
+include __DIR__ . '/../../../../vendor/autoload.php';
+$laravel_app = include __DIR__ . '/../../../../bootstrap/start.php';
 $laravel_app->boot();
-include __DIR__ .'/laravelManager.php';
+include __DIR__ . '/laravelManager.php';
 $manager = new laravelSessionManager($laravel_app);
 $manager->startSession();
-$cus_id=Auth::id();
-$cus_name=Auth::user()->name;
+$cus_id = Auth::id();
+$cus_name = Auth::user()->name;
 /* 上传配置 */
 $base64 = "upload";
 switch (htmlspecialchars($_GET['action'])) {
@@ -56,22 +57,33 @@ switch (htmlspecialchars($_GET['action'])) {
 
 /* 生成上传实例对象并完成上传 */
 $up = new Uploader($fieldName, $config, $base64);
-$up_result=$up->getFileInfo();
-/*同步到客户服务器*/
-if($up_result['state']=='SUCCESS'){
+$up_result = $up->getFileInfo();
+/* 同步到客户服务器 */
+if ($up_result['state'] == 'SUCCESS') {
     //同步到客户服务器
-	$customerinfo = Customer::find($cus_id);
-	$ftp_array = explode(':',$customerinfo->ftp_address);
-    $ftp_array[1] = isset($ftp_array[1])?$ftp_array[1]:'21';
-    $conn = ftp_connect($ftp_array[0],$ftp_array[1]);
-	if($conn){
-        ftp_login($conn,$customerinfo->ftp_user,$customerinfo->ftp_pwd);
+    $customerinfo = Customer::find($cus_id);
+    $ftp_array = explode(':', $customerinfo->ftp_address);
+    $ftp_array[1] = isset($ftp_array[1]) ? $ftp_array[1] : '21';
+    $conn = ftp_connect($ftp_array[0], $ftp_array[1]);
+    if ($conn) {
+        ftp_login($conn, $customerinfo->ftp_user, $customerinfo->ftp_pwd);
         /* 编辑器上传图片问题 */
-         ftp_pasv($conn, 1);
-        ftp_put($conn,$cus_name.'/'.'images/ueditor/'.$up_result['title'],public_path('customers/'.$cus_name.'/images/ueditor/'.$up_result['title']),FTP_BINARY);
-        ftp_put($conn,$cus_name.'/'.'mobile/images/ueditor/'.$up_result['title'],public_path('customers/'.$cus_name.'/images/ueditor/'.$up_result['title']),FTP_BINARY);
+        ftp_pasv($conn, 1);
+        //===扣除空间===
+        $size = filesize(public_path('customers/' . $cus_name . '/images/ueditor/' . $up_result['title']));
+//        return $size;
+//        var_dump($size);
+//        echo '<br>---size---<br>';
+        
+        $cus = new CustomerController;
+        if (!$cus->change_capa($size, 'use')) {
+            return Response::json(['err' => 1001, 'msg' => '容量不足', 'data' => []]);
+        }
+        //===end===
+        ftp_put($conn, $cus_name . '/' . 'images/ueditor/' . $up_result['title'], public_path('customers/' . $cus_name . '/images/ueditor/' . $up_result['title']), FTP_BINARY);
+        ftp_put($conn, $cus_name . '/' . 'mobile/images/ueditor/' . $up_result['title'], public_path('customers/' . $cus_name . '/images/ueditor/' . $up_result['title']), FTP_BINARY);
         ftp_close($conn);
-	}
+    }
 }
 /**
  * 得到上传文件所对应的各个参数,数组结构
@@ -84,6 +96,5 @@ if($up_result['state']=='SUCCESS'){
  *     "size" => "",           //文件大小
  * )
  */
-
 /* 返回数据 */
 return json_encode($up_result);
