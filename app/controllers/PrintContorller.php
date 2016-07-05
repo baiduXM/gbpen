@@ -841,6 +841,30 @@ class PrintController extends BaseController {
     public function publicdata() {
         $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
         $formC = new FormController();
+        //===显示版本切换链接===
+        $templatesC = new TemplatesController;
+        $tempname = $templatesC->getTemplatesName($this->type);
+        $flagPlatform = substr($tempname, 0, 2);
+        $flagLanguage = substr($tempname, 2, 1);
+        $customerC = new CustomerController;
+        $domain = $customerC->getSwitchCustomer();
+        if ($flagPlatform == 'GM') {//===手机
+            $language_url = $domain['mobile_domain'];
+        } else {//===PC
+            $language_url = $domain['pc_domain'];
+        }
+        if ($flagLanguage == 9) {//===英文
+            $language = '<a href="' . $language_url . '">中文版</a>';
+        } else {//===中文
+            $language = '<a href="' . $language_url . '">English</a>';
+        }
+        $tempscript = '<script>'
+                . '$(function(){'
+                . '$("#language_div").html(\'' . $language . '\');'
+                . '});'
+                . '</script>';
+//        exit;
+        //===显示版本切换链接-end===
         if ($this->type == 'pc') {
             $stylecolor = websiteInfo::leftJoin('color', 'color.id', '=', 'website_info.pc_color_id')->where('cus_id', $this->cus_id)->pluck('color_en');
             $logo = $this->showtype == 'preview' ? '/customers/' . $this->customer . '/images/l/common/' . $customer_info->logo : $this->domain . '/images/l/common/' . $customer_info->logo; //'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $customer_info->logo) : $this->domain . '/images/l/common/' . $customer_info->logo;
@@ -878,30 +902,7 @@ class PrintController extends BaseController {
                 curl_close($ch);
             }
             $headscript = $customer_info->pc_header_script;
-            //===显示版本切换链接===
-            $templatesC = new TemplatesController;
-            $tempname = $templatesC->getTemplatesName();
-            $flagPlatform = substr($tempname, 0, 2);
-            $flagLanguage = substr($tempname, 2, 1);
-            $customerC = new CustomerController;
-            $domain = $customerC->getSwitchCustomer();
-            if ($flagPlatform == 'GM') {//===手机
-                $language_url = $domain['mobile_domain'];
-            } else {//===GP：PC
-                $language_url = $domain['pc_domain'];
-            }
-            if ($flagLanguage == 9) {//===英文
-                $language = '<a href="' . $language_url . '">中文版</a>';
-            } else {//===中文
-                $language = '<a href="' . $language_url . '">English</a>';
-            }
-            $headscript .='<script>'
-                    . '$(function(){'
-                    . '$("#language_div").html(\'' . $language . '\');'
-                    . '});'
-                    . '</script>';
-            //===显示版本切换链接-end===
-//            <div id="language_div" style="float: right;"></div>
+            $headscript .= $tempscript;
             if ($customer_info->lang == 'en') {
                 $footprint = $customer_info->footer . '<p>Technology support：<a href="http://www.12t.cn/">Xiamen 12t network technology co.ltd</a> Talent support：<a href="http://www.xgzrc.com/">www.xgzrc.com.cn</a></p>';
             } else {
@@ -915,6 +916,7 @@ class PrintController extends BaseController {
             $logo = $this->showtype == 'preview' ? ('/customers/' . $this->customer . '/images/l/common/' . $customer_info->logo_small) : $this->domain . '/images/l/common/' . $customer_info->logo_small; //'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $customer_info->logo_small) : $this->domain . '/images/l/common/' . $customer_info->logo_small;
             $stylecolor = websiteInfo::leftJoin('color', 'color.id', '=', 'website_info.mobile_color_id')->where('cus_id', $this->cus_id)->pluck('color_en');
             $headscript = $customer_info->mobile_header_script;
+            $headscript .= $tempscript;
             $footprint = $customer_info->mobile_footer;
             $footscript = $customer_info->mobile_footer_script;
             $footscript .= '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/quickbar.js?' . $this->cus_id . 'mobile"></script>';

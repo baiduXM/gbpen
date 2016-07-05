@@ -741,10 +741,15 @@ class TemplatesController extends BaseController {
     /**
      * 获取模板名
      */
-    public function getTemplatesName() {
+    public function getTemplatesName($type = 'pc') {
         $cus_id = Auth::id();
-        $pc_tpl_id = WebsiteInfo::where('cus_id', $cus_id)->pluck('pc_tpl_id');
-        $my_tpl_name = Template::where('id', $pc_tpl_id)->pluck('name');
+        if ($type == 'pc') {
+            $tpl_name = 'pc_tpl_id';
+        } else {
+            $tpl_name = 'mobile_tpl_id';
+        }
+        $tpl_id = WebsiteInfo::where('cus_id', $cus_id)->pluck($tpl_name);
+        $my_tpl_name = Template::where('id', $tpl_id)->pluck('name');
         return $my_tpl_name;
     }
 
