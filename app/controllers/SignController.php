@@ -80,9 +80,8 @@ class SignController extends BaseController {
      * 自动登陆绑定账户
      */
     public function autoLogin() {
-        $cus_id = Auth::id();
-        $bind_id = Customer::where('id', $cus_id)->pluck('switch_cus_id');
-        if ($bind_id) {
+        $bind_id = Input::get('switch_cus_id');
+        if (!empty($bind_id)) {
             $user = Customer::find($bind_id);
             Auth::login($user);
         } else {

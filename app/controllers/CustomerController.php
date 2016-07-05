@@ -252,11 +252,23 @@ class CustomerController extends BaseController {
     }
 
     /**
+     * 初始化获取切换信息
+     */
+    public function isSwitchcus() {
+        $cus_id = Auth::id();
+        $switch_cus_id = Customer::where('id', $cus_id)->pluck('switch_cus_id');
+        return $switch_cus_id;
+    }
+
+    /**
      * 获取用户信息
      */
     public function getSwitchCustomer() {
         $cus_id = Auth::id();
         $switch_cus_id = Customer::where('id', $cus_id)->pluck('switch_cus_id');
+        if (empty($switch_cus_id)) {
+            return null;
+        }
         $switch_cus_info = Customer::where('id', $switch_cus_id)->first();
         $data['pc_domain'] = $switch_cus_info->pc_domain;
         $data['mobile_domain'] = $switch_cus_info->mobile_domain;

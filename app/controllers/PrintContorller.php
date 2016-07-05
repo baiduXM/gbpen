@@ -848,22 +848,25 @@ class PrintController extends BaseController {
         $flagLanguage = substr($tempname, 2, 1);
         $customerC = new CustomerController;
         $domain = $customerC->getSwitchCustomer();
-        if ($flagPlatform == 'GM') {//===手机
-            $language_url = $domain['mobile_domain'];
-        } else {//===PC
-            $language_url = $domain['pc_domain'];
+//        var_dump($domain);
+        if (!empty($domain)) {
+            if ($flagPlatform == 'GM') {//===手机
+                $language_url = $domain['mobile_domain'];
+            } elseif ($flagPlatform == 'GP') {//===PC
+                $language_url = $domain['pc_domain'];
+            }
+            if ($flagLanguage == 9) {//===英文
+                $language = '<a href="' . $language_url . '">中文版</a>';
+            } elseif ($flagLanguage == 0) {//===中文
+                $language = '<a href="' . $language_url . '">English</a>';
+            }
+            $tempscript = '<script>'
+                    . '$(function(){'
+                    . 'if($("#language_div").size()>0){'
+                    . '$("#language_div").html(\'' . $language . '\');}'
+                    . '});'
+                    . '</script>';
         }
-        if ($flagLanguage == 9) {//===英文
-            $language = '<a href="' . $language_url . '">中文版</a>';
-        } else {//===中文
-            $language = '<a href="' . $language_url . '">English</a>';
-        }
-        $tempscript = '<script>'
-                . '$(function(){'
-                . '$("#language_div").html(\'' . $language . '\');'
-                . '});'
-                . '</script>';
-//        exit;
         //===显示版本切换链接-end===
         if ($this->type == 'pc') {
             $stylecolor = websiteInfo::leftJoin('color', 'color.id', '=', 'website_info.pc_color_id')->where('cus_id', $this->cus_id)->pluck('color_en');
@@ -902,7 +905,7 @@ class PrintController extends BaseController {
                 curl_close($ch);
             }
             $headscript = $customer_info->pc_header_script;
-            $headscript .= $tempscript;
+//            $headscript .= $tempscript;
             if ($customer_info->lang == 'en') {
                 $footprint = $customer_info->footer . '<p>Technology support：<a href="http://www.12t.cn/">Xiamen 12t network technology co.ltd</a> Talent support：<a href="http://www.xgzrc.com/">www.xgzrc.com.cn</a></p>';
             } else {
@@ -910,22 +913,29 @@ class PrintController extends BaseController {
             }
             $footscript = $customer_info->pc_footer_script;
             $footscript .= '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/quickbar.js?' . $this->cus_id . 'pc"></script>';
-//            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/js/statis.js?' . $this->cus_id . 'pc"></script>'; //===添加统计代码PC===
+            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/js/statis.js?' . $this->cus_id . 'pc"></script>'; //===添加统计代码PC===
+            $footscript .= $tempscript;
             $site_another_url = $this->showtype == 'preview' ? '' : $customer_info->mobile_domain;
         } else {
             $logo = $this->showtype == 'preview' ? ('/customers/' . $this->customer . '/images/l/common/' . $customer_info->logo_small) : $this->domain . '/images/l/common/' . $customer_info->logo_small; //'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $customer_info->logo_small) : $this->domain . '/images/l/common/' . $customer_info->logo_small;
             $stylecolor = websiteInfo::leftJoin('color', 'color.id', '=', 'website_info.mobile_color_id')->where('cus_id', $this->cus_id)->pluck('color_en');
             $headscript = $customer_info->mobile_header_script;
-            $headscript .= $tempscript;
+//            $headscript .= $tempscript;
             $footprint = $customer_info->mobile_footer;
             $footscript = $customer_info->mobile_footer_script;
             $footscript .= '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/quickbar.js?' . $this->cus_id . 'mobile"></script>';
-//            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/js/statis.js?' . $this->cus_id . 'mobile"></script>'; //===添加统计代码MOBILE===
+            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/js/statis.js?' . $this->cus_id . 'mobile"></script>'; //===添加统计代码MOBILE===
+            $footscript .= $tempscript;
             $site_another_url = $this->showtype == 'preview' ? '' : $customer_info->pc_domain;
             $config_arr = parse_ini_file(public_path('/templates/' . $this->themename) . '/config.ini', true);
             if (!is_array($config_arr))
                 dd('【config.ini】文件不存在！文件格式说明详见：http://pme/wiki/doku.php?id=ued:template:config');
         }
+//        var_dump($headscript);
+//        echo '<br>---$headscript---<br>';
+//        var_dump($footprint);
+//        echo '<br>---$footprint---<br>';
+//        exit;
         //获取global信息
         if ($this->type == 'pc') {
             $global_data = $this->pagedata('global');
