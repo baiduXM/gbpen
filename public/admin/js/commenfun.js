@@ -255,7 +255,7 @@ WarningBox.prototype = {
                     //===检测空间容量是否充足===
                     //file.size是要目标图片的大小，和裁剪后的保存图片大小不同
                     //TODO
-                    if (/^image\/\w+$/.test(file.type)) {
+                    if (/^image\/\w+$/.test(file.type)||/^image\/x\-\w+$/.test(file.type)) {
                         blobURL = URL.createObjectURL(file);
                         $image.one('built.cropper', function () {
                             URL.revokeObjectURL(blobURL); // Revoke when load complete

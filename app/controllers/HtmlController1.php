@@ -638,7 +638,7 @@ class HtmlController1 extends BaseController{
         $pushqueue->id=$maxpushid?$maxpushid+1:1;
         $pushqueue->pushtime=time();
         $pushqueue->cus_id=$this->cus_id;
-        if($pushqueuecount<6){
+        if($pushqueuecount<3){
             $pushqueue->push=1;
             $pushqueue->save();
         }else{
@@ -654,7 +654,7 @@ class HtmlController1 extends BaseController{
                     break;
                 }else{
                     $pushqueuecount=PushQueue::where('push',1)->count();
-                    if($pushqueuecount<6){
+                    if($pushqueuecount<3){
                         PushQueue::where('cus_id',$this->cus_id)->update(['push' => 1]);
                         break;
                     }
@@ -742,6 +742,14 @@ class HtmlController1 extends BaseController{
      */
     public function pushPrecent(){
         set_time_limit(0);
+        $have_article=Articles::where('cus_id',$this->cus_id)->count();
+        if(!$have_article){
+             echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
+            echo '没有文章不可推送<script type="text/javascript">alert("没有文章不可推送");parent.refresh("没有文章不可推送");</script><br />';
+            ob_flush();
+            flush();
+            exit();
+        }
         if(!isset($_GET['gradpush'])){
             $this->needpush();
         }else{
