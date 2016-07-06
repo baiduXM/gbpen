@@ -37,11 +37,25 @@ class CommonController extends BaseController {
 		}
 		return $output;
 	}
-
+        public function quickBarColorClear(){
+            $cus_id=Auth::id();
+            $websiteconfig = WebsiteConfig::where('cus_id', $cus_id)->where('type', 2)->where('template_id', '0')->where('key', 'quickbar')->pluck('value');
+            $QuickBar=unserialize($websiteconfig);
+            foreach((array)  $QuickBar as $key=>$val){
+                if($val['type']==='colors'){
+                    unset($QuickBar[$key]);
+                    break;
+                }
+            }
+            $websiteconfig=serialize($QuickBar);
+            WebsiteConfig::where('cus_id',$cus_id)->where('key','quickbar')->update(['value'=>$websiteconfig,'pushed'=>1]);
+            $json_result = ['err' => 0, 'msg' => '保存成功'];
+            return $json_result;
+        }
 	public function quickBarJsonInit() {
-		include_once '../public/QRcode.php';
-		$Mobile = new PrintController('preview', 'mobile');
-		$QuickBar = WebsiteConfig::where('cus_id', $Mobile->cus_id)->where('type', 2)->where('template_id', '0')->where('key', 'quickbar')->pluck('value');
+		//include_once '../public/QRcode.php';
+                $cus_id=Auth::id();
+		$QuickBar = WebsiteConfig::where('cus_id', $cus_id)->where('type', 2)->where('template_id', '0')->where('key', 'quickbar')->pluck('value');
 		if ($QuickBar)
 			$MobileQuickBar = unserialize($QuickBar);
 		$DefaultQuickBar = [
@@ -57,16 +71,31 @@ class CommonController extends BaseController {
 			//                ['pc'=>0,'mobile'=>0,'name'=>'PC二维码','icon'=>'&#xe630;','image'=>'icon/a.png','data'=>$this->qrcode('pc_domain'),'for'=>'pc_barcode','type'=>'follow','enable_pc'=>0,'enable_mobile'=>0],
 			['pc' => 0, 'mobile' => 0, 'name' => '手机二维码','en_name' => 'M-Qcode', 'icon' => '&#xe64b;', 'image' => 'icon/a.png', 'data' => $this->qrcode('mobile_domain'), 'for' => 'm_barcode', 'type' => 'follow', 'enable_pc' => 0, 'enable_mobile' => 0],
 		];
+                
+                $colors=$this->quickBarDefaultColor();
 		if (!$QuickBar) {
-			$QuickBar = ['err' => 0, 'msg' => '获取成功！', 'data' => $DefaultQuickBar];
+                        $data=$DefaultQuickBar;
+                        $data['colors']['type']='colors';
+                        $data['colors']['data']=$colors;
+			$QuickBar = ['err' => 0, 'msg' => '获取成功！', 'data' => $data];
 		} else {
-			$QuickBar = ['err' => 0, 'msg' => '获取成功！', 'data' => $MobileQuickBar];
+                        $data=$MobileQuickBar;
+                        foreach($data as $key=>$value){
+                            if($value['type']=="colors"){
+                                $havecolors=1;
+                                break;
+                            }
+                        }
+                        if(!isset($havecolors)||$havecolors!=1){
+                            $data['colors']['type']='colors';
+                            $data['colors']['data']=$colors;
+                        }
+			$QuickBar = ['err' => 0, 'msg' => '获取成功！', 'data' => $data];
 		}
 		return json_encode($QuickBar);
 	}
 
 	public function quickBarJsonModify() {
-		$Mobile = new PrintController('preview', 'mobile');
                 $cus_id=Auth::id();
                 $org_img='';
                 $vx_bar_img='';
@@ -77,18 +106,18 @@ class CommonController extends BaseController {
                         $vx_bar_img=basename($v['data']);
                     }
                 }
-                $websiteconfig = WebsiteConfig::where('cus_id', $Mobile->cus_id)->where('type', 2)->where('template_id', '0')->where('key', 'quickbar')->pluck('value');
+                $websiteconfig = WebsiteConfig::where('cus_id', $cus_id)->where('type', 2)->where('template_id', '0')->where('key', 'quickbar')->pluck('value');
                 foreach((array)  unserialize($websiteconfig) as $v){
                     if($v['for']==='vx_barcode'){
                         $org_img=  basename($v['data']);
                     }
                 }
-		$id = WebsiteConfig::where('cus_id', $Mobile->cus_id)->where('type', 2)->where('template_id', '0')->where('key', 'quickbar')->pluck('id');
+		$id = WebsiteConfig::where('cus_id', $cus_id)->where('type', 2)->where('template_id', '0')->where('key', 'quickbar')->pluck('id');
 		if ($id) {
 			$QuickData = WebsiteConfig::find($id);
 		} else {
 			$QuickData = new WebsiteConfig();
-			$QuickData->cus_id = $Mobile->cus_id;
+			$QuickData->cus_id = $cus_id;
 			$QuickData->type = 2;
 			$QuickData->template_id = 0;
 			$QuickData->key = 'quickbar';
@@ -144,6 +173,30 @@ class CommonController extends BaseController {
 		$result = WebsiteConfig::where('cus_id', Auth::id())->where('key', 'quickbar')->delete();
 		$json_result = ['err' => 0, 'msg' => '重置成功'];
 		return $json_result;
+	}
+        private function quickBarDefaultColor() {
+            $id = Auth::id();
+            $search = "/QuickBar=(.*)/i";
+            $template=WebsiteInfo::where('cus_id',$id)->first();
+            $pc_name=Template::where('id',$template->pc_tpl_id)->pluck('name');
+            $config_str = file_get_contents(public_path('/templates/'.$pc_name) . '/config.ini');
+            $result = preg_match($search, $config_str, $config_arr);
+            if(!$result){
+                $config_arr = array();
+                $config_arr[1] = '#AAA,#BBB,#FFF|totop';
+            }
+            $color_str=preg_replace ("/\|(.*)/i",'', $config_arr[1]);
+            $colors['pc']= explode(',', ltrim($color_str, ','));
+            $mobile_name=Template::where('id',$template->mobile_tpl_id)->pluck('name');
+            $config_str = file_get_contents(public_path('/templates/'.$mobile_name) . '/config.ini');
+            $result = preg_match($search, $config_str, $config_arr);
+            if($result){
+                if(trim($config_arr[1])!='custom'){
+                    $color_str=preg_replace ("/\|(.*)/i",'', $config_arr[1]);
+                    $colors['mobile']= explode(',', ltrim($color_str, ','));
+                } 
+            }
+            return $colors;
 	}
 
 }

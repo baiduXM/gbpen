@@ -150,6 +150,15 @@ class WebsiteController extends BaseController{
         $color = Input::get('color');
         $color_id = Color::where('color_en',$color)->pluck('id');
         $template = Template::find($id);
+        $websiteconfig = WebsiteConfig::where('cus_id', $cus_id)->where('type', 2)->where('template_id', '0')->where('key', 'quickbar')->pluck('value');
+        $websiteconfig=unserialize($websiteconfig);
+        foreach((array) $websiteconfig  as $key=>$val){
+            if($val['type']==='colors'){
+                unset($websiteconfig[$key]);
+                break;
+            }
+        }
+        $websiteconfig=serialize($websiteconfig);
         $pushed = websiteInfo::where('cus_id', $cus_id)->pluck('pushed');
         if($template->type==$type){
             if($type==1){
@@ -170,7 +179,7 @@ class WebsiteController extends BaseController{
             }
             $update_result = WebsiteInfo::where('cus_id',$cus_id)->update($update);
             if($update_result){
-                WebsiteConfig::where('cus_id',$cus_id)->where('key','quickbar')->update(['pushed'=>1]);
+                WebsiteConfig::where('cus_id',$cus_id)->where('key','quickbar')->update(['value'=>$websiteconfig,'pushed'=>1]);
                 $result = ['err' => 0, 'msg' => ''];
             }
             else{

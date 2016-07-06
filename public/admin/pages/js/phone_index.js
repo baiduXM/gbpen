@@ -261,8 +261,6 @@ function phone_indexController($scope, $http, $location) {
                 rootNode: 'firsttab',
                 parentNode: 'phone_index-index',
                 'oncallback': function (indexlist) {
-//                    console.log(indexlist);
-//                    console.log('indexlist');
                     $http.post('../mhomepage-sortmodify', {indexlist: indexlist}).success(function (json) {
                         checkJSON(json, function (json) {
                             phoneindexinit.Save_hint();
@@ -721,7 +719,7 @@ function phone_indexController($scope, $http, $location) {
         },
         QuickBarInfo: function () {
             var data = (this.jsonData == undefined ? null : this.jsonData.value), _this = this,
-                    _div1 = '', num, info;
+                    _div1 = '', num, info,colors={};
             $.each(this.jsonData, function (k, v) {
                 switch (v.type) {
                     case 'tel':
@@ -826,6 +824,9 @@ function phone_indexController($scope, $http, $location) {
                                                               </div>';
                         }
                         break;
+                    case 'colors':
+                        colors=v.data;
+                        return true;
                 }
                 _div1 += '<li class="move_feild" data-role="' + v.for + '" >\n\
 							<div class="quicklist-l inline-block">\
@@ -846,6 +847,33 @@ function phone_indexController($scope, $http, $location) {
 						</li>';
             });
             $('.phone_quickbar_item .phone_func').append(_div1);
+            var mobile_info='';
+            if(typeof(colors['mobile'])!="undefined"){
+                mobile_info = '<li class="consultation-item">\
+                                    <label class="message-name">手机主色：</label><input type="color" class="colors" value="'+this.ColorRet(colors['mobile'][0])+'" name="mobile_mainColor" id="mobile_mainColor" /><span style="margin:0 20px 0 20px">|</span>\
+                                    <label class="message-name">手机鼠标停留时颜色：</label><input type="color" class="colors" value="'+this.ColorRet(colors['mobile'][1])+'" name="mobile_secondColor" id="mobile_secondColor" /><span style="margin:0 20px 0 20px">|</span>\
+                                    <label class="message-name">手机图标颜色：</label><input type="color" class="colors" value="'+this.ColorRet(colors['mobile'][2])+'" name="mobile_textColor" id="mobile_textColor" />\
+				</li>';
+            }
+            info = '<div class="quicklist-r inline-block">\
+                        <div class="ml5">\
+                            <ul class="fl consultation">\n\
+                                <li class="consultation-item">\
+                                    <label class="message-name">pc主色：</label><input type="color" class="colors" value="'+this.ColorRet(colors['pc'][0])+'" name="pc_mainColor" id="pc_mainColor" /><span style="margin:0 20px 0 20px">|</span>\
+                                    <label class="message-name">pc鼠标停留时颜色：</label><input type="color" class="colors" value="'+this.ColorRet(colors['pc'][1])+'" name="pc_secondColor" id="pc_secondColor" /><span style="margin:0 20px 0 20px">|</span>\
+                                    <label class="message-name">pc图标颜色：</label><input type="color" class="colors" value="'+this.ColorRet(colors['pc'][2])+'" name="pc_textColor" id="pc_textColor" />\
+				</li>'+mobile_info+'\n\
+                            </ul>\
+                            <button class="colorsclear" >还原</button>\
+			</div>\n\
+                    </div>';
+            var _div2='<li class="move_feild">\n\
+                            <div class="quicklist-l inline-block">\
+                                <i class="fa iconfont icon-yidong"></i>\n\
+                                <label class="message-name" data-type="colors">快捷导航颜色&nbsp&nbsp&nbsp</label>\
+                            </div>' + info + '\n\
+                        </li>';
+            $('.phone_quickbar_item .phone_func').append(_div2);
             // 栏目图标
             var columnicon = new icon_choose(780);
             columnicon.clicks();
@@ -854,6 +882,14 @@ function phone_indexController($scope, $http, $location) {
             this.DragBlock();
             this.SaveData();
             this.QuickBarListFuc();
+        },
+        //颜色3位转换成六位16进制
+        ColorRet:function(color){
+            if(color.length<5){
+                var colorstr=color.replace('#','');
+                color +=colorstr;
+            }
+            return color;
         },
         QuickBarListFuc: function () {
             // 咨询  
@@ -1019,6 +1055,13 @@ function phone_indexController($scope, $http, $location) {
                     });
                 });
             });
+            $('.colorsclear').click(function () {
+                $http.post('../quickbar-colorsclear').success(function (json) {
+                    checkJSON(json, function (json) {
+                        location.reload();
+                    });
+                });
+            });
             $('.phone_index-banner .save').click(function () {
                 var navsArray = new Array();
                 $('.phone_quickbar_item .phone_func .move_feild').each(function () {
@@ -1062,12 +1105,28 @@ function phone_indexController($scope, $http, $location) {
                             for_bar = $(this).data('role');
                             data = $("input[name=" + for_bar + "]").val();
                             break;
+                        case 'colors':
+                            var colors={};
+                            if($("#mobile_mainColor").length>0){
+                                colors.mobile=[];
+                                colors.mobile[0]=$("#mobile_mainColor").val();
+                                colors.mobile[1]=$("#mobile_secondColor").val();
+                                colors.mobile[2]=$("#mobile_textColor").val();
+                            }
+                            if($("#pc_mainColor")){
+                                colors.pc=[];
+                                colors.pc[0]=$("#pc_mainColor").val();
+                                colors.pc[1]=$("#pc_secondColor").val();
+                                colors.pc[2]=$("#pc_textColor").val();
+                            }
+                            data=colors;
+                            break;
                     }
                     navsArray.push({
                         name: $(this).find('.quicklist-l>.message-name').text(),
                         en_name:$(this).find('.quicklist-l>.en-name').text(),
                         icon: icons,
-                        data: data ? data.toString() : '',
+                        data: data,
                         enable_pc: $(this).find('.quicklist-l span:eq(0) i').eq(0).hasClass('blue') ? 1 : 0,
                         enable_mobile: $(this).find('.quicklist-l span:eq(0) i').eq(1).hasClass('blue') ? 1 : 0,
                         for : for_bar,

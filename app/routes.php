@@ -282,6 +282,10 @@ Route::group(array('before' => 'auth'), function() {
         'as' => 'quickbar.rewrite',
         'uses' => 'CommonController@quickBarRewrite'
     ]);
+    Route::post('quickbar-colorsclear', [//还原quickbar颜色
+        'as' => 'quickbar-colorsclear',
+        'uses' => 'CommonController@quickBarColorClear'
+    ]);
     Route::post('getqrcode', [
         'as' => 'getqrcode',
         'uses' => 'CommonController@getqrcode'

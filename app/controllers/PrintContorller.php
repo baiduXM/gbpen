@@ -523,6 +523,17 @@ class PrintController extends BaseController {
      * 手机底部功能条
      */
     public function quickBarJson() {
+        $CommonCont = new CommonController();
+        $quickbar = $CommonCont->quickBarJsonInit();
+        $quickbar = json_decode($quickbar, true);
+        $quickbar = $quickbar['data'];
+        foreach($quickbar as $key=>$value){
+            if($value['type']=="colors"){
+                $colors=$value['data'];
+                unset($quickbar[$key]);
+                break;
+            }
+        }
         $config_str = file_get_contents(public_path('/templates/' . $this->themename) . '/config.ini');
         $search = "/QuickBar=(.*)/i";
         $searchtype = "/Type=(.*)/i";
@@ -548,7 +559,11 @@ class PrintController extends BaseController {
                     $config['language'] = 'cn';
                 }
                 $config['style'] = array();
-                $tmpStyleConfigQuickbar = explode(',', $quickbar_arr[0]);
+                if(!isset($colors[$this->type])){
+                    $tmpStyleConfigQuickbar = explode(',', $quickbar_arr[0]);
+                }else{
+                    $tmpStyleConfigQuickbar=$colors[$this->type];
+                }
                 if (count($tmpStyleConfigQuickbar)) {
                     $keys = array('mainColor', 'secondColor', 'textColor', 'iconColor');
                     foreach ($tmpStyleConfigQuickbar as $key => $val) {
@@ -573,10 +588,6 @@ class PrintController extends BaseController {
                 } else {
                     $config['module'] = array();
                 }
-                $CommonCont = new CommonController();
-                $quickbar = $CommonCont->quickBarJsonInit();
-                $quickbar = json_decode($quickbar, true);
-                $quickbar = $quickbar['data'];
                 foreach ($quickbar as $key => $val) {
                     if ($this->type == 'pc') {
                         $quickbar[$key]['enable'] = intval($quickbar[$key]['enable_pc']);
@@ -734,10 +745,6 @@ class PrintController extends BaseController {
                         $config['style']['iconColor'] = $config['style']['textColor'] ? $config['style']['textColor'] : '';
                     }
                 }
-                $CommonCont = new CommonController();
-                $quickbar = $CommonCont->quickBarJsonInit();
-                $quickbar = json_decode($quickbar, true);
-                $quickbar = $quickbar['data'];
                 foreach ($quickbar as $key => $val) {
                     if ($this->type == 'pc') {
                         $quickbar[$key]['enable'] = intval($quickbar[$key]['enable_pc']);
