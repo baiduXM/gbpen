@@ -344,6 +344,10 @@ function width_resize(data) {
 $(window).resize(function () {
     width_resize()
 });
+
+
+
+
 //===获取容量信息===
 function get_capacity() {
     $.get('../customer-capacity', function (json) {
@@ -353,6 +357,32 @@ function get_capacity() {
         $('#capacity_bar').css('width', data.use_percent + '%');
     });
 }
+
+//===查看是否有双账号用户===
+function init_bind() {
+    $.get('../init-bind', function (json) {
+        if (json != 0) {
+            var img='<img src="images/switch_account.png" style="width:16px;" title="双站切换" />';
+            $('#switch_bind').html(img);
+            $('#switch_bind').attr('data-cusid', json);
+        }
+    });
+}
+
+//===获取绑定账号===
+function get_bind_account() {
+    var cusid = $('#switch_bind').attr('data-cusid');
+    $.post('../bind-auto-login',{switch_cus_id:cusid}, function (json) {
+        if (json.err) {
+            alert(json.msg);
+        } else {
+            location.href = json.msg;
+        }
+    });
+}
+
+
+
 // 推送静态文件
 var cache_num;
 function pushtimer() {

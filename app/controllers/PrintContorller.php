@@ -90,38 +90,39 @@ class PrintController extends BaseController {
         $this->cus_id = Auth::id();
         $this->customer = Auth::user()->name;
         if ($this->showtype == 'preview') {
-            $this->source_dir ='/customers/' . $this->customer . '/images/';//asset('customers/' . $this->customer . '/images/') . '/';
+            $this->source_dir = '/customers/' . $this->customer . '/images/'; //asset('customers/' . $this->customer . '/images/') . '/';
             if ($this->type == 'mobile') {
-                $this->domain = '/mobile';//url() . '/mobile';
+                $this->domain = '/mobile'; //url() . '/mobile';
                 $this->tpl_id = WebsiteInfo::where('cus_id', $this->cus_id)->pluck('mobile_tpl_id');
                 $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.mobile_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
-                $this->source_dir = '/customers/' . $this->customer . '/mobile/images/';//asset('customers/' . $this->customer . '/mobile/images/') . '/';
-                self::$cus_domain = '';//CustomerInfo::where('cus_id', $this->cus_id)->pluck('mobile_domain');
+                $this->source_dir = '/customers/' . $this->customer . '/mobile/images/'; //asset('customers/' . $this->customer . '/mobile/images/') . '/';
+                self::$cus_domain = ''; //CustomerInfo::where('cus_id', $this->cus_id)->pluck('mobile_domain');
             } else {
-                $this->domain = '';//url();
+                $this->domain = ''; //url();
                 $this->tpl_id = WebsiteInfo::where('cus_id', $this->cus_id)->pluck('pc_tpl_id');
                 $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.pc_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
-                self::$cus_domain = '';//CustomerInfo::where('cus_id', $this->cus_id)->pluck('pc_domain');
+                self::$cus_domain = ''; //CustomerInfo::where('cus_id', $this->cus_id)->pluck('pc_domain');
             }
-            $this->site_url ='/templates/' . $this->themename.'/';url('/templates/' . $this->themename) . '/';
+            $this->site_url = '/templates/' . $this->themename . '/';
+            url('/templates/' . $this->themename) . '/';
         } else {
             if ($this->type == 'mobile') {
                 $this->tpl_id = WebsiteInfo::where('cus_id', $this->cus_id)->pluck('mobile_tpl_id');
                 $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.mobile_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
-                $mobile_domain=CustomerInfo::where('cus_id', $this->cus_id)->pluck('mobile_domain');
-                $mobile_domain= str_replace('http://', '', $mobile_domain);
-                if(strpos($mobile_domain,'/mobile')){
-                    $this->domain='/mobile';
+                $mobile_domain = CustomerInfo::where('cus_id', $this->cus_id)->pluck('mobile_domain');
+                $mobile_domain = str_replace('http://', '', $mobile_domain);
+                if (strpos($mobile_domain, '/mobile')) {
+                    $this->domain = '/mobile';
                 }
                 //$this->domain = '';//CustomerInfo::where('cus_id', $this->cus_id)->pluck('mobile_domain');
             } else {
                 $this->tpl_id = WebsiteInfo::where('cus_id', $this->cus_id)->pluck('pc_tpl_id');
                 $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.pc_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
-                $this->domain ='';//CustomerInfo::where('cus_id', $this->cus_id)->pluck('pc_domain');
+                $this->domain = ''; //CustomerInfo::where('cus_id', $this->cus_id)->pluck('pc_domain');
             }
-            self::$cus_domain ='';// $this->domain;
-            $this->site_url = $this->domain.'/';
-            $this->source_dir = '/images/';//$this->domain . '/images/';
+            self::$cus_domain = ''; // $this->domain;
+            $this->site_url = $this->domain . '/';
+            $this->source_dir = '/images/'; //$this->domain . '/images/';
         }
     }
 
@@ -133,7 +134,7 @@ class PrintController extends BaseController {
      *  @param string $jsondata 文件配置数据
      * @return array 合并后的数组
      */
-    public function pagedata($pagename,$jsondata=array()) {
+    public function pagedata($pagename, $jsondata = array()) {
 
         if ($this->type == 'pc') {
             $tpl_id = websiteInfo::where('cus_id', $this->cus_id)->pluck('pc_tpl_id');
@@ -142,9 +143,9 @@ class PrintController extends BaseController {
         }
         $website_confige = WebsiteConfig::where('cus_id', $this->cus_id)->where('key', $pagename)->where('type', 1)->where('template_id', $tpl_id)->pluck('value');
         $website_confige_value = unserialize($website_confige);
-        if(count($jsondata)){
-            $json=isset($jsondata[$pagename.'.json'])?$jsondata[$pagename.'.json']:'{}';
-        }else{       
+        if (count($jsondata)) {
+            $json = isset($jsondata[$pagename . '.json']) ? $jsondata[$pagename . '.json'] : '{}';
+        } else {
             $json_path = public_path('templates/' . $this->themename . '/json/' . $pagename . '.json');
             $json = file_exists($json_path) ? file_get_contents($json_path) : '{}';
         }
@@ -543,7 +544,7 @@ class PrintController extends BaseController {
             $config_arr = array();
             $config_arr[1] = '#AAA,#BBB,#FFF|totop';
         }
-        $lang=CustomerInfo::where('cus_id',$this->cus_id)->pluck('lang');
+        $lang = CustomerInfo::where('cus_id', $this->cus_id)->pluck('lang');
         if ($result != 0) {
             if (trim($config_arr[1]) != "custom") {
                 $quickbar_arr = explode('|', $config_arr[1]);
@@ -847,15 +848,43 @@ class PrintController extends BaseController {
     public function publicdata() {
         $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
         $formC = new FormController();
+        //===显示版本切换链接===
+        $templatesC = new TemplatesController;
+        $tempname = $templatesC->getTemplatesName($this->type);
+        $flagPlatform = substr($tempname, 0, 2);
+        $flagLanguage = substr($tempname, 2, 1);
+        $customerC = new CustomerController;
+        $domain = $customerC->getSwitchCustomer();
+        $tempscript = '';
+        if (!empty($domain)) {
+            if ($flagPlatform == 'GM') {//===手机
+                $language_url = $domain['mobile_domain'];
+            } elseif ($flagPlatform == 'GP') {//===PC
+                $language_url = $domain['pc_domain'];
+            }
+            if ($flagLanguage == 9) {//===英文
+                $language = '<a href="' . $language_url . '">中文版</a>';
+            } elseif ($flagLanguage == 0) {//===中文
+                $language = '<a href="' . $language_url . '">English</a>';
+            }
+            $tempscript = '<script>'
+                    . '$(function(){'
+                    . 'if($("#language_div").size()>0){'
+                    . '$("#language_div").html(\'' . $language . '\');'
+                    . '}'
+                    . '});'
+                    . '</script>';
+        }
+        //===显示版本切换链接-end===
         if ($this->type == 'pc') {
             $stylecolor = websiteInfo::leftJoin('color', 'color.id', '=', 'website_info.pc_color_id')->where('cus_id', $this->cus_id)->pluck('color_en');
-            $logo = $this->showtype == 'preview' ? '/customers/' . $this->customer . '/images/l/common/' . $customer_info->logo : $this->domain . '/images/l/common/' . $customer_info->logo;//'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $customer_info->logo) : $this->domain . '/images/l/common/' . $customer_info->logo;
+            $logo = $this->showtype == 'preview' ? '/customers/' . $this->customer . '/images/l/common/' . $customer_info->logo : $this->domain . '/images/l/common/' . $customer_info->logo; //'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $customer_info->logo) : $this->domain . '/images/l/common/' . $customer_info->logo;
             $floatadv = json_decode($customer_info->floatadv);
             if (!empty($floatadv)) {
                 foreach ((array) $floatadv as $key => $val) {
                     if (!isset($val->type) || $val->type == 'adv') {
                         if ($this->showtype == 'preview') {
-                            $floatadv[$key]->url = ('/customers/' . $this->customer . '/images/l/common/' . $val->adv);//asset('customers/' . $this->customer . '/images/l/common/' . $val->adv);
+                            $floatadv[$key]->url = ('/customers/' . $this->customer . '/images/l/common/' . $val->adv); //asset('customers/' . $this->customer . '/images/l/common/' . $val->adv);
                         } else {
                             $floatadv[$key]->url = $this->domain . '/images/l/common/' . $val->adv;
                         }
@@ -884,6 +913,7 @@ class PrintController extends BaseController {
                 curl_close($ch);
             }
             $headscript = $customer_info->pc_header_script;
+//            $headscript .= $tempscript;
             if ($customer_info->lang == 'en') {
                 $footprint = $customer_info->footer . '<p>Technology support：<a href="http://www.12t.cn/">Xiamen 12t network technology co.ltd</a> Talent support：<a href="http://www.xgzrc.com/">www.xgzrc.com.cn</a></p>';
             } else {
@@ -891,16 +921,19 @@ class PrintController extends BaseController {
             }
             $footscript = $customer_info->pc_footer_script;
             $footscript .= '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/quickbar.js?' . $this->cus_id . 'pc"></script>';
-//            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/js/statis.js?' . $this->cus_id . 'pc"></script>'; //===添加统计代码PC===
+            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/js/statis.js?' . $this->cus_id . 'pc"></script>'; //===添加统计代码PC===
+            $footscript .= $tempscript;
             $site_another_url = $this->showtype == 'preview' ? '' : $customer_info->mobile_domain;
         } else {
-            $logo = $this->showtype == 'preview' ? ('/customers/' . $this->customer . '/images/l/common/' . $customer_info->logo_small) : $this->domain . '/images/l/common/' . $customer_info->logo_small;//'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $customer_info->logo_small) : $this->domain . '/images/l/common/' . $customer_info->logo_small;
+            $logo = $this->showtype == 'preview' ? ('/customers/' . $this->customer . '/images/l/common/' . $customer_info->logo_small) : $this->domain . '/images/l/common/' . $customer_info->logo_small; //'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $customer_info->logo_small) : $this->domain . '/images/l/common/' . $customer_info->logo_small;
             $stylecolor = websiteInfo::leftJoin('color', 'color.id', '=', 'website_info.mobile_color_id')->where('cus_id', $this->cus_id)->pluck('color_en');
             $headscript = $customer_info->mobile_header_script;
+//            $headscript .= $tempscript;
             $footprint = $customer_info->mobile_footer;
             $footscript = $customer_info->mobile_footer_script;
             $footscript .= '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/quickbar.js?' . $this->cus_id . 'mobile"></script>';
-//            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/js/statis.js?' . $this->cus_id . 'mobile"></script>'; //===添加统计代码MOBILE===
+            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/js/statis.js?' . $this->cus_id . 'mobile"></script>'; //===添加统计代码MOBILE===
+            $footscript .= $tempscript;
             $site_another_url = $this->showtype == 'preview' ? '' : $customer_info->pc_domain;
             $config_arr = parse_ini_file(public_path('/templates/' . $this->themename) . '/config.ini', true);
             if (!is_array($config_arr))
@@ -1715,7 +1748,7 @@ class PrintController extends BaseController {
         $result['description'] = $customer_info->description;
         $result['pagenavs'] = false;
         $result['posnavs'] = false;
-        $data = $this->pagedata('index',$publicdata['pagedata']);
+        $data = $this->pagedata('index', $publicdata['pagedata']);
         $index = $this->detailList($data);
         $result = array_add($result, 'index', $index);
         $json_keys = $this->getJsonKey('index.html');
@@ -1902,7 +1935,7 @@ class PrintController extends BaseController {
         $result['keywords'] = $customer_info->keywords;
         $result['description'] = $customer_info->description;
         //获取模板目录
-        $data = $this->pagedata('index',$publicdata['pagedata']);
+        $data = $this->pagedata('index', $publicdata['pagedata']);
         $show_navs = DB::table('mobile_homepage')->leftJoin('classify', 'classify.id', '=', 'mobile_homepage.c_id')->where('mobile_homepage.index_show', 1)->where('classify.mobile_show', 1)->where('mobile_homepage.cus_id', '=', $this->cus_id)->orderBy('mobile_homepage.s_sort', 'asc')->select('classify.id', 'classify.p_id', 'classify.name', 'classify.en_name', 'classify.type', 'classify.meta_description', 'classify.page_id', 'classify.url', 'classify.img', 'classify.icon', 'mobile_homepage.star_only', 'mobile_homepage.show_num', 'mobile_homepage.m_index_showtype')->get();
         //===调试测试账号===
         $mIndexCats = array();
@@ -2366,7 +2399,7 @@ class PrintController extends BaseController {
         //echo $viewname;exit;
         if (in_array($classify->type, array(1, 2, 3, 4, 5, 9))) {
             $sub = str_replace('-', '_', $viewname);
-            $data = $this->pagedata($viewname,$publicdata['pagedata']);
+            $data = $this->pagedata($viewname, $publicdata['pagedata']);
             $index = $this->detailList($data);
             $result = array_add($result, $sub, $index);
             $data_index = $this->pagedata($viewname);
@@ -2549,8 +2582,8 @@ class PrintController extends BaseController {
                 echo floor($nowpercent) . '%<script type="text/javascript">parent.refresh(' . floor($nowpercent) . ');</script><br />';
                 ob_flush();
                 flush();
-                PushQueue::where('pushtime','<',time()-60)->delete();
-                PushQueue::where('cus_id',$this->cus_id)->update(['pushtime' => time()]);
+                PushQueue::where('pushtime', '<', time() - 60)->delete();
+                PushQueue::where('cus_id', $this->cus_id)->update(['pushtime' => time()]);
             }
             $last_html_precent +=$html_precent;
             //===显示类型不是'list-page'===
@@ -2570,8 +2603,8 @@ class PrintController extends BaseController {
                         echo floor($nowpercent) . '%<script type="text/javascript">parent.refresh(' . floor($nowpercent) . ');</script><br />';
                         ob_flush();
                         flush();
-                        PushQueue::where('pushtime','<',time()-60)->delete();
-                        PushQueue::where('cus_id',$this->cus_id)->update(['pushtime' => time()]);
+                        PushQueue::where('pushtime', '<', time() - 60)->delete();
+                        PushQueue::where('cus_id', $this->cus_id)->update(['pushtime' => time()]);
                     }
                     $last_html_precent +=$html_precent;
                 }
@@ -2686,7 +2719,7 @@ class PrintController extends BaseController {
         } elseif ($article_type == 2) {//产品内容
             $viewname = 'content-product';
             $result['enlarge'] = $customer_info->enlarge;
-            if ($result['enlarge']&&$this->type == 'pc') {
+            if ($result['enlarge'] && $this->type == 'pc') {
                 $result['footscript'] .= '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/img.js"></script>';
             }
         } else {//跳转404
@@ -2857,7 +2890,7 @@ class PrintController extends BaseController {
         } elseif ($article_type == 2) {//产品内容
             $viewname = 'content-product';
             $result['enlarge'] = $customer_info->enlarge;
-            if ($result['enlarge']&&$this->type == 'pc') {
+            if ($result['enlarge'] && $this->type == 'pc') {
                 $result['footscript'] .= '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/img.js"></script>';
             }
         } else {//跳转404
@@ -2867,7 +2900,7 @@ class PrintController extends BaseController {
         $json_keys = $this->getJsonKey($viewname . '.html');
         if (count($json_keys)) {
             foreach ((array) $json_keys as $key) {
-                $result[$key] = $this->detailList($this->pagedata($key,$publicdata['pagedata']));
+                $result[$key] = $this->detailList($this->pagedata($key, $publicdata['pagedata']));
             }
         }
         $articles = Articles::where($this->type . '_show', '1')->where('c_id', $c_id)->where('use_url', '0')->orderBy('is_top', 'desc')->orderBy('sort', 'asc')->orderBy('created_at', 'desc')->get()->toArray();
@@ -2986,8 +3019,8 @@ class PrintController extends BaseController {
                 echo floor($nowpercent) . '%<script type="text/javascript">parent.refresh(' . floor($nowpercent) . ');</script><br />';
                 ob_flush();
                 flush();
-                PushQueue::where('pushtime','<',time()-60)->delete();
-                PushQueue::where('cus_id',$this->cus_id)->update(['pushtime' => time()]);
+                PushQueue::where('pushtime', '<', time() - 60)->delete();
+                PushQueue::where('cus_id', $this->cus_id)->update(['pushtime' => time()]);
             }
             $last_html_precent +=$html_precent;
         }

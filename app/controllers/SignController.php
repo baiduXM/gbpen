@@ -12,6 +12,12 @@ class SignController extends BaseController {
       |remindPost         重设密码
      */
 
+    /**
+     * 用户登录
+     * @param type $name
+     * @param type $password
+     * @return type
+     */
     public function loginPost() {
         $name = Input::get('name');
         $password = Input::get('password');
@@ -68,6 +74,27 @@ class SignController extends BaseController {
         } else {
             return Response::json(['err' => 0, 'msg' => '密码错误', 'success' => 0]);
         }
+    }
+
+    /**
+     * 自动登陆绑定账户
+     */
+    public function autoLogin() {
+        $bind_id = Input::get('switch_cus_id');
+        if (!empty($bind_id)) {
+            $user = Customer::find($bind_id);
+            Auth::login($user);
+        } else {
+            $result = ['err' => 1001, 'msg' => '未绑定'];
+            return Response::json($result);
+        }
+        if (Auth::check()) {
+            Session::put('isAdmin', TRUE);
+            $result = ['err' => 0, 'msg' => '/admin/index.html'];
+        } else {
+            $result = ['err' => 1001, 'msg' => '登录失败'];
+        }
+        return Response::json($result);
     }
 
 }

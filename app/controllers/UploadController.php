@@ -301,11 +301,11 @@ class UploadController extends BaseController {
                 $upload = file_put_contents($dir . '/' . $fileName, base64_decode(preg_replace('/data\:image\/png\;base64\,/i', '', $file)));
             }
             //===扣除用户空间容量===
-//            $size = filesize(public_path('customers/' . $customer . '/cache_images/' . $fileName));
-//            $cus = new CustomerController;
-//            if (!$cus->change_capa($size, 'use')) {
-//                return Response::json(['err' => 1001, 'msg' => '容量不足', 'data' => []]);
-//            }
+            $size = filesize(public_path('customers/' . $customer . '/cache_images/' . $fileName));
+            $cus = new CustomerController;
+            if (!$cus->change_capa($size, 'use')) {
+                return Response::json(['err' => 1001, 'msg' => '容量不足', 'data' => []]);
+            }
             if ($upload) {
                 return Response::json(['err' => 0, 'msg' => 'empty($file)&&$upload', 'data' => ['name' => $fileName, 'url' => asset('customers/' . $customer . '/cache_images/' . $fileName), 's_url' => ((strpos($domain, 'http://') === false) ? 'http://' : '') . $domain . '/' . 'images/s/' . $target . '/' . $fileName]]);
             } else {

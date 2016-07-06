@@ -185,8 +185,11 @@ class CustomerController extends BaseController {
         return Response::json($result);
     }
 
+    /**
+     * 获取容量数据
+     * @return type
+     */
     public function getCapacity() {
-        //===格式化容量===
         $cus_id = Auth::id();
         $customer_info = CustomerInfo::where('cus_id', $cus_id)->first();
         $data['capacity'] = $this->format_bytes($customer_info->capacity);
@@ -217,15 +220,21 @@ class CustomerController extends BaseController {
             }
         }
         if ($way == 'free') {
-            $data = array(
-                "capacity_use" => $capacity_use - $size,
-            );
+            if (0 < ($capacity_use - $size)) {
+                $data = array(
+                    "capacity_use" => 0,
+                );
+            } else {
+                $data = array(
+                    "capacity_use" => $capacity_use - $size,
+                );
+            }
         }
         $flag = CustomerInfo::where('cus_id', $cus_id)->update($data);
         if ($flag) {//是否更新成功
-            return true; //扣除成功
+            return true; //修改成功
         } else {
-            return false;
+            return false; //修改失败
         }
     }
 
@@ -240,6 +249,30 @@ class CustomerController extends BaseController {
             $size /= 1024;
         }
         return round($size, 2) . $units[$i];
+    }
+
+    /**
+     * 初始化获取切换信息
+     */
+    public function isSwitchcus() {
+        $cus_id = Auth::id();
+        $switch_cus_id = Customer::where('id', $cus_id)->pluck('switch_cus_id');
+        return $switch_cus_id;
+    }
+
+    /**
+     * 获取用户信息
+     */
+    public function getSwitchCustomer() {
+        $cus_id = Auth::id();
+        $switch_cus_id = Customer::where('id', $cus_id)->pluck('switch_cus_id');
+        if (empty($switch_cus_id)) {
+            return null;
+        }
+        $switch_cus_info = Customer::where('id', $switch_cus_id)->first();
+        $data['pc_domain'] = $switch_cus_info->pc_domain;
+        $data['mobile_domain'] = $switch_cus_info->mobile_domain;
+        return $data;
     }
 
 }

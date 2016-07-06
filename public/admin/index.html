@@ -30,21 +30,33 @@
             <div class="fr">
                 <!-- 登陆信息 -->
                 <div class="member_info clearfix" ng-controller="memberController">
-                    <div class="member_buttons fr clearfix"><a href="javascript:;"><img src="images/u_logo3.png" /></a><a href="#/setting"><img src="images/setting.png" /></a><a href="../log-out"><img src="images/loginout.png" /></a></div>
-                    <a href="#/user"><p class="fr clearfix" ng-bind-template="欢迎，{{ companyname}}" ></p></a>
-                    <!--容量条-->
-                </div>
-<!--                <div class="fr clearfix" style="font-size: 12px;color:#7c6154;margin-top: 0px;" >
-                    剩余容量/总容量：<span id="capacity_free"></span>/<span id="capacity"></span>
-                    <div style="width: 100px; height: 10px; background: green; display: inline-block;">
-                        <div id="capacity_bar" style="background: blue; height: 10px;"></div>
+                    <div class="member_buttons fr clearfix">
+                        <a href="javascript:;"><img src="images/u_logo3.png" title=""/></a>
+                        <a href="#/setting"><img src="images/setting.png" title="设置"/></a>
+                        <a href="../log-out"><img src="images/loginout.png" title="退出"/></a>
+                        <a href="javascript:;" id="switch_bind"></a>
                     </div>
+                    <a href="#/user"><p class="fr clearfix" ng-bind-template="欢迎，{{ companyname}}" ></p></a>
+                    
+                </div>
+                <!--容量条-->
+<!--                <div class="fr clearfix" style="font-size: 12px;color:#7c6154;margin-right: 22px;" >
+                    剩余容量/总容量：<span id="capacity_free"></span>/<span id="capacity"></span>
                 </div>-->
-<!--                <script>
+                <!--切换绑定账户-->
+<!--                <div class="fr clearfix bindswitch" style="font-size: 12px;color:#7c6154;margin-top: 0px;margin-right: 10px;" >
+                    <a href="javascript:;" id="switch_bind"></a>
+                </div>-->
+                <script>
                     $(function(){
-                        get_capacity();
-                    })
-                </script>-->
+//                        get_capacity();
+                        init_bind();
+                        $('#switch_bind').click(function(){
+                            get_bind_account();
+                        });
+                    });
+                </script>
+
                 <!-- 顶部主导航 -->
                 <nav class="pr clearfix">
                     <ul>
@@ -244,6 +256,7 @@
     <script type="text/javascript" src="js/laydate.js"></script>           			<!-- 时间选择控件 -->
     <script type="text/javascript" src="js/jquery.uploadify.min.js"></script>       <!-- 图片上传控件 -->
     <script type="text/javascript" src="js/script.js"></script>						<!-- 公共脚本文件 --> 
+    
     <!--[if lte IE 7]>
     <script type="text/javascript">
             mainApp.config(function($sceProvider) {

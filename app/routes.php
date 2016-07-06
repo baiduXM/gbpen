@@ -432,6 +432,14 @@ Route::group(array('before' => 'auth'), function() {
         'uses' => 'FormController@submitFormUserdata'
     ]);
     //===万用表单end===
+    //===切换绑定用户===
+    Route::any('bind-auto-login', [//切换绑定用户
+        'uses' => 'SignController@autoLogin'
+    ]);
+    Route::any('init-bind', [//查看是否有绑定双用户
+        'uses' => 'CustomerController@isSwitchcus'
+    ]);
+    //
     //-----------留言板--------
     Route::get('feedback-data', [//获取表单数据
         'uses' => 'FeedbackController@getFeedbackData'
