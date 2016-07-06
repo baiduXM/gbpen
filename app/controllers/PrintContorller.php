@@ -848,7 +848,7 @@ class PrintController extends BaseController {
         $flagLanguage = substr($tempname, 2, 1);
         $customerC = new CustomerController;
         $domain = $customerC->getSwitchCustomer();
-//        var_dump($domain);
+        $tempscript = '';
         if (!empty($domain)) {
             if ($flagPlatform == 'GM') {//===手机
                 $language_url = $domain['mobile_domain'];
@@ -863,7 +863,8 @@ class PrintController extends BaseController {
             $tempscript = '<script>'
                     . '$(function(){'
                     . 'if($("#language_div").size()>0){'
-                    . '$("#language_div").html(\'' . $language . '\');}'
+                    . '$("#language_div").html(\'' . $language . '\');'
+                    . '}'
                     . '});'
                     . '</script>';
         }

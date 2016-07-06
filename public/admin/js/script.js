@@ -362,7 +362,8 @@ function get_capacity() {
 function init_bind() {
     $.get('../init-bind', function (json) {
         if (json != 0) {
-            $('#switch_bind').html('切换绑定账号');
+            var img='<img src="images/switch_account.png" style="width:16px;" title="双站切换" />';
+            $('#switch_bind').html(img);
             $('#switch_bind').attr('data-cusid', json);
         }
     });
