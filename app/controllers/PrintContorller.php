@@ -3141,7 +3141,7 @@ class PrintController extends BaseController {
      */
     public function getChirldenCid($cid = 0) {
         $result = $cid;
-        $cids = Classify::where('p_id', $cid)->lists('id');
+        $cids = Classify::where('p_id', $cid)->OrderBy('sort', 'asc')->lists('id');
         if (!empty($cids)) {
             foreach ((array) $cids as $v) {
                 $result.= ',' . $this->getChirldenCid($v);
@@ -3505,7 +3505,7 @@ class PrintController extends BaseController {
 
     private function getChildrenClassify($p_id) {
         $id_str = $p_id;
-        $ids = DB::table('classify')->where('p_id', '=', $p_id)->lists('id');
+        $ids = DB::table('classify')->where('p_id', '=', $p_id)->OrderBy('sort', 'asc')->lists('id');
         if (count($ids) > 0) {
             foreach ($ids as &$id) {
                 $id_str.=',' . $this->getChildrenClassify($id);
