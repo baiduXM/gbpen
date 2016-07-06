@@ -931,11 +931,6 @@ class PrintController extends BaseController {
             if (!is_array($config_arr))
                 dd('【config.ini】文件不存在！文件格式说明详见：http://pme/wiki/doku.php?id=ued:template:config');
         }
-//        var_dump($headscript);
-//        echo '<br>---$headscript---<br>';
-//        var_dump($footprint);
-//        echo '<br>---$footprint---<br>';
-//        exit;
         //获取global信息
         if ($this->type == 'pc') {
             $global_data = $this->pagedata('global');
