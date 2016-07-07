@@ -98,7 +98,7 @@ class HtmlController extends BaseController{
         $template = new PrintController('online','pc');
         $per_page = CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_count');
         foreach($ids as $id){
-            $c_ids=explode(',',$template->getChirldenCid($id));
+            $c_ids=explode(',',$template->getChirldenCid($id,1));
             $total = Articles::whereIn('c_id',$c_ids)->where('cus_id',$this->cus_id)->where('pc_show','1')->count();
             $page_count = ceil($total/$per_page);
             $this->getPrecent();
@@ -145,7 +145,7 @@ class HtmlController extends BaseController{
         $result = [];
         $per_page = CustomerInfo::where('cus_id',$this->cus_id)->pluck('mobile_page_count');
         foreach($ids as $id){
-            $c_ids=explode(',',$template->getChirldenCid($id));
+            $c_ids=explode(',',$template->getChirldenCid($id,1));
             $total = Articles::whereIn('c_id',$c_ids)->where('cus_id',$this->cus_id)->where('mobile_show','1')->count();
             $page_count = ceil($total/$per_page);
             $this->getPrecent();
@@ -215,7 +215,7 @@ class HtmlController extends BaseController{
         $page_count = 2;
         $pc_per_page = CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_count');
         foreach($pc_classify_ids as $id){
-            $c_ids=explode(',',$template->getChirldenCid($id));
+            $c_ids=explode(',',$template->getChirldenCid($id,1));
             $total = Articles::whereIn('c_id',$c_ids)->where('cus_id',$this->cus_id)->where('pc_show','1')->count();
             if($total){
                 $page_count += ceil($total/$pc_per_page);
@@ -227,7 +227,7 @@ class HtmlController extends BaseController{
         }
         $mobileper_page = CustomerInfo::where('cus_id',$this->cus_id)->pluck('mobile_page_count');
         foreach($pc_classify_ids as $id){
-            $c_ids=explode(',',$template->getChirldenCid($id));
+            $c_ids=explode(',',$template->getChirldenCid($id,1));
             $total = Articles::whereIn('c_id',$c_ids)->where('cus_id',$this->cus_id)->where('mobile_show','1')->count();
             if($total){
                 $page_count += ceil($total/$mobileper_page);

@@ -1093,7 +1093,7 @@ class PrintController extends BaseController {
             if ($v['type'] == 'list') {
                 if (isset($v['config']['id']) && is_numeric($v['config']['id']) && $v['config']['id'] > 0) {
                     $c_info = Classify::where('id', $v['config']['id'])->where('cus_id', $this->cus_id)->where($this->type . '_show', 1)->first();
-                    $cids = explode(',', $this->getChirldenCid($v['config']['id'])); //取得所有栏目id
+                    $cids = explode(',', $this->getChirldenCid($v['config']['id'],1)); //取得所有栏目id
                 } else {
                     $c_info = false;
                     $cids = false;
@@ -1237,7 +1237,7 @@ class PrintController extends BaseController {
                             $c_c_info['icon'] = ($c_c_info ? '<i class="iconfont">' . $c_c_info['icon'] . '</i>' : '');
                             $c_c_info['current'] = 0;
                             $c_c_info['selected'] = 0;
-                            $c_cids = explode(',', $this->getChirldenCid($cid)); //取得所有栏目id
+                            $c_cids = explode(',', $this->getChirldenCid($cid,1)); //取得所有栏目id
                             if (isset($v['config']['star_only']) && $v['config']['star_only']) {
                                 $articles = Articles::whereIn('c_id', $c_cids)->where($this->type . '_show', '1')->where('cus_id', $this->cus_id)->where('is_star', '1')->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
                             } else {
@@ -1288,7 +1288,7 @@ class PrintController extends BaseController {
             } elseif ($v['type'] == 'page') {
                 if (isset($v['config']['id'])) {
                     $c_info = Classify::where('id', $v['config']['id'])->where('cus_id', $this->cus_id)->where($this->type . '_show', 1)->first();
-                    $cids = explode(',', $this->getChirldenCid($v['config']['id'])); //取得所有栏目id
+                    $cids = explode(',', $this->getChirldenCid($v['config']['id'],1)); //取得所有栏目id
                 } else {
                     $c_info = false;
                     $cids = false;
@@ -1372,7 +1372,7 @@ class PrintController extends BaseController {
      */
     private function pageList($id, $page) {
         $list = [];
-        $cids = explode(',', $this->getChirldenCid($id)); //取得所有栏目id
+        $cids = explode(',', $this->getChirldenCid($id,1)); //取得所有栏目id
         $a_c_type = Classify::where('id', $id)->select('type')->first(); //取得栏目的type
         $type = $a_c_type->type;
         if ($this->type == 'mobile') {
@@ -1808,7 +1808,7 @@ class PrintController extends BaseController {
                     $mIndexCat['type'] = $nav->type;
                     $mIndexCat['showtype'] = $nav->m_index_showtype;
                     $mIndexCat['description'] = $nav->meta_description;
-                    $id_arr = explode(',', $this->getChildrenClassify($nav->id));
+                    $id_arr = explode(',', $this->getChildrenClassify($nav->id,1));
                     if ($nav->type == 1 || $nav->type == 2 || $nav->type == 3) {
                         $art_arr = array();
                         if ($nav->star_only) {
@@ -1865,7 +1865,7 @@ class PrintController extends BaseController {
                     $mIndexCat['type'] = $nav->type;
                     $mIndexCat['showtype'] = $nav->m_index_showtype;
                     $mIndexCat['description'] = $nav->meta_description;
-                    $id_arr = explode(',', $this->getChildrenClassify($nav->id));
+                    $id_arr = explode(',', $this->getChildrenClassify($nav->id,1));
                     if ($nav->type == 1 || $nav->type == 2 || $nav->type == 3) {
                         $art_arr = array();
                         if ($nav->star_only) {
@@ -1957,7 +1957,7 @@ class PrintController extends BaseController {
                     $mIndexCat['type'] = $nav->type;
                     $mIndexCat['showtype'] = $nav->m_index_showtype;
                     $mIndexCat['description'] = $nav->meta_description;
-                    $id_arr = explode(',', $this->getChildrenClassify($nav->id));
+                    $id_arr = explode(',', $this->getChildrenClassify($nav->id,1));
                     if ($nav->type == 1 || $nav->type == 2 || $nav->type == 3) {
                         $art_arr = array();
                         if ($nav->star_only) {
@@ -2014,7 +2014,7 @@ class PrintController extends BaseController {
                     $mIndexCat['type'] = $nav->type;
                     $mIndexCat['showtype'] = $nav->m_index_showtype;
                     $mIndexCat['description'] = $nav->meta_description;
-                    $id_arr = explode(',', $this->getChildrenClassify($nav->id));
+                    $id_arr = explode(',', $this->getChildrenClassify($nav->id,1));
                     if ($nav->type == 1 || $nav->type == 2 || $nav->type == 3) {
                         $art_arr = array();
                         if ($nav->star_only) {
@@ -3095,7 +3095,7 @@ class PrintController extends BaseController {
             if ($v['type'] != 6) {
                 $tree[$k]['link'] = $this->showtype == 'preview' ? $this->domain . '/category/' . $v['id'] : $this->domain . '/category/' . $v['id'] . '.html';
                 if ($isNav == TRUE) {
-                    $cids = explode(',', $this->getChirldenCid($v['id'])); //取得所有栏目id
+                    $cids = explode(',', $this->getChirldenCid($v['id'],1)); //取得所有栏目id
                     if ($this->type == 'mobile') {
                         $articles = Articles::whereIn('c_id', $cids)->where('mobile_show', '1')->where('cus_id', $this->cus_id)->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at')->take(20)->get();
                     } else {
@@ -3139,12 +3139,16 @@ class PrintController extends BaseController {
      * @param int $cid 栏目
      * @return string 以“,”分割的栏目id串
      */
-    public function getChirldenCid($cid = 0) {
+    public function getChirldenCid($cid = 0,$show=null) {
         $result = $cid;
-        $cids = Classify::where('p_id', $cid)->OrderBy('sort', 'asc')->lists('id');
+        if($show==null){
+            $cids = Classify::where('p_id', $cid)->OrderBy('sort', 'asc')->lists('id');
+        }else{
+            $cids = Classify::where('p_id', $cid)->where($this->type.'_show', $show)->OrderBy('sort', 'asc')->lists('id');
+        }
         if (!empty($cids)) {
             foreach ((array) $cids as $v) {
-                $result.= ',' . $this->getChirldenCid($v);
+                $result.= ',' . $this->getChirldenCid($v,$show);
             }
         }
         return $result;
@@ -3503,12 +3507,16 @@ class PrintController extends BaseController {
         return $data;
     }
 
-    private function getChildrenClassify($p_id) {
+    private function getChildrenClassify($p_id,$show=null) {
         $id_str = $p_id;
-        $ids = DB::table('classify')->where('p_id', '=', $p_id)->OrderBy('sort', 'asc')->lists('id');
+        if($show==null){
+            $ids = DB::table('classify')->where('p_id', '=', $p_id)->OrderBy('sort', 'asc')->lists('id');
+        }else{
+            $ids = DB::table('classify')->where('p_id', '=', $p_id)->where($this->type.'_show', $show)->OrderBy('sort', 'asc')->lists('id');
+        }
         if (count($ids) > 0) {
             foreach ($ids as &$id) {
-                $id_str.=',' . $this->getChildrenClassify($id);
+                $id_str.=',' . $this->getChildrenClassify($id,$show);
             }
         }
         return $id_str;

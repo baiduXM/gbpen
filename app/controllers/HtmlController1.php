@@ -121,7 +121,7 @@ class HtmlController1 extends BaseController{
             $publicdata=$this->pushmobile;
         }
         foreach((array)$ids as $id){
-            $c_ids=explode(',',$template->getChirldenCid($id));
+            $c_ids=explode(',',$template->getChirldenCid($id,1));
             $a_c_type = Classify::where('id',$id)->pluck('type');//取得栏目的type
             $pc_page_count_switch = CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_count_switch');//页面图文列表图文显示个数是否分开控制开关
             if(isset($pc_page_count_switch)&&$pc_page_count_switch==1&&$type=='pc'){
@@ -213,7 +213,7 @@ class HtmlController1 extends BaseController{
         $page_count = 2;
         $pc_per_page = CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_count');
         foreach((array)$pc_classify_ids as $id){
-            $c_ids=explode(',',$template->getChirldenCid($id));
+            $c_ids=explode(',',$template->getChirldenCid($id,1));
             $a_c_type = Classify::where('id',$id)->pluck('type');//取得栏目的type
             $pc_page_count_switch = CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_count_switch');//页面图文列表图文显示个数是否分开控制开关
             if(isset($pc_page_count_switch)&&$pc_page_count_switch==1&&$a_c_type<=3){
@@ -260,7 +260,7 @@ class HtmlController1 extends BaseController{
         }
         $mobileper_page = CustomerInfo::where('cus_id',$this->cus_id)->pluck('mobile_page_count');
         foreach((array)$mobile_classify_ids as $id){
-            $c_ids=explode(',',$template->getChirldenCid($id));
+            $c_ids=explode(',',$template->getChirldenCid($id,1));
             $total = Articles::whereIn('c_id',$c_ids)->where('cus_id',$this->cus_id)->where('mobile_show','1')->count();
             if($total){
                 $page_count += ceil($total/$mobileper_page);
