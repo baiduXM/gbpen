@@ -235,10 +235,13 @@ class ApiController extends BaseController {
                             ftp_mkdir($conn, $update['ftp_dir'] . '/mobile/images/s/page_index');
                             ftp_close($conn);
                         }
+                        $common = new CommonController();
+                        @$common->postsend(trim($update['weburl'], '/') . "/urlbind.php", array('cus_name' => $update['name'], 'stage' => $update['stage'], 'pc_domain' => $update['pc_domain'], 'mobile_domain' => $update['mobile_domain']));
+                        $result = ['err' => 1000, 'msg' => '创建用户成功'];
+                    }else{
+                        $result = ['err' => 1001, 'msg' => '创建用户失败,创建文件失败'];
                     }
-                    $common = new CommonController();
-                    @$common->postsend(trim($update['weburl'], '/') . "/urlbind.php", array('cus_name' => $update['name'], 'stage' => $update['stage'], 'pc_domain' => $update['pc_domain'], 'mobile_domain' => $update['mobile_domain']));
-                    $result = ['err' => 1000, 'msg' => '创建用户成功'];
+                    
                 } else {
                     $result = ['err' => 1001, 'msg' => '创建用户失败'];
                 }
