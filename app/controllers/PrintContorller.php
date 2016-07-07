@@ -840,7 +840,6 @@ class PrintController extends BaseController {
 
     public function publicdata() {
         $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
-        $formC = new FormController();
         //===显示版本切换链接===
         $templatesC = new TemplatesController;
         $tempname = $templatesC->getTemplatesName($this->type);
@@ -855,6 +854,9 @@ class PrintController extends BaseController {
             } elseif ($flagPlatform == 'GP') {//===PC
                 $language_url = $domain['pc_domain'];
             }
+            
+            
+            
             if ($flagLanguage == 9) {//===英文
                 $language = '<a href="' . $language_url . '">中文版</a>';
             } elseif ($flagLanguage == 0) {//===中文
@@ -868,7 +870,11 @@ class PrintController extends BaseController {
                     . '});'
                     . '</script>';
         }
+        $language_css='<link rel="stylesheet" href="http://swap.5067.org/css/language.css">';
+//        var_dump($language_css);exit;
+        
         //===显示版本切换链接-end===
+        $formC = new FormController();
         if ($this->type == 'pc') {
             $stylecolor = websiteInfo::leftJoin('color', 'color.id', '=', 'website_info.pc_color_id')->where('cus_id', $this->cus_id)->pluck('color_en');
             $logo = $this->showtype == 'preview' ? '/customers/' . $this->customer . '/images/l/common/' . $customer_info->logo : $this->domain . '/images/l/common/' . $customer_info->logo; //'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $customer_info->logo) : $this->domain . '/images/l/common/' . $customer_info->logo;
@@ -914,7 +920,7 @@ class PrintController extends BaseController {
             }
             $footscript = $customer_info->pc_footer_script;
             $footscript .= '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/quickbar.js?' . $this->cus_id . 'pc"></script>';
-            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/js/statis.js?' . $this->cus_id . 'pc"></script>'; //===添加统计代码PC===
+//            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/js/statis.js?' . $this->cus_id . 'pc"></script>'; //===添加统计代码PC===
             $footscript .= $tempscript;
             $site_another_url = $this->showtype == 'preview' ? '' : $customer_info->mobile_domain;
         } else {
@@ -925,7 +931,7 @@ class PrintController extends BaseController {
             $footprint = $customer_info->mobile_footer;
             $footscript = $customer_info->mobile_footer_script;
             $footscript .= '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/quickbar.js?' . $this->cus_id . 'mobile"></script>';
-            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/js/statis.js?' . $this->cus_id . 'mobile"></script>'; //===添加统计代码MOBILE===
+//            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/js/statis.js?' . $this->cus_id . 'mobile"></script>'; //===添加统计代码MOBILE===
             $footscript .= $tempscript;
             $site_another_url = $this->showtype == 'preview' ? '' : $customer_info->pc_domain;
             $config_arr = parse_ini_file(public_path('/templates/' . $this->themename) . '/config.ini', true);
