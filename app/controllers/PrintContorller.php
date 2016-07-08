@@ -545,6 +545,24 @@ class PrintController extends BaseController {
             $config_arr[1] = '#AAA,#BBB,#FFF|totop';
         }
         $lang = CustomerInfo::where('cus_id', $this->cus_id)->pluck('lang');
+        $templatesC = new TemplatesController;
+        $tempname = $templatesC->getTemplatesName($this->type);
+        $flagPlatform = substr($tempname, 0, 2);
+        $flagLanguage = substr($tempname, 2, 1);
+        $customerC = new CustomerController;
+        $domain = $customerC->getSwitchCustomer(); //双站用户
+        if (!empty($domain)) {
+            if ($flagPlatform == 'GM') {//===手机
+                $language_url = $domain['mobile_domain'];
+            } elseif ($flagPlatform == 'GP') {//===PC
+                $language_url = $domain['pc_domain'];
+            }
+            if ($flagLanguage == 9) {//===英文
+                $language = '中文版';
+            } elseif ($flagLanguage == 0) {//===中文
+                $language = 'English';
+            }
+        }
         if ($result != 0) {
             if (trim($config_arr[1]) != "custom") {
                 $quickbar_arr = explode('|', $config_arr[1]);
@@ -715,6 +733,7 @@ class PrintController extends BaseController {
                     $catlist = array();
                 }
                 array_unshift($catlist, array('id' => null, 'name' => '首页', 'en_name' => 'Home', 'url' => $this->site_url, 'childmenu' => null));
+                $catlist[] = array('id' => null, 'name' => $language, 'en_name' => 'language', 'url' => $language_url, 'childmenu' => null); //===
                 $quickbarCallback = array('config' => $config, 'quickbar' => $quickbar, 'catlist' => $catlist);
                 if ($this->showtype == 'preview') {
                     echo "quickbarCallback(" . json_encode($quickbarCallback) . ")";
@@ -824,6 +843,7 @@ class PrintController extends BaseController {
                     $catlist = array();
                 }
                 array_unshift($catlist, array('id' => null, 'name' => '首页', 'en_name' => 'Home', 'url' => $this->site_url, 'childmenu' => null));
+                $catlist[] = array('id' => null, 'name' => $language, 'en_name' => 'language', 'url' => $language_url, 'childmenu' => null); //===
                 $quickbarCallback = array('config' => $config, 'quickbar' => $quickbar, 'catlist' => $catlist);
                 if ($this->showtype == 'preview') {
                     echo "quickbarCallback(" . json_encode($quickbarCallback) . ")";
@@ -853,35 +873,43 @@ class PrintController extends BaseController {
 
     public function publicdata() {
         $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
-        $formC = new FormController();
         //===显示版本切换链接===
         $templatesC = new TemplatesController;
         $tempname = $templatesC->getTemplatesName($this->type);
         $flagPlatform = substr($tempname, 0, 2);
         $flagLanguage = substr($tempname, 2, 1);
-        $customerC = new CustomerController;
-        $domain = $customerC->getSwitchCustomer();
         $tempscript = '';
+        $customerC = new CustomerController;
+        $domain = $customerC->getSwitchCustomer(); //双站用户
         if (!empty($domain)) {
+            $current_url = 'http://' . $_SERVER['HTTP_HOST'];
             if ($flagPlatform == 'GM') {//===手机
                 $language_url = $domain['mobile_domain'];
             } elseif ($flagPlatform == 'GP') {//===PC
                 $language_url = $domain['pc_domain'];
             }
             if ($flagLanguage == 9) {//===英文
-                $language = '<a href="' . $language_url . '">中文版</a>';
+                $language = '<li><a href="' . $language_url . '">中文版</a></li>';
+                $language .= '<li><a href="' . $current_url . '">English</a></li>';
             } elseif ($flagLanguage == 0) {//===中文
-                $language = '<a href="' . $language_url . '">English</a>';
+                $language = '<li><a href="' . $current_url . '">中文版</a></li>';
+                $language .= '<li><a href="' . $language_url . '">English</a></li>';
             }
+            $language_div = '<div class="language_div">'
+                    . '<ul>'
+                    . $language
+                    . '</ul>'
+                    . '</div>';
+
             $tempscript = '<script>'
                     . '$(function(){'
-                    . 'if($("#language_div").size()>0){'
-                    . '$("#language_div").html(\'' . $language . '\');'
-                    . '}'
+                    . '$("body").prepend(\'' . $language_div . '\');'
                     . '});'
                     . '</script>';
         }
+        $language_css = '<link rel="stylesheet" href="http://swap.5067.org/css/language.css">'; //
         //===显示版本切换链接-end===
+        $formC = new FormController();
         if ($this->type == 'pc') {
             $stylecolor = websiteInfo::leftJoin('color', 'color.id', '=', 'website_info.pc_color_id')->where('cus_id', $this->cus_id)->pluck('color_en');
             $logo = $this->showtype == 'preview' ? '/customers/' . $this->customer . '/images/l/common/' . $customer_info->logo : $this->domain . '/images/l/common/' . $customer_info->logo; //'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $customer_info->logo) : $this->domain . '/images/l/common/' . $customer_info->logo;
@@ -919,7 +947,7 @@ class PrintController extends BaseController {
                 curl_close($ch);
             }
             $headscript = $customer_info->pc_header_script;
-//            $headscript .= $tempscript;
+            $headscript .= $language_css;
             if ($customer_info->lang == 'en') {
                 $footprint = $customer_info->footer . '<p>Technology support：<a href="http://www.12t.cn/">Xiamen 12t network technology co.ltd</a> Talent support：<a href="http://www.xgzrc.com/">www.xgzrc.com.cn</a></p>';
             } else {
@@ -927,19 +955,19 @@ class PrintController extends BaseController {
             }
             $footscript = $customer_info->pc_footer_script;
             $footscript .= '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/quickbar.js?' . $this->cus_id . 'pc"></script>';
-            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/js/statis.js?' . $this->cus_id . 'pc"></script>'; //===添加统计代码PC===
+//            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/js/statis.js?' . $this->cus_id . 'pc"></script>'; //===添加统计代码PC===
             $footscript .= $tempscript;
             $site_another_url = $this->showtype == 'preview' ? '' : $customer_info->mobile_domain;
         } else {
             $logo = $this->showtype == 'preview' ? ('/customers/' . $this->customer . '/images/l/common/' . $customer_info->logo_small) : $this->domain . '/images/l/common/' . $customer_info->logo_small; //'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $customer_info->logo_small) : $this->domain . '/images/l/common/' . $customer_info->logo_small;
             $stylecolor = websiteInfo::leftJoin('color', 'color.id', '=', 'website_info.mobile_color_id')->where('cus_id', $this->cus_id)->pluck('color_en');
             $headscript = $customer_info->mobile_header_script;
-//            $headscript .= $tempscript;
+//            $headscript .= $language_css;
             $footprint = $customer_info->mobile_footer;
             $footscript = $customer_info->mobile_footer_script;
             $footscript .= '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/quickbar.js?' . $this->cus_id . 'mobile"></script>';
-            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/js/statis.js?' . $this->cus_id . 'mobile"></script>'; //===添加统计代码MOBILE===
-            $footscript .= $tempscript;
+//            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/js/statis.js?' . $this->cus_id . 'mobile"></script>'; //===添加统计代码MOBILE===
+//            $footscript .= $tempscript;
             $site_another_url = $this->showtype == 'preview' ? '' : $customer_info->pc_domain;
             $config_arr = parse_ini_file(public_path('/templates/' . $this->themename) . '/config.ini', true);
             if (!is_array($config_arr))
