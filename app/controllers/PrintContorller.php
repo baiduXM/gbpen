@@ -1778,6 +1778,7 @@ class PrintController extends BaseController {
         ob_end_clean();
         if (!count($result['footer_navs'])) {
             $output = preg_replace('/<a href="' . str_replace("/", "\/", $result['site_url']) . '"( target="_blank")?( )?>首页<\/a>( )?\|([\s]+)?(<br \/>)?(<br>)?/is', "", $output);
+            $output = preg_replace('/<a href="' . str_replace("/", "\/", $result['site_url']) . '"( target="_blank")?( )?>Home<\/a>( )?\|([\s]+)?(<br \/>)?(<br>)?/is', "", $output);
         }
         return $output;
         //return View::make('templates.'.$this->themename.'.index',$result);
@@ -2082,9 +2083,6 @@ class PrintController extends BaseController {
         $smarty->display('string:' . $content);
         $output = ob_get_contents();
         ob_end_clean();
-        if (!count($result['footer_navs'])) {
-            $output = preg_replace('/<a href="' . str_replace("/", "\/", $result['site_url']) . '"( target="_blank")?( )?>首页<\/a>( )?\|([\s]+)?(<br \/>)?(<br>)?/is', "", $output);
-        }
         return $output;
     }
 
@@ -2581,7 +2579,10 @@ class PrintController extends BaseController {
             $content = $publicdata['repleace'][$viewname . '.html'];
             $content = preg_replace($publicdata['pattern'], $publicdata['repleace'], $content);
             $output = $this->pushdisplay($the_result, $content);
-            $output = preg_replace('/<a href="' . str_replace("/", "\/", $result['site_url']) . '"( target="_blank")?( )?>首页<\/a>( )?\|([\s]+)?(<br \/>)?(<br>)?/is', "", $output);
+            if (!count($result['footer_navs'])) {
+                $output = preg_replace('/<a href="' . str_replace("/", "\/", $result['site_url']) . '"( target="_blank")?( )?>首页<\/a>( )?\|([\s]+)?(<br \/>)?(<br>)?/is', "", $output);
+                $output = preg_replace('/<a href="' . str_replace("/", "\/", $result['site_url']) . '"( target="_blank")?( )?>Home<\/a>( )?\|([\s]+)?(<br \/>)?(<br>)?/is', "", $output);
+            }
             file_put_contents($path, $output);
             $paths[] = $path;
             $nowpercent = $last_html_precent + $html_precent;
@@ -2602,7 +2603,10 @@ class PrintController extends BaseController {
                     $the_result['list']['data'] = $index_list['data'];
                     $path = $this->type == 'pc' ? public_path('customers/' . $this->customer . '/category/' . $id . '_' . $i . '.html') : public_path('customers/' . $this->customer . '/mobile/category/' . $id . '_' . $i . '.html');
                     $output = $this->pushdisplay($the_result, $content);
-                    $output = preg_replace('/<a href="' . str_replace("/", "\/", $result['site_url']) . '"( target="_blank")?( )?>首页<\/a>( )?\|([\s]+)?(<br \/>)?(<br>)?/is', "", $output);
+                    if (!count($result['footer_navs'])) {
+                        $output = preg_replace('/<a href="' . str_replace("/", "\/", $result['site_url']) . '"( target="_blank")?( )?>首页<\/a>( )?\|([\s]+)?(<br \/>)?(<br>)?/is', "", $output);
+                        $output = preg_replace('/<a href="' . str_replace("/", "\/", $result['site_url']) . '"( target="_blank")?( )?>Home<\/a>( )?\|([\s]+)?(<br \/>)?(<br>)?/is', "", $output);
+                    }
                     file_put_contents($path, $output);
                     $paths[] = $path;
                     $nowpercent = $last_html_precent + $html_precent;
@@ -3017,7 +3021,10 @@ class PrintController extends BaseController {
             }
             $the_result['related'] = $related;
             $output = $this->pushdisplay($the_result, $content);
-            $output = preg_replace('/<a href="' . str_replace("/", "\/", $result['site_url']) . '"( target="_blank")?( )?>首页<\/a>( )?\|([\s]+)?(<br \/>)?(<br>)?/is', "", $output);
+            if (!count($result['footer_navs'])) {
+                $output = preg_replace('/<a href="' . str_replace("/", "\/", $result['site_url']) . '"( target="_blank")?( )?>首页<\/a>( )?\|([\s]+)?(<br \/>)?(<br>)?/is', "", $output);
+                $output = preg_replace('/<a href="' . str_replace("/", "\/", $result['site_url']) . '"( target="_blank")?( )?>Home<\/a>( )?\|([\s]+)?(<br \/>)?(<br>)?/is', "", $output);
+            }
             $path = $this->type == 'pc' ? public_path('customers/' . $this->customer . '/detail/' . $article['id'] . '.html') : public_path('customers/' . $this->customer . '/mobile/detail/' . $article['id'] . '.html');
             file_put_contents($path, $output);
             $paths[] = $path;

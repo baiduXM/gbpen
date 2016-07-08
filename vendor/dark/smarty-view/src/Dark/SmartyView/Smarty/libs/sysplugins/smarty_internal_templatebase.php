@@ -225,6 +225,7 @@ abstract class Smarty_Internal_TemplateBase extends Smarty_Internal_Data {
 			$_output = ob_get_clean();
 			if ($_template->template_resource == './_footer.html' && (empty($_template->tpl_vars['navs']->value))) {
 				$_output = preg_replace('/<a href="' . str_replace("/", "\/", $_template->tpl_vars['site_url']->value) . '"( target="_blank")?( )?>首页<\/a>( )?\|([\s]+)?(<br \/>)?(<br>)?/is', "", $_output);
+                                $_output = preg_replace('/<a href="' . str_replace("/", "\/", $_template->tpl_vars['site_url']->value) . '"( target="_blank")?( )?>Home<\/a>( )?\|([\s]+)?(<br \/>)?(<br>)?/is', "", $_output);
 			}
 			//===调用交互服务器接口文件中js,加载访问统计===
 			/**
