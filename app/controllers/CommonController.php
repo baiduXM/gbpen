@@ -85,7 +85,7 @@ class CommonController extends BaseController {
                             if($value['type']=="colors"){
                                 $havecolors=1;
                             }else if($value['type']=="follow"){
-                                if(strpos($data[$key]['data'], 'http://')===false){
+                                if($data[$key]['data']!=''&&strpos($data[$key]['data'], 'http://')===false){
                                     $data[$key]['serurl']='/customers/'.$customer.$data[$key]['data'];
                                 }else{
                                     $data[$key]['serurl']=$data[$key]['data'];
