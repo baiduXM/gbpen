@@ -790,6 +790,12 @@ class PrintController extends BaseController {
                         } else {
                             $quickbar[$key]['data'] = $this->domain . '/search.php';
                         }
+                    } elseif ($quickbar[$key]['type'] == 'follow') {
+                        if ($this->showtype == 'preview') {
+                            if(strpos($quickbar[$key]['data'], 'http://')==FALSE){
+                                $quickbar[$key]['data'] = $quickbar[$key]['serurl'];
+                            }
+                        }
                     }
                 }
 

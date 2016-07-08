@@ -784,12 +784,12 @@ function phone_indexController($scope, $http, $location) {
                     case 'follow':
                         var barcode = '';
                         if (v.for == "vx_barcode" || v.for == "qq_barcode") {
-                            if (v.data != '') {
+                            if (v.serurl != '') {
                                 barcode = '<div class="template-download fade fl in">\n\
                                                                             <div>\n\
                                                                                 <span class="preview">\n\
                                                                                 <div class="preview-close"><img src="images/preview-close.png" /></div>\n\
-                                                                                    <img src="' + v.data + '" style="width:80px;height:80px;padding:5px;" data-role="' + v.for + ' data-preimg="preimg">\n\
+                                                                                    <img src="' + v.serurl + '" style="width:80px;height:80px;padding:5px;" data-role="' + v.for + '" data-preimg="preimg">\n\
                                                                                 </span>\n\
                                                                             </div><input type="hidden" name="' + v.for + '" value="' + v.data + '"></div>';
                             }

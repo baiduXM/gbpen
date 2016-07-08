@@ -55,6 +55,7 @@ class CommonController extends BaseController {
 	public function quickBarJsonInit() {
 		//include_once '../public/QRcode.php';
                 $cus_id=Auth::id();
+                $customer=Auth::user()->name;
 		$QuickBar = WebsiteConfig::where('cus_id', $cus_id)->where('type', 2)->where('template_id', '0')->where('key', 'quickbar')->pluck('value');
 		if ($QuickBar)
 			$MobileQuickBar = unserialize($QuickBar);
@@ -83,8 +84,14 @@ class CommonController extends BaseController {
                         foreach($data as $key=>$value){
                             if($value['type']=="colors"){
                                 $havecolors=1;
-                                break;
+                            }else if($value['type']=="follow"){
+                                if(strpos($data[$key]['data'], 'http://')===false){
+                                    $data[$key]['serurl']='/customers/'.$customer.$data[$key]['data'];
+                                }else{
+                                    $data[$key]['serurl']=$data[$key]['data'];
+                                }
                             }
+                            
                         }
                         if(!isset($havecolors)||$havecolors!=1){
                             $data['colors']['type']='colors';

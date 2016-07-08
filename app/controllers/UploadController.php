@@ -217,7 +217,7 @@ class UploadController extends BaseController {
                         }
                         $data[$i]['name'] = $fileName;
                         $data[$i]['url'] = asset('customers/' . $customer . '/images/l/' . $target . '/' . $fileName);
-                        $data[$i]['s_url'] = ((strpos($domain, 'http://') === false) ? 'http://' : '') . $domain . '/' . 'images/s/' . $target . '/' . $fileName;
+                        $data[$i]['s_url'] = '/images/s/' . $target . '/' . $fileName;
                         $i++;
                     }
                 }
