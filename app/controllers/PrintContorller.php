@@ -1457,6 +1457,7 @@ class PrintController extends BaseController {
                     'page_count' => $page_count,
                     'per_page' => $page_number,
                     'first_link' => $links['first'],
+                    'art_total' => $total,
                     'current_page' => $page,
                     'prev_link' => $links['prev'],
                     'next_link' => $links['next'],
