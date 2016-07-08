@@ -851,7 +851,7 @@ function phone_indexController($scope, $http, $location) {
             if(typeof(colors['mobile'])!="undefined"){
                 mobile_info = '<li class="consultation-item">\
                                     <label class="message-name">手机主色：</label><input type="color" class="colors" value="'+this.ColorRet(colors['mobile'][0])+'" name="mobile_mainColor" id="mobile_mainColor" /><span style="margin:0 20px 0 20px">|</span>\
-                                    <label class="message-name">手机鼠标停留时颜色：</label><input type="color" class="colors" value="'+this.ColorRet(colors['mobile'][1])+'" name="mobile_secondColor" id="mobile_secondColor" /><span style="margin:0 20px 0 20px">|</span>\
+                                    <label class="message-name">手机副色：</label><input type="color" class="colors" value="'+this.ColorRet(colors['mobile'][1])+'" name="mobile_secondColor" id="mobile_secondColor" /><span style="margin:0 20px 0 20px">|</span>\
                                     <label class="message-name">手机图标颜色：</label><input type="color" class="colors" value="'+this.ColorRet(colors['mobile'][2])+'" name="mobile_textColor" id="mobile_textColor" />\
 				</li>';
             }
