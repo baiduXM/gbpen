@@ -371,7 +371,7 @@ class UploadController extends BaseController {
                 }
                 ftp_put($conn,$customer."/unzip.php",public_path("packages/unzip.php"),FTP_ASCII);
                 ftp_put($conn,$customer."/site.zip",public_path('packages/customernull.zip'),FTP_BINARY);
-                @file_get_contents('http://'.$customer . $weburl."/unzip.php");
+                @file_get_contents('http://'.$customer . $suf_url."/unzip.php");
             } else {
                 if(ftp_nlist($conn, $ftpdir)===FALSE){
                     ftp_mkdir($conn, $ftpdir);
