@@ -733,7 +733,10 @@ class PrintController extends BaseController {
                     $catlist = array();
                 }
                 array_unshift($catlist, array('id' => null, 'name' => '首页', 'en_name' => 'Home', 'url' => $this->site_url, 'childmenu' => null));
-                $catlist[] = array('id' => null, 'name' => $language, 'en_name' => 'language', 'url' => $language_url, 'childmenu' => null); //===
+                if (!empty($domain)) {
+                    $catlist[] = array('id' => null, 'name' => $language, 'en_name' => 'language', 'url' => $language_url, 'childmenu' => null); //===
+                }
+//                $catlist[] = array('id' => null, 'name' => $language, 'en_name' => 'language', 'url' => $language_url, 'childmenu' => null); //===
                 $quickbarCallback = array('config' => $config, 'quickbar' => $quickbar, 'catlist' => $catlist);
                 if ($this->showtype == 'preview') {
                     echo "quickbarCallback(" . json_encode($quickbarCallback) . ")";
@@ -843,7 +846,10 @@ class PrintController extends BaseController {
                     $catlist = array();
                 }
                 array_unshift($catlist, array('id' => null, 'name' => '首页', 'en_name' => 'Home', 'url' => $this->site_url, 'childmenu' => null));
-                $catlist[] = array('id' => null, 'name' => $language, 'en_name' => 'language', 'url' => $language_url, 'childmenu' => null); //===
+                if (!empty($domain)) {
+                    $catlist[] = array('id' => null, 'name' => $language, 'en_name' => 'language', 'url' => $language_url, 'childmenu' => null); //===
+                }
+//                $catlist[] = array('id' => null, 'name' => $language, 'en_name' => 'language', 'url' => $language_url, 'childmenu' => null); //===
                 $quickbarCallback = array('config' => $config, 'quickbar' => $quickbar, 'catlist' => $catlist);
                 if ($this->showtype == 'preview') {
                     echo "quickbarCallback(" . json_encode($quickbarCallback) . ")";
