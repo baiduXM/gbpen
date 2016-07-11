@@ -912,7 +912,7 @@ class PrintController extends BaseController {
                     . '<ul>'
                     . $language
                     . '</ul>'
-                    . '123</div>';
+                    . '</div>';
 
             $tempscript = '<script>'
                     . '$(function(){'
