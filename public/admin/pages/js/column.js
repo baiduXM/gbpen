@@ -298,6 +298,8 @@ function columnController($scope, $http) {
                     columnicon.clicks();
                     $('.en_name').val(d.en_name);
                     $('#out_url input').val(d.url);
+                    console.log(d.open_page);
+                    $('#out_url select').val(d.open_page);
                     _this.column_type_info(d);
                     // 联动更改内容展示
                     // if($('#lottery').val() == '列表'){
@@ -484,6 +486,7 @@ function columnController($scope, $http) {
                     var vform_id = $('#form_select').val() ? $('#form_select').val() : 0;
                     var s_t = new Array();
                     var j = 0;
+                    var open_page=$('#out_url select').val();
                     $('.sites input[type="checkbox"]').each(function (i) {
                         if ($(this).siblings('label').hasClass('chirdchecked')) {
                             s_t[j] = $(this).val();
@@ -515,6 +518,7 @@ function columnController($scope, $http) {
                             en_name: enname,
                             type: vlayout,
                             url: vurl,
+                            open_page:open_page,
                             is_show: s_t,
                             keywords: vkeywords,
                             description: vdescription,
