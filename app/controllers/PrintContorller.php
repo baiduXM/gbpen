@@ -961,7 +961,6 @@ class PrintController extends BaseController {
             }
             $headscript = $customer_info->pc_header_script;
             $headscript .= $language_css;
-            $headscript .= '<script>alert(1)</script>';
             if ($customer_info->lang == 'en') {
                 $footprint = $customer_info->footer . '<p>Technology support：<a href="http://www.12t.cn/">Xiamen 12t network technology co.ltd</a> Talent support：<a href="http://www.xgzrc.com/">www.xgzrc.com.cn</a></p>';
             } else {
