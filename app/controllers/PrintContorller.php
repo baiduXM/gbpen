@@ -553,9 +553,9 @@ class PrintController extends BaseController {
         $domain = $customerC->getSwitchCustomer(); //双站用户
         if (!empty($domain)) {
             if ($flagPlatform == 'GM') {//===手机
-                $language_url = $domain['mobile_domain'];
+                $language_url = $domain['switch_mobile_domain'];
             } elseif ($flagPlatform == 'GP') {//===PC
-                $language_url = $domain['pc_domain'];
+                $language_url = $domain['switch_pc_domain'];
             }
             if ($flagLanguage == 9) {//===英文
                 $language = '中文版';
