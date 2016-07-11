@@ -894,11 +894,12 @@ class PrintController extends BaseController {
         $customerC = new CustomerController;
         $domain = $customerC->getSwitchCustomer(); //双站用户
         if (!empty($domain)) {
-            $current_url = 'http://' . $_SERVER['HTTP_HOST'];
             if ($flagPlatform == 'GM') {//===手机
-                $language_url = $domain['mobile_domain'];
+                $language_url = $domain['switch_mobile_domain'];
+                $current_url=$domain['current_mobile_domain'];
             } elseif ($flagPlatform == 'GP') {//===PC
-                $language_url = $domain['pc_domain'];
+                $language_url = $domain['switch_pc_domain'];
+                $current_url=$domain['current_pc_domain'];
             }
             if ($flagLanguage == 9) {//===英文
                 $language = '<li><a href="' . $language_url . '">中文版</a></li>';
@@ -911,7 +912,7 @@ class PrintController extends BaseController {
                     . '<ul>'
                     . $language
                     . '</ul>'
-                    . '</div>';
+                    . '123</div>';
 
             $tempscript = '<script>'
                     . '$(function(){'
@@ -925,7 +926,7 @@ class PrintController extends BaseController {
         if ($this->type == 'pc') {
             $stylecolor = websiteInfo::leftJoin('color', 'color.id', '=', 'website_info.pc_color_id')->where('cus_id', $this->cus_id)->pluck('color_en');
             $logo = $this->showtype == 'preview' ? '/customers/' . $this->customer . '/images/l/common/' . $customer_info->logo : $this->domain . '/images/l/common/' . $customer_info->logo; //'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $customer_info->logo) : $this->domain . '/images/l/common/' . $customer_info->logo;
-            $floatadv = json_decode($customer_info->floatadv);
+            $floatadv = json_decode($customer_info->floatadv);//===浮动类型
             if (!empty($floatadv)) {
                 foreach ((array) $floatadv as $key => $val) {
                     if (!isset($val->type) || $val->type == 'adv') {
@@ -938,8 +939,8 @@ class PrintController extends BaseController {
                         $form_id = $val->adv;
                         $formCdata = $formC->getFormdataForPrint($form_id);
                         if (!empty($formCdata)) {
-                            $content = $formC->showFormHtmlForPrint($formCdata, 'float');
-                            $floatadv[$key]->content = $content;
+                            $form_content = $formC->showFormHtmlForPrint($formCdata, 'float');
+                            $floatadv[$key]->content = $form_content;
                             $floatadv[$key]->cssjs = $formC->assignFormCSSandJSForPrint();
                         }
                     }
@@ -960,6 +961,7 @@ class PrintController extends BaseController {
             }
             $headscript = $customer_info->pc_header_script;
             $headscript .= $language_css;
+            $headscript .= '<script>alert(1)</script>';
             if ($customer_info->lang == 'en') {
                 $footprint = $customer_info->footer . '<p>Technology support：<a href="http://www.12t.cn/">Xiamen 12t network technology co.ltd</a> Talent support：<a href="http://www.xgzrc.com/">www.xgzrc.com.cn</a></p>';
             } else {

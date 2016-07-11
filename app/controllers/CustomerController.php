@@ -269,9 +269,12 @@ class CustomerController extends BaseController {
         if (empty($switch_cus_id)) {
             return null;
         }
+        $current_cus_info = Customer::where('id', $cus_id)->first();
         $switch_cus_info = Customer::where('id', $switch_cus_id)->first();
-        $data['pc_domain'] = $switch_cus_info->pc_domain;
-        $data['mobile_domain'] = $switch_cus_info->mobile_domain;
+        $data['switch_pc_domain'] = $switch_cus_info->pc_domain;
+        $data['switch_mobile_domain'] = $switch_cus_info->mobile_domain;
+        $data['current_pc_domain'] = $current_cus_info->pc_domain;
+        $data['current_mobile_domain'] = $current_cus_info->mobile_domain;
         return $data;
     }
 
