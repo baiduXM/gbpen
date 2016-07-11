@@ -922,7 +922,7 @@ class PrintController extends BaseController {
                     . '});'
                     . '</script>';
         }
-        $language_css = '<link rel="stylesheet" href="http://swap.5067.org/css/language.css">'; //
+        $language_css = '<link rel="stylesheet" href="http://swap.5067.org/css/language.css">'; //===
         //===显示版本切换链接-end===
         $formC = new FormController();
         if ($this->type == 'pc') {
@@ -962,7 +962,7 @@ class PrintController extends BaseController {
                 curl_close($ch);
             }
             $headscript = $customer_info->pc_header_script;
-            $headscript .= $language_css;
+//            $headscript .= $language_css;
             if ($customer_info->lang == 'en') {
                 $footprint = $customer_info->footer . '<p>Technology support：<a href="http://www.12t.cn/">Xiamen 12t network technology co.ltd</a> Talent support：<a href="http://www.xgzrc.com/">www.xgzrc.com.cn</a></p>';
             } else {
@@ -972,6 +972,7 @@ class PrintController extends BaseController {
             $footscript .= '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/quickbar.js?' . $this->cus_id . 'pc"></script>';
 //            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/js/statis.js?' . $this->cus_id . 'pc"></script>'; //===添加统计代码PC===
             $footscript .= $tempscript;
+            $footscript .= $language_css;
             $site_another_url = $this->showtype == 'preview' ? '' : $customer_info->mobile_domain;
         } else {
             $logo = $this->showtype == 'preview' ? ('/customers/' . $this->customer . '/images/l/common/' . $customer_info->logo_small) : $this->domain . '/images/l/common/' . $customer_info->logo_small; //'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $customer_info->logo_small) : $this->domain . '/images/l/common/' . $customer_info->logo_small;
@@ -1037,7 +1038,6 @@ class PrintController extends BaseController {
                                 unset($quickbar[$key]['enable_mobile']);
                             }
                             $quickbarKey = $gkey;
-                            ;
                         } else {
                             foreach ($global_data[$gkey]['value'] as $key => $val) {
                                 if ($global_data[$gkey]['value'][$key]['type'] == 'tel') {
