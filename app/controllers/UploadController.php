@@ -366,17 +366,17 @@ class UploadController extends BaseController {
             ftp_login($conn, $customerinfo->ftp_user, $customerinfo->ftp_pwd);
             ftp_pasv($conn, 1);
             if (trim($ftp) == '1') {
-                if(ftp_nlist($conn, $customer)==FALSE){
+                if(ftp_nlist($conn, $customer)===FALSE){
                     ftp_mkdir($conn, $customer);
                 }
                 ftp_put($conn,$customer."/unzip.php",public_path("packages/unzip.php"),FTP_ASCII);
                 ftp_put($conn,$customer."/site.zip",public_path('packages/customernull.zip'),FTP_BINARY);
                 @file_get_contents('http://'.$customer . $weburl."/unzip.php");
             } else {
-                if(ftp_nlist($conn, $ftpdir)==FALSE){
+                if(ftp_nlist($conn, $ftpdir)===FALSE){
                     ftp_mkdir($conn, $ftpdir);
                 }
-                if(ftp_nlist($conn, $ftpdir.'/mobile')==FALSE){
+                if(ftp_nlist($conn, $ftpdir.'/mobile')===FALSE){
                     ftp_mkdir($conn, $ftpdir.'/mobile');
                 }
                 $domain = strlen(str_replace('http://', '', $customerinfo->pc_domain))>0? $customerinfo->pc_domain.'/mobile' : $customerinfo->mobile_domain;
