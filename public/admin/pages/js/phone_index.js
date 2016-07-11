@@ -1083,6 +1083,7 @@ function phone_indexController($scope, $http, $location) {
                                 info += (name + ':' + num + '@' + fs + (count == 0 ? null : i == count - 1 ? null : '|'));
                             });
                             data = info;
+                            data=data?data.toString():'';
                             break;
                         case 'map':
                             data = $(this).find('.quicklist-r .linktop .message-box').val() + '|' + $(this).find('.quicklist-r .linktop .message-box').data('point')
@@ -1091,6 +1092,7 @@ function phone_indexController($scope, $http, $location) {
                             $(this).find('.quicklist-r .shareicon i').each(function (index, el) {
                                 $(this).hasClass('blue') ? data.push($(this).data('name')) : null;
                             });
+                            data=data?data.toString():'';
                             break;
                         case 'link':
                             var info = '', name,
@@ -1100,10 +1102,12 @@ function phone_indexController($scope, $http, $location) {
                                 info += (name + (count == 0 ? '' : i == count - 1 ? '' : '|'));
                             });
                             data = info;
+                            data=data?data.toString():'';
                             break;
                         case 'follow':
                             for_bar = $(this).data('role');
                             data = $("input[name=" + for_bar + "]").val();
+                            data=data?data.toString():'';
                             break;
                         case 'colors':
                             var colors={};

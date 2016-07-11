@@ -647,6 +647,12 @@ class PrintController extends BaseController {
                         } else {
                             $quickbar[$key]['data'] = $this->domain . '/search.php';
                         }
+                    }elseif ($quickbar[$key]['type'] == 'follow') {
+                        if ($this->showtype == 'preview') {
+                            if(strpos($quickbar[$key]['data'], 'http://')===FALSE){
+                                $quickbar[$key]['data'] = $quickbar[$key]['serurl'];
+                            }
+                        }
                     }
 
                     //TODO:删除enable_pc/enable_mobile键值
@@ -811,7 +817,7 @@ class PrintController extends BaseController {
                         }
                     } elseif ($quickbar[$key]['type'] == 'follow') {
                         if ($this->showtype == 'preview') {
-                            if(strpos($quickbar[$key]['data'], 'http://')==FALSE){
+                            if(strpos($quickbar[$key]['data'], 'http://')===FALSE){
                                 $quickbar[$key]['data'] = $quickbar[$key]['serurl'];
                             }
                         }
