@@ -1098,7 +1098,7 @@ class PrintController extends BaseController {
         ];
 
         if ($this->type == 'pc') {
-            $footer_navs = Classify::where('cus_id', $this->cus_id)->where('footer_show', 1)->select('id', 'type', 'img', 'icon', 'name', 'url', 'p_id', 'en_name', 'meta_description as description')->OrderBy('sort', 'asc')->get()->toArray();
+            $footer_navs = Classify::where('cus_id', $this->cus_id)->where('footer_show', 1)->select('id', 'type', 'img', 'icon', 'name', 'url', 'p_id', 'en_name', 'meta_description as description','open_page')->OrderBy('sort', 'asc')->get()->toArray();
             $footer_navs = $this->toFooter($footer_navs);
             $result['footer_navs'] = $footer_navs;
             $result['type'] = 'pc';
@@ -1110,9 +1110,9 @@ class PrintController extends BaseController {
         error_reporting(E_ALL ^ E_NOTICE);
         //===whereIN(type:9) 万用表单===
         if ($this->type == 'pc') {
-            $navs = Classify::where('cus_id', $this->cus_id)->where('pc_show', 1)->whereIN('type', [1, 2, 3, 4, 5, 6, 9])->select('id', 'type', 'img', 'icon', 'name', 'url', 'p_id', 'en_name', 'meta_description as description')->OrderBy('sort', 'asc')->get()->toArray();
+            $navs = Classify::where('cus_id', $this->cus_id)->where('pc_show', 1)->whereIN('type', [1, 2, 3, 4, 5, 6, 9])->select('id', 'type', 'img', 'icon', 'name', 'url', 'p_id', 'en_name', 'meta_description as description','open_page')->OrderBy('sort', 'asc')->get()->toArray();
         } else {
-            $navs = Classify::where('cus_id', $this->cus_id)->where('mobile_show', 1)->select('id', 'type', 'img', 'icon', 'name', 'url', 'p_id', 'en_name', 'meta_description as description')->OrderBy('sort', 'asc')->get()->toArray();
+            $navs = Classify::where('cus_id', $this->cus_id)->where('mobile_show', 1)->select('id', 'type', 'img', 'icon', 'name', 'url', 'p_id', 'en_name', 'meta_description as description','open_page')->OrderBy('sort', 'asc')->get()->toArray();
         }
         $navs = $this->toTree($navs, 0, TRUE);
 
@@ -3114,7 +3114,11 @@ class PrintController extends BaseController {
             if ($v['type'] != 6) {
                 $v['link'] = $this->showtype == 'preview' ? $this->domain . '/category/' . $v['id'] : $this->domain . '/category/' . $v['id'] . '.html';
             } else {
-                $v['link'] = strpos('1' . $v['url'], 'http') ? $v['url'] : ('http://' . $v['url']);
+                if($v['open_page']==1){
+                    $v['link'] = strpos($v['url'], 'http')===false ?('http://' . $v['url']): $v['url'];
+                }else{
+                    $v['link'] = strpos($v['url'], 'http')===false ?('http://' . $v['url'].'"target="_blank'): $v['url'].'"target="_blank';
+                }
             }
 
             unset($v['img']);
@@ -3178,7 +3182,11 @@ class PrintController extends BaseController {
                     }
                 }
             } else {
-                $tree[$k]['link'] = strpos('1' . $v['url'], 'http') ? $v['url'] : ('http://' . $v['url']);
+                if($v['open_page']==1){
+                    $tree[$k]['link'] = strpos($v['url'], 'http')===false ?('http://' . $v['url']): $v['url'];
+                }else{
+                    $tree[$k]['link'] = strpos($v['url'], 'http')===false ?('http://' . $v['url'].'"target="_blank'): $v['url'].'"target="_blank';
+                }
             }
             $tree[$k]['current'] = 0;
             $tree[$k]['selected'] = 0;

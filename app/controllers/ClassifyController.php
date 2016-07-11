@@ -192,6 +192,7 @@ class ClassifyController extends BaseController {
 			$classify->meta_keywords = trim(Input::get('keywords'));
 			$classify->meta_description = trim(Input::get('description'));
 			$classify->url = trim(Input::get('url'));
+                        $classify->open_page = trim(Input::get('open_page'));
 			$classify->pushed = 1;
 			$is_show = Input::get('is_show');
 			$shows = explode(',', $is_show);
