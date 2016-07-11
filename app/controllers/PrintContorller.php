@@ -893,13 +893,15 @@ class PrintController extends BaseController {
         $tempscript = '';
         $customerC = new CustomerController;
         $domain = $customerC->getSwitchCustomer(); //双站用户
+        $current_url = '#';
+        $language_url = '#';
         if (!empty($domain)) {
             if ($flagPlatform == 'GM') {//===手机
                 $language_url = $domain['switch_mobile_domain'];
-                $current_url=$domain['current_mobile_domain'];
+                $current_url = $domain['current_mobile_domain'];
             } elseif ($flagPlatform == 'GP') {//===PC
                 $language_url = $domain['switch_pc_domain'];
-                $current_url=$domain['current_pc_domain'];
+                $current_url = $domain['current_pc_domain'];
             }
             if ($flagLanguage == 9) {//===英文
                 $language = '<li><a href="' . $language_url . '">中文版</a></li>';

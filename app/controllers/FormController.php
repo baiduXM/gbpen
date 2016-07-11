@@ -637,10 +637,10 @@ class FormController extends BaseController {
      * 赋值表单前端css/js
      */
     public function assignFormCSSandJSForPrint() {
-        $css = '<link rel="stylesheet" href="http://swap.5067.org/js/laydate/need/laydate.css">';
-        $css .='<link rel="stylesheet" href="http://swap.5067.org/css/universal-form.css">';
-        $js = '<script src="http://swap.5067.org/js/laydate/laydate.js"></script>';
-        $js .= '<script src="http://swap.5067.org/js/universal-form.js"></script>';
+        $css ='<link rel="stylesheet" href="http://swap.5067.org/css/universal-form.css">';
+//        $css .= '<link rel="stylesheet" href="http://swap.5067.org/js/laydate/need/laydate.css">';
+        $js = '<script src="http://swap.5067.org/js/universal-form.js"></script>';
+        $js .= '<script src="http://swap.5067.org/js/laydate/laydate.js"></script>';
         return $css . $js;
     }
 
