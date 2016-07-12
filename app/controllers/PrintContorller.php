@@ -2342,7 +2342,7 @@ class PrintController extends BaseController {
                 }
                 .elegant-aero .button{
                 padding: 10px 30px 10px 30px;
-                background: #ACB5B7;;
+                background: #ACB5B7;
                 border: none;
                 color: #FFF;
                 box-shadow: 1px 1px 1px #4C6E91;
@@ -2568,7 +2568,7 @@ class PrintController extends BaseController {
                 }
                 .elegant-aero .button{
                 padding: 10px 30px 10px 30px;
-                background: #ACB5B7;;
+                background: #ACB5B7;
                 border: none;
                 color: #FFF;
                 box-shadow: 1px 1px 1px #4C6E91;
@@ -3117,10 +3117,20 @@ class PrintController extends BaseController {
             if ($v['type'] != 6) {
                 $v['link'] = $this->showtype == 'preview' ? $this->domain . '/category/' . $v['id'] : $this->domain . '/category/' . $v['id'] . '.html';
             } else {
-                if($v['open_page']==1){
-                    $v['link'] = strpos($v['url'], 'http')===false ?('http://' . $v['url']): $v['url'];
-                }else{
-                    $v['link'] = strpos($v['url'], 'http')===false ?('http://' . $v['url'].'"target="_blank'): $v['url'].'"target="_blank';
+                if ($v['open_page'] == 1) {
+                    if (strpos($v['url'], 'http') === false) {
+                        $v['link'] = 'http://' . $v['url'];
+                    } else {
+                        $v['link'] = $v['url'];
+                    }
+//                    $v['link'] = strpos($v['url'], 'http') === false ? ('http://' . $v['url']) : $v['url'];
+                } else {
+                    if (strpos($v['url'], 'http') === false) {
+                        $v['link'] = 'http://' . $v['url'] . '"target="_blank';
+                    } else {
+                        $v['link'] = $v['url'] . '"target="_blank';
+                    }
+//                    $v['link'] = strpos($v['url'], 'http') === false ? ('http://' . $v['url'] . '"target="_blank') : $v['url'] . '"target="_blank';
                 }
             }
 
