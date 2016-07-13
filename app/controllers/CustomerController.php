@@ -194,7 +194,6 @@ class CustomerController extends BaseController {
         $customer_info = CustomerInfo::where('cus_id', $cus_id)->first();
         $data['capacity'] = $this->format_bytes($customer_info->capacity);
         $data['capacity_free'] = $this->format_bytes($customer_info->capacity - $customer_info->capacity_use);
-        $data['use_percent'] = round(($customer_info->capacity_use / $customer_info->capacity) * 100, 2);
         $result = ['err' => 0, 'msg' => '容量数据', 'data' => $data];
         return Response::json($result);
     }

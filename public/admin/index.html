@@ -40,15 +40,12 @@
                     
                 </div>
                 <!--容量条-->
-<!--                <div class="fr clearfix" style="font-size: 12px;color:#7c6154;margin-right: 22px;" >
-                    剩余容量/总容量：<span id="capacity_free"></span>/<span id="capacity"></span>
-                </div>-->
-                <!--切换绑定账户-->
-<!--                <div class="fr clearfix bindswitch" style="font-size: 12px;color:#7c6154;margin-top: 0px;margin-right: 10px;" >
-                    <a href="javascript:;" id="switch_bind"></a>
-                </div>-->
+                <div class="fr clearfix" id="capacity_div" style="font-size: 12px;color:#7c6154;margin-right: 22px;" >
+                    <!--剩余容量/总容量：<span id="capacity_free"></span>/<span id="capacity"></span>-->
+                </div>
                 <script>
                     $(function(){
+                        init_capacity();//初始化容量条
 //                        get_capacity();
                         init_bind();
                         $('#switch_bind').click(function(){

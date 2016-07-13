@@ -346,7 +346,10 @@ $(window).resize(function () {
 });
 
 
-
+function init_capacity(){
+    $('#capacity_div').html('剩余容量/总容量：<span id="capacity_free">0</span>/<span id="capacity">0</span>');
+    get_capacity();
+}
 
 //===获取容量信息===
 function get_capacity() {
@@ -354,7 +357,6 @@ function get_capacity() {
         var data = json.data;
         $('#capacity_free').html(data.capacity_free);
         $('#capacity').html(data.capacity);
-        $('#capacity_bar').css('width', data.use_percent + '%');
     });
 }
 
