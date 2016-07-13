@@ -12,9 +12,6 @@ class ImgDel extends Eloquent {
             $size = filesize(public_path('customers/' . $customer . '/cache_images/' . $img));
             $cus = new CustomerController;
             $cus->change_capa($size, 'free');
-            echo "<script>$(function(){
-                        get_capacity();
-                    })</script>";
             return DB::table($this->table)->insert(array('img' => $img, 'cus_id' => Auth::id(), 'target' => $target));
         }
     }
