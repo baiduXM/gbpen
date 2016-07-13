@@ -3606,6 +3606,7 @@ class PrintController extends BaseController {
         } else {
             $arr['link'] = $this->domain . '/category/' . $c_id . '.html';
         }
+        $arr['icon'] = '<i class="iconfont">' . $classify->icon . '</i>';
         array_unshift($posnavs, $arr);
         if ($classify->p_id > 0) {
             $this->getPosNavs($classify->p_id, $posnavs);
