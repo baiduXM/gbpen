@@ -1752,7 +1752,7 @@ class PrintController extends BaseController {
             $s.="delete _bd_share_config.image\n";
         }
         $s.= "window.onload=function(){with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];}\n";
-        $s.='$(".bds_tqq").click(function(){window.open("http://v.t.qq.com/share/share.php?url="+url+"&title="+document.title+"&appkey=xx");});';
+        $s.='$(".bds_tqq").click(function(){window.open("http://v.t.qq.com/share/share.php?url="+encodeURIComponent(url)+"&title="+encodeURIComponent(document.title));});';
         $s.="</script>";
         echo $s;
     }
