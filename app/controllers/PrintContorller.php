@@ -910,7 +910,7 @@ class PrintController extends BaseController {
                 $language = '<li><a href="' . $current_url . '">中文版</a></li>';
                 $language .= '<li><a href="' . $language_url . '">English</a></li>';
             }
-            $language_div = '<div class="language_div">'
+            $language_div = '<div class="language_div" style="position:absolute;">'
                     . '<ul>'
                     . $language
                     . '</ul>'
