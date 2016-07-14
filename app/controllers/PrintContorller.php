@@ -1702,7 +1702,7 @@ class PrintController extends BaseController {
             bdText : \"";
         $s.=isset($params['shareText']) ? $params['shareText'] : '';
         $s.="\",
-        bdMiniList: ['mshare', 'qzone', 'tsina', 'bdysc', 'weixin', 'renren', 'tqq', 'kaixin001', 'tqf', 'tieba', 'douban', 'bdhome', 'sqq', 'thx', 'ibaidu', 'meilishuo', 'mogujie', 'huaban', 'duitang', 'hx', 'fx', 'youdao', 'sdo', 'qingbiji', 'people', 'xinhua', 'mail', 'isohu', 'yaolan', 'wealink', 'ty', 'iguba', 'linkedin', 'copy', 'print'], 
+        bdMiniList: ['mshare', 'qzone', 'tsina', 'bdysc', 'weixin', 'renren', 'kaixin001', 'tqf', 'tieba', 'douban', 'bdhome', 'sqq', 'thx', 'ibaidu', 'meilishuo', 'mogujie', 'huaban', 'duitang', 'hx', 'fx', 'youdao', 'sdo', 'qingbiji', 'people', 'xinhua', 'mail', 'isohu', 'yaolan', 'wealink', 'ty', 'iguba', 'linkedin', 'copy', 'print'], 
             bdDesc : \"";
         $s.=isset($params['shareDesc']) ? $params['shareDesc'] : '';
         $s.="\", 
