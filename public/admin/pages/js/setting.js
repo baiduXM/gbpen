@@ -15,6 +15,7 @@ function settingController($scope, $http) {
             this._loadPageSize();
             this._Addadv();
             this._Addform();
+            this._changeLang();
         },
         _settingGetInfo: function () {
             var _this = this;
@@ -59,6 +60,7 @@ function settingController($scope, $http) {
                 $('#domain_pc').attr('href', 'http://' + set.domain_pc);
                 $('#def_domain_pc').attr('href', 'http://' + set.def_domain_pc);
                 $('#lang option[value=' + set.lang + ']').attr('selected', true);
+                $('#copyright option[value=' + set.copyright + ']').attr('selected', true);
                 $('#def_domain_m').MoveBox({
                     Trigger: 'mouseenter',
                     context: '<img src="http://s.jiathis.com/qrcode.php?url=http://' + set.def_domain_m + '" />'
@@ -183,6 +185,7 @@ function settingController($scope, $http) {
             });
 
         },
+        //===添加浮动表单===
         _Addform: function () {
             $(".addfloatform").click(function () {
                 var subscript = $('ul .floatadv').length;
