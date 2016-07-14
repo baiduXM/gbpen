@@ -918,7 +918,8 @@ class PrintController extends BaseController {
 
             $tempscript = '<script>'
                     . '$(function(){'
-                    . '$("body").prepend(\'' . $language_div . '\');'
+                    . '$("#header").prepend(\'' . $language_div . '\');'
+                    . '$("#header").css("position","relative");'
                     . '});'
                     . '</script>';
         }
