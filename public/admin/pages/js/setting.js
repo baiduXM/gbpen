@@ -15,7 +15,7 @@ function settingController($scope, $http) {
             this._loadPageSize();
             this._Addadv();
             this._Addform();
-            this._changeLang();
+//            this._changeLang();
         },
         _settingGetInfo: function () {
             var _this = this;
