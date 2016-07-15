@@ -140,6 +140,7 @@ class CustomerController extends BaseController {
         $data['pc_page_count_switch'] = Input::get('pc_page_count_switch');
         $data['enlarge'] = Input::get('enlargev');
         $data['lang'] = Input::get('lang');
+        $data['copyright'] = Input::get('copyright');
         $data['pushed'] = 1;
 
         $float_adv = Input::get('float_adv') ? Input::get('float_adv') : array();

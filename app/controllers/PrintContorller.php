@@ -918,7 +918,8 @@ class PrintController extends BaseController {
 
             $tempscript = '<script>'
                     . '$(function(){'
-                    . '$("body").prepend(\'' . $language_div . '\');'
+                    . '$("#header").prepend(\'' . $language_div . '\');'
+                    . '$("#header").css("position","relative");'
                     . '});'
                     . '</script>';
         }
@@ -964,9 +965,11 @@ class PrintController extends BaseController {
             $headscript = $customer_info->pc_header_script;
 //            $headscript .= $language_css;
             if ($customer_info->lang == 'en') {
-                $footprint = $customer_info->footer . '<p>Technology support：<a href="http://www.12t.cn/">Xiamen 12t network technology co.ltd</a> Talent support：<a href="http://www.xgzrc.com/">www.xgzrc.com.cn</a></p>';
+               $_copyright= !empty($customer_info->copyright)?$customer_info->copyright:'Xiamen 12t network technology co.ltd';
+                $footprint = $customer_info->footer . '<p>Technology support：<a href="http://www.12t.cn/">'.$_copyright.'</a> Talent support：<a href="http://www.xgzrc.com/">www.xgzrc.com.cn</a></p>';
             } else {
-                $footprint = $customer_info->footer . '<p>技术支持：<a href="http://www.12t.cn/">厦门易尔通网络科技有限公司</a> 人才支持：<a href="http://www.xgzrc.com/">厦门人才网</a></p>';
+               $_copyright= !empty($customer_info->copyright)?$customer_info->copyright:'厦门易尔通网络科技有限公司';
+                $footprint = $customer_info->footer . '<p>技术支持：<a href="http://www.12t.cn/">'.$_copyright.'</a> 人才支持：<a href="http://www.xgzrc.com/">厦门人才网</a></p>';
             }
             $footscript = $customer_info->pc_footer_script;
             $footscript .= '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/quickbar.js?' . $this->cus_id . 'pc"></script>';
