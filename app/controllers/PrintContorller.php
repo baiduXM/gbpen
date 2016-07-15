@@ -714,7 +714,7 @@ class PrintController extends BaseController {
 //                    ];  
 //                }
                 //快捷导航
-                $navs = Classify::where('cus_id', $this->cus_id)->where('mobile_show', 1)->select('id', 'type', 'name', 'en_name', 'icon', 'url', 'p_id', 'en_name')->OrderBy('sort', 'asc')->get()->toArray();
+                $navs = Classify::where('cus_id', $this->cus_id)->where('mobile_show', 1)->select('id', 'type','open_page', 'name', 'en_name', 'icon', 'url', 'p_id', 'en_name')->OrderBy('sort', 'asc')->get()->toArray();
                 if (count($navs)) {
                     if ($this->showtype == 'preview') {
                         foreach ($navs as &$nav) {

@@ -439,7 +439,7 @@ Route::group(array('before' => 'auth'), function() {
     Route::any('init-bind', [//查看是否有绑定双用户
         'uses' => 'CustomerController@isSwitchcus'
     ]);
-    //
+    //===end===
     //-----------留言板--------
     Route::get('feedback-data', [//获取表单数据
         'uses' => 'FeedbackController@getFeedbackData'
