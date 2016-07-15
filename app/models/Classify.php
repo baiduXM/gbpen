@@ -30,6 +30,13 @@ class Classify extends Eloquent {
 	public function toTree($arr, $pid = 0) {
 		$tree = array();
 		foreach ($arr as $k => $v) {
+                        if($v['type']==6){
+                            if($v['open_page']==2){
+                                $v['link']=$v['url'].'" target="_blank';
+                            }else{
+                                $v['link']=$v['url'];
+                            }
+                        }
 			if ($v['p_id'] == $pid) {
 				$tree[] = $v;
 			}
