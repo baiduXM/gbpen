@@ -291,14 +291,14 @@ function columnController($scope, $http) {
                     $('.column_name').val(d.name);
                     // 图标判断
                     $('.icon_input').val(d.icon);
-                    console.log(d.icon);
+//                    console.log(d.icon);
                     d.icon ? $('.col_icon .icon_box>i').before('<i class="iconfonts">' + d.icon + '</i>').remove() : $('.col_icon .icon_box>i').before('<i class="iconfont icon-dengpao"></i>').remove();
                     // 栏目图标
                     var columnicon = new icon_choose();
                     columnicon.clicks();
                     $('.en_name').val(d.en_name);
                     $('#out_url input').val(d.url);
-                    console.log(d.open_page);
+//                    console.log(d.open_page);
                     $('#out_url select').val(d.open_page);
                     _this.column_type_info(d);
                     // 联动更改内容展示

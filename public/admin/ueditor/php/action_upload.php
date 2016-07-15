@@ -70,11 +70,11 @@ if ($up_result['state'] == 'SUCCESS') {
         /* 编辑器上传图片问题 */
         ftp_pasv($conn, 1);
         //===扣除空间===
-        $size = filesize(public_path('customers/' . $cus_name . '/images/ueditor/' . $up_result['title']));
-        $cus = new CustomerController;
-        if (!$cus->change_capa($size, 'use')) {
-            return Response::json(['err' => 1001, 'msg' => '容量不足', 'data' => []]);
-        }
+//        $size = filesize(public_path('customers/' . $cus_name . '/images/ueditor/' . $up_result['title']));
+//        $cus = new CustomerController;
+//        if (!$cus->change_capa($size, 'use')) {
+//            return Response::json(['err' => 1001, 'msg' => '容量不足', 'data' => []]);
+//        }
         //===扣除空间end===
         ftp_put($conn, $cus_name . '/' . 'images/ueditor/' . $up_result['title'], public_path('customers/' . $cus_name . '/images/ueditor/' . $up_result['title']), FTP_BINARY);
         ftp_put($conn, $cus_name . '/' . 'mobile/images/ueditor/' . $up_result['title'], public_path('customers/' . $cus_name . '/images/ueditor/' . $up_result['title']), FTP_BINARY);
