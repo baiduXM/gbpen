@@ -3602,10 +3602,14 @@ class PrintController extends BaseController {
         $classify = Classify::where('id', $c_id)->first();
         $arr['name'] = $classify->name;
         $arr['en_name'] = $classify->en_name;
-        if ($this->showtype == 'preview') {
-            $arr['link'] = $this->domain . '/category/' . $c_id;
-        } else {
-            $arr['link'] = $this->domain . '/category/' . $c_id . '.html';
+        if($classify->type==6){
+            $arr['link']=$classify->url;
+        }else{
+            if ($this->showtype == 'preview') {
+                $arr['link'] = $this->domain . '/category/' . $c_id;
+            } else {
+                $arr['link'] = $this->domain . '/category/' . $c_id . '.html';
+            }
         }
         $arr['icon'] = '<i class="iconfont">' . $classify->icon . '</i>';
         array_unshift($posnavs, $arr);
