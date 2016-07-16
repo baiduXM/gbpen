@@ -386,6 +386,10 @@ function get_bind_account() {
 //===ueditor编辑器 正则匹配img file 
 function ueditor_regular(html){
     //
+//    var i=1;
+//    j\k\l\m\n
+//ueditor/php/(\w|/)*.(\w)+
+    return html;
 }
 
 
