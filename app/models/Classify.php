@@ -31,7 +31,7 @@ class Classify extends Eloquent {
 		$tree = array();
 		foreach ($arr as $k => $v) {
                         if($v['type']==6){
-                            if(empty('open_page')){
+                            if(empty($v['open_page'])){
                                 $v['open_page']=1;
                             }
                             if($v['open_page']==2){
