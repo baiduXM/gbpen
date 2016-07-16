@@ -34,6 +34,9 @@ class Classify extends Eloquent {
                             if(empty($v['open_page'])){
                                 $v['open_page']=1;
                             }
+                            if(empty($v['url'])){
+                                $v['url']='javascript:;';
+                            }
                             if($v['open_page']==2){
                                 $v['link']=$v['url'].'" target="_blank';
                             }else{
