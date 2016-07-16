@@ -383,6 +383,10 @@ function get_bind_account() {
     });
 }
 
+//===ueditor编辑器 正则匹配img file 
+function ueditor_regular(html){
+    //
+}
 
 
 // 推送静态文件
