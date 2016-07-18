@@ -1090,7 +1090,7 @@ class PrintController extends BaseController {
         }
         $result = [
             'stylecolor' => $stylecolor,
-            'favicon' => rtrim($this->source_dir, 'images/') . '/images/l/common/' . $customer_info->favicon,
+            'favicon' => $customer_info->favicon?(rtrim($this->source_dir, 'images/') . '/images/l/common/' . $customer_info->favicon):'',
             'logo' => $logo,
             'floatadvprint' => isset($floatadvprint) ? $floatadvprint : '',
             'headscript' => $headscript,
@@ -1176,7 +1176,7 @@ class PrintController extends BaseController {
                                     $abc['data'][$key]['title'] = '<strong style="' . $bold . $font_color . '">' . $d->title . '</strong>';
                                 }
                                 $d_c_info = Classify::where('id', $d->c_id)->first();
-                                $abc['data'][$key]['image'] = $this->source_dir . 'l/articles/' . $d->img;
+                                $abc['data'][$key]['image'] = $d->img?($this->source_dir . 'l/articles/' . $d->img):'';
                                 if ($this->showtype == 'preview') {
                                     $abc['data'][$key]['category']['link'] = $this->domain . '/category/' . $d->c_id;
                                     $abc['data'][$key]['link'] = $this->domain . '/detail/' . $d->id;
@@ -1236,7 +1236,7 @@ class PrintController extends BaseController {
                                 $abc['data'][$key]['title'] = '<strong style="' . $bold . $font_color . '">' . $d->title . '</strong>';
                             }
                             $d_c_info = Classify::where('id', $d->c_id)->first();
-                            $abc['data'][$key]['image'] = $this->source_dir . 'l/articles/' . $d->img;
+                            $abc['data'][$key]['image'] = $d->img?($this->source_dir . 'l/articles/' . $d->img):'';
                             if ($this->showtype == 'preview') {
                                 $abc['data'][$key]['category']['link'] = $this->domain . '/category/' . $d->c_id;
                                 $abc['data'][$key]['link'] = $this->domain . '/detail/' . $d->id;
@@ -1265,10 +1265,10 @@ class PrintController extends BaseController {
                 $v['value']['icon'] = ($c_info ? '<i class="iconfont">' . $c_info->icon . '</i>' : '');
                 $v['value']['link'] = '';
                 if ($this->showtype == 'preview') {
-                    $v['value']['image'] = ($c_info ? $this->source_dir . 'l/category/' . $c_info->img : '');
+                    $v['value']['image'] = ($c_info->img ? $this->source_dir . 'l/category/' . $c_info->img : '');
                     $v['value']['link'] = ($c_info ? ($c_info->type == 6) ? $c_info->url ? $c_info->url : '' : $this->domain . '/category/' . $c_info->id : '');
                 } else {
-                    $v['value']['image'] = ($c_info ? $this->domain . '/images/l/category/' . $c_info->img : '');
+                    $v['value']['image'] = ($c_info->img ? $this->domain . '/images/l/category/' . $c_info->img : '');
                     $v['value']['link'] = ($c_info ? ($c_info->type == 6) ? $c_info->url ? $c_info->url : '' : $this->domain . '/category/' . $c_info->id . '.html' : '');
                 }
                 $v['value']['description'] = ($c_info ? $c_info->meta_description : '');
@@ -1280,10 +1280,10 @@ class PrintController extends BaseController {
                         if ($c_c_info) {
                             $c_c_info = $c_c_info->toArray();
                             if ($this->showtype == 'preview') {
-                                $c_c_info['image'] = ($c_c_info ? $this->source_dir . 'l/category/' . $c_c_info['image'] : '');
+                                $c_c_info['image'] = ($c_c_info['image'] ? $this->source_dir . 'l/category/' . $c_c_info['image'] : '');
                                 $c_c_info['link'] = ($c_c_info ? $this->domain . '/category/' . $c_c_info['id'] : '');
                             } else {
-                                $c_c_info['image'] = ($c_c_info ? $this->domain . '/images/l/category/' . $c_c_info['image'] : '');
+                                $c_c_info['image'] = ($c_c_info['image'] ? $this->domain . '/images/l/category/' . $c_c_info['image'] : '');
                                 $c_c_info['link'] = ($c_c_info ? $this->domain . '/category/' . $c_c_info['id'] . '.html' : '');
                             }
                             $c_c_info['icon'] = ($c_c_info ? '<i class="iconfont">' . $c_c_info['icon'] . '</i>' : '');
@@ -1306,7 +1306,7 @@ class PrintController extends BaseController {
                                         $abc[$key]['title'] = '<strong style="' . $bold . $font_color . '">' . $d->title . '</strong>';
                                     }
                                     $d_c_info = Classify::where('id', $d->c_id)->first();
-                                    $abc[$key]['image'] = $this->source_dir . 'l/articles/' . $d->img;
+                                    $abc[$key]['image'] = $d->img?($this->source_dir . 'l/articles/' . $d->img):'';
                                     if ($this->showtype == 'preview') {
                                         $abc[$key]['category']['link'] = $this->domain . '/category/' . $d->c_id;
                                         $abc[$key]['link'] = $this->domain . '/detail/' . $d->id;
@@ -1353,10 +1353,10 @@ class PrintController extends BaseController {
                     $v['value']['icon'] = '<i class="iconfont">' . $c_info->icon . '</i>';
                     $v['value']['link'] = '';
                     if ($this->showtype == 'preview') {
-                        $v['value']['image'] = $this->source_dir . 'l/category/' . $c_info->img;
+                        $v['value']['image'] = $c_info->img?($this->source_dir . 'l/category/' . $c_info->img):'';
                         $v['value']['link'] = $this->domain . '/category/' . $c_info->id;
                     } else {
-                        $v['value']['image'] = $this->domain . '/images/l/category/' . $c_info->img;
+                        $v['value']['image'] = $c_info->img?($this->domain . '/images/l/category/' . $c_info->img):'';
                         $v['value']['link'] = $this->domain . '/category/' . $c_info->id . '.html';
                     }
                     $v['value']['description'] = $c_info->meta_description;
@@ -1369,10 +1369,10 @@ class PrintController extends BaseController {
                         if ($c_c_info) {
                             $c_c_info = $c_c_info->toArray();
                             if ($this->showtype == 'preview') {
-                                $c_c_info['image'] = ($c_c_info ? $this->source_dir . 'l/category/' . $c_c_info['image'] : '');
+                                $c_c_info['image'] = ($c_c_info['image'] ? $this->source_dir . 'l/category/' . $c_c_info['image'] : '');
                                 $c_c_info['link'] = ($c_c_info ? $this->domain . '/category/' . $c_c_info['id'] : '');
                             } else {
-                                $c_c_info['image'] = ($c_c_info ? $this->domain . '/images/l/category/' . $c_c_info['image'] : '');
+                                $c_c_info['image'] = ($c_c_info['image'] ? $this->domain . '/images/l/category/' . $c_c_info['image'] : '');
                                 $c_c_info['link'] = ($c_c_info ? $this->domain . '/category/' . $c_c_info['id'] . '.html' : '');
                             }
                             $c_c_info['current'] = 0;
@@ -1396,10 +1396,10 @@ class PrintController extends BaseController {
                         $v['value'][$i]['en_name'] = $c_info ? $c_info->en_name : '';
                         $v['value'][$i]['icon'] = $c_info ? '<i class="iconfont">' . $c_info->icon . '</i>' : '';
                         if ($this->showtype == 'preview') {
-                            $v['value'][$i]['image'] = $c_info ? $this->source_dir . 'l/category/' . $c_info->img : '';
+                            $v['value'][$i]['image'] = $c_info->img ? $this->source_dir . 'l/category/' . $c_info->img : '';
                             $v['value'][$i]['link'] = $c_info ? $this->domain . '/category/' . $c_info->id : '';
                         } else {
-                            $v['value'][$i]['image'] = $c_info ? $this->domain . '/images/l/category/' . $c_info->img : '';
+                            $v['value'][$i]['image'] = $c_info->img ? $this->domain . '/images/l/category/' . $c_info->img : '';
                             $v['value'][$i]['link'] = $c_info ? $this->domain . '/category/' . $c_info->id . '.html' : '';
                         }
                         $v['value'][$i]['current'] = 0;
@@ -1470,7 +1470,7 @@ class PrintController extends BaseController {
                         $font_color = ($d->title_color != 'rgb(0, 0, 0)') ? 'color:' . $d->title_color . ';' : '';
                         $article[$key]['title'] = '<strong style="' . $bold . $font_color . '">' . $d->title . '</strong>';
                     }
-                    $article[$key]['image'] = $this->source_dir . 's/articles/' . $d->img;
+                    $article[$key]['image'] = $d->img?($this->source_dir . 's/articles/' . $d->img):'';
                     $article[$key]['link'] = $this->domain . '/detail/' . $d->id;
                     if ($d->use_url) {
                         $article[$key]['link'] = $d->url;
@@ -1494,7 +1494,7 @@ class PrintController extends BaseController {
                         $font_color = ($d->title_color != 'rgb(0, 0, 0)') ? 'color:' . $d->title_color . ';' : '';
                         $article[$key]['title'] = '<strong style="' . $bold . $font_color . '">' . $d->title . '</strong>';
                     }
-                    $article[$key]['image'] = $this->source_dir . 's/articles/' . $d->img;
+                    $article[$key]['image'] = $d->img?($this->source_dir . 's/articles/' . $d->img):'';
                     $article[$key]['link'] = $this->domain . '/detail/' . $d->id . '.html';
                     if ($d->use_url) {
                         $article[$key]['link'] = $d->url;
@@ -1856,7 +1856,7 @@ class PrintController extends BaseController {
                     $mIndexCat['name'] = $nav->name;
                     $mIndexCat['en_name'] = $nav->en_name;
                     $mIndexCat['icon'] = '<i class="iconfont">' . $nav->icon . '</i>';
-                    $mIndexCat['image'] = $this->source_dir . 'l/category/' . $nav->img;
+                    $mIndexCat['image'] = $nav->img?($this->source_dir . 'l/category/' . $nav->img):'';
                     if ($nav->url) {
                         $mIndexCat['link'] = $nav->url;
                     } else {
@@ -1878,7 +1878,7 @@ class PrintController extends BaseController {
                             $i = 0;
                             foreach ($articles as &$article) {
                                 $art_arr[$i]['title'] = $article->title;
-                                $art_arr[$i]['image'] = $this->source_dir . 's/articles/' . $article->img;
+                                $art_arr[$i]['image'] = $article->img?($this->source_dir . 's/articles/' . $article->img):'';
                                 $art_arr[$i]['link'] = $this->domain . "/detail/" . $article->id;
                                 if ($article->use_url) {
                                     $art_arr[$i]['link'] = $article->url;
@@ -1913,7 +1913,7 @@ class PrintController extends BaseController {
                     $mIndexCat['name'] = $nav->name;
                     $mIndexCat['en_name'] = $nav->en_name;
                     $mIndexCat['icon'] = '<i class="iconfont">' . $nav->icon . '</i>';
-                    $mIndexCat['image'] = $this->source_dir . "/l/category/" . $nav->img;
+                    $mIndexCat['image'] = $nav->img?($this->source_dir . "/l/category/" . $nav->img):'';
                     if ($nav->url) {
                         $mIndexCat['link'] = $nav->url;
                     } else {
@@ -1935,7 +1935,7 @@ class PrintController extends BaseController {
                             $i = 0;
                             foreach ($articles as &$article) {
                                 $art_arr[$i]['title'] = $article->title;
-                                $art_arr[$i]['image'] = $this->source_dir . "/s/articles/" . $article->img;
+                                $art_arr[$i]['image'] = $article->img?($this->source_dir . "/s/articles/" . $article->img):'';
                                 $art_arr[$i]['link'] = $this->domain . "/detail/" . $article->id . ".html";
                                 if ($article->use_url) {
                                     $art_arr[$i]['link'] = $article->url;
@@ -2005,7 +2005,7 @@ class PrintController extends BaseController {
                     $mIndexCat['name'] = $nav->name;
                     $mIndexCat['en_name'] = $nav->en_name;
                     $mIndexCat['icon'] = '<i class="iconfont">' . $nav->icon . '</i>';
-                    $mIndexCat['image'] = $this->source_dir . 'l/category/' . $nav->img;
+                    $mIndexCat['image'] = $nav->img?($this->source_dir . 'l/category/' . $nav->img):'';
                     if ($nav->url) {
                         $mIndexCat['link'] = $nav->url;
                     } else {
@@ -2027,7 +2027,7 @@ class PrintController extends BaseController {
                             $i = 0;
                             foreach ($articles as &$article) {
                                 $art_arr[$i]['title'] = $article->title;
-                                $art_arr[$i]['image'] = $this->source_dir . 's/articles/' . $article->img;
+                                $art_arr[$i]['image'] = $article->img?($this->source_dir . 's/articles/' . $article->img):'';
                                 $art_arr[$i]['link'] = $this->domain . "/detail/" . $article->id;
                                 if ($article->use_url) {
                                     $art_arr[$i]['link'] = $article->url;
@@ -2062,7 +2062,7 @@ class PrintController extends BaseController {
                     $mIndexCat['name'] = $nav->name;
                     $mIndexCat['en_name'] = $nav->en_name;
                     $mIndexCat['icon'] = '<i class="iconfont">' . $nav->icon . '</i>';
-                    $mIndexCat['image'] = $this->source_dir . "/l/category/" . $nav->img;
+                    $mIndexCat['image'] = $nav->img?($this->source_dir . "/l/category/" . $nav->img):'';
                     if ($nav->url) {
                         $mIndexCat['link'] = $nav->url;
                     } else {
@@ -2084,7 +2084,7 @@ class PrintController extends BaseController {
                             $i = 0;
                             foreach ($articles as &$article) {
                                 $art_arr[$i]['title'] = $article->title;
-                                $art_arr[$i]['image'] = $this->source_dir . "/s/articles/" . $article->img;
+                                $art_arr[$i]['image'] = $article->img?($this->source_dir . "/s/articles/" . $article->img):'';
                                 $art_arr[$i]['link'] = $this->domain . "/detail/" . $article->id . ".html";
                                 if ($article->use_url) {
                                     $art_arr[$i]['link'] = $article->url;
@@ -2159,7 +2159,7 @@ class PrintController extends BaseController {
         $result['list']['en_name'] = $classify->en_name;
         $result['list']['description'] = $classify->meta_description;
         $result['list']['icon'] = '<i class="iconfont">' . $classify->icon . '</i>';
-        $result['list']['image'] = $this->source_dir . 's/category/' . $classify->img;
+        $result['list']['image'] = $classify->img?($this->source_dir . 's/category/' . $classify->img):'';
         $result['list']['type'] = $classify->type;
         if ($this->showtype == 'preview') {
             $result['list']['link'] = $this->domain . '/category/' . $id;
@@ -2424,7 +2424,7 @@ class PrintController extends BaseController {
         $result['list']['en_name'] = $classify->en_name;
         $result['list']['description'] = $classify->meta_description;
         $result['list']['icon'] = '<i class="iconfont">' . $classify->icon . '</i>';
-        $result['list']['image'] = $this->source_dir . 's/category/' . $classify->img;
+        $result['list']['image'] = $classify->img?($this->source_dir . 's/category/' . $classify->img):'';
         $result['list']['type'] = $classify->type;
         if ($this->showtype == 'preview') {
             $result['list']['link'] = $this->domain . '/category/' . $id;
@@ -2732,7 +2732,7 @@ class PrintController extends BaseController {
             $i = 0;
             foreach ($a_moreimg as $a_img) {
                 $images[$i]['title'] = $a_img['title'];
-                $images[$i]['image'] = $this->source_dir . 'l/articles/' . $a_img['img'];
+                $images[$i]['image'] = $a_img['img']?($this->source_dir . 'l/articles/' . $a_img['img']):'';
                 $i++;
             }
         }
@@ -2844,7 +2844,7 @@ class PrintController extends BaseController {
             }
             $related[$k]['title'] = $articles[$k]['title'];
             $related[$k]['description'] = $articles[$k]['introduction'];
-            $related[$k]['image'] = $this->source_dir . 'l/articles/' . $articles[$k]['img'];
+            $related[$k]['image'] = $articles[$k]['img']?($this->source_dir . 'l/articles/' . $articles[$k]['img']):'';
             $related[$k]['pubdate'] = $articles[$k]['created_at'];
             $related[$k]['pubtimestamp'] = strtotime($articles[$k]['created_at']);
             $a_c_info = Classify::where('id', $articles[$k]['c_id'])->first();
@@ -2868,7 +2868,7 @@ class PrintController extends BaseController {
                 $result['article']['prev']['title'] = $article_prev->title;
                 $result['article']['prev']['link'] = $this->domain . '/detail/' . $article_prev->id;
             }
-            $result['article']['image'] = $this->source_dir . 'l/articles/' . $article->img;
+            $result['article']['image'] = $article->img?($this->source_dir . 'l/articles/' . $article->img):'';
             $result['article']['images'] = $images;
             $result['article']['content'] = $article->content;
         } else {
@@ -2886,7 +2886,7 @@ class PrintController extends BaseController {
                 $result['article']['prev']['title'] = $article_prev->title;
                 $result['article']['prev']['link'] = $this->domain . '/detail/' . $article_prev->id . '.html';
             }
-            $result['article']['image'] = $this->source_dir . 'l/articles/' . $article->img;
+            $result['article']['image'] = $article->img?($this->source_dir . 'l/articles/' . $article->img):'';
             $result['article']['images'] = $images;
             $result['article']['content'] = preg_replace('/\/customers\/' . $this->customer . '/i', '', $article->content);
         }
@@ -2979,7 +2979,7 @@ class PrintController extends BaseController {
                 $i = 0;
                 foreach ((array) $a_moreimg as $a_img) {
                     $images[$i]['title'] = $a_img['title'];
-                    $images[$i]['image'] = $this->source_dir . 'l/articles/' . $a_img['img'];
+                    $images[$i]['image'] = $a_img['img']?($this->source_dir . 'l/articles/' . $a_img['img']):'';
                     $i++;
                 }
             }
@@ -3006,7 +3006,7 @@ class PrintController extends BaseController {
                 $the_result['article']['prev']['title'] = $articles[$key - 1]['title'];
                 $the_result['article']['prev']['link'] = $this->domain . '/detail/' . ($articles[$key - 1]['id']) . '.html';
             }
-            $the_result['article']['image'] = $this->source_dir . 'l/articles/' . $article['img'];
+            $the_result['article']['image'] = $article['img']?($this->source_dir . 'l/articles/' . $article['img']):'';
             $the_result['article']['images'] = $images;
             $the_result['article']['content'] = preg_replace('/\/customers\/' . $this->customer . '/i', '', $article['content']);
             $the_result['article']['description'] = $article['introduction'];
@@ -3063,7 +3063,7 @@ class PrintController extends BaseController {
                 $related[$k]['category']['link'] = $this->domain . '/category/' . $articles[$k]['id'] . '.html';
                 $related[$k]['title'] = $articles[$k]['title'];
                 $related[$k]['description'] = $articles[$k]['introduction'];
-                $related[$k]['image'] = $this->source_dir . 'l/articles/' . $articles[$k]['img'];
+                $related[$k]['image'] = $articles[$k]['img']?($this->source_dir . 'l/articles/' . $articles[$k]['img']):'';
                 $related[$k]['pubdate'] = $articles[$k]['created_at'];
                 $related[$k]['pubtimestamp'] = strtotime($articles[$k]['created_at']);
                 $a_c_info = Classify::where('id', $articles[$k]['c_id'])->first();
@@ -3121,7 +3121,7 @@ class PrintController extends BaseController {
     private function toFooter($arr) {
         $footer = array();
         foreach ((array) $arr as $k => $v) {
-            $v['image'] = $this->source_dir . 'l/category/' . $v['img'];
+            $v['image'] = $v['img']?($this->source_dir . 'l/category/' . $v['img']):'';
             $v['icon'] = '<i class="iconfont">' . $v['icon'] . '</i>';
             if ($v['type'] != 6) {
                 $v['link'] = $this->showtype == 'preview' ? $this->domain . '/category/' . $v['id'] : $this->domain . '/category/' . $v['id'] . '.html';
@@ -3161,7 +3161,7 @@ class PrintController extends BaseController {
         $tree = array();
         foreach ((array) $arr as $k => $v) {
             if ($v['p_id'] == $pid) {
-                $v['image'] = $this->source_dir . 'l/category/' . $v['img'];
+                $v['image'] = $v['img']?($this->source_dir . 'l/category/' . $v['img']):'';
                 $v['icon'] = '<i class="iconfont">' . $v['icon'] . '</i>';
                 unset($v['img']);
                 $tree[] = $v;
@@ -3188,7 +3188,7 @@ class PrintController extends BaseController {
                             $classify = Classify::where('id', $d->c_id)->first();
 
                             $data[$key]['category']['link'] = $this->showtype == 'preview' ? $this->domain . '/category/' . $d->c_id : $this->domain . '/category/' . $d->c_id . '.html';
-                            $data[$key]['image'] = $this->source_dir . 's/articles/' . $d->img;
+                            $data[$key]['image'] = $d->img?($this->source_dir . 's/articles/' . $d->img):'';
                             $data[$key]['link'] = $this->showtype == 'preview' ? $this->domain . '/detail/' . $d->id : $this->domain . '/detail/' . $d->id . '.html';
                             $data[$key]['category']['name'] = $classify->name;
                             $data[$key]['category']['en_name'] = $classify->en_name;
@@ -3387,7 +3387,7 @@ class PrintController extends BaseController {
         foreach ((array) $article_data as $article_img) {
             $article[$article_img['id']]['id'] = $article_img['id'];
             $article[$article_img['id']]['title'] = $article_img['title'];
-            $article[$article_img['id']]['img'] = $this->source_dir . 'l/articles/' . $article_img['img'];
+            $article[$article_img['id']]['img'] = $article_img['img']?($this->source_dir . 'l/articles/' . $article_img['img']):'';
             $article[$article_img['id']]['introduction'] = $article_img['introduction'];
             $article[$article_img['id']]['created_at'] = strtotime($article_img['created_at']);
             $article[$article_img['id']]['link'] = $this->domain . '/detail/' . $article_img['id'] . '.html';
@@ -3509,7 +3509,7 @@ class PrintController extends BaseController {
         foreach ((array) $article_data as $article_img) {
             $article[$article_img['id']]['id'] = $article_img['id'];
             $article[$article_img['id']]['title'] = $article_img['title'];
-            $article[$article_img['id']]['img'] = $this->source_dir . 'l/articles/' . $article_img['img'];
+            $article[$article_img['id']]['img'] = $article_img['img']?($this->source_dir . 'l/articles/' . $article_img['img']):'';
             $article[$article_img['id']]['introduction'] = $article_img['introduction'];
             $article[$article_img['id']]['created_at'] = strtotime($article_img['created_at']);
             $article[$article_img['id']]['link'] = $this->domain . '/detail/' . $article_img['id'] . '.html';
