@@ -1527,6 +1527,7 @@ class PrintController extends BaseController {
                     'per_page' => 1,
                     'first_link' => 'javascript:;',
                     'current_page' => 1,
+                    'total' => $total,
                     'prev_link' => 'javascript:;',
                     'next_link' => 'javascript:;',
                     'last_link' => 'javascript:;',
@@ -2259,6 +2260,7 @@ class PrintController extends BaseController {
                 $result['list']['content'] = $formC->showFormHtmlForPrint($formCdata);
             } else {
                 $result['list']['data'] = $index_list['data'];
+                $result['list']['total'] = count($index_list['data']);
             }
             $result['page_links'] = $index_list['page_links'];
             $json_keys = $this->getJsonKey($viewname . '.html');
@@ -2622,6 +2624,7 @@ class PrintController extends BaseController {
             //===显示类型不是'list-page'===
             if ($classify->type != 5 && $classify->type != 4 && $classify->type != 9) {
                 $the_result['list']['data'] = $index_list['data'];
+                $the_result['list']['total'] = count($index_list['data']);
             }
             $path = $this->type == 'pc' ? public_path('customers/' . $this->customer . '/category/' . $id . '.html') : public_path('customers/' . $this->customer . '/mobile/category/' . $id . '.html');
             $content = $publicdata['repleace'][$viewname . '.html'];
@@ -2649,6 +2652,7 @@ class PrintController extends BaseController {
                     $index_list = $this->pageList($id, $i);
                     $the_result['page_links'] = $index_list['page_links'];
                     $the_result['list']['data'] = $index_list['data'];
+                    $the_result['list']['total'] = count($index_list['data']);
                     $path = $this->type == 'pc' ? public_path('customers/' . $this->customer . '/category/' . $id . '_' . $i . '.html') : public_path('customers/' . $this->customer . '/mobile/category/' . $id . '_' . $i . '.html');
                     $output = $this->pushdisplay($the_result, $content);
                     if (!count($result['footer_navs'])) {
