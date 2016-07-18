@@ -1276,7 +1276,7 @@ class PrintController extends BaseController {
                 $childrenMenu = array();
                 if ($cids) {
                     foreach ($cids as $cid) {
-                        $c_c_info = Classify::where('id', $cid)->where('cus_id', $this->cus_id)->where($this->type . '_show', 1)->select('id', 'name', 'en_name', 'img as image', 'icon', 'meta_description as description', 'p_id')->first();
+                        $c_c_info = Classify::where('id', $cid)->where('cus_id', $this->cus_id)->where($this->type . '_show', 1)->select('id', 'name', 'en_name','type','url','open_page' ,'img as image', 'icon', 'meta_description as description', 'p_id')->first();
                         if ($c_c_info) {
                             $c_c_info = $c_c_info->toArray();
                             if ($this->showtype == 'preview') {
@@ -1365,7 +1365,7 @@ class PrintController extends BaseController {
                 $childrenMenu = array();
                 if ($cids) {
                     foreach ($cids as $cid) {
-                        $c_c_info = Classify::where('id', $cid)->where('cus_id', $this->cus_id)->where($this->type . '_show', 1)->select('id', 'name', 'en_name', 'img as image', 'icon', 'meta_description as description', 'p_id')->first();
+                        $c_c_info = Classify::where('id', $cid)->where('cus_id', $this->cus_id)->where($this->type . '_show', 1)->select('id', 'name','type', 'url','open_page' ,'en_name', 'img as image', 'icon', 'meta_description as description', 'p_id')->first();
                         if ($c_c_info) {
                             $c_c_info = $c_c_info->toArray();
                             if ($this->showtype == 'preview') {
@@ -3531,7 +3531,11 @@ class PrintController extends BaseController {
         $smarty->registerPlugin('function', 'shareExt', array('PrintController', 'createShare'));
         $smarty->assign($result);
         ob_start();
-        $smarty->display('string:' . $content);
+        if($content==''){
+            $smarty->display('searchresult_do.html');
+        }else{
+            $smarty->display('string:' . $content);
+        }
         $output = ob_get_contents();
         ob_end_clean();
         if (!count($result['footer_navs'])) {
@@ -3605,10 +3609,18 @@ class PrintController extends BaseController {
         $classify = Classify::where('id', $c_id)->first();
         $arr['name'] = $classify->name;
         $arr['en_name'] = $classify->en_name;
-        if ($this->showtype == 'preview') {
-            $arr['link'] = $this->domain . '/category/' . $c_id;
-        } else {
-            $arr['link'] = $this->domain . '/category/' . $c_id . '.html';
+        if($classify->type==6){
+            if($classify->open_page==2){
+                $arr['link']=$classify->url.'" target="_blank';
+            }else{
+                $arr['link']=$classify->url;
+            }
+        }else{
+            if ($this->showtype == 'preview') {
+                $arr['link'] = $this->domain . '/category/' . $c_id;
+            } else {
+                $arr['link'] = $this->domain . '/category/' . $c_id . '.html';
+            }
         }
         $arr['icon'] = '<i class="iconfont">' . $classify->icon . '</i>';
         array_unshift($posnavs, $arr);
