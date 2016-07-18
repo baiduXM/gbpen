@@ -10,7 +10,7 @@ class ImgDel extends Eloquent {
             //===释放用户空间容量===
             $customer = Auth::user()->name;
             $size = filesize(public_path('customers/' . $customer . '/images/l/' . $target . '/' . $img));
-            $cus = new CustomerController;
+            $cus = new CapacityController;
             if (!$cus->change_capa($size, 'free')) {
                 true;
             }

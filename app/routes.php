@@ -67,11 +67,11 @@ Route::group(array('before' => 'auth'), function() {
         'as' => 'customer-setting',
         'uses' => 'CustomerController@customerSetting'
     ]);
+    //===容量====
     Route::get('customer-capacity', [//保存用户信息
-        'uses' => 'CustomerController@getCapacity'
+        'uses' => 'CapacityController@getCapacity'
     ]);
-
-    
+    //===end===
 
     //-----------------------------------------------
     //--------------------栏目路由--------------------
@@ -441,9 +441,9 @@ Route::group(array('before' => 'auth'), function() {
     ]);
     //===end===
     //===ueditor正则规则===
-//    Route::any('init-bind', [//
-//        'uses' => 'CustomerController@isSwitchcus'
-//    ]);
+    Route::any('ueditor-reg', [//
+        'uses' => 'CustomerController@isSwitchcus'
+    ]);
     //===end===
     //-----------留言板--------
     Route::get('feedback-data', [//获取表单数据

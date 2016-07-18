@@ -346,53 +346,6 @@ $(window).resize(function () {
 });
 
 
-function init_capacity(){
-    $('#capacity_div').html('剩余容量/总容量：<span id="capacity_free">0</span>/<span id="capacity">0</span>');
-    get_capacity();
-}
-
-//===获取容量信息===
-function get_capacity() {
-    $.get('../customer-capacity', function (json) {
-        var data = json.data;
-        $('#capacity_free').html(data.capacity_free);
-        $('#capacity').html(data.capacity);
-    });
-}
-
-//===查看是否有双账号用户===
-function init_bind() {
-    $.get('../init-bind', function (json) {
-        if (json != 0) {
-            var img='<img src="images/switch_account.png" style="width:16px;" title="双站切换" />';
-            $('#switch_bind').html(img);
-            $('#switch_bind').attr('data-cusid', json);
-        }
-    });
-}
-
-//===获取绑定账号===
-function get_bind_account() {
-    var cusid = $('#switch_bind').attr('data-cusid');
-    $.post('../bind-auto-login',{switch_cus_id:cusid}, function (json) {
-        if (json.err) {
-            alert(json.msg);
-        } else {
-            location.href = json.msg;
-        }
-    });
-}
-
-//===ueditor编辑器 正则匹配img file 
-function ueditor_regular(html){
-    //
-//    var i=1;
-//    j\k\l\m\n
-//ueditor/php/(\w|/)*.(\w)+
-    return html;
-}
-
-
 // 推送静态文件
 var cache_num;
 function pushtimer() {
