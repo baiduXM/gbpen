@@ -3531,7 +3531,11 @@ class PrintController extends BaseController {
         $smarty->registerPlugin('function', 'shareExt', array('PrintController', 'createShare'));
         $smarty->assign($result);
         ob_start();
-        $smarty->display('string:' . $content);
+        if($content==''){
+            $smarty->display('searchresult_do.html');
+        }else{
+            $smarty->display('string:' . $content);
+        }
         $output = ob_get_contents();
         ob_end_clean();
         if (!count($result['footer_navs'])) {
