@@ -70,11 +70,10 @@ if ($up_result['state'] == 'SUCCESS') {
         /* 编辑器上传图片问题 */
         ftp_pasv($conn, 1);
         //===扣除空间===
-        //        customers/$cus_name/images/ueditor/
+//                customers/$cus_name/images/ueditor/
 //        $size = filesize(public_path('customers/' . $cus_name . '/images/ueditor/' . $up_result['title']));
-//        $.get('')
 //        $reg=ueditor_regular(1024);
-//        $cus = new CustomerController;
+//        $cus = new CapacityController;
 //        if (!$cus->change_capa($reg, 'use')) {
 //            return Response::json(['err' => 1001, 'msg' => '容量不足', 'data' => []]);
 //        }

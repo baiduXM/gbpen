@@ -737,7 +737,7 @@ function insertText(obj, str) {
 }
 
 /**
- * 获取url参数
+ * ===获取url参数===
  * @returns {string}
  */
 function getUrlParam(name) {
@@ -749,3 +749,72 @@ function getUrlParam(name) {
         return null; //返回参数值
     }
 }
+
+/**
+ * ===初始化容量===
+ * @returns {undefined}
+ */
+function init_capacity(){
+    $('#capacity_div').html('剩余容量/总容量：<span id="capacity_free">0</span>/<span id="capacity">0</span>');
+    get_capacity();
+}
+
+/**
+ * ===获取容量信息===
+ * @returns {undefined}
+ */        
+function get_capacity() {
+    $.get('../customer-capacity', function (json) {
+        var data = json.data;
+        $('#capacity_free').html(data.capacity_free);
+        $('#capacity').html(data.capacity);
+    });
+}
+
+/**
+ * ===查看是否有双账号用户===
+ * @returns {undefined}
+ */
+function init_bind() {
+    $.get('../init-bind', function (json) {
+        if (json != 0) {
+            var img='<img src="images/switch_account.png" style="width:16px;" title="双站切换" />';
+            $('#switch_bind').html(img);
+            $('#switch_bind').attr('data-cusid', json);
+        }
+    });
+}
+
+/**
+ * ===获取绑定账号===
+ * @returns {undefined}
+ */
+function get_bind_account() {
+    var cusid = $('#switch_bind').attr('data-cusid');
+    $.post('../bind-auto-login',{switch_cus_id:cusid}, function (json) {
+        if (json.err) {
+            alert(json.msg);
+        } else {
+            location.href = json.msg;
+        }
+    });
+}
+
+/**
+ * ===ueditor编辑器，获取文件存储名===
+ * @param {type} html
+ * @returns {undefined}
+ */
+function ueditor_regular(html){
+    //
+//    var i=1;
+//    j\k\l\m\n
+//ueditor/php/(\w|/)*.(\w)+
+//    $.get('../');
+    var editor = UE.getEditor('container');
+    var _html=editor.getContent()
+    console.log(_html);
+//    return html;
+}
+
+
