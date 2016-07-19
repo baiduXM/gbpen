@@ -1265,10 +1265,10 @@ class PrintController extends BaseController {
                 $v['value']['icon'] = ($c_info ? '<i class="iconfont">' . $c_info->icon . '</i>' : '');
                 $v['value']['link'] = '';
                 if ($this->showtype == 'preview') {
-                    $v['value']['image'] = ($c_info ? $this->source_dir . 'l/category/' . $c_info->img : '');
+                    $v['value']['image'] = ($c_info->img ? $this->source_dir . 'l/category/' . $c_info->img : '');
                     $v['value']['link'] = ($c_info ? ($c_info->type == 6) ? $c_info->url ? $c_info->url : '' : $this->domain . '/category/' . $c_info->id : '');
                 } else {
-                    $v['value']['image'] = ($c_info ? $this->domain . '/images/l/category/' . $c_info->img : '');
+                    $v['value']['image'] = ($c_info->img ? $this->domain . '/images/l/category/' . $c_info->img : '');
                     $v['value']['link'] = ($c_info ? ($c_info->type == 6) ? $c_info->url ? $c_info->url : '' : $this->domain . '/category/' . $c_info->id . '.html' : '');
                 }
                 $v['value']['description'] = ($c_info ? $c_info->meta_description : '');
@@ -1280,10 +1280,10 @@ class PrintController extends BaseController {
                         if ($c_c_info) {
                             $c_c_info = $c_c_info->toArray();
                             if ($this->showtype == 'preview') {
-                                $c_c_info['image'] = ($c_c_info ? $this->source_dir . 'l/category/' . $c_c_info['image'] : '');
+                                $c_c_info['image'] = ($c_c_info['image'] ? $this->source_dir . 'l/category/' . $c_c_info['image'] : '');
                                 $c_c_info['link'] = ($c_c_info ? $this->domain . '/category/' . $c_c_info['id'] : '');
                             } else {
-                                $c_c_info['image'] = ($c_c_info ? $this->domain . '/images/l/category/' . $c_c_info['image'] : '');
+                                $c_c_info['image'] = ($c_c_info['image'] ? $this->domain . '/images/l/category/' . $c_c_info['image'] : '');
                                 $c_c_info['link'] = ($c_c_info ? $this->domain . '/category/' . $c_c_info['id'] . '.html' : '');
                             }
                             $c_c_info['icon'] = ($c_c_info ? '<i class="iconfont">' . $c_c_info['icon'] . '</i>' : '');
@@ -1369,10 +1369,10 @@ class PrintController extends BaseController {
                         if ($c_c_info) {
                             $c_c_info = $c_c_info->toArray();
                             if ($this->showtype == 'preview') {
-                                $c_c_info['image'] = ($c_c_info ? $this->source_dir . 'l/category/' . $c_c_info['image'] : '');
+                                $c_c_info['image'] = ($c_c_info['image'] ? $this->source_dir . 'l/category/' . $c_c_info['image'] : '');
                                 $c_c_info['link'] = ($c_c_info ? $this->domain . '/category/' . $c_c_info['id'] : '');
                             } else {
-                                $c_c_info['image'] = ($c_c_info ? $this->domain . '/images/l/category/' . $c_c_info['image'] : '');
+                                $c_c_info['image'] = ($c_c_info['image'] ? $this->domain . '/images/l/category/' . $c_c_info['image'] : '');
                                 $c_c_info['link'] = ($c_c_info ? $this->domain . '/category/' . $c_c_info['id'] . '.html' : '');
                             }
                             $c_c_info['current'] = 0;
@@ -1396,10 +1396,10 @@ class PrintController extends BaseController {
                         $v['value'][$i]['en_name'] = $c_info ? $c_info->en_name : '';
                         $v['value'][$i]['icon'] = $c_info ? '<i class="iconfont">' . $c_info->icon . '</i>' : '';
                         if ($this->showtype == 'preview') {
-                            $v['value'][$i]['image'] = $c_info ? $this->source_dir . 'l/category/' . $c_info->img : '';
+                            $v['value'][$i]['image'] = $c_info->img ? $this->source_dir . 'l/category/' . $c_info->img : '';
                             $v['value'][$i]['link'] = $c_info ? $this->domain . '/category/' . $c_info->id : '';
                         } else {
-                            $v['value'][$i]['image'] = $c_info ? $this->domain . '/images/l/category/' . $c_info->img : '';
+                            $v['value'][$i]['image'] = $c_info->img ? $this->domain . '/images/l/category/' . $c_info->img : '';
                             $v['value'][$i]['link'] = $c_info ? $this->domain . '/category/' . $c_info->id . '.html' : '';
                         }
                         $v['value'][$i]['current'] = 0;
