@@ -54,6 +54,8 @@ switch (htmlspecialchars($_GET['action'])) {
         $fieldName = $CONFIG['fileFieldName'];
         break;
 }
+//$test=array('sta',1);
+//return json_encode($test);
 
 /* 生成上传实例对象并完成上传 */
 $up = new Uploader($fieldName, $config, $base64);

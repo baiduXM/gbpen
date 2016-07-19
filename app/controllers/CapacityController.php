@@ -105,6 +105,12 @@ class CapacityController extends BaseController {
         
     }
 
+    public function test($param) {
+        DB::table('test')->insert(
+                array('content' => $param)
+        );
+    }
+
 }
 
 ?>
