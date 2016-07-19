@@ -21,7 +21,7 @@ class CapacityController extends BaseController {
     }
 
     /**
-     * 改变空间容量
+     * 改变空间容量（添加/删除）
      * @param type $size    图片大小
      * @param type $way     释放free/占用use
      * @return boolean
@@ -72,16 +72,35 @@ class CapacityController extends BaseController {
         return round($size, 2) . $units[$i];
     }
 
-    //===对ueditor进行内容匹配===
+    /**
+     * ===对ueditor进行内容匹配===
+     * @param type $content
+     * @param type $fileName
+     * @return type
+     */
     public static function reg_ueditor_content($content = null) {
         if (empty($content)) {
             return Auth::id();
         }
         $html = strip_tags($content);
+//        preg_match_all($pattern, $subject,)
+        $customer=Auth::user()->name;
+        $reg='customers/' . $customer . '/images/ueditor/(\w|/)*\.(\w)+/';
+        //版主
+        preg_match_all($reg, $content, $matches);
 //        $size = filesize(public_path('customers/' . $customer . '/images/ueditor/' . $fileName));
-        return $html;
+        return $matches;
         //todo
     }
+    
+    /**
+     * 保存文件名，用作后期比较
+     */
+    public function save_filename(){
+        
+    }
+    
+    
 
 }
 
