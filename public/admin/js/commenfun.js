@@ -481,12 +481,12 @@ WarningBox.prototype = {
                 dataType: 'json',
                 cache: false,
                 success: function (json) {
-                    if (json.err) {//有错误!=0
-                        alert(json.msg);
-                    } else {
-                        get_capacity();
+//                    if (json.err) {//有错误!=0
+//                        alert(json.msg);
+//                    } else {
+//                        get_capacity();
                         oncallback(json);
-                    }
+//                    }
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
                     alert(textStatus || errorThrown);
@@ -756,7 +756,7 @@ function getUrlParam(name) {
  */
 function init_capacity(){
     $('#capacity_div').html('剩余容量/总容量：<span id="capacity_free">0</span>/<span id="capacity">0</span>');
-    get_capacity();
+//    get_capacity();
 }
 
 /**
