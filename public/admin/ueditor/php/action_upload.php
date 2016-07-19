@@ -70,7 +70,7 @@ if ($up_result['state'] == 'SUCCESS') {
         /* 编辑器上传图片问题 */
         ftp_pasv($conn, 1);
         //===扣除空间===
-        //        customers/$cus_name/images/ueditor/
+//                customers/$cus_name/images/ueditor/
 //        $size = filesize(public_path('customers/' . $cus_name . '/images/ueditor/' . $up_result['title']));
 //        $reg=ueditor_regular(1024);
 //        $cus = new CapacityController;
