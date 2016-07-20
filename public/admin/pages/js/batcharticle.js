@@ -146,7 +146,7 @@ function batcharticleController($scope, $http, $location) {
         _AddarticleSave: function () {
             var _this = this;
             $('.addsave').click(function () {
-//                alert('保存uedit2');
+                alert('保存uedit2');
                 var editor = UE.getEditor('container'),
                         art_info = editor.getContent(),
                         id = _this.G_id || '',

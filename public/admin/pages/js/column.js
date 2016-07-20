@@ -512,7 +512,7 @@ function columnController($scope, $http) {
                         img_upload.push($(this).data('name'));
                     });
                     var savePostRequest = function (first) {
-//                        alert('保存uedit3');
+                        alert('保存uedit3');
                         $http.post('../classify-modify', {id: id,
                             p_id: vpid,
                             name: vname,

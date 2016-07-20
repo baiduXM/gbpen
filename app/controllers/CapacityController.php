@@ -6,11 +6,6 @@
  * @time 2016.07.18
  */
 class CapacityController extends BaseController {
-    /*
-     * getCapacity              获取当前容量
-     * change_capa              改变空间容量（添加/删除）
-     * 
-     */
 
     /**
      * 获取容量数据
@@ -89,21 +84,23 @@ class CapacityController extends BaseController {
         }
         $html = strip_tags($content);
 //        preg_match_all($pattern, $subject,)
-        $customer = Auth::user()->name;
-        $reg = 'customers/' . $customer . '/images/ueditor/(\w|/)*\.(\w)+/';
+        $customer=Auth::user()->name;
+        $reg='customers/' . $customer . '/images/ueditor/(\w|/)*\.(\w)+/';
         //版主
         preg_match_all($reg, $content, $matches);
 //        $size = filesize(public_path('customers/' . $customer . '/images/ueditor/' . $fileName));
         return $matches;
         //todo
     }
-
+    
     /**
      * 保存文件名，用作后期比较
      */
-    public function save_filename() {
+    public function save_filename(){
         
     }
+    
+    
 
 }
 

@@ -240,7 +240,7 @@ function addarticleController($scope, $http, $location) {
     }
     function AddarticleSave(){
         $('.addsave').click(function(){
-//            alert('保存uedit1');
+            alert('保存uedit1');
             var editor = UE.getEditor('container');
             var art_info = editor.getContent();
             var id = G_id?G_id:'';
