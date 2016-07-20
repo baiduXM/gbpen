@@ -7,10 +7,42 @@
  */
 class CapacityController extends BaseController {
     /*
-     * getCapacity              获取当前容量
-     * change_capa              改变空间容量（添加/删除）
-     * 
+     * 1、初始化当前已使用空间容量
+     * 2、对用户操作进行容量增减
+     *      普通上传文件、ueditor上传文件
+     * 3、更新容量
      */
+
+    private $size; //容量大小
+
+    /*   (●'◡'●)   */
+
+    /**
+     * 初始化
+     * @param type $capacity
+     */
+    public function init($capacity) {
+        $customer = Auth::user()->name;
+        $path = public_path('customers/' . $customer);
+        $this->tree($path);
+    }
+
+    /**
+     * 遍历目录下的文件
+     * @param type $directory 要遍历的根目录
+     * @return null 计算文件大小，对$this->size进行赋值
+     */
+    function tree($directory) {
+        $mydir = dir($directory);
+        while ($file = $mydir->read()) {
+            if ((is_dir("$directory/$file")) && ( $file != ".") && ( $file != "..")) {
+                $this->tree("$directory/$file");
+            } else if (( $file != ".") && ( $file != "..")) {
+                $this->size += filesize($directory . '/' . $file);
+            }
+        }
+        $mydir->close();
+    }
 
     /**
      * 获取容量数据
@@ -19,10 +51,38 @@ class CapacityController extends BaseController {
     public function getCapacity() {
         $cus_id = Auth::id();
         $customer_info = CustomerInfo::where('cus_id', $cus_id)->first();
-        $data['capacity'] = $this->format_bytes($customer_info->capacity);
-        $data['capacity_free'] = $this->format_bytes($customer_info->capacity - $customer_info->capacity_use);
-        $result = ['err' => 0, 'msg' => '容量数据', 'data' => $data];
+        $capacity = $customer_info->capacity;
+        $capacity_use = $customer_info->capacity_use;
+        if ($customer_info->capacity_use == 0) {//===如果容量使用为0，则初始化===
+            $this->init($capacity);
+            $capacity_use = $this->size;
+            $this->setCapacity($capacity_use);
+        }
+        $err = 0;
+        $msg = '容量数据';
+        if ($capacity_use > $capacity) {
+            $err = 1;
+            $msg = '空间容量不足';
+        }
+        $data['capacity'] = $this->format_bytes($capacity);
+        $data['capacity_use'] = $this->format_bytes($capacity_use);
+        $result = ['err' => $err, 'msg' => $msg, 'data' => $data];
         return Response::json($result);
+    }
+
+    /**
+     * 设置容量
+     */
+    public function setCapacity($capacity_use = 0, $capacity = 0) {
+        $cus_id = Auth::id();
+        $data = array();
+        if (!empty($capacity_use)) {
+            $data['capacity_use'] = $capacity_use;
+        }
+        if (!empty($capacity)) {
+            $data['capacity'] = $capacity;
+        }
+        CustomerInfo::where('cus_id', $cus_id)->update($data);
     }
 
     /**

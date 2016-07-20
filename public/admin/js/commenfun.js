@@ -755,8 +755,8 @@ function getUrlParam(name) {
  * @returns {undefined}
  */
 function init_capacity(){
-    $('#capacity_div').html('剩余容量/总容量：<span id="capacity_free">0</span>/<span id="capacity">0</span>');
-//    get_capacity();
+    $('#capacity_div').html('已用容量/总容量：<span id="capacity_use">-</span>/<span id="capacity">-</span>');
+    get_capacity();
 }
 
 /**
@@ -766,7 +766,7 @@ function init_capacity(){
 function get_capacity() {
     $.get('../customer-capacity', function (json) {
         var data = json.data;
-        $('#capacity_free').html(data.capacity_free);
+        $('#capacity_use').html(data.capacity_use);
         $('#capacity').html(data.capacity);
     });
 }

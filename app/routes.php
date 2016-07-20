@@ -71,6 +71,11 @@ Route::group(array('before' => 'auth'), function() {
     Route::get('customer-capacity', [//保存用户信息
         'uses' => 'CapacityController@getCapacity'
     ]);
+    
+    Route::any('capacity-init', [//初始化容量
+        'uses' => 'CapacityController@init'
+    ]);
+    
     //===end===
 
     //-----------------------------------------------
