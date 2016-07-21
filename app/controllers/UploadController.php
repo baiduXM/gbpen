@@ -155,6 +155,10 @@ class UploadController extends BaseController {
         }
     }
 
+    /**
+     * ===点击保存按钮后动作===
+     * @return type
+     */
     public function img_upload() {
         $customer = Auth::user()->name;
         $cus_id = Auth::id();
@@ -230,6 +234,7 @@ class UploadController extends BaseController {
 
     /**
      * 文件上传
+     * ===点击选择图片后上传===
      */
     public function fileupload() {
         $customer = Auth::user()->name;

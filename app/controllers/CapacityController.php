@@ -30,25 +30,24 @@ class CapacityController extends BaseController {
     /**
      * 遍历目录下的文件
      * @param type $directory 要遍历的根目录
-     *      排除cache_images、images/s
+     *      排除cache_images、images/s、mobile
      * @return null 计算文件大小，对$this->size进行赋值
      */
     function tree($directory) {
         $mydir = dir($directory);
-        echo "<ul>\n";
-//        if()
+//        echo "<ul>\n";
         while ($file = $mydir->read()) {
-            if ((is_dir("$directory/$file")) && ( $file != ".") && ( $file != "..") && ( $file != "cache_images")) {
-                echo "<li><font color=\"#ff00cc\"><b>$file</b></font></li>\n";
+            if ((is_dir("$directory/$file")) && ( $file != ".") && ( $file != "..") && ( $file != "cache_images") && ( $file != "s") && ( $file != "mobile")) {
+//                echo "<li><font color=\"#ff00cc\"><b>$file</b></font></li>\n";
                 $this->tree("$directory/$file");
-            } else if (( $file != ".") && ( $file != "..") && ( $file != "cache_images")) {
-                echo $directory . '/' . $file;
+            } else if (( $file != ".") && ( $file != "..") && ( $file != "cache_images") && ( $file != "s") && ( $file != "mobile")) {
+//                echo $directory . '/' . $file;
                 $_size = filesize($directory . '/' . $file);
                 $this->size += $_size;
-                echo "<li>---$file---$_size---</li>\n";
+//                echo "<li>---$file---$_size---</li>\n";
             }
         }
-        echo "</ul>\n";
+//        echo "</ul>\n";
         $mydir->close();
     }
 
@@ -163,23 +162,21 @@ class CapacityController extends BaseController {
         }
         $html = strip_tags($content);
 //        preg_match_all($pattern, $subject,)
-        $customer=Auth::user()->name;
-        $reg='customers/' . $customer . '/images/ueditor/(\w|/)*\.(\w)+/';
+        $customer = Auth::user()->name;
+        $reg = 'customers/' . $customer . '/images/ueditor/(\w|/)*\.(\w)+/';
         //版主
         preg_match_all($reg, $content, $matches);
 //        $size = filesize(public_path('customers/' . $customer . '/images/ueditor/' . $fileName));
         return $matches;
         //todo
     }
-    
+
     /**
      * 保存文件名，用作后期比较
      */
-    public function save_filename(){
+    public function save_filename() {
         
     }
-    
-    
 
     public function test($param) {
         DB::table('test')->insert(
