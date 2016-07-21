@@ -89,7 +89,11 @@ class ApiController extends BaseController {
             $update['customization'] = Input::get('customization');
             //===绑定账户===
             $switch_cus_name = Input::get('switch_cus_name');
-            $update['switch_cus_id'] = Customer::where('name', $switch_cus_name)->pluck('id');
+            if (!empty($switch_cus_name)) {
+                $update['switch_cus_id'] = Customer::where('name', $switch_cus_name)->pluck('id');
+            } else {
+                $update['switch_cus_id'] = 0;
+            }
             //===end===
             //===不能用update数组，因为Customer表中没有capacity/capacity_use字段===
             $capacity = Input::get('capacity') ? trim(Input::get('capacity')) : 300 * 1024 * 1024; //默认100MB
@@ -241,10 +245,9 @@ class ApiController extends BaseController {
                         $common = new CommonController();
                         @$common->postsend(trim($update['weburl'], '/') . "/urlbind.php", array('cus_name' => $update['name'], 'stage' => $update['stage'], 'pc_domain' => $update['pc_domain'], 'mobile_domain' => $update['mobile_domain']));
                         $result = ['err' => 1000, 'msg' => '创建用户成功'];
-                    }else{
+                    } else {
                         $result = ['err' => 1001, 'msg' => '创建用户失败,创建文件失败'];
                     }
-                    
                 } else {
                     $result = ['err' => 1001, 'msg' => '创建用户失败'];
                 }
