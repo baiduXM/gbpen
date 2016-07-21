@@ -399,7 +399,7 @@ class WebsiteController extends BaseController{
             unset($filename);
         }
         $tpl_9['title'] = '模块文件';
-        $tpl_9['files'] = $tpl_file_1;
+        $tpl_9['files'] = array_merge($tpl_file_1,$json);
         //js
         $js['title'] = '脚本文件';
         $js['files'] = $this->getFile($dst_js);
