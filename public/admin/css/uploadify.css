@@ -18,10 +18,10 @@ Released under the MIT License <http://www.opensource.org/licenses/mit-license.p
 	-moz-transition:all .2s;
 	margin-bottom: 1em;
 	position: absolute;
-	top: 15%;
-	left: 50px;
-	width: 750px;
-        height:350px;
+	top: 20%;
+	left: 19px;
+	width: 93%;
+        height:60%;
         overflow-y: scroll
 }
 .batch_title{top: 10px;width:99%;margin-top:10px;}
@@ -33,7 +33,7 @@ Released under the MIT License <http://www.opensource.org/licenses/mit-license.p
 	border-radius: 3px;
 	font: 11px Verdana, Geneva, sans-serif;
 	margin-top: 5px;
-	width: 700px;
+	width: 96%;
 	padding: 10px;
 }
 .uploadify-error {
