@@ -255,7 +255,7 @@ WarningBox.prototype = {
                     //===检测空间容量是否充足===
                     //file.size是要目标图片的大小，和裁剪后的保存图片大小不同
                     //TODO
-                    if (/^image\/\w+$/.test(file.type)||/^image\/x\-\w+$/.test(file.type)) {
+                    if (/^image\/\w+$/.test(file.type) || /^image\/x\-\w+$/.test(file.type)) {
                         blobURL = URL.createObjectURL(file);
                         $image.one('built.cropper', function () {
                             URL.revokeObjectURL(blobURL); // Revoke when load complete
@@ -485,7 +485,7 @@ WarningBox.prototype = {
 //                        alert(json.msg);
 //                    } else {
 //                        get_capacity();
-                        oncallback(json);
+                    oncallback(json);
 //                    }
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -590,15 +590,15 @@ function column_type(type) {
 }
 // 错误验证
 function checkJSON(json, callback, fail_callback) {
-	if (json.err == 0) {
-		typeof(callback) === 'function' ? callback(json) : null;
-	} else if (json.err == 401) {
-		alert('登入失效！');
-		location.hash = 'login';
-	} else {
-		alert(json.msg);
-		typeof(callback) === 'function' ? fail_callback == undefined ? null : fail_callback(json) : null;
-	}
+    if (json.err == 0) {
+        typeof (callback) === 'function' ? callback(json) : null;
+    } else if (json.err == 401) {
+        alert('登入失效！');
+        location.hash = 'login';
+    } else {
+        alert(json.msg);
+        typeof (callback) === 'function' ? fail_callback == undefined ? null : fail_callback(json) : null;
+    }
 }
 //保存提示效果
 var Hint_box = function (text) {
@@ -754,7 +754,7 @@ function getUrlParam(name) {
  * ===初始化容量===
  * @returns {undefined}
  */
-function init_capacity(){
+function init_capacity() {
     $('#capacity_div').html('已用容量/总容量：<span id="capacity_use">-</span>/<span id="capacity">-</span>');
     get_capacity();
 }
@@ -762,12 +762,18 @@ function init_capacity(){
 /**
  * ===获取容量信息===
  * @returns {undefined}
- */        
+ */
 function get_capacity() {
     $.get('../customer-capacity', function (json) {
         var data = json.data;
-        $('#capacity_use').html(data.capacity_use);
-        $('#capacity').html(data.capacity);
+        if (json.err == 0) {
+            $('#capacity_use').html(data.capacity_use);
+            $('#capacity').html(data.capacity);
+        } else {
+            $('#capacity_use').html(data.capacity_use);
+            $('#capacity').html(data.capacity);
+            $('#capacity_use').css('color', 'red');
+        }
     });
 }
 
@@ -778,7 +784,7 @@ function get_capacity() {
 function init_bind() {
     $.get('../init-bind', function (json) {
         if (json != 0) {
-            var img='<img src="images/switch_account.png" style="width:16px;" title="双站切换" />';
+            var img = '<img src="images/switch_account.png" style="width:16px;" title="双站切换" />';
             $('#switch_bind').html(img);
             $('#switch_bind').attr('data-cusid', json);
         }
@@ -791,7 +797,7 @@ function init_bind() {
  */
 function get_bind_account() {
     var cusid = $('#switch_bind').attr('data-cusid');
-    $.post('../bind-auto-login',{switch_cus_id:cusid}, function (json) {
+    $.post('../bind-auto-login', {switch_cus_id: cusid}, function (json) {
         if (json.err) {
             alert(json.msg);
         } else {
@@ -805,14 +811,14 @@ function get_bind_account() {
  * @param {type} html
  * @returns {undefined}
  */
-function ueditor_regular(html){
+function ueditor_regular(html) {
     //
 //    var i=1;
 //    j\k\l\m\n
 //ueditor/php/(\w|/)*.(\w)+
 //    $.get('../');
     var editor = UE.getEditor('container');
-    var _html=editor.getContent()
+    var _html = editor.getContent()
     console.log(_html);
 //    return html;
 }

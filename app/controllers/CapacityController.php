@@ -19,50 +19,62 @@ class CapacityController extends BaseController {
 
     /**
      * 初始化
-     * @param type $capacity
      */
-    public function init($capacity) {
+    public function init() {
         $customer = Auth::user()->name;
         $path = public_path('customers/' . $customer);
         $this->tree($path);
+//        echo  $this->format_bytes($this->size);
     }
 
     /**
      * 遍历目录下的文件
      * @param type $directory 要遍历的根目录
+     *      排除cache_images、images/s
      * @return null 计算文件大小，对$this->size进行赋值
      */
     function tree($directory) {
         $mydir = dir($directory);
+        echo "<ul>\n";
+//        if()
         while ($file = $mydir->read()) {
-            if ((is_dir("$directory/$file")) && ( $file != ".") && ( $file != "..")) {
+            if ((is_dir("$directory/$file")) && ( $file != ".") && ( $file != "..") && ( $file != "cache_images")) {
+                echo "<li><font color=\"#ff00cc\"><b>$file</b></font></li>\n";
                 $this->tree("$directory/$file");
-            } else if (( $file != ".") && ( $file != "..")) {
-                $this->size += filesize($directory . '/' . $file);
+            } else if (( $file != ".") && ( $file != "..") && ( $file != "cache_images")) {
+                echo $directory . '/' . $file;
+                $_size = filesize($directory . '/' . $file);
+                $this->size += $_size;
+                echo "<li>---$file---$_size---</li>\n";
             }
         }
+        echo "</ul>\n";
         $mydir->close();
     }
 
     /**
      * 获取容量数据
+     * @param type $is_first        是否第一次，1/0
      * @return type
      */
-    public function getCapacity() {
+    public function getCapacity($is_first = 0) {
         $cus_id = Auth::id();
         $customer_info = CustomerInfo::where('cus_id', $cus_id)->first();
         $capacity = $customer_info->capacity;
         $capacity_use = $customer_info->capacity_use;
-        if ($customer_info->capacity_use == 0) {//===如果容量使用为0，则初始化===
-            $this->init($capacity);
-            $capacity_use = $this->size;
-            $this->setCapacity($capacity_use);
-        }
-        $err = 0;
-        $msg = '容量数据';
+//        if ($customer_info->capacity_use == 0 || $is_first == 1) {//===如果容量使用为0，则初始化===
+        $this->init();
+        $capacity_use = $this->size;
+        $this->setCapacity($capacity_use, $capacity);
+//        } else {
+//            
+//        }
         if ($capacity_use > $capacity) {
             $err = 1;
             $msg = '空间容量不足';
+        } else {
+            $err = 0;
+            $msg = '容量数据';
         }
         $data['capacity'] = $this->format_bytes($capacity);
         $data['capacity_use'] = $this->format_bytes($capacity_use);
@@ -72,6 +84,8 @@ class CapacityController extends BaseController {
 
     /**
      * 设置容量
+     * @param type $capacity_use        已使用空间
+     * @param type $capacity            总空间
      */
     public function setCapacity($capacity_use = 0, $capacity = 0) {
         $cus_id = Auth::id();
