@@ -87,7 +87,10 @@ class ApiController extends BaseController {
             $update['ended_at'] = trim(Input::get('ended_at'));
             $update['status'] = Input::get('status');
             $update['customization'] = Input::get('customization');
-            $update['switch_cus_id'] = Input::get('switch_cus_id') ? trim(Input::get('switch_cus_id')) : 0; //绑定账户
+            //===绑定账户===
+            $switch_cus_name = Input::get('switch_cus_name');
+            $update['switch_cus_id'] = Customer::where('name', $switch_cus_name)->pluck('id');
+            //===end===
             //===不能用update数组，因为Customer表中没有capacity/capacity_use字段===
             $capacity = Input::get('capacity') ? trim(Input::get('capacity')) : 300 * 1024 * 1024; //默认100MB
             $cus_id = Customer::where('name', $update['name'])->pluck('id');
