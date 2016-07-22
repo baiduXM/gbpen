@@ -1870,9 +1870,9 @@ class PrintController extends BaseController {
                         $art_arr = array();
                         if ($nav->star_only) {
                             //是否只显示推荐
-                            $articles = Articles::whereIn('c_id', $id_arr)->where('mobile_show', 1)->where('is_star', 1)->take($nav->show_num)->get();
+                            $articles = Articles::whereIn('c_id', $id_arr)->where('mobile_show', 1)->where('is_star', 1)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->take($nav->show_num)->get();
                         } else {
-                            $articles = Articles::whereIn('c_id', $id_arr)->where('mobile_show', 1)->take($nav->show_num)->get();
+                            $articles = Articles::whereIn('c_id', $id_arr)->where('mobile_show', 1)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->take($nav->show_num)->get();
                         }
                         if (count($articles) > 0) {
                             $i = 0;
@@ -1927,9 +1927,9 @@ class PrintController extends BaseController {
                         $art_arr = array();
                         if ($nav->star_only) {
                             //是否只显示推荐
-                            $articles = Articles::whereIn('c_id', $id_arr)->where('mobile_show', 1)->where('is_star', 1)->take($nav->show_num)->get();
+                            $articles = Articles::whereIn('c_id', $id_arr)->where('mobile_show', 1)->where('is_star', 1)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->take($nav->show_num)->get();
                         } else {
-                            $articles = Articles::whereIn('c_id', $id_arr)->where('mobile_show', 1)->take($nav->show_num)->get();
+                            $articles = Articles::whereIn('c_id', $id_arr)->where('mobile_show', 1)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->take($nav->show_num)->get();
                         }
                         if (count($articles) > 0) {
                             $i = 0;
@@ -2019,9 +2019,9 @@ class PrintController extends BaseController {
                         $art_arr = array();
                         if ($nav->star_only) {
                             //是否只显示推荐
-                            $articles = Articles::whereIn('c_id', $id_arr)->where('mobile_show', 1)->where('is_star', 1)->take($nav->show_num)->get();
+                            $articles = Articles::whereIn('c_id', $id_arr)->where('mobile_show', 1)->where('is_star', 1)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->take($nav->show_num)->get();
                         } else {
-                            $articles = Articles::whereIn('c_id', $id_arr)->where('mobile_show', 1)->take($nav->show_num)->get();
+                            $articles = Articles::whereIn('c_id', $id_arr)->where('mobile_show', 1)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->take($nav->show_num)->get();
                         }
                         if (count($articles) > 0) {
                             $i = 0;
@@ -2076,9 +2076,9 @@ class PrintController extends BaseController {
                         $art_arr = array();
                         if ($nav->star_only) {
                             //是否只显示推荐
-                            $articles = Articles::whereIn('c_id', $id_arr)->where('mobile_show', 1)->where('is_star', 1)->take($nav->show_num)->get();
+                            $articles = Articles::whereIn('c_id', $id_arr)->where('mobile_show', 1)->where('is_star', 1)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->take($nav->show_num)->get();
                         } else {
-                            $articles = Articles::whereIn('c_id', $id_arr)->where('mobile_show', 1)->take($nav->show_num)->get();
+                            $articles = Articles::whereIn('c_id', $id_arr)->where('mobile_show', 1)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->take($nav->show_num)->get();
                         }
                         if (count($articles) > 0) {
                             $i = 0;
