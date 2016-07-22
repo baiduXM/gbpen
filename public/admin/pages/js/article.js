@@ -84,7 +84,7 @@ function articleController($scope, $http ,$location) {
                                             <dl class="fl checkclass">\n\
                                                 <input type="checkbox" name="checks" value="Bike1" style=" display:none;">\n\
                                                 <label class="label"></label>\n\
-                                                </dl><div class="tit_info"><input type="hidden" class="imgpre" value="'+v.img[0]+'"><span class="sap_tit">'+v.title+(v.is_star?'</span><img class="tit_pic" />':'</span>')+(v.is_top?'<i class="fa iconfont icon-zhiding mr5 pos_bule"></i>':'')+'</div>\n\
+                                                </dl><div class="tit_info"><input type="hidden" class="imgpre" value="'+v.img[0]+'"><input type="text" data-id="'+v.id+'" class="title_modify" style="display:none;" value='+v.title+' /><span class="sap_tit">'+v.title+(v.is_star?'</span><img class="tit_pic" />':'</span>')+(v.is_top?'<i class="fa iconfont icon-zhiding mr5 pos_bule"></i>':'')+'</div>\n\
                                         </td>\n\
                                         <td>'+v.c_name+'</td>\n\
                                         <td>'+v.viewcount+'</td>\n\
@@ -147,7 +147,27 @@ function articleController($scope, $http ,$location) {
                 $('tr .tit_info').mouseout(function(){
                     $('#imgpre').hide();
                 });
-                
+                //文章标题修改
+                $(".tit_info").click(function(){
+                    $(this).find(".sap_tit").hide();
+                    $(this).find(".title_modify").show();
+                    $(this).find(".title_modify").focus().val($(this).find(".title_modify").val());
+                });
+                $(".title_modify").blur(function(){
+                    if($(this).val()!==$(this).parent("div").find(".sap_tit").text()){
+                        $(this).parent("div").find(".sap_tit").text($(this).val());
+                        var title=$(this).val();
+                        var id =$(this).data("id");
+                        $http.post('../article-title-modify', {id: id,title:title}).success(function(json) {
+                                checkJSON(json, function(json){
+                                    var hint_box = new Hint_box();
+                                    hint_box;
+                                });
+                            });
+                    }
+                    $(this).parent("div").find(".sap_tit").show();
+                    $(this).hide();
+                });
             }); // checkJSON结束
         });
     };
@@ -362,6 +382,7 @@ function articleController($scope, $http ,$location) {
             });
         },
         _sort : function(){
+            //排序设置
             $('.a-table').on('change','.sort',function(){
                 var id,sort;
                 id=$(this).data('id');

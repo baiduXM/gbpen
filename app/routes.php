@@ -99,6 +99,11 @@ Route::group(array('before' => 'auth'), function() {
         'as' => 'classify-list',
         'uses' => 'ClassifyController@classifyModify'
     ]);
+    
+    Route::post('classify-name-modify', [//栏目标题修改
+        'as' => 'classify-name-modify',
+        'uses' => 'ClassifyController@classifyNameModify'
+    ]);
 
     Route::post('classify-show', [//栏目显隐
         'as' => 'classify-show',
@@ -139,6 +144,11 @@ Route::group(array('before' => 'auth'), function() {
     Route::post('article-sort-modify', [//文章排序修改
         'as' => 'article-sort-modify',
         'uses' => 'ArticleController@articleSortModify'
+    ]);
+    
+    Route::post('article-title-modify', [//文章标题修改
+        'as' => 'article-title-modify',
+        'uses' => 'ArticleController@articleTitleModify'
     ]);
 
     Route::post('article-sort', [//文章排序

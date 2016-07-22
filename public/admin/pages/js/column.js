@@ -112,7 +112,7 @@ function columnController($scope, $http) {
                 $.each(d, function (idx, ele) {
                     label = (ele.childmenu != null) ? '<div class="iconbtn"><b class="iconshow disnone">+</b><b class="iconhide">-</b></div>' : '<div class="iconbtn2"><b class="iconshow">-</b></div>';
                     _div += '<tr class="Level1" data-aid="' + ele.id + '">\n\
-                    <td style="text-align: left; height:20px;overflow:hidden;"><dl class="fl checkclass"><input type="checkbox" name="vehicle" value="Bike1" style=" display:none;"><label class="label"></label></dl>' + label + '<div class="tit_info">' + ele.name + '</div></td>';
+                    <td style="text-align: left; height:20px;overflow:hidden;"><dl class="fl checkclass"><input type="checkbox" name="vehicle" value="Bike1" style=" display:none;"><label class="label"></label></dl>' + label + '<input type="text" style="display:none;" data-id="' + ele.id + '" class="name_modify" value="' + ele.name + '" /><div class="tit_info class_name">' + ele.name + '</div></td>';
                     column_icon(ele.type);
                     _div += '<td><div class="tit_info">' + column_type(ele.type) + '</div>' + layout + '</td>';
                     _div += '<td style="text-align:center;"><span><i class="fa icon-pc iconfont btn btn-show btn-desktop ' + (ele.pc_show ? 'blue' : 'grey') + '"></i></span><div class="pr size1"><i class="fa iconfont icon-snimicshouji btn btn-show btn-mobile ' + (ele.mobile_show ? 'blue' : 'grey') + '"></i><i class="fa iconfont btn icon-phonehome none ' + (ele.show == 1 ? 'blue' : 'grey') + (ele.showtypetotal == 0 ? ' not-allowed' : '') + '"></i></div></td>\n\
@@ -124,7 +124,7 @@ function columnController($scope, $http) {
                         if (NextChild.childmenu != null) {
                             $.each(NextChild.childmenu, function (k, v) {
                                 _div += '<tr class="Level' + num + '" data-aid="' + v.id + '" data-parent="' + v.p_id + '">\n\
-                                    <td style="text-align: left;"><div class="fl style">├</div><dl class="fl checkclass"><input type="checkbox" name="vehicle" value="Bike1" style=" display:none;"><label class="label"></label></dl><div class="tit_info">' + v.name + '</div></td>';
+                                    <td style="text-align: left;"><div class="fl style">├</div><dl class="fl checkclass"><input type="checkbox" name="vehicle" value="Bike1" style=" display:none;"><label class="label"></label></dl><input type="text" style="display:none;" data-id="' + v.id + '" class="name_modify" value="' + v.name + '" /><div class="tit_info class_name">' + v.name + '</div></td>';
                                 column_icon(v.type);
                                 _div += '<td><div class="tit_info">' + column_type(v.type) + '</div>' + layout + '</td>';
                                 _div += '<td style="text-align:center;"><span><i class="fa iconfont icon-pc btn btn-show btn-desktop ' + (v.pc_show ? 'blue' : 'grey') + '"></i></span><div class="pr size1"><i class="iconfont icon-snimicshouji fa btn btn-show btn-mobile ' + (v.mobile_show ? 'blue' : 'grey') + '"></i><i class="fa iconfont btn icon-phonehome none ' + (v.show ? 'blue' : 'grey') + (v.showtypetotal == 0 ? ' not-allowed' : '') + '"></i></div></td>\n\
@@ -202,10 +202,35 @@ function columnController($scope, $http) {
             // 栏目提交移动
             this.Column_Move();
             //列表展开
+            this.classnamemodify();
+            //分类标题修改
             $(".iconbtn").unbind('click').on('click', function () {
                 $(this).parents('tr').nextUntil('.Level1').slideToggle();
                 $(this).children().toggleClass("disnone");
             });
+        },
+        classnamemodify:function(){
+            //分类标题修改
+            $(".class_name").click(function(){
+                    $(this).hide();
+                    $(this).parent('td').find(".name_modify").show();
+                    $(this).parent('td').find(".name_modify").focus().val($(this).parent('td').find(".name_modify").val());
+                });
+                $(".name_modify").blur(function(){
+                    if($(this).val()!==$(this).parent("td").find(".class_name").text()){
+                        $(this).parent("td").find(".class_name").text($(this).val());
+                        var name=$(this).val();
+                        var id =$(this).data("id");
+                        $http.post('../classify-name-modify', {id: id,name:name}).success(function(json) {
+                                checkJSON(json, function(json){
+                                    var hint_box = new Hint_box();
+                                    hint_box;
+                                });
+                            });
+                    }
+                    $(this).parent("td").find(".class_name").show();
+                    $(this).hide();
+                });
         },
         //type-->data.type
         column_type_info: function (data) {

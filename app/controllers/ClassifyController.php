@@ -14,6 +14,7 @@ class ClassifyController extends BaseController {
 	  |classifyShow      栏目显隐
 	  |classifySort      栏目排序
 	  |toTree            将数组递归为树形结构
+          |classifyNameModify 栏目标题修改
 	 */
 
 	public function classifyList() {
@@ -429,6 +430,17 @@ class ClassifyController extends BaseController {
 				$this->delMobileHomepage($id);
 				$this->delChildClassify($id);
 			}
+		}
+	}
+        public function classifyNameModify() {
+		$cus_id = Auth::id();
+		$id = Input::get('id');
+                $name = Input::get('name');
+		$result = Classify::where('id', $id)->where('cus_id', $cus_id)->update(['name' => $name,'pushed'=>1]);
+		if ($result) {
+			return Response::json(['err' => 0, 'msg' => '修改成功']);
+		} else {
+			return Response::json(['err' => 3001, 'msg' => '修改失败']);
 		}
 	}
 
