@@ -764,7 +764,9 @@ function init_capacity() {
  * @returns {undefined}
  */
 function get_capacity() {
-    $.get('../customer-capacity', function (json) {
+    $.get('../capacity-info', function (json) {
+//        console.log(json);
+//        console.log('capacity-info');
         var data = json.data;
         if (json.err == 0) {
             $('#capacity_use').html(data.capacity_use);

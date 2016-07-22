@@ -181,9 +181,11 @@ class UploadController extends BaseController {
             $ftp = $customerinfo->ftp;
             $ftp_array[1] = isset($ftp_array[1]) ? $ftp_array[1] : $port;
             $conn = ftp_connect($ftp_array[0], $ftp_array[1]);
-
+            $filesize = 0; //===文件大小===
             foreach ((array) $files as $fileName) {
-                if (file_exists(public_path('customers/' . $customer . '/cache_images/' . $fileName))) {
+                $filepath = public_path('customers/' . $customer . '/cache_images/' . $fileName);
+                if (file_exists($filepath)) {
+                    $filesize += filesize($filepath); //===累加大小
                     $file = explode('.', $fileName);
                     $type = end($file);
                     $up_result = copy(public_path('customers/' . $customer . '/cache_images/' . $fileName), $destinationPath . '/l/' . $target . '/' . $fileName);
@@ -225,6 +227,10 @@ class UploadController extends BaseController {
                     }
                 }
             }
+            //===扣除空间容量===
+            $Capacity = new CapacityController;
+            $Capacity->change_capa($filesize, 'use');
+            //===end===
             @ftp_close($conn);
             return Response::json(['err' => 0, 'msg' => '保存成功', 'data' => $data]);
         } else {
@@ -302,13 +308,6 @@ class UploadController extends BaseController {
             } else {
                 $upload = file_put_contents($dir . '/' . $fileName, base64_decode(preg_replace('/data\:image\/png\;base64\,/i', '', $file)));
             }
-            //===扣除用户空间容量===
-            $size = filesize(public_path('customers/' . $customer . '/cache_images/' . $fileName));
-            $cus = new CapacityController;
-            if (!$cus->change_capa($size, 'use')) {
-                return Response::json(['err' => 1, 'msg' => '容量不足', 'data' => []]);
-            }
-            //===end===
             if ($upload) {
                 return Response::json(['err' => 0, 'msg' => 'empty($file)&&$upload', 'data' => ['name' => $fileName, 'url' => asset('customers/' . $customer . '/cache_images/' . $fileName), 's_url' => '/images/s/' . $target . '/' . $fileName]]);
             } else {

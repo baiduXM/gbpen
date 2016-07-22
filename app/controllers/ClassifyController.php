@@ -16,6 +16,10 @@ class ClassifyController extends BaseController {
       |toTree            将数组递归为树形结构
      */
 
+    /**
+     * 栏目列表
+     * @return type
+     */
     public function classifyList() {
         $customer = Auth::user()->name;
         $cus_id = Auth::id();
@@ -123,6 +127,10 @@ class ClassifyController extends BaseController {
         return Response::json($result);
     }
 
+    /**
+     * 栏目添加、修改
+     * @return type
+     */
     public function classifyModify() {
         $cus_id = Auth::id();
         $c_imgs = '';
@@ -175,7 +183,7 @@ class ClassifyController extends BaseController {
         if ($is_passed) {
             $classify->name = trim(Input::get('name'));
             $classify->en_name = trim(Input::get('en_name'));
-            $images = Input::get('img');
+            $images = Input::get('img'); //===新图片
             $classify->img = $images;
             if (!empty($c_imgs) && $c_imgs != 'undefined') {
                 if ($c_imgs != $images) {
@@ -210,7 +218,7 @@ class ClassifyController extends BaseController {
             if (Input::has('page_content') && Input::get('page_content') != 'undefined') {
                 $page_content = Input::get('page_content');
 //                $file_array = CapacityController::reg_ueditor_content($page_content);
-                $file_array='';
+                $file_array = '';
                 if ($page_id) {
                     Page::where('id', $page_id)->update(array('content' => $page_content, 'file_array' => $file_array));
                 } else {
@@ -225,17 +233,19 @@ class ClassifyController extends BaseController {
                     }
                 }
             }
+            $size = 0;
             if ($classify->save()) {
                 if (isset($del_img)) {
                     $imgdel = new ImgDel();
-                    $imgdel->mysave($del_img, 'category');
+                    $size = $imgdel->mysave($del_img, 'category');
                 }
                 $data['id'] = $classify->id;
                 if ($is_forced) {
                     Articles::where('cus_id', $cus_id)->whereIn('id', $a_ids)->update(array('c_id' => $classify->id));
                 }
+
                 if ($id != NULL) {
-                    $result = ['err' => 0, 'msg' => '栏目修改成功', 'data' => $data];
+                    $result = ['err' => 0, 'msg' => '栏目修改成功' . $size, 'data' => $data];
                 } else {
                     if (in_array($classify->type, array(1, 2, 3, 4, 9)) && $classify->p_id == 0) {
                         //===添加type:9万用表单===

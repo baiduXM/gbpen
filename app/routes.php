@@ -49,7 +49,6 @@ Route::group(array('before' => 'auth'), function() {
         'as' => 'statis',
         'uses' => 'StatisController@getCount'
     ]);
-
     //===获取用户统计数据-end===
 
     Route::get('log-out', [//用户登出
@@ -68,14 +67,17 @@ Route::group(array('before' => 'auth'), function() {
         'uses' => 'CustomerController@customerSetting'
     ]);
     //===容量====
-    Route::get('customer-capacity', [//保存用户信息
-        'uses' => 'CapacityController@getCapacity'
+    Route::get('capacity-info', [//保存用户信息
+        'uses' => 'CapacityController@getInfo'
     ]);
     
     Route::any('capacity-init', [//初始化容量
         'uses' => 'CapacityController@init'
     ]);
     
+    Route::any('capacity-release', [//释放空间
+        'uses' => 'CapacityController@release'
+    ]);
     //===end===
 
     //-----------------------------------------------
