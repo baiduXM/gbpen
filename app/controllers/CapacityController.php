@@ -178,10 +178,13 @@ class CapacityController extends BaseController {
         
     }
 
-    public function test($param) {
-        DB::table('test')->insert(
-                array('content' => $param)
-        );
+    /**
+     * 获取文件大小
+     * @param type $filepath        文件路径
+     * @param type $filename        文件名
+     */
+    public function get_filesize($filepath, $filename) {
+        
     }
 
 }

@@ -753,11 +753,19 @@ function columnController($scope, $http) {
                                     </div>';
                         $('.up_column').before(_newpic);
                         _this.upload_picname = json.data.name;
+                        console.log()
                     }
                 });
             });
             //删除图片
             $('.column_pic').on('click', '.preview-close', function () {
+                //===回复空间容量===
+//                $.get('../capacity-release',{},function(json){
+                    alert(1)
+//                });
+                console.log(_this);
+                console.log('_this');
+                //===end===
                 $(this).parents('.template-download').remove();
                 _this.upload_picname = '';
                 return false;
