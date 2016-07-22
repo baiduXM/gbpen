@@ -368,10 +368,10 @@ function articleController($scope, $http ,$location) {
                 sort=$(this).val();
                 $http.post('../article-sort-modify', {id: id,sort:sort}).success(function(json) {
                                 checkJSON(json, function(json){
-                                    $('.a-table').children().remove();
-                                    $scope.getArticleList({
-                                        first : false
-                                    });
+//                                    $('.a-table').children().remove();
+//                                    $scope.getArticleList({
+//                                        first : false
+//                                    });
                                     var hint_box = new Hint_box();
                                     hint_box;
                                 });
