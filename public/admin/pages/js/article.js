@@ -129,11 +129,11 @@ function articleController($scope, $http ,$location) {
                     $("#Pagination").pagination(page_num2);
                 } // if判断结束
                 $('body').append('<img id="imgpre" style="display:none;width:100px;" src="images/logo.png" />');
-                $('tr .tit_info').mouseover(function(e){
+                $('tr .sap_tit').mouseover(function(e){
                     var x = e.pageX;
                     var y = e.pageY-$('body').scrollTop();
                     
-                    var imgpre=$(this).children("input").val();
+                    var imgpre=$(this).parent('div').find(".imgpre").val();
                     if(imgpre.length){
                          $('#imgpre').show();
                         $('#imgpre').attr('src',json.data.source_dir+imgpre);
@@ -144,14 +144,14 @@ function articleController($scope, $http ,$location) {
                         });
                     }
                 });
-                $('tr .tit_info').mouseout(function(){
+                $('tr .sap_tit').mouseout(function(){
                     $('#imgpre').hide();
                 });
                 //文章标题修改
-                $(".tit_info").click(function(){
-                    $(this).find(".sap_tit").hide();
-                    $(this).find(".title_modify").show();
-                    $(this).find(".title_modify").focus().val($(this).find(".title_modify").val());
+                $(".tit_info .sap_tit").click(function(){
+                    $(this).hide();
+                    $(this).parent('div').find(".title_modify").show();
+                    $(this).parent('div').find(".title_modify").focus().val($(this).parent('div').find(".title_modify").val());
                 });
                 $(".title_modify").blur(function(){
                     if($(this).val()!==$(this).parent("div").find(".sap_tit").text()){
