@@ -168,29 +168,28 @@ class CapacityController extends BaseController {
      * @param type $content
      * @return type
      */
-    public function reg_ueditor_content($content) {
+    public static function reg_ueditor_content($content) {
         if (empty($content)) {
             return false;
         }
         $customer = Auth::user()->name;
-        $reg = '/customers/' . $customer . '/images/ueditor/(\w|/)*\.(\w)+/';
-        preg_match_all($reg, $content, $matches);
-        foreach ($matches as $value) {
+        preg_match_all('/customers\/' . $customer . '\/images\/ueditor\/[\w\/]*\.\w+/', $content, $matches);
+        foreach ($matches[0] as $value) {
             $temp_array = explode('/', $value);
-            $file_array[] = array_slice($temp_array, -1, 1);
+            $file_array[] = end($temp_array);
+//            $file_array[] = array_slice($temp_array, -1, 1);
         }
-//        $size = 0;
-//        foreach ($file_array as $value) {
-//            $size += filesize(public_path('customers/' . $customer . '/images/ueditor/' . $value));
-//        }
-        return $file_array;
-        //todo
+        $file_str = implode(',', $file_array);
+//        var_dump($file_str);
+//        exit;
+        return $file_str;
+//        return '123asdf';
     }
 
     /**
-     * 保存文件名，用作后期比较
+     * 比较文件名差异
      */
-    public function save_filename() {
+    public function compare_filename() {
         
     }
 

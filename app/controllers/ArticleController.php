@@ -73,6 +73,7 @@ class ArticleController extends BaseController {
 		}
 		$article->cus_id = $cus_id;
                 $article->pushed = 1;
+                $article->file_array = CapacityController::reg_ueditor_content($article->content);
 		$result = $article->save();
 		if ($result) {
 			if ($id) {
