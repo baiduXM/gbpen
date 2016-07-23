@@ -4,7 +4,7 @@
   /**
  * ===容量控制器===
  * @author xieqixiang
- * @time 2016.07.18
+ * @date 2016.07.18
  * 
  * 1、初始化当前已使用空间容量
  *      统计物理存在的图片大小，去除cache_images、images/s、mobile文件下的图片
@@ -14,10 +14,14 @@
  * 2、对用户操作进行容量增减
  *      普通直接上传图片、ueditor上传文件（图片、附件）
  *      只对用户空间容量数值上的增减
- * 3、关于删除图片和添加图片
+ * 
+ *  ·直接上传图片
  *      删除图片释放空间结算时间：点击“保存”按钮后才结束，在此操作前添加图片/更换图片可能造成容量不足
  *      ？添加图片：添加新图片即扣除容量。可能造成容量不足。
  *      更换图片：更换图片原理删除原图，添加新图，结算空间时间同“添加图片”操作。
+ *  ·ueditor上传图片
+ *      文章ueditor：
+ * 
  * attention：
  *      此方法原理统计出的空间容量并非真实用户占用空间，真实占用空间容量>>统计占用空间容量
  *      所以在非必要时候，请勿手动！直接！删除文件夹中文件
@@ -162,21 +166,24 @@ class CapacityController extends BaseController {
     /**
      * ===对ueditor进行内容匹配===
      * @param type $content
-     * @param type $fileName
      * @return type
      */
-    public static function reg_ueditor_content($content = null) {
+    public function reg_ueditor_content($content) {
         if (empty($content)) {
-            return Auth::id();
+            return false;
         }
-        $html = strip_tags($content);
-//        preg_match_all($pattern, $subject,)
         $customer = Auth::user()->name;
-        $reg = 'customers/' . $customer . '/images/ueditor/(\w|/)*\.(\w)+/';
-        //版主
+        $reg = '/customers/' . $customer . '/images/ueditor/(\w|/)*\.(\w)+/';
         preg_match_all($reg, $content, $matches);
-//        $size = filesize(public_path('customers/' . $customer . '/images/ueditor/' . $fileName));
-        return $matches;
+        foreach ($matches as $value) {
+            $temp_array = explode('/', $value);
+            $file_array[] = array_slice($temp_array, -1, 1);
+        }
+//        $size = 0;
+//        foreach ($file_array as $value) {
+//            $size += filesize(public_path('customers/' . $customer . '/images/ueditor/' . $value));
+//        }
+        return $file_array;
         //todo
     }
 

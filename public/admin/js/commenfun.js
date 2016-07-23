@@ -819,9 +819,9 @@ function ueditor_regular(html) {
 //    j\k\l\m\n
 //ueditor/php/(\w|/)*.(\w)+
 //    $.get('../');
-    var editor = UE.getEditor('container');
-    var _html = editor.getContent()
-    console.log(_html);
+//    var editor = UE.getEditor('container');
+//    var _html = editor.getContent()
+//    console.log(_html);
 //    return html;
 }
 

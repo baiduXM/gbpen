@@ -218,7 +218,7 @@ class ClassifyController extends BaseController {
             if (Input::has('page_content') && Input::get('page_content') != 'undefined') {
                 $page_content = Input::get('page_content');
 //                $file_array = CapacityController::reg_ueditor_content($page_content);
-                $file_array = '';
+//                $file_array = '';
                 if ($page_id) {
                     Page::where('id', $page_id)->update(array('content' => $page_content, 'file_array' => $file_array));
                 } else {
