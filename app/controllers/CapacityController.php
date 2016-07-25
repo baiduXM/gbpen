@@ -38,7 +38,7 @@ class CapacityController extends BaseController {
      */
     function init() {
         $customer = Auth::user()->name;
-        $path = public_path('customers/' . $customer);
+        $pathf = public_path('customers/' . $customer);
         $this->tree($path);
 //        echo $this->format_bytes($this->size);
     }
@@ -165,32 +165,47 @@ class CapacityController extends BaseController {
 
     /**
      * ===对ueditor进行内容匹配===
-     * @param type $content
-     * @return type
+     *      先获取文件然后
+     * @param string $content       html内容
+     * @return string $file_str     文件名字符串
      */
-    public static function reg_ueditor_content($content) {
+    public static function reg_ueditor_content(string $content) {
         if (empty($content)) {
             return false;
         }
         $customer = Auth::user()->name;
+        $file_str = '';
         preg_match_all('/customers\/' . $customer . '\/images\/ueditor\/[\w\/]*\.\w+/', $content, $matches);
-        foreach ($matches[0] as $value) {
-            $temp_array = explode('/', $value);
-            $file_array[] = end($temp_array);
-//            $file_array[] = array_slice($temp_array, -1, 1);
+        if (empty($matches)) {
+
+            foreach ($matches[0] as $value) {
+                $temp_array = explode('/', $value);
+                $file_array[] = end($temp_array);
+            }
+            $file_str = implode(',', $file_array);
         }
-        $file_str = implode(',', $file_array);
-//        var_dump($file_str);
-//        exit;
         return $file_str;
-//        return '123asdf';
     }
 
     /**
-     * 比较文件名差异
+     * 比较文件名差异，删除不存在文件
+     * 
      */
-    public function compare_filename() {
-        
+    public static function compare_filename($new_content, $old_content) {
+        $new_array = explode(',', $this->reg_ueditor_content($new_content));
+        $old_array = explode(',', $this->reg_ueditor_content($old_content));
+        $diff_array = array_diff($old_array, $new_array);
+        $customer = Auth::user()->name;
+        if (!empty($diff_array)) {
+            $size = 0;
+            foreach ($diff_array as $value) {
+                $filepath = public_path('customers/' . $customer . '/images/ueditor/' . $value);
+                if (is_file($filepath)) {
+                    $size += filesize($filepath);
+                }
+            }
+            $this->change_capa($size, 'free');
+        }
     }
 
     /**

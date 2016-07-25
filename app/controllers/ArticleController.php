@@ -73,6 +73,9 @@ class ArticleController extends BaseController {
 		}
 		$article->cus_id = $cus_id;
                 $article->pushed = 1;
+                if(!empty($article->file_array)){
+                    CapacityController::compare_filename($article->content, $article->file_array);
+                }
                 $article->file_array = CapacityController::reg_ueditor_content($article->content);
 		$result = $article->save();
 		if ($result) {
