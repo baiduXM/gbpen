@@ -176,12 +176,21 @@ class CapacityController extends BaseController {
         $customer = Auth::user()->name;
         $file_str = '';
         preg_match_all('/customers\/' . $customer . '\/images\/ueditor\/[\w\/]*\.\w+/', $content, $matches);
-        if (empty($matches)) {
-
+        if (!empty($matches)) {
             foreach ($matches[0] as $value) {
                 $temp_array = explode('/', $value);
                 $file_array[] = end($temp_array);
             }
+        }
+        if (!empty($file_array)) {
+            $size = 0;
+            foreach ($file_array as $value) {
+                $filepath = public_path('customers/' . $customer . '/images/ueditor/' . $value);
+                if (is_file($filepath)) {
+                    $size += filesize($filepath);
+                }
+            }
+            $this->change_capa($size, 'use');
             $file_str = implode(',', $file_array);
         }
         return $file_str;
@@ -194,7 +203,7 @@ class CapacityController extends BaseController {
     public static function compare_filename($new_content, $old_content) {
         $new_array = explode(',', $this->reg_ueditor_content($new_content));
         $old_array = explode(',', $this->reg_ueditor_content($old_content));
-        $diff_array = array_diff($old_array, $new_array);
+        $diff_array = array_diff($old_array, $new_array); //===返回原来存在的差异===
         $customer = Auth::user()->name;
         if (!empty($diff_array)) {
             $size = 0;
