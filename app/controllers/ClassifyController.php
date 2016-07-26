@@ -226,7 +226,7 @@ class ClassifyController extends BaseController {
 //                $file_array = CapacityController::reg_ueditor_content($page_content);
 //                $file_array = '';
                 if ($page_id) {
-                    Page::where('id', $page_id)->update(array('content' => $page_content));
+                    Page::where('id', $page_id)->update(array('content' => $page_content, 'file_array' => $file_array));
                 } else {
                     $page = new Page;
                     $page->c_id = 0;
