@@ -229,36 +229,6 @@ class CapacityController extends BaseController {
         }
     }
 
-    /**
-     * 获取文件大小
-     * @param type $filepath        文件路径
-     * @param type $filename        文件名
-     */
-    public function get_filesize($filepath, $filename) {
-        
-    }
-
-    /**
-     * 释放空间
-     */
-    public function release() {
-
-//        $customer = Auth::user()->name;
-//        $filepath = 'customers/' . $customer . '/images/l/' . $target . '/' . $img;
-//        if (is_file(public_path($filepath))) {
-//            $size = filesize(public_path($filepath)); //===images/l不一定有，要推送后才有图片
-//        } else {
-//            $size = 0;
-//        }
-//        $this->change_capa($size, 'free');
-//        //===end===
-//        $picname = Input::get('picname');
-//        $data = Input::get('data');
-//
-//        $str = $picname;
-//        return $str;
-    }
-
 }
 
 ?>
