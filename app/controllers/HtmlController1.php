@@ -144,9 +144,19 @@ class HtmlController1 extends BaseController{
                 $total = Articles::whereIn('c_id',$c_ids)->where('cus_id',$this->cus_id)->where($type.'_show','1')->count();
                 $page_count = ceil($total/$per_page);
             }
+            if(isset($_GET['testc2'])){
+                var_dump($id);
+                ob_flush();
+                flush();
+            }
             $paths=$template->categoryPush($id,$page_count,$publicdata,$this->last_html_precent,$this->html_precent);
             $this->last_html_precent +=($this->html_precent*count($paths));
             $result=array_merge((array)$result,(array)$paths);
+        }
+        if(isset($_GET['testc2'])){
+            var_dump($result);
+            ob_flush();
+            flush();
         }
         return $result;
     }
@@ -840,9 +850,17 @@ class HtmlController1 extends BaseController{
             }
             $count = $this->htmlPagecount($pc_classify_ids,$mobile_classify_ids,$pc_article_ids,$mobile_article_ids);
             $this->html_precent= 70/$count;
+            if(isset($_GET['test6'])){
+                var_dump(1);
+                exit();
+            }
             if($this->pcpush){
                 $categoryhtml = $this->categoryhtml($pc_classify_ids,'pc');
                 $articlehtml = $this->articlehtml($pc_classify_ids,'pc');
+            }
+            if(isset($_GET['test7'])){
+                var_dump(1);
+                exit();
             }
             if($this->mobilepush){
                 $mcategoryhtml = $this->categoryhtml($mobile_classify_ids,'mobile');
