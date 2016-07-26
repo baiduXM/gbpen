@@ -120,11 +120,6 @@ class HtmlController1 extends BaseController{
         }else{
             $publicdata=$this->pushmobile;
         }
-        if(isset($_GET['testc1'])){
-                var_dump($ids);
-                ob_flush();
-                flush();
-            }
         foreach((array)$ids as $id){
             $c_ids=explode(',',$template->getChirldenCid($id,1));
             $a_c_type = Classify::where('id',$id)->pluck('type');//取得栏目的type
@@ -149,19 +144,9 @@ class HtmlController1 extends BaseController{
                 $total = Articles::whereIn('c_id',$c_ids)->where('cus_id',$this->cus_id)->where($type.'_show','1')->count();
                 $page_count = ceil($total/$per_page);
             }
-            if(isset($_GET['testc2'])){
-                var_dump($id);
-                ob_flush();
-                flush();
-            }
             $paths=$template->categoryPush($id,$page_count,$publicdata,$this->last_html_precent,$this->html_precent);
             $this->last_html_precent +=($this->html_precent*count($paths));
             $result=array_merge((array)$result,(array)$paths);
-        }
-        if(isset($_GET['testc2'])){
-            var_dump($result);
-            ob_flush();
-            flush();
         }
         return $result;
     }
@@ -227,21 +212,8 @@ class HtmlController1 extends BaseController{
          $template = new PrintController();
         $page_count = 2;
         $pc_per_page = CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_count');
-        if(!empty($pc_classify_ids)){
-            echo "pc_per_page:";
-            var_dump($pc_per_page);
-            ob_flush();
-            flush();
         foreach((array)$pc_classify_ids as $id){
-            echo "id:";
-            var_dump($id);
-            ob_flush();
-            flush();
             $c_ids=explode(',',ltrim($template->getChirldenCid($id,1)));
-            echo "c_ids:";
-            var_dump($c_ids);
-            ob_flush();
-            flush();
             $a_c_type = Classify::where('id',$id)->pluck('type');//取得栏目的type
             $pc_page_count_switch = CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_count_switch');//页面图文列表图文显示个数是否分开控制开关
             if(isset($pc_page_count_switch)&&$pc_page_count_switch==1&&$a_c_type<=3){
@@ -275,9 +247,6 @@ class HtmlController1 extends BaseController{
                         $page_count+=2;
                     }
                 }
-                var_dump($page_count);
-                ob_flush();
-                flush();
             }else{
                 $total = Articles::whereIn('c_id',$c_ids)->where('cus_id',$this->cus_id)->where('pc_show','1')->count();
                 if($total){
@@ -287,12 +256,7 @@ class HtmlController1 extends BaseController{
                     $page_count+=2;
                 }
             }
-            
-        var_dump($page_count);
-                ob_flush();
-                flush();
 
-        }
         }
         $mobileper_page = CustomerInfo::where('cus_id',$this->cus_id)->pluck('mobile_page_count');
         if(!empty($mobile_classify_ids)){
@@ -676,10 +640,6 @@ class HtmlController1 extends BaseController{
         $pushqueue->id=$maxpushid?$maxpushid+1:1;
         $pushqueue->pushtime=time();
         $pushqueue->cus_id=$this->cus_id;
-        if(isset($_GET['test1'])){
-            var_dump(1);
-            exit();
-        }
         if($pushqueuecount<3){
             $pushqueue->push=1;
             $pushqueue->save();
@@ -772,10 +732,6 @@ class HtmlController1 extends BaseController{
                 }
             }
         }
-        if(isset($_GET['test2'])){
-            var_dump(1);
-            exit();
-        }
     }
     private function clearpushqueue(){
         PushQueue::where('pushtime','<',time()-60)->delete();
@@ -794,10 +750,6 @@ class HtmlController1 extends BaseController{
             echo '没有文章不可推送<script type="text/javascript">alert("没有文章不可推送");parent.refresh("没有文章不可推送");</script><br />';
             ob_flush();
             flush();
-            exit();
-        }
-        if(isset($_GET['test'])){
-            var_dump(1);
             exit();
         }
         if(!isset($_GET['gradpush'])){
@@ -831,10 +783,6 @@ class HtmlController1 extends BaseController{
                 $this->mobilehomepage_push();
             }
         }
-        if(isset($_GET['test3'])){
-            var_dump(1);
-            exit();
-        }
         if($this->pcpush||$this->mobilepush){
             if(!$this->pcpush&&$this->mobilepush){
                 $this->mobile_push();
@@ -862,40 +810,17 @@ class HtmlController1 extends BaseController{
                 $mobile_classify_ids = Classify::where('cus_id',$this->cus_id)->where('mobile_show',1)->lists('id');
                 $mobile_article_ids = Articles::where('cus_id',$this->cus_id)->where('mobile_show',1)->lists('id');
             }
-            if(isset($_GET['test4'])){
-                var_dump(1);
-                exit();
-            }
             if($this->pcpush){
                 $indexhtml = $this->homgepagehtml('pc');
                 $searchhtml = $this->sendData('pc');
                 $pc_classify_ids = Classify::where('cus_id',$this->cus_id)->where('pc_show',1)->lists('id');
                 $pc_article_ids = Articles::where('cus_id',$this->cus_id)->where('pc_show',1)->lists('id');
             }
-            if(isset($_GET['test5'])){
-                var_dump(1);
-                exit();
-            }
-            if(isset($_GET['test8'])){
-                var_dump($pc_classify_ids);
-                var_dump($mobile_classify_ids);
-                var_dump($pc_article_ids);
-                var_dump($mobile_article_ids);
-                exit();
-            }
             $count = $this->htmlPagecount($pc_classify_ids,$mobile_classify_ids,$pc_article_ids,$mobile_article_ids);
             $this->html_precent= 70/$count;
-            if(isset($_GET['test6'])){
-                var_dump(1);
-                exit();
-            }
             if($this->pcpush){
                 $categoryhtml = $this->categoryhtml($pc_classify_ids,'pc');
                 $articlehtml = $this->articlehtml($pc_classify_ids,'pc');
-            }
-            if(isset($_GET['test7'])){
-                var_dump(1);
-                exit();
             }
             if($this->mobilepush){
                 $mcategoryhtml = $this->categoryhtml($mobile_classify_ids,'mobile');
