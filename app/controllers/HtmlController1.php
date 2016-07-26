@@ -793,6 +793,10 @@ class HtmlController1 extends BaseController{
                 $this->mobilehomepage_push();
             }
         }
+        if(isset($_GET['test3'])){
+            var_dump(1);
+            exit();
+        }
         if($this->pcpush||$this->mobilepush){
             if(!$this->pcpush&&$this->mobilepush){
                 $this->mobile_push();
@@ -820,11 +824,19 @@ class HtmlController1 extends BaseController{
                 $mobile_classify_ids = Classify::where('cus_id',$this->cus_id)->where('mobile_show',1)->lists('id');
                 $mobile_article_ids = Articles::where('cus_id',$this->cus_id)->where('mobile_show',1)->lists('id');
             }
+            if(isset($_GET['test4'])){
+                var_dump(1);
+                exit();
+            }
             if($this->pcpush){
                 $indexhtml = $this->homgepagehtml('pc');
                 $searchhtml = $this->sendData('pc');
                 $pc_classify_ids = Classify::where('cus_id',$this->cus_id)->where('pc_show',1)->lists('id');
                 $pc_article_ids = Articles::where('cus_id',$this->cus_id)->where('pc_show',1)->lists('id');
+            }
+            if(isset($_GET['test5'])){
+                var_dump(1);
+                exit();
             }
             $count = $this->htmlPagecount($pc_classify_ids,$mobile_classify_ids,$pc_article_ids,$mobile_article_ids);
             $this->html_precent= 70/$count;
