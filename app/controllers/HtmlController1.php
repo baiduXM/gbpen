@@ -853,6 +853,13 @@ class HtmlController1 extends BaseController{
                 var_dump(1);
                 exit();
             }
+            if(isset($_GET['test8'])){
+                var_dump($pc_classify_ids);
+                var_dump($mobile_classify_ids);
+                var_dump($pc_article_ids);
+                var_dump($mobile_article_ids);
+                exit();
+            }
             $count = $this->htmlPagecount($pc_classify_ids,$mobile_classify_ids,$pc_article_ids,$mobile_article_ids);
             $this->html_precent= 70/$count;
             if(isset($_GET['test6'])){
