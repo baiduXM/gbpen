@@ -217,6 +217,12 @@ class ClassifyController extends BaseController {
             }
             if (Input::has('page_content') && Input::get('page_content') != 'undefined') {
                 $page_content = Input::get('page_content');
+                //===ueditor保存===
+                if (!empty($classify->file_array)) {
+                    CapacityController::compare_filename($page_content, $classify->file_array);
+                }
+                $file_array = CapacityController::reg_ueditor_content($page_content);
+                //===end===
 //                $file_array = CapacityController::reg_ueditor_content($page_content);
 //                $file_array = '';
                 if ($page_id) {
