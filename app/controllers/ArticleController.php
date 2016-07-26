@@ -73,10 +73,12 @@ class ArticleController extends BaseController {
 		}
 		$article->cus_id = $cus_id;
                 $article->pushed = 1;
+                //===ueditor文件统计容量===
                 if(!empty($article->file_array)){
                     CapacityController::compare_filename($article->content, $article->file_array);
                 }
                 $article->file_array = CapacityController::reg_ueditor_content($article->content);
+                //===end===
 		$result = $article->save();
 		if ($result) {
 			if ($id) {

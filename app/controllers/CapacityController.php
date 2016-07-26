@@ -41,7 +41,7 @@ class CapacityController extends BaseController {
      */
     function init() {
         $customer = Auth::user()->name;
-        $pathf = public_path('customers/' . $customer);
+        $path = public_path('customers/' . $customer);
         $this->tree($path);
 //        echo $this->format_bytes($this->size);
     }
@@ -194,6 +194,7 @@ class CapacityController extends BaseController {
                 }
             }
             $this->change_capa($size, 'use');
+
             $file_str = implode(',', $file_array);
         }
         return $file_str;
