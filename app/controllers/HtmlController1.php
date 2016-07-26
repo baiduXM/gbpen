@@ -233,12 +233,15 @@ class HtmlController1 extends BaseController{
             ob_flush();
             flush();
         foreach((array)$pc_classify_ids as $id){
-            echo "c_ids:";
+            echo "id:";
             var_dump($id);
             ob_flush();
             flush();
             $c_ids=explode(',',ltrim($template->getChirldenCid($id,1)));
-            
+            echo "c_ids:";
+            var_dump($c_ids);
+            ob_flush();
+            flush();
             $a_c_type = Classify::where('id',$id)->pluck('type');//取得栏目的type
             $pc_page_count_switch = CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_count_switch');//页面图文列表图文显示个数是否分开控制开关
             if(isset($pc_page_count_switch)&&$pc_page_count_switch==1&&$a_c_type<=3){

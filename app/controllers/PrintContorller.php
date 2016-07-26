@@ -3230,10 +3230,18 @@ class PrintController extends BaseController {
         }else{
             $cids = Classify::where('p_id', $cid)->where($this->type.'_show', $show)->OrderBy('sort', 'asc')->lists('id');
         }
+        if(isset($_GET['test'])){
+            echo "cids:";
+            var_dump($cids);
+        }
         if (!empty($cids)) {
             foreach ((array) $cids as $v) {
                 $result.= ',' . $this->getChirldenCid($v,$show);
             }
+        }
+        if(isset($_GET['test'])){
+            echo "result:";
+            var_dump($result);
         }
         return $result;
     }
