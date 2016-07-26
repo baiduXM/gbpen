@@ -219,8 +219,9 @@ class ClassifyController extends BaseController {
                 $page_content = Input::get('page_content');
                 //===ueditor保存===
                 $Capacity = new CapacityController();
-                if (!empty($classify->file_array)) {
-                    $Capacity->compare_filename($page_content, $classify->file_array);
+                $page = Page::find($page_id);
+                if (!empty($page->file_array)) {
+                    $Capacity->compare_filename($page_content, $page->file_array);
                 }
                 $file_array = $Capacity->reg_ueditor_content($page_content);
                 //===end===
