@@ -233,7 +233,7 @@ class HtmlController1 extends BaseController{
             ob_flush();
             flush();
         foreach((array)$pc_classify_ids as $id){
-            $c_ids=explode(',',$template->getChirldenCid($id,1));
+            $c_ids=explode(',',ltrim($template->getChirldenCid($id,1)));
             echo "c_ids:";
             var_dump($c_ids);
             ob_flush();
@@ -271,6 +271,9 @@ class HtmlController1 extends BaseController{
                         $page_count+=2;
                     }
                 }
+                var_dump($total);
+                ob_flush();
+                flush();
             }else{
                 $total = Articles::whereIn('c_id',$c_ids)->where('cus_id',$this->cus_id)->where('pc_show','1')->count();
                 if($total){
