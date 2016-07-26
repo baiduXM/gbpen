@@ -169,7 +169,7 @@ class CapacityController extends BaseController {
      * @param string $content       html内容
      * @return string $file_str     文件名字符串
      */
-    public static function reg_ueditor_content(string $content) {
+    public static function reg_ueditor_content($content) {
         if (empty($content)) {
             return false;
         }
@@ -198,14 +198,15 @@ class CapacityController extends BaseController {
 
     /**
      * 比较文件名差异，删除不存在文件
-     * 
+     * @param type $new_content
+     * @param type $old_content
      */
     public static function compare_filename($new_content, $old_content) {
         $new_array = explode(',', $this->reg_ueditor_content($new_content));
         $old_array = explode(',', $this->reg_ueditor_content($old_content));
         $diff_array = array_diff($old_array, $new_array); //===返回原来存在的差异===
-        $customer = Auth::user()->name;
         if (!empty($diff_array)) {
+            $customer = Auth::user()->name;
             $size = 0;
             foreach ($diff_array as $value) {
                 $filepath = public_path('customers/' . $customer . '/images/ueditor/' . $value);
