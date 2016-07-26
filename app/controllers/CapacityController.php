@@ -208,7 +208,15 @@ class CapacityController extends BaseController {
     public function compare_filename($new_content, $old_content) {
         $new_array = explode(',', $this->reg_ueditor_content($new_content));
         $old_array = explode(',', $this->reg_ueditor_content($old_content));
+        if (is_array($new_array)) {
+            $new_array = array();
+        }
+        if (is_array($old_array)) {
+            $old_array = array();
+        }
         $diff_array = array_diff($old_array, $new_array); //===返回原来存在的差异===
+        var_dump($diff_array);
+        exit;
         if (!empty($diff_array)) {
             $customer = Auth::user()->name;
             $size = 0;
