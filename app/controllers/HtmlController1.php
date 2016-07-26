@@ -120,6 +120,11 @@ class HtmlController1 extends BaseController{
         }else{
             $publicdata=$this->pushmobile;
         }
+        if(isset($_GET['testc1'])){
+                var_dump($ids);
+                ob_flush();
+                flush();
+            }
         foreach((array)$ids as $id){
             $c_ids=explode(',',$template->getChirldenCid($id,1));
             $a_c_type = Classify::where('id',$id)->pluck('type');//取得栏目的type
