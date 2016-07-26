@@ -964,13 +964,27 @@ class PrintController extends BaseController {
             }
             $headscript = $customer_info->pc_header_script;
 //            $headscript .= $language_css;
+            //===版权选择===
             if ($customer_info->lang == 'en') {
-               $_copyright= !empty($customer_info->copyright)?$customer_info->copyright:'Xiamen 12t network technology co.ltd';
-                $footprint = $customer_info->footer . '<p>Technology support：<a href="http://www.12t.cn/">'.$_copyright.'</a> Talent support：<a href="http://www.xgzrc.com/">www.xgzrc.com.cn</a></p>';
+                $_copyright = !empty($customer_info->copyright) ? $customer_info->copyright : 'Xiamen 12t network technology co.ltd';
+                $flag = strcasecmp($customer_info->copyright, 'XIAMEN 12t NETWORK TECHNOLOGY CO., LTD.');
+                if ($flag == 0) {
+                    $href = 'http://www.12t.cn/';
+                } else {
+                    $href = 'http://www.ydbaidu.net/';
+                }
+                $footprint = $customer_info->footer . '<p>Technology support：<a href="' . $href . '">' . $_copyright . '</a> Talent support：<a href="http://www.xgzrc.com/">www.xgzrc.com.cn</a></p>';
             } else {
-               $_copyright= !empty($customer_info->copyright)?$customer_info->copyright:'厦门易尔通网络科技有限公司';
-                $footprint = $customer_info->footer . '<p>技术支持：<a href="http://www.12t.cn/">'.$_copyright.'</a> 人才支持：<a href="http://www.xgzrc.com/">厦门人才网</a></p>';
+                $_copyright = !empty($customer_info->copyright) ? $customer_info->copyright : '厦门易尔通网络科技有限公司';
+                $flag = strcasecmp($customer_info->copyright, '厦门易尔通网络科技有限公司');
+                if ($flag == 0) {
+                    $href = 'http://www.12t.cn/';
+                } else {
+                    $href = 'http://www.ydbaidu.net/';
+                }
+                $footprint = $customer_info->footer . '<p>技术支持：<a href="' . $href . '">' . $_copyright . '</a> 人才支持：<a href="http://www.xgzrc.com/">厦门人才网</a></p>';
             }
+            //===end===
             $footscript = $customer_info->pc_footer_script;
             $footscript .= '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/quickbar.js?' . $this->cus_id . 'pc"></script>';
 //            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/js/statis.js?' . $this->cus_id . 'pc"></script>'; //===添加统计代码PC===
