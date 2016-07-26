@@ -638,6 +638,10 @@ class HtmlController1 extends BaseController{
         $pushqueue->id=$maxpushid?$maxpushid+1:1;
         $pushqueue->pushtime=time();
         $pushqueue->cus_id=$this->cus_id;
+        if(isset($_GET['test1'])){
+            var_dump(1);
+            exit();
+        }
         if($pushqueuecount<3){
             $pushqueue->push=1;
             $pushqueue->save();
@@ -729,7 +733,11 @@ class HtmlController1 extends BaseController{
                     }
                 }
             }
-        }   
+        }
+        if(isset($_GET['test2'])){
+            var_dump(1);
+            exit();
+        }
     }
     private function clearpushqueue(){
         PushQueue::where('pushtime','<',time()-60)->delete();
@@ -748,6 +756,10 @@ class HtmlController1 extends BaseController{
             echo '没有文章不可推送<script type="text/javascript">alert("没有文章不可推送");parent.refresh("没有文章不可推送");</script><br />';
             ob_flush();
             flush();
+            exit();
+        }
+        if(isset($_GET['test'])){
+            var_dump(1);
             exit();
         }
         if(!isset($_GET['gradpush'])){
@@ -770,6 +782,8 @@ class HtmlController1 extends BaseController{
         var_dump('mobilepush:'.$this->mobilepush);
         var_dump('quickbarpush:'.$this->quickbarpush);
         var_dump('mobilehomepagepush:'.$this->mobilehomepagepush);
+        ob_flush();
+        flush();
         $this->pushinit();
         if($this->quickbarpush){
             $this->pushQuickbar();
