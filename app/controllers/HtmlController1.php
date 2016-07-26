@@ -227,6 +227,7 @@ class HtmlController1 extends BaseController{
          $template = new PrintController();
         $page_count = 2;
         $pc_per_page = CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_page_count');
+        if(!empty($pc_classify_ids)){
         foreach((array)$pc_classify_ids as $id){
             $c_ids=explode(',',$template->getChirldenCid($id,1));
             $a_c_type = Classify::where('id',$id)->pluck('type');//取得栏目的type
@@ -273,7 +274,9 @@ class HtmlController1 extends BaseController{
             }
 
         }
+        }
         $mobileper_page = CustomerInfo::where('cus_id',$this->cus_id)->pluck('mobile_page_count');
+        if(!empty($mobile_classify_ids)){
         foreach((array)$mobile_classify_ids as $id){
             $c_ids=explode(',',$template->getChirldenCid($id,1));
             $total = Articles::whereIn('c_id',$c_ids)->where('cus_id',$this->cus_id)->where('mobile_show','1')->count();
@@ -284,6 +287,7 @@ class HtmlController1 extends BaseController{
                 $page_count++;
             }
             
+        }
         }
         $page_count +=count($pc_article_ids);
         $page_count +=count($mobile_article_ids);
