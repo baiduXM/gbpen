@@ -271,7 +271,7 @@ class HtmlController1 extends BaseController{
                         $page_count+=2;
                     }
                 }
-                var_dump($total);
+                var_dump($page_count);
                 ob_flush();
                 flush();
             }else{
@@ -285,6 +285,9 @@ class HtmlController1 extends BaseController{
             }
 
         }
+        var_dump($page_count);
+                ob_flush();
+                flush();
         }
         $mobileper_page = CustomerInfo::where('cus_id',$this->cus_id)->pluck('mobile_page_count');
         if(!empty($mobile_classify_ids)){
