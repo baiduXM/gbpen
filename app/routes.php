@@ -447,11 +447,6 @@ Route::group(array('before' => 'auth'), function() {
         'uses' => 'CustomerController@isSwitchcus'
     ]);
     //===end===
-    //===ueditor正则规则===
-    Route::any('ueditor-reg', [//
-        'uses' => 'CustomerController@isSwitchcus'
-    ]);
-    //===end===
     //-----------留言板--------
     Route::get('feedback-data', [//获取表单数据
         'uses' => 'FeedbackController@getFeedbackData'
