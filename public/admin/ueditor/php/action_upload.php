@@ -54,6 +54,8 @@ switch (htmlspecialchars($_GET['action'])) {
         $fieldName = $CONFIG['fileFieldName'];
         break;
 }
+//$test=array('sta',1);
+//return json_encode($test);
 
 /* 生成上传实例对象并完成上传 */
 $up = new Uploader($fieldName, $config, $base64);
@@ -70,11 +72,15 @@ if ($up_result['state'] == 'SUCCESS') {
         /* 编辑器上传图片问题 */
         ftp_pasv($conn, 1);
         //===扣除空间===
+//                customers/$cus_name/images/ueditor/
 //        $size = filesize(public_path('customers/' . $cus_name . '/images/ueditor/' . $up_result['title']));
-//        $cus = new CustomerController;
-//        if (!$cus->change_capa($size, 'use')) {
+//        $reg=ueditor_regular(1024);
+//        $cus = new CapacityController;
+//        if (!$cus->change_capa($reg, 'use')) {
 //            return Response::json(['err' => 1001, 'msg' => '容量不足', 'data' => []]);
 //        }
+//        var_dump($reg);
+//        exit;
         //===扣除空间end===
         ftp_put($conn, $cus_name . '/' . 'images/ueditor/' . $up_result['title'], public_path('customers/' . $cus_name . '/images/ueditor/' . $up_result['title']), FTP_BINARY);
         ftp_put($conn, $cus_name . '/' . 'mobile/images/ueditor/' . $up_result['title'], public_path('customers/' . $cus_name . '/images/ueditor/' . $up_result['title']), FTP_BINARY);

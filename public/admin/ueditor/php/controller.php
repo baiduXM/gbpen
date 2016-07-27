@@ -44,7 +44,11 @@ switch ($action) {
         ));
         break;
 }
-
+//echo 1;
+//===test===
+//$capacity = new CapacityController;
+//$capacity->test('$up_result');
+//===end===
 /* 输出结果 */
 if (isset($_GET["callback"])) {
     if (preg_match("/^[\w_]+$/", $_GET["callback"])) {

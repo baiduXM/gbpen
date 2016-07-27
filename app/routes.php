@@ -49,7 +49,6 @@ Route::group(array('before' => 'auth'), function() {
         'as' => 'statis',
         'uses' => 'StatisController@getCount'
     ]);
-
     //===获取用户统计数据-end===
 
     Route::get('log-out', [//用户登出
@@ -67,11 +66,19 @@ Route::group(array('before' => 'auth'), function() {
         'as' => 'customer-setting',
         'uses' => 'CustomerController@customerSetting'
     ]);
-    Route::get('customer-capacity', [//保存用户信息
-        'uses' => 'CustomerController@getCapacity'
+    //===容量====
+    Route::get('capacity-info', [//保存用户信息
+        'uses' => 'CapacityController@getInfo'
     ]);
-
     
+    Route::any('capacity-init', [//初始化容量
+        'uses' => 'CapacityController@init'
+    ]);
+    
+    Route::any('capacity-release', [//释放空间
+        'uses' => 'CapacityController@release'
+    ]);
+    //===end===
 
     //-----------------------------------------------
     //--------------------栏目路由--------------------
@@ -447,6 +454,11 @@ Route::group(array('before' => 'auth'), function() {
         'uses' => 'SignController@autoLogin'
     ]);
     Route::any('init-bind', [//查看是否有绑定双用户
+        'uses' => 'CustomerController@isSwitchcus'
+    ]);
+    //===end===
+    //===ueditor正则规则===
+    Route::any('ueditor-reg', [//
         'uses' => 'CustomerController@isSwitchcus'
     ]);
     //===end===

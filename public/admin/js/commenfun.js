@@ -255,7 +255,7 @@ WarningBox.prototype = {
                     //===检测空间容量是否充足===
                     //file.size是要目标图片的大小，和裁剪后的保存图片大小不同
                     //TODO
-                    if (/^image\/\w+$/.test(file.type)||/^image\/x\-\w+$/.test(file.type)) {
+                    if (/^image\/\w+$/.test(file.type) || /^image\/x\-\w+$/.test(file.type)) {
                         blobURL = URL.createObjectURL(file);
                         $image.one('built.cropper', function () {
                             URL.revokeObjectURL(blobURL); // Revoke when load complete
@@ -481,12 +481,12 @@ WarningBox.prototype = {
                 dataType: 'json',
                 cache: false,
                 success: function (json) {
-                    if (json.err) {//有错误!=0
-                        alert(json.msg);
-                    } else {
-                        get_capacity();
-                        oncallback(json);
-                    }
+//                    if (json.err) {//有错误!=0
+//                        alert(json.msg);
+//                    } else {
+//                        get_capacity();
+                    oncallback(json);
+//                    }
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
                     alert(textStatus || errorThrown);
@@ -590,15 +590,15 @@ function column_type(type) {
 }
 // 错误验证
 function checkJSON(json, callback, fail_callback) {
-	if (json.err == 0) {
-		typeof(callback) === 'function' ? callback(json) : null;
-	} else if (json.err == 401) {
-		alert('登入失效！');
-		location.hash = 'login';
-	} else {
-		alert(json.msg);
-		typeof(callback) === 'function' ? fail_callback == undefined ? null : fail_callback(json) : null;
-	}
+    if (json.err == 0) {
+        typeof (callback) === 'function' ? callback(json) : null;
+    } else if (json.err == 401) {
+        alert('登入失效！');
+        location.hash = 'login';
+    } else {
+        alert(json.msg);
+        typeof (callback) === 'function' ? fail_callback == undefined ? null : fail_callback(json) : null;
+    }
 }
 //保存提示效果
 var Hint_box = function (text) {
@@ -737,7 +737,7 @@ function insertText(obj, str) {
 }
 
 /**
- * 获取url参数
+ * ===获取url参数===
  * @returns {string}
  */
 function getUrlParam(name) {
@@ -749,3 +749,80 @@ function getUrlParam(name) {
         return null; //返回参数值
     }
 }
+
+/**
+ * ===初始化容量===
+ * @returns {undefined}
+ */
+function init_capacity() {
+    $('#capacity_div').html('已用容量/总容量：<span id="capacity_use">-</span>/<span id="capacity">-</span>');
+    get_capacity();
+}
+
+/**
+ * ===获取容量信息===
+ * @returns {undefined}
+ */
+function get_capacity() {
+    $.get('../capacity-info', function (json) {
+//        console.log(json);
+//        console.log('capacity-info');
+        var data = json.data;
+        if (json.err == 0) {
+            $('#capacity_use').html(data.capacity_use);
+            $('#capacity').html(data.capacity);
+        } else {
+            $('#capacity_use').html(data.capacity_use);
+            $('#capacity').html(data.capacity);
+            $('#capacity_use').css('color', 'red');
+        }
+    });
+}
+
+/**
+ * ===查看是否有双账号用户===
+ * @returns {undefined}
+ */
+function init_bind() {
+    $.get('../init-bind', function (json) {
+        if (json != 0) {
+            var img = '<img src="images/switch_account.png" style="width:16px;" title="双站切换" />';
+            $('#switch_bind').html(img);
+            $('#switch_bind').attr('data-cusid', json);
+        }
+    });
+}
+
+/**
+ * ===获取绑定账号===
+ * @returns {undefined}
+ */
+function get_bind_account() {
+    var cusid = $('#switch_bind').attr('data-cusid');
+    $.post('../bind-auto-login', {switch_cus_id: cusid}, function (json) {
+        if (json.err) {
+            alert(json.msg);
+        } else {
+            location.href = json.msg;
+        }
+    });
+}
+
+/**
+ * ===ueditor编辑器，获取文件存储名===
+ * @param {type} html
+ * @returns {undefined}
+ */
+function ueditor_regular(html) {
+    //
+//    var i=1;
+//    j\k\l\m\n
+//ueditor/php/(\w|/)*.(\w)+
+//    $.get('../');
+//    var editor = UE.getEditor('container');
+//    var _html = editor.getContent()
+//    console.log(_html);
+//    return html;
+}
+
+

@@ -511,7 +511,7 @@ function columnController($scope, $http) {
                     var vform_id = $('#form_select').val() ? $('#form_select').val() : 0;
                     var s_t = new Array();
                     var j = 0;
-                    var open_page=$('#out_url select').val();
+                    var open_page = $('#out_url select').val();
                     $('.sites input[type="checkbox"]').each(function (i) {
                         if ($(this).siblings('label').hasClass('chirdchecked')) {
                             s_t[j] = $(this).val();
@@ -537,13 +537,14 @@ function columnController($scope, $http) {
                         img_upload.push($(this).data('name'));
                     });
                     var savePostRequest = function (first) {
+//                        alert('保存uedit3');
                         $http.post('../classify-modify', {id: id,
                             p_id: vpid,
                             name: vname,
                             en_name: enname,
                             type: vlayout,
                             url: vurl,
-                            open_page:open_page,
+                            open_page: open_page,
                             is_show: s_t,
                             keywords: vkeywords,
                             description: vdescription,
@@ -782,6 +783,14 @@ function columnController($scope, $http) {
             });
             //删除图片
             $('.column_pic').on('click', '.preview-close', function () {
+//                    console.log(_this);
+//                    console.log('_this');
+                //===空间容量===
+//                $.get('../capacity-release', {picname: _this.upload_picname,data:_this}, function (json) {
+//                    console.log(json);
+//                    console.log('_json');
+//                });
+                //===end===
                 $(this).parents('.template-download').remove();
                 _this.upload_picname = '';
                 return false;

@@ -29,6 +29,7 @@ class Classify extends Eloquent {
 
 	public function toTree($arr, $pid = 0) {
 		$tree = array();
+               // var_dump($arr);exit();
 		foreach ($arr as $k => $v) {
                         if($v['type']==6){
                             if(empty($v['open_page'])){

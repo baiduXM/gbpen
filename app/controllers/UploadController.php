@@ -155,6 +155,10 @@ class UploadController extends BaseController {
         }
     }
 
+    /**
+     * ===点击保存按钮后动作===
+     * @return type
+     */
     public function img_upload() {
         $customer = Auth::user()->name;
         $cus_id = Auth::id();
@@ -177,9 +181,11 @@ class UploadController extends BaseController {
             $ftp = $customerinfo->ftp;
             $ftp_array[1] = isset($ftp_array[1]) ? $ftp_array[1] : $port;
             $conn = ftp_connect($ftp_array[0], $ftp_array[1]);
-
+            $filesize = 0; //===文件大小===
             foreach ((array) $files as $fileName) {
-                if (file_exists(public_path('customers/' . $customer . '/cache_images/' . $fileName))) {
+                $filepath = public_path('customers/' . $customer . '/cache_images/' . $fileName);
+                if (file_exists($filepath)) {
+                    $filesize += filesize($filepath); //===累加大小
                     $file = explode('.', $fileName);
                     $type = end($file);
                     $up_result = copy(public_path('customers/' . $customer . '/cache_images/' . $fileName), $destinationPath . '/l/' . $target . '/' . $fileName);
@@ -203,43 +209,11 @@ class UploadController extends BaseController {
                             ftp_login($conn, $customerinfo->ftp_user, $customerinfo->ftp_pwd);
                             ftp_pasv($conn, 1);
                             if (trim($ftp) == '1') {
-//                                $ftpdirarray=array($customer . '/images/l/' . $target . '/' . $fileName, $destinationPath . '/l/' . $target,
-//                                    $customer . '/images/s/' . $target . '/' . $fileName, $destinationPath . '/s/' . $target,
-//                                    $customer . '/mobile/images/l/' . $target . '/' . $fileName, public_path('customers/' . $customer . '/mobile/images/l/') . $target,
-//                                    $customer . '/mobile/images/s/' . $target . '/' . $fileName, public_path('customers/' . $customer . '/mobile/images/s/') . $target);
-//                                foreach($ftpdirarray as $val){
-//                                    if(ftp_nlist($conn, $val)==FALSE){
-//                                        if(ftp_nlist($conn, $customer)==FALSE){
-//                                            ftp_mkdir($conn, $customer);
-//                                        }
-//                                        ftp_put($conn,$customer."/unzip.php",public_path("packages/unzip.php"),FTP_ASCII);
-//                                        ftp_put($conn,$customer."/site.zip",public_path('packages/customernull.zip'),FTP_BINARY);
-//                                        @file_get_contents('http://'.$customer . $suf_url."/unzip.php");
-//                                    }
-//                                }
                                 ftp_put($conn, $customer . '/images/l/' . $target . '/' . $fileName, $destinationPath . '/l/' . $target . '/' . $fileName, FTP_BINARY);
                                 ftp_put($conn, $customer . '/images/s/' . $target . '/' . $fileName, $destinationPath . '/s/' . $target . '/' . $fileName, FTP_BINARY);
                                 ftp_put($conn, $customer . '/mobile/images/l/' . $target . '/' . $fileName, public_path('customers/' . $customer . '/mobile/images/l/') . $target . '/' . $fileName, FTP_BINARY);
                                 ftp_put($conn, $customer . '/mobile/images/s/' . $target . '/' . $fileName, public_path('customers/' . $customer . '/mobile/images/s/') . $target . '/' . $fileName, FTP_BINARY);
                             } else {
-//                                $ftpdirarray=array($ftpdir . '/images/l/' . $target . '/' . $fileName, $destinationPath . '/l/' . $target,
-//                                    $ftpdir . '/images/s/' . $target . '/' . $fileName, $destinationPath . '/s/' . $target,
-//                                    $ftpdir . '/mobile/images/l/' . $target . '/' . $fileName, public_path('customers/' . $customer . '/mobile/images/l/') . $target,
-//                                    $ftpdir . '/mobile/images/s/' . $target . '/' . $fileName, public_path('customers/' . $customer . '/mobile/images/s/') . $target);
-//                                foreach($ftpdirarray as $val){
-//                                    if(ftp_nlist($conn, $val)==FALSE){
-//                                        if(ftp_nlist($conn, $ftpdir)==FALSE){
-//                                            ftp_mkdir($conn, $ftpdir);
-//                                        }
-//                                        if(ftp_nlist($conn, $ftpdir.'/mobile')==FALSE){
-//                                            ftp_mkdir($conn, $ftpdir.'/mobile');
-//                                        }
-//                                        $domain = strlen(str_replace('http://', '', $customerinfo->pc_domain))>0? $customerinfo->pc_domain.'/mobile' : $customerinfo->mobile_domain;
-//                                        ftp_put($conn,$ftpdir."/mobile/m_unzip.php",public_path("packages/m_unzip.php"),FTP_ASCII);
-//                                        ftp_put($conn,$ftpdir."/mobile/site.zip",public_path('packages/customernull.zip'),FTP_BINARY);
-//                                        @file_get_contents("$domain/m_unzip.php");
-//                                    }
-//                                }
                                 ftp_put($conn, $ftpdir . '/' . 'images/l/' . $target . '/' . $fileName, $destinationPath . '/l/' . $target . '/' . $fileName, FTP_BINARY);
                                 ftp_put($conn, $ftpdir . '/' . 'images/s/' . $target . '/' . $fileName, $destinationPath . '/s/' . $target . '/' . $fileName, FTP_BINARY);
                                 ftp_put($conn, $ftpdir . '/' . 'mobile/images/l/' . $target . '/' . $fileName, public_path('customers/' . $customer . '/mobile/images/l/') . $target . '/' . $fileName, FTP_BINARY);
@@ -253,6 +227,10 @@ class UploadController extends BaseController {
                     }
                 }
             }
+            //===扣除空间容量===
+            $Capacity = new CapacityController;
+            $Capacity->change_capa($filesize, 'use');
+            //===end===
             @ftp_close($conn);
             return Response::json(['err' => 0, 'msg' => '保存成功', 'data' => $data]);
         } else {
@@ -262,6 +240,7 @@ class UploadController extends BaseController {
 
     /**
      * 文件上传
+     * ===点击选择图片后上传===
      */
     public function fileupload() {
         $customer = Auth::user()->name;
@@ -274,7 +253,7 @@ class UploadController extends BaseController {
             $this->CreateAllDir();
             mkdir($dir, 0777, true);
         }
-        $size = 0; //===文件大小
+//        $size = 0; //===文件大小
         if ($files) {
             if ($target == 'imgcache') {
                 $id = $cus_id;
@@ -329,13 +308,6 @@ class UploadController extends BaseController {
             } else {
                 $upload = file_put_contents($dir . '/' . $fileName, base64_decode(preg_replace('/data\:image\/png\;base64\,/i', '', $file)));
             }
-            //===扣除用户空间容量===
-            $size = filesize(public_path('customers/' . $customer . '/cache_images/' . $fileName));
-            $cus = new CustomerController;
-            if (!$cus->change_capa($size, 'use')) {
-                return Response::json(['err' => 1001, 'msg' => '容量不足', 'data' => []]);
-            }
-            //===end===
             if ($upload) {
                 return Response::json(['err' => 0, 'msg' => 'empty($file)&&$upload', 'data' => ['name' => $fileName, 'url' => asset('customers/' . $customer . '/cache_images/' . $fileName), 's_url' => '/images/s/' . $target . '/' . $fileName]]);
             } else {
@@ -343,16 +315,16 @@ class UploadController extends BaseController {
             }
         }
     }
-    private function CreateAllDir(){
+
+    private function CreateAllDir() {
         $customer = Auth::user()->name;
-        $cus_id=Auth::id();
+        $cus_id = Auth::id();
         $weburl = Customer::where('id', $cus_id)->pluck('weburl');
         $suf_url = str_replace('http://c', '', $weburl);
-        if(!file_exists(public_path('customers/' . $customer)))
+        if (!file_exists(public_path('customers/' . $customer)))
             mkdir(public_path('customers/' . $customer));
-        $zip = new ZipArchive;//新建一个ZipArchive的对象
-        if ($zip->open(public_path('packages/customernull.zip')) === TRUE)
-        {
+        $zip = new ZipArchive; //新建一个ZipArchive的对象
+        if ($zip->open(public_path('packages/customernull.zip')) === TRUE) {
             $zip->extractTo(public_path('customers/' . $customer));
         }
         $zip->close();
@@ -367,27 +339,28 @@ class UploadController extends BaseController {
             ftp_login($conn, $customerinfo->ftp_user, $customerinfo->ftp_pwd);
             ftp_pasv($conn, 1);
             if (trim($ftp) == '1') {
-                if(ftp_nlist($conn, $customer)===FALSE){
+                if (ftp_nlist($conn, $customer) === FALSE) {
                     ftp_mkdir($conn, $customer);
                 }
-                ftp_put($conn,$customer."/unzip.php",public_path("packages/unzip.php"),FTP_ASCII);
-                ftp_put($conn,$customer."/site.zip",public_path('packages/customernull.zip'),FTP_BINARY);
-                @file_get_contents('http://'.$customer . $suf_url."/unzip.php");
+                ftp_put($conn, $customer . "/unzip.php", public_path("packages/unzip.php"), FTP_ASCII);
+                ftp_put($conn, $customer . "/site.zip", public_path('packages/customernull.zip'), FTP_BINARY);
+                @file_get_contents('http://' . $customer . $suf_url . "/unzip.php");
             } else {
-                if(ftp_nlist($conn, $ftpdir)===FALSE){
+                if (ftp_nlist($conn, $ftpdir) === FALSE) {
                     ftp_mkdir($conn, $ftpdir);
                 }
-                if(ftp_nlist($conn, $ftpdir.'/mobile')===FALSE){
-                    ftp_mkdir($conn, $ftpdir.'/mobile');
+                if (ftp_nlist($conn, $ftpdir . '/mobile') === FALSE) {
+                    ftp_mkdir($conn, $ftpdir . '/mobile');
                 }
-                $domain = strlen(str_replace('http://', '', $customerinfo->pc_domain))>0? $customerinfo->pc_domain.'/mobile' : $customerinfo->mobile_domain;
-                ftp_put($conn,$ftpdir."/mobile/m_unzip.php",public_path("packages/m_unzip.php"),FTP_ASCII);
-                ftp_put($conn,$ftpdir."/mobile/site.zip",public_path('packages/customernull.zip'),FTP_BINARY);
+                $domain = strlen(str_replace('http://', '', $customerinfo->pc_domain)) > 0 ? $customerinfo->pc_domain . '/mobile' : $customerinfo->mobile_domain;
+                ftp_put($conn, $ftpdir . "/mobile/m_unzip.php", public_path("packages/m_unzip.php"), FTP_ASCII);
+                ftp_put($conn, $ftpdir . "/mobile/site.zip", public_path('packages/customernull.zip'), FTP_BINARY);
                 @file_get_contents("$domain/m_unzip.php");
             }
             ftp_close($conn);
         }
     }
+
     private function check_dir($dirName, $customer) {
         $path_arr = array(
             public_path("customers/$customer/images/l/$dirName"),
@@ -441,6 +414,5 @@ class UploadController extends BaseController {
         }
         imagedestroy($canvas);
     }
-
 
 }
