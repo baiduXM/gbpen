@@ -220,6 +220,9 @@ class ClassifyController extends BaseController {
                 //===ueditor保存===
                 $page = Page::find($page_id);
                 $Capacity = new CapacityController();
+                var_dump($page_content);
+                var_dump($page->file_array);
+                exit;
                 $Capacity->compare_filename($page_content, $page->file_array);
                 $file_array = $Capacity->reg_ueditor_content($page_content);
                 //===end===
