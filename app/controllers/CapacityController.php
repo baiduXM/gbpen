@@ -79,7 +79,7 @@ class CapacityController extends BaseController {
         $customer_info = CustomerInfo::where('cus_id', $cus_id)->first();
         $capacity = $customer_info->capacity;
         $capacity_use = $customer_info->capacity_use;
-        if ($customer_info->init_capacity == 0 && $capacity_use == 0) {//===如果容量使用为0，则初始化===
+        if ($customer_info->init_capacity == 0) {//===如果容量使用为0，则初始化===
             $this->init();
             $capacity_use = $this->size;
             $this->setCapacity($capacity_use, $capacity);
