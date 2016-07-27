@@ -84,7 +84,7 @@ function articleController($scope, $http ,$location) {
                                             <dl class="fl checkclass">\n\
                                                 <input type="checkbox" name="checks" value="Bike1" style=" display:none;">\n\
                                                 <label class="label"></label>\n\
-                                                </dl><div class="tit_info"><input type="hidden" class="imgpre" value="'+v.img[0]+'"><span class="sap_tit">'+v.title+(v.is_star?'</span><img class="tit_pic" />':'</span>')+(v.is_top?'<i class="fa iconfont icon-zhiding mr5 pos_bule"></i>':'')+'</div>\n\
+                                                </dl><div class="tit_info"><input type="hidden" class="imgpre" value="'+v.img[0]+'"><input type="text" data-id="'+v.id+'" class="title_modify" style="display:none;" value='+v.title+' /><span class="sap_tit">'+v.title+(v.is_star?'</span><img class="tit_pic" />':'</span>')+(v.is_top?'<i class="fa iconfont icon-zhiding mr5 pos_bule"></i>':'')+'</div>\n\
                                         </td>\n\
                                         <td>'+v.c_name+'</td>\n\
                                         <td>'+v.viewcount+'</td>\n\
@@ -129,11 +129,11 @@ function articleController($scope, $http ,$location) {
                     $("#Pagination").pagination(page_num2);
                 } // if判断结束
                 $('body').append('<img id="imgpre" style="display:none;width:100px;" src="images/logo.png" />');
-                $('tr .tit_info').mouseover(function(e){
+                $('tr .sap_tit').mouseover(function(e){
                     var x = e.pageX;
                     var y = e.pageY-$('body').scrollTop();
                     
-                    var imgpre=$(this).children("input").val();
+                    var imgpre=$(this).parent('div').find(".imgpre").val();
                     if(imgpre.length){
                          $('#imgpre').show();
                         $('#imgpre').attr('src',json.data.source_dir+imgpre);
@@ -144,10 +144,30 @@ function articleController($scope, $http ,$location) {
                         });
                     }
                 });
-                $('tr .tit_info').mouseout(function(){
+                $('tr .sap_tit').mouseout(function(){
                     $('#imgpre').hide();
                 });
-                
+                //文章标题修改
+                $(".tit_info .sap_tit").click(function(){
+                    $(this).hide();
+                    $(this).parent('div').find(".title_modify").show();
+                    $(this).parent('div').find(".title_modify").focus().val($(this).parent('div').find(".title_modify").val());
+                });
+                $(".title_modify").blur(function(){
+                    if($(this).val()!==$(this).parent("div").find(".sap_tit").text()){
+                        $(this).parent("div").find(".sap_tit").text($(this).val());
+                        var title=$(this).val();
+                        var id =$(this).data("id");
+                        $http.post('../article-title-modify', {id: id,title:title}).success(function(json) {
+                                checkJSON(json, function(json){
+                                    var hint_box = new Hint_box();
+                                    hint_box;
+                                });
+                            });
+                    }
+                    $(this).parent("div").find(".sap_tit").show();
+                    $(this).hide();
+                });
             }); // checkJSON结束
         });
     };
@@ -362,16 +382,17 @@ function articleController($scope, $http ,$location) {
             });
         },
         _sort : function(){
+            //排序设置
             $('.a-table').on('change','.sort',function(){
                 var id,sort;
                 id=$(this).data('id');
                 sort=$(this).val();
                 $http.post('../article-sort-modify', {id: id,sort:sort}).success(function(json) {
                                 checkJSON(json, function(json){
-                                    $('.a-table').children().remove();
-                                    $scope.getArticleList({
-                                        first : false
-                                    });
+//                                    $('.a-table').children().remove();
+//                                    $scope.getArticleList({
+//                                        first : false
+//                                    });
                                     var hint_box = new Hint_box();
                                     hint_box;
                                 });

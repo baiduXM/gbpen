@@ -16,6 +16,7 @@ class ArticleController extends BaseController {
 	  |articleBatchModify  文章批量设置
 	  |articleSortModify   文章顺序修改
 	  |articleBatchAdd   文章批量添加
+          |articleTitleModify   文章标题修改
 	 */
 
 	public function articleAdd() {
@@ -176,6 +177,18 @@ class ArticleController extends BaseController {
 		$id = Input::get('id');
 		$sort = Input::get('sort');
 		$result = Articles::where('id', $id)->where('cus_id', $cus_id)->update(['sort' => $sort,'pushed'=>1]);
+		if ($result) {
+			return Response::json(['err' => 0, 'msg' => '修改成功']);
+		} else {
+			return Response::json(['err' => 3001, 'msg' => '修改失败']);
+		}
+	}
+        
+        public function articleTitleModify() {
+		$cus_id = Auth::id();
+		$id = Input::get('id');
+                $title = Input::get('title');
+		$result = Articles::where('id', $id)->where('cus_id', $cus_id)->update(['title' => $title,'pushed'=>1]);
 		if ($result) {
 			return Response::json(['err' => 0, 'msg' => '修改成功']);
 		} else {

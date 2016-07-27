@@ -136,7 +136,7 @@ function addarticleController($scope, $http, $location) {
                     var id = G_id;
                     var _newpic = '',
                         d = json.data;
-                    $('.creat_time').val(d.updated_at);
+                    $('.creat_time').val(d.created_at);
                     $('.visit').val(d.viewcount);
                     if(d.pc_show == 1){
                         $('.is_show input[value=pc_show]').attr('checked','true');
