@@ -20,7 +20,7 @@
  *      ？添加图片：添加新图片即扣除容量。可能造成容量不足。
  *      更换图片：更换图片原理删除原图，添加新图，结算空间时间同“添加图片”操作。
  *  ·ueditor上传图片
- *      文章ueditor：
+ *      文章ueditor：对比当前内容和数据库存储内容，进行适用释放空间
  * 
  * 数据库：
  *      表up_customer_info、添加init_capacity字段：是否初始化:0-未初始化，1-已初始化
@@ -186,15 +186,6 @@ class CapacityController extends BaseController {
             }
         }
         if (!empty($file_array)) {
-            $size = 0;
-            foreach ($file_array as $value) {
-                $filepath = public_path('customers/' . $customer . '/images/ueditor/' . $value);
-                if (is_file($filepath)) {
-                    $size += filesize($filepath);
-                }
-            }
-            $this->change_capa($size, 'use');
-
             $file_str = implode(',', $file_array);
         }
         return $file_str;
@@ -203,10 +194,10 @@ class CapacityController extends BaseController {
     /**
      * 比较文件名差异，删除不存在文件
      * @param type $new_content
+     *      string
      * @param type $old_content
      */
-    public function compare_filename($new_content, $old_content) {
-
+    public function compare_filename($new_content = '', $old_content = '') {
         $new_array = explode(',', $this->reg_ueditor_content($new_content));
         $old_array = explode(',', $old_content);
         if (!is_array($new_array)) {
@@ -215,17 +206,28 @@ class CapacityController extends BaseController {
         if (!is_array($old_array)) {
             $old_array = array();
         }
-        $diff_array = array_diff($old_array, $new_array); //===返回原来存在的差异===
-        if (!empty($diff_array)) {
-            $customer = Auth::user()->name;
-            $size = 0;
-            foreach ($diff_array as $value) {
+        $customer = Auth::user()->name;
+        $free_array = array_diff($old_array, $new_array); //===删除的文件名===
+        if (!empty($free_array)) {
+            $free_size = 0;
+            foreach ($free_array as $value) {
                 $filepath = public_path('customers/' . $customer . '/images/ueditor/' . $value);
                 if (is_file($filepath)) {
-                    $size += filesize($filepath);
+                    $free_size += filesize($filepath);
                 }
             }
-            $this->change_capa($size, 'free');
+            $this->change_capa($free_size, 'free');
+        }
+        $use_array = array_diff($new_array, $old_array); //===新增的文件名===
+        if (!empty($use_array)) {
+            $use_size = 0;
+            foreach ($use_array as $value) {
+                $filepath = public_path('customers/' . $customer . '/images/ueditor/' . $value);
+                if (is_file($filepath)) {
+                    $use_size += filesize($filepath);
+                }
+            }
+            $this->change_capa($use_size, 'use');
         }
     }
 
