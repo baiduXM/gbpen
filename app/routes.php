@@ -221,17 +221,17 @@ Route::group(array('before' => 'auth'), function() {
     ])->where('id', '[0-9]+');
 
     Route::get('checkChange', [
-        'uses' => 'HTMLController@checkChange'
+        'uses' => 'HTMLController1@checkChange'
     ]);
 
     Route::get('pushold', [
-        'uses' => 'HTMLController@pushPrecent'
+        'uses' => 'HTMLController1@pushPrecent'
     ]);
     Route::get('push', [
         'uses' => 'HTMLController1@pushPrecent'
     ]);
     Route::get('isneedpush', [
-        'uses' => 'HTMLController@isNeedPush'
+        'uses' => 'HTMLController1@isNeedPush'
     ]);
     /*
       Route::get('push',[
