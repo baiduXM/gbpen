@@ -221,17 +221,17 @@ Route::group(array('before' => 'auth'), function() {
     ])->where('id', '[0-9]+');
 
     Route::get('checkChange', [
-        'uses' => 'HTMLController1@checkChange'
+        'uses' => 'HTMLController@checkChange'
     ]);
 
     Route::get('pushold', [
-        'uses' => 'HTMLController1@pushPrecent'
+        'uses' => 'HTMLController@pushPrecent'
     ]);
     Route::get('push', [
-        'uses' => 'HTMLController1@pushPrecent'
+        'uses' => 'HTMLController@pushPrecent'
     ]);
     Route::get('isneedpush', [
-        'uses' => 'HTMLController1@isNeedPush'
+        'uses' => 'HTMLController@isNeedPush'
     ]);
     /*
       Route::get('push',[
@@ -285,7 +285,7 @@ Route::group(array('before' => 'auth'), function() {
     ]);
     Route::get('pushquickbar', [
         'as' => 'pushquickbar',
-        'uses' => 'HtmlController1@pushQuickbar'
+        'uses' => 'HtmlController@pushQuickbar'
     ]);
     Route::get('quickbar.jsoninit', [
         'as' => 'quickbar.jsoninit',

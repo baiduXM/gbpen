@@ -45,7 +45,6 @@ return array(
     'DatabaseSeeder' => $baseDir . '/app/database/seeds/DatabaseSeeder.php',
     'HomeController' => $baseDir . '/app/controllers/HomeController.php',
     'HtmlController' => $baseDir . '/app/controllers/HtmlController.php',
-    'HtmlController1' => $baseDir . '/app/controllers/HtmlController1.php',
     'IlluminateQueueClosure' => $vendorDir . '/laravel/framework/src/Illuminate/Queue/IlluminateQueueClosure.php',
     'MobileHomepage' => $baseDir . '/app/models/MobileHomepage.php',
     'Moreimg' => $baseDir . '/app/models/Moreimg.php',
