@@ -1080,7 +1080,7 @@ function phone_indexController($scope, $http, $location) {
                                 name = $(this).find('.consultation-name').val();
                                 num = $(this).find('.consultation-num').val();
                                 fs = $(this).find('select').val();
-                                info += (name + ':' + num + '@' + fs + (count == 0 ? null : i == count - 1 ? null : '|'));
+                                info += (name + ':' + num + '@' + fs + (count == 0 ? '': i == count - 1 ? '' : '|'));
                             });
                             data = info;
                             data=data?data.toString():'';
