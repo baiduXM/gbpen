@@ -918,12 +918,12 @@ class PrintController extends BaseController {
 
             $tempscript = '<script>'
                     . '$(function(){'
-                    . '$("#header").prepend(\'' . $language_div . '\');'
+                    . '$("#body").prepend(\'' . $language_div . '\');'
                     . '$("#header").css("position","relative");'
                     . '});'
                     . '</script>';
         }
-        $language_css = '<link rel="stylesheet" href="http://swap.5067.org/css/language.css">'; //===
+        $language_css = '<link rel="stylesheet" href="http://swap.5067.org/css/language-test.css">'; //===
         //===显示版本切换链接-end===
         $formC = new FormController();
         if ($this->type == 'pc') {
