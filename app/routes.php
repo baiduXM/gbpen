@@ -228,7 +228,7 @@ Route::group(array('before' => 'auth'), function() {
         'uses' => 'HTMLController@pushPrecent'
     ]);
     Route::get('push', [
-        'uses' => 'HTMLController1@pushPrecent'
+        'uses' => 'HTMLController@pushPrecent'
     ]);
     Route::get('isneedpush', [
         'uses' => 'HTMLController@isNeedPush'
@@ -285,7 +285,7 @@ Route::group(array('before' => 'auth'), function() {
     ]);
     Route::get('pushquickbar', [
         'as' => 'pushquickbar',
-        'uses' => 'HtmlController1@pushQuickbar'
+        'uses' => 'HtmlController@pushQuickbar'
     ]);
     Route::get('quickbar.jsoninit', [
         'as' => 'quickbar.jsoninit',

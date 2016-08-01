@@ -621,7 +621,7 @@ class PrintController extends BaseController {
                     } elseif ($quickbar[$key]['type'] == 'im') {
                         $qq = explode('|', $quickbar[$key]['data']);
                         $qq = explode(':', $qq[0]);
-                        $qq = explode('@', $qq[1]);
+                        $qq = explode('@', (isset($qq[1])?$qq[1]:''));
                         if ($this->type == 'pc') {
                             $quickbar[$key]['link'] = 'http://wpa.qq.com/msgrd?v=3&uin=' . $qq[0] . '&site=qq&menu=yes';
                         } else {
