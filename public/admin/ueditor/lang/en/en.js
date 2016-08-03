@@ -53,13 +53,15 @@ UE.I18N['en'] = {
         'kaiti':'Sim Kai',
         'heiti':'Sim Hei',
         'lishu':'Sim Li',
+        'huawenxingkai':'Sim Kai HuaWen',
         'yahei': 'Microsoft YaHei',
         'andaleMono':'Andale Mono',
         'arial': 'Arial',
         'arialBlack':'Arial Black',
         'comicSansMs':'Comic Sans MS',
         'impact':'Impact',
-        'timesNewRoman':'Times New Roman'
+        'timesNewRoman':'Times New Roman',
+        'calibri':'Calibri'
     },
     'customstyle':{
         'tc':'Title center',

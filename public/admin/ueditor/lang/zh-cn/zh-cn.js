@@ -54,12 +54,14 @@ UE.I18N['zh-cn'] = {
         'heiti':'黑体',
         'lishu':'隶书',
         'yahei':'微软雅黑',
+        'huawenxingkai':'华文行楷',
         'andaleMono':'andale mono',
         'arial': 'arial',
         'arialBlack':'arial black',
         'comicSansMs':'comic sans ms',
         'impact':'impact',
-        'timesNewRoman':'times new roman'
+        'timesNewRoman':'times new roman',
+        'calibri':'Calibri'
     },
     'customstyle':{
         'tc':'标题居中',
