@@ -309,6 +309,10 @@ Route::group(array('before' => 'auth'), function() {
     ]);
     //-----------------------------------------------
     //--------------------模版操作--------------------
+    Route::post('template-upload-zip', [//定制模板上传
+        'as' => 'template-upload-zip',
+        'uses' => 'WebsiteController@templateUploadZip'
+    ]);
     Route::post('template-operate', [//更换操作
         'as' => 'template-operate',
         'uses' => 'WebsiteController@templateChage'

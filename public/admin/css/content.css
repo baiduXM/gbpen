@@ -455,7 +455,9 @@ ul.made_style li.list_a .list_box a.cu{ background:none; color:#d91f1f}
 .made_style_edite .up_load{background: #3878c0;}
 .made_style_edite_top{ height:45px; line-height:45px; overflow:hidden; font-size:16px; color:#3d4455}
 .made_style_edite_top .made_btn{ width:92px; font-size:15px; margin-top:9px; height:34px; display:inline; margin-left:10px; border-radius:5px; text-align:center; line-height:34px; color:#fff;cursor: pointer;}
-.made_style_edite_top .resh_btn{ background:#3878c0}
+.made_style_edite_top .resh_btn,.Upload_btn{ background:#3878c0}
+.Upload_btn .up_pic_btn{position: relative;top: -34px;}
+.Uploadzip{padding: 5px;position: relative;width: 75px;filter: alpha(opacity=100);-moz-opacity: 0;-khtml-opacity: 0;opacity: 0;cursor: default;z-index:99;}
 .made_style_edite_top .Preview_btn{ background:#3d4455}
 .made_edite{ border:1px solid #cccccc; background:#ffffff; height:92%; overflow:hidden; overflow-y:visible; margin:10px auto 0px; padding:15px; color:#666;width: 98%;}
 .made_style .made_left{ float: left; display:inline; height:35px; line-height:35px; margin-left:5px;}
