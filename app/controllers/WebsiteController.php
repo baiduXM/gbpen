@@ -632,18 +632,18 @@ class WebsiteController extends BaseController{
     }
     
     //模板入库
-    public function saveTemplate($truth_name,$tpl_name=''){
+    public function saveTemplate($truth_name,$tpl_name='',$temptype=0){
         if($tpl_name!=''){
             $tpl_exists=Template::where('name',$tpl_name)->first();
             if($tpl_exists){
-                $unpack_resuslt=$this->unpack($truth_name,$tpl_name,true);
+                $unpack_resuslt=$this->unpack($truth_name,$tpl_name,true,$temptype);
             }else{
                 $tpl_exists=false;
-                $unpack_resuslt=$this->unpack($truth_name,$tpl_name,true);
+                $unpack_resuslt=$this->unpack($truth_name,$tpl_name,true,$temptype);
             }
         }else{
             $tpl_exists=false;
-            $unpack_resuslt=$this->unpack($truth_name,$tpl_name,false);
+            $unpack_resuslt=$this->unpack($truth_name,$tpl_name,false,$temptype);
         }
         
         if($unpack_resuslt){
@@ -689,7 +689,7 @@ class WebsiteController extends BaseController{
     } 
     
     //解包并分配模板文件
-    private function unpack($tpl_pack,$tpl_name,$tpl_exists=false){
+    private function unpack($tpl_pack,$tpl_name,$tpl_exists=false,$temptype=0){
         $zip = new ZipArchive;
         if($zip->open(public_path("temp_templates/$tpl_pack"))===true){
             $file_info=pathinfo($tpl_pack);
@@ -715,6 +715,11 @@ class WebsiteController extends BaseController{
             $config_arr=parse_ini_file($dir_site.'/config.ini',true);
             if(!is_array($config_arr)) dd('【config.ini】文件不存在！文件格式说明详见：http://pme/wiki/doku.php?id=ued:template:config');
             $type=$config_arr['Config']['Type'];
+            if($temptype!=0){
+                if($type!=$temptype){
+                    return false;
+                }
+            }
             if($tpl_exists){
                 if(substr_count(strtolower($type),'pc')){
                     $type=1;
@@ -873,7 +878,7 @@ class WebsiteController extends BaseController{
                         else
                             $name = WebsiteInfo::leftJoin('template','mobile_tpl_id','=','template.id')->where('website_info.cus_id',$cus_id)->pluck('name');
                         $tpl_name = $name;
-                        $result = $this->saveTemplate($truth_name,$tpl_name);
+                        $result = $this->saveTemplate($truth_name,$tpl_name,$temptype);
                     }else{
                         $result = ['err'=>1001,'msg'=>'模板覆盖失败'];
                     }
