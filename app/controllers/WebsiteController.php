@@ -715,16 +715,16 @@ class WebsiteController extends BaseController{
             $config_arr=parse_ini_file($dir_site.'/config.ini',true);
             if(!is_array($config_arr)) dd('【config.ini】文件不存在！文件格式说明详见：http://pme/wiki/doku.php?id=ued:template:config');
             $type=$config_arr['Config']['Type'];
-            if($temptype!=0){
-                if($type!=$temptype){
-                    return false;
-                }
-            }
             if($tpl_exists){
                 if(substr_count(strtolower($type),'pc')){
                     $type=1;
                 }else{
                     $type=2;
+                }
+                if($temptype!=0){
+                    if($type!=$temptype){
+                        return false;
+                    }
                 }
                 $tpl_dir=$tpl_name;
                 $new_num='';
