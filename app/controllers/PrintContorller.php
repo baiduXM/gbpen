@@ -3381,7 +3381,7 @@ class PrintController extends BaseController {
             $search_view = $search_view[1];
             //匹配所有查询中循环的值
             preg_match_all('/{[\s]*\$' . $search_view . '[.|\[]([a-z]*)[\]]*}/', $search_foreach[2], $date_replace);
-            $search_view = array('title' => '$title', 'image' => '$image', 'link' => '$link', 'description' => '$description', 'pubdate' => '$pubdate', 'pubtimestamp' => '$pubtimestamp');
+            $search_view = array('title' => '$title', 'image' => '$image', 'link' => '$link', 'description' => '$description', 'pubdate' => '$pubdate', 'pubtimestamp' => '$pubtimestamp','pubymd' => '$pubymd');
             foreach ((array) $date_replace[0] as $k => $v) {
                 $search_content = str_replace($v, 'search_' . $search_view[$date_replace[1][$k]], $search_content);
             }
@@ -3503,7 +3503,7 @@ class PrintController extends BaseController {
             $search_view = $search_view[1];
             //匹配所有查询中循环的值
             preg_match_all('/{[\s]*\$' . $search_view . '[.|\[]([a-z]*)[\]]*}/', $search_foreach[2], $date_replace);
-            $search_view = array('title' => '$title', 'image' => '$image', 'link' => '$link', 'description' => '$description', 'pubdate' => '$pubdate', 'pubtimestamp' => '$pubtimestamp');
+            $search_view = array('title' => '$title', 'image' => '$image', 'link' => '$link', 'description' => '$description', 'pubdate' => '$pubdate', 'pubtimestamp' => '$pubtimestamp','pubymd' => '$pubymd');
             foreach ((array) $date_replace[0] as $k => $v) {
                 $search_content = str_replace($v, 'search_' . $search_view[$date_replace[1][$k]], $search_content);
             }
