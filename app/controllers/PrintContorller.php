@@ -986,7 +986,7 @@ class PrintController extends BaseController {
             }
             //===end===
             $footscript = $customer_info->pc_footer_script;
-            $footscript .= '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/quickbar.js?' . $this->cus_id . 'pc"></script>';
+            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/js/quickbar.js?' . $this->cus_id . 'pc"></script>';
 //            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/js/statis.js?' . $this->cus_id . 'pc"></script>'; //===添加统计代码PC===
             $footscript .= $tempscript;
             $footscript .= $language_css;
@@ -998,7 +998,7 @@ class PrintController extends BaseController {
 //            $headscript .= $language_css;
             $footprint = $customer_info->mobile_footer;
             $footscript = $customer_info->mobile_footer_script;
-            $footscript .= '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/quickbar.js?' . $this->cus_id . 'mobile"></script>';
+            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/js/quickbar.js?' . $this->cus_id . 'mobile"></script>';
 //            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/js/statis.js?' . $this->cus_id . 'mobile"></script>'; //===添加统计代码MOBILE===
 //            $footscript .= $tempscript;
             $site_another_url = $this->showtype == 'preview' ? '' : $customer_info->pc_domain;
@@ -2826,7 +2826,7 @@ class PrintController extends BaseController {
             $viewname = 'content-product';
             $result['enlarge'] = $customer_info->enlarge;
             if ($result['enlarge'] && $this->type == 'pc') {
-                $result['footscript'] .= '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/img.js"></script>';
+                $result['footscript'] .= '<script type="text/javascript" src="http://swap.5067.org/js/img.js"></script>';
             }
         } else {//跳转404
         }
@@ -2997,7 +2997,7 @@ class PrintController extends BaseController {
             $viewname = 'content-product';
             $result['enlarge'] = $customer_info->enlarge;
             if ($result['enlarge'] && $this->type == 'pc') {
-                $result['footscript'] .= '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/img.js"></script>';
+                $result['footscript'] .= '<script type="text/javascript" src="http://swap.5067.org/js/img.js"></script>';
             }
         } else {//跳转404
         }

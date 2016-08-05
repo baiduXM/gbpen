@@ -767,7 +767,7 @@ class FormController extends BaseController {
 
     function test() {
         $data = json_decode($_POST['data']);
-        $css = '<link rel="stylesheet" type="text/css" href="http://chanpin.xm12t.com.cn/css/floatadv.css">';
+        $css = '<link rel="stylesheet" type="text/css" href="http://swap.5067.org/css/floatadv.css">';
         $div = '';
         $js = '';
         foreach ((array) $data as $k => $v) {
