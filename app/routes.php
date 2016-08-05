@@ -193,7 +193,10 @@ Route::group(array('before' => 'auth'), function() {
         'as' => 'homepage-preview',
         'uses' => 'TemplatesController@homepagePreview'
     ]);
-
+    Route::get('homepage-rewrite', [//首页配置重写
+        'as' => 'homepage-rewrite',
+        'uses' => 'TemplatesController@homepageRewrite'
+    ]);
     Route::get('homepage-list', [//首页编辑保存
         'uses' => 'TemplatesController@homepageList'
     ]);
