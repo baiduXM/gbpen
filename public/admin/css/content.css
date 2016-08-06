@@ -520,11 +520,13 @@ left: 0;width: 100%;height: 100%;border-radius: 100px;box-shadow: inset 0 0 0 0 
 .refresh-feild .feild-item{width: 760px;float: left;}
 .refresh-feild .feild-item div{display: inline-block;}
 .feild-content .feild-item{margin: 10px auto;}
-.refresh-content .refresh{display: block;width: 175px;height: 50px;background-color: #3878c0;border-radius: 5px;line-height: 50px;color: #fff;font-size: 18px;text-align: center;margin: 45px auto;}
+.refresh-content .refresh{display: block;width: 175px;height: 50px;background-color: #3878c0;border-radius: 5px;line-height: 50px;color: #fff;font-size: 18px;text-align: center;margin: 12px auto;}
 .refresh-content .refresh-feild{margin-bottom: 50px;}
 .refresh-content .ing,.refresh-content .ed{display: none;}
 .refresh-content .progress_bar{width: 450px;height: 5px;background-color: #b0b0b0;margin: 0 auto;border-radius: 10px;}
 .refresh-content .progress_title{margin-top: 50px;text-align: center;}
+.refresh-content .worning{margin-top: 5px;text-align: center;}
+.refresh-content .animation{width: 146px;background-image: url('../images/refresh.gif');height: 146px;background-repeat: on-repeat;background-position: -128px -65px;-moz-border-radius: 73px;-webkit-border-radius: 73px;border-radius: 73px;text-align: center;margin: 12px auto;}
 .refresh-content .btn-top .refresh_a{color: blue; display: block;margin: 45px auto;text-align: center;text-decoration: underline;width: 100px;}
 .refresh-content .btn-top .refresh_a:hover{text-decoration: none;color:rgb(132, 136, 134);}
 .progress_bar .expand{height: 1px;margin: 2px 0;background-color: #2187e7;position: absolute;box-shadow: 0px 0px 10px 1px rgba(0,198,255,0.7);}
