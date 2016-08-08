@@ -42,7 +42,7 @@ function homeController($scope, $http) {
 					if(json.data.coded){
 						location.href = '#/diytpl?type='+templeType+'';
 					}else{
-						var warningbox = new WarningBox('',{warning_context : '∑(っ°Д ° )っ此定制编辑需要有一定的代码基础，确定要对文件进行编辑吗？'});
+						var warningbox = new WarningBox('',{warning_context : '∑(っ°Д ° )っ此定制编辑需要有一定的代码基础，确定要对文件进行编辑吗？<p style="color:red;">(页面编辑配置数据将被重置)</p>'});
 						warningbox.idx_fuc(templeType);
 					}
 				});
