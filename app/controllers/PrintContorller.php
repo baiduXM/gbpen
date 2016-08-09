@@ -1112,7 +1112,7 @@ class PrintController extends BaseController {
             'footscript' => $footscript,
             'global' => $global_data,
             'site_url' => $this->site_url,
-            'site_another_url' => $site_another_url,
+            'site_another_url' => (str_replace('http://', '', $site_another_url)?$site_another_url:''),
             'contact' => $contact,
             'search_action' => $pc_domain //'http://swap.gbpen.com'
         ];
