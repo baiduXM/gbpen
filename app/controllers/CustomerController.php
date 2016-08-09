@@ -142,6 +142,7 @@ class CustomerController extends BaseController {
         $data['lang'] = Input::get('lang');
         $data['copyright'] = Input::get('copyright');
         $data['pushed'] = 1;
+        $data['is_openmember'] = Input::get('openmemberv');
 
         $float_adv = Input::get('float_adv') ? Input::get('float_adv') : array();
         $float_type = Input::get('float_type') ? Input::get('float_type') : array();

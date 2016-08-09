@@ -885,6 +885,9 @@ class PrintController extends BaseController {
 
     public function publicdata() {
         $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
+        //===用户登录注册===
+        $customer_member='';
+        //===用户登录注册-end===
         //===显示版本切换链接===
         $templatesC = new TemplatesController;
         $tempname = $templatesC->getTemplatesName($this->type);
@@ -915,7 +918,6 @@ class PrintController extends BaseController {
                     . $language
                     . '</ul>'
                     . '</div>';
-
 //            $tempscript = '<script>'
 //                    . '$(function(){'
 //                    . '$("#header").prepend(\'' . $language_div . '\');'

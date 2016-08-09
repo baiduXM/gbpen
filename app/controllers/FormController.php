@@ -10,7 +10,7 @@
  * form_column_n (n=0,..,9) 表单列名，根据表单id尾数存储在对于表中，例：form_id=5,添加的列名存储在form_column_5表中
  * form_data_n (n=0,...,9) 表单数据 原理同上，存储在交互服务器上
  */
-
+use \Illuminate\Support\Facades\Auth;
 class FormController extends BaseController {
 
     /**

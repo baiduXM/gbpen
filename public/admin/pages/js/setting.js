@@ -347,6 +347,17 @@ function settingController($scope, $http) {
                     $("#enlargev").val("1");
                 }
             });
+            $('.openmember').MoveBox({
+                Trigger: 'mouseenter',
+                context: '开启网站用户注册功能'
+            });
+            $('.openmember').click(function () {
+                if ($("#openmemberv").val() == '1') {
+                    $("#openmemberv").val("0");
+                } else {
+                    $("#openmemberv").val("1");
+                }
+            });
             $('input.chk').click(function (event) {
                 var _this = $(this),
                         openstatus = _this.is(':checked');
