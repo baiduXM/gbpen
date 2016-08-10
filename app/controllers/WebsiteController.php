@@ -260,6 +260,13 @@ class WebsiteController extends BaseController{
                 $template->type = $type;
                 $template->cus_id = $cus_id;
                 $template->former_id = $id;
+                $template->classify = $tpl_info->classify;
+                $template->description = $tpl_info->description;
+                $template->demo = $tpl_info->demo;
+                $template->list1showtypetotal = $tpl_info->list1showtypetotal;
+                $template->list2showtypetotal = $tpl_info->list2showtypetotal;
+                $template->list3showtypetotal = $tpl_info->list3showtypetotal;
+                $template->list4showtypetotal = $tpl_info->list4showtypetotal;
                 $template->save();
                 $insertedId = $template->id;
                 $src = app_path('views/templates/'.$name);
