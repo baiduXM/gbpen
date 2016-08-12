@@ -62,6 +62,7 @@ class CustomerController extends BaseController {
         $data['qq'] = $customer_info->qq;
         $data['address'] = $customer_info->address;
         $data['enlarge'] = $customer_info->enlarge;
+        $data['is_openmember'] = $customer_info->is_openmember;
         $data['lang'] = $customer_info->lang;
         $data['lastpushtime'] = strtotime($customer_info->lastpushtime);
         $data['floatadv'] = json_decode($customer_info->floatadv);

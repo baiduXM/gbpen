@@ -883,18 +883,48 @@ class PrintController extends BaseController {
         return $result;
     }
 
+    /**
+     * 1、加载头部导航条，包括用户登录、版本切换
+     * 2、加载悬浮表单内容
+     * @return string
+     */
     public function publicdata() {
         $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
+        $templatesC = new TemplatesController;
+        $customerC = new CustomerController;
+
         //===用户登录注册===
-        $customer_member='';
+        if ($customer_info->is_openmember == 1) {
+            $memberC = new MemberController;
+            $this->cus_id;
+            
+            
+        }
+//        echo phpinfo();
+//        exit;
+//        var_dump($customer_info->is_openmember);
+//        exit;
+
+        $customer_member = '';
+
+
+
+
+
+
+
+
+
+
+
+
+
         //===用户登录注册-end===
         //===显示版本切换链接===
-        $templatesC = new TemplatesController;
         $tempname = $templatesC->getTemplatesName($this->type);
         $flagPlatform = substr($tempname, 0, 2);
         $flagLanguage = substr($tempname, 2, 1);
         $tempscript = '';
-        $customerC = new CustomerController;
         $domain = $customerC->getSwitchCustomer(); //双站用户
         $current_url = '#';
         $language_url = '#';

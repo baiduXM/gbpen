@@ -60,14 +60,14 @@ function settingController($scope, $http) {
                 $('#domain_pc').attr('href', 'http://' + set.domain_pc);
                 $('#def_domain_pc').attr('href', 'http://' + set.def_domain_pc);
                 $('#lang option[value=' + set.lang + ']').attr('selected', true);
-                if(set.lang=='cn'){
-                    var _option='<option value="厦门易尔通网络科技有限公司">厦门易尔通网络科技有限公司</option>'+
-                                '<option value="惠州易瑞通网络科技有限公司">惠州易瑞通网络科技有限公司</option>';
-                }else if(set.lang=='en'){
-                    var _option='<option value="XIAMEN 12t NETWORK TECHNOLOGY CO., LTD.">XIAMEN 12t NETWORK TECHNOLOGY CO., LTD.</option>'+
-                                '<option value="HUIZHOU YIRUITONG NETWORK TECHNOLOGY CO., LTD.">HUIZHOU YIRUITONG NETWORK TECHNOLOGY CO., LTD.</option>';
-                }else{
-                    var _option='';
+                if (set.lang == 'cn') {
+                    var _option = '<option value="厦门易尔通网络科技有限公司">厦门易尔通网络科技有限公司</option>' +
+                            '<option value="惠州易瑞通网络科技有限公司">惠州易瑞通网络科技有限公司</option>';
+                } else if (set.lang == 'en') {
+                    var _option = '<option value="XIAMEN 12t NETWORK TECHNOLOGY CO., LTD.">XIAMEN 12t NETWORK TECHNOLOGY CO., LTD.</option>' +
+                            '<option value="HUIZHOU YIRUITONG NETWORK TECHNOLOGY CO., LTD.">HUIZHOU YIRUITONG NETWORK TECHNOLOGY CO., LTD.</option>';
+                } else {
+                    var _option = '';
                 }
                 $('#copyright').html(_option);
                 $('#lang option[value=' + set.copyright + ']').attr('selected', true);
@@ -112,7 +112,7 @@ function settingController($scope, $http) {
                                 });
                             });
                         }
-                        if (v.type == 'adv'||typeof(v.type)=='undefined') {
+                        if (v.type == 'adv' || typeof (v.type) == 'undefined') {
                             var html = '<li class="floatadv">\n\
                                         <div class="template-download fade fl in">\n\
                                             <div>\n\
@@ -143,7 +143,11 @@ function settingController($scope, $http) {
                 }
                 if (set.enlarge == '1') {
                     $("#enlargev").val("1");
-                    $("input.enl").attr("checked", true);
+                    $("input.enlbar").attr("checked", true);
+                }
+                if (set.is_openmember == '1') {
+                    $("#openmemberv").val("1");
+                    $("input.openbar").attr("checked", true);
                 }
                 // $('.setting-content label[name=pcnum]').val(set.address);
                 // $('.setting-content label[name=mobnum]').val(set.address);
@@ -230,17 +234,17 @@ function settingController($scope, $http) {
             });
         },
         //===更换语言===
-        _changeLang:function(){        
-            $('#lang').change(function(){
-                var _lang=$('#lang').val();
-                if(_lang=='cn'){
-                    var _option='<option value="厦门易尔通网络科技有限公司">厦门易尔通网络科技有限公司</option>'+
-                                '<option value="惠州易瑞通网络科技有限公司">惠州易瑞通网络科技有限公司</option>';
-                }else if(_lang=='en'){
-                    var _option='<option value="XIAMEN 12t NETWORK TECHNOLOGY CO., LTD.">XIAMEN 12t NETWORK TECHNOLOGY CO., LTD.</option>'+
-                                '<option value="HUIZHOU YIRUITONG NETWORK TECHNOLOGY CO., LTD.">HUIZHOU YIRUITONG NETWORK TECHNOLOGY CO., LTD.</option>';
-                }else{
-                    var _option='';
+        _changeLang: function () {
+            $('#lang').change(function () {
+                var _lang = $('#lang').val();
+                if (_lang == 'cn') {
+                    var _option = '<option value="厦门易尔通网络科技有限公司">厦门易尔通网络科技有限公司</option>' +
+                            '<option value="惠州易瑞通网络科技有限公司">惠州易瑞通网络科技有限公司</option>';
+                } else if (_lang == 'en') {
+                    var _option = '<option value="XIAMEN 12t NETWORK TECHNOLOGY CO., LTD.">XIAMEN 12t NETWORK TECHNOLOGY CO., LTD.</option>' +
+                            '<option value="HUIZHOU YIRUITONG NETWORK TECHNOLOGY CO., LTD.">HUIZHOU YIRUITONG NETWORK TECHNOLOGY CO., LTD.</option>';
+                } else {
+                    var _option = '';
                 }
                 $('#copyright').html(_option);
             });
@@ -268,8 +272,6 @@ function settingController($scope, $http) {
                     img_upload.push($(this).data('name'));
                 });
                 $http.post('../customer-setting', data).success(function (json) {
-                    console.log(json);
-                    console.log('customer-setting');
                     checkJSON(json, function (json) {
                         if (json.err == 0) {
                             if (img_upload.length) {

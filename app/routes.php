@@ -374,78 +374,57 @@ Route::group(array('before' => 'auth'), function() {
 
     //===万用表单start===
     Route::get('form-list', [//获取表单列表
-        'as' => 'form-list',
         'uses' => 'FormController@getFormList'
     ]);
     Route::get('form-data', [//获取表单信息
-        'as' => 'form-list',
         'uses' => 'FormController@getFormData'
     ]);
     Route::get('form-view', [//获取表单信息
-        'as' => 'form-list',
         'uses' => 'FormController@getFormView'
     ]);
     Route::post('form-create', [//创建表单
-        'as' => 'form-list',
         'uses' => 'FormController@createForm'
     ]);
     Route::post('form-delete', [//删除表单
-        'as' => 'form-list',
         'uses' => 'FormController@deleteForm'
     ]);
     Route::post('form-edit', [//保存表单，仅表单信息
-        'as' => 'form-list',
         'uses' => 'FormController@editForm'
     ]);
     Route::post('form-save', [//保存表单，表单信息包括栏目信息
-        'as' => 'form-list',
         'uses' => 'FormController@saveForm'
     ]);
-
     Route::get('form-element-list', [//获取组件元素
-        'as' => 'form-list',
         'uses' => 'FormController@getFormElementList'
     ]);
-
     Route::get('form-column-list', [//获取组件列表
-        'as' => 'form-list',
         'uses' => 'FormController@getFormColumnList'
     ]);
     Route::get('form-column', [//获取组件
-        'as' => 'form-list',
         'uses' => 'FormController@getFormColumn'
     ]);
     Route::post('form-column-add', [//添加组件
-        'as' => 'form-list',
         'uses' => 'FormController@addFormColumn'
     ]);
     Route::post('form-column-delete', [//删除组件
-        'as' => 'form-list',
         'uses' => 'FormController@deleteFormColumn'
     ]);
     Route::post('form-column-edit', [//编辑组件
-        'as' => 'form-list',
         'uses' => 'FormController@editFormColumn'
     ]);
     Route::post('form-column-move', [//移动组件
-        'as' => 'form-list',
         'uses' => 'FormController@moveFormColumn'
     ]);
-
     Route::get('form-userdata-list', [//用户表单数据列表
-        'as' => 'form-list',
         'uses' => 'FormController@getFormUserdataList'
     ]);
     Route::get('form-userdata', [//用户单条数据
-        'as' => 'form-list',
         'uses' => 'FormController@getFormUserdata'
     ]);
     Route::post('form-userdata-delete', [//用户数据删除
-        'as' => 'form-list',
         'uses' => 'FormController@deleteFormUserdata'
     ]);
     Route::any('form-userdata-submit', [//用户数据提交
-        'as' => 'form-list',
         'uses' => 'FormController@submitFormUserdata'
     ]);
     //===万用表单end===
@@ -456,7 +435,7 @@ Route::group(array('before' => 'auth'), function() {
     Route::any('init-bind', [//查看是否有绑定双用户
         'uses' => 'CustomerController@isSwitchcus'
     ]);
-    //===end===
+    //===切换绑定用户end===
     //-----------留言板--------
     Route::get('feedback-data', [//获取表单数据
         'uses' => 'FeedbackController@getFeedbackData'
