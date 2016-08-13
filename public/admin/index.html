@@ -17,13 +17,14 @@
         <![endif]-->
     </head>
     <body class="closephone" ng-class="{
-			'showbox-main':showbox=='main',
-			'showbox-index':showbox=='home',
-			'showbox-page':showbox=='page',
-			'showbox-diy':showbox=='diy',
-			'showmenu': menu.length>0,
-			'hidepreviews': hidepreviews
-		}" ng-controller="mainController">
+        'showbox-main':showbox == 'main',
+                'showbox-index':showbox == 'home',
+                'showbox-page':showbox == 'page',
+                'showbox-diy':showbox == 'diy',
+                'showmenu': menu.length > 0,
+                'hidepreviews': hidepreviews
+        }" ng-controller="mainController">
+        
         <!-- 头部 -->
         <header>
             <div class="logo fl"><img src="images/logo.png" /></div>
@@ -37,7 +38,7 @@
                         <a href="javascript:;" id="switch_bind"></a>
                     </div>
                     <a href="#/user"><p class="fr clearfix" ng-bind-template="欢迎，{{ companyname}}" ></p></a>
-                    
+
                 </div>
                 <!--容量条-->
                 <div class="fr clearfix" id="capacity_div" style="font-size: 12px;color:#7c6154;margin-right: 22px;" >
@@ -45,11 +46,11 @@
                 </div>
                 <script>
                     $(function(){
-                        init_capacity();//初始化容量条
-                        init_bind();//初始化双站用户
-                        $('#switch_bind').click(function(){
-                            get_bind_account();
-                        });
+                    init_capacity(); //初始化容量条
+                    init_bind(); //初始化双站用户
+                    $('#switch_bind').click(function(){
+                    get_bind_account();
+                    });
                     });
                 </script>
 
@@ -66,7 +67,7 @@
                         <!-- <li class="nav"><a href="#/menu">微信运用</a><em></em></li> -->
                         <li class="nav"><a href="#/message">留&nbsp;言&nbsp;板</a><em></em></li>
                         <li class="nav"><a href="#/form">万用表单</a><em></em></li>
-                        <li class="nav"><a href="#/member">会员管理</a><em></em></li>
+                        <li class="nav is_judge" style="display:none"><a href="#/member">会员管理</a><em></em></li>
                         <li class="nav"><a href="#/phone_index?Area=quickbar">快捷导航</a><em></em></li>
                     </ul>
                 </nav>
@@ -253,7 +254,7 @@
     <script type="text/javascript" src="js/laydate.js"></script>           			 时间选择控件 
     <script type="text/javascript" src="js/jquery.uploadify.min.js"></script>       <!-- 图片上传控件 -->
     <script type="text/javascript" src="js/script.js"></script>						<!-- 公共脚本文件 --> 
-    
+
     <!--[if lte IE 7]>
     <script type="text/javascript">
             mainApp.config(function($sceProvider) {

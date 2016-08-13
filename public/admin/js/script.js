@@ -223,6 +223,7 @@ $(document).ready(function ($scope) {
             this.otherPageSkip();
             this.phoneMousehover();
             this.phoneClick();
+            this.check_openmember();
         },
         navanimation: function () {
             $('header nav ul').spasticNav({
@@ -316,6 +317,9 @@ $(document).ready(function ($scope) {
                 }
                 $(window).resize();
             });
+        },
+        check_openmember: function () {
+//            alert(1);
         }
     };
     var maininit = new $scope.MainInit();

@@ -12,7 +12,10 @@ function memberController($scope) {
     var page_num = 0;
     var pageselectCallback = function (page_indexs) {
 //        console.log(jq)
-$.ajax();
+//        $.ajax({
+//            url: '',
+//            success: '',
+//        });
         $.getJSON(json_url, {per_page: num_per_page, current_page: page_indexs + 1}, function (json) {
             var data = json.data;
             var _div = '';
