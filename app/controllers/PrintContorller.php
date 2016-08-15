@@ -928,8 +928,10 @@ class PrintController extends BaseController {
             $logo = $this->showtype == 'preview' ? '/customers/' . $this->customer . '/images/l/common/' . $customer_info->logo : $this->domain . '/images/l/common/' . $customer_info->logo; //'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $customer_info->logo) : $this->domain . '/images/l/common/' . $customer_info->logo;
             if (empty($tempscript)) {
                 $tempscript = '$(".logo").find("img").attr("alt","' . $customer_info->title . '");'; //===给logo添加img中的alt
+                $tempscript .= '$("#logo").find("img").attr("alt","' . $customer_info->title . '");'; //===给logo添加img中的alt
             } else {
                 $tempscript .= '$(".logo").find("img").attr("alt","' . $customer_info->title . '");'; //===给logo添加img中的alt
+                $tempscript .= '$("#logo").find("img").attr("alt","' . $customer_info->title . '");'; //===给logo添加img中的alt
             }
             $floatadv = json_decode($customer_info->floatadv); //===浮动类型
             if (!empty($floatadv)) {
