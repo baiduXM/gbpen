@@ -528,9 +528,9 @@ class PrintController extends BaseController {
         $quickbar = $CommonCont->quickBarJsonInit();
         $quickbar = json_decode($quickbar, true);
         $quickbar = $quickbar['data'];
-        foreach($quickbar as $key=>$value){
-            if($value['type']=="colors"){
-                $colors=$value['data'];
+        foreach ($quickbar as $key => $value) {
+            if ($value['type'] == "colors") {
+                $colors = $value['data'];
                 unset($quickbar[$key]);
                 break;
             }
@@ -578,10 +578,10 @@ class PrintController extends BaseController {
                     $config['language'] = 'cn';
                 }
                 $config['style'] = array();
-                if(!isset($colors[$this->type])){
+                if (!isset($colors[$this->type])) {
                     $tmpStyleConfigQuickbar = explode(',', $quickbar_arr[0]);
-                }else{
-                    $tmpStyleConfigQuickbar=$colors[$this->type];
+                } else {
+                    $tmpStyleConfigQuickbar = $colors[$this->type];
                 }
                 if (count($tmpStyleConfigQuickbar)) {
                     $keys = array('mainColor', 'secondColor', 'textColor', 'iconColor');
@@ -621,7 +621,7 @@ class PrintController extends BaseController {
                     } elseif ($quickbar[$key]['type'] == 'im') {
                         $qq = explode('|', $quickbar[$key]['data']);
                         $qq = explode(':', $qq[0]);
-                        $qq = explode('@', (isset($qq[1])?$qq[1]:''));
+                        $qq = explode('@', (isset($qq[1]) ? $qq[1] : ''));
                         if ($this->type == 'pc') {
                             $quickbar[$key]['link'] = 'http://wpa.qq.com/msgrd?v=3&uin=' . $qq[0] . '&site=qq&menu=yes';
                         } else {
@@ -647,9 +647,9 @@ class PrintController extends BaseController {
                         } else {
                             $quickbar[$key]['data'] = $this->domain . '/search.php';
                         }
-                    }elseif ($quickbar[$key]['type'] == 'follow') {
+                    } elseif ($quickbar[$key]['type'] == 'follow') {
                         if ($this->showtype == 'preview') {
-                            if(strpos($quickbar[$key]['data'], 'http://')===FALSE){
+                            if (strpos($quickbar[$key]['data'], 'http://') === FALSE) {
                                 $quickbar[$key]['data'] = $quickbar[$key]['serurl'];
                             }
                         }
@@ -714,7 +714,7 @@ class PrintController extends BaseController {
 //                    ];  
 //                }
                 //快捷导航
-                $navs = Classify::where('cus_id', $this->cus_id)->where('mobile_show', 1)->select('id', 'type','open_page', 'name', 'en_name', 'icon', 'url', 'p_id', 'en_name')->OrderBy('sort', 'asc')->get()->toArray();
+                $navs = Classify::where('cus_id', $this->cus_id)->where('mobile_show', 1)->select('id', 'type', 'open_page', 'name', 'en_name', 'icon', 'url', 'p_id', 'en_name')->OrderBy('sort', 'asc')->get()->toArray();
                 if (count($navs)) {
                     if ($this->showtype == 'preview') {
                         foreach ($navs as &$nav) {
@@ -820,7 +820,7 @@ class PrintController extends BaseController {
                         }
                     } elseif ($quickbar[$key]['type'] == 'follow') {
                         if ($this->showtype == 'preview') {
-                            if(strpos($quickbar[$key]['data'], 'http://')===FALSE){
+                            if (strpos($quickbar[$key]['data'], 'http://') === FALSE) {
                                 $quickbar[$key]['data'] = $quickbar[$key]['serurl'];
                             }
                         }
@@ -895,6 +895,8 @@ class PrintController extends BaseController {
         $domain = $customerC->getSwitchCustomer(); //双站用户
         $current_url = '#';
         $language_url = '#';
+        $tempscript_star = '<script>$(function(){';
+        $tempscript_end = '});</script>';
         if (!empty($domain)) {
             if ($flagPlatform == 'GM') {//===手机
                 $language_url = $domain['switch_mobile_domain'];
@@ -915,13 +917,8 @@ class PrintController extends BaseController {
                     . $language
                     . '</ul>'
                     . '</div>';
-
-            $tempscript = '<script>'
-                    . '$(function(){'
-                    . '$("#header").prepend(\'' . $language_div . '\');'
-                    . '$("#header").css("position","relative");'
-                    . '});'
-                    . '</script>';
+            $tempscript = '$("#header").prepend("' . $language_div . '");'
+                    . '$("#header").css("position","relative");';
         }
         $language_css = '<link rel="stylesheet" href="http://swap.5067.org/css/language.css">'; //===
         //===显示版本切换链接-end===
@@ -929,7 +926,7 @@ class PrintController extends BaseController {
         if ($this->type == 'pc') {
             $stylecolor = websiteInfo::leftJoin('color', 'color.id', '=', 'website_info.pc_color_id')->where('cus_id', $this->cus_id)->pluck('color_en');
             $logo = $this->showtype == 'preview' ? '/customers/' . $this->customer . '/images/l/common/' . $customer_info->logo : $this->domain . '/images/l/common/' . $customer_info->logo; //'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $customer_info->logo) : $this->domain . '/images/l/common/' . $customer_info->logo;
-            $floatadv = json_decode($customer_info->floatadv);//===浮动类型
+            $floatadv = json_decode($customer_info->floatadv); //===浮动类型
             if (!empty($floatadv)) {
                 foreach ((array) $floatadv as $key => $val) {
                     if (!isset($val->type) || $val->type == 'adv') {
@@ -988,7 +985,7 @@ class PrintController extends BaseController {
             $footscript = $customer_info->pc_footer_script;
             $footscript .= '<script type="text/javascript" src="http://swap.5067.org/js/quickbar.js?' . $this->cus_id . 'pc"></script>';
 //            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/js/statis.js?' . $this->cus_id . 'pc"></script>'; //===添加统计代码PC===
-            $footscript .= $tempscript;
+            $footscript .= $tempscript_star . $tempscript . $tempscript_end;
             $footscript .= $language_css;
             $site_another_url = $this->showtype == 'preview' ? '' : $customer_info->mobile_domain;
         } else {
@@ -1104,7 +1101,7 @@ class PrintController extends BaseController {
         }
         $result = [
             'stylecolor' => $stylecolor,
-            'favicon' => $customer_info->favicon?(rtrim($this->source_dir, 'images/') . '/images/l/common/' . $customer_info->favicon):'',
+            'favicon' => $customer_info->favicon ? (rtrim($this->source_dir, 'images/') . '/images/l/common/' . $customer_info->favicon) : '',
             'logo' => $logo,
             'floatadvprint' => isset($floatadvprint) ? $floatadvprint : '',
             'headscript' => $headscript,
@@ -1112,13 +1109,13 @@ class PrintController extends BaseController {
             'footscript' => $footscript,
             'global' => $global_data,
             'site_url' => $this->site_url,
-            'site_another_url' => (str_replace('http://', '', $site_another_url)?$site_another_url:''),
+            'site_another_url' => (str_replace('http://', '', $site_another_url) ? $site_another_url : ''),
             'contact' => $contact,
             'search_action' => $pc_domain //'http://swap.gbpen.com'
         ];
 
         if ($this->type == 'pc') {
-            $footer_navs = Classify::where('cus_id', $this->cus_id)->where('footer_show', 1)->select('id', 'type', 'img', 'icon', 'name', 'url', 'p_id', 'en_name', 'meta_description as description','open_page')->OrderBy('sort', 'asc')->get()->toArray();
+            $footer_navs = Classify::where('cus_id', $this->cus_id)->where('footer_show', 1)->select('id', 'type', 'img', 'icon', 'name', 'url', 'p_id', 'en_name', 'meta_description as description', 'open_page')->OrderBy('sort', 'asc')->get()->toArray();
             $footer_navs = $this->toFooter($footer_navs);
             $result['footer_navs'] = $footer_navs;
             $result['type'] = 'pc';
@@ -1130,9 +1127,9 @@ class PrintController extends BaseController {
         error_reporting(E_ALL ^ E_NOTICE);
         //===whereIN(type:9) 万用表单===
         if ($this->type == 'pc') {
-            $navs = Classify::where('cus_id', $this->cus_id)->where('pc_show', 1)->whereIN('type', [1, 2, 3, 4, 5, 6, 9])->select('id', 'type', 'img', 'icon', 'name', 'url', 'p_id', 'en_name', 'meta_description as description','open_page')->OrderBy('sort', 'asc')->get()->toArray();
+            $navs = Classify::where('cus_id', $this->cus_id)->where('pc_show', 1)->whereIN('type', [1, 2, 3, 4, 5, 6, 9])->select('id', 'type', 'img', 'icon', 'name', 'url', 'p_id', 'en_name', 'meta_description as description', 'open_page')->OrderBy('sort', 'asc')->get()->toArray();
         } else {
-            $navs = Classify::where('cus_id', $this->cus_id)->where('mobile_show', 1)->select('id', 'type', 'img', 'icon', 'name', 'url', 'p_id', 'en_name', 'meta_description as description','open_page')->OrderBy('sort', 'asc')->get()->toArray();
+            $navs = Classify::where('cus_id', $this->cus_id)->where('mobile_show', 1)->select('id', 'type', 'img', 'icon', 'name', 'url', 'p_id', 'en_name', 'meta_description as description', 'open_page')->OrderBy('sort', 'asc')->get()->toArray();
         }
         $navs = $this->toTree($navs, 0, TRUE);
 
@@ -1159,7 +1156,7 @@ class PrintController extends BaseController {
             if ($v['type'] == 'list') {
                 if (isset($v['config']['id']) && is_numeric($v['config']['id']) && $v['config']['id'] > 0) {
                     $c_info = Classify::where('id', $v['config']['id'])->where('cus_id', $this->cus_id)->where($this->type . '_show', 1)->first();
-                    $cids = explode(',', $this->getChirldenCid($v['config']['id'],1)); //取得所有栏目id
+                    $cids = explode(',', $this->getChirldenCid($v['config']['id'], 1)); //取得所有栏目id
                 } else {
                     $c_info = false;
                     $cids = false;
@@ -1190,7 +1187,7 @@ class PrintController extends BaseController {
                                     $abc['data'][$key]['title'] = '<strong style="' . $bold . $font_color . '">' . $d->title . '</strong>';
                                 }
                                 $d_c_info = Classify::where('id', $d->c_id)->first();
-                                $abc['data'][$key]['image'] = $d->img?($this->source_dir . 'l/articles/' . $d->img):'';
+                                $abc['data'][$key]['image'] = $d->img ? ($this->source_dir . 'l/articles/' . $d->img) : '';
                                 if ($this->showtype == 'preview') {
                                     $abc['data'][$key]['category']['link'] = $this->domain . '/category/' . $d->c_id;
                                     $abc['data'][$key]['link'] = $this->domain . '/detail/' . $d->id;
@@ -1250,7 +1247,7 @@ class PrintController extends BaseController {
                                 $abc['data'][$key]['title'] = '<strong style="' . $bold . $font_color . '">' . $d->title . '</strong>';
                             }
                             $d_c_info = Classify::where('id', $d->c_id)->first();
-                            $abc['data'][$key]['image'] = $d->img?($this->source_dir . 'l/articles/' . $d->img):'';
+                            $abc['data'][$key]['image'] = $d->img ? ($this->source_dir . 'l/articles/' . $d->img) : '';
                             if ($this->showtype == 'preview') {
                                 $abc['data'][$key]['category']['link'] = $this->domain . '/category/' . $d->c_id;
                                 $abc['data'][$key]['link'] = $this->domain . '/detail/' . $d->id;
@@ -1290,7 +1287,7 @@ class PrintController extends BaseController {
                 $childrenMenu = array();
                 if ($cids) {
                     foreach ($cids as $cid) {
-                        $c_c_info = Classify::where('id', $cid)->where('cus_id', $this->cus_id)->where($this->type . '_show', 1)->select('id', 'name', 'en_name','type','url','open_page' ,'img as image', 'icon', 'meta_description as description', 'p_id')->first();
+                        $c_c_info = Classify::where('id', $cid)->where('cus_id', $this->cus_id)->where($this->type . '_show', 1)->select('id', 'name', 'en_name', 'type', 'url', 'open_page', 'img as image', 'icon', 'meta_description as description', 'p_id')->first();
                         if ($c_c_info) {
                             $c_c_info = $c_c_info->toArray();
                             if ($this->showtype == 'preview') {
@@ -1303,7 +1300,7 @@ class PrintController extends BaseController {
                             $c_c_info['icon'] = ($c_c_info ? '<i class="iconfont">' . $c_c_info['icon'] . '</i>' : '');
                             $c_c_info['current'] = 0;
                             $c_c_info['selected'] = 0;
-                            $c_cids = explode(',', $this->getChirldenCid($cid,1)); //取得所有栏目id
+                            $c_cids = explode(',', $this->getChirldenCid($cid, 1)); //取得所有栏目id
                             if (isset($v['config']['star_only']) && $v['config']['star_only']) {
                                 $articles = Articles::whereIn('c_id', $c_cids)->where($this->type . '_show', '1')->where('cus_id', $this->cus_id)->where('is_star', '1')->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
                             } else {
@@ -1320,7 +1317,7 @@ class PrintController extends BaseController {
                                         $abc[$key]['title'] = '<strong style="' . $bold . $font_color . '">' . $d->title . '</strong>';
                                     }
                                     $d_c_info = Classify::where('id', $d->c_id)->first();
-                                    $abc[$key]['image'] = $d->img?($this->source_dir . 'l/articles/' . $d->img):'';
+                                    $abc[$key]['image'] = $d->img ? ($this->source_dir . 'l/articles/' . $d->img) : '';
                                     if ($this->showtype == 'preview') {
                                         $abc[$key]['category']['link'] = $this->domain . '/category/' . $d->c_id;
                                         $abc[$key]['link'] = $this->domain . '/detail/' . $d->id;
@@ -1354,7 +1351,7 @@ class PrintController extends BaseController {
             } elseif ($v['type'] == 'page') {
                 if (isset($v['config']['id'])) {
                     $c_info = Classify::where('id', $v['config']['id'])->where('cus_id', $this->cus_id)->where($this->type . '_show', 1)->first();
-                    $cids = explode(',', $this->getChirldenCid($v['config']['id'],1)); //取得所有栏目id
+                    $cids = explode(',', $this->getChirldenCid($v['config']['id'], 1)); //取得所有栏目id
                 } else {
                     $c_info = false;
                     $cids = false;
@@ -1367,10 +1364,10 @@ class PrintController extends BaseController {
                     $v['value']['icon'] = '<i class="iconfont">' . $c_info->icon . '</i>';
                     $v['value']['link'] = '';
                     if ($this->showtype == 'preview') {
-                        $v['value']['image'] = $c_info->img?($this->source_dir . 'l/category/' . $c_info->img):'';
+                        $v['value']['image'] = $c_info->img ? ($this->source_dir . 'l/category/' . $c_info->img) : '';
                         $v['value']['link'] = $this->domain . '/category/' . $c_info->id;
                     } else {
-                        $v['value']['image'] = $c_info->img?($this->domain . '/images/l/category/' . $c_info->img):'';
+                        $v['value']['image'] = $c_info->img ? ($this->domain . '/images/l/category/' . $c_info->img) : '';
                         $v['value']['link'] = $this->domain . '/category/' . $c_info->id . '.html';
                     }
                     $v['value']['description'] = $c_info->meta_description;
@@ -1379,7 +1376,7 @@ class PrintController extends BaseController {
                 $childrenMenu = array();
                 if ($cids) {
                     foreach ($cids as $cid) {
-                        $c_c_info = Classify::where('id', $cid)->where('cus_id', $this->cus_id)->where($this->type . '_show', 1)->select('id', 'name','type', 'url','open_page' ,'en_name', 'img as image', 'icon', 'meta_description as description', 'p_id')->first();
+                        $c_c_info = Classify::where('id', $cid)->where('cus_id', $this->cus_id)->where($this->type . '_show', 1)->select('id', 'name', 'type', 'url', 'open_page', 'en_name', 'img as image', 'icon', 'meta_description as description', 'p_id')->first();
                         if ($c_c_info) {
                             $c_c_info = $c_c_info->toArray();
                             if ($this->showtype == 'preview') {
@@ -1438,7 +1435,7 @@ class PrintController extends BaseController {
      */
     private function pageList($id, $page) {
         $list = [];
-        $cids = explode(',', $this->getChirldenCid($id,1)); //取得所有栏目id
+        $cids = explode(',', $this->getChirldenCid($id, 1)); //取得所有栏目id
         $a_c_type = Classify::where('id', $id)->select('type')->first(); //取得栏目的type
         $type = $a_c_type->type;
         if ($this->type == 'mobile') {
@@ -1484,7 +1481,7 @@ class PrintController extends BaseController {
                         $font_color = ($d->title_color != 'rgb(0, 0, 0)') ? 'color:' . $d->title_color . ';' : '';
                         $article[$key]['title'] = '<strong style="' . $bold . $font_color . '">' . $d->title . '</strong>';
                     }
-                    $article[$key]['image'] = $d->img?($this->source_dir . 's/articles/' . $d->img):'';
+                    $article[$key]['image'] = $d->img ? ($this->source_dir . 's/articles/' . $d->img) : '';
                     $article[$key]['link'] = $this->domain . '/detail/' . $d->id;
                     if ($d->use_url) {
                         $article[$key]['link'] = $d->url;
@@ -1508,7 +1505,7 @@ class PrintController extends BaseController {
                         $font_color = ($d->title_color != 'rgb(0, 0, 0)') ? 'color:' . $d->title_color . ';' : '';
                         $article[$key]['title'] = '<strong style="' . $bold . $font_color . '">' . $d->title . '</strong>';
                     }
-                    $article[$key]['image'] = $d->img?($this->source_dir . 's/articles/' . $d->img):'';
+                    $article[$key]['image'] = $d->img ? ($this->source_dir . 's/articles/' . $d->img) : '';
                     $article[$key]['link'] = $this->domain . '/detail/' . $d->id . '.html';
                     if ($d->use_url) {
                         $article[$key]['link'] = $d->url;
@@ -1870,7 +1867,7 @@ class PrintController extends BaseController {
                     $mIndexCat['name'] = $nav->name;
                     $mIndexCat['en_name'] = $nav->en_name;
                     $mIndexCat['icon'] = '<i class="iconfont">' . $nav->icon . '</i>';
-                    $mIndexCat['image'] = $nav->img?($this->source_dir . 'l/category/' . $nav->img):'';
+                    $mIndexCat['image'] = $nav->img ? ($this->source_dir . 'l/category/' . $nav->img) : '';
                     if ($nav->url) {
                         $mIndexCat['link'] = $nav->url;
                     } else {
@@ -1879,7 +1876,7 @@ class PrintController extends BaseController {
                     $mIndexCat['type'] = $nav->type;
                     $mIndexCat['showtype'] = $nav->m_index_showtype;
                     $mIndexCat['description'] = $nav->meta_description;
-                    $id_arr = explode(',', $this->getChildrenClassify($nav->id,1));
+                    $id_arr = explode(',', $this->getChildrenClassify($nav->id, 1));
                     if ($nav->type == 1 || $nav->type == 2 || $nav->type == 3) {
                         $art_arr = array();
                         if ($nav->star_only) {
@@ -1892,7 +1889,7 @@ class PrintController extends BaseController {
                             $i = 0;
                             foreach ($articles as &$article) {
                                 $art_arr[$i]['title'] = $article->title;
-                                $art_arr[$i]['image'] = $article->img?($this->source_dir . 's/articles/' . $article->img):'';
+                                $art_arr[$i]['image'] = $article->img ? ($this->source_dir . 's/articles/' . $article->img) : '';
                                 $art_arr[$i]['link'] = $this->domain . "/detail/" . $article->id;
                                 if ($article->use_url) {
                                     $art_arr[$i]['link'] = $article->url;
@@ -1927,7 +1924,7 @@ class PrintController extends BaseController {
                     $mIndexCat['name'] = $nav->name;
                     $mIndexCat['en_name'] = $nav->en_name;
                     $mIndexCat['icon'] = '<i class="iconfont">' . $nav->icon . '</i>';
-                    $mIndexCat['image'] = $nav->img?($this->source_dir . "/l/category/" . $nav->img):'';
+                    $mIndexCat['image'] = $nav->img ? ($this->source_dir . "/l/category/" . $nav->img) : '';
                     if ($nav->url) {
                         $mIndexCat['link'] = $nav->url;
                     } else {
@@ -1936,7 +1933,7 @@ class PrintController extends BaseController {
                     $mIndexCat['type'] = $nav->type;
                     $mIndexCat['showtype'] = $nav->m_index_showtype;
                     $mIndexCat['description'] = $nav->meta_description;
-                    $id_arr = explode(',', $this->getChildrenClassify($nav->id,1));
+                    $id_arr = explode(',', $this->getChildrenClassify($nav->id, 1));
                     if ($nav->type == 1 || $nav->type == 2 || $nav->type == 3) {
                         $art_arr = array();
                         if ($nav->star_only) {
@@ -1949,7 +1946,7 @@ class PrintController extends BaseController {
                             $i = 0;
                             foreach ($articles as &$article) {
                                 $art_arr[$i]['title'] = $article->title;
-                                $art_arr[$i]['image'] = $article->img?($this->source_dir . "/s/articles/" . $article->img):'';
+                                $art_arr[$i]['image'] = $article->img ? ($this->source_dir . "/s/articles/" . $article->img) : '';
                                 $art_arr[$i]['link'] = $this->domain . "/detail/" . $article->id . ".html";
                                 if ($article->use_url) {
                                     $art_arr[$i]['link'] = $article->url;
@@ -2019,7 +2016,7 @@ class PrintController extends BaseController {
                     $mIndexCat['name'] = $nav->name;
                     $mIndexCat['en_name'] = $nav->en_name;
                     $mIndexCat['icon'] = '<i class="iconfont">' . $nav->icon . '</i>';
-                    $mIndexCat['image'] = $nav->img?($this->source_dir . 'l/category/' . $nav->img):'';
+                    $mIndexCat['image'] = $nav->img ? ($this->source_dir . 'l/category/' . $nav->img) : '';
                     if ($nav->url) {
                         $mIndexCat['link'] = $nav->url;
                     } else {
@@ -2028,7 +2025,7 @@ class PrintController extends BaseController {
                     $mIndexCat['type'] = $nav->type;
                     $mIndexCat['showtype'] = $nav->m_index_showtype;
                     $mIndexCat['description'] = $nav->meta_description;
-                    $id_arr = explode(',', $this->getChildrenClassify($nav->id,1));
+                    $id_arr = explode(',', $this->getChildrenClassify($nav->id, 1));
                     if ($nav->type == 1 || $nav->type == 2 || $nav->type == 3) {
                         $art_arr = array();
                         if ($nav->star_only) {
@@ -2041,7 +2038,7 @@ class PrintController extends BaseController {
                             $i = 0;
                             foreach ($articles as &$article) {
                                 $art_arr[$i]['title'] = $article->title;
-                                $art_arr[$i]['image'] = $article->img?($this->source_dir . 's/articles/' . $article->img):'';
+                                $art_arr[$i]['image'] = $article->img ? ($this->source_dir . 's/articles/' . $article->img) : '';
                                 $art_arr[$i]['link'] = $this->domain . "/detail/" . $article->id;
                                 if ($article->use_url) {
                                     $art_arr[$i]['link'] = $article->url;
@@ -2076,7 +2073,7 @@ class PrintController extends BaseController {
                     $mIndexCat['name'] = $nav->name;
                     $mIndexCat['en_name'] = $nav->en_name;
                     $mIndexCat['icon'] = '<i class="iconfont">' . $nav->icon . '</i>';
-                    $mIndexCat['image'] = $nav->img?($this->source_dir . "/l/category/" . $nav->img):'';
+                    $mIndexCat['image'] = $nav->img ? ($this->source_dir . "/l/category/" . $nav->img) : '';
                     if ($nav->url) {
                         $mIndexCat['link'] = $nav->url;
                     } else {
@@ -2085,7 +2082,7 @@ class PrintController extends BaseController {
                     $mIndexCat['type'] = $nav->type;
                     $mIndexCat['showtype'] = $nav->m_index_showtype;
                     $mIndexCat['description'] = $nav->meta_description;
-                    $id_arr = explode(',', $this->getChildrenClassify($nav->id,1));
+                    $id_arr = explode(',', $this->getChildrenClassify($nav->id, 1));
                     if ($nav->type == 1 || $nav->type == 2 || $nav->type == 3) {
                         $art_arr = array();
                         if ($nav->star_only) {
@@ -2098,7 +2095,7 @@ class PrintController extends BaseController {
                             $i = 0;
                             foreach ($articles as &$article) {
                                 $art_arr[$i]['title'] = $article->title;
-                                $art_arr[$i]['image'] = $article->img?($this->source_dir . "/s/articles/" . $article->img):'';
+                                $art_arr[$i]['image'] = $article->img ? ($this->source_dir . "/s/articles/" . $article->img) : '';
                                 $art_arr[$i]['link'] = $this->domain . "/detail/" . $article->id . ".html";
                                 if ($article->use_url) {
                                     $art_arr[$i]['link'] = $article->url;
@@ -2173,7 +2170,7 @@ class PrintController extends BaseController {
         $result['list']['en_name'] = $classify->en_name;
         $result['list']['description'] = $classify->meta_description;
         $result['list']['icon'] = '<i class="iconfont">' . $classify->icon . '</i>';
-        $result['list']['image'] = $classify->img?($this->source_dir . 's/category/' . $classify->img):'';
+        $result['list']['image'] = $classify->img ? ($this->source_dir . 's/category/' . $classify->img) : '';
         $result['list']['type'] = $classify->type;
         if ($this->showtype == 'preview') {
             $result['list']['link'] = $this->domain . '/category/' . $id;
@@ -2438,7 +2435,7 @@ class PrintController extends BaseController {
         $result['list']['en_name'] = $classify->en_name;
         $result['list']['description'] = $classify->meta_description;
         $result['list']['icon'] = '<i class="iconfont">' . $classify->icon . '</i>';
-        $result['list']['image'] = $classify->img?($this->source_dir . 's/category/' . $classify->img):'';
+        $result['list']['image'] = $classify->img ? ($this->source_dir . 's/category/' . $classify->img) : '';
         $result['list']['type'] = $classify->type;
         if ($this->showtype == 'preview') {
             $result['list']['link'] = $this->domain . '/category/' . $id;
@@ -2479,7 +2476,7 @@ class PrintController extends BaseController {
                     $result['list']['content'] = preg_replace('/\/customers\/' . $this->customer . '/i', '', Page::where('id', $classify->page_id)->pluck('content'));
                 }
             } elseif ($classify->type == 5) {
-                 $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
+                $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
                 if ($customer_info->lang == 'en') {
                     $result['list']['content'] = '<form action="http://swap.5067.org/message/' . $this->cus_id . '" method="post" name="messageboard" onsubmit="return CheckPost();" class="elegant-aero">
                     <h1>' . $classify->name . '
@@ -2775,7 +2772,7 @@ class PrintController extends BaseController {
             $i = 0;
             foreach ($a_moreimg as $a_img) {
                 $images[$i]['title'] = $a_img['title'];
-                $images[$i]['image'] = $a_img['img']?($this->source_dir . 'l/articles/' . $a_img['img']):'';
+                $images[$i]['image'] = $a_img['img'] ? ($this->source_dir . 'l/articles/' . $a_img['img']) : '';
                 $i++;
             }
         }
@@ -2887,7 +2884,7 @@ class PrintController extends BaseController {
             }
             $related[$k]['title'] = $articles[$k]['title'];
             $related[$k]['description'] = $articles[$k]['introduction'];
-            $related[$k]['image'] = $articles[$k]['img']?($this->source_dir . 'l/articles/' . $articles[$k]['img']):'';
+            $related[$k]['image'] = $articles[$k]['img'] ? ($this->source_dir . 'l/articles/' . $articles[$k]['img']) : '';
             $related[$k]['pubdate'] = $articles[$k]['created_at'];
             $related[$k]['pubtimestamp'] = strtotime($articles[$k]['created_at']);
             $a_c_info = Classify::where('id', $articles[$k]['c_id'])->first();
@@ -2911,7 +2908,7 @@ class PrintController extends BaseController {
                 $result['article']['prev']['title'] = $article_prev->title;
                 $result['article']['prev']['link'] = $this->domain . '/detail/' . $article_prev->id;
             }
-            $result['article']['image'] = $article->img?($this->source_dir . 'l/articles/' . $article->img):'';
+            $result['article']['image'] = $article->img ? ($this->source_dir . 'l/articles/' . $article->img) : '';
             $result['article']['images'] = $images;
             $result['article']['content'] = $article->content;
         } else {
@@ -2929,7 +2926,7 @@ class PrintController extends BaseController {
                 $result['article']['prev']['title'] = $article_prev->title;
                 $result['article']['prev']['link'] = $this->domain . '/detail/' . $article_prev->id . '.html';
             }
-            $result['article']['image'] = $article->img?($this->source_dir . 'l/articles/' . $article->img):'';
+            $result['article']['image'] = $article->img ? ($this->source_dir . 'l/articles/' . $article->img) : '';
             $result['article']['images'] = $images;
             $result['article']['content'] = preg_replace('/\/customers\/' . $this->customer . '/i', '', $article->content);
         }
@@ -3022,7 +3019,7 @@ class PrintController extends BaseController {
                 $i = 0;
                 foreach ((array) $a_moreimg as $a_img) {
                     $images[$i]['title'] = $a_img['title'];
-                    $images[$i]['image'] = $a_img['img']?($this->source_dir . 'l/articles/' . $a_img['img']):'';
+                    $images[$i]['image'] = $a_img['img'] ? ($this->source_dir . 'l/articles/' . $a_img['img']) : '';
                     $i++;
                 }
             }
@@ -3049,7 +3046,7 @@ class PrintController extends BaseController {
                 $the_result['article']['prev']['title'] = $articles[$key - 1]['title'];
                 $the_result['article']['prev']['link'] = $this->domain . '/detail/' . ($articles[$key - 1]['id']) . '.html';
             }
-            $the_result['article']['image'] = $article['img']?($this->source_dir . 'l/articles/' . $article['img']):'';
+            $the_result['article']['image'] = $article['img'] ? ($this->source_dir . 'l/articles/' . $article['img']) : '';
             $the_result['article']['images'] = $images;
             $the_result['article']['content'] = preg_replace('/\/customers\/' . $this->customer . '/i', '', $article['content']);
             $the_result['article']['description'] = $article['introduction'];
@@ -3106,7 +3103,7 @@ class PrintController extends BaseController {
                 $related[$k]['category']['link'] = $this->domain . '/category/' . $articles[$k]['id'] . '.html';
                 $related[$k]['title'] = $articles[$k]['title'];
                 $related[$k]['description'] = $articles[$k]['introduction'];
-                $related[$k]['image'] = $articles[$k]['img']?($this->source_dir . 'l/articles/' . $articles[$k]['img']):'';
+                $related[$k]['image'] = $articles[$k]['img'] ? ($this->source_dir . 'l/articles/' . $articles[$k]['img']) : '';
                 $related[$k]['pubdate'] = $articles[$k]['created_at'];
                 $related[$k]['pubtimestamp'] = strtotime($articles[$k]['created_at']);
                 $a_c_info = Classify::where('id', $articles[$k]['c_id'])->first();
@@ -3164,7 +3161,7 @@ class PrintController extends BaseController {
     private function toFooter($arr) {
         $footer = array();
         foreach ((array) $arr as $k => $v) {
-            $v['image'] = $v['img']?($this->source_dir . 'l/category/' . $v['img']):'';
+            $v['image'] = $v['img'] ? ($this->source_dir . 'l/category/' . $v['img']) : '';
             $v['icon'] = '<i class="iconfont">' . $v['icon'] . '</i>';
             if ($v['type'] != 6) {
                 $v['link'] = $this->showtype == 'preview' ? $this->domain . '/category/' . $v['id'] : $this->domain . '/category/' . $v['id'] . '.html';
@@ -3204,7 +3201,7 @@ class PrintController extends BaseController {
         $tree = array();
         foreach ((array) $arr as $k => $v) {
             if ($v['p_id'] == $pid) {
-                $v['image'] = $v['img']?($this->source_dir . 'l/category/' . $v['img']):'';
+                $v['image'] = $v['img'] ? ($this->source_dir . 'l/category/' . $v['img']) : '';
                 $v['icon'] = '<i class="iconfont">' . $v['icon'] . '</i>';
                 unset($v['img']);
                 $tree[] = $v;
@@ -3218,7 +3215,7 @@ class PrintController extends BaseController {
             if ($v['type'] != 6) {
                 $tree[$k]['link'] = $this->showtype == 'preview' ? $this->domain . '/category/' . $v['id'] : $this->domain . '/category/' . $v['id'] . '.html';
                 if ($isNav == TRUE) {
-                    $cids = explode(',', $this->getChirldenCid($v['id'],1)); //取得所有栏目id
+                    $cids = explode(',', $this->getChirldenCid($v['id'], 1)); //取得所有栏目id
                     if ($this->type == 'mobile') {
                         $articles = Articles::whereIn('c_id', $cids)->where('mobile_show', '1')->where('cus_id', $this->cus_id)->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at')->take(20)->get();
                     } else {
@@ -3231,7 +3228,7 @@ class PrintController extends BaseController {
                             $classify = Classify::where('id', $d->c_id)->first();
 
                             $data[$key]['category']['link'] = $this->showtype == 'preview' ? $this->domain . '/category/' . $d->c_id : $this->domain . '/category/' . $d->c_id . '.html';
-                            $data[$key]['image'] = $d->img?($this->source_dir . 's/articles/' . $d->img):'';
+                            $data[$key]['image'] = $d->img ? ($this->source_dir . 's/articles/' . $d->img) : '';
                             $data[$key]['link'] = $this->showtype == 'preview' ? $this->domain . '/detail/' . $d->id : $this->domain . '/detail/' . $d->id . '.html';
                             $data[$key]['category']['name'] = $classify->name;
                             $data[$key]['category']['en_name'] = $classify->en_name;
@@ -3247,10 +3244,10 @@ class PrintController extends BaseController {
                     }
                 }
             } else {
-                if($v['open_page']==1){
-                    $tree[$k]['link'] = strpos($v['url'], 'http')===false ?('http://' . $v['url']): $v['url'];
-                }else{
-                    $tree[$k]['link'] = strpos($v['url'], 'http')===false ?('http://' . $v['url'].'"target="_blank'): $v['url'].'"target="_blank';
+                if ($v['open_page'] == 1) {
+                    $tree[$k]['link'] = strpos($v['url'], 'http') === false ? ('http://' . $v['url']) : $v['url'];
+                } else {
+                    $tree[$k]['link'] = strpos($v['url'], 'http') === false ? ('http://' . $v['url'] . '"target="_blank') : $v['url'] . '"target="_blank';
                 }
             }
             $tree[$k]['current'] = 0;
@@ -3266,16 +3263,16 @@ class PrintController extends BaseController {
      * @param int $cid 栏目
      * @return string 以“,”分割的栏目id串
      */
-    public function getChirldenCid($cid = 0,$show=null) {
+    public function getChirldenCid($cid = 0, $show = null) {
         $result = $cid;
-        if($show==null){
+        if ($show == null) {
             $cids = Classify::where('p_id', $cid)->OrderBy('sort', 'asc')->lists('id');
-        }else{
-            $cids = Classify::where('p_id', $cid)->where($this->type.'_show', $show)->OrderBy('sort', 'asc')->lists('id');
+        } else {
+            $cids = Classify::where('p_id', $cid)->where($this->type . '_show', $show)->OrderBy('sort', 'asc')->lists('id');
         }
         if (!empty($cids)) {
             foreach ((array) $cids as $v) {
-                $result.= ',' . $this->getChirldenCid($v,$show);
+                $result.= ',' . $this->getChirldenCid($v, $show);
             }
         }
         return $result;
@@ -3381,7 +3378,7 @@ class PrintController extends BaseController {
             $search_view = $search_view[1];
             //匹配所有查询中循环的值
             preg_match_all('/{[\s]*\$' . $search_view . '[.|\[]([a-z]*)[\]]*}/', $search_foreach[2], $date_replace);
-            $search_view = array('title' => '$title', 'image' => '$image', 'link' => '$link', 'description' => '$description', 'pubdate' => '$pubdate', 'pubtimestamp' => '$pubtimestamp','pubymd' => '$pubymd');
+            $search_view = array('title' => '$title', 'image' => '$image', 'link' => '$link', 'description' => '$description', 'pubdate' => '$pubdate', 'pubtimestamp' => '$pubtimestamp', 'pubymd' => '$pubymd');
             foreach ((array) $date_replace[0] as $k => $v) {
                 $search_content = str_replace($v, 'search_' . $search_view[$date_replace[1][$k]], $search_content);
             }
@@ -3430,7 +3427,7 @@ class PrintController extends BaseController {
         foreach ((array) $article_data as $article_img) {
             $article[$article_img['id']]['id'] = $article_img['id'];
             $article[$article_img['id']]['title'] = $article_img['title'];
-            $article[$article_img['id']]['img'] = $article_img['img']?($this->source_dir . 'l/articles/' . $article_img['img']):'';
+            $article[$article_img['id']]['img'] = $article_img['img'] ? ($this->source_dir . 'l/articles/' . $article_img['img']) : '';
             $article[$article_img['id']]['introduction'] = $article_img['introduction'];
             $article[$article_img['id']]['created_at'] = strtotime($article_img['created_at']);
             $article[$article_img['id']]['link'] = $this->domain . '/detail/' . $article_img['id'] . '.html';
@@ -3503,7 +3500,7 @@ class PrintController extends BaseController {
             $search_view = $search_view[1];
             //匹配所有查询中循环的值
             preg_match_all('/{[\s]*\$' . $search_view . '[.|\[]([a-z]*)[\]]*}/', $search_foreach[2], $date_replace);
-            $search_view = array('title' => '$title', 'image' => '$image', 'link' => '$link', 'description' => '$description', 'pubdate' => '$pubdate', 'pubtimestamp' => '$pubtimestamp','pubymd' => '$pubymd');
+            $search_view = array('title' => '$title', 'image' => '$image', 'link' => '$link', 'description' => '$description', 'pubdate' => '$pubdate', 'pubtimestamp' => '$pubtimestamp', 'pubymd' => '$pubymd');
             foreach ((array) $date_replace[0] as $k => $v) {
                 $search_content = str_replace($v, 'search_' . $search_view[$date_replace[1][$k]], $search_content);
             }
@@ -3552,7 +3549,7 @@ class PrintController extends BaseController {
         foreach ((array) $article_data as $article_img) {
             $article[$article_img['id']]['id'] = $article_img['id'];
             $article[$article_img['id']]['title'] = $article_img['title'];
-            $article[$article_img['id']]['img'] = $article_img['img']?($this->source_dir . 'l/articles/' . $article_img['img']):'';
+            $article[$article_img['id']]['img'] = $article_img['img'] ? ($this->source_dir . 'l/articles/' . $article_img['img']) : '';
             $article[$article_img['id']]['introduction'] = $article_img['introduction'];
             $article[$article_img['id']]['created_at'] = strtotime($article_img['created_at']);
             $article[$article_img['id']]['link'] = $this->domain . '/detail/' . $article_img['id'] . '.html';
@@ -3579,10 +3576,10 @@ class PrintController extends BaseController {
         $smarty->registerPlugin('function', 'shareExt', array('PrintController', 'createShare'));
         $smarty->assign($result);
         ob_start();
-        if($content==''){
+        if ($content == '') {
             $smarty->display('searchresult_do.html');
-        }else{
-        $smarty->display('string:' . $content);
+        } else {
+            $smarty->display('string:' . $content);
         }
         $output = ob_get_contents();
         ob_end_clean();
@@ -3638,16 +3635,16 @@ class PrintController extends BaseController {
         return $data;
     }
 
-    private function getChildrenClassify($p_id,$show=null) {
+    private function getChildrenClassify($p_id, $show = null) {
         $id_str = $p_id;
-        if($show==null){
+        if ($show == null) {
             $ids = DB::table('classify')->where('p_id', '=', $p_id)->OrderBy('sort', 'asc')->lists('id');
-        }else{
-            $ids = DB::table('classify')->where('p_id', '=', $p_id)->where($this->type.'_show', $show)->OrderBy('sort', 'asc')->lists('id');
+        } else {
+            $ids = DB::table('classify')->where('p_id', '=', $p_id)->where($this->type . '_show', $show)->OrderBy('sort', 'asc')->lists('id');
         }
         if (count($ids) > 0) {
             foreach ($ids as &$id) {
-                $id_str.=',' . $this->getChildrenClassify($id,$show);
+                $id_str.=',' . $this->getChildrenClassify($id, $show);
             }
         }
         return $id_str;
@@ -3657,18 +3654,18 @@ class PrintController extends BaseController {
         $classify = Classify::where('id', $c_id)->first();
         $arr['name'] = $classify->name;
         $arr['en_name'] = $classify->en_name;
-        if($classify->type==6){
-            if($classify->open_page==2){
-                $arr['link']=$classify->url.'" target="_blank';
-            }else{
-                $arr['link']=$classify->url;
+        if ($classify->type == 6) {
+            if ($classify->open_page == 2) {
+                $arr['link'] = $classify->url . '" target="_blank';
+            } else {
+                $arr['link'] = $classify->url;
             }
-        }else{
-        if ($this->showtype == 'preview') {
-            $arr['link'] = $this->domain . '/category/' . $c_id;
         } else {
-            $arr['link'] = $this->domain . '/category/' . $c_id . '.html';
-        }
+            if ($this->showtype == 'preview') {
+                $arr['link'] = $this->domain . '/category/' . $c_id;
+            } else {
+                $arr['link'] = $this->domain . '/category/' . $c_id . '.html';
+            }
         }
         $arr['icon'] = '<i class="iconfont">' . $classify->icon . '</i>';
         array_unshift($posnavs, $arr);
