@@ -926,13 +926,6 @@ class PrintController extends BaseController {
         if ($this->type == 'pc') {
             $stylecolor = websiteInfo::leftJoin('color', 'color.id', '=', 'website_info.pc_color_id')->where('cus_id', $this->cus_id)->pluck('color_en');
             $logo = $this->showtype == 'preview' ? '/customers/' . $this->customer . '/images/l/common/' . $customer_info->logo : $this->domain . '/images/l/common/' . $customer_info->logo; //'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $customer_info->logo) : $this->domain . '/images/l/common/' . $customer_info->logo;
-            if (empty($tempscript)) {
-                $tempscript = '$(".logo").find("img").attr("alt","' . $customer_info->title . '");'; //===给logo添加img中的alt
-                $tempscript .= '$("#logo").find("img").attr("alt","' . $customer_info->title . '");'; //===给logo添加img中的alt
-            } else {
-                $tempscript .= '$(".logo").find("img").attr("alt","' . $customer_info->title . '");'; //===给logo添加img中的alt
-                $tempscript .= '$("#logo").find("img").attr("alt","' . $customer_info->title . '");'; //===给logo添加img中的alt
-            }
             $floatadv = json_decode($customer_info->floatadv); //===浮动类型
             if (!empty($floatadv)) {
                 foreach ((array) $floatadv as $key => $val) {
