@@ -896,16 +896,15 @@ class PrintController extends BaseController {
         //===用户登录注册===
         if ($customer_info->is_openmember == 1) {
             $memberC = new MemberController;
-            $this->cus_id;
             
-            
+//            $this->cus_id;
         }
 //        echo phpinfo();
 //        exit;
 //        var_dump($customer_info->is_openmember);
 //        exit;
 
-        $customer_member = '';
+//        $customer_member = '';
 
 
 
@@ -948,15 +947,15 @@ class PrintController extends BaseController {
                     . $language
                     . '</ul>'
                     . '</div>';
-//            $tempscript = '<script>'
-//                    . '$(function(){'
-//                    . '$("#header").prepend(\'' . $language_div . '\');'
-//                    . '$("#header").css("position","relative");'
-//                    . '});'
-//                    . '</script>';
+            $tempscript = '<script>'
+                    . '$(function(){'
+                    . '$("#header").prepend(\'' . $language_div . '\');'
+                    . '$("#header").css("position","relative");'
+                    . '});'
+                    . '</script>';
         }
         $language_css = '';
-//        $language_css = '<link rel="stylesheet" href="http://swap.5067.org/css/language-test.css">'; //===
+        $language_css = '<link rel="stylesheet" href="http://swap.5067.org/css/language-test.css">'; //===
         //===显示版本切换链接-end===
         $formC = new FormController();
         if ($this->type == 'pc') {
@@ -996,7 +995,7 @@ class PrintController extends BaseController {
                 curl_close($ch);
             }
             $headscript = $customer_info->pc_header_script;
-//            $headscript .= $language_css;
+            $headscript .= $language_css;
             //===版权选择===
             if ($customer_info->lang == 'en') {
                 $_copyright = !empty($customer_info->copyright) ? $customer_info->copyright : 'Xiamen 12t network technology co.ltd';
@@ -3316,31 +3315,6 @@ class PrintController extends BaseController {
     }
 
     /**
-     * 合并多个个多维数组，键值相同时总是合并
-     * @param array 数组
-     * @return array
-     */
-    /*
-      public function array_merge_recursive_new() {
-      $arrays = func_get_args();
-      $base = array_shift($arrays);
-      //dd($arrays);
-      foreach ($arrays as $array) {
-      reset($base); //important
-      while (list($key, $value) = @each($array)) {
-      if (is_array($value) && @is_array($base[$key])) {
-      $base[$key] = $this->array_merge_recursive_new($base[$key], $value);
-      } else {
-      $base[$key] = $value;
-      }
-      }
-      }
-
-      return $base;
-      }
-     */
-
-    /*
      * 搜索页面数据
      */
     public function searchPreview() {
@@ -3596,6 +3570,12 @@ class PrintController extends BaseController {
         return $output;
     }
 
+    /**
+     * 合并多个个多维数组，键值相同时总是合并
+     * @param type $old_arr
+     * @param type $new_arr
+     * @return array
+     */
     public function array_merge_recursive_new($old_arr, $new_arr) {
         foreach ((array) $old_arr as $key => $val) {
             if (array_key_exists($key, $new_arr)) {

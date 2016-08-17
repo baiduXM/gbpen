@@ -41,6 +41,10 @@ Route::get('login-info', [//用户名称
     'uses' => 'SignController@loginInfo'
 ]);
 
+
+
+
+
 //路由组--所有登录后的操作放入本组
 Route::group(array('before' => 'auth'), function() {
 
@@ -70,16 +74,15 @@ Route::group(array('before' => 'auth'), function() {
     Route::get('capacity-info', [//保存用户信息
         'uses' => 'CapacityController@getInfo'
     ]);
-    
+
     Route::any('capacity-init', [//初始化容量
         'uses' => 'CapacityController@init'
     ]);
-    
+
     Route::any('capacity-release', [//释放空间
         'uses' => 'CapacityController@release'
     ]);
     //===end===
-
     //-----------------------------------------------
     //--------------------栏目路由--------------------
     Route::post('classify-create', [//栏目添加
@@ -106,7 +109,7 @@ Route::group(array('before' => 'auth'), function() {
         'as' => 'classify-list',
         'uses' => 'ClassifyController@classifyModify'
     ]);
-    
+
     Route::post('classify-name-modify', [//栏目标题修改
         'as' => 'classify-name-modify',
         'uses' => 'ClassifyController@classifyNameModify'
@@ -152,7 +155,7 @@ Route::group(array('before' => 'auth'), function() {
         'as' => 'article-sort-modify',
         'uses' => 'ArticleController@articleSortModify'
     ]);
-    
+
     Route::post('article-title-modify', [//文章标题修改
         'as' => 'article-title-modify',
         'uses' => 'ArticleController@articleTitleModify'
@@ -233,11 +236,6 @@ Route::group(array('before' => 'auth'), function() {
     Route::get('isneedpush', [
         'uses' => 'HTMLController@isNeedPush'
     ]);
-    /*
-      Route::get('push',[
-      'uses' => 'WebsiteController@pushFile'
-      ]);
-     */
     Route::get('pagemodify/{themename?}', [//首页内容编辑
         'uses' => 'TemplatesController@homepageInfo'
     ]);
@@ -448,20 +446,7 @@ Route::group(array('before' => 'auth'), function() {
     Route::post('message-state', [
         'uses' => 'FeedbackController@messagestate'
     ]);
-});
-
-Route::get('seach-seachinfo', [//推送文章到搜索平台
-    'as' => 'seach-seachinfo',
-    'uses' => 'SeachController@articleListToSeachWeb'
-]);
-Route::get('seach-seachinfoclass', [//推送文章分类到搜索平台
-    'as' => 'seach-seachinfoclass',
-    'uses' => 'SeachController@articleListClassToSeachWeb'
-]);
-Route::get('seach-userinfo', [//
-    'as' => 'seach-userinfo',
-    'uses' => 'SeachController@userInfoToSeachWeb'
-]);
+}); //===后台需要登录===
 
 Route::post('file-upload', [//文件上传
     'as' => 'file-upload',
