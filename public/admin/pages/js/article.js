@@ -498,19 +498,29 @@ function articleController($scope, $http, $location) {
                                 var pc_show = $('.classify input[value=pc_show][checked]').val() ? '1' : '0';
                                 var mobile_show = $('.classify input[value=mobile_show][checked]').val() ? '1' : '0';
                                 var c_id = $('.classify input[name=column_name]').val();
+                                var title_empty = 0;
+                                $('.batch_title .article').each(function () {
+                                    var title = $(this).children(".title").val();
+                                    if (title == '') {
+                                        title_empty = 1;
+                                        return false;
+                                    }
+                                    img_upload.push($(this).children(".img").val());
+                                    articleArray.push({
+                                        img: $(this).children(".img").val(),
+                                        title: title,
+                                    });
+                                });
+                                if (title_empty) {
+                                    alert("标题不能为空！");
+                                    return false;
+                                }
                                 if (!$(".my_mask").attr('class')) {
                                     var fade = '<div class="tpl_mask my_mask" style="display: block;"></div><div class="text_tishi my_tishi">努力保存中<i class="icon-spin4 iconfont icon-shuaxin"></i></div>';
                                     $('body').append(fade);
                                 }
                                 $('.my_mask').show();
                                 $('.my_tishi').show();
-                                $('.batch_title .article').each(function () {
-                                    img_upload.push($(this).children(".img").val());
-                                    articleArray.push({
-                                        img: $(this).children(".img").val(),
-                                        title: $(this).children(".title").val(),
-                                    });
-                                });
                                 $http.post('../article-batch-add', {ArticleBatch: articleArray, pc_show: pc_show, mobile_show: mobile_show, c_id: c_id}).success(function (json) {
                                     checkJSON(json, function (json) {
                                         if (img_upload.length) {
