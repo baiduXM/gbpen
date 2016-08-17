@@ -198,7 +198,7 @@ class ClassifyController extends BaseController {
             }
             $classify->article_type = (Input::get('article_type') != "undefined") ? Input::get('article_type') : 1;
             $classify->meta_keywords = trim(Input::get('keywords'));
-            $classify->meta_description = htmlspecialchars(trim(Input::get('description')));
+            $classify->meta_description = trim(Input::get('description'));
             $classify->url = trim(Input::get('url'));
             $classify->open_page = trim(Input::get('open_page')) ? trim(Input::get('open_page')) : 1;
             $classify->pushed = 1;
