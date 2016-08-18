@@ -131,7 +131,7 @@ class PrintController extends BaseController {
      *
      * @param string $themename 模版名称
      * @param string $pagename 页面名称
-     *  @param string $jsondata 文件配置数据
+     * @param string $jsondata 文件配置数据
      * @return array 合并后的数组
      */
     public function pagedata($pagename, $jsondata = array()) {
@@ -896,10 +896,16 @@ class PrintController extends BaseController {
         //===用户登录注册===
         if ($customer_info->is_openmember == 1) {
             //===前端开启注册===
+            //显示html
+            
+            
+            
+            
             $memberC = new MemberController;
             
-            
-            
+
+
+
 //            
 //             .top_div{
 //                width:100%;background-color:gray;
@@ -950,17 +956,17 @@ class PrintController extends BaseController {
 //                    top: -10px;
 //                    height: 20px;
 //            }
-            
-            
-/*            .fix_center{
-                    position:absolute; 绝对定位 
-                    top:50%; 距顶部50% 
-                    left:50%; 
-                    margin:-150px 0 0 -200px; 设定这个div的margin-top的负值为自身的高度的一半,margin-left的值也是自身的宽度的一半的负值.(感觉在绕口令) 
-                    width:400px; 宽为400,那么margin-top为-200px 
-                    height:300px; 高为200那么margin-left为-100px; 
-                    z-index:99; 浮动在最上层  
-            }*/
+
+
+            /*            .fix_center{
+              position:absolute; 绝对定位
+              top:50%; 距顶部50%
+              left:50%;
+              margin:-150px 0 0 -200px; 设定这个div的margin-top的负值为自身的高度的一半,margin-left的值也是自身的宽度的一半的负值.(感觉在绕口令)
+              width:400px; 宽为400,那么margin-top为-200px
+              height:300px; 高为200那么margin-left为-100px;
+              z-index:99; 浮动在最上层
+              } */
 //            $this->cus_id;
 //<div class="top_div">
 //    <div class="main_area">
@@ -994,30 +1000,11 @@ class PrintController extends BaseController {
 //        </div>
 //    </div>
 //</div>
-            
-            
-            
-            
-            
         }
 //        echo 12;
 //        var_dump($customer_info->is_openmember);
 //        exit;
-
 //        $customer_member = '';
-
-
-
-
-
-
-
-
-
-
-
-
-
         //===用户登录注册-end===
         //===显示版本切换链接===
         $tempname = $templatesC->getTemplatesName($this->type);
@@ -1042,18 +1029,24 @@ class PrintController extends BaseController {
                 $language = '<li><a href="' . $current_url . '">中文版</a></li>';
                 $language .= '<li><a href="' . $language_url . '">English</a></li>';
             }
+            $top_div = '';
+            $login_div = '';
             $language_div = '<div class="language_div">'
                     . '<ul>'
                     . $language
                     . '</ul>'
                     . '</div>';
+            $top_div = $login_div . $language_div;
+
             $tempscript = '<script>'
                     . '$(function(){'
                     . '$("#header").prepend(\'' . $language_div . '\');'
                     . '$("#header").css("position","relative");'
                     . '});'
                     . '</script>';
+            include '../view/top_common.php';
         }
+        $top_div_css = '<link rel="stylesheet" href="http://swap.5067.org/css/top_common.css">'; //===顶部公共的样式===
         $language_css = '<link rel="stylesheet" href="http://swap.5067.org/css/language.css">'; //===交互中的样式===
         //===显示版本切换链接-end===
         $formC = new FormController();
@@ -1134,7 +1127,7 @@ class PrintController extends BaseController {
 //            $footscript .= $tempscript;
             $site_another_url = $this->showtype == 'preview' ? '' : $customer_info->pc_domain;
             $config_arr = parse_ini_file(public_path('/templates/' . $this->themename) . '/config.ini', true);
-            if (!is_array($config_arr)){
+            if (!is_array($config_arr)) {
                 dd('【config.ini】文件不存在！文件格式说明详见：http://pme/wiki/doku.php?id=ued:template:config');
             }
         }
@@ -2837,12 +2830,9 @@ class PrintController extends BaseController {
         return $output;
     }
 
-    /*
+    /**
      * 获取当前包含的页面 
-     * 
-     *
      */
-
     private function getJsonKey($viewname, &$json_keys = []) {
         $content = file_get_contents(app_path('views/templates/' . $this->themename . '/') . $viewname);
         preg_match_all('/\{include\s+file=[\"|\'](.*\.html)\s*[\"|\']\}/i', $content, $i_arr);
@@ -2858,7 +2848,6 @@ class PrintController extends BaseController {
 
     /**
      * 显示文章页
-     *
      * @param int $id 文章id
      */
     public function articlePreview($id) {
