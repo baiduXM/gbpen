@@ -896,110 +896,18 @@ class PrintController extends BaseController {
         //===用户登录注册===
         if ($customer_info->is_openmember == 1) {
             //===前端开启注册===
-            //显示html
-            
-            
-            
-            
+            $login_div = '<div class="login_div left">'
+                    . '<ul class="login_status">'
+                    . '<li><a href="#" name="login">登录</a></li>'
+                    . '<li><a href="javascript:void();" name="register">注册</a></li>'
+                    . '</ul>'
+                    . '<ul class="login_status hidden">'
+                    . '<li>你好，XXX</li>'
+                    . '<li><a href="javascript:void();">退出</a></li>'
+                    . '</ul>'
+                    . '</div>';
+
             $memberC = new MemberController;
-            
-
-
-
-//            
-//             .top_div{
-//                width:100%;background-color:gray;
-//            }
-//            .main_area{
-//                    margin: 0 auto;
-//                    width: 1000px;
-//            }
-//            .main_div{
-//                background-color: red;
-//            }
-//            .main_div ul{
-//                
-//            }
-//            .main_div ul li{
-//                float: left;margin: 5px 10px;
-//            }
-//            
-//            .left{
-//                    float: left;
-//            }
-//            .right{
-//                    float: right;
-//            }
-//            .hidden{
-//                    display: none;
-//            }
-//            .frame_box{
-//                    position:absolute; /*绝对定位*/ 
-//                    top:50%; /*距顶部50%*/ 
-//                    left:50%; 
-//                    margin:-100px 0 0 -200px; /*设定这个div的margin-top的负值为自身的高度的一半,margin-left的值也是自身的宽度的一半的负值.(感觉在绕口令)*/ 
-//                    width:400px; /*宽为400,那么margin-top为-200px*/ 
-//                    height:200px; /*高为200那么margin-left为-100px;*/ 
-//                    z-index:99; /*浮动在最上层 */ 
-//                    background-color: white;
-//                    box-shadow: 2px 2px 20px #dddddd;
-//            }
-//            
-//            .frame_box>iframe{
-//                    width: 400px;height:200px;
-//            }
-//            .frame_box img{
-//                    cursor: pointer;
-//                    float:right;
-//                    position: absolute;
-//                    right: -10px;
-//                    top: -10px;
-//                    height: 20px;
-//            }
-
-
-            /*            .fix_center{
-              position:absolute; 绝对定位
-              top:50%; 距顶部50%
-              left:50%;
-              margin:-150px 0 0 -200px; 设定这个div的margin-top的负值为自身的高度的一半,margin-left的值也是自身的宽度的一半的负值.(感觉在绕口令)
-              width:400px; 宽为400,那么margin-top为-200px
-              height:300px; 高为200那么margin-left为-100px;
-              z-index:99; 浮动在最上层
-              } */
-//            $this->cus_id;
-//<div class="top_div">
-//    <div class="main_area">
-//        <div class="main_div left">
-//            <ul class="login_status">
-//                <li>
-//                    <a href="#" name="login">登录</a>
-//                </li>
-//                <li>
-//                    <a href="javascript:void();" name="register">注册</a>
-//                </li>
-//            </ul>
-//            <ul class="login_status hidden">
-//                <li>
-//                    你好，<a href="javascript:void();">XXX</a>
-//                </li>
-//                <li>
-//                    <a href="javascript:void();">退出</a>
-//                </li>
-//            </ul>
-//        </div>
-//        <div class="main_div right">
-//            <ul>
-//                <li>
-//                    <a href="javascript:void();">中文版</a>
-//                </li>
-//                <li>
-//                    <a href="javascript:void();">English</a>
-//                </li>
-//            </ul>
-//        </div>
-//    </div>
-//</div>
         }
 //        echo 12;
 //        var_dump($customer_info->is_openmember);
@@ -1015,36 +923,34 @@ class PrintController extends BaseController {
         $current_url = '#';
         $language_url = '#';
         if (!empty($domain)) {
-            if ($flagPlatform == 'GM') {//===手机
+            if ($flagPlatform == 'GM') {//===手机===
                 $language_url = $domain['switch_mobile_domain'];
                 $current_url = $domain['current_mobile_domain'];
-            } elseif ($flagPlatform == 'GP') {//===PC
+            } elseif ($flagPlatform == 'GP') {//===PC===
                 $language_url = $domain['switch_pc_domain'];
                 $current_url = $domain['current_pc_domain'];
             }
-            if ($flagLanguage == 9) {//===英文
+            if ($flagLanguage == 9) {//===英文===
                 $language = '<li><a href="' . $language_url . '">中文版</a></li>';
                 $language .= '<li><a href="' . $current_url . '">English</a></li>';
-            } elseif ($flagLanguage == 0) {//===中文
+            } elseif ($flagLanguage == 0) {//===中文===
                 $language = '<li><a href="' . $current_url . '">中文版</a></li>';
                 $language .= '<li><a href="' . $language_url . '">English</a></li>';
             }
-            $top_div = '';
-            $login_div = '';
-            $language_div = '<div class="language_div">'
+
+            $language_div = '<div class="language_div right">'
                     . '<ul>'
                     . $language
                     . '</ul>'
                     . '</div>';
-            $top_div = $login_div . $language_div;
+            $top_div = '<div class="top_div">' . $login_div . $language_div . '</div>';
 
             $tempscript = '<script>'
                     . '$(function(){'
-                    . '$("#header").prepend(\'' . $language_div . '\');'
+                    . '$("#header").prepend(\'' . $top_div . '\');'
                     . '$("#header").css("position","relative");'
                     . '});'
                     . '</script>';
-            include '../view/top_common.php';
         }
         $top_div_css = '<link rel="stylesheet" href="http://swap.5067.org/css/top_common.css">'; //===顶部公共的样式===
         $language_css = '<link rel="stylesheet" href="http://swap.5067.org/css/language.css">'; //===交互中的样式===
@@ -1053,7 +959,7 @@ class PrintController extends BaseController {
         if ($this->type == 'pc') {
             $stylecolor = websiteInfo::leftJoin('color', 'color.id', '=', 'website_info.pc_color_id')->where('cus_id', $this->cus_id)->pluck('color_en');
             $logo = $this->showtype == 'preview' ? '/customers/' . $this->customer . '/images/l/common/' . $customer_info->logo : $this->domain . '/images/l/common/' . $customer_info->logo; //'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $customer_info->logo) : $this->domain . '/images/l/common/' . $customer_info->logo;
-            $floatadv = json_decode($customer_info->floatadv); //===浮动类型
+            $floatadv = json_decode($customer_info->floatadv); //===浮动类型===
             if (!empty($floatadv)) {
                 foreach ((array) $floatadv as $key => $val) {
                     if (!isset($val->type) || $val->type == 'adv') {
@@ -3107,6 +3013,11 @@ class PrintController extends BaseController {
         foreach ((array) $articles as $key => $article) {
             $the_result = array();
             $the_result = $result;
+            //===当前页面底部脚本===
+//            if(是否登录){
+//            登录添加脚本
+//                $the_result["foot_script"].="<s>js</s>";
+//            }
             $a_moreimg = Moreimg::where('a_id', $article['id'])->get()->toArray();
             array_unshift($a_moreimg, array('title' => $article['title'], 'img' => $article['img']));
             $images = array();
