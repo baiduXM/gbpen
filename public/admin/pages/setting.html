@@ -2,9 +2,16 @@
 <div class="jumbotron text-center">
     <section id="setting" class="whole">
         <div class="setting-content">
-            <form id="setting_info">
-                <div class="setting-feild">
-                    <div class="setting-name">通用设置：</div>
+            <form id="setting_info" style="height: auto;">
+                
+                <div class="set_title">
+                    <div class="setting-name select " id="set_common">通用设置</div>
+                    <div class="setting-name" id="set_pc">PC基本设置</div>
+                    <div class="setting-name" id="set_mobile">手机基本设置</div>
+                </div>              
+
+                <div class="setting-feild " name="set_common">
+                    <!--<div class="setting-name">通用设置：</div>-->
                     <div class="feild-content">
                         <div class="feild-item"><label for="company_name">公司名称：</label><input type="text" name="company_name" /></div>
                         <!--SEO-->
@@ -60,8 +67,8 @@
                         <div class="feild-item"><label for="password">密码：</label><button><a  href="#/user"><span >密码修改</span></a></button></div>
                     </div>
                 </div>
-                <div class="setting-feild">
-                    <div class="setting-name">PC基本设置：</div>
+                <div class="setting-feild" name="set_pc" style="display:none;">
+                    <!--<div class="setting-name">PC基本设置：</div>-->
                     <div class="feild-content">
                         <div class="feild-item"><label for="domain_pc">PC域名：</label><a id="domain_pc" href="" target="_blank"><input type="text" name="domain_pc" readonly="readonly" /></a></div>
                         <div class="feild-item"><label for="def_domain_pc">PC默认域名：</label><a id="def_domain_pc" href="" target="_blank"><input type="text" name="def_domain_pc" readonly="readonly" /></a></div>
@@ -97,8 +104,8 @@
 
                     </div>
                 </div>
-                <div class="setting-feild">
-                    <div class="setting-name">手机基本设置：</div>
+                <div class="setting-feild" name="set_mobile" style="display:none;">
+                    <!--<div class="setting-name">手机基本设置：</div>-->
                     <div class="feild-content">
                         <div class="feild-item"><label for="domain_m">手机域名：</label><input type="text" id="domain_m" name="domain_m" readonly="readonly" /></div>
                         <div class="feild-item"><label for="def_domain_m">手机默认域名：</label><input type="text" id="def_domain_m" name="def_domain_m" readonly="readonly" /></div>

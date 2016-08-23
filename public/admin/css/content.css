@@ -467,7 +467,11 @@ ul.made_style li.list_a .list_box a.cu{ background:none; color:#d91f1f}
 .newfile input{width: 90px;height: 24px;text-align: center;margin: 10px auto;}
 .newfile select{width: 90px;height: 28px;margin: 10px auto;}
 /*Setting用户设置*/
-.setting-feild .setting-name{color: #5f8cc5;font-size: 16px;line-height: 36px;border-bottom: 1px solid #b2b2b2;}
+.set_title{margin: 0 auto;border-bottom: 1px solid #b2b2b2;height: 40px;}
+.set_title .select{color:#5f8cc5; }
+.set_title .setting-name{font-size: 16px;line-height: 36px;float:left;display: block;width:250px;text-align: center; cursor: pointer;}
+.set_title .setting-name a:hover{}
+/*.setting-feild .setting-name{color: #5f8cc5;font-size: 16px;line-height: 36px;border-bottom: 1px solid #b2b2b2;}*/
 .setting-feild .feild-content{margin: 20px auto 20px auto;max-width: 620px;}
 .feild-content .feild-item label{width: 100px;text-align: right;display: inline-block;}
 .feild-content .feild-item input{width: 480px;height: 30px;margin-left: 10px;}
