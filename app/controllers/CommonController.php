@@ -76,6 +76,15 @@ class CommonController extends BaseController {
                 $colors=$this->quickBarDefaultColor();
 		if (!$QuickBar) {
                         $data=$DefaultQuickBar;
+                        foreach($data as $key=>$value){
+                            if($value['type']=="follow"){
+                                if($data[$key]['data']!=''&&strpos($data[$key]['data'], 'http://')===false){
+                                    $data[$key]['serurl']='/customers/'.$customer.$data[$key]['data'];
+                                }else{
+                                    $data[$key]['serurl']=$data[$key]['data'];
+                                }
+                            }   
+                        }
                         $data['colors']['type']='colors';
                         $data['colors']['data']=$colors;
 			$QuickBar = ['err' => 0, 'msg' => '获取成功！', 'data' => $data];

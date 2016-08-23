@@ -808,4 +808,21 @@ function get_bind_account() {
     });
 }
 
+/**
+ * ===ueditor编辑器，获取文件存储名===
+ * @param {type} html
+ * @returns {undefined}
+ */
+function ueditor_regular(html) {
+    //
+//    var i=1;
+//    j\k\l\m\n
+//ueditor/php/(\w|/)*.(\w)+
+//    $.get('../');
+//    var editor = UE.getEditor('container');
+//    var _html = editor.getContent()
+//    console.log(_html);
+//    return html;
+}
+
 

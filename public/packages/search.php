@@ -77,6 +77,7 @@
                 $linshi = str_replace('search_$image',$article_content[$v]['img'],$linshi);
                 $linshi = str_replace('search_$description',$article_content[$v]['introduction'],$linshi);
                 $linshi = str_replace('search_$pubdate',date("Y-m-d H:i:s",$article_content[$v]['created_at']),$linshi);
+                $linshi = str_replace('search_$pubymd',date("Y-m-d",$article_content[$v]['created_at']),$linshi);
                 $linshi = str_replace('search_$link',$article_content[$v]['link'],$linshi);
                 $string .= $linshi;
                 $i +=1;

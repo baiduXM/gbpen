@@ -11,7 +11,7 @@ class TemplatesController extends BaseController {
       |homepagePreview    首页预览
       |categoryPreview    列表页预览
       |articlePreview     内容页预览
-      |
+      |homepageRewrite    首页配置重写
      */
 
     //public function homepageInfo(){
@@ -290,7 +290,35 @@ class TemplatesController extends BaseController {
         }
         return $org_img;
     }
-
+    public function homepageRewrite() {
+        $cus_id = Auth::id();
+        $website_config = new WebsiteConfig();
+        websiteInfo::where('cus_id', $cus_id)->update(['pushed'=>3]);
+        $webinfo=  WebsiteInfo::where('cus_id',$cus_id)->first();
+        $pc_tpl_id=$webinfo->pc_tpl_id;
+        $mobile_tpl_id=$webinfo->mobile_tpl_id;
+        $websiteconfigs = $website_config->where('cus_id', $cus_id)->where('template_id', $pc_tpl_id)->get()->toArray();
+        foreach($websiteconfigs as $val){
+            $org_imgs = $this->getimage(unserialize($val['value']));
+            foreach ((array) $org_imgs as $v) {
+                $imgdel = new ImgDel();
+                $imgdel->mysave($v, 'page_index');
+            }
+        }
+        $websiteconfigs = $website_config->where('cus_id', $cus_id)->where('template_id', $mobile_tpl_id)->get()->toArray();
+        foreach($websiteconfigs as $val){
+            $org_imgs = $this->getimage(unserialize($val['value']));
+            foreach ((array) $org_imgs as $v) {
+                $imgdel = new ImgDel();
+                $imgdel->mysave($v, 'page_index');
+            }
+        }
+        WebsiteConfig::where('cus_id',$cus_id)->where('template_id',$pc_tpl_id)->delete();
+        WebsiteConfig::where('cus_id',$cus_id)->where('template_id',$mobile_tpl_id)->delete();
+        echo '<meta http-equiv="Content-Type" content="text/html;charset=utf-8">';
+        echo '清除首页配置';
+        exit();
+    }
     public function homepageModify() {
         $org_imgs = array();
         $mod_imgs = array();

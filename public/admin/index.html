@@ -17,14 +17,13 @@
         <![endif]-->
     </head>
     <body class="closephone" ng-class="{
-        'showbox-main':showbox == 'main',
-                'showbox-index':showbox == 'home',
-                'showbox-page':showbox == 'page',
-                'showbox-diy':showbox == 'diy',
-                'showmenu': menu.length > 0,
-                'hidepreviews': hidepreviews
-        }" ng-controller="mainController">
-        
+			'showbox-main':showbox=='main',
+			'showbox-index':showbox=='home',
+			'showbox-page':showbox=='page',
+			'showbox-diy':showbox=='diy',
+			'showmenu': menu.length>0,
+			'hidepreviews': hidepreviews
+		}" ng-controller="mainController">
         <!-- 头部 -->
         <header>
             <div class="logo fl"><img src="images/logo.png" /></div>
@@ -38,7 +37,7 @@
                         <a href="javascript:;" id="switch_bind"></a>
                     </div>
                     <a href="#/user"><p class="fr clearfix" ng-bind-template="欢迎，{{ companyname}}" ></p></a>
-
+                    
                 </div>
                 <!--容量条-->
                 <div class="fr clearfix" id="capacity_div" style="font-size: 12px;color:#7c6154;margin-right: 22px;" >
@@ -46,8 +45,8 @@
                 </div>
                 <script>
                     $(function(){
-                        init_capacity(); //初始化容量条
-                        init_bind(); //初始化双站用户
+                        init_capacity();//初始化容量条
+                        init_bind();//初始化双站用户
                         $('#switch_bind').click(function(){
                             get_bind_account();
                         });
@@ -67,7 +66,6 @@
                         <!-- <li class="nav"><a href="#/menu">微信运用</a><em></em></li> -->
                         <li class="nav"><a href="#/message">留&nbsp;言&nbsp;板</a><em></em></li>
                         <li class="nav"><a href="#/form">万用表单</a><em></em></li>
-                        <li class="nav is_judge"><a href="#/member">会员管理</a><em></em></li>
                         <li class="nav"><a href="#/phone_index?Area=quickbar">快捷导航</a><em></em></li>
                     </ul>
                 </nav>
@@ -203,7 +201,7 @@
                 </section><!--
                 --><div class="home-page-preview clearfix">
                     <div class="made_style_edite">
-                        <h1 class="made_style_edite_top"><a href="javascript:void(0);" class="made_btn resh_btn invalid_button fr">保存文件</a><a href="../homepage-preview" target="_blank" class="made_btn Preview_btn fr">预览首页</a><strong>请在左侧选择需要编辑的文件！</strong><a onclick="javascript:history.go( - 1);" class="made_btn resh_btn fr">返回</a></h1>
+                        <h1 class="made_style_edite_top"><a href="javascript:void(0);" class="made_btn resh_btn invalid_button fr">保存文件</a><a href="../homepage-preview" target="_blank" class="made_btn Preview_btn fr">预览首页</a><a href="javascript:void(0);" class="made_btn Upload_btn fr"><input type="file" class="Uploadzip" name="file" accept="application/x-zip-compressed"><div class="up_pic_btn">上传模板</div></a><strong>请在左侧选择需要编辑的文件！</strong><a onclick="javascript:history.go( - 1);" class="made_btn resh_btn fr">返回</a></h1>
                         <textarea class="made_edite">厦门易尔通厦门易</textarea>
                     </div>
                 </div><!--
@@ -251,10 +249,10 @@
     <script type="text/javascript" src="js/jquery.commen.js"></script>           	<!-- 公共插件文件 -->
     <script type="text/javascript" src="ueditor/ueditor.config.js"></script>        <!-- 编辑器配置文件 -->    
     <script type="text/javascript" src="ueditor/ueditor.all.min.js"></script>       <!-- 编辑器源码文件 -->
-    <script type="text/javascript" src="js/laydate.js"></script>           			<!-- 时间选择控件 -->
+    <script type="text/javascript" src="js/laydate.js"></script>           			 <!-- 时间选择控件 -->
     <script type="text/javascript" src="js/jquery.uploadify.min.js"></script>       <!-- 图片上传控件 -->
     <script type="text/javascript" src="js/script.js"></script>						<!-- 公共脚本文件 --> 
-
+    
     <!--[if lte IE 7]>
     <script type="text/javascript">
             mainApp.config(function($sceProvider) {

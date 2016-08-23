@@ -632,18 +632,18 @@ class WebsiteController extends BaseController{
     }
     
     //模板入库
-    public function saveTemplate($truth_name,$tpl_name=''){
+    public function saveTemplate($truth_name,$tpl_name='',$temptype=0){
         if($tpl_name!=''){
             $tpl_exists=Template::where('name',$tpl_name)->first();
             if($tpl_exists){
-                $unpack_resuslt=$this->unpack($truth_name,$tpl_name,true);
+                $unpack_resuslt=$this->unpack($truth_name,$tpl_name,true,$temptype);
             }else{
                 $tpl_exists=false;
-                $unpack_resuslt=$this->unpack($truth_name,$tpl_name,true);
+                $unpack_resuslt=$this->unpack($truth_name,$tpl_name,true,$temptype);
             }
         }else{
             $tpl_exists=false;
-            $unpack_resuslt=$this->unpack($truth_name,$tpl_name,false);
+            $unpack_resuslt=$this->unpack($truth_name,$tpl_name,false,$temptype);
         }
         
         if($unpack_resuslt){
@@ -689,7 +689,7 @@ class WebsiteController extends BaseController{
     } 
     
     //解包并分配模板文件
-    private function unpack($tpl_pack,$tpl_name,$tpl_exists=false){
+    private function unpack($tpl_pack,$tpl_name,$tpl_exists=false,$temptype=0){
         $zip = new ZipArchive;
         if($zip->open(public_path("temp_templates/$tpl_pack"))===true){
             $file_info=pathinfo($tpl_pack);
@@ -720,6 +720,11 @@ class WebsiteController extends BaseController{
                     $type=1;
                 }else{
                     $type=2;
+                }
+                if($temptype!=0){
+                    if($type!=$temptype){
+                        return false;
+                    }
                 }
                 $tpl_dir=$tpl_name;
                 $new_num='';
@@ -848,5 +853,42 @@ class WebsiteController extends BaseController{
             //更新$customer.'.zip'，创建$customer.'_update.zip'，推送$customer.'_update.zip'，删除$customer.'_update.zip'
         }
         
+    }
+    public function templateUploadZip(){
+        set_time_limit(0);
+        $files=Input::file();
+        $cus_id = Auth::id();
+        $temptype= Input::get("type");
+        $customization = Customer::where('id',$cus_id)->pluck('customization');
+        if($customization <= 0 ||($customization !=3 && $customization != $temptype))
+            return Response::json(['err'=>1001,'msg' => '您未开启相应的高级定制，高级定制需要付费，如需要，请联系客服','data' => '您未开启高级定制，高级定制需要付费，如需要，请联系客服']);
+        $files=Input::file();
+        $file=$files['upload_zip'];
+        if($file->isValid()){
+            $type = $file->getClientOriginalExtension();
+            $truth_name=date('ymd').mt_rand(100,999).'.'.$type;
+            if($type=="zip"){
+                if(file_exists(public_path("temp_templates/$truth_name"))){
+                   $result = ['err'=>1000,'msg'=>'模板覆盖成功'];
+                }else{
+                    $up_result=$file->move(public_path("temp_templates/"),$truth_name);
+                    if($up_result){
+                        if($temptype == 1)
+                            $name = WebsiteInfo::leftJoin('template','pc_tpl_id','=','template.id')->where('website_info.cus_id',$cus_id)->pluck('name');
+                        else
+                            $name = WebsiteInfo::leftJoin('template','mobile_tpl_id','=','template.id')->where('website_info.cus_id',$cus_id)->pluck('name');
+                        $tpl_name = $name;
+                        $result = $this->saveTemplate($truth_name,$tpl_name,$temptype);
+                    }else{
+                        $result = ['err'=>1001,'msg'=>'模板覆盖失败'];
+                    }
+                }
+            }else{
+               $result = ['err'=>1002,'msg'=>'模板覆盖失败，请上传正确的文件类型']; 
+            }
+        }else{
+            $result = ['err'=>1002,'msg'=>'模板覆盖失败，请上传正确的文件类型']; 
+        }
+        return Response::json($result);
     }
 }

@@ -62,7 +62,6 @@ class CustomerController extends BaseController {
         $data['qq'] = $customer_info->qq;
         $data['address'] = $customer_info->address;
         $data['enlarge'] = $customer_info->enlarge;
-        $data['is_openmember'] = $customer_info->is_openmember;
         $data['lang'] = $customer_info->lang;
         $data['lastpushtime'] = strtotime($customer_info->lastpushtime);
         $data['floatadv'] = json_decode($customer_info->floatadv);
@@ -143,7 +142,6 @@ class CustomerController extends BaseController {
         $data['lang'] = Input::get('lang');
         $data['copyright'] = Input::get('copyright');
         $data['pushed'] = 1;
-        $data['is_openmember'] = Input::get('openmemberv');
 
         $float_adv = Input::get('float_adv') ? Input::get('float_adv') : array();
         $float_type = Input::get('float_type') ? Input::get('float_type') : array();

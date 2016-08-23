@@ -16,6 +16,18 @@ function settingController($scope, $http) {
             this._Addadv();
             this._Addform();
             this._changeLang();
+            this._changeTab();//选项卡切换
+        },
+        _changeTab: function () {
+            $(".setting-name").click(function (e) {
+//                console.log(_this);
+                $(this).siblings('div').removeClass("select");
+                $(this).addClass("select");
+                var _name = this.id;
+                $('[name="'+_name+'"]').siblings(".setting-feild").hide();
+                $('[name="'+_name+'"]').show();
+                
+            });
         },
         _settingGetInfo: function () {
             var _this = this;
@@ -143,11 +155,7 @@ function settingController($scope, $http) {
                 }
                 if (set.enlarge == '1') {
                     $("#enlargev").val("1");
-                    $("input.enlbar").attr("checked", true);
-                }
-                if (set.is_openmember == '1') {
-                    $("#openmemberv").val("1");
-                    $("input.openbar").attr("checked", true);
+                    $("input.enl").attr("checked", true);
                 }
                 // $('.setting-content label[name=pcnum]').val(set.address);
                 // $('.setting-content label[name=mobnum]').val(set.address);
@@ -272,6 +280,8 @@ function settingController($scope, $http) {
                     img_upload.push($(this).data('name'));
                 });
                 $http.post('../customer-setting', data).success(function (json) {
+                    console.log(json);
+                    console.log('customer-setting');
                     checkJSON(json, function (json) {
                         if (json.err == 0) {
                             if (img_upload.length) {
@@ -347,17 +357,6 @@ function settingController($scope, $http) {
                     $("#enlargev").val("0");
                 } else {
                     $("#enlargev").val("1");
-                }
-            });
-            $('.openmember').MoveBox({
-                Trigger: 'mouseenter',
-                context: '开启网站用户注册功能'
-            });
-            $('.openmember').click(function () {
-                if ($("#openmemberv").val() == '1') {
-                    $("#openmemberv").val("0");
-                } else {
-                    $("#openmemberv").val("1");
                 }
             });
             $('input.chk').click(function (event) {

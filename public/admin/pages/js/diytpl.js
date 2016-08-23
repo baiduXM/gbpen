@@ -3,17 +3,13 @@ function diytplController($scope, $http, $location) {
 	$scope.$parent.menu = [];
 	$_GET = $location.search();
     
-    $scope.DiytplInit = function(){
-    	this.type = $_GET['type'];
-    	this.init();
-    }
-    $scope.DiytplInit.prototype = {
+    $scope.DiytplInit ={
     	init : function(){
+                this.type = $_GET['type'];
     		this.FileImgArr = [];
     		this.FileJsonArr = [];
     		this.FileHtmlToJsonArr = [];
     		this.getinfo();
-    		this.clicks();
     	},
     	getinfo : function(){
     		var _this = this;
@@ -36,13 +32,54 @@ function diytplController($scope, $http, $location) {
                                                         homelist += '<li class="list_a"><dl class="made_left fl">'+v.title+'：</dl><dl class="made_right fl">'+list+'</dl></li>'
                                                     }
 						});
-						$('.made_style').html(homelist).after('<div class="addfile-item"><a href="javascript:void(0);" class="bluebtn addfile">添加文件</a></div>');
-    					_this.AddFile();
-    					_this.FileListClick(json);
+                                                if($(".addfile-item").length==0){
+                                                    _this._uploadzip();
+                                                    _this.clicks();
+                                                    $('.made_style').html(homelist).after('<div class="addfile-item"><a href="javascript:void(0);" class="bluebtn addfile">添加文件</a></div>');
+                                                    _this.AddFile();
+                                                    _this.FileListClick(json);
+                                                }
 					}
 				});//checkJSON结束
 			});//GET请求结束
     	},
+        _uploadzip:function(){
+            var _this = this;
+            $(".Uploadzip").change(function(){
+                var data = new FormData();
+                //console.log($(".Uploadzip")[0].files[0]);
+                data.append('upload_zip', $(".Uploadzip")[0].files[0]);
+                var type=_this.type;
+                if(!$(".my_mask").attr('class')){
+                    var fade = '<div class="tpl_mask my_mask" style="display: none;"></div><div class="text_tishi my_tishi">努力保存中<i class="icon-spin4 iconfont icon-shuaxin"></i></div>';
+                    $('body').append(fade);
+                }
+                $('.my_mask').show();
+                $('.my_tishi').show();
+                $.ajax({
+                    url: '../template-upload-zip?type='+type,
+                    type: 'POST',
+                    data: data,
+                    cache: false,
+                    contentType: false, //告诉jQuery不要去处理发送的数据
+                    processData: false, //不将传输数据转为对象，告诉jQuery不要去设置Content-Type请求头
+                    success: function (json) {
+                        $('.my_mask').hide();
+                        $('.my_tishi').hide(); 
+                        checkJSON(json, function(json){
+                           alert(json.msg);
+                        });
+                        location.reload();
+                    },
+                    error:function(){
+                        $('.my_mask').hide();
+                        $('.my_tishi').hide(); 
+                        alert('模板覆盖失败！');
+                        location.reload();
+                    }
+                });
+            });
+        },
     	clicks : function(){
     		$(".made_style li a").click(function(){
 				$("ul.made_style li").addClass("cu")
@@ -50,11 +87,12 @@ function diytplController($scope, $http, $location) {
 			});
     	},
     	ModelHtml : function(files,filename){
-    		var preview = '<h1 class="made_style_edite_top"><a href="javascript:void(0);" class="made_btn resh_btn fr">保存文件</a><a href="../homepage-preview" class="made_btn Preview_btn fr">预览首页</a><a onclick="javascript:history.go(-1);" class="made_btn resh_btn fr">返回</a><span class="fl">'+files+'：（'+filename+'）</span><a href="javascript:void(0);" class="made_btn up_load fl">上传图片</a></h1>\n\
+    		var preview = '<h1 class="made_style_edite_top"><a href="javascript:void(0);" class="made_btn resh_btn fr">保存文件</a><a href="../homepage-preview" class="made_btn Preview_btn fr">预览首页</a><a href="javascript:void(0);" class="made_btn Upload_btn fr"><input type="file" class="Uploadzip" name="file" accept="application/x-zip-compressed"><div class="up_pic_btn">上传模板</div></a><a onclick="javascript:history.go(-1);" class="made_btn resh_btn fr">返回</a><span class="fl">'+files+'：（'+filename+'）</span><a href="javascript:void(0);" class="made_btn up_load fl">上传图片</a></h1>\n\
                     <textarea class="made_edite"></textarea>';
         	$('.made_style_edite').html(preview);
         	this.$made_edite = $('.made_edite')
         	this._UploadImg();
+                this._uploadzip();
     	},
     	AddFile : function(){// 添加文件的编辑按钮
     		var _this = this;
@@ -171,5 +209,5 @@ function diytplController($scope, $http, $location) {
 			});
     	}
     }
-    var init = new $scope.DiytplInit();
+    $scope.DiytplInit.init();
 }
