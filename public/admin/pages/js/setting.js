@@ -20,13 +20,11 @@ function settingController($scope, $http) {
         },
         _changeTab: function () {
             $(".setting-name").click(function (e) {
-//                console.log(_this);
                 $(this).siblings('div').removeClass("select");
                 $(this).addClass("select");
                 var _name = this.id;
                 $('[name="'+_name+'"]').siblings(".setting-feild").hide();
                 $('[name="'+_name+'"]').show();
-                
             });
         },
         _settingGetInfo: function () {

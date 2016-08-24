@@ -883,6 +883,11 @@ class PrintController extends BaseController {
         return $result;
     }
 
+    /**
+     * 1、加载头部导航条，包括用户登录、版本切换
+     * 2、加载悬浮表单内容
+     * @return string
+     */
     public function publicdata() {
         $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
         $templatesC = new TemplatesController;
@@ -892,35 +897,26 @@ class PrintController extends BaseController {
         if ($customer_info->is_openmember == 1) {
             //===前端开启注册===
             $login_div = '<div class="login_div left">'
-                    . '<ul class="login_status">'
+                    . '<ul class="login_status" name="login_out">'
                     . '<li><a href="#" name="login">登录</a></li>'
                     . '<li><a href="javascript:void();" name="register">注册</a></li>'
                     . '</ul>'
-                    . '<ul class="login_status hidden">'
+                    . '<ul class="login_status" name="login_in">'
                     . '<li>你好，XXX</li>'
                     . '<li><a href="javascript:void();">退出</a></li>'
                     . '</ul>'
                     . '</div>';
-
             $memberC = new MemberController;
         }
-//        echo 12;
-//        var_dump($customer_info->is_openmember);
-//        exit;
-//        $customer_member = '';
         //===用户登录注册-end===
         //===显示版本切换链接===
-        $templatesC = new TemplatesController;
         $tempname = $templatesC->getTemplatesName($this->type);
         $flagPlatform = substr($tempname, 0, 2);
         $flagLanguage = substr($tempname, 2, 1);
         $tempscript = '';
-        $customerC = new CustomerController;
         $domain = $customerC->getSwitchCustomer(); //双站用户
         $current_url = '#';
         $language_url = '#';
-        $tempscript_star = '<script>$(function(){';
-        $tempscript_end = '});</script>';
         if (!empty($domain)) {
             if ($flagPlatform == 'GM') {//===手机===
                 $language_url = $domain['switch_mobile_domain'];
@@ -1015,10 +1011,10 @@ class PrintController extends BaseController {
             }
             //===end===
             $footscript = $customer_info->pc_footer_script;
-            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/js/quickbar.js?' . $this->cus_id . 'pc"></script>';
+            $footscript .= '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/quickbar.js?' . $this->cus_id . 'pc"></script>';
 //            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/js/statis.js?' . $this->cus_id . 'pc"></script>'; //===添加统计代码PC===
-            $footscript .= $tempscript_star . $tempscript . $tempscript_end;
-            $footscript .= $language_css;
+            $footscript .= $tempscript;
+//            $footscript .= $language_css;
             $site_another_url = $this->showtype == 'preview' ? '' : $customer_info->mobile_domain;
         } else {
             $logo = $this->showtype == 'preview' ? ('/customers/' . $this->customer . '/images/l/common/' . $customer_info->logo_small) : $this->domain . '/images/l/common/' . $customer_info->logo_small; //'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $customer_info->logo_small) : $this->domain . '/images/l/common/' . $customer_info->logo_small;
@@ -1027,7 +1023,7 @@ class PrintController extends BaseController {
 //            $headscript .= $language_css;
             $footprint = $customer_info->mobile_footer;
             $footscript = $customer_info->mobile_footer_script;
-            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/js/quickbar.js?' . $this->cus_id . 'mobile"></script>';
+            $footscript .= '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/quickbar.js?' . $this->cus_id . 'mobile"></script>';
 //            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/js/statis.js?' . $this->cus_id . 'mobile"></script>'; //===添加统计代码MOBILE===
 //            $footscript .= $tempscript;
             $site_another_url = $this->showtype == 'preview' ? '' : $customer_info->pc_domain;
@@ -1142,7 +1138,7 @@ class PrintController extends BaseController {
             'footscript' => $footscript,
             'global' => $global_data,
             'site_url' => $this->site_url,
-            'site_another_url' => (str_replace('http://', '', $site_another_url) ? $site_another_url : ''),
+            'site_another_url' => $site_another_url,
             'contact' => $contact,
             'search_action' => $pc_domain //'http://swap.gbpen.com'
         ];
@@ -2509,36 +2505,7 @@ class PrintController extends BaseController {
                     $result['list']['content'] = preg_replace('/\/customers\/' . $this->customer . '/i', '', Page::where('id', $classify->page_id)->pluck('content'));
                 }
             } elseif ($classify->type == 5) {
-                $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
-                if ($customer_info->lang == 'en') {
-                    $result['list']['content'] = '<form action="http://swap.5067.org/message/' . $this->cus_id . '" method="post" name="messageboard" onsubmit="return CheckPost();" class="elegant-aero">
-                    <h1>' . $classify->name . '
-                    <span>' . $classify->en_name . '</span>
-                    </h1>
-                    <label>
-                    <span>Name :</span>
-                    <input id="name" type="text" name="name" placeholder="Name" />
-                    </label>
-                    <label>
-                    <span>Email :</span>
-                    <input id="email" type="email" name="email" placeholder="Email Address" />
-                    </label>
-                    <label>
-                    <span>Tel :</span>
-                    <input id="telephone" type="tel" name="telephone" placeholder="Telephone" />
-                    </label>
-                    <label>
-                    <label>
-                    <span>Content :</span>
-                    <textarea id="content" name="content" placeholder="You mind ...."></textarea>
-                    </label>
-                    <label>
-                    <span>&nbsp;</span>
-                    <input type="submit" class="button" name="submit" value="Submit" />
-                    </label>
-                    </form>';
-                } else {
-                    $result['list']['content'] = '<form action="http://swap.5067.org/message/' . $this->cus_id . '" method="post" name="messageboard" onsubmit="return CheckPost();" class="elegant-aero">
+                $result['list']['content'] = '<form action="http://swap.5067.org/message/' . $this->cus_id . '" method="post" name="messageboard" onsubmit="return CheckPost();" class="elegant-aero">
                     <h1>' . $classify->name . '
                     <span>' . $classify->en_name . '</span>
                     </h1>
@@ -2555,6 +2522,7 @@ class PrintController extends BaseController {
                     <input id="telephone" type="tel" name="telephone" placeholder="Telephone" />
                     </label>
                     <label>
+                    <label>
                     <span>内容 :</span>
                     <textarea id="content" name="content" placeholder="You mind ...."></textarea>
                     </label>
@@ -2563,7 +2531,6 @@ class PrintController extends BaseController {
                     <input type="submit" class="button" name="submit" value="提交" />
                     </label>
                     </form>';
-                }
             } elseif ($classify->type == 9) {
                 //===显示前端===
                 $result['list']['content'] = $formC->showFormHtmlForPrint($formCdata);
@@ -2852,7 +2819,7 @@ class PrintController extends BaseController {
             $viewname = 'content-product';
             $result['enlarge'] = $customer_info->enlarge;
             if ($result['enlarge'] && $this->type == 'pc') {
-                $result['footscript'] .= '<script type="text/javascript" src="http://swap.5067.org/js/img.js"></script>';
+                $result['footscript'] .= '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/img.js"></script>';
             }
         } else {//跳转404
         }
@@ -3023,7 +2990,7 @@ class PrintController extends BaseController {
             $viewname = 'content-product';
             $result['enlarge'] = $customer_info->enlarge;
             if ($result['enlarge'] && $this->type == 'pc') {
-                $result['footscript'] .= '<script type="text/javascript" src="http://swap.5067.org/js/img.js"></script>';
+                $result['footscript'] .= '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/img.js"></script>';
             }
         } else {//跳转404
         }
@@ -3387,7 +3354,7 @@ class PrintController extends BaseController {
             $search_view = $search_view[1];
             //匹配所有查询中循环的值
             preg_match_all('/{[\s]*\$' . $search_view . '[.|\[]([a-z]*)[\]]*}/', $search_foreach[2], $date_replace);
-            $search_view = array('title' => '$title', 'image' => '$image', 'link' => '$link', 'description' => '$description', 'pubdate' => '$pubdate', 'pubtimestamp' => '$pubtimestamp', 'pubymd' => '$pubymd');
+            $search_view = array('title' => '$title', 'image' => '$image', 'link' => '$link', 'description' => '$description', 'pubdate' => '$pubdate', 'pubtimestamp' => '$pubtimestamp');
             foreach ((array) $date_replace[0] as $k => $v) {
                 $search_content = str_replace($v, 'search_' . $search_view[$date_replace[1][$k]], $search_content);
             }
@@ -3509,7 +3476,7 @@ class PrintController extends BaseController {
             $search_view = $search_view[1];
             //匹配所有查询中循环的值
             preg_match_all('/{[\s]*\$' . $search_view . '[.|\[]([a-z]*)[\]]*}/', $search_foreach[2], $date_replace);
-            $search_view = array('title' => '$title', 'image' => '$image', 'link' => '$link', 'description' => '$description', 'pubdate' => '$pubdate', 'pubtimestamp' => '$pubtimestamp', 'pubymd' => '$pubymd');
+            $search_view = array('title' => '$title', 'image' => '$image', 'link' => '$link', 'description' => '$description', 'pubdate' => '$pubdate', 'pubtimestamp' => '$pubtimestamp');
             foreach ((array) $date_replace[0] as $k => $v) {
                 $search_content = str_replace($v, 'search_' . $search_view[$date_replace[1][$k]], $search_content);
             }
@@ -3734,6 +3701,13 @@ class PrintController extends BaseController {
             closedir($handle);
         }
         return $fileArray;
+    }
+
+    /**
+     * ===已登录===
+     */
+    public function haveLogin() {
+        
     }
 
 }
