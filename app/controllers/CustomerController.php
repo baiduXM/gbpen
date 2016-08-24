@@ -62,6 +62,7 @@ class CustomerController extends BaseController {
         $data['qq'] = $customer_info->qq;
         $data['address'] = $customer_info->address;
         $data['enlarge'] = $customer_info->enlarge;
+        $data['is_openmember'] = $customer_info->is_openmember;
         $data['lang'] = $customer_info->lang;
         $data['lastpushtime'] = strtotime($customer_info->lastpushtime);
         $data['floatadv'] = json_decode($customer_info->floatadv);
@@ -139,6 +140,7 @@ class CustomerController extends BaseController {
         $data['pc_page_img_count'] = (Input::get('pc_img_per_page') > 0) ? Input::get('pc_img_per_page') : 3;
         $data['pc_page_count_switch'] = Input::get('pc_page_count_switch');
         $data['enlarge'] = Input::get('enlargev');
+        $data['is_openmember'] = Input::get('openmemberv');
         $data['lang'] = Input::get('lang');
         $data['copyright'] = Input::get('copyright');
         $data['pushed'] = 1;

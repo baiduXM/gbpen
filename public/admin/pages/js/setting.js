@@ -19,12 +19,12 @@ function settingController($scope, $http) {
             this._changeTab();//选项卡切换
         },
         _changeTab: function () {
-            $(".setting-name").click(function (e) {
+            $(".setting-name").click(function () {
                 $(this).siblings('div').removeClass("select");
                 $(this).addClass("select");
                 var _name = this.id;
-                $('[name="'+_name+'"]').siblings(".setting-feild").hide();
-                $('[name="'+_name+'"]').show();
+                $('[name="' + _name + '"]').siblings(".setting-feild").hide();
+                $('[name="' + _name + '"]').show();
             });
         },
         _settingGetInfo: function () {
@@ -32,6 +32,7 @@ function settingController($scope, $http) {
             // 数据读取
             $http.get('../customer-info').success(function (json) {
                 var set = json.data;
+                console.log(set)
                 $('.setting-content input[name=company_name]').val(set.company_name);
                 $('.setting-content input[name=domain_pc]').val(set.domain_pc);
                 $('.setting-content input[name=domain_m]').val(set.domain_m);
@@ -155,6 +156,11 @@ function settingController($scope, $http) {
                     $("#enlargev").val("1");
                     $("input.enl").attr("checked", true);
                 }
+                if (set.is_openmember == '1') {
+                    $("#openmemberv").val("1");
+                    $("input.opm").attr("checked", true);
+                }
+
                 // $('.setting-content label[name=pcnum]').val(set.address);
                 // $('.setting-content label[name=mobnum]').val(set.address);
                 if (set.favicon != null) {
@@ -278,8 +284,6 @@ function settingController($scope, $http) {
                     img_upload.push($(this).data('name'));
                 });
                 $http.post('../customer-setting', data).success(function (json) {
-                    console.log(json);
-                    console.log('customer-setting');
                     checkJSON(json, function (json) {
                         if (json.err == 0) {
                             if (img_upload.length) {
@@ -350,11 +354,22 @@ function settingController($scope, $http) {
                 Trigger: 'mouseenter',
                 context: '开启产品介绍图片放大功能'
             });
-            $('.enlarge').click(function () {
+            $('.openmember').MoveBox({
+                Trigger: 'mouseenter',
+                context: '开启用户注册功能'
+            });
+            $('[name="enlargelab"]').click(function () {
                 if ($("#enlargev").val() == '1') {
                     $("#enlargev").val("0");
                 } else {
                     $("#enlargev").val("1");
+                }
+            });
+            $('[name="openmemberlab"]').click(function () {
+                if ($("#openmemberv").val() == '1') {
+                    $("#openmemberv").val("0");
+                } else {
+                    $("#openmemberv").val("1");
                 }
             });
             $('input.chk').click(function (event) {
