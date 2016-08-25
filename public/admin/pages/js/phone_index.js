@@ -854,21 +854,21 @@ function phone_indexController($scope, $http, $location) {
             var mobile_info = '';
             if (typeof (colors['mobile']) != "undefined") {
                 mobile_info = '<li class="consultation-item">\
-                                    <label class="message-name">手机主色：</label><input type="color" class="colors" value="' + this.ColorRet(colors['mobile'][0]) + '" name="mobile_mainColor" id="mobile_mainColor" /><span style="margin:0 20px 0 20px">|</span>\
-                                    <label class="message-name">手机副色：</label><input type="color" class="colors" value="' + this.ColorRet(colors['mobile'][1]) + '" name="mobile_secondColor" id="mobile_secondColor" /><span style="margin:0 20px 0 20px">|</span>\
-                                    <label class="message-name">手机图标颜色：</label><input type="color" class="colors" value="' + this.ColorRet(colors['mobile'][2]) + '" name="mobile_textColor" id="mobile_textColor" />\
+                                    <label class="message-name">手机主色：</label><div><input type="color" class="colors" value="' + this.ColorRet(colors['mobile'][0]) + '" name="mobile_mainColor" id="mobile_mainColor" data-id="mobile_mainColor"/><input type="text" class="mobile_mainColor" value="' + this.ColorRet(colors['mobile'][0]) + '"  data-id="mobile_mainColor" /></div>\
+                                    <label class="message-name">手机副色：</label><div><input type="color" class="colors" value="' + this.ColorRet(colors['mobile'][1]) + '" name="mobile_secondColor" id="mobile_secondColor" data-id="mobile_secondColor"/><input type="text" class="mobile_secondColor" value="' + this.ColorRet(colors['mobile'][1]) + '" data-id="mobile_secondColor"/></div>\
+                                    <label class="message-name">手机图标颜色：</label><div><input type="color" class="colors" value="' + this.ColorRet(colors['mobile'][2]) + '" name="mobile_textColor" id="mobile_textColor" data-id="mobile_textColor"/><input type="text" class="mobile_textColor" value="' + this.ColorRet(colors['mobile'][2]) + '" data-id="mobile_textColor"/></div>\
 				</li>';
             }
             info = '<div class="quicklist-r inline-block">\
                         <div class="ml5">\
-                            <ul class="fl consultation">\n\
+                            <ul class="fl consultation colorsetting">\n\
                                 <li class="consultation-item">\
-                                    <label class="message-name">pc主色：</label><input type="color" class="colors" value="' + this.ColorRet(colors['pc'][0]) + '" name="pc_mainColor" id="pc_mainColor" /><span style="margin:0 20px 0 20px">|</span>\
-                                    <label class="message-name">pc鼠标停留时颜色：</label><input type="color" class="colors" value="' + this.ColorRet(colors['pc'][1]) + '" name="pc_secondColor" id="pc_secondColor" /><span style="margin:0 20px 0 20px">|</span>\
-                                    <label class="message-name">pc图标颜色：</label><input type="color" class="colors" value="' + this.ColorRet(colors['pc'][2]) + '" name="pc_textColor" id="pc_textColor" />\
+                                    <label class="message-name">pc主色：</label><div><input type="color" class="colors" value="' + this.ColorRet(colors['pc'][0]) + '" name="pc_mainColor" id="pc_mainColor" data-id="pc_mainColor"/><input type="text" class="pc_mainColor" value="' + this.ColorRet(colors['pc'][0]) + '" data-id="pc_mainColor" /></div>\
+                                    <label class="message-name">pc鼠标停留时颜色：</label><div><input type="color" class="colors" value="' + this.ColorRet(colors['pc'][1]) + '" name="pc_secondColor" id="pc_secondColor" data-id="pc_secondColor"/><input type="text" class="pc_secondColor" value="' + this.ColorRet(colors['pc'][1]) + '" data-id="pc_secondColor"/></div>\
+                                    <label class="message-name">pc图标颜色：</label><div><input type="color" class="colors" value="' + this.ColorRet(colors['pc'][2]) + '" name="pc_textColor" id="pc_textColor" data-id="pc_textColor"/><input type="text" class="pc_textColor" value="' + this.ColorRet(colors['pc'][2]) + '" data-id="pc_textColor" /></div>\
 				</li>' + mobile_info + '\n\
                             </ul>\
-                            <button class="colorsclear" >还原</button>\
+                            <button class="colorsclear btn btn-default" >还原</button>\
 			</div>\n\
                     </div>';
             var _div2 = '<li class="move_feild">\n\
@@ -886,6 +886,7 @@ function phone_indexController($scope, $http, $location) {
             this.DragBlock();
             this.SaveData();
             this.QuickBarListFuc();
+            this.ColorBind();
         },
         //颜色3位转换成六位16进制
         ColorRet: function (color) {
@@ -894,6 +895,13 @@ function phone_indexController($scope, $http, $location) {
                 color += colorstr;
             }
             return color;
+        },
+        ColorBind:function(){
+            $(".colorsetting input").change(function(){
+                var value=$(this).val();
+                var id=$(this).data("id");
+                $(".colorsetting input[data-id="+id+"]").val(value);
+            });
         },
         QuickBarListFuc: function () {
             // 咨询  
