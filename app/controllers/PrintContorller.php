@@ -938,7 +938,11 @@ class PrintController extends BaseController {
                     . $language
                     . '</ul>'
                     . '</div>';
-            $top_div = '<div class="top_div">' . $login_div . $language_div . '</div>';
+            if ($customer_info->is_openmember == 1) {
+                $top_div = '<div class="top_div">' . $login_div . $language_div . '</div>';
+            } else {
+                $top_div = '<div class="top_div">' . $language_div . '</div>';
+            }
 
             $tempscript = '<script>'
                     . '$(function(){'
@@ -947,8 +951,10 @@ class PrintController extends BaseController {
                     . '});'
                     . '</script>';
         }
-        $top_div_css = '<link rel="stylesheet" href="http://swap.5067.org/css/top_common.css">'; //===顶部公共的样式===
-        $language_css = '<link rel="stylesheet" href="http://swap.5067.org/css/language.css">'; //===交互中的样式===
+//        $top_div_css = '<link rel="stylesheet" href="http://swap.5067.org/css/top_common.css">'; //===顶部公共的样式===
+//        $language_css = '<link rel="stylesheet" href="http://swap.5067.org/css/language.css">'; //===交互中的样式===
+        $language_css = '<link rel="stylesheet" href="http://localhost/swap.5067.org/top_common.css">'; //===本地调试样式===
+        
         //===显示版本切换链接-end===
         $formC = new FormController();
         if ($this->type == 'pc') {
@@ -3009,11 +3015,8 @@ class PrintController extends BaseController {
             $the_result = array();
             $the_result = $result;
             //===当前页面底部脚本===
-//            if(是否登录){
-//            登录添加脚本
-//                $the_result["foot_script"].="<s>js</s>";
-//            }
-            $a_moreimg = Moreimg::where('a_id', $article['id'])->get()->toArray();
+            $footisloginjs = //            alert(1);
+                    $a_moreimg = Moreimg::where('a_id', $article['id'])->get()->toArray();
             array_unshift($a_moreimg, array('title' => $article['title'], 'img' => $article['img']));
             $images = array();
             if (count($a_moreimg)) {

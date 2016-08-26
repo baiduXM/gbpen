@@ -13,7 +13,7 @@ class MemberController extends BaseController {
      * index
      */
     public function index() {
-        echo 123;
+        //nihao ma 
     }
 
     /**
@@ -23,7 +23,10 @@ class MemberController extends BaseController {
     public function browse() {
         $id = Auth::id();
         $article = Articles::find($id);
-        $is_browse_member = $article->is_browse_member;
+        
+        $is_openmember = $article->is_openmember;
+        
+//        asdfadsfsadf
         
     }
 
