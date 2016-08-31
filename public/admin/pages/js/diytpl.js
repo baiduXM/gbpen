@@ -164,7 +164,7 @@ function diytplController($scope, $http, $location) {
                 var warningbox = new WarningBox();
                 warningbox._upImage({
                 	IsOneNatural : true,
-                    ajaxurl    : '../file-upload?target=imgcache',
+                    ajaxurl    : '../file-upload?target=imgcache&type=' + _this.type,
                     oncallback : function(json){
                         insertText($('.made_edite')[0],json.data.url);
                         _this.FileImgArr.push(json.data.name);

@@ -257,10 +257,15 @@ class UploadController extends BaseController {
         if ($files) {
             if ($target == 'imgcache') {
                 $id = $cus_id;
+                $type = Input::get('type');
                 $filename = Input::get('filename');
                 $filename = explode('.', $filename);
                 $filetype = end($filename);
-                $name = WebsiteInfo::leftJoin('template', 'pc_tpl_id', '=', 'template.id')->where('website_info.cus_id', $id)->pluck('name');
+                if($type == 1){
+                    $name = WebsiteInfo::leftJoin('template', 'pc_tpl_id', '=', 'template.id')->where('website_info.cus_id', $id)->pluck('name');
+                } else {
+                    $name = WebsiteInfo::leftJoin('template', 'mobile_tpl_id', '=', 'template.id')->where('website_info.cus_id', $id)->pluck('name');
+                }
                 if ($files['upload_file0']->isValid()) {
                     $type = $files['upload_file0']->getClientOriginalExtension();
                     $truth_name = time() . mt_rand(100, 999) . '.' . $type;
