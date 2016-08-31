@@ -892,21 +892,31 @@ class PrintController extends BaseController {
         $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
         $templatesC = new TemplatesController;
         $customerC = new CustomerController;
-
+        $top_div = '<div class="top_div clearfix">';
+        $member_js = "";
         //===用户登录注册===
         if ($customer_info->is_openmember == 1) {
             //===前端开启注册===
-            $login_div = '<div class="login_div left">'
-                    . '<ul class="login_status" name="login_out">'
-                    . '<li><a href="#" name="login">登录</a></li>'
-                    . '<li><a href="javascript:void();" name="register">注册</a></li>'
+            $top_div .= '<div class="login_div left">'
+                    . '<ul class="" name="login_out" style="display:block;">'
+                    . '<li class="left"><a href="#" id="login">登录</a></li>'
+                    . '<li class="left"><a href="javascript:void();" id="register">注册</a></li>'
                     . '</ul>'
-                    . '<ul class="login_status" name="login_in">'
-                    . '<li>你好，XXX</li>'
-                    . '<li><a href="javascript:void();">退出</a></li>'
+                    . '<ul class="" name="login_in" style="display:none;">'
+                    . '<li class="left">你好，XXX</li>'
+                    . '<li class="left"><a href="javascript:void();" id="logout">退出</a></li>'
                     . '</ul>'
                     . '</div>';
-            $memberC = new MemberController;
+//            $memberC = new MemberController;
+            $iframe_div = '<iframe src="http://localhost/swap.5067.org/unifyhtml/login.html" id="if_login" frameborder="0″ scrolling="auto" style="display:none;"></iframe>';
+//            $iframe_div = '<iframe src="http://swap.5067.org/unifyhtml/logout.php" id="if_logout" width="700″ height="300″ frameborder="0″ scrolling="auto"></iframe>';
+//            $iframe_div = '<iframe src="http://swap.5067.org/unifyhtml/register.html" id="if_register" width="700″ height="300″ frameborder="0″ scrolling="auto"></iframe>';
+            $member_js = '$("#register").click(function(){'
+                    . 'alert(1);'
+                    . '});'
+                    . '$("#login").click(function(){'
+                    . 'alert(2);'
+                    . '});';
         }
         //===用户登录注册-end===
         //===显示版本切换链接===
@@ -933,28 +943,24 @@ class PrintController extends BaseController {
                 $language .= '<li><a href="' . $language_url . '">English</a></li>';
             }
 
-            $language_div = '<div class="language_div right">'
+            $language_div = '<div class="language_div right" style="display:block;">'
                     . '<ul>'
                     . $language
                     . '</ul>'
                     . '</div>';
-            if ($customer_info->is_openmember == 1) {
-                $top_div = '<div class="top_div">' . $login_div . $language_div . '</div>';
-            } else {
-                $top_div = '<div class="top_div">' . $language_div . '</div>';
-            }
+            $top_div .= $language_div . '</div>' . $iframe_div;
 
             $tempscript = '<script>'
                     . '$(function(){'
                     . '$("#header").prepend(\'' . $top_div . '\');'
                     . '$("#header").css("position","relative");'
+                    . $member_js
                     . '});'
                     . '</script>';
         }
 //        $top_div_css = '<link rel="stylesheet" href="http://swap.5067.org/css/top_common.css">'; //===顶部公共的样式===
 //        $language_css = '<link rel="stylesheet" href="http://swap.5067.org/css/language.css">'; //===交互中的样式===
         $language_css = '<link rel="stylesheet" href="http://localhost/swap.5067.org/top_common.css">'; //===本地调试样式===
-        
         //===显示版本切换链接-end===
         $formC = new FormController();
         if ($this->type == 'pc') {
