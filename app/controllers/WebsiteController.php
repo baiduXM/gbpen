@@ -497,6 +497,21 @@ class WebsiteController extends BaseController{
                     $dst = app_path('views/templates/'.$template.'/'.$filename);
                 }
             }
+            $pushed=WebsiteInfo::where("cus_id",$cus_id)->pluck("pushed");
+            if($type==1){
+                if($pushed == 0 || $pushed == 2){
+                    $pushed=2;
+                }else{
+                    $pushed=1;
+                }
+            }else{
+                if($pushed == 0 || $pushed == 3){
+                    $pushed=3;
+                }else{
+                    $pushed=1;
+                }
+            }
+            WebsiteInfo::where("cus_id",$cus_id)->update(array("pushed"=>$pushed));
             if(file_exists($dst)){
                 $edit = file_put_contents($dst, $content);
                 if($edit==FALSE){
@@ -886,6 +901,21 @@ class WebsiteController extends BaseController{
                             $name = WebsiteInfo::leftJoin('template','mobile_tpl_id','=','template.id')->where('website_info.cus_id',$cus_id)->pluck('name');
                         $tpl_name = $name;
                         $result = $this->saveTemplate($truth_name,$tpl_name,$temptype);
+                        $pushed=WebsiteInfo::where("cus_id",$cus_id)->pluck("pushed");
+                        if($temptype==1){
+                            if($pushed == 0 || $pushed == 2){
+                                $pushed=2;
+                            }else{
+                                $pushed=1;
+                            }
+                        }else{
+                            if($pushed == 0 || $pushed == 3){
+                                $pushed=3;
+                            }else{
+                                $pushed=1;
+                            }
+                        }
+                        WebsiteInfo::where("cus_id",$cus_id)->update(array("pushed"=>$pushed));
                     }else{
                         $result = ['err'=>1001,'msg'=>'模板覆盖失败'];
                     }
