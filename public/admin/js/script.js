@@ -106,6 +106,12 @@ mainApp.config(function ($routeProvider, $httpProvider) {
                     }
                 });
             }
+            //===end===
+            //===判断是否开启会员管理===
+            $.get('../member-info', function (json) {
+                
+            });
+            //===end===
             locathash ? $('#blob').animate({left: $('nav .nav a[href="' + locathash + '"]').parent().position().left}, 1000, 'easeOutExpo').addClass('rotation') : '';
         }, 200);
         /*

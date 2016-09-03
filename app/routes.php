@@ -48,12 +48,14 @@ Route::get('login-info', [//用户名称
 //路由组--所有登录后的操作放入本组
 Route::group(array('before' => 'auth'), function() {
 
-    //===获取用户统计数据-start===
-    Route::get('statis-get', [//首页统计数据
+    Route::get('statis-get', [//===获取用户统计数据-start===
         'as' => 'statis',
         'uses' => 'StatisController@getCount'
     ]);
-    //===获取用户统计数据-end===
+
+    Route::get('member-info', [//===是否开启会员管理===
+        'uses' => 'MemberController@isopenmember'
+    ]);
 
     Route::get('log-out', [//用户登出
         'as' => 'log-out',

@@ -16,18 +16,12 @@ class MemberController extends BaseController {
         //nihao ma 
     }
 
-    /**
-     * web浏览
-     * 添加文章用户浏览权限，若无权限返回上一页面
-     */
-    public function browse() {
-        $id = Auth::id();
-        $article = Articles::find($id);
-        
-        $is_openmember = $article->is_openmember;
-        
-//        asdfadsfsadf
-        
+    public function CustomerIsOpenmember() {
+        $cus_id = Auth::id();
+        $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
+        $is_openmember = $customer_info->is_openmember;
+        $return_msg = array('err' => 3001, 'msg' => '文章添加失败', 'data' => 1);
+        return Response::json($return_msg);
     }
 
 }
