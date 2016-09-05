@@ -16,11 +16,19 @@ class MemberController extends BaseController {
         //nihao ma 
     }
 
-    public function CustomerIsOpenmember() {
+    /**
+     * 检查是否开启用户管理
+     * @return type
+     */
+    public function isOpenmember() {
         $cus_id = Auth::id();
-        $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
+        $customer_info = CustomerInfo::where('cus_id', $cus_id)->first();
         $is_openmember = $customer_info->is_openmember;
-        $return_msg = array('err' => 3001, 'msg' => '文章添加失败', 'data' => 1);
+        if ($is_openmember == 1) {
+            $return_msg = array('err' => 0, 'msg' => '开启会员注册', 'data' => 1);
+        } else {
+            $return_msg = array('err' => 0, 'msg' => '未开启会员注册', 'data' => 0);
+        }
         return Response::json($return_msg);
     }
 

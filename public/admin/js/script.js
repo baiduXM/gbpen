@@ -109,7 +109,12 @@ mainApp.config(function ($routeProvider, $httpProvider) {
             //===end===
             //===判断是否开启会员管理===
             $.get('../member-info', function (json) {
-                
+                var _data = json.data;
+                if (_data == 1) {//===开启===
+                    $("#member_nav").show();
+                } else {//===关闭===
+                    $("#member_nav").hide();
+                }
             });
             //===end===
             locathash ? $('#blob').animate({left: $('nav .nav a[href="' + locathash + '"]').parent().position().left}, 1000, 'easeOutExpo').addClass('rotation') : '';

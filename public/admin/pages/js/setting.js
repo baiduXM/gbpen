@@ -350,11 +350,11 @@ function settingController($scope, $http) {
                 Trigger: 'mouseenter',
                 context: '开启设置各个列表展示条数'
             });
-            $('.enlarge').MoveBox({
+            $('[name="enlargelab"]').MoveBox({
                 Trigger: 'mouseenter',
                 context: '开启产品介绍图片放大功能'
             });
-            $('.openmember').MoveBox({
+            $('[name="openmemberlab"]').MoveBox({
                 Trigger: 'mouseenter',
                 context: '开启用户注册功能'
             });

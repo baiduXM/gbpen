@@ -41,20 +41,18 @@ Route::get('login-info', [//用户名称
     'uses' => 'SignController@loginInfo'
 ]);
 
-
-
-
-
 //路由组--所有登录后的操作放入本组
 Route::group(array('before' => 'auth'), function() {
-
-    Route::get('statis-get', [//===获取用户统计数据-start===
+    
+    //===获取用户统计数据-start===
+    Route::get('statis-get', [
         'as' => 'statis',
         'uses' => 'StatisController@getCount'
     ]);
 
-    Route::get('member-info', [//===是否开启会员管理===
-        'uses' => 'MemberController@isopenmember'
+    //===是否开启会员管理===
+    Route::get('member-info', [
+        'uses' => 'MemberController@isOpenmember'
     ]);
 
     Route::get('log-out', [//用户登出
