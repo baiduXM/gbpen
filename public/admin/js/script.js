@@ -108,15 +108,6 @@ mainApp.config(function ($routeProvider, $httpProvider) {
             }
             locathash ? $('#blob').animate({left: $('nav .nav a[href="' + locathash + '"]').parent().position().left}, 1000, 'easeOutExpo').addClass('rotation') : '';
         }, 200);
-        /*
-         // reload page
-         if (currentPage && location.hash != '#/loading') {
-         var nowHash = location.hash;
-         location.hash = '#/loading?' + encodeURIComponent(currentPage.router);
-         setTimeout(function() {
-         if (location.hash != nowHash) location.hash = nowHash;
-         }, 100);
-         }*/
     });
 
     // change request payload method to form data
