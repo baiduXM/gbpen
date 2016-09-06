@@ -1116,7 +1116,7 @@ class PrintController extends BaseController {
 
         if ($this->type == 'pc') {
             $footer_navs = Classify::where('cus_id', $this->cus_id)->where('footer_show', 1)->select('id', 'type', 'img', 'icon', 'name', 'url', 'p_id', 'en_name', 'meta_description as description', 'open_page')->OrderBy('sort', 'asc')->get()->toArray();
-            $footer_navs = $this->toFooter($footer_navs);
+            $footer_navs = $this->toFooter($footer_navs,0);
             $result['footer_navs'] = $footer_navs;
             $result['type'] = 'pc';
         }
@@ -3160,9 +3160,19 @@ class PrintController extends BaseController {
      * @param array $arr 栏目数据数组
      * @return array 
      */
-    private function toFooter($arr) {
+    private function toFooter($arr,$pid=0) {
         $footer = array();
-        foreach ((array) $arr as $k => $v) {
+        $needarr=array();
+        foreach ((array) $needarr as $k => $v) {
+            if ($v['p_id'] == $pid) {
+                $needarr[] = $v;
+            }
+        }
+        
+        if (empty($needarr)) {
+            return null;
+        }
+        foreach ((array) $needarr as $k => $v) {
             $v['image'] = $v['img'] ? ($this->source_dir . 'l/category/' . $v['img']) : '';
             $v['icon'] = '<i class="iconfont">' . $v['icon'] . '</i>';
             if ($v['type'] != 6) {
@@ -3186,7 +3196,8 @@ class PrintController extends BaseController {
             }
 
             unset($v['img']);
-            $footer[] = $v;
+            $footer[$k] = $v;
+            $footer[$k]["childmenu"]= $this->toFooter($arr, $v['id']);
         }
         return $footer;
     }
