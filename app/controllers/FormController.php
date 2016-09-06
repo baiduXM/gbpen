@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * 万用表单控制器
  * @author xieqixiang
  * 
@@ -10,7 +10,6 @@
  * form_column_n (n=0,..,9) 表单列名，根据表单id尾数存储在对于表中，例：form_id=5,添加的列名存储在form_column_5表中
  * form_data_n (n=0,...,9) 表单数据 原理同上，存储在交互服务器上
  */
-
 class FormController extends BaseController {
 
     /**
@@ -223,7 +222,7 @@ class FormController extends BaseController {
         //===获取参数===
         $form_id = Input::get('form_id');
         $element_id = Input::get('element_id');
-        Classify::where('form_id', $form_id)->update(['pushed'=>1]);
+        Classify::where('form_id', $form_id)->update(['pushed' => 1]);
         //===获取元素===
         $element_data = DB::table('form_element')->where('id', $element_id)->first();
         //===添加数据===
@@ -260,7 +259,7 @@ class FormController extends BaseController {
         $data = Input::get('data');
         $column_id = Input::get('column_id');
         $type = Input::get('type');
-        Classify::where('form_id', $form_id)->update(['pushed'=>1]);
+        Classify::where('form_id', $form_id)->update(['pushed' => 1]);
         $redata = array();
         $config = array();
         foreach ($data as $v) {
@@ -394,7 +393,7 @@ class FormController extends BaseController {
     public function deleteFormColumn() {
         $form_id = Input::get('form_id');
         $column_id = Input::get('column_id');
-        Classify::where('form_id', $form_id)->update(['pushed'=>1]);
+        Classify::where('form_id', $form_id)->update(['pushed' => 1]);
         $res = DB::table('form_column_' . $form_id % 10)->where('id', $column_id)->delete();
         if ($res != NULL) {
             $json = Response::json(['err' => 0, 'msg' => '删除成功', 'data' => $res]);
@@ -526,7 +525,7 @@ class FormController extends BaseController {
         $param['id'] = $id;
         $param['flag'] = 1;
         $param['host'] = $_SERVER['HTTP_HOST'];
-        Classify::where('form_id', $form_id)->update(['pushed'=>1]);
+        Classify::where('form_id', $form_id)->update(['pushed' => 1]);
 //		$res = DB::table('form_data_' . $form_id % 10)->where('id', $id)->delete();
         $postFun = new CommonController;
         $res = $postFun->postsend("http://swap.5067.org/admin/form_userdata_delete.php", $param);
@@ -637,7 +636,7 @@ class FormController extends BaseController {
      * 赋值表单前端css/js
      */
     public function assignFormCSSandJSForPrint() {
-        $css ='<link rel="stylesheet" href="http://swap.5067.org/css/universal-form.css">';
+        $css = '<link rel="stylesheet" href="http://swap.5067.org/css/universal-form.css">';
 //        $css .= '<link rel="stylesheet" href="http://swap.5067.org/js/laydate/need/laydate.css">';
         $js = '<script src="http://swap.5067.org/js/universal-form.js"></script>';
         $js .= '<script src="http://swap.5067.org/js/laydate/laydate.js"></script>';
