@@ -37,20 +37,20 @@
                         <a href="javascript:;" id="switch_bind"></a>
                     </div>
                     <a href="#/user"><p class="fr clearfix" ng-bind-template="欢迎，{{ companyname}}" ></p></a>
-                    
+
                 </div>
                 <!--容量条-->
                 <div class="fr clearfix" id="capacity_div" style="font-size: 12px;color:#7c6154;margin-right: 22px;" >
                     <!--剩余容量/总容量：<span id="capacity_free"></span>/<span id="capacity"></span>-->
                 </div>
                 <script>
-                    $(function(){
-                        init_capacity();//初始化容量条
-                        init_bind();//初始化双站用户
-                        $('#switch_bind').click(function(){
+                            $(function(){
+                            init_capacity(); //初始化容量条
+                            init_bind(); //初始化双站用户
+                            $('#switch_bind').click(function(){
                             get_bind_account();
-                        });
-                    });
+                            });
+                            });
                 </script>
 
                 <!-- 顶部主导航 -->
@@ -252,7 +252,7 @@
     <script type="text/javascript" src="js/laydate.js"></script>           			 <!-- 时间选择控件 -->
     <script type="text/javascript" src="js/jquery.uploadify.min.js"></script>       <!-- 图片上传控件 -->
     <script type="text/javascript" src="js/script.js"></script>						<!-- 公共脚本文件 --> 
-    
+
     <!--[if lte IE 7]>
     <script type="text/javascript">
             mainApp.config(function($sceProvider) {
