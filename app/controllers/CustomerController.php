@@ -50,7 +50,7 @@ class CustomerController extends BaseController {
         $data['pc_txt_per_page'] = $customer_info->pc_page_txt_count;
         $data['pc_img_per_page'] = $customer_info->pc_page_img_count;
         $data['pc_page_count_switch'] = $customer_info->pc_page_count_switch;
-
+        $data['copyright'] = $customer_info->copyright;
         $data['pc_num_pagenav'] = $customer_info->pc_page_links;
         $data['m_num_per_page'] = $customer_info->mobile_page_count;
         $data['m_num_pagenav'] = $customer_info->mobile_page_links;
