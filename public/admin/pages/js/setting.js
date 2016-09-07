@@ -32,7 +32,6 @@ function settingController($scope, $http) {
             // 数据读取
             $http.get('../customer-info').success(function (json) {
                 var set = json.data;
-                console.log(set)
                 $('.setting-content input[name=company_name]').val(set.company_name);
                 $('.setting-content input[name=domain_pc]').val(set.domain_pc);
                 $('.setting-content input[name=domain_m]').val(set.domain_m);
