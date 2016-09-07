@@ -25,6 +25,7 @@ function settingController($scope, $http) {
                 var _name = this.id;
                 $('[name="' + _name + '"]').siblings(".setting-feild").hide();
                 $('[name="' + _name + '"]').show();
+
             });
         },
         _settingGetInfo: function () {
@@ -70,17 +71,16 @@ function settingController($scope, $http) {
                 $('#domain_pc').attr('href', 'http://' + set.domain_pc);
                 $('#def_domain_pc').attr('href', 'http://' + set.def_domain_pc);
                 $('#lang option[value=' + set.lang + ']').attr('selected', true);
+                var _option = '';
                 if (set.lang == 'cn') {
-                    var _option = '<option value="厦门易尔通网络科技有限公司">厦门易尔通网络科技有限公司</option>' +
+                    _option = '<option value="厦门易尔通网络科技有限公司">厦门易尔通网络科技有限公司</option>' +
                             '<option value="惠州易瑞通网络科技有限公司">惠州易瑞通网络科技有限公司</option>';
                 } else if (set.lang == 'en') {
-                    var _option = '<option value="XIAMEN 12t NETWORK TECHNOLOGY CO., LTD.">XIAMEN 12t NETWORK TECHNOLOGY CO., LTD.</option>' +
+                    _option = '<option value="XIAMEN 12t NETWORK TECHNOLOGY CO., LTD.">XIAMEN 12t NETWORK TECHNOLOGY CO., LTD.</option>' +
                             '<option value="HUIZHOU YIRUITONG NETWORK TECHNOLOGY CO., LTD.">HUIZHOU YIRUITONG NETWORK TECHNOLOGY CO., LTD.</option>';
-                } else {
-                    var _option = '';
                 }
                 $('#copyright').html(_option);
-                $('#lang option[value=' + set.copyright + ']').attr('selected', true);
+                $('#copyright option[value=' + set.copyright + ']').attr('selected', true);
                 $('#def_domain_m').MoveBox({
                     Trigger: 'mouseenter',
                     context: '<img src="http://s.jiathis.com/qrcode.php?url=http://' + set.def_domain_m + '" />'

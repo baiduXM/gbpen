@@ -1027,10 +1027,10 @@ class PrintController extends BaseController {
             }
             //===end===
             $footscript = $customer_info->pc_footer_script;
-            $footscript .= '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/quickbar.js?' . $this->cus_id . 'pc"></script>';
-//            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/js/statis.js?' . $this->cus_id . 'pc"></script>'; //===添加统计代码PC===
-            $footscript .= $tempscript;
-//            $footscript .= $language_css;
+            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/js/quickbar.js?' . $this->cus_id . 'pc"></script>';
+            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/admin/statis.php?cus_id=' . $this->cus_id . '&platform=pc"></script>'; //===添加统计代码PC===
+            $footscript .= $tempscript_star . $tempscript . $tempscript_end;
+            $footscript .= $language_css;
             $site_another_url = $this->showtype == 'preview' ? '' : $customer_info->mobile_domain;
         } else {
             $logo = $this->showtype == 'preview' ? ('/customers/' . $this->customer . '/images/l/common/' . $customer_info->logo_small) : $this->domain . '/images/l/common/' . $customer_info->logo_small; //'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $customer_info->logo_small) : $this->domain . '/images/l/common/' . $customer_info->logo_small;
@@ -1039,8 +1039,8 @@ class PrintController extends BaseController {
 //            $headscript .= $language_css;
             $footprint = $customer_info->mobile_footer;
             $footscript = $customer_info->mobile_footer_script;
-            $footscript .= '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/quickbar.js?' . $this->cus_id . 'mobile"></script>';
-//            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/js/statis.js?' . $this->cus_id . 'mobile"></script>'; //===添加统计代码MOBILE===
+            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/js/quickbar.js?' . $this->cus_id . 'mobile"></script>';
+            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/admin/statis.php?cus_id=' . $this->cus_id . '&platform=mobile"></script>'; //===添加统计代码MOBILE===
 //            $footscript .= $tempscript;
             $site_another_url = $this->showtype == 'preview' ? '' : $customer_info->pc_domain;
             $config_arr = parse_ini_file(public_path('/templates/' . $this->themename) . '/config.ini', true);
@@ -1161,7 +1161,7 @@ class PrintController extends BaseController {
 
         if ($this->type == 'pc') {
             $footer_navs = Classify::where('cus_id', $this->cus_id)->where('footer_show', 1)->select('id', 'type', 'img', 'icon', 'name', 'url', 'p_id', 'en_name', 'meta_description as description', 'open_page')->OrderBy('sort', 'asc')->get()->toArray();
-            $footer_navs = $this->toFooter($footer_navs);
+            $footer_navs = $this->toFooter($footer_navs,0);
             $result['footer_navs'] = $footer_navs;
             $result['type'] = 'pc';
         }
@@ -2199,6 +2199,7 @@ class PrintController extends BaseController {
      */
     public function categoryPreview($id, $page) {
         $result = $this->pagePublic($id);
+        $customerinfo=CustomerInfo::where("cus_id",  $this->cus_id)->first();
         foreach ((array) $result['navs'] as $nav) {
             if ($nav['current'] == 1) {
                 $pagenavs = $nav['childmenu'];
@@ -2208,9 +2209,9 @@ class PrintController extends BaseController {
             }
         }
         $classify = Classify::find($id);
-        $result['title'] = $classify->name;
-        $result['keywords'] = $classify->meta_keywords;
-        $result['description'] = $classify->meta_description;
+        $result['title'] = ($customerinfo->title!="")?$customerinfo->title.'-'.$classify->name:$classify->name;
+        $result['keywords'] = ($classify->meta_keywords!="")?$classify->meta_keywords:$customerinfo->keywords;
+        $result['description'] = ($classify->meta_description!="")?$classify->meta_description:$customerinfo->description;
         $result['list']['name'] = $classify->name;
         $result['list']['en_name'] = $classify->en_name;
         $result['list']['description'] = $classify->meta_description;
@@ -2473,9 +2474,10 @@ class PrintController extends BaseController {
             }
         }
         $classify = Classify::find($id);
-        $result['title'] = $classify->name;
-        $result['keywords'] = $classify->meta_keywords;
-        $result['description'] = $classify->meta_description;
+        $customerinfo=CustomerInfo::where("cus_id",  $this->cus_id)->first();
+        $result['title'] = ($customerinfo->title!="")?$customerinfo->title.'-'.$classify->name:$classify->name;
+        $result['keywords'] = ($classify->meta_keywords!="")?$classify->meta_keywords:$customerinfo->keywords;
+        $result['description'] = ($classify->meta_description!="")?$classify->meta_description:$customerinfo->description;
         $result['list']['name'] = $classify->name;
         $result['list']['en_name'] = $classify->en_name;
         $result['list']['description'] = $classify->meta_description;
@@ -2820,9 +2822,9 @@ class PrintController extends BaseController {
         }
         $result['pagenavs'] = $pagenavs;
         $result['posnavs'] = $this->getPosNavs($article->c_id);
-        $result['title'] = $article->title;
-        $result['keywords'] = $article->keywords;
-        $result['description'] = $article->introduction;
+        $result['title'] = ($customer_info->title!="")?$customer_info->title.'-'.$article->title:$article->title;
+        $result['keywords'] = ($article->keywords!="")?$article->keywords:$customer_info->keywords;
+        $result['description'] = ($article->introduction!="")?$article->introduction:$customer_info->description;
         $result['article']['title'] = $article->title;
         $result['article']['keywords'] = $article->keywords;
         $result['article']['description'] = $article->introduction;
@@ -3037,9 +3039,9 @@ class PrintController extends BaseController {
                     $i++;
                 }
             }
-            $the_result['title'] = $article['title'];
-            $the_result['keywords'] = $article['keywords'];
-            $the_result['description'] = $article['introduction'];
+            $the_result['title'] = ($customer_info->title!="")?$customer_info->title.'-'.$article['title']:$article['title'];
+            $the_result['keywords'] = ($article['keywords']!="")?$article['keywords']:$customer_info->keywords;
+            $the_result['description'] = ($article['introduction']!="")?$article['introduction']:$customer_info->description;
             $the_result['article']['title'] = $article['title'];
             $the_result['article']['keywords'] = $article['keywords'];
             $the_result['article']['description'] = $article['introduction'];
@@ -3172,9 +3174,19 @@ class PrintController extends BaseController {
      * @param array $arr 栏目数据数组
      * @return array 
      */
-    private function toFooter($arr) {
+    private function toFooter($arr,$pid=0) {
         $footer = array();
-        foreach ((array) $arr as $k => $v) {
+        $needarr=array();
+        foreach ((array) $needarr as $k => $v) {
+            if ($v['p_id'] == $pid) {
+                $needarr[] = $v;
+            }
+        }
+        
+        if (empty($needarr)) {
+            return null;
+        }
+        foreach ((array) $needarr as $k => $v) {
             $v['image'] = $v['img'] ? ($this->source_dir . 'l/category/' . $v['img']) : '';
             $v['icon'] = '<i class="iconfont">' . $v['icon'] . '</i>';
             if ($v['type'] != 6) {
@@ -3198,7 +3210,8 @@ class PrintController extends BaseController {
             }
 
             unset($v['img']);
-            $footer[] = $v;
+            $footer[$k] = $v;
+            $footer[$k]["childmenu"]= $this->toFooter($arr, $v['id']);
         }
         return $footer;
     }

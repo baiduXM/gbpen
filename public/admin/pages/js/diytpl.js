@@ -6,6 +6,7 @@ function diytplController($scope, $http, $location) {
     $scope.DiytplInit ={
     	init : function(){
                 this.type = $_GET['type'];
+                this.FileNameCho = '';
     		this.FileImgArr = [];
     		this.FileJsonArr = [];
     		this.FileHtmlToJsonArr = [];
@@ -164,7 +165,7 @@ function diytplController($scope, $http, $location) {
                 var warningbox = new WarningBox();
                 warningbox._upImage({
                 	IsOneNatural : true,
-                    ajaxurl    : '../file-upload?target=imgcache',
+                    ajaxurl    : '../file-upload?target=imgcache&type=' + _this.type + '&filenamecho=' + _this.FileNameCho,
                     oncallback : function(json){
                         insertText($('.made_edite')[0],json.data.url);
                         _this.FileImgArr.push(json.data.name);
@@ -179,9 +180,11 @@ function diytplController($scope, $http, $location) {
 				var target = $(this),$made_left = target.parent().siblings('.made_left');
 				file_name = target.text().substring(target.text().indexOf('（')+1,target.text().indexOf('）'));
 				file_tit = $made_left.text().substring(0,$made_left.text().indexOf('：'));
+                                _this.FileNameCho = file_name;
 				_this.ModelHtml(file_tit,file_name);
             	$http.get('../template-fileget?type='+_this.type+'&filename='+file_name+'').success(function(json){
 					checkJSON(json, function(json){
+                                                console.log(json);
 						$('.made_style_edite .made_edite').html(json.data.code);
 					});
 				});

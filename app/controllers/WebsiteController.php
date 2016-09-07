@@ -260,6 +260,13 @@ class WebsiteController extends BaseController{
                 $template->type = $type;
                 $template->cus_id = $cus_id;
                 $template->former_id = $id;
+                $template->classify = $tpl_info->classify;
+                $template->description = $tpl_info->description;
+                $template->demo = $tpl_info->demo;
+                $template->list1showtypetotal = $tpl_info->list1showtypetotal;
+                $template->list2showtypetotal = $tpl_info->list2showtypetotal;
+                $template->list3showtypetotal = $tpl_info->list3showtypetotal;
+                $template->list4showtypetotal = $tpl_info->list4showtypetotal;
                 $template->save();
                 $insertedId = $template->id;
                 $src = app_path('views/templates/'.$name);
@@ -490,6 +497,21 @@ class WebsiteController extends BaseController{
                     $dst = app_path('views/templates/'.$template.'/'.$filename);
                 }
             }
+            $pushed=WebsiteInfo::where("cus_id",$cus_id)->pluck("pushed");
+            if($type==1){
+                if($pushed == 0 || $pushed == 2){
+                    $pushed=2;
+                }else{
+                    $pushed=1;
+                }
+            }else{
+                if($pushed == 0 || $pushed == 3){
+                    $pushed=3;
+                }else{
+                    $pushed=1;
+                }
+            }
+            WebsiteInfo::where("cus_id",$cus_id)->update(array("pushed"=>$pushed));
             if(file_exists($dst)){
                 $edit = file_put_contents($dst, $content);
                 if($edit==FALSE){
@@ -879,6 +901,21 @@ class WebsiteController extends BaseController{
                             $name = WebsiteInfo::leftJoin('template','mobile_tpl_id','=','template.id')->where('website_info.cus_id',$cus_id)->pluck('name');
                         $tpl_name = $name;
                         $result = $this->saveTemplate($truth_name,$tpl_name,$temptype);
+                        $pushed=WebsiteInfo::where("cus_id",$cus_id)->pluck("pushed");
+                        if($temptype==1){
+                            if($pushed == 0 || $pushed == 2){
+                                $pushed=2;
+                            }else{
+                                $pushed=1;
+                            }
+                        }else{
+                            if($pushed == 0 || $pushed == 3){
+                                $pushed=3;
+                            }else{
+                                $pushed=1;
+                            }
+                        }
+                        WebsiteInfo::where("cus_id",$cus_id)->update(array("pushed"=>$pushed));
                     }else{
                         $result = ['err'=>1001,'msg'=>'模板覆盖失败'];
                     }
