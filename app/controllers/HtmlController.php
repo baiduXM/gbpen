@@ -770,7 +770,7 @@ class HtmlController extends BaseController{
         if(Input::get("count")>0){
             $count=Input::get("count");
         }
-        if(Input::get("end")>0){
+        if(Input::get("end")>=0){
             $end=Input::get("end");
         }
         $have_article=Articles::where('cus_id',$this->cus_id)->count();
