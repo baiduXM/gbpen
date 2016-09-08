@@ -835,7 +835,7 @@ class HtmlController extends BaseController{
                     $all_id=Classify::where('cus_id',$this->cus_id)->where('mobile_show',1)->lists('id');
                     $mobile_classify_ids=array();
                     $mobile_article_ids=array();
-                    if($start>count($all_id)){
+                    if($start>=count($all_id)){
                         $mobile_classify_ids=array();
                     }else{
                         if(count($all_id)-$start<$count){
@@ -865,7 +865,7 @@ class HtmlController extends BaseController{
                     $all_id=Classify::where('cus_id',$this->cus_id)->where('pc_show',1)->lists('id');
                     $pc_classify_ids=array();
                     $pc_article_ids=array();
-                    if($start>count($all_id)){
+                    if($start>=count($all_id)){
                         $pc_classify_ids=array();
                     }else{
                         if(count($all_id)-$start<$count){
