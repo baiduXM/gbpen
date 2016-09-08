@@ -967,7 +967,7 @@ class PrintController extends BaseController {
                     $_href = 'http://www.12t.cn/';
                     $_copyright = 'XIAMEN 12t NETWORK TECHNOLOGY CO., LTD.';
                     break;
-                case 'en_huihzou':
+                case 'en_huizhou':
                     $_href = 'http://www.ydbaidu.net/';
                     $_copyright = 'HUIZHOU YIRUITONG NETWORK TECHNOLOGY CO., LTD.';
                     break;
