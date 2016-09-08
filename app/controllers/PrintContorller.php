@@ -1005,24 +1005,32 @@ class PrintController extends BaseController {
             $headscript = $customer_info->pc_header_script;
             $headscript .= $language_css;
             //===版权选择===
+            switch ($customer_info->copyright) {
+                case 'en_xiamen':
+                    $_href = 'http://www.12t.cn/';
+                    $_copyright = 'XIAMEN 12t NETWORK TECHNOLOGY CO., LTD.';
+                    break;
+                case 'en_huizhou':
+                    $_href = 'http://www.ydbaidu.net/';
+                    $_copyright = 'HUIZHOU YIRUITONG NETWORK TECHNOLOGY CO., LTD.';
+                    break;
+                case 'cn_xiamen':
+                    $_href = 'http://www.12t.cn/';
+                    $_copyright = '厦门易尔通网络科技有限公司';
+                    break;
+                case 'cn_huizhou':
+                    $_href = 'http://www.ydbaidu.net/';
+                    $_copyright = '惠州易瑞通网络科技有限公司';
+                    break;
+                default :
+                    $_href = 'http://www.12t.cn/';
+                    $_copyright = '厦门易尔通网络科技有限公司';
+                    break;
+            }
             if ($customer_info->lang == 'en') {
-                $_copyright = !empty($customer_info->copyright) ? $customer_info->copyright : 'Xiamen 12t network technology co.ltd';
-                $flag = strcasecmp($customer_info->copyright, 'XIAMEN 12t NETWORK TECHNOLOGY CO., LTD.');
-                if ($flag == 0) {
-                    $href = 'http://www.12t.cn/';
-                } else {
-                    $href = 'http://www.ydbaidu.net/';
-                }
-                $footprint = $customer_info->footer . '<p>Technology support：<a href="' . $href . '">' . $_copyright . '</a> Talent support：<a href="http://www.xgzrc.com/">www.xgzrc.com.cn</a></p>';
+                $footprint = $customer_info->footer . '<p>Technology support：<a href="' . $_href . '">' . $_copyright . '</a> Talent support：<a href="http://www.xgzrc.com/">www.xgzrc.com.cn</a></p>';
             } else {
-                $_copyright = !empty($customer_info->copyright) ? $customer_info->copyright : '厦门易尔通网络科技有限公司';
-                $flag = strcasecmp($customer_info->copyright, '厦门易尔通网络科技有限公司');
-                if ($flag == 0) {
-                    $href = 'http://www.12t.cn/';
-                } else {
-                    $href = 'http://www.ydbaidu.net/';
-                }
-                $footprint = $customer_info->footer . '<p>技术支持：<a href="' . $href . '">' . $_copyright . '</a> 人才支持：<a href="http://www.xgzrc.com/">厦门人才网</a></p>';
+                $footprint = $customer_info->footer . '<p>技术支持：<a href="' . $_href . '">' . $_copyright . '</a> 人才支持：<a href="http://www.xgzrc.com/">厦门人才网</a></p>';
             }
             //===end===
             $footscript = $customer_info->pc_footer_script;
