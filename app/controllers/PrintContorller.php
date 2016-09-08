@@ -962,24 +962,32 @@ class PrintController extends BaseController {
             $headscript = $customer_info->pc_header_script;
 //            $headscript .= $language_css;
             //===版权选择===
+            switch ($customer_info->copyright) {
+                case 'en_xiamen':
+                    $_href = 'http://www.12t.cn/';
+                    $_copyright = 'XIAMEN 12t NETWORK TECHNOLOGY CO., LTD.';
+                    break;
+                case 'en_huihzou':
+                    $_href = 'http://www.ydbaidu.net/';
+                    $_copyright = 'HUIZHOU YIRUITONG NETWORK TECHNOLOGY CO., LTD.';
+                    break;
+                case 'cn_xiamen':
+                    $_href = 'http://www.12t.cn/';
+                    $_copyright = '厦门易尔通网络科技有限公司';
+                    break;
+                case 'cn_huizhou':
+                    $_href = 'http://www.ydbaidu.net/';
+                    $_copyright = '惠州易瑞通网络科技有限公司';
+                    break;
+                default :
+                    $_href = 'http://www.12t.cn/';
+                    $_copyright = '厦门易尔通网络科技有限公司';
+                    break;
+            }
             if ($customer_info->lang == 'en') {
-                $_copyright = !empty($customer_info->copyright) ? $customer_info->copyright : 'Xiamen 12t network technology co.ltd';
-                $flag = strcasecmp($customer_info->copyright, 'XIAMEN 12t NETWORK TECHNOLOGY CO., LTD.');
-                if ($flag == 0) {
-                    $href = 'http://www.12t.cn/';
-                } else {
-                    $href = 'http://www.ydbaidu.net/';
-                }
-                $footprint = $customer_info->footer . '<p>Technology support：<a href="' . $href . '">' . $_copyright . '</a> Talent support：<a href="http://www.xgzrc.com/">www.xgzrc.com.cn</a></p>';
+                $footprint = $customer_info->footer . '<p>Technology support：<a href="' . $_href . '">' . $_copyright . '</a> Talent support：<a href="http://www.xgzrc.com/">www.xgzrc.com.cn</a></p>';
             } else {
-                $_copyright = !empty($customer_info->copyright) ? $customer_info->copyright : '厦门易尔通网络科技有限公司';
-                $flag = strcasecmp($customer_info->copyright, '厦门易尔通网络科技有限公司');
-                if ($flag == 0) {
-                    $href = 'http://www.12t.cn/';
-                } else {
-                    $href = 'http://www.ydbaidu.net/';
-                }
-                $footprint = $customer_info->footer . '<p>技术支持：<a href="' . $href . '">' . $_copyright . '</a> 人才支持：<a href="http://www.xgzrc.com/">厦门人才网</a></p>';
+                $footprint = $customer_info->footer . '<p>技术支持：<a href="' . $_href . '">' . $_copyright . '</a> 人才支持：<a href="http://www.xgzrc.com/">厦门人才网</a></p>';
             }
             //===end===
             $footscript = $customer_info->pc_footer_script;
@@ -1116,7 +1124,7 @@ class PrintController extends BaseController {
 
         if ($this->type == 'pc') {
             $footer_navs = Classify::where('cus_id', $this->cus_id)->where('footer_show', 1)->select('id', 'type', 'img', 'icon', 'name', 'url', 'p_id', 'en_name', 'meta_description as description', 'open_page')->OrderBy('sort', 'asc')->get()->toArray();
-            $footer_navs = $this->toFooter($footer_navs,0);
+            $footer_navs = $this->toFooter($footer_navs, 0);
             $result['footer_navs'] = $footer_navs;
             $result['type'] = 'pc';
         }
@@ -2154,7 +2162,7 @@ class PrintController extends BaseController {
      */
     public function categoryPreview($id, $page) {
         $result = $this->pagePublic($id);
-        $customerinfo=CustomerInfo::where("cus_id",  $this->cus_id)->first();
+        $customerinfo = CustomerInfo::where("cus_id", $this->cus_id)->first();
         foreach ((array) $result['navs'] as $nav) {
             if ($nav['current'] == 1) {
                 $pagenavs = $nav['childmenu'];
@@ -2164,9 +2172,9 @@ class PrintController extends BaseController {
             }
         }
         $classify = Classify::find($id);
-        $result['title'] = ($customerinfo->title!="")?$customerinfo->title.'-'.$classify->name:$classify->name;
-        $result['keywords'] = ($classify->meta_keywords!="")?$classify->meta_keywords:$customerinfo->keywords;
-        $result['description'] = ($classify->meta_description!="")?$classify->meta_description:$customerinfo->description;
+        $result['title'] = ($customerinfo->title != "") ? $customerinfo->title . '-' . $classify->name : $classify->name;
+        $result['keywords'] = ($classify->meta_keywords != "") ? $classify->meta_keywords : $customerinfo->keywords;
+        $result['description'] = ($classify->meta_description != "") ? $classify->meta_description : $customerinfo->description;
         $result['list']['name'] = $classify->name;
         $result['list']['en_name'] = $classify->en_name;
         $result['list']['description'] = $classify->meta_description;
@@ -2429,10 +2437,10 @@ class PrintController extends BaseController {
             }
         }
         $classify = Classify::find($id);
-        $customerinfo=CustomerInfo::where("cus_id",  $this->cus_id)->first();
-        $result['title'] = ($customerinfo->title!="")?$customerinfo->title.'-'.$classify->name:$classify->name;
-        $result['keywords'] = ($classify->meta_keywords!="")?$classify->meta_keywords:$customerinfo->keywords;
-        $result['description'] = ($classify->meta_description!="")?$classify->meta_description:$customerinfo->description;
+        $customerinfo = CustomerInfo::where("cus_id", $this->cus_id)->first();
+        $result['title'] = ($customerinfo->title != "") ? $customerinfo->title . '-' . $classify->name : $classify->name;
+        $result['keywords'] = ($classify->meta_keywords != "") ? $classify->meta_keywords : $customerinfo->keywords;
+        $result['description'] = ($classify->meta_description != "") ? $classify->meta_description : $customerinfo->description;
         $result['list']['name'] = $classify->name;
         $result['list']['en_name'] = $classify->en_name;
         $result['list']['description'] = $classify->meta_description;
@@ -2810,9 +2818,9 @@ class PrintController extends BaseController {
         }
         $result['pagenavs'] = $pagenavs;
         $result['posnavs'] = $this->getPosNavs($article->c_id);
-        $result['title'] = ($customer_info->title!="")?$customer_info->title.'-'.$article->title:$article->title;
-        $result['keywords'] = ($article->keywords!="")?$article->keywords:$customer_info->keywords;
-        $result['description'] = ($article->introduction!="")?$article->introduction:$customer_info->description;
+        $result['title'] = ($customer_info->title != "") ? $customer_info->title . '-' . $article->title : $article->title;
+        $result['keywords'] = ($article->keywords != "") ? $article->keywords : $customer_info->keywords;
+        $result['description'] = ($article->introduction != "") ? $article->introduction : $customer_info->description;
         $result['article']['title'] = $article->title;
         $result['article']['keywords'] = $article->keywords;
         $result['article']['description'] = $article->introduction;
@@ -3025,9 +3033,9 @@ class PrintController extends BaseController {
                     $i++;
                 }
             }
-            $the_result['title'] = ($customer_info->title!="")?$customer_info->title.'-'.$article['title']:$article['title'];
-            $the_result['keywords'] = ($article['keywords']!="")?$article['keywords']:$customer_info->keywords;
-            $the_result['description'] = ($article['introduction']!="")?$article['introduction']:$customer_info->description;
+            $the_result['title'] = ($customer_info->title != "") ? $customer_info->title . '-' . $article['title'] : $article['title'];
+            $the_result['keywords'] = ($article['keywords'] != "") ? $article['keywords'] : $customer_info->keywords;
+            $the_result['description'] = ($article['introduction'] != "") ? $article['introduction'] : $customer_info->description;
             $the_result['article']['title'] = $article['title'];
             $the_result['article']['keywords'] = $article['keywords'];
             $the_result['article']['description'] = $article['introduction'];
@@ -3160,15 +3168,15 @@ class PrintController extends BaseController {
      * @param array $arr 栏目数据数组
      * @return array 
      */
-    private function toFooter($arr,$pid=0) {
+    private function toFooter($arr, $pid = 0) {
         $footer = array();
-        $needarr=array();
+        $needarr = array();
         foreach ((array) $needarr as $k => $v) {
             if ($v['p_id'] == $pid) {
                 $needarr[] = $v;
             }
         }
-        
+
         if (empty($needarr)) {
             return null;
         }
@@ -3197,7 +3205,7 @@ class PrintController extends BaseController {
 
             unset($v['img']);
             $footer[$k] = $v;
-            $footer[$k]["childmenu"]= $this->toFooter($arr, $v['id']);
+            $footer[$k]["childmenu"] = $this->toFooter($arr, $v['id']);
         }
         return $footer;
     }
