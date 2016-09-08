@@ -967,7 +967,7 @@ class PrintController extends BaseController {
         $language_css = '<link rel="stylesheet" href="http://localhost/swap.5067.org/top_common.css">'; //===本地调试样式===
         //===显示版本切换链接-end===
         $formC = new FormController();
-        if ($this->type == 'pc') {
+        if ($this->type == 'pc') {//===PC加载数据===
             $stylecolor = websiteInfo::leftJoin('color', 'color.id', '=', 'website_info.pc_color_id')->where('cus_id', $this->cus_id)->pluck('color_en');
             $logo = $this->showtype == 'preview' ? '/customers/' . $this->customer . '/images/l/common/' . $customer_info->logo : $this->domain . '/images/l/common/' . $customer_info->logo; //'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $customer_info->logo) : $this->domain . '/images/l/common/' . $customer_info->logo;
             $floatadv = json_decode($customer_info->floatadv); //===浮动类型===
@@ -1036,10 +1036,9 @@ class PrintController extends BaseController {
             $footscript = $customer_info->pc_footer_script;
             $footscript .= '<script type="text/javascript" src="http://swap.5067.org/js/quickbar.js?' . $this->cus_id . 'pc"></script>';
             $footscript .= '<script type="text/javascript" src="http://swap.5067.org/admin/statis.php?cus_id=' . $this->cus_id . '&platform=pc"></script>'; //===添加统计代码PC===
-            $footscript .= $tempscript;
-            $footscript .= $language_css;
+//            $footscript .= $tempscript;
             $site_another_url = $this->showtype == 'preview' ? '' : $customer_info->mobile_domain;
-        } else {
+        } else {//===手机加载数据===
             $logo = $this->showtype == 'preview' ? ('/customers/' . $this->customer . '/images/l/common/' . $customer_info->logo_small) : $this->domain . '/images/l/common/' . $customer_info->logo_small; //'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $customer_info->logo_small) : $this->domain . '/images/l/common/' . $customer_info->logo_small;
             $stylecolor = websiteInfo::leftJoin('color', 'color.id', '=', 'website_info.mobile_color_id')->where('cus_id', $this->cus_id)->pluck('color_en');
             $headscript = $customer_info->mobile_header_script;
