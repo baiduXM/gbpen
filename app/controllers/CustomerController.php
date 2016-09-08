@@ -50,22 +50,7 @@ class CustomerController extends BaseController {
         $data['pc_txt_per_page'] = $customer_info->pc_page_txt_count;
         $data['pc_img_per_page'] = $customer_info->pc_page_img_count;
         $data['pc_page_count_switch'] = $customer_info->pc_page_count_switch;
-        switch ($customer_info->copyright) {
-            case 'XIAMEN 12t NETWORK TECHNOLOGY CO., LTD.':
-                $data['copyright'] = 'en_xiamen';
-                break;
-            case 'HUIZHOU YIRUITONG NETWORK TECHNOLOGY CO., LTD.':
-                $data['copyright'] = 'en_huizhou';
-                break;
-            case '厦门易尔通网络科技有限公司':
-                $data['copyright'] = 'cn_xiamen';
-                break;
-            case '惠州易瑞通网络科技有限公司':
-                $data['copyright'] = 'cn_huizhou';
-                break;
-            default :
-                break;
-        }
+        $data['copyright'] = $customer_info->copyright;
         $data['pc_num_pagenav'] = $customer_info->pc_page_links;
         $data['m_num_per_page'] = $customer_info->mobile_page_count;
         $data['m_num_pagenav'] = $customer_info->mobile_page_links;
@@ -155,22 +140,7 @@ class CustomerController extends BaseController {
         $data['pc_page_count_switch'] = Input::get('pc_page_count_switch');
         $data['enlarge'] = Input::get('enlargev');
         $data['lang'] = Input::get('lang');
-        switch (Input::get('copyright')) {
-            case 'en_xiamen':
-                $data['copyright'] = 'XIAMEN 12t NETWORK TECHNOLOGY CO., LTD.';
-                break;
-            case 'en_huizhou':
-                $data['copyright'] = 'HUIZHOU YIRUITONG NETWORK TECHNOLOGY CO., LTD.';
-                break;
-            case 'cn_xiamen':
-                $data['copyright'] = '厦门易尔通网络科技有限公司';
-                break;
-            case 'cn_huizhou':
-                $data['copyright'] = '惠州易瑞通网络科技有限公司';
-                break;
-            default :
-                break;
-        }
+        $data['copyright'] = Input::get('copyright');
         $data['pushed'] = 1;
 
         $float_adv = Input::get('float_adv') ? Input::get('float_adv') : array();
