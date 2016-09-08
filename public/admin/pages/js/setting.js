@@ -74,11 +74,11 @@ function settingController($scope, $http) {
                 $('#lang option[value=' + set.lang + ']').attr('selected', true);
                 var _option = '';
                 if (set.lang == 'cn') {
-                    _option = '<option value="厦门易尔通网络科技有限公司">厦门易尔通网络科技有限公司</option>' +
-                            '<option value="惠州易瑞通网络科技有限公司">惠州易瑞通网络科技有限公司</option>';
+                    _option = '<option value="cn_xiamen">厦门易尔通网络科技有限公司</option>' +
+                            '<option value="cn_huizhou">惠州易瑞通网络科技有限公司</option>';
                 } else if (set.lang == 'en') {
-                    _option = '<option value="XIAMEN 12t NETWORK TECHNOLOGY CO., LTD.">XIAMEN 12t NETWORK TECHNOLOGY CO., LTD.</option>' +
-                            '<option value="HUIZHOU YIRUITONG NETWORK TECHNOLOGY CO., LTD.">HUIZHOU YIRUITONG NETWORK TECHNOLOGY CO., LTD.</option>';
+                    _option = '<option value="en_xiamen">XIAMEN 12t NETWORK TECHNOLOGY CO., LTD.</option>' +
+                            '<option value="en_huizhou">HUIZHOU YIRUITONG NETWORK TECHNOLOGY CO., LTD.</option>';
                 }
                 $('#copyright').html(_option);
                 $('#copyright option[value=' + set.copyright + ']').attr('selected', true);
