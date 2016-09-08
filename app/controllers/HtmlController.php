@@ -380,23 +380,47 @@ class HtmlController extends BaseController{
         if (ob_get_level() == 0){
             ob_start();
         }
-        $customer_data_get = CustomerPushfile::where('cus_id',$this->cus_id)->pluck('files');
-        if($customer_data_get){
-            $new_data = 0;
-            $customer_data = unserialize($customer_data_get);
+        if(Input::get("st")>=0){
+            $start=Input::get("st");
         }
-        else{
-            $new_data = 1;
-            $customer_data = [];
+        if(Input::get("count")>0){
+            $count=Input::get("count");
+        }
+        if(Input::get("end")>=0){
+            $end=Input::get("end");
         }
         $pc_classify_ids=array();
         $mobile_classify_ids=array();
         $pc_article_ids=array();
         $mobile_article_ids=array();
-        $mindexhtml = $this->homgepagehtml('mobile');
-        $msearchhtml = $this->sendData('mobile');
-        $mobile_classify_ids = Classify::where('cus_id',$this->cus_id)->where('mobile_show',1)->lists('id');
-        $mobile_article_ids = Articles::where('cus_id',$this->cus_id)->where('mobile_show',1)->lists('id');
+        if(isset($start)&&isset($count)&&$start!=null&&$count!=null){
+            if(!isset($end)||$end==1){
+                $mindexhtml = $this->homgepagehtml('mobile');
+                $msearchhtml = $this->sendData('mobile');
+            }
+            $all_id=Classify::where('cus_id',$this->cus_id)->where('mobile_show',1)->lists('id');
+            $mobile_classify_ids=array();
+            $mobile_article_ids=array();
+            if($start>count($all_id)){
+                $mobile_classify_ids=array();
+            }else{
+                if(count($all_id)-$start<$count){
+                    $getcount=count($all_id)-$start;
+                }else{
+                    $getcount=$count;
+                }
+                 $classifys = Classify::where('cus_id',$this->cus_id)->where('mobile_show',1)->skip($start)->take($getcount)->get()->toArray();
+                 foreach($classifys as $classify){
+                     $mobile_classify_ids[]=$classify["id"];
+                 }
+                 $mobile_article_ids = Articles::where('cus_id',$this->cus_id)->where('mobile_show',1)->whereIn("c_id",$mobile_classify_ids)->lists('id');
+            }
+        }else{
+            $mindexhtml = $this->homgepagehtml('mobile');
+            $msearchhtml = $this->sendData('mobile');
+            $mobile_classify_ids = Classify::where('cus_id',$this->cus_id)->where('mobile_show',1)->lists('id');
+            $mobile_article_ids = Articles::where('cus_id',$this->cus_id)->where('mobile_show',1)->lists('id');
+        }
         $count = $this->htmlPagecount($pc_classify_ids,$mobile_classify_ids,$pc_article_ids,$mobile_article_ids);
         $this->html_precent= 70/$count;
         $mcategoryhtml = $this->categoryhtml($mobile_classify_ids,'mobile');
@@ -407,7 +431,7 @@ class HtmlController extends BaseController{
             @unlink($path);
         }
         $zip = new ZipArchive;
-        if ($zip->open($path, ZipArchive::CREATE) === TRUE) {
+        if ((!isset($end)||$end==1)&&($zip->open($path, ZipArchive::CREATE) === TRUE)) {
             $this->lastpercent += 70+$this->percent;
             $zip->addFile($mindexhtml,'mobile/index.html');
             $zip->addFile($msearchhtml,'mobile/search.html');
@@ -418,11 +442,13 @@ class HtmlController extends BaseController{
                 ob_flush();
                 flush();
             }
+            $zip->close();
+        }else{
+            $this->lastpercent += 70+$this->percent;
         }
         $this->lastpercent += $this->percent;
-        $zip->close();
-        $this->compareZip($mcategoryhtml,$customer_data,'m','mobile/category',$path);
-        $this->compareZip($marticlehtml,$customer_data,'mf','mobile/detail',$path);
+        $this->compareZip($mcategoryhtml,'mobile/category',$path);
+        $this->compareZip($marticlehtml,'mobile/detail',$path);
         if(90 > floor($this->lastpercent)) {
             echo '90%<script type="text/javascript">parent.refresh(90);</script><br />';
             ob_flush();
@@ -435,22 +461,14 @@ class HtmlController extends BaseController{
             PushQueue::where('id',$nextpush->id)->update(['push' => 1]);
         }
         if ($zip->open($path, ZipArchive::CREATE) === TRUE) {
-            $mobile_dir=  Template::where('website_info.cus_id',$this->cus_id)->Leftjoin('website_info','template.id','=','website_info.mobile_tpl_id')->pluck('name');
-            $maim_dir=public_path("templates/$mobile_dir/");
-            $this->addDir($maim_dir,$zip,'mobile/');
+            if(!isset($end)||$end==1){
+                $mobile_dir=  Template::where('website_info.cus_id',$this->cus_id)->Leftjoin('website_info','template.id','=','website_info.mobile_tpl_id')->pluck('name');
+                $maim_dir=public_path("templates/$mobile_dir/");
+                $this->addDir($maim_dir,$zip,'mobile/');
+            }
+            $zip->close();
             //$images_dir=public_path("customers/".$this->customer."/images/");
             //$this->addDir($images_dir,$zip,'images/'); 
-            $zip->close();
-            $data = serialize($customer_data);
-            if($new_data){
-                $customerpushfile = new CustomerPushfile;
-                $customerpushfile->cus_id = $this->cus_id;
-                $customerpushfile->files = $data;
-                $customerpushfile->save();
-            }
-            else{
-                CustomerPushfile::where('cus_id',$this->cus_id)->update(['files'=>$data]);
-            }
             $customerinfo = Customer::find($this->cus_id);
             $ftp_array = explode(':',$customerinfo->ftp_address);
             $port= $customerinfo->ftp_port;
@@ -505,12 +523,14 @@ class HtmlController extends BaseController{
            
             $this->folderClear();
             echo '100%<script type="text/javascript">parent.refresh(100);</script><br />';
-            Classify::where('cus_id',$this->cus_id)->where('pushed','>',0)->update(['pushed'=>0]);
-            Articles::where('cus_id',$this->cus_id)->where('pushed','>',0)->update(['pushed'=>0]);
-            WebsiteConfig::where('cus_id',$this->cus_id)->update(['pushed'=>0]);
-            WebsiteInfo::where('cus_id',$this->cus_id)->update(['pushed'=>0]);
-            MobileHomepage::where('cus_id',$this->cus_id)->update(['pushed'=>0]);
-            CustomerInfo::where('cus_id', $this->cus_id)->update(['pushed' => 0,'lastpushtime'=>date('Y-m-d H:i:s',time())]);//date('Y-m-d H:i:s',time())
+            if(!isset($end)||$end==1){
+                Classify::where('cus_id',$this->cus_id)->where('pushed','>',0)->update(['pushed'=>0]);
+                Articles::where('cus_id',$this->cus_id)->where('pushed','>',0)->update(['pushed'=>0]);
+                WebsiteConfig::where('cus_id',$this->cus_id)->update(['pushed'=>0]);
+                WebsiteInfo::where('cus_id',$this->cus_id)->update(['pushed'=>0]);
+                MobileHomepage::where('cus_id',$this->cus_id)->update(['pushed'=>0]);
+                CustomerInfo::where('cus_id', $this->cus_id)->update(['pushed' => 0,'lastpushtime'=>date('Y-m-d H:i:s',time())]);//date('Y-m-d H:i:s',time())
+            }
             //$pc_domain = CustomerInfo::where('cus_id',$this->cus_id)->pluck('pc_domain');
              /**
             * pc使用本服务器自带域名推送，后期需要改进！
@@ -744,6 +764,15 @@ class HtmlController extends BaseController{
      */
     public function pushPrecent(){
         set_time_limit(0);
+        if(Input::get("st")>=0){
+            $start=Input::get("st");
+        }
+        if(Input::get("count")>0){
+            $count=Input::get("count");
+        }
+        if(Input::get("end")>0){
+            $end=Input::get("end");
+        }
         $have_article=Articles::where('cus_id',$this->cus_id)->count();
         if(!$have_article){
              echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
@@ -775,12 +804,14 @@ class HtmlController extends BaseController{
         ob_flush();
         flush();
         $this->pushinit();
-        if($this->quickbarpush){
-            $this->pushQuickbar();
-        }
-        if(!$this->mobilepush){
-            if($this->mobilehomepagepush){
-                $this->mobilehomepage_push();
+        if(!isset($end)||$end==1){
+            if($this->quickbarpush){
+                $this->pushQuickbar();
+            }
+            if(!$this->mobilepush){
+                if($this->mobilehomepagepush){
+                    $this->mobilehomepage_push();
+                }
             }
         }
         if($this->pcpush||$this->mobilepush){
@@ -791,30 +822,69 @@ class HtmlController extends BaseController{
             if (ob_get_level() == 0){
                 ob_start();
             }
-            $customer_data_get = CustomerPushfile::where('cus_id',$this->cus_id)->pluck('files');
-            if($customer_data_get){
-                $new_data = 0;
-                $customer_data = unserialize($customer_data_get);
-            }
-            else{
-                $new_data = 1;
-                $customer_data = [];
-            }
             $pc_classify_ids=array();
             $mobile_classify_ids=array();
             $pc_article_ids=array();
             $mobile_article_ids=array();
             if($this->mobilepush){
-                $mindexhtml = $this->homgepagehtml('mobile');
-                $msearchhtml = $this->sendData('mobile');
-                $mobile_classify_ids = Classify::where('cus_id',$this->cus_id)->where('mobile_show',1)->lists('id');
-                $mobile_article_ids = Articles::where('cus_id',$this->cus_id)->where('mobile_show',1)->lists('id');
+                if(isset($start)&&isset($count)&&$start!=null&&$count!=null){
+                    if(!isset($end)||$end==1){
+                        $mindexhtml = $this->homgepagehtml('mobile');
+                        $msearchhtml = $this->sendData('mobile');
+                    }
+                    $all_id=Classify::where('cus_id',$this->cus_id)->where('mobile_show',1)->lists('id');
+                    $mobile_classify_ids=array();
+                    $mobile_article_ids=array();
+                    if($start>count($all_id)){
+                        $mobile_classify_ids=array();
+                    }else{
+                        if(count($all_id)-$start<$count){
+                            $getcount=count($all_id)-$start;
+                        }else{
+                            $getcount=$count;
+                        }
+                         $classifys = Classify::where('cus_id',$this->cus_id)->where('mobile_show',1)->skip($start)->take($getcount)->get()->toArray();
+                         foreach($classifys as $classify){
+                             $mobile_classify_ids[]=$classify["id"];
+                         }
+                         $mobile_article_ids = Articles::where('cus_id',$this->cus_id)->where('mobile_show',1)->whereIn("c_id",$mobile_classify_ids)->lists('id');
+                    }
+                }else{
+                    $mindexhtml = $this->homgepagehtml('mobile');
+                    $msearchhtml = $this->sendData('mobile');
+                    $mobile_classify_ids = Classify::where('cus_id',$this->cus_id)->where('mobile_show',1)->lists('id');
+                    $mobile_article_ids = Articles::where('cus_id',$this->cus_id)->where('mobile_show',1)->lists('id');
+                }
             }
             if($this->pcpush){
-                $indexhtml = $this->homgepagehtml('pc');
-                $searchhtml = $this->sendData('pc');
-                $pc_classify_ids = Classify::where('cus_id',$this->cus_id)->where('pc_show',1)->lists('id');
-                $pc_article_ids = Articles::where('cus_id',$this->cus_id)->where('pc_show',1)->lists('id');
+                if(isset($start)&&isset($count)&&$start!=null&&$count!=null){
+                    if(!isset($end)||$end==1){
+                        $indexhtml = $this->homgepagehtml('pc');
+                        $searchhtml = $this->sendData('pc');
+                    }
+                    $all_id=Classify::where('cus_id',$this->cus_id)->where('pc_show',1)->lists('id');
+                    $pc_classify_ids=array();
+                    $pc_article_ids=array();
+                    if($start>count($all_id)){
+                        $pc_classify_ids=array();
+                    }else{
+                        if(count($all_id)-$start<$count){
+                            $getcount=count($all_id)-$start;
+                        }else{
+                            $getcount=$count;
+                        }
+                         $classifys = Classify::where('cus_id',$this->cus_id)->where('pc_show',1)->skip($start)->take($getcount)->get()->toArray();
+                         foreach($classifys as $classify){
+                             $pc_classify_ids[]=$classify["id"];
+                         }
+                         $pc_article_ids = Articles::where('cus_id',$this->cus_id)->where('pc_show',1)->whereIn("c_id",$pc_classify_ids)->lists('id');
+                    }
+                }else{
+                    $indexhtml = $this->homgepagehtml('pc');
+                    $searchhtml = $this->sendData('pc');
+                    $pc_classify_ids = Classify::where('cus_id',$this->cus_id)->where('pc_show',1)->lists('id');
+                    $pc_article_ids = Articles::where('cus_id',$this->cus_id)->where('pc_show',1)->lists('id');
+                }
             }
             $count = $this->htmlPagecount($pc_classify_ids,$mobile_classify_ids,$pc_article_ids,$mobile_article_ids);
             $this->html_precent= 70/$count;
@@ -832,7 +902,7 @@ class HtmlController extends BaseController{
                 @unlink($path);
             }
             $zip = new ZipArchive;
-            if ($zip->open($path, ZipArchive::CREATE) === TRUE) {
+            if ((!isset($end)||$end==1)&&($zip->open($path, ZipArchive::CREATE) === TRUE)) {
                 if($this->pcpush){
                     $zip->addFile($indexhtml,'index.html');
                     $zip->addFile($searchhtml,'search.html');
@@ -860,14 +930,16 @@ class HtmlController extends BaseController{
                 }
                 $this->lastpercent += $this->percent;
                 $zip->close();
+            }else{
+                $this->lastpercent += 70+$this->percent;
             }
                 if($this->pcpush){
-                    $this->compareZip($categoryhtml,$customer_data,'p','category',$path);
-                    $this->compareZip($articlehtml,$customer_data,'pf','detail',$path);
+                    $this->compareZip($categoryhtml,'category',$path);
+                    $this->compareZip($articlehtml,'detail',$path);
                 }
                 if($this->mobilepush){
-                    $this->compareZip($mcategoryhtml,$customer_data,'m','mobile/category',$path);
-                    $this->compareZip($marticlehtml,$customer_data,'mf','mobile/detail',$path);
+                    $this->compareZip($mcategoryhtml,'mobile/category',$path);
+                    $this->compareZip($marticlehtml,'mobile/detail',$path);
                 }
 
 
@@ -883,27 +955,17 @@ class HtmlController extends BaseController{
                 PushQueue::where('id',$nextpush->id)->update(['push' => 1]);
             }
             if ($zip->open($path, ZipArchive::CREATE) === TRUE) {
-                if($this->pcpush){
+                if((!isset($end)||$end==1)&&$this->pcpush){
                     $pc_dir=  Template::where('website_info.cus_id',$this->cus_id)->Leftjoin('website_info','website_info.pc_tpl_id','=','template.id')->pluck('name');
                     $aim_dir=public_path("templates/$pc_dir/");
                     $this->addDir($aim_dir,$zip);
                 }
-                if($this->mobilepush){
+                if((!isset($end)||$end==1)&&$this->mobilepush){
                     $mobile_dir=  Template::where('website_info.cus_id',$this->cus_id)->Leftjoin('website_info','template.id','=','website_info.mobile_tpl_id')->pluck('name');
                     $maim_dir=public_path("templates/$mobile_dir/");
                     $this->addDir($maim_dir,$zip,'mobile/');
                 }
                 $zip->close();
-                $data = serialize($customer_data);
-                if($new_data){
-                    $customerpushfile = new CustomerPushfile;
-                    $customerpushfile->cus_id = $this->cus_id;
-                    $customerpushfile->files = $data;
-                    $customerpushfile->save();
-                }
-                else{
-                    CustomerPushfile::where('cus_id',$this->cus_id)->update(['files'=>$data]);
-                }
                 $customerinfo = Customer::find($this->cus_id);
                 $ftp_array = explode(':',$customerinfo->ftp_address);
                 $port= $customerinfo->ftp_port;
@@ -970,12 +1032,14 @@ class HtmlController extends BaseController{
 
                 $this->folderClear();
                 echo '100%<script type="text/javascript">parent.refresh(100);</script><br />';
-                Classify::where('cus_id',$this->cus_id)->where('pushed','>',0)->update(['pushed'=>0]);
-                Articles::where('cus_id',$this->cus_id)->where('pushed','>',0)->update(['pushed'=>0]);
-                WebsiteConfig::where('cus_id',$this->cus_id)->update(['pushed'=>0]);
-                WebsiteInfo::where('cus_id',$this->cus_id)->update(['pushed'=>0]);
-                MobileHomepage::where('cus_id',$this->cus_id)->update(['pushed'=>0]);
-                CustomerInfo::where('cus_id', $this->cus_id)->update(['pushed' => 0,'lastpushtime'=>date('Y-m-d H:i:s',time())]);//date('Y-m-d H:i:s',time())
+                if(!isset($end)||$end==1){
+                    Classify::where('cus_id',$this->cus_id)->where('pushed','>',0)->update(['pushed'=>0]);
+                    Articles::where('cus_id',$this->cus_id)->where('pushed','>',0)->update(['pushed'=>0]);
+                    WebsiteConfig::where('cus_id',$this->cus_id)->update(['pushed'=>0]);
+                    WebsiteInfo::where('cus_id',$this->cus_id)->update(['pushed'=>0]);
+                    MobileHomepage::where('cus_id',$this->cus_id)->update(['pushed'=>0]);
+                    CustomerInfo::where('cus_id', $this->cus_id)->update(['pushed' => 0,'lastpushtime'=>date('Y-m-d H:i:s',time())]);//date('Y-m-d H:i:s',time())
+                }
                  /**
                 * pc使用本服务器自带域名推送，后期需要改进！
                 */
@@ -996,13 +1060,15 @@ class HtmlController extends BaseController{
             ob_end_flush();
         }else{
             echo '100%<script type="text/javascript">parent.refresh(100);</script><br />';
-            Classify::where('cus_id',$this->cus_id)->where('pushed','>',0)->update(['pushed'=>0]);
-            Articles::where('cus_id',$this->cus_id)->where('pushed','>',0)->update(['pushed'=>0]);
-            WebsiteConfig::where('cus_id',$this->cus_id)->update(['pushed'=>0]);
-            WebsiteInfo::where('cus_id',$this->cus_id)->update(['pushed'=>0]);
-            MobileHomepage::where('cus_id',$this->cus_id)->update(['pushed'=>0]);
-            CustomerInfo::where('cus_id', $this->cus_id)->update(['pushed' => 0,'lastpushtime'=>date('Y-m-d H:i:s',time())]);//date('Y-m-d H:i:s',time())
-            ob_end_flush();
+            if(!isset($end)||$end==1){
+                Classify::where('cus_id',$this->cus_id)->where('pushed','>',0)->update(['pushed'=>0]);
+                Articles::where('cus_id',$this->cus_id)->where('pushed','>',0)->update(['pushed'=>0]);
+                WebsiteConfig::where('cus_id',$this->cus_id)->update(['pushed'=>0]);
+                WebsiteInfo::where('cus_id',$this->cus_id)->update(['pushed'=>0]);
+                MobileHomepage::where('cus_id',$this->cus_id)->update(['pushed'=>0]);
+                CustomerInfo::where('cus_id', $this->cus_id)->update(['pushed' => 0,'lastpushtime'=>date('Y-m-d H:i:s',time())]);//date('Y-m-d H:i:s',time())
+                ob_end_flush();
+            }
         }
     }
     
@@ -1016,7 +1082,7 @@ class HtmlController extends BaseController{
      * @param string $path 加入压缩的路径
      * @return array
      */
-    private function compareZip($filearray=[],$data=[],$prefix='',$fpath='',$path=''){
+    private function compareZip($filearray=[],$fpath='',$path=''){
         $zip = new ZipArchive;
         if ($zip->open($path, ZipArchive::CREATE) === TRUE) {
             foreach((array)$filearray as $file)
@@ -1024,21 +1090,6 @@ class HtmlController extends BaseController{
                 $cat_arr = explode('/',$file);
                 $filename = array_pop($cat_arr);
                 $zip->addFile($file,$fpath.'/'.$filename);
-                /*
-                $md5 = md5_file($file);
-                if(array_key_exists($prefix.$filename,$data))
-                {
-                   // //if($data[$prefix.$filename] != $md5)
-                    {
-                        $data[$prefix.$filename] = $md5;
-                        $zip->addFile($file,$fpath.'/'.$filename);
-                    }                   
-                }
-                else{
-                    $data[$prefix.$filename] = $md5;
-                    $zip->addFile($file,$fpath.'/'.$filename);
-                }
-                 */
                 $nowpercent = $this->percent + $this->lastpercent;
                 if (floor($nowpercent) !==floor($this->lastpercent)) {
                      echo floor($nowpercent) . '%<script type="text/javascript">parent.refresh(' . floor($nowpercent) . ');</script><br />';
