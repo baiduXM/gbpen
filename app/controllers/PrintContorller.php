@@ -3171,7 +3171,7 @@ class PrintController extends BaseController {
     private function toFooter($arr, $pid = 0) {
         $footer = array();
         $needarr = array();
-        foreach ((array) $needarr as $k => $v) {
+        foreach ((array) $arr as $k => $v) {
             if ($v['p_id'] == $pid) {
                 $needarr[] = $v;
             }
