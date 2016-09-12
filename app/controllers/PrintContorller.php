@@ -742,7 +742,6 @@ class PrintController extends BaseController {
 //                if (!empty($domain)) {
 //                    $catlist[] = array('id' => null, 'name' => $language, 'en_name' => 'language', 'url' => $language_url, 'childmenu' => null); //===
 //                }
-//                $catlist[] = array('id' => null, 'name' => $language, 'en_name' => 'language', 'url' => $language_url, 'childmenu' => null); //===
                 $quickbarCallback = array('config' => $config, 'quickbar' => $quickbar, 'catlist' => $catlist);
                 if ($this->showtype == 'preview') {
                     echo "quickbarCallback(" . json_encode($quickbarCallback) . ")";
@@ -2384,26 +2383,34 @@ class PrintController extends BaseController {
                 </STYLE>
                 <SCRIPT language=javascript>
 		function CheckPost()
-		{
-				if (messageboard.name.value=="")
+		{   
+                    var _name       =messageboard.name.value;
+                    var _content    =messageboard.content.value;
+                    var _telephone  =messageboard.telephone.value;
+				if (_name=="")
 				{
-						alert("请填写您的姓名");
-						messageboard.name.focus();
-						return false;
+                                    alert("请填写您的姓名++++");
+                                    messageboard.name.focus();
+                                    return false;
 				}
-				if (messageboard.content.value=="")
+				if (_content=="")
 				{
-						alert("必须要填写留言内容");
-						messageboard.content.focus();
-						return false;
+                                    alert("必须要填写留言内容");
+                                    messageboard.content.focus();
+                                    return false;
 				}
-				if (messageboard.telephone.value!="")
+				if (_telephone!="")
 				{
-						if(isNaN(messageboard.telephone.value)){
-							alert("电话号码请填写数字");
-							messageboard.telephone.focus();
-							return false;
-						}
+                                    if(isNaN(_telephone)){
+                                            alert("电话号码请填写数字");
+                                            messageboard.telephone.focus();
+                                            return false;
+                                    }
+                                    if(!(/^1[3|4|5|7|8]\d{9}$/.test(_telephone))){
+                                            alert("手机号码有误");
+                                            messageboard.telephone.focus();
+                                            return false;
+                                    }
 				}
 		}
                 </SCRIPT>';
@@ -2643,7 +2650,7 @@ class PrintController extends BaseController {
                 {
                         if (messageboard.name.value=="")
                         {
-                                alert("请填写您的姓名");
+                                alert("请填写您的姓名---");
                                 messageboard.name.focus();
                                 return false;
                         }
