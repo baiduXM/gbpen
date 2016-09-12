@@ -2389,7 +2389,7 @@ class PrintController extends BaseController {
                     var _telephone  =messageboard.telephone.value;
 				if (_name=="")
 				{
-                                    alert("请填写您的姓名++++");
+                                    alert("请填写您的姓名");
                                     messageboard.name.focus();
                                     return false;
 				}
@@ -2650,7 +2650,7 @@ class PrintController extends BaseController {
                 {
                         if (messageboard.name.value=="")
                         {
-                                alert("请填写您的姓名---");
+                                alert("请填写您的姓名");
                                 messageboard.name.focus();
                                 return false;
                         }
@@ -2666,6 +2666,11 @@ class PrintController extends BaseController {
                                     alert("电话号码请填写数字");
                                     messageboard.telephone.focus();
                                     return false;
+                                }
+                                if(!(/^1[3|4|5|7|8]\d{9}$/.test(messageboard.telephone.value))){
+                                        alert("手机号码有误");
+                                        messageboard.telephone.focus();
+                                        return false;
                                 }
                         }
                 }
