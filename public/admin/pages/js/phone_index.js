@@ -370,7 +370,7 @@ function phone_indexController($scope, $http, $location) {
                     $.each(data, function (k, v) {
                         _this.count = k;
                         // 除余取列
-                        var C_num = (k + 1) % ColumnNum == 0 ? (k + 1) : (k + 1) % ColumnNum;
+                        var C_num = (k + 1) % ColumnNum == 0 ? (k % ColumnNum) + 1 : (k + 1) % ColumnNum;
                         var _div = _this.ModelSlidepicsInfo({
                             key: index,
                             title: v.title,
@@ -493,8 +493,8 @@ function phone_indexController($scope, $http, $location) {
                             });
                             var addBtn = (lastColumnNum + 1) % ColumnNum,
                                     addpic = (lastColumnNum + 2) % ColumnNum;
-                            $('#phone_index_col_' + eventitemnum + '_' + (addBtn == 0 ? (lastColumnNum + 1) : addBtn) + '').append(_newpic);
-                            $('#phone_index_col_' + eventitemnum + '_' + (addpic == 0 ? (lastColumnNum + 2) : addpic) + '').append($eventthis.parent());
+                            $('#phone_index_col_' + eventitemnum + '_' + (addBtn == 0 ? ColumnNum : addBtn) + '').append(_newpic);
+                            $('#phone_index_col_' + eventitemnum + '_' + (addpic == 0 ? ColumnNum : addpic) + '').append($eventthis.parent());
                             lastColumnNum++;
                         }
                         _this.IsDelete();
