@@ -10,17 +10,38 @@ function articleController($scope, $http, $location) {
     $scope.cat_id = $_GET['id'] == undefined ? null : parseInt($_GET['id']);
     $scope.is_star = $_GET['is_star'] == undefined ? null : parseInt($_GET['is_star']);
     $scope.ser_name = $_GET['ser_name'] == undefined ? null : $_GET['ser_name'];
+    $scope.search_word = $_GET['search_word'] == undefined ? null : $_GET['search_word'];
+    console.log($scope);
+    console.log('===$scope===');
     // Model
     $scope.getArticleList = function (option) {
+        console.log(option);
+        console.log('===option===');
         var page = option.page || $scope.page,
                 cat_id = option.cat_id || $scope.cat_id,
                 num_per_page = option.num_per_page || $scope.num_per_page,
                 page_num = option.page_num || $scope.page_num,
                 is_star = option.is_star || $scope.is_star,
                 ser_active = option.ser_active,
+                search_word = option.search_word || $scope.search_word,
                 ser_name = option.ser_name || $scope.ser_name;
         option.back == undefined ? '' : option.back == 1 ? window.location.hash = '#/article' : '';
-        $http.get('../article-manage?per_page=' + num_per_page + (cat_id == null ? '' : '&c_id=' + cat_id + '') + (is_star == null ? '' : '&is_star=' + is_star + '') + '&page=' + page + '').success(function (json) {
+        var urlparam = '';
+        if (cat_id != null) {
+            urlparam += '&c_id=' + cat_id;
+        }
+        if (is_star != null) {
+            urlparam += '&is_star=' + is_star;
+        }
+        if (search_word != null) {
+            urlparam += '&search_word=' + search_word;
+        }
+        if (page != null) {
+            urlparam += '&page=' + page;
+        }
+        $http.get('../article-manage?per_page=' + num_per_page + urlparam).success(function (json) {
+            console.log(json.data);
+            console.log('article-manage');
             checkJSON(json, function (json) {
                 if (option.first) {
                     checkjs('article');
@@ -59,7 +80,21 @@ function articleController($scope, $http, $location) {
                     }
                 }
 
-                ser_active ? window.location.hash = '#/article?p=1' + (cat_id == null ? '' : '&id=' + cat_id + '') + (is_star == null ? '' : '&is_star=' + is_star + '') + (ser_name == null ? '' : '&ser_name=' + ser_name + '') : '';
+                //===搜索条件===
+                var urlparam = '';
+                if (cat_id != null) {
+                    urlparam += '&id=' + cat_id;
+                }
+                if (is_star != null) {
+                    urlparam += '&is_star=' + is_star;
+                }
+                if (ser_name != null) {
+                    urlparam += '&ser_name=' + ser_name;
+                }
+                if (search_word != null) {
+                    urlparam += '&search_word=' + search_word;
+                }
+                ser_active ? window.location.hash = '#/article?p=1' + urlparam : '';
                 if (cat_id != null) {
                     $('.article-tb .newarticle').addClass('navcolor');
                     $('.article-tb .newarticle span').text($scope.ser_name)
@@ -111,7 +146,17 @@ function articleController($scope, $http, $location) {
                         num_display_entries: 5,
                         num_edge_entries: 3,
                         callback: function (page_index) {
-                            window.location.hash = '#/article?p=' + (page_index + 1) + (cat_id == null ? '' : '&id=' + cat_id + '') + (is_star == null ? '' : '&is_star=' + is_star + '') + (ser_name == null ? '' : '&ser_name=' + ser_name + '');
+                            var urlparam = '';
+                            if (cat_id != null) {
+                                urlparam += '&id=' + cat_id;
+                            }
+                            if (is_star != null) {
+                                urlparam += '&is_star=' + is_star;
+                            }
+                            if (ser_name != null) {
+                                urlparam += '&ser_name=' + ser_name;
+                            }
+                            window.location.hash = '#/article?p=' + (page_index + 1) + urlparam;
                         }
                     });
                 } else {
@@ -172,10 +217,7 @@ function articleController($scope, $http, $location) {
             }); // checkJSON结束
         });
     };
-    // 首次获取
-    $scope.getArticleList({
-        first: true
-    });
+
     //菜单
     (function ArticleMenu() {
         var timer;
@@ -214,6 +256,7 @@ function articleController($scope, $http, $location) {
     // 取消置顶、推荐
     function star_top() {
         $('.article-tb .a-table .article-check .tit_info .pos_bule').on('click', function () {
+            console.log('===star_top===');
             var id = $(this).parents('td').siblings().find('.delv').attr('name');
             if ($(this).hasClass('pos_bule')) {
                 $(this).removeClass('pos_bule');
@@ -257,8 +300,13 @@ function articleController($scope, $http, $location) {
         });
         return id_all;
     };
+
     $scope.ArticleNav = {
         init: function () {
+            // 首次获取
+            $scope.getArticleList({
+                first: true
+            });
             this._checkstar();
             this._searchInfo();
             this._moveclassify();
@@ -268,11 +316,13 @@ function articleController($scope, $http, $location) {
             this._batchdel();
             this._showPlatform();
             this._batchAdd();
+            this._searchWords();//===模糊查找===
             // this._batchEdit();
         },
+        // 查看推荐以及返回
         _checkstar: function () {
-            // 查看推荐以及返回
-            $('.article-tb .stararticle').on('click', function () {
+            $('.article-tb .stararticle').unbind('click').click(function () {
+                console.log('_checkstar');
                 if ($(this).hasClass('starback')) {
                     // 返回
                     $scope.cat_id = null;
@@ -298,9 +348,10 @@ function articleController($scope, $http, $location) {
                 }
             });
         },
+        //新闻分类搜索
         _searchInfo: function () {
-            //新闻分类搜索
-            $('.info-top .list_new').on('click', ' .mov_val:not(.not-allowed)', function () {
+            $('.info-top .list_new').off('click').on('click', ' .mov_val:not(.not-allowed)', function () {
+                console.log('_searchInfo');
                 $scope.page = 1;
                 $(this).parents('ul').prev().addClass('navcolor');
                 $('.article-tb .stararticle').next().fadeIn();
@@ -310,12 +361,14 @@ function articleController($scope, $http, $location) {
                     first: false,
                     ser_active: true,
                     ser_name: $(this).find('span').text()
-                })
+                });
             });
         },
+        //移动分类
         _moveclassify: function () {
-            //移动分类
-            $('.info-top .list_mov').on('click', '.mov_val:not(.not-allowed)', function () {
+            $('.info-top .list_mov').off('click').on('click', '.mov_val:not(.not-allowed)', function () {
+                console.log('_moveclassify');
+
                 mov_id = $(this).find('input').val();
                 var id_all = new all_id;
                 var mov_text = $(this).text();
@@ -332,8 +385,8 @@ function articleController($scope, $http, $location) {
         },
         _setInfoClassify: function () {
             var r_this = this;
-            //设为
-            $('.list_set a').click(function () {
+            $('.list_set a').unbind('click').click(function () {
+                console.log('_setInfoClassify');
                 var set_name = $(this).attr('name'),
                         set_val = $(this).attr('value');
                 if (id_all = null) {
@@ -378,14 +431,17 @@ function articleController($scope, $http, $location) {
             });
         },
         ModelSetIsShow: function (_this, set_val, selector) {
+            console.log('ModelSetIsShow');
             _this.parents('td').siblings().find('span ' + selector).each(function () {
                 _this.parents('td').siblings().find('span ' + selector).removeClass((set_val == 1 && !$(this).hasClass('blue') ? 'grey' : $(this).hasClass('blue') ? 'blue' : null))
                         .addClass((set_val == 1 && !$(this).hasClass('blue') ? 'blue' : $(this).hasClass('blue') ? 'grey' : null));
             });
         },
+        //排序设置
         _sort: function () {
-            //排序设置
             $('.a-table').on('change', '.sort', function () {
+                console.log('_sort');
+
                 var id, sort;
                 id = $(this).data('id');
                 sort = $(this).val();
@@ -401,9 +457,11 @@ function articleController($scope, $http, $location) {
                 });
             });
         },
+        //删除
         _delete: function () {
-            //删除
-            $('.a-table').on('click', '.delv', function () {
+            $('.a-table').off('click').on('click', '.delv', function () {
+                console.log('_delete');
+
                 var id = $(this).attr('name');
                 var _this = $(this);
                 (function article_delete(del_num) {
@@ -424,9 +482,11 @@ function articleController($scope, $http, $location) {
                 })();
             });
         },
+        //批量删除
         _batchdel: function () {
-            //批量删除
-            $('.info-top .delarticle').click(function (event) {
+            $('.info-top .delarticle').unbind('click').click(function (event) {
+                console.log('_batchdel');
+
                 (function article_delete(del_num) {
                     if (del_num == undefined) {
                         var warningbox = new WarningBox(article_delete);
@@ -446,9 +506,11 @@ function articleController($scope, $http, $location) {
                 })();
             });
         },
+        //展示
         _showPlatform: function () {
-            //展示
-            $('.a-table').on('click', '.btn-show', function () {
+            $('.a-table').off('click').on('click', '.btn-show', function () {
+                console.log('_showPlatform');
+
                 var btn = $(this);
                 var voperate = '';
                 if (btn.hasClass('icon-pc')) {
@@ -477,10 +539,12 @@ function articleController($scope, $http, $location) {
                 });
             });
         },
+        // 批量添加文章
         _batchAdd: function () {
             var _this = this;
-            // 批量添加文章
             $('.info-top .batchadd').unbind('click').click(function () {
+                console.log('_batchAdd');
+
                 var warningbox = new WarningBox();
                 warningbox._upImage({
                     IsBaseShow: true,
@@ -524,10 +588,7 @@ function articleController($scope, $http, $location) {
                                 $http.post('../article-batch-add', {ArticleBatch: articleArray, pc_show: pc_show, mobile_show: mobile_show, c_id: c_id}).success(function (json) {
                                     checkJSON(json, function (json) {
                                         if (img_upload.length) {
-                                            $http.post('../imgupload?target=articles',
-                                                    {
-                                                        files: img_upload
-                                                    }).success(function () {
+                                            $http.post('../imgupload?target=articles', {files: img_upload}).success(function () {
                                                 $('.my_mask').hide();
                                                 $('.my_tishi').hide();
                                             });
@@ -543,9 +604,11 @@ function articleController($scope, $http, $location) {
                 });
             });
         },
+        // 批量编辑文章
         batchEdit: function () {
-            // 批量编辑文章
-            $('.info-top .batchedit').click(function () {
+            $('.info-top .batchedit').unbind('click').click(function () {
+                console.log('batchEdit');
+
                 var id_all = new all_id;
                 if (id_all == '') {
                     alert('请选择要编辑的文章！')
@@ -553,7 +616,26 @@ function articleController($scope, $http, $location) {
                     window.location.hash = '#/batcharticle?ids=' + id_all + '';
                 }
             });
+        },
+        //===搜索关键词===
+        _searchWords: function () {
+            $('.searcharticle').unbind('click').click(function () {
+                console.log('_searchWords');
+
+                var search_word = $("[name='search_word']").val();
+                $scope.getArticleList({
+                    first: false,
+                    ser_active: true,
+                    search_word: search_word
+                });
+//                $scope.getArticleList({
+//                    first: false,
+//                    ser_active: true,
+//                    ser_name: $(this).find('span').text()
+//                });
+            });
         }
     };
+    //===加载初始化===
     $scope.ArticleNav.init();
 }

@@ -124,7 +124,6 @@ Route::group(array('before' => 'auth'), function() {
     //-----------------------------------------------
     //--------------------文章路由--------------------
     Route::post('article-create', [//文章添加
-        'as' => 'article-list',
         'uses' => 'ArticleController@articleAdd'
     ]);
 
@@ -134,17 +133,14 @@ Route::group(array('before' => 'auth'), function() {
     ]);
 
     Route::get('article-manage', [//文章列表
-        'as' => 'article-list',
         'uses' => 'ArticleController@articleManage'
     ]);
 
     Route::get('article-info', [//文章详情
-        'as' => 'article-list',
         'uses' => 'ArticleController@articleInfo'
     ]);
 
     Route::post('article-delete', [//文章删除
-        'as' => 'article-list',
         'uses' => 'ArticleController@articleDelete'
     ]);
 
