@@ -15,8 +15,6 @@ function articleController($scope, $http, $location) {
     console.log('===$scope===');
     // Model
     $scope.getArticleList = function (option) {
-        console.log(option);
-        console.log('===option===');
         var page = option.page || $scope.page,
                 cat_id = option.cat_id || $scope.cat_id,
                 num_per_page = option.num_per_page || $scope.num_per_page,

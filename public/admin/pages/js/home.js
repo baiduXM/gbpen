@@ -64,6 +64,12 @@ function homeController($scope, $http) {
             }
         });
     }
+    /**
+     * ===模板数据===
+     * @param {type} templeType
+     * @param {type} templePage
+     * @returns {undefined}
+     */
     function getTempledata(templeType, templePage) {
         $('.home-edite').html('loading...');
         $http.get('../homepage-list?type=' + templeType + '&page=' + templePage + '').success(function (json) {
@@ -81,7 +87,7 @@ function homeController($scope, $http) {
                         href = v.value.link;
                         _rel = '<dd class="img_show"><a class="preview" href="' + v.value.link + '" onclick="return false">\n\
 							<div class="preview-close"><img src="images/preview-close.png" /></div>\n\
-							<div class="preview-edit" style="visibility:hidden"><img src="images/preview-edit.png" /><span>编辑</span></div>\n\
+							<div class="preview-edit" style="visibility:hidden"><img src="images/preview-edit.png" /><span>前移1</span><span>后移1</span><span>编辑</span></div>\n\
 							<div class="preview-mask" style="visibility:hidden"></div>\n\
 							<img src="' + v.value.image + '" width="55" height="55" class="home_pic" data-preimg="preimg"></a>\n\
 							<input type="hidden" value="' + src + '" name="data[' + k + '][src]" />\n\
@@ -101,7 +107,7 @@ function homeController($scope, $http) {
                             src = j.image.split('/')[srclen - 1];
                             _rel += '<dd class="img_show" ><a href="' + j.link + '" class="preview" onclick="return false">\n\
 							<div class="preview-close"><img src="images/preview-close.png" /></div>\n\
-							<div class="preview-edit" style="visibility:hidden"><img src="images/preview-edit.png" /><span>编辑</span></div>\n\
+							<div class="preview-edit" style="visibility:hidden"><span>编辑</span></div>\n\
 							<div class="preview-mask" style="visibility:hidden"></div>\n\
 							<img src="' + j.image + '" class="home_pic" data-preimg="preimg"></a>\n\
 							<input type="hidden" value="' + src + '" name="data[' + k + '][' + num + '][src]" />\n\
@@ -111,7 +117,7 @@ function homeController($scope, $http) {
                             num++;
                             pic++;
                         });
-                        _rel += '<dd class="new_add pr" data-role="images-' + k + '" data-type="image" style="margin-left:8px;"></dd>';
+                        _rel += '<dd class="new_add pr" data-role="images-' + k + '" data-type="image" style="margin-left:8px; float:left;"></dd>';
                         break;
                     case 'list':
                         var _rel = '', sign = '', list1 = '', pname = '', rootNodeName = k;
@@ -346,7 +352,7 @@ function homeController($scope, $http) {
                             var new_num = parseInt(pic_num) + 1;
                             _newpic = '<dd class="img_show"><a href="" class="preview" onclick="return false">\n\
 									<div class="preview-close"><img src="images/preview-close.png" /></div>\n\
-									<div class="preview-edit" style="visibility:hidden"><img src="images/preview-edit.png" /><span>编辑</span></div>\n\
+									<div class="preview-edit" style="visibility:hidden"><img src="images/preview-edit.png" /><span>前移</span><span>后移</span><span>编辑</span></div>\n\
 									<div class="preview-mask" style="visibility:hidden"></div>\n\
 									<img src="' + json.data.url + '" data-name="' + json.data.name + '" class="home_pic img_upload" data-preimg="preimg"></a>\n\
 									<input type="hidden" value="' + json.data.name + '" name="data[' + pic_name + ']' + (upload_Classname == 'images' ? '[' + new_num + ']' : '') + '[src]" />\n\
@@ -370,7 +376,10 @@ function homeController($scope, $http) {
             });
         }); // GET请求结束
     } // getTempledata方法结束
-    //修改首页 
+    /**
+     * 修改首页 
+     * @returns {undefined}
+     */
     function homeChangeSave() {
         $('.home-info .btn-top .save').not($('.save_column')).unbind("click").click(function () {
             var err = 0;
@@ -422,7 +431,10 @@ function homeController($scope, $http) {
             return false;
         });
     }
-    // 为最后一级，类型为单页的删除或者子级都为page，父级以及子级全删除
+    /**
+     * 为最后一级，类型为单页的删除或者子级都为page，父级以及子级全删除
+     * @returns {undefined}
+     */
     function homeListFix() {
         $('.dropdown ul li a').each(function (index, el) {
             if ($(this).hasClass('lastchild not-allowed')) {
