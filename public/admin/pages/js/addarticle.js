@@ -119,6 +119,16 @@ function addarticleController($scope, $http, $location) {
     editor.addListener('ready', function (editor) {
         addarticleEditor = true;
     });
+    $("#main").css("position", "relative");
+    var mainCon = $("#main").children(":first");
+    mainCon.css("position", "relative");
+    editor.addListener("contentChange", function () {
+        var posTop = -mainCon.position().top;
+        if (posTop > 0) {
+            var v = parseInt(mainCon.css("top")) + posTop + 2;
+            mainCon.css("top", v);
+        }
+    });
     var AddarticleData = function () {
         if (G_id) {
             //文章编辑
@@ -131,19 +141,6 @@ function addarticleController($scope, $http, $location) {
                     var editor = UE.getEditor('container', {
                         initialFrameHeight: 300,
                         autoHeightEnabled: false
-                    });
-                    $("#main").css("position", "relative");
-                    var mainCon = $("#main").children(":first");
-                    mainCon.css("position", "relative");
-                    editor.fireEvent("contentChange");
-                    editor.addListener("contentChange", function () {
-                        var posTop = -mainCon.position().top;
-                        console.log(mainCon.css("top"));
-                        console.log(posTop);
-                        if (posTop > 0) {
-                            var v = parseInt(mainCon.css("top")) + posTop + 2;
-                            mainCon.css("top", v);
-                        }
                     });
                     editor.addListener('ready', function (editor) {
                         addarticleEditor = true;
