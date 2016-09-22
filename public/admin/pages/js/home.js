@@ -88,6 +88,7 @@ function homeController($scope, $http) {
 							<input type="hidden" value="' + tit + '" name="data[' + k + '][title]" />\n\
 							<input type="hidden" value="' + href + '" name="data[' + k + '][href]" /></dd>';
                         _rel += '<dd class="new_add pr" data-role="image-' + k + '" data-type="image" style="margin-left:8px;">\n\
+                                    <div style="margin-top: 2px;position: relative;"><span class="moveup">前移1</span><span class="movedown">后移1</span></div>\n\
                                 </dd>';
                         break;
                     case 'text':
@@ -109,7 +110,7 @@ function homeController($scope, $http) {
 							<input type="hidden" value="' + j.title + '" name="data[' + k + '][' + num + '][title]" />\n\
 							<input type="hidden" value="' + (j.description || '') + '" name="data[' + k + '][' + num + '][description]" />\n\
 							<input type="hidden" value="' + j.link + '" name="data[' + k + '][' + num + '][href]" />\n\
-                                                        <div><span>前移</span><span>后移</span></div>\n\
+                                                        <div style="margin-top: 2px;position: relative;"><span class="moveup">前移2</span><span class="movedown">后移2</span></div>\n\
                                                     </dd>';
                             num++;
                             pic++;
@@ -214,6 +215,12 @@ function homeController($scope, $http) {
                 }// switch结束
                 _rt += '<li><dl class="homeed-left">' + v.description + '：' + (typeof v.prompt == 'undefined' ? '' : v.prompt) + (typeof v.config == 'undefined' ? '' : v.type == 'images' || v.type == 'image' ? '<div class="ratio">' + (v.config.width == undefined ? '自适应' : v.config.width) + '*' + (v.config.height == 'undefined' ? '自适应' : v.config.height) + '</div>' + (v.type == 'image' ? '' : '<div>限制数量：<span class="pic_limit">' + (v.config.limit == undefined ? '0' : v.config.limit) + '</span></div>') : '') + '</dl><dl class="homeed-right">' + (v.type == 'navs' ? '<div id="move_navs">' + _rel + '</div>' : '' + _rel + '') + '</dl></li>';
             }); // each结束
+
+            //===轮播图排序===
+            $('.moveup').click(function () {
+                alert(1);
+            });
+
 
             $('.home-edite').html('<form id="temple-data">' + _rt + '<input type="hidden" name="page" value="' + templePage + '" /><input type="hidden" name="type" value="' + templeType + '" /></form>');
             //下拉框更改
@@ -356,6 +363,7 @@ function homeController($scope, $http) {
 									<input type="hidden" value="" name="data[' + pic_name + ']' + (upload_Classname == 'images' ? '[' + new_num + ']' : '') + '[title]" />\n\
 									<input type="hidden" value="" name="data[' + pic_name + ']' + (upload_Classname == 'images' ? '[' + new_num + ']' : '') + '[href]" />\n\
 									<input type="hidden" value="" name="data[' + pic_name + ']' + (upload_Classname == 'images' ? '[' + new_num + ']' : '') + '[description]" />\n\
+                                                                        <div style="margin-top: 2px;position: relative;"><span class="moveup">前移3</span><span class="movedown">后移3</span></div>\n\
 									</dd>';
                             $('.new_add[data-role=' + role + ']').before(_newpic);
                         }
@@ -434,16 +442,6 @@ function homeController($scope, $http) {
             if ($(this).hasClass('lastchild not-allowed')) {
                 $(this).remove();
             }
-        });
-    }
-    /**
-     * ===轮播图排序===
-     * @returns {undefined}
-     */
-    function bannerOrder() {
-//        $http.post("../homepage-banner-edit",data).su
-        $.post("../homepage-bannereidt", {suggest: txt}, function (result) {
-            $("span").html(result);
         });
     }
 }
