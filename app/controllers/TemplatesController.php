@@ -290,15 +290,16 @@ class TemplatesController extends BaseController {
         }
         return $org_img;
     }
+
     public function homepageRewrite() {
         $cus_id = Auth::id();
         $website_config = new WebsiteConfig();
-        websiteInfo::where('cus_id', $cus_id)->update(['pushed'=>3]);
-        $webinfo=  WebsiteInfo::where('cus_id',$cus_id)->first();
-        $pc_tpl_id=$webinfo->pc_tpl_id;
-        $mobile_tpl_id=$webinfo->mobile_tpl_id;
+        websiteInfo::where('cus_id', $cus_id)->update(['pushed' => 3]);
+        $webinfo = WebsiteInfo::where('cus_id', $cus_id)->first();
+        $pc_tpl_id = $webinfo->pc_tpl_id;
+        $mobile_tpl_id = $webinfo->mobile_tpl_id;
         $websiteconfigs = $website_config->where('cus_id', $cus_id)->where('template_id', $pc_tpl_id)->get()->toArray();
-        foreach($websiteconfigs as $val){
+        foreach ($websiteconfigs as $val) {
             $org_imgs = $this->getimage(unserialize($val['value']));
             foreach ((array) $org_imgs as $v) {
                 $imgdel = new ImgDel();
@@ -306,31 +307,36 @@ class TemplatesController extends BaseController {
             }
         }
         $websiteconfigs = $website_config->where('cus_id', $cus_id)->where('template_id', $mobile_tpl_id)->get()->toArray();
-        foreach($websiteconfigs as $val){
+        foreach ($websiteconfigs as $val) {
             $org_imgs = $this->getimage(unserialize($val['value']));
             foreach ((array) $org_imgs as $v) {
                 $imgdel = new ImgDel();
                 $imgdel->mysave($v, 'page_index');
             }
         }
-        WebsiteConfig::where('cus_id',$cus_id)->where('template_id',$pc_tpl_id)->delete();
-        WebsiteConfig::where('cus_id',$cus_id)->where('template_id',$mobile_tpl_id)->delete();
+        WebsiteConfig::where('cus_id', $cus_id)->where('template_id', $pc_tpl_id)->delete();
+        WebsiteConfig::where('cus_id', $cus_id)->where('template_id', $mobile_tpl_id)->delete();
         echo '<meta http-equiv="Content-Type" content="text/html;charset=utf-8">';
         echo '清除首页配置';
         exit();
     }
+
+    /**
+     * 首页修改
+     * @return type
+     */
     public function homepageModify() {
         $org_imgs = array();
         $mod_imgs = array();
         $cus_id = Auth::id();
         $template_id = websiteInfo::where('cus_id', $cus_id)->pluck('pc_tpl_id');
         $pushed = websiteInfo::where('cus_id', $cus_id)->pluck('pushed');
-        if($pushed==1||$pushed=='3'){
-            $pushed=1;
-        }else{
-            $pushed=2;
+        if ($pushed == 1 || $pushed == '3') {
+            $pushed = 1;
+        } else {
+            $pushed = 2;
         }
-        websiteInfo::where('cus_id', $cus_id)->update(['pushed'=>$pushed]);
+        websiteInfo::where('cus_id', $cus_id)->update(['pushed' => $pushed]);
         $website_config = new WebsiteConfig();
         $website_config->cus_id = $cus_id;
         $page = Input::get('page');
@@ -394,6 +400,20 @@ class TemplatesController extends BaseController {
         } else {
             return Response::json(['err' => 1001, 'msg' => '数据保存失败', 'data' => null]);
         }
+    }
+
+    /**
+     * ===首页轮播排序===
+     */
+    public function homepageBannerOrder() {
+        $cus_id = Auth::id();
+        $data = Input::get('data');
+        var_dump($data);
+        exit;
+//        foreach ($data as $key => $val) {
+//            var_dump($val);
+//        }
+        return Response::json(['err' => 0, 'msg' => '', 'data' => $data]);
     }
 
     public function getMobilePageData() {
@@ -485,12 +505,12 @@ class TemplatesController extends BaseController {
         $mod_imgs = array();
         $template_id = WebsiteInfo::where('cus_id', $cus_id)->pluck('mobile_tpl_id');
         $pushed = websiteInfo::where('cus_id', $cus_id)->pluck('pushed');
-        if($pushed==1||$pushed=='2'){
-            $pushed=1;
-        }else{
-            $pushed=3;
+        if ($pushed == 1 || $pushed == '2') {
+            $pushed = 1;
+        } else {
+            $pushed = 3;
         }
-        websiteInfo::where('cus_id', $cus_id)->update(['pushed'=>$pushed]);
+        websiteInfo::where('cus_id', $cus_id)->update(['pushed' => $pushed]);
         $data = Input::all();
         $input_keys = array_keys($data);
         $config_str = WebsiteConfig::where('cus_id', $cus_id)->where('type', 2)->where('template_id', $template_id)->pluck('value');
