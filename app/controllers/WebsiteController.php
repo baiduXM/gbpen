@@ -48,7 +48,7 @@ class WebsiteController extends BaseController{
         $website_info = WebsiteInfo::where('cus_id',$cus_id)->first();
         $total = DB::select('SELECT count(*) FROM '.$prefix.'template t'.$join.$where.' GROUP BY name');
         $result['total'] = count($total);
-        $data = DB::select('SELECT t.id as tid,name,tpl_name,classify,created_at,updated_at  FROM '.$prefix.'template t'.$join.$where.' GROUP BY name ORDER BY tid limit '.$form.','.$per_page);
+        $data = DB::select('SELECT t.id as tid,name,tpl_name,classify,created_at,updated_at  FROM '.$prefix.'template t'.$join.$where.' GROUP BY tpl_num ORDER BY tid limit '.$form.','.$per_page);
         $result['per_page'] = count($data);
         $result['current_page'] = $form+1;
         $result['last_page'] = ceil($result['total']/$per_page);
@@ -109,7 +109,7 @@ class WebsiteController extends BaseController{
         $form = Input::has('current_page') ? (Input::get('current_page')-1) * $per_page : 0;
         $data = Template::where('cus_id',$cus_id)->where('type',$type)
         ->LeftJoin('template_to_color','template.id','=','template_to_color.template_id')
-        ->LeftJoin('color','template_to_color.color_id','=','color_id')->select('template.id as tid','name','tpl_name','created_at','updated_at')->groupBy('name')->get()->toArray();
+        ->LeftJoin('color','template_to_color.color_id','=','color_id')->select('template.id as tid','name','tpl_name','created_at','updated_at')->groupBy('tpl_num')->get()->toArray();
         $i = 1;
         $website_info = WebsiteInfo::where('cus_id',$cus_id)->first();
         $mytemplelist=array();
