@@ -366,11 +366,12 @@ function homeController($scope, $http) {
 
             //===轮播图片排序===
             $('.moveup').click(function () {
-                var data1 = $("#temple-data").serializeJson();
-                console.log(data1);
-//                $.post('../homepage-bannerorder', {data: data1}, function (json) {
+                var picdata = $("#temple-data").serializeJson();
+                console.log(picdata);
+                $http.post('../homepage-bannerorder', picdata).success(function (json) {
+//                $.post('../homepage-bannerorder', picdata, function (json) {
 //                    console.log(json);
-//                });
+                });
 //                $http.post('../homepage-modify', data1).success(function (json) {
 //                    checkJSON(json, function (json) {
 //                        if (img_upload.length) {

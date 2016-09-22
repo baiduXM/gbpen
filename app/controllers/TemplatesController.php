@@ -346,6 +346,7 @@ class TemplatesController extends BaseController {
         $count = $website_config->where('cus_id', $cus_id)->where('template_id', $template_id)->where('key', $page)->count();
         $website_config->template_id = $template_id;
         $data = Input::get('data');
+        var_dump($data);
         /*
           if(isset($data['slidepics']) && count($data['slidepics'])){
           foreach($data['slidepics'] as &$arr){
@@ -407,13 +408,15 @@ class TemplatesController extends BaseController {
      */
     public function homepageBannerOrder() {
         $cus_id = Auth::id();
-        $data = Input::get('data');
+        $data = Input::get();
         var_dump($data);
-        exit;
+        exit();
+        return $data;
 //        foreach ($data as $key => $val) {
 //            var_dump($val);
 //        }
-        return Response::json(['err' => 0, 'msg' => '', 'data' => $data]);
+        $return_data = array('err' => 0, 'msg' => '', 'data' => '1');
+        return Response::json($return_data);
     }
 
     public function getMobilePageData() {
