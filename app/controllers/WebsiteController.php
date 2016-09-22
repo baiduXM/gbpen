@@ -48,7 +48,7 @@ class WebsiteController extends BaseController{
         $website_info = WebsiteInfo::where('cus_id',$cus_id)->first();
         $total = DB::select('SELECT count(*) FROM '.$prefix.'template t'.$join.$where.' GROUP BY name');
         $result['total'] = count($total);
-        $data = DB::select('SELECT t.id as tid,name,tpl_name,classify,created_at,updated_at  FROM '.$prefix.'template t'.$join.$where.' GROUP BY name ORDER BY tpl_num limit '.$form.','.$per_page);
+        $data = DB::select('SELECT t.id as tid,name,tpl_name,classify,created_at,updated_at  FROM '.$prefix.'template t'.$join.$where.' GROUP BY name ORDER BY tid limit '.$form.','.$per_page);
         $result['per_page'] = count($data);
         $result['current_page'] = $form+1;
         $result['last_page'] = ceil($result['total']/$per_page);
