@@ -201,6 +201,11 @@ Route::group(array('before' => 'auth'), function() {
     Route::post('homepage-modify', [//首页编辑保存
         'uses' => 'TemplatesController@homepageModify'
     ]);
+    
+    Route::post('homepage-banneredit', [//首页轮播图片保存
+        'uses' => 'TemplatesController@homepageBanneredit'
+    ]);
+    
 
     Route::get('homepage-manage', [//首页管理
         'uses' => 'TemplatesController@homepageManage'

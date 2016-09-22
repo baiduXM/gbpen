@@ -326,6 +326,10 @@ class TemplatesController extends BaseController {
         exit();
     }
 
+    /**
+     * 首页修改
+     * @return type
+     */
     public function homepageModify() {
         $org_imgs = array();
         $mod_imgs = array();
@@ -401,6 +405,13 @@ class TemplatesController extends BaseController {
         } else {
             return Response::json(['err' => 1001, 'msg' => '数据保存失败', 'data' => null]);
         }
+    }
+
+    /**
+     * 首页轮播图编辑
+     */
+    public function homepageBanneredit() {
+        
     }
 
     public function getMobilePageData() {
