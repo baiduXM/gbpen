@@ -196,7 +196,13 @@ i.fa-mobile{font-size: 25px;}
 .home-page-preview .hd .bule_button{float: right;width: 105px;height: 40px;line-height: 40px;border-radius: 5px;box-shadow: 1px 1px 5px #000;background-color: #3878c0;text-align: center;color: #fff;font-size: 16px;}
 .home-page-preview .hd .bule_button a{color:#fff;}
 .home-page-preview .hd .current a{background:#3878c0; color:#fff;}
-.new_add{width: 70px;height: 70px;}
+.new_add{width: 70px;height: 70px;float:left;}
+
+.moveup{float:left;margin-left:10px;font-size: 8px;margin-top: 5px;}
+.movedown{float:right;margin-right:10px;font-size: 8px;margin-top: 5px;}
+.moveup:hover{cursor: pointer;color:#3878c0;}
+.movedown:hover{cursor: pointer;color:#3878c0;}
+
 .up_pic{width: 70px;height: 70px;float: left;overflow: hidden;margin-bottom: 10px;margin-left: 10px;}
 .up_pic .uploadify{ top: -15px;}
 .up_column .uploadify,.up_phone .uploadify{ top: 0px;}

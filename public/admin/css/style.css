@@ -552,7 +552,7 @@ ul.home-edite li{ width:100%; height:auto; min-height:28px; margin:5px 0px; floa
 ul.home-edite li .homeed-left{ width:90px; padding-right:10px; height:auto; float:left; display:inline; text-align:right; vertical-align:middle;}
 ul.home-edite li .homeed-left div{color : rgb(151, 151, 151);}
 ul.home-edite li .homeed-right{ width:194px; float:right; display:inline; height:auto;}
-ul.home-edite li .homeed-right dd{float:left; display:inline;margin-bottom: 10px;}
+ul.home-edite li .homeed-right dd.img_show{float:left; display:inline;margin-bottom: 10px;width: 90px;height: 85px;}
 ul.home-edite li .homeed-right dd.add-edite{ position:relative; }
 ul.home-edite li .homeed-right dd.add-edite .fileedite{ width:70px; height:70px; position:absolute; top:0px; left:0px; z-index:10; overflow:hidden;cursor:pointer; opacity:0}
 ul.home-edite li .homeed-right img{ vertical-align:top}
