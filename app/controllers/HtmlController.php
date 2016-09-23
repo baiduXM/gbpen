@@ -833,7 +833,7 @@ class HtmlController extends BaseController {
             $zipjson->close();
         }
        $conn = ftp_connect("182.61.23.43", "21");
-        $path="d:/php/gbpen/public/customers";
+        $path="gbpen/public/customers";
         if ($conn) {
             ftp_login($conn, '12t', 'Db#907$LKF');
             ftp_pasv($conn, true);
