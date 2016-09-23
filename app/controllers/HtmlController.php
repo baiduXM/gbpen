@@ -841,9 +841,9 @@ class HtmlController extends BaseController {
                 ftp_mkdir($conn, $path."/" . $this->customer);
             }
             if (file_exists($view_path)) {
-                ftp_put($conn, $path."/".$this->customer."/view.zip", $view_path, FTP_BINARY);
+                ftp_put($conn, "view.zip", $view_path, FTP_BINARY);
             }
-            ftp_put($conn, $path."/".$this->customer. "/json.zip", $json_path, FTP_BINARY);
+            ftp_put($conn, "json.zip", $json_path, FTP_BINARY);
             ftp_close($conn);
         }
         return Response::json(array("name" => Auth::user()->name, "remember_token" => Auth::user()->remember_token));
