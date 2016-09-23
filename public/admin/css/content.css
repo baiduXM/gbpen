@@ -218,12 +218,10 @@ span.move_icon{position: absolute;top: 0;right: -45px;height: 25px;line-height: 
 .home-edite .crl_icon{margin-left: 5px;color: #5c5c5c;}
 .homeed-right i:hover{color: #005AFF;}
 /*Home首页管理——end*/
-
 /*Member会员管理——begin*/
 .relcolumn{background-color: #3878c0;width: 125px;padding-right: 10px;}
 .member_tb th img{margin: 0 5px 0 10px;}
 /*Member会员管理——end*/
-
 /*Ercode二维码管理——end*/
 .tb_info{margin: 12px auto;}
 .tb_info tr:nth-of-type(n+2){background-color: #fff;opacity:0.7;}
