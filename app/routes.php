@@ -70,16 +70,15 @@ Route::group(array('before' => 'auth'), function() {
     Route::get('capacity-info', [//保存用户信息
         'uses' => 'CapacityController@getInfo'
     ]);
-    
+
     Route::any('capacity-init', [//初始化容量
         'uses' => 'CapacityController@init'
     ]);
-    
+
     Route::any('capacity-release', [//释放空间
         'uses' => 'CapacityController@release'
     ]);
     //===end===
-
     //-----------------------------------------------
     //--------------------栏目路由--------------------
     Route::post('classify-create', [//栏目添加
@@ -106,7 +105,7 @@ Route::group(array('before' => 'auth'), function() {
         'as' => 'classify-list',
         'uses' => 'ClassifyController@classifyModify'
     ]);
-    
+
     Route::post('classify-name-modify', [//栏目标题修改
         'as' => 'classify-name-modify',
         'uses' => 'ClassifyController@classifyNameModify'
@@ -148,7 +147,7 @@ Route::group(array('before' => 'auth'), function() {
         'as' => 'article-sort-modify',
         'uses' => 'ArticleController@articleSortModify'
     ]);
-    
+
     Route::post('article-title-modify', [//文章标题修改
         'as' => 'article-title-modify',
         'uses' => 'ArticleController@articleTitleModify'
@@ -197,15 +196,12 @@ Route::group(array('before' => 'auth'), function() {
         'uses' => 'TemplatesController@homepageList'
     ]);
 
-
     Route::post('homepage-modify', [//首页编辑保存
         'uses' => 'TemplatesController@homepageModify'
     ]);
-    
-    Route::post('homepage-banneredit', [//首页轮播图片保存
-        'uses' => 'TemplatesController@homepageBanneredit'
+    Route::post('homepage-bannerorder', [//===首页轮播图片排序===
+        'uses' => 'TemplatesController@homepageBannerOrder'
     ]);
-    
 
     Route::get('homepage-manage', [//首页管理
         'uses' => 'TemplatesController@homepageManage'
