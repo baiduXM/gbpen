@@ -758,9 +758,7 @@ class HtmlController extends BaseController {
     }
 
     public function pushLogin() {
-        var_dump($_SERVER);
-        exit();
-        if($_SERVER["SERVER_ADDR"]=="182.61.23.43"){
+        if($_SERVER["SERVER_ADDR"]=="182.61.23.43"||$_SERVER["SERVER_ADDR"]=="172.16.0.17"){
             if (Input::has("name")) {
                 $cus_id = Customer::where("name", Input::get("name"))->pluck("id");
                 if ($cus_id > 0 && Input::has("remember_token")) {
