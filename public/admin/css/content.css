@@ -181,11 +181,11 @@ i.fa-mobile{font-size: 25px;}
 .reflash div{margin: 5px 0 0 19px}
 .home-txt{width: 195px;height: 25px;margin-bottom: 10px;}
 .add-edite{width: 200px;}
-.preview{display: block;width: 90px;height: 67px;position: relative;}
+.preview{display: block;width: 90px;height: 80px;position: relative;}
 .preview .preview-close{position: absolute;right: 0;z-index: 1;}
 .preview .preview-close img{width: 17px;height: 17px;cursor: pointer;display: block;}
 .preview .preview-mask{width: 80px;height: 64px;margin: 5px;background-color: #4989ca;position: relative;opacity: 0.6;margin-top:-36px;cursor: pointer;}
-.preview-edit{z-index: 8;position: relative;top: 18px;text-align: center;}
+.preview-edit{z-index: 8;position: relative;top: 18px;text-align: center; width: 40px;margin: auto;}
 .preview-edit img{width: 20px;height: 22px;}
 .preview-edit span{display: block;color: #fff;}
 
@@ -203,7 +203,13 @@ i.fa-mobile{font-size: 25px;}
 .home-page-preview .hd .bule_button{float: right;width: 105px;height: 40px;line-height: 40px;border-radius: 5px;box-shadow: 1px 1px 5px #000;background-color: #3878c0;text-align: center;color: #fff;font-size: 16px;}
 .home-page-preview .hd .bule_button a{color:#fff;}
 .home-page-preview .hd .current a{background:#3878c0; color:#fff;}
-.new_add{width: 70px;height: 70px;}
+.new_add{width: 70px;height: 70px;float:left;}
+
+.moveup{float:left;margin-left:10px;font-size: 8px;margin-top: 5px;}
+.movedown{float:right;margin-right:10px;font-size: 8px;margin-top: 5px;}
+.moveup:hover{cursor: pointer;color:#3878c0;}
+.movedown:hover{cursor: pointer;color:#3878c0;}
+
 .up_pic{width: 70px;height: 70px;float: left;overflow: hidden;margin-bottom: 10px;margin-left: 10px;}
 .up_pic .uploadify{ top: -15px;}
 .up_column .uploadify,.up_phone .uploadify{ top: 0px;}
@@ -214,12 +220,10 @@ span.move_icon{position: absolute;top: 0;right: -45px;height: 25px;line-height: 
 .home-edite .crl_icon{margin-left: 5px;color: #5c5c5c;}
 .homeed-right i:hover{color: #005AFF;}
 /*Home首页管理——end*/
-
 /*Member会员管理——begin*/
 .relcolumn{background-color: #3878c0;width: 125px;padding-right: 10px;}
 .member_tb th img{margin: 0 5px 0 10px;}
 /*Member会员管理——end*/
-
 /*Ercode二维码管理——end*/
 .tb_info{margin: 12px auto;}
 .tb_info tr:nth-of-type(n+2){background-color: #fff;opacity:0.7;}
@@ -531,7 +535,7 @@ ul.made_style li.list_a .list_box a.cu{ background:none; color:#d91f1f}
 .refresh-feild .feild-item{width: 760px;float: left;}
 .refresh-feild .feild-item div{display: inline-block;}
 .feild-content .feild-item{margin: 10px auto;}
-.refresh-content .refresh{display: block;width: 175px;height: 50px;background-color: #3878c0;border-radius: 5px;line-height: 50px;color: #fff;font-size: 18px;text-align: center;margin: 12px auto;}
+.refresh-content .refresh,.refresh-content .refresh_button{display: block;width: 175px;height: 50px;background-color: #3878c0;border-radius: 5px;line-height: 50px;color: #fff;font-size: 18px;text-align: center;margin: 12px auto;}
 .refresh-content .refresh-feild{margin-bottom: 50px;}
 .refresh-content .ing,.refresh-content .ed{display: none;}
 .refresh-content .progress_bar{width: 450px;height: 5px;background-color: #b0b0b0;margin: 0 auto;border-radius: 10px;}

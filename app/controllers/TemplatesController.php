@@ -1,22 +1,24 @@
 <?php
 
+/**
+  |--------------------------------------------------------------------------
+  | 模版首页控制器
+  |--------------------------------------------------------------------------
+  |方法：
+  |homepageInfo       首页详情
+  |homepageModify     首页修改
+  |homepagePreview    首页预览
+  |categoryPreview    列表页预览
+  |articlePreview     内容页预览
+  |homepageRewrite    首页配置重写
+ */
 class TemplatesController extends BaseController {
-    /*
-      |--------------------------------------------------------------------------
-      | 模版首页控制器
-      |--------------------------------------------------------------------------
-      |方法：
-      |homepageInfo       首页详情
-      |homepageModify     首页修改
-      |homepagePreview    首页预览
-      |categoryPreview    列表页预览
-      |articlePreview     内容页预览
-      |homepageRewrite    首页配置重写
+
+    /**
+     * 首页详情
+     * @param type $page
+     * @return string
      */
-
-    //public function homepageInfo(){
-
-
     public function homepageInfo($page = 'index') {
         $pagedata = new PrintController;
         $data = $pagedata->pagedata($page);
@@ -152,7 +154,6 @@ class TemplatesController extends BaseController {
                 }
             }
         }
-        //dd($data_final);
         return $data_final;
     }
 
@@ -221,8 +222,12 @@ class TemplatesController extends BaseController {
         return Response::json($data_final);
     }
 
+    /**
+     * ===首页列表===
+     * @return type
+     */
     public function homepageList() {
-        $page = Input::get('page') ? Input::get('page') : 'index';
+        $page = Input::get('page') ? Input::get('page') : 'index';//===index首页/_aside其他/global全局===
         $templedata = $this->homepageInfo($page);
         $data_final = ['err' => 0, 'msg' => '', 'data' => $templedata];
         return Response::json($data_final);

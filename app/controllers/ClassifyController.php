@@ -39,6 +39,14 @@ class ClassifyController extends BaseController {
         $result['data'] = $this->toTree($classify);
         return Response::json($result);
     }
+    /**
+     * 栏目id列表
+     */
+    public function classifyids() {
+        $cus_id=Auth::id();
+        $classify = Classify::where('cus_id', $cus_id)->orderBy('sort')->orderBy('id')->lists("id");
+        return Response::json($classify);
+    }
 
     public function classifyDelete() {
         $failed = '';

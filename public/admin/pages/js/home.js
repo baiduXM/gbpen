@@ -101,7 +101,7 @@ function homeController($scope, $http) {
                             src = j.image.split('/')[srclen - 1];
                             _rel += '<dd class="img_show" ><a href="' + j.link + '" class="preview" onclick="return false">\n\
 							<div class="preview-close"><img src="images/preview-close.png" /></div>\n\
-							<div class="preview-edit" style="visibility:hidden"><img src="images/preview-edit.png" /><span>编辑</span></div>\n\
+							<div class="preview-edit" style="visibility:hidden"><span>编辑</span></div>\n\
 							<div class="preview-mask" style="visibility:hidden"></div>\n\
 							<img src="' + j.image + '" class="home_pic" data-preimg="preimg"></a>\n\
 							<input type="hidden" value="' + src + '" name="data[' + k + '][' + num + '][src]" />\n\

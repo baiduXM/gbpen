@@ -41,6 +41,9 @@ Route::get('login-info', [//用户名称
     'uses' => 'SignController@loginInfo'
 ]);
 
+Route::get('pushlogin', [//推送时验证登录
+    'uses' => 'HTMLController@pushLogin'
+]);
 //路由组--所有登录后的操作放入本组
 Route::group(array('before' => 'auth'), function() {
 
@@ -120,10 +123,13 @@ Route::group(array('before' => 'auth'), function() {
         'as' => 'classify-list',
         'uses' => 'ClassifyController@classifySort'
     ]);
+    Route::get('classify-ids', [//栏目id列表
+        'as' => 'classify-ids',
+        'uses' => 'ClassifyController@classifyids'
+    ]);
     //-----------------------------------------------
     //--------------------文章路由--------------------
     Route::post('article-create', [//文章添加
-        'as' => 'article-list',
         'uses' => 'ArticleController@articleAdd'
     ]);
 
@@ -133,17 +139,14 @@ Route::group(array('before' => 'auth'), function() {
     ]);
 
     Route::get('article-manage', [//文章列表
-        'as' => 'article-list',
         'uses' => 'ArticleController@articleManage'
     ]);
 
     Route::get('article-info', [//文章详情
-        'as' => 'article-list',
         'uses' => 'ArticleController@articleInfo'
     ]);
 
     Route::post('article-delete', [//文章删除
-        'as' => 'article-list',
         'uses' => 'ArticleController@articleDelete'
     ]);
 
@@ -227,7 +230,11 @@ Route::group(array('before' => 'auth'), function() {
     Route::get('checkChange', [
         'uses' => 'HTMLController@checkChange'
     ]);
-
+    
+    Route::get('getremeber_token', [
+        'uses' => 'HTMLController@getRemeber_token'
+    ]);
+    
     Route::get('pushold', [
         'uses' => 'HTMLController@pushPrecent'
     ]);
