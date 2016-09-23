@@ -376,8 +376,6 @@ function homeController($scope, $http) {
             var err = 0;
             $('dd[data-type=image]').each(function () {
                 var _length = $(this).parent().children('.img_show').length;
-                console.log(_length);
-                console.log('_length');
                 if (!_length) {
                     err = 1;
                     alert('至少选择一张图片');
