@@ -1,22 +1,24 @@
 <?php
 
+/**
+  |--------------------------------------------------------------------------
+  | 模版首页控制器
+  |--------------------------------------------------------------------------
+  |方法：
+  |homepageInfo       首页详情
+  |homepageModify     首页修改
+  |homepagePreview    首页预览
+  |categoryPreview    列表页预览
+  |articlePreview     内容页预览
+  |homepageRewrite    首页配置重写
+ */
 class TemplatesController extends BaseController {
-    /*
-      |--------------------------------------------------------------------------
-      | 模版首页控制器
-      |--------------------------------------------------------------------------
-      |方法：
-      |homepageInfo       首页详情
-      |homepageModify     首页修改
-      |homepagePreview    首页预览
-      |categoryPreview    列表页预览
-      |articlePreview     内容页预览
-      |homepageRewrite    首页配置重写
+
+    /**
+     * 首页详情
+     * @param type $page
+     * @return string
      */
-
-    //public function homepageInfo(){
-
-
     public function homepageInfo($page = 'index') {
         $pagedata = new PrintController;
         $data = $pagedata->pagedata($page);
@@ -152,7 +154,6 @@ class TemplatesController extends BaseController {
                 }
             }
         }
-        //dd($data_final);
         return $data_final;
     }
 
@@ -221,8 +222,12 @@ class TemplatesController extends BaseController {
         return Response::json($data_final);
     }
 
+    /**
+     * ===首页列表===
+     * @return type
+     */
     public function homepageList() {
-        $page = Input::get('page') ? Input::get('page') : 'index';
+        $page = Input::get('page') ? Input::get('page') : 'index';//===index首页/_aside其他/global全局===
         $templedata = $this->homepageInfo($page);
         $data_final = ['err' => 0, 'msg' => '', 'data' => $templedata];
         return Response::json($data_final);
@@ -290,15 +295,16 @@ class TemplatesController extends BaseController {
         }
         return $org_img;
     }
+
     public function homepageRewrite() {
         $cus_id = Auth::id();
         $website_config = new WebsiteConfig();
-        websiteInfo::where('cus_id', $cus_id)->update(['pushed'=>3]);
-        $webinfo=  WebsiteInfo::where('cus_id',$cus_id)->first();
-        $pc_tpl_id=$webinfo->pc_tpl_id;
-        $mobile_tpl_id=$webinfo->mobile_tpl_id;
+        websiteInfo::where('cus_id', $cus_id)->update(['pushed' => 3]);
+        $webinfo = WebsiteInfo::where('cus_id', $cus_id)->first();
+        $pc_tpl_id = $webinfo->pc_tpl_id;
+        $mobile_tpl_id = $webinfo->mobile_tpl_id;
         $websiteconfigs = $website_config->where('cus_id', $cus_id)->where('template_id', $pc_tpl_id)->get()->toArray();
-        foreach($websiteconfigs as $val){
+        foreach ($websiteconfigs as $val) {
             $org_imgs = $this->getimage(unserialize($val['value']));
             foreach ((array) $org_imgs as $v) {
                 $imgdel = new ImgDel();
@@ -306,31 +312,36 @@ class TemplatesController extends BaseController {
             }
         }
         $websiteconfigs = $website_config->where('cus_id', $cus_id)->where('template_id', $mobile_tpl_id)->get()->toArray();
-        foreach($websiteconfigs as $val){
+        foreach ($websiteconfigs as $val) {
             $org_imgs = $this->getimage(unserialize($val['value']));
             foreach ((array) $org_imgs as $v) {
                 $imgdel = new ImgDel();
                 $imgdel->mysave($v, 'page_index');
             }
         }
-        WebsiteConfig::where('cus_id',$cus_id)->where('template_id',$pc_tpl_id)->delete();
-        WebsiteConfig::where('cus_id',$cus_id)->where('template_id',$mobile_tpl_id)->delete();
+        WebsiteConfig::where('cus_id', $cus_id)->where('template_id', $pc_tpl_id)->delete();
+        WebsiteConfig::where('cus_id', $cus_id)->where('template_id', $mobile_tpl_id)->delete();
         echo '<meta http-equiv="Content-Type" content="text/html;charset=utf-8">';
         echo '清除首页配置';
         exit();
     }
+
+    /**
+     * 首页修改
+     * @return type
+     */
     public function homepageModify() {
         $org_imgs = array();
         $mod_imgs = array();
         $cus_id = Auth::id();
         $template_id = websiteInfo::where('cus_id', $cus_id)->pluck('pc_tpl_id');
         $pushed = websiteInfo::where('cus_id', $cus_id)->pluck('pushed');
-        if($pushed==1||$pushed=='3'){
-            $pushed=1;
-        }else{
-            $pushed=2;
+        if ($pushed == 1 || $pushed == '3') {
+            $pushed = 1;
+        } else {
+            $pushed = 2;
         }
-        websiteInfo::where('cus_id', $cus_id)->update(['pushed'=>$pushed]);
+        websiteInfo::where('cus_id', $cus_id)->update(['pushed' => $pushed]);
         $website_config = new WebsiteConfig();
         $website_config->cus_id = $cus_id;
         $page = Input::get('page');
@@ -340,6 +351,7 @@ class TemplatesController extends BaseController {
         $count = $website_config->where('cus_id', $cus_id)->where('template_id', $template_id)->where('key', $page)->count();
         $website_config->template_id = $template_id;
         $data = Input::get('data');
+        var_dump($data);
         /*
           if(isset($data['slidepics']) && count($data['slidepics'])){
           foreach($data['slidepics'] as &$arr){
@@ -394,6 +406,22 @@ class TemplatesController extends BaseController {
         } else {
             return Response::json(['err' => 1001, 'msg' => '数据保存失败', 'data' => null]);
         }
+    }
+
+    /**
+     * ===首页轮播排序===
+     */
+    public function homepageBannerOrder() {
+        $cus_id = Auth::id();
+        $data = Input::get();
+        var_dump($data);
+        exit();
+        return $data;
+//        foreach ($data as $key => $val) {
+//            var_dump($val);
+//        }
+        $return_data = array('err' => 0, 'msg' => '', 'data' => '1');
+        return Response::json($return_data);
     }
 
     public function getMobilePageData() {
@@ -485,12 +513,12 @@ class TemplatesController extends BaseController {
         $mod_imgs = array();
         $template_id = WebsiteInfo::where('cus_id', $cus_id)->pluck('mobile_tpl_id');
         $pushed = websiteInfo::where('cus_id', $cus_id)->pluck('pushed');
-        if($pushed==1||$pushed=='2'){
-            $pushed=1;
-        }else{
-            $pushed=3;
+        if ($pushed == 1 || $pushed == '2') {
+            $pushed = 1;
+        } else {
+            $pushed = 3;
         }
-        websiteInfo::where('cus_id', $cus_id)->update(['pushed'=>$pushed]);
+        websiteInfo::where('cus_id', $cus_id)->update(['pushed' => $pushed]);
         $data = Input::all();
         $input_keys = array_keys($data);
         $config_str = WebsiteConfig::where('cus_id', $cus_id)->where('type', 2)->where('template_id', $template_id)->pluck('value');

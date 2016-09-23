@@ -131,7 +131,7 @@ class PrintController extends BaseController {
      *
      * @param string $themename 模版名称
      * @param string $pagename 页面名称
-     *  @param string $jsondata 文件配置数据
+     * @param string $jsondata 文件配置数据
      * @return array 合并后的数组
      */
     public function pagedata($pagename, $jsondata = array()) {
