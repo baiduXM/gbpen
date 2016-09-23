@@ -108,8 +108,8 @@ function homeController($scope, $http) {
 							<input type="hidden" value="' + j.title + '" name="data[' + k + '][' + num + '][title]" />\n\
 							<input type="hidden" value="' + (j.description || '') + '" name="data[' + k + '][' + num + '][description]" />\n\
 							<input type="hidden" value="' + j.link + '" name="data[' + k + '][' + num + '][href]" />\n\
-                                                        <div style="margin-top:2px;position: relative;"><span class="moveup">前移</span><span class="movedown">后移</span></div>\n\
-</dd>';
+                                                        <div class="movediv"><span class="moveup">前移</span><span class="movedown">后移</span></div>\n\
+                                    </dd>';
                             num++;
                             pic++;
                         });
@@ -367,7 +367,8 @@ function homeController($scope, $http) {
             //===轮播图片排序===
             $('.moveup').click(function () {
                 var picdata = $("#temple-data").serializeJson();
-                console.log(picdata);
+                var _this = $(this).parents();
+                console.log(_this);
                 $http.post('../homepage-bannerorder', picdata).success(function (json) {
 //                $.post('../homepage-bannerorder', picdata, function (json) {
 //                    console.log(json);
