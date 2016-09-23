@@ -816,7 +816,7 @@ class HtmlController extends BaseController {
         if (file_exists($view_path)) {
             @unlink($view_path);
         }
-        if($zipview->open($view_path, ZipArchive::OVERWRITE)=== TRUE){
+        if($zipview->open($view_path, ZipArchive::CREATE)=== TRUE){
             $this->addFileToZip($view_dir.$pc_themename,$zipview,$pc_themename);
             $this->addFileToZip($view_dir.$mobile_themename,$zipview,$mobile_themename);
             $zipview->close();
@@ -827,7 +827,7 @@ class HtmlController extends BaseController {
         if (file_exists($json_path)) {
             @unlink($json_path);
         }
-        if($zipjson->open($json_path, ZipArchive::OVERWRITE)=== TRUE){
+        if($zipjson->open($json_path, ZipArchive::CREATE)=== TRUE){
             $this->addFileToZip($json_dir.$pc_themename,$zipjson,$pc_themename);
             $this->addFileToZip($json_dir.$mobile_themename,$zipjson,$mobile_themename);
             $zipjson->close();
