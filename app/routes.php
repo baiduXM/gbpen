@@ -41,6 +41,9 @@ Route::get('login-info', [//用户名称
     'uses' => 'SignController@loginInfo'
 ]);
 
+Route::get('pushlogin', [//推送时验证登录
+    'uses' => 'HTMLController@pushLogin'
+]);
 //路由组--所有登录后的操作放入本组
 Route::group(array('before' => 'auth'), function() {
 
@@ -70,16 +73,15 @@ Route::group(array('before' => 'auth'), function() {
     Route::get('capacity-info', [//保存用户信息
         'uses' => 'CapacityController@getInfo'
     ]);
-    
+
     Route::any('capacity-init', [//初始化容量
         'uses' => 'CapacityController@init'
     ]);
-    
+
     Route::any('capacity-release', [//释放空间
         'uses' => 'CapacityController@release'
     ]);
     //===end===
-
     //-----------------------------------------------
     //--------------------栏目路由--------------------
     Route::post('classify-create', [//栏目添加
@@ -106,7 +108,7 @@ Route::group(array('before' => 'auth'), function() {
         'as' => 'classify-list',
         'uses' => 'ClassifyController@classifyModify'
     ]);
-    
+
     Route::post('classify-name-modify', [//栏目标题修改
         'as' => 'classify-name-modify',
         'uses' => 'ClassifyController@classifyNameModify'
@@ -120,6 +122,10 @@ Route::group(array('before' => 'auth'), function() {
     Route::post('classify-sort', [//栏目排序
         'as' => 'classify-list',
         'uses' => 'ClassifyController@classifySort'
+    ]);
+    Route::get('classify-ids', [//栏目id列表
+        'as' => 'classify-ids',
+        'uses' => 'ClassifyController@classifyids'
     ]);
     //-----------------------------------------------
     //--------------------文章路由--------------------
@@ -152,7 +158,7 @@ Route::group(array('before' => 'auth'), function() {
         'as' => 'article-sort-modify',
         'uses' => 'ArticleController@articleSortModify'
     ]);
-    
+
     Route::post('article-title-modify', [//文章标题修改
         'as' => 'article-title-modify',
         'uses' => 'ArticleController@articleTitleModify'
@@ -226,7 +232,11 @@ Route::group(array('before' => 'auth'), function() {
     Route::get('checkChange', [
         'uses' => 'HTMLController@checkChange'
     ]);
-
+    
+    Route::get('getremeber_token', [
+        'uses' => 'HTMLController@getRemeber_token'
+    ]);
+    
     Route::get('pushold', [
         'uses' => 'HTMLController@pushPrecent'
     ]);
