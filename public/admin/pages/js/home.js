@@ -101,15 +101,13 @@ function homeController($scope, $http) {
                             src = j.image.split('/')[srclen - 1];
                             _rel += '<dd class="img_show" ><a href="' + j.link + '" class="preview" onclick="return false">\n\
 							<div class="preview-close"><img src="images/preview-close.png" /></div>\n\
-							<div class="preview-edit" style="visibility:hidden"><span>编辑</span></div>\n\
+							<div class="preview-edit" style="visibility:hidden"><img src="images/preview-edit.png" /><span>编辑</span></div>\n\
 							<div class="preview-mask" style="visibility:hidden"></div>\n\
 							<img src="' + j.image + '" class="home_pic" data-preimg="preimg"></a>\n\
 							<input type="hidden" value="' + src + '" name="data[' + k + '][' + num + '][src]" />\n\
 							<input type="hidden" value="' + j.title + '" name="data[' + k + '][' + num + '][title]" />\n\
 							<input type="hidden" value="' + (j.description || '') + '" name="data[' + k + '][' + num + '][description]" />\n\
-							<input type="hidden" value="' + j.link + '" name="data[' + k + '][' + num + '][href]" />\n\
-                                    </dd>';
-                            //<div class="movediv"><span class="moveup">前移</span><span class="movedown">后移</span></div>\n\
+							<input type="hidden" value="' + j.link + '" name="data[' + k + '][' + num + '][href]" /></dd>';
                             num++;
                             pic++;
                         });
@@ -364,51 +362,6 @@ function homeController($scope, $http) {
                 }
             });
 
-            //===轮播图片排序===
-            $('.moveup').click(function () {
-                var picdata = $("#temple-data").serializeJson();
-                var _this = $(this).parents();
-                console.log(_this);
-                $http.post('../homepage-bannerorder', picdata).success(function (json) {
-//                $.post('../homepage-bannerorder', picdata, function (json) {
-//                    console.log(json);
-                });
-//                $http.post('../homepage-modify', data1).success(function (json) {
-//                    checkJSON(json, function (json) {
-//                        if (img_upload.length) {
-//                            if (!$('.tpl_mask').attr('class')) {
-//                                var fade = '<div class="tpl_mask" style="display: block;"></div><div class="text_tishi">努力保存中<i class="icon-spin4 iconfont icon-shuaxin"></i></div>';
-//                                $('body').append(fade);
-//                            }
-//                            $('.tpl_mask').show();
-//                            $('.text_tishi').show();
-//                            $http.post('../imgupload?target=page_index',
-//                                    {
-//                                        files: img_upload
-//                                    }).success(function () {
-//                                $('.tpl_mask').hide();
-//                                $('.text_tishi').hide();
-//                                $('.home-content').append('<div class="hint_box">保存成功！</div>');
-//                                setTimeout(function () {
-//                                    $('.hint_box').remove();
-//                                }, 2000);
-//                                return false;
-//                            });
-//                        } else {
-//                            $('.home-content').append('<div class="hint_box">保存成功！</div>');
-//                            setTimeout(function () {
-//                                $('.hint_box').remove();
-//                            }, 2000);
-//                        }
-//
-//                    });
-//                });
-            });
-            $('.movedown').click(function () {
-                alert(2)
-            });
-
-
             $('.mask,.cancel,.save_column,.box_info .boxs .save').click(function () {
                 $('#bomb-box').fadeOut('400', function () {
                     $('.box_info .box-up').text('编辑图片');
@@ -422,7 +375,8 @@ function homeController($scope, $http) {
         $('.home-info .btn-top .save').not($('.save_column')).unbind("click").click(function () {
             var err = 0;
             $('dd[data-type=image]').each(function () {
-                if (!$(this).parent().children('.img_show').length) {
+                var _length = $(this).parent().children('.img_show').length;
+                if (!_length) {
                     err = 1;
                     alert('至少选择一张图片');
                     return false;
@@ -432,7 +386,6 @@ function homeController($scope, $http) {
                 return false;
             }
             var data1 = $("#temple-data").serializeJson();
-            console.log(data1);
             var img_upload = [];
             $('.preview>.img_upload').each(function () {
                 img_upload.push($(this).data('name'));
@@ -446,7 +399,10 @@ function homeController($scope, $http) {
                         }
                         $('.tpl_mask').show();
                         $('.text_tishi').show();
-                        $http.post('../imgupload?target=page_index', {files: img_upload}).success(function () {
+                        $http.post('../imgupload?target=page_index',
+                                {
+                                    files: img_upload
+                                }).success(function () {
                             $('.tpl_mask').hide();
                             $('.text_tishi').hide();
                             $('.home-content').append('<div class="hint_box">保存成功！</div>');
@@ -475,5 +431,4 @@ function homeController($scope, $http) {
             }
         });
     }
-
 }
