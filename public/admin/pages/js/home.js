@@ -107,7 +107,9 @@ function homeController($scope, $http) {
 							<input type="hidden" value="' + src + '" name="data[' + k + '][' + num + '][src]" />\n\
 							<input type="hidden" value="' + j.title + '" name="data[' + k + '][' + num + '][title]" />\n\
 							<input type="hidden" value="' + (j.description || '') + '" name="data[' + k + '][' + num + '][description]" />\n\
-							<input type="hidden" value="' + j.link + '" name="data[' + k + '][' + num + '][href]" /></dd>';
+							<input type="hidden" value="' + j.link + '" name="data[' + k + '][' + num + '][href]" />\n\
+                                    </dd>';
+//                            <div class="movediv"><span class="moveup">前移</span><span class="movedown">后移</span></div>\n\
                             num++;
                             pic++;
                         });
@@ -362,6 +364,59 @@ function homeController($scope, $http) {
                 }
             });
 
+            //===轮播图片排序===
+            $('.moveup').click(function () {
+                var data = new Array;
+                var picdata = $("#temple-data").serializeJson();
+                var _this = $(this).parents('img_show');
+                var _this_parents = $(this).parent().parent().parent().children().serializeJson;
+                data['picdata'] = picdata;
+                console.log(_this_parents);
+//                $.ajax({
+//                    type:'POST',
+//                    url:'../homepage-bannerorder',
+//                    data:JSON.
+//                });
+                $http.post('../homepage-bannerorder', _this_parents).success(function (json) {
+//                $.post('../homepage-bannerorder', {data: _this_parents}, function (json) {
+                    console.log(json);
+                });
+//                $http.post('../homepage-modify', data1).success(function (json) {
+//                    checkJSON(json, function (json) {
+//                        if (img_upload.length) {
+//                            if (!$('.tpl_mask').attr('class')) {
+//                                var fade = '<div class="tpl_mask" style="display: block;"></div><div class="text_tishi">努力保存中<i class="icon-spin4 iconfont icon-shuaxin"></i></div>';
+//                                $('body').append(fade);
+//                            }
+//                            $('.tpl_mask').show();
+//                            $('.text_tishi').show();
+//                            $http.post('../imgupload?target=page_index',
+//                                    {
+//                                        files: img_upload
+//                                    }).success(function () {
+//                                $('.tpl_mask').hide();
+//                                $('.text_tishi').hide();
+//                                $('.home-content').append('<div class="hint_box">保存成功！</div>');
+//                                setTimeout(function () {
+//                                    $('.hint_box').remove();
+//                                }, 2000);
+//                                return false;
+//                            });
+//                        } else {
+//                            $('.home-content').append('<div class="hint_box">保存成功！</div>');
+//                            setTimeout(function () {
+//                                $('.hint_box').remove();
+//                            }, 2000);
+//                        }
+//
+//                    });
+//                });
+            });
+            $('.movedown').click(function () {
+                alert(2)
+            });
+
+
             $('.mask,.cancel,.save_column,.box_info .boxs .save').click(function () {
                 $('#bomb-box').fadeOut('400', function () {
                     $('.box_info .box-up').text('编辑图片');
@@ -391,7 +446,7 @@ function homeController($scope, $http) {
                 img_upload.push($(this).data('name'));
             });
             $http.post('../homepage-modify', data1).success(function (json) {
-                console.log(json);
+//                console.log(json);
                 checkJSON(json, function (json) {
                     if (img_upload.length) {
                         if (!$('.tpl_mask').attr('class')) {
