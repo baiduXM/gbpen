@@ -76,7 +76,7 @@
                     $http.get('../getremeber_token').success(function (json) {
                         name=json.name;
                         remember_token=json.remember_token;
-                        $('#refresh_iframe').attr('src','http://192.168.1.44/pushlogin?pushgrad=1&name='+json.name+"&remember_token="+json.remember_token);
+                        $('#refresh_iframe').attr('src','http://182.61.23.43/pushlogin?pushgrad=1&name='+json.name+"&remember_token="+json.remember_token);
 //                        $http.get('../classify-ids').success(function (json) {
 //                            c_ids=json;
 //                            count=json.length;
@@ -104,7 +104,7 @@
                     $http.get('../getremeber_token').success(function (json) {
                         name=json.name;
                         remember_token=json.remember_token;
-                        $('#refresh_iframe').attr('src','http://192.168.1.44/pushlogin?name='+json.name+"&remember_token="+json.remember_token);
+                        $('#refresh_iframe').attr('src','http://182.61.23.43/pushlogin?name='+json.name+"&remember_token="+json.remember_token);
                     });
                 }else{
                     alert('你推送过于频繁，一小时只允许推送一次');

@@ -58,7 +58,7 @@ function getUrlParam(name) {
 if(getUrlParam("pushgrad")=="1"){
     grad_push = 1;
     $.ajax({
-        url: "http://192.168.1.44/push-classify-ids?name="+name+"&remember_token="+remember_token,
+        url: "http://182.61.23.43/push-classify-ids?name="+name+"&remember_token="+remember_token,
         async: false,
         dataType: "json",
         type: "GET",
