@@ -950,6 +950,7 @@ class HtmlController extends BaseController {
             $pushcid = $this->pushcid;
             $end = $this->end;
         }else{
+            echo '<script type="text/javascript">function refresh(parameter){;}</script>';
             if (Input::has("push_c_id")) {
                 $pushcid = Input::get("push_c_id");
             }
