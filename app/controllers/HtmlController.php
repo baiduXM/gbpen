@@ -282,7 +282,7 @@ class HtmlController extends BaseController {
     private function getPrecent() {
         $nowpercent = $this->last_html_precent + $this->html_precent;
         if (floor($nowpercent) !== floor($this->last_html_precent)) {
-            echo '<div class="prompt">'.floor($nowpercent) . '%</div><script type="text/javascript">refresh(' . floor($nowpercent) . ');parent.refresh(' . floor($nowpercent) . ');</script>';
+            echo '<div class="prompt">'.floor($nowpercent) . '%</div><script type="text/javascript">refresh(' . floor($nowpercent) . ');</script>';
             ob_flush();
             flush();
             $this->clearpushqueue();
@@ -428,7 +428,7 @@ class HtmlController extends BaseController {
             $zip->addFile(public_path('customers/' . $this->customer . '/mobile/article_data.json'), 'mobile/article_data.json');
             $nowpercent = $this->percent + $this->lastpercent;
             if (floor($nowpercent) != floor($this->lastpercent)) {
-                echo '<div class="prompt">'.floor($nowpercent) . '%</div><script type="text/javascript">refresh(' . floor($nowpercent) . ');parent.refresh(' . floor($nowpercent) . ');</script>';
+                echo '<div class="prompt">'.floor($nowpercent) . '%</div><script type="text/javascript">refresh(' . floor($nowpercent) . ');</script>';
                 ob_flush();
                 flush();
             }
@@ -440,7 +440,7 @@ class HtmlController extends BaseController {
         $this->compareZip($mcategoryhtml, 'mobile/category', $path);
         $this->compareZip($marticlehtml, 'mobile/detail', $path);
         if (90 > floor($this->lastpercent)) {
-            echo '<div class="prompt">'.'90%</div><script type="text/javascript">refresh(90);parent.refresh(90);</script>';
+            echo '<div class="prompt">'.'90%</div><script type="text/javascript">refresh(90);</script>';
             ob_flush();
             flush();
             $this->clearpushqueue();
@@ -516,7 +516,7 @@ class HtmlController extends BaseController {
             }
 
             $this->folderClear();
-            echo '<div class="prompt">'.'100%</div><script type="text/javascript">refresh(100);parent.refresh(100);</script>';
+            echo '<div class="prompt">'.'100%</div><script type="text/javascript">refresh(100);</script>';
             if (!isset($end) || $end == 1) {
                 Classify::where('cus_id', $this->cus_id)->where('pushed', '>', 0)->update(['pushed' => 0]);
                 Articles::where('cus_id', $this->cus_id)->where('pushed', '>', 0)->update(['pushed' => 0]);
@@ -675,7 +675,7 @@ class HtmlController extends BaseController {
             $pushqueue->save();
             while (1) {
                 sleep(3);
-                echo '<div class="prompt">繁忙等待.......</div><script type="text/javascript">refresh("繁忙等待.......");parent.refresh("繁忙等待.......");</script>';
+                echo '<div class="prompt">繁忙等待.......</div><script type="text/javascript">refresh("繁忙等待.......");</script>';
                 ob_flush();
                 flush();
                 $push_table = PushQueue::where('cus_id', $this->cus_id)->first();
@@ -949,8 +949,13 @@ class HtmlController extends BaseController {
         if(Input::has("pushgrad")==1){
             $pushcid = $this->pushcid;
             $end = $this->end;
+            $this->percent=0;
+            $this->lastpercent=0;
+            $this->html_precent=0;
         }else{
-            echo '<script type="text/javascript">function refresh(parameter){;}</script>';
+            if(!Input::has("name")){
+                echo '<script type="text/javascript">function refresh(str){parent.refresh(str);};</script>';
+            }
             if (Input::has("push_c_id")) {
                 $pushcid = Input::get("push_c_id");
             }
@@ -961,7 +966,7 @@ class HtmlController extends BaseController {
         $have_article = Articles::where('cus_id', $this->cus_id)->count();
         if (!$have_article) {
             echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
-            echo '<div class="prompt">没有文章不可推送</div><script type="text/javascript">alert("没有文章不可推送");refresh("没有文章不可推送");parent.refresh("没有文章不可推送");</script>';
+            echo '<div class="prompt">没有文章不可推送</div><script type="text/javascript">alert("没有文章不可推送");refresh("没有文章不可推送");</script>';
             ob_flush();
             flush();
             exit();
@@ -1076,7 +1081,7 @@ class HtmlController extends BaseController {
                     $zip->addFile(public_path('customers/' . $this->customer . '/article_data.json'), 'article_data.json');
                     $nowpercent = $this->percent + $this->lastpercent;
                     if (floor($nowpercent) != $this->lastpercent) {
-                        echo '<div class="prompt">'.floor($nowpercent) . '%</div><script type="text/javascript">refresh(' . floor($nowpercent) . ');parent.refresh(' . floor($nowpercent) . ');</script>';
+                        echo '<div class="prompt">'.floor($nowpercent) . '%</div><script type="text/javascript">refresh(' . floor($nowpercent) . ');</script>';
                         ob_flush();
                         flush();
                         $this->clearpushqueue();
@@ -1089,7 +1094,7 @@ class HtmlController extends BaseController {
                     $zip->addFile(public_path('customers/' . $this->customer . '/mobile/article_data.json'), 'mobile/article_data.json');
                     $nowpercent = $this->percent + $this->lastpercent;
                     if (floor($nowpercent) != floor($this->lastpercent)) {
-                        echo '<div class="prompt">'.floor($nowpercent) . '%</div><script type="text/javascript">refresh(' . floor($nowpercent) . ');parent.refresh(' . floor($nowpercent) . ');</script>';
+                        echo '<div class="prompt">'.floor($nowpercent) . '%</div><script type="text/javascript">refresh(' . floor($nowpercent) . ');</script>';
                         ob_flush();
                         flush();
                         $this->clearpushqueue();
@@ -1111,7 +1116,7 @@ class HtmlController extends BaseController {
 
 
             if (90 > floor($this->lastpercent)) {
-                echo '<div class="prompt">'.'90%</div><script type="text/javascript">refresh(90);parent.refresh(90);</script>';
+                echo '<div class="prompt">'.'90%</div><script type="text/javascript">refresh(90);</script>';
                 ob_flush();
                 flush();
                 $this->clearpushqueue();
@@ -1202,7 +1207,7 @@ class HtmlController extends BaseController {
                 }
 
                 $this->folderClear();
-                echo '<div class="prompt">'.'100%</div><script type="text/javascript">refresh(100);parent.refresh(100);</script>';
+                echo '<div class="prompt">'.'100%</div><script type="text/javascript">refresh(100);</script>';
                 if (!isset($end) || $end == 1) {
                     Classify::where('cus_id', $this->cus_id)->where('pushed', '>', 0)->update(['pushed' => 0]);
                     Articles::where('cus_id', $this->cus_id)->where('pushed', '>', 0)->update(['pushed' => 0]);
@@ -1228,7 +1233,7 @@ class HtmlController extends BaseController {
             }
             ob_end_flush();
         } else {
-            echo '<div class="prompt">'.'100%</div><script type="text/javascript">refresh(100);parent.refresh(100);</script>';
+            echo '<div class="prompt">'.'100%</div><script type="text/javascript">refresh(100);</script>';
             if (!isset($end) || $end == 1) {
                 Classify::where('cus_id', $this->cus_id)->where('pushed', '>', 0)->update(['pushed' => 0]);
                 Articles::where('cus_id', $this->cus_id)->where('pushed', '>', 0)->update(['pushed' => 0]);
@@ -1260,7 +1265,7 @@ class HtmlController extends BaseController {
                 $zip->addFile($file, $fpath . '/' . $filename);
                 $nowpercent = $this->percent + $this->lastpercent;
                 if (floor($nowpercent) !== floor($this->lastpercent)) {
-                    echo '<div class="prompt">'.floor($nowpercent) . '%</div><script type="text/javascript">refresh(' . floor($nowpercent) . ');parent.refresh(' . floor($nowpercent) . ');</script>';
+                    echo '<div class="prompt">'.floor($nowpercent) . '%</div><script type="text/javascript">refresh(' . floor($nowpercent) . ');</script>';
                     ob_flush();
                     flush();
                 }
