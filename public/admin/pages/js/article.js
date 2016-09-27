@@ -11,8 +11,8 @@ function articleController($scope, $http, $location) {
     $scope.is_star = $_GET['is_star'] == undefined ? null : parseInt($_GET['is_star']);
     $scope.ser_name = $_GET['ser_name'] == undefined ? null : $_GET['ser_name'];
     $scope.search_word = $_GET['search_word'] == undefined ? null : $_GET['search_word'];
-    console.log($scope);
-    console.log('===$scope===');
+//    console.log($scope);
+//    console.log('===$scope===');
     // Model
     $scope.getArticleList = function (option) {
         var page = option.page || $scope.page,
@@ -38,8 +38,8 @@ function articleController($scope, $http, $location) {
             urlparam += '&page=' + page;
         }
         $http.get('../article-manage?per_page=' + num_per_page + urlparam).success(function (json) {
-            console.log(json.data);
-            console.log('article-manage');
+//            console.log(json.data);
+//            console.log('article-manage');
             checkJSON(json, function (json) {
                 if (option.first) {
                     checkjs('article');
@@ -215,7 +215,10 @@ function articleController($scope, $http, $location) {
             }); // checkJSON结束
         });
     };
-
+    // 首次获取
+    $scope.getArticleList({
+        first: true
+    });
     //菜单
     (function ArticleMenu() {
         var timer;
@@ -254,7 +257,6 @@ function articleController($scope, $http, $location) {
     // 取消置顶、推荐
     function star_top() {
         $('.article-tb .a-table .article-check .tit_info .pos_bule').on('click', function () {
-            console.log('===star_top===');
             var id = $(this).parents('td').siblings().find('.delv').attr('name');
             if ($(this).hasClass('pos_bule')) {
                 $(this).removeClass('pos_bule');
@@ -301,10 +303,6 @@ function articleController($scope, $http, $location) {
 
     $scope.ArticleNav = {
         init: function () {
-            // 首次获取
-            $scope.getArticleList({
-                first: true
-            });
             this._checkstar();
             this._searchInfo();
             this._moveclassify();
@@ -317,10 +315,9 @@ function articleController($scope, $http, $location) {
             this._searchWords();//===模糊查找===
             // this._batchEdit();
         },
-        // 查看推荐以及返回
         _checkstar: function () {
-            $('.article-tb .stararticle').unbind('click').click(function () {
-                console.log('_checkstar');
+            // 查看推荐以及返回
+            $('.article-tb .stararticle').on('click', function () {
                 if ($(this).hasClass('starback')) {
                     // 返回
                     $scope.cat_id = null;
@@ -346,10 +343,9 @@ function articleController($scope, $http, $location) {
                 }
             });
         },
-        //新闻分类搜索
         _searchInfo: function () {
-            $('.info-top .list_new').off('click').on('click', ' .mov_val:not(.not-allowed)', function () {
-                console.log('_searchInfo');
+            //新闻分类搜索
+            $('.info-top .list_new').on('click', ' .mov_val:not(.not-allowed)', function () {
                 $scope.page = 1;
                 $(this).parents('ul').prev().addClass('navcolor');
                 $('.article-tb .stararticle').next().fadeIn();
@@ -362,11 +358,9 @@ function articleController($scope, $http, $location) {
                 });
             });
         },
-        //移动分类
         _moveclassify: function () {
-            $('.info-top .list_mov').off('click').on('click', '.mov_val:not(.not-allowed)', function () {
-                console.log('_moveclassify');
-
+            //移动分类
+            $('.info-top .list_mov').on('click', '.mov_val:not(.not-allowed)', function () {
                 mov_id = $(this).find('input').val();
                 var id_all = new all_id;
                 var mov_text = $(this).text();
@@ -383,8 +377,8 @@ function articleController($scope, $http, $location) {
         },
         _setInfoClassify: function () {
             var r_this = this;
-            $('.list_set a').unbind('click').click(function () {
-                console.log('_setInfoClassify');
+            //设为
+            $('.list_set a').click(function () {
                 var set_name = $(this).attr('name'),
                         set_val = $(this).attr('value');
                 if (id_all = null) {
@@ -429,7 +423,6 @@ function articleController($scope, $http, $location) {
             });
         },
         ModelSetIsShow: function (_this, set_val, selector) {
-            console.log('ModelSetIsShow');
             _this.parents('td').siblings().find('span ' + selector).each(function () {
                 _this.parents('td').siblings().find('span ' + selector).removeClass((set_val == 1 && !$(this).hasClass('blue') ? 'grey' : $(this).hasClass('blue') ? 'blue' : null))
                         .addClass((set_val == 1 && !$(this).hasClass('blue') ? 'blue' : $(this).hasClass('blue') ? 'grey' : null));
@@ -438,8 +431,6 @@ function articleController($scope, $http, $location) {
         //排序设置
         _sort: function () {
             $('.a-table').on('change', '.sort', function () {
-                console.log('_sort');
-
                 var id, sort;
                 id = $(this).data('id');
                 sort = $(this).val();
@@ -455,11 +446,9 @@ function articleController($scope, $http, $location) {
                 });
             });
         },
-        //删除
         _delete: function () {
-            $('.a-table').off('click').on('click', '.delv', function () {
-                console.log('_delete');
-
+            //删除
+            $('.a-table').on('click', '.delv', function () {
                 var id = $(this).attr('name');
                 var _this = $(this);
                 (function article_delete(del_num) {
@@ -480,11 +469,9 @@ function articleController($scope, $http, $location) {
                 })();
             });
         },
-        //批量删除
         _batchdel: function () {
-            $('.info-top .delarticle').unbind('click').click(function (event) {
-                console.log('_batchdel');
-
+            //批量删除
+            $('.info-top .delarticle').click(function (event) {
                 (function article_delete(del_num) {
                     if (del_num == undefined) {
                         var warningbox = new WarningBox(article_delete);
@@ -504,11 +491,9 @@ function articleController($scope, $http, $location) {
                 })();
             });
         },
-        //展示
         _showPlatform: function () {
-            $('.a-table').off('click').on('click', '.btn-show', function () {
-                console.log('_showPlatform');
-
+            //展示
+            $('.a-table').on('click', '.btn-show', function () {
                 var btn = $(this);
                 var voperate = '';
                 if (btn.hasClass('icon-pc')) {
@@ -541,8 +526,6 @@ function articleController($scope, $http, $location) {
         _batchAdd: function () {
             var _this = this;
             $('.info-top .batchadd').unbind('click').click(function () {
-                console.log('_batchAdd');
-
                 var warningbox = new WarningBox();
                 warningbox._upImage({
                     IsBaseShow: true,
@@ -602,11 +585,9 @@ function articleController($scope, $http, $location) {
                 });
             });
         },
-        // 批量编辑文章
         batchEdit: function () {
-            $('.info-top .batchedit').unbind('click').click(function () {
-                console.log('batchEdit');
-
+            // 批量编辑文章
+            $('.info-top .batchedit').click(function () {
                 var id_all = new all_id;
                 if (id_all == '') {
                     alert('请选择要编辑的文章！')
