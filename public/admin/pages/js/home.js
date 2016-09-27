@@ -372,11 +372,11 @@ function homeController($scope, $http) {
                 var _this_parents = $(this).parent().parent().parent().children().serializeJson;
                 data['picdata'] = picdata;
                 console.log(_this_parents);
-                $.ajax({
-                    type:'POST',
-                    url:'../homepage-bannerorder',
-                    data:JSON.
-                });
+//                $.ajax({
+//                    type:'POST',
+//                    url:'../homepage-bannerorder',
+//                    data:JSON.
+//                });
                 $http.post('../homepage-bannerorder', _this_parents).success(function (json) {
 //                $.post('../homepage-bannerorder', {data: _this_parents}, function (json) {
                     console.log(json);

@@ -569,8 +569,10 @@ class PrintController extends BaseController {
                 $config['enable'] = true;
                 if ($this->type == 'pc') {
                     $config['type'] = 'p1';
-                } else {
+                } else if ($this->type == 'mobile') {
                     $config['type'] = 'm1';
+                } else {
+                    $config['type'] = 'p1';
                 }
                 if ($lang == 'en') {
                     $config['language'] = 'en';
@@ -2700,7 +2702,7 @@ class PrintController extends BaseController {
             $paths[] = $path;
             $nowpercent = $last_html_precent + $html_precent;
             if (floor($nowpercent) !== floor($last_html_precent)) {
-                echo '<div class="prompt">'.floor($nowpercent) . '%</div><script type="text/javascript">refresh(' . floor($nowpercent) . ');parent.refresh(' . floor($nowpercent) . ');</script>';
+                echo '<div class="prompt">' . floor($nowpercent) . '%</div><script type="text/javascript">refresh(' . floor($nowpercent) . ');parent.refresh(' . floor($nowpercent) . ');</script>';
                 ob_flush();
                 flush();
                 PushQueue::where('pushtime', '<', time() - 60)->delete();
@@ -2725,7 +2727,7 @@ class PrintController extends BaseController {
                     $paths[] = $path;
                     $nowpercent = $last_html_precent + $html_precent;
                     if (floor($nowpercent) !== floor($last_html_precent)) {
-                        echo '<div class="prompt">'.floor($nowpercent) . '%</div><script type="text/javascript">refresh(' . floor($nowpercent) . ');parent.refresh(' . floor($nowpercent) . ');</script>';
+                        echo '<div class="prompt">' . floor($nowpercent) . '%</div><script type="text/javascript">refresh(' . floor($nowpercent) . ');parent.refresh(' . floor($nowpercent) . ');</script>';
                         ob_flush();
                         flush();
                         PushQueue::where('pushtime', '<', time() - 60)->delete();
@@ -3144,7 +3146,7 @@ class PrintController extends BaseController {
             $paths[] = $path;
             $nowpercent = $last_html_precent + $html_precent;
             if (floor($nowpercent) !== floor($last_html_precent)) {
-                echo '<div class="prompt">'.floor($nowpercent) . '%</div><script type="text/javascript">refresh(' . floor($nowpercent) . ');parent.refresh(' . floor($nowpercent) . ');</script>';
+                echo '<div class="prompt">' . floor($nowpercent) . '%</div><script type="text/javascript">refresh(' . floor($nowpercent) . ');parent.refresh(' . floor($nowpercent) . ');</script>';
                 ob_flush();
                 flush();
                 PushQueue::where('pushtime', '<', time() - 60)->delete();
