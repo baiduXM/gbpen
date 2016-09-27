@@ -782,7 +782,7 @@ class HtmlController extends BaseController {
                     $json_path = public_path('customers/' . $this->customer . '/json.zip');
                     $view_dir = app_path('views/templates/');
                     $json_dir = public_path('templates/');
-                    $customer_pack_path=public_path('packages/customernull');
+                    $customer_pack_path=public_path('packages/customernull.zip');
                     $customer_dir=public_path('customers/' . $this->customer);;
                     if(file_exists($customer_pack_path)){
                         $zip = new ZipArchive;
