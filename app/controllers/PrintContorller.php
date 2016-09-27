@@ -131,7 +131,7 @@ class PrintController extends BaseController {
      *
      * @param string $themename 模版名称
      * @param string $pagename 页面名称
-     *  @param string $jsondata 文件配置数据
+     * @param string $jsondata 文件配置数据
      * @return array 合并后的数组
      */
     public function pagedata($pagename, $jsondata = array()) {
@@ -2700,7 +2700,7 @@ class PrintController extends BaseController {
             $paths[] = $path;
             $nowpercent = $last_html_precent + $html_precent;
             if (floor($nowpercent) !== floor($last_html_precent)) {
-                echo floor($nowpercent) . '%<script type="text/javascript">parent.refresh(' . floor($nowpercent) . ');</script><br />';
+                echo '<div class="prompt">'.floor($nowpercent) . '%</div><script type="text/javascript">refresh(' . floor($nowpercent) . ');parent.refresh(' . floor($nowpercent) . ');</script>';
                 ob_flush();
                 flush();
                 PushQueue::where('pushtime', '<', time() - 60)->delete();
@@ -2725,7 +2725,7 @@ class PrintController extends BaseController {
                     $paths[] = $path;
                     $nowpercent = $last_html_precent + $html_precent;
                     if (floor($nowpercent) !== floor($last_html_precent)) {
-                        echo floor($nowpercent) . '%<script type="text/javascript">parent.refresh(' . floor($nowpercent) . ');</script><br />';
+                        echo '<div class="prompt">'.floor($nowpercent) . '%</div><script type="text/javascript">refresh(' . floor($nowpercent) . ');parent.refresh(' . floor($nowpercent) . ');</script>';
                         ob_flush();
                         flush();
                         PushQueue::where('pushtime', '<', time() - 60)->delete();
@@ -3144,7 +3144,7 @@ class PrintController extends BaseController {
             $paths[] = $path;
             $nowpercent = $last_html_precent + $html_precent;
             if (floor($nowpercent) !== floor($last_html_precent)) {
-                echo floor($nowpercent) . '%<script type="text/javascript">parent.refresh(' . floor($nowpercent) . ');</script><br />';
+                echo '<div class="prompt">'.floor($nowpercent) . '%</div><script type="text/javascript">refresh(' . floor($nowpercent) . ');parent.refresh(' . floor($nowpercent) . ');</script>';
                 ob_flush();
                 flush();
                 PushQueue::where('pushtime', '<', time() - 60)->delete();

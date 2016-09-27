@@ -522,7 +522,7 @@ left: 0;width: 100%;height: 100%;border-radius: 100px;box-shadow: inset 0 0 0 0 
 .refresh-feild .feild-item{width: 760px;float: left;}
 .refresh-feild .feild-item div{display: inline-block;}
 .feild-content .feild-item{margin: 10px auto;}
-.refresh-content .refresh{display: block;width: 175px;height: 50px;background-color: #3878c0;border-radius: 5px;line-height: 50px;color: #fff;font-size: 18px;text-align: center;margin: 12px auto;}
+.refresh-content .refresh,.refresh-content .refresh_button{display: block;width: 175px;height: 50px;background-color: #3878c0;border-radius: 5px;line-height: 50px;color: #fff;font-size: 18px;text-align: center;margin: 12px auto;}
 .refresh-content .refresh-feild{margin-bottom: 50px;}
 .refresh-content .ing,.refresh-content .ed{display: none;}
 .refresh-content .progress_bar{width: 450px;height: 5px;background-color: #b0b0b0;margin: 0 auto;border-radius: 10px;}

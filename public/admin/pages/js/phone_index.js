@@ -896,11 +896,11 @@ function phone_indexController($scope, $http, $location) {
             }
             return color;
         },
-        ColorBind:function(){
-            $(".colorsetting input").change(function(){
-                var value=$(this).val();
-                var id=$(this).data("id");
-                $(".colorsetting input[data-id="+id+"]").val(value);
+        ColorBind: function () {
+            $(".colorsetting input").change(function () {
+                var value = $(this).val();
+                var id = $(this).data("id");
+                $(".colorsetting input[data-id=" + id + "]").val(value);
             });
         },
         QuickBarListFuc: function () {
