@@ -44,6 +44,9 @@ Route::get('login-info', [//用户名称
 Route::get('pushlogin', [//推送时验证登录
     'uses' => 'HTMLController@pushLogin'
 ]);
+Route::get('push-classify-ids', [//推送时验证登录
+    'uses' => 'HTMLController@push_classify_ids'
+]);
 //路由组--所有登录后的操作放入本组
 Route::group(array('before' => 'auth'), function() {
 

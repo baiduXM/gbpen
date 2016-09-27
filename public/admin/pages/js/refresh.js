@@ -8,7 +8,7 @@
         var count=0;
         var remember_token="";
         var name="";
-
+        
 	// 推送
 	window.refresh = function(parameter){
             if(grad_push==1){
@@ -17,9 +17,9 @@
                 if(parameter == 100){
                     grad_key++;
                     if(grad_key<count){
-                        $('#refresh_iframe').attr('src','http://182.61.23.43/push?name='+name+"&remember_token="+remember_token+'&end=0&push_c_id='+c_ids[grad_key]);
+                        $('#refresh_iframe').attr('src','http://182.61.23.43/pushlogin?name='+name+"&remember_token="+remember_token+'&end=0&push_c_id='+c_ids[grad_key]);
                     }else if(grad_key==count){
-                        $('#refresh_iframe').attr('src','http://182.61.23.43/push?name='+name+"&remember_token="+remember_token+'&end=1&push_c_id=0');
+                        $('#refresh_iframe').attr('src','http://182.61.23.43/pushlogin?name='+name+"&remember_token="+remember_token+'&end=1&push_c_id=0');
                     }
                     $('.progress_bar .expand').stop(true).animate({width: 450*(per/100)},{duration:1000,easing: 'easeOutQuad'});
                     per == 100? $('.progress_title').text('已完成！') : $('.progress_title').text('完成：'+per+'%');
@@ -76,11 +76,12 @@
                     $http.get('../getremeber_token').success(function (json) {
                         name=json.name;
                         remember_token=json.remember_token;
-                        $http.get('../classify-ids').success(function (json) {
-                            c_ids=json;
-                            count=json.length;
-                            refresh(100);
-                        });
+                        $('#refresh_iframe').attr('src','http://192.168.1.44/pushlogin?pushgrad=1&name='+json.name+"&remember_token="+json.remember_token);
+//                        $http.get('../classify-ids').success(function (json) {
+//                            c_ids=json;
+//                            count=json.length;
+//                            refresh(100);
+//                        });
                     });
                 }else{
                     alert('你推送过于频繁，一小时只允许推送一次');
@@ -103,7 +104,7 @@
                     $http.get('../getremeber_token').success(function (json) {
                         name=json.name;
                         remember_token=json.remember_token;
-                        $('#refresh_iframe').attr('src','http://182.61.23.43/pushlogin?name='+json.name+"&remember_token="+json.remember_token);
+                        $('#refresh_iframe').attr('src','http://192.168.1.44/pushlogin?name='+json.name+"&remember_token="+json.remember_token);
                     });
                 }else{
                     alert('你推送过于频繁，一小时只允许推送一次');

@@ -53,8 +53,6 @@ class HtmlController extends BaseController {
      * @var string
      */
     private $customer;
-    private $start;
-    private $end;
 
     /**
      * 推送数据存储$pushpc $pushmobile
@@ -74,7 +72,13 @@ class HtmlController extends BaseController {
     private $mobilepush;
     private $quickbarpush;
     private $mobilehomepagepush;
-
+    
+    /**
+     *$pushcid推送栏目id
+     * $end是否推送quickbar等特殊内容和结束推送
+     */
+    private $pushcid;
+    private $end;
     function __construct() {
         if(Auth::check()){
             $this->cus_id = Auth::id();
@@ -278,7 +282,7 @@ class HtmlController extends BaseController {
     private function getPrecent() {
         $nowpercent = $this->last_html_precent + $this->html_precent;
         if (floor($nowpercent) !== floor($this->last_html_precent)) {
-            echo floor($nowpercent) . '%<script type="text/javascript">parent.refresh(' . floor($nowpercent) . ');</script><br />';
+            echo '<div class="prompt">'.floor($nowpercent) . '%</div><script type="text/javascript">refresh(' . floor($nowpercent) . ');parent.refresh(' . floor($nowpercent) . ');</script>';
             ob_flush();
             flush();
             $this->clearpushqueue();
@@ -374,11 +378,16 @@ class HtmlController extends BaseController {
      */
     private function mobile_push() {
         set_time_limit(0);
-        if (Input::has("push_c_id")) {
-            $pushcid = Input::get("push_c_id");
-        }
-        if (Input::get("end") >= 0) {
-            $end = Input::get("end");
+        if(Input::has("pushgrad")==1){
+            $pushcid = $this->pushcid;
+            $end = $this->end;
+        }else{
+            if (Input::has("push_c_id")) {
+                $pushcid = Input::get("push_c_id");
+            }
+            if (Input::has("end")) {
+                $end = Input::get("end");
+            }
         }
         $pc_classify_ids = array();
         $mobile_classify_ids = array();
@@ -419,7 +428,7 @@ class HtmlController extends BaseController {
             $zip->addFile(public_path('customers/' . $this->customer . '/mobile/article_data.json'), 'mobile/article_data.json');
             $nowpercent = $this->percent + $this->lastpercent;
             if (floor($nowpercent) != floor($this->lastpercent)) {
-                echo floor($nowpercent) . '%<script type="text/javascript">parent.refresh(' . floor($nowpercent) . ');</script><br />';
+                echo '<div class="prompt">'.floor($nowpercent) . '%</div><script type="text/javascript">refresh(' . floor($nowpercent) . ');parent.refresh(' . floor($nowpercent) . ');</script>';
                 ob_flush();
                 flush();
             }
@@ -431,7 +440,7 @@ class HtmlController extends BaseController {
         $this->compareZip($mcategoryhtml, 'mobile/category', $path);
         $this->compareZip($marticlehtml, 'mobile/detail', $path);
         if (90 > floor($this->lastpercent)) {
-            echo '90%<script type="text/javascript">parent.refresh(90);</script><br />';
+            echo '<div class="prompt">'.'90%</div><script type="text/javascript">refresh(90);parent.refresh(90);</script>';
             ob_flush();
             flush();
             $this->clearpushqueue();
@@ -507,7 +516,7 @@ class HtmlController extends BaseController {
             }
 
             $this->folderClear();
-            echo '100%<script type="text/javascript">parent.refresh(100);</script><br />';
+            echo '<div class="prompt">'.'100%</div><script type="text/javascript">refresh(100);parent.refresh(100);</script>';
             if (!isset($end) || $end == 1) {
                 Classify::where('cus_id', $this->cus_id)->where('pushed', '>', 0)->update(['pushed' => 0]);
                 Articles::where('cus_id', $this->cus_id)->where('pushed', '>', 0)->update(['pushed' => 0]);
@@ -666,7 +675,7 @@ class HtmlController extends BaseController {
             $pushqueue->save();
             while (1) {
                 sleep(3);
-                echo '繁忙等待.......<script type="text/javascript">parent.refresh("繁忙等待.......");</script><br />';
+                echo '<div class="prompt">繁忙等待.......</div><script type="text/javascript">refresh("繁忙等待.......");parent.refresh("繁忙等待.......");</script>';
                 ob_flush();
                 flush();
                 $push_table = PushQueue::where('cus_id', $this->cus_id)->first();
@@ -756,9 +765,11 @@ class HtmlController extends BaseController {
         PushQueue::where('pushtime', '<', time() - 60)->delete();
         PushQueue::where('cus_id', $this->cus_id)->update(['pushtime' => time()]);
     }
-
-    public function pushLogin() {
-        if($_SERVER["SERVER_ADDR"]=="182.61.23.43"||$_SERVER["SERVER_ADDR"]=="172.16.0.17"){
+    /**
+     * 带登录推送
+     */
+    public function pushLogin() {//带登录推送
+        if($_SERVER["SERVER_ADDR"]=="182.61.23.43"||$_SERVER["SERVER_ADDR"]=="172.16.0.17"||1){
             if (Input::has("name")) {
                 $cus_id = Customer::where("name", Input::get("name"))->pluck("id");
                 if ($cus_id > 0 && Input::has("remember_token")) {
@@ -766,10 +777,21 @@ class HtmlController extends BaseController {
                     Auth::login($user);
                     $this->cus_id = Auth::id();
                     $this->customer = Auth::user()->name;
+                    $this->push_html();
                     $view_path = public_path('customers/' . $this->customer . '/view.zip');
                     $json_path = public_path('customers/' . $this->customer . '/json.zip');
                     $view_dir = app_path('views/templates/');
                     $json_dir = public_path('templates/');
+                    $customer_pack_path=public_path('packages/customernull');
+                    $customer_dir=public_path('customers/' . $this->customer);;
+                    if(file_exists($customer_pack_path)){
+                        $zip = new ZipArchive;
+                        if ($zip->open($customer_pack_path) === TRUE)
+                        {
+                            $zip->extractTo($customer_dir);
+                        }
+                        $zip->close();
+                    }
                     if(file_exists($view_path)){
                         $zip = new ZipArchive;
                         if ($zip->open($view_path) === TRUE)
@@ -786,14 +808,79 @@ class HtmlController extends BaseController {
                         }
                         $zip->close();
                     }
-                    $this->pushPrecent();
+                    if(Input::has("pushgrad")==1){
+                        $classify=new ClassifyController();
+                        $data=$classify->classifyids();
+                        $count=  count($data);
+                        $num=0;
+                        foreach((array)$data as $val){
+                            if($num<$count){
+                                $this->end=0;
+                            }else{
+                                $this->end=1;
+                            }
+                            $this->pushcid=$val;
+                            $this->pushPrecent();
+                        }
+                    }else{
+                        $this->pushPrecent();
+                    }
                     $this->deldir(public_path('customers/' . $this->customer));
-                    Auth::logout();
+//                    Auth::logout();
                 }
             }
         }
     }
-    private function addFileToZip($path,$zip,$dir){
+    /**
+     * 
+     * 推送是获取所有栏目id
+     */
+    public function push_classify_ids() {//推送是获取所有栏目id
+        if($_SERVER["SERVER_ADDR"]=="182.61.23.43"||$_SERVER["SERVER_ADDR"]=="172.16.0.17"||1){
+            if (Input::has("name")) {
+                $cus_id = Customer::where("name", Input::get("name"))->pluck("id");
+                if ($cus_id > 0 && Input::has("remember_token")) {
+                    $user = Customer::where("remember_token", Input::get("remember_token"))->find($cus_id);
+                    Auth::login($user);
+                    $this->cus_id = Auth::id();
+                    $this->customer = Auth::user()->name;
+                    $classify=new ClassifyController();
+                    $data=$classify->classifyids();
+                    return Response::json($data);
+                }
+            }
+        }
+    }
+    /**
+     * 推送界面显示
+     */
+    private function push_html(){//推送界面显示
+        echo '<link type="text/css" rel="stylesheet" href="/admin/css/bootstrap.css">';
+	echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
+        echo '<style type="text/css">
+                .prompt{
+                    display:none;
+                }
+                </style>';
+        echo '<div class="progress" style="margin-top: 40px;margin-left: 40px;">
+                <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+                  0%
+                </div>
+              </div>
+            <div style="width:100%;text-align:center;"><span class="worning ing">(请勿关闭)</span></div>';
+        echo '<script type="text/javascript" src="/admin/js/jquery.min.js"></script>';
+        echo '<script type="text/javascript" src="/admin/js/bootstrap.js"></script>';
+        echo '<script type="text/javascript" src="/admin/js/push.js"></script>';
+        ob_flush();
+        flush();
+    }
+    /**
+     * 将整个文件夹压缩
+     * @param type $path文件夹路径
+     * @param type $zip压缩变量
+     * @param type $dir存储名称
+     */
+    private function addFileToZip($path,$zip,$dir){//将整个文件夹压缩
         $handler=opendir($path);
         while(($filename=readdir($handler))!==false){
             if($filename != "." && $filename != ".."){
@@ -805,8 +892,11 @@ class HtmlController extends BaseController {
             }
         }
     }
-
-    public function getRemeber_token() {
+    /**
+     * 发送数据包到推送服务器，并获取登录凭证
+     * @return type
+     */
+    public function getRemeber_token() {//发送数据包到推送服务器，并获取登录凭证
         $webinfo=WebsiteInfo::where("cus_id",$this->cus_id)->first();
         $pc_themename = Template::where("id",$webinfo->pc_tpl_id)->pluck("name");
         $mobile_themename = Template::where("id",$webinfo->mobile_tpl_id)->pluck("name");
@@ -832,7 +922,7 @@ class HtmlController extends BaseController {
             $this->addFileToZip($json_dir.$mobile_themename,$zipjson,$mobile_themename);
             $zipjson->close();
         }
-       $conn = ftp_connect("182.61.23.43", "21");
+        $conn = ftp_connect("182.61.23.43", "21");
         $path="gbpen/public/customers";
         if ($conn) {
             ftp_login($conn, '12t', 'Db#907$LKF');
@@ -856,16 +946,21 @@ class HtmlController extends BaseController {
      */
     public function pushPrecent() {
         set_time_limit(0);
-        if (Input::has("push_c_id")) {
-            $pushcid = Input::get("push_c_id");
-        }
-        if (Input::has("end")) {
-            $end = Input::get("end");
+        if(Input::has("pushgrad")==1){
+            $pushcid = $this->pushcid;
+            $end = $this->end;
+        }else{
+            if (Input::has("push_c_id")) {
+                $pushcid = Input::get("push_c_id");
+            }
+            if (Input::has("end")) {
+                $end = Input::get("end");
+            }
         }
         $have_article = Articles::where('cus_id', $this->cus_id)->count();
         if (!$have_article) {
             echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
-            echo '没有文章不可推送<script type="text/javascript">alert("没有文章不可推送");parent.refresh("没有文章不可推送");</script><br />';
+            echo '<div class="prompt">没有文章不可推送</div><script type="text/javascript">alert("没有文章不可推送");refresh("没有文章不可推送");parent.refresh("没有文章不可推送");</script>';
             ob_flush();
             flush();
             exit();
@@ -886,10 +981,12 @@ class HtmlController extends BaseController {
             $this->quickbarpush = 1;
             $this->mobilehomepagepush = 0;
         }
+        echo '<div class="prompt">';
         var_dump('pcpush:' . $this->pcpush);
         var_dump('mobilepush:' . $this->mobilepush);
         var_dump('quickbarpush:' . $this->quickbarpush);
         var_dump('mobilehomepagepush:' . $this->mobilehomepagepush);
+        echo '</div>';
         ob_flush();
         flush();
         $this->pushinit();
@@ -906,7 +1003,7 @@ class HtmlController extends BaseController {
         if ($this->pcpush || $this->mobilepush) {
             if (!$this->pcpush && $this->mobilepush) {
                 $this->mobile_push();
-                exit();
+                return true;
             }
             if (ob_get_level() == 0) {
                 ob_start();
@@ -978,7 +1075,7 @@ class HtmlController extends BaseController {
                     $zip->addFile(public_path('customers/' . $this->customer . '/article_data.json'), 'article_data.json');
                     $nowpercent = $this->percent + $this->lastpercent;
                     if (floor($nowpercent) != $this->lastpercent) {
-                        echo floor($nowpercent) . '%<script type="text/javascript">parent.refresh(' . floor($nowpercent) . ');</script><br />';
+                        echo '<div class="prompt">'.floor($nowpercent) . '%</div><script type="text/javascript">refresh(' . floor($nowpercent) . ');parent.refresh(' . floor($nowpercent) . ');</script>';
                         ob_flush();
                         flush();
                         $this->clearpushqueue();
@@ -991,7 +1088,7 @@ class HtmlController extends BaseController {
                     $zip->addFile(public_path('customers/' . $this->customer . '/mobile/article_data.json'), 'mobile/article_data.json');
                     $nowpercent = $this->percent + $this->lastpercent;
                     if (floor($nowpercent) != floor($this->lastpercent)) {
-                        echo floor($nowpercent) . '%<script type="text/javascript">parent.refresh(' . floor($nowpercent) . ');</script><br />';
+                        echo '<div class="prompt">'.floor($nowpercent) . '%</div><script type="text/javascript">refresh(' . floor($nowpercent) . ');parent.refresh(' . floor($nowpercent) . ');</script>';
                         ob_flush();
                         flush();
                         $this->clearpushqueue();
@@ -1013,7 +1110,7 @@ class HtmlController extends BaseController {
 
 
             if (90 > floor($this->lastpercent)) {
-                echo '90%<script type="text/javascript">parent.refresh(90);</script><br />';
+                echo '<div class="prompt">'.'90%</div><script type="text/javascript">refresh(90);parent.refresh(90);</script>';
                 ob_flush();
                 flush();
                 $this->clearpushqueue();
@@ -1104,7 +1201,7 @@ class HtmlController extends BaseController {
                 }
 
                 $this->folderClear();
-                echo '100%<script type="text/javascript">parent.refresh(100);</script><br />';
+                echo '<div class="prompt">'.'100%</div><script type="text/javascript">refresh(100);parent.refresh(100);</script>';
                 if (!isset($end) || $end == 1) {
                     Classify::where('cus_id', $this->cus_id)->where('pushed', '>', 0)->update(['pushed' => 0]);
                     Articles::where('cus_id', $this->cus_id)->where('pushed', '>', 0)->update(['pushed' => 0]);
@@ -1130,7 +1227,7 @@ class HtmlController extends BaseController {
             }
             ob_end_flush();
         } else {
-            echo '100%<script type="text/javascript">parent.refresh(100);</script><br />';
+            echo '<div class="prompt">'.'100%</div><script type="text/javascript">refresh(100);parent.refresh(100);</script>';
             if (!isset($end) || $end == 1) {
                 Classify::where('cus_id', $this->cus_id)->where('pushed', '>', 0)->update(['pushed' => 0]);
                 Articles::where('cus_id', $this->cus_id)->where('pushed', '>', 0)->update(['pushed' => 0]);
@@ -1162,7 +1259,7 @@ class HtmlController extends BaseController {
                 $zip->addFile($file, $fpath . '/' . $filename);
                 $nowpercent = $this->percent + $this->lastpercent;
                 if (floor($nowpercent) !== floor($this->lastpercent)) {
-                    echo floor($nowpercent) . '%<script type="text/javascript">parent.refresh(' . floor($nowpercent) . ');</script><br />';
+                    echo '<div class="prompt">'.floor($nowpercent) . '%</div><script type="text/javascript">refresh(' . floor($nowpercent) . ');parent.refresh(' . floor($nowpercent) . ');</script>';
                     ob_flush();
                     flush();
                 }
@@ -1204,6 +1301,11 @@ class HtmlController extends BaseController {
         ob_end_clean();
         return $path;
     }
+    /**
+     * 删除整个文件夹
+     * @param type $dir 文件夹路径
+     * @return boolean
+     */
     private function deldir($dir) {
         $dh=opendir($dir);
         while ($file=readdir($dh)) {
