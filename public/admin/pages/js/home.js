@@ -108,8 +108,8 @@ function homeController($scope, $http) {
 							<input type="hidden" value="' + j.title + '" name="data[' + k + '][' + num + '][title]" />\n\
 							<input type="hidden" value="' + (j.description || '') + '" name="data[' + k + '][' + num + '][description]" />\n\
 							<input type="hidden" value="' + j.link + '" name="data[' + k + '][' + num + '][href]" />\n\
+                                                        <div class="movediv"><span class="moveup">前移</span><span class="movedown">后移</span></div>\n\
                                     </dd>';
-                            //<div class="movediv"><span class="moveup">前移</span><span class="movedown">后移</span></div>\n\
                             num++;
                             pic++;
                         });
@@ -366,12 +366,20 @@ function homeController($scope, $http) {
 
             //===轮播图片排序===
             $('.moveup').click(function () {
+                var data = new Array;
                 var picdata = $("#temple-data").serializeJson();
-                var _this = $(this).parents();
-                console.log(_this);
-                $http.post('../homepage-bannerorder', picdata).success(function (json) {
-//                $.post('../homepage-bannerorder', picdata, function (json) {
-//                    console.log(json);
+                var _this = $(this).parents('img_show');
+                var _this_parents = $(this).parent().parent().parent().children().serializeJson;
+                data['picdata'] = picdata;
+                console.log(_this_parents);
+                $.ajax({
+                    type:'POST',
+                    url:'../homepage-bannerorder',
+                    data:JSON.
+                });
+                $http.post('../homepage-bannerorder', _this_parents).success(function (json) {
+//                $.post('../homepage-bannerorder', {data: _this_parents}, function (json) {
+                    console.log(json);
                 });
 //                $http.post('../homepage-modify', data1).success(function (json) {
 //                    checkJSON(json, function (json) {

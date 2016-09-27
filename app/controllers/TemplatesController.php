@@ -409,6 +409,7 @@ class TemplatesController extends BaseController {
     public function homepageBannerOrder() {
         $cus_id = Auth::id();
         $data = Input::get();
+//        $act = Input::get('act');
         var_dump($data);
         exit();
         return $data;
