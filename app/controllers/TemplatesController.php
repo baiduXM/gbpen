@@ -351,7 +351,6 @@ class TemplatesController extends BaseController {
         $count = $website_config->where('cus_id', $cus_id)->where('template_id', $template_id)->where('key', $page)->count();
         $website_config->template_id = $template_id;
         $data = Input::get('data');
-        var_dump($data);
         /*
           if(isset($data['slidepics']) && count($data['slidepics'])){
           foreach($data['slidepics'] as &$arr){
