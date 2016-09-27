@@ -11,8 +11,8 @@ function articleController($scope, $http, $location) {
     $scope.is_star = $_GET['is_star'] == undefined ? null : parseInt($_GET['is_star']);
     $scope.ser_name = $_GET['ser_name'] == undefined ? null : $_GET['ser_name'];
     $scope.search_word = $_GET['search_word'] == undefined ? null : $_GET['search_word'];
-    console.log($scope);
-    console.log('===$scope===');
+//    console.log($scope);
+//    console.log('===$scope===');
     // Model
     $scope.getArticleList = function (option) {
         var page = option.page || $scope.page,
@@ -38,8 +38,8 @@ function articleController($scope, $http, $location) {
             urlparam += '&page=' + page;
         }
         $http.get('../article-manage?per_page=' + num_per_page + urlparam).success(function (json) {
-            console.log(json.data);
-            console.log('article-manage');
+//            console.log(json.data);
+//            console.log('article-manage');
             checkJSON(json, function (json) {
                 if (option.first) {
                     checkjs('article');

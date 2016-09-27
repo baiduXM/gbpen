@@ -391,7 +391,7 @@ function homeController($scope, $http) {
                 img_upload.push($(this).data('name'));
             });
             $http.post('../homepage-modify', data1).success(function (json) {
-                console.log(json);
+//                console.log(json);
                 checkJSON(json, function (json) {
                     if (img_upload.length) {
                         if (!$('.tpl_mask').attr('class')) {
