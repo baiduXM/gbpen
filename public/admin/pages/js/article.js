@@ -1,6 +1,13 @@
+/**
+ * 文章控制器
+ * @param {type} $scope
+ * @param {type} $http
+ * @param {type} $location
+ * @returns {undefined}
+ */
 function articleController($scope, $http, $location) {
-    console.log($scope);
-    console.log('===1===');
+//    console.log($scope);
+//    console.log('===1===');
     $scope.$parent.showbox = "main";
     $scope.$parent.homepreview = true;
     $scope.$parent.menu = [];
@@ -12,19 +19,24 @@ function articleController($scope, $http, $location) {
     $scope.cat_id = $_GET['id'] == undefined ? null : parseInt($_GET['id']);
     $scope.is_star = $_GET['is_star'] == undefined ? null : parseInt($_GET['is_star']);
     $scope.ser_name = $_GET['ser_name'] == undefined ? null : $_GET['ser_name'];
-//    $scope.search_word = $_GET['search_word'] == undefined ? null : $_GET['search_word'];
-    // Model
+    $scope.search_word = $_GET['search_word'] == undefined ? null : $_GET['search_word'];
+    var ser_name = '分类查找';
+    /**
+     * 文章列表Model
+     * @param {type} option
+     * @returns {undefined}
+     */
     $scope.getArticleList = function (option) {
-        console.log(option);
-        console.log('===2===');
-        var page = option.page || $scope.page,
-                cat_id = option.cat_id || $scope.cat_id,
-                num_per_page = option.num_per_page || $scope.num_per_page,
-                page_num = option.page_num || $scope.page_num,
+//        console.log(option);
+//        console.log('===2===');
+        var page = option.page || $scope.page, //===当前页码
+                cat_id = option.cat_id || $scope.cat_id, //===分类id
+                num_per_page = option.num_per_page || $scope.num_per_page, //===每页几条
+                page_num = option.page_num || $scope.page_num, //===页数
                 is_star = option.is_star || $scope.is_star,
                 ser_active = option.ser_active,
-                search_word = option.search_word || $scope.search_word,
-                ser_name = option.ser_name || $scope.ser_name;
+                search_word = option.search_word || $scope.search_word;//===关键字
+        ser_name = option.ser_name || $scope.ser_name;//===分类名
         option.back == undefined ? '' : option.back == 1 ? window.location.hash = '#/article' : '';
         var urlparam = '';
         if (cat_id != null) {
@@ -39,7 +51,10 @@ function articleController($scope, $http, $location) {
         if (page != null) {
             urlparam += '&page=' + page;
         }
-        $http.get('../article-manage?per_page=' + num_per_page + urlparam).success(function (json) {
+        if (num_per_page != null) {
+            urlparam += '&per_page=' + num_per_page;
+        }
+        $http.get('../article-manage?1' + urlparam).success(function (json) {
             checkJSON(json, function (json) {
                 if (option.first) {
                     checkjs('article');
@@ -79,23 +94,23 @@ function articleController($scope, $http, $location) {
                 }
 
                 //===搜索条件===
-                var urlparam = '';
-                if (cat_id != null) {
-                    urlparam += '&id=' + cat_id;
-                }
-                if (is_star != null) {
-                    urlparam += '&is_star=' + is_star;
-                }
-                if (ser_name != null) {
-                    urlparam += '&ser_name=' + ser_name;
-                }
-                if (search_word != null) {
-                    urlparam += '&search_word=' + search_word;
-                }
-                ser_active ? window.location.hash = '#/article?p=1' + urlparam : '';
+//                var urlparam = '';
+//                if (cat_id != null) {
+//                    urlparam += '&id=' + cat_id;
+//                }
+//                if (is_star != null) {
+//                    urlparam += '&is_star=' + is_star;
+//                }
+//                if (ser_name != null) {
+//                    urlparam += '&ser_name=' + ser_name;
+//                }
+//                if (search_word != null) {
+//                    urlparam += '&search_word=' + search_word;
+//                }
+//                ser_active ? window.location.hash = '#/article?p=1' + urlparam : '';
                 if (cat_id != null) {
                     $('.article-tb .newarticle').addClass('navcolor');
-                    $('.article-tb .newarticle span').text($scope.ser_name)
+                    $('.article-tb .newarticle span').text(ser_name)//。。。
                     $('.article-tb .starback').fadeIn();
                 }
                 if (json.data != null && json.data.aticlelist != null) {
@@ -144,17 +159,30 @@ function articleController($scope, $http, $location) {
                         num_display_entries: 5,
                         num_edge_entries: 3,
                         callback: function (page_index) {
-                            var urlparam = '';
-                            if (cat_id != null) {
-                                urlparam += '&id=' + cat_id;
-                            }
-                            if (is_star != null) {
-                                urlparam += '&is_star=' + is_star;
-                            }
-                            if (ser_name != null) {
-                                urlparam += '&ser_name=' + ser_name;
-                            }
-                            window.location.hash = '#/article?p=' + (page_index + 1) + urlparam;
+//                            var urlparam = '';
+//                            if (cat_id != null) {
+//                                urlparam += '&id=' + cat_id;
+//                            }
+//                            if (is_star != null) {
+//                                urlparam += '&is_star=' + is_star;
+//                            }
+//                            if (ser_name != null) {
+//                                urlparam += '&ser_name=' + ser_name;
+//                            }
+//                            if (page_index != null) {
+//                                urlparam += '&p=' + (page_index + 1);
+//                            }
+                            $scope.getArticleList({
+                                first: false,
+                                page: page_index + 1,
+                                cat_id: cat_id,
+                                is_star: is_star,
+                                ser_name: ser_name,
+                                search_word: search_word,
+                                ser_active: ser_active,
+                            });
+
+//                            window.location.hash = '#/article?1' + urlparam;
                         }
                     });
                 } else {
@@ -215,7 +243,11 @@ function articleController($scope, $http, $location) {
             }); // checkJSON结束
         });
     };
-
+    // 首次获取
+    $scope.getArticleList({
+        first: true,
+        ser_name: ser_name,
+    });
     //菜单
     (function ArticleMenu() {
         var timer;
@@ -300,10 +332,6 @@ function articleController($scope, $http, $location) {
 
     $scope.ArticleNav = {
         init: function () {
-            // 首次获取
-            $scope.getArticleList({
-                first: true
-            });
             this._checkstar();
             this._searchInfo();
             this._moveclassify();
@@ -316,9 +344,9 @@ function articleController($scope, $http, $location) {
             this._searchWords();//===模糊查找===
             // this._batchEdit();
         },
-        // 查看推荐以及返回
         _checkstar: function () {
-            $('.article-tb .stararticle').unbind('click').click(function () {
+            // 查看推荐以及返回
+            $('.article-tb .stararticle').on('click', function () {
                 if ($(this).hasClass('starback')) {
                     // 返回
                     $scope.cat_id = null;
@@ -326,6 +354,7 @@ function articleController($scope, $http, $location) {
                     $scope.page = 1;
                     $scope.getArticleList({
                         first: true,
+                        ser_name: ser_name,
                         back: 1
                     });
                     $('.article-tb .newarticle span').text('分类查找');
@@ -337,6 +366,7 @@ function articleController($scope, $http, $location) {
                     $scope.page = 1;
                     $scope.getArticleList({
                         first: false,
+                        ser_name: ser_name,
                         is_star: 1
                     });
                     $(this).css({'background-color': '#B0B0B0'});
@@ -344,9 +374,9 @@ function articleController($scope, $http, $location) {
                 }
             });
         },
-        //新闻分类搜索
         _searchInfo: function () {
-            $('.info-top .list_new').off('click').on('click', ' .mov_val:not(.not-allowed)', function () {
+            //新闻分类搜索
+            $('.info-top .list_new').on('click', ' .mov_val:not(.not-allowed)', function () {
                 $scope.page = 1;
                 $(this).parents('ul').prev().addClass('navcolor');
                 $('.article-tb .stararticle').next().fadeIn();
@@ -359,9 +389,9 @@ function articleController($scope, $http, $location) {
                 });
             });
         },
-        //移动分类
         _moveclassify: function () {
-            $('.info-top .list_mov').off('click').on('click', '.mov_val:not(.not-allowed)', function () {
+            //移动分类
+            $('.info-top .list_mov').on('click', '.mov_val:not(.not-allowed)', function () {
                 mov_id = $(this).find('input').val();
                 var id_all = new all_id;
                 var mov_text = $(this).text();
@@ -378,7 +408,8 @@ function articleController($scope, $http, $location) {
         },
         _setInfoClassify: function () {
             var r_this = this;
-            $('.list_set a').unbind('click').click(function () {
+            //设为
+            $('.list_set a').click(function () {
                 var set_name = $(this).attr('name'),
                         set_val = $(this).attr('value');
                 if (id_all = null) {
@@ -446,9 +477,9 @@ function articleController($scope, $http, $location) {
                 });
             });
         },
-        //删除
         _delete: function () {
-            $('.a-table').off('click').on('click', '.delv', function () {
+            //删除
+            $('.a-table').on('click', '.delv', function () {
                 var id = $(this).attr('name');
                 var _this = $(this);
                 (function article_delete(del_num) {
@@ -469,9 +500,9 @@ function articleController($scope, $http, $location) {
                 })();
             });
         },
-        //批量删除
         _batchdel: function () {
-            $('.info-top .delarticle').unbind('click').click(function (event) {
+            //批量删除
+            $('.info-top .delarticle').click(function (event) {
                 (function article_delete(del_num) {
                     if (del_num == undefined) {
                         var warningbox = new WarningBox(article_delete);
@@ -491,9 +522,9 @@ function articleController($scope, $http, $location) {
                 })();
             });
         },
-        //展示
         _showPlatform: function () {
-            $('.a-table').off('click').on('click', '.btn-show', function () {
+            //展示
+            $('.a-table').on('click', '.btn-show', function () {
                 var btn = $(this);
                 var voperate = '';
                 if (btn.hasClass('icon-pc')) {
@@ -585,14 +616,14 @@ function articleController($scope, $http, $location) {
                 });
             });
         },
-        // 批量编辑文章
         batchEdit: function () {
-            $('.info-top .batchedit').unbind('click').click(function () {
+            // 批量编辑文章
+            $('.info-top .batchedit').click(function () {
                 var id_all = new all_id;
                 if (id_all == '') {
                     alert('请选择要编辑的文章！')
                 } else {
-                    window.location.hash = '#/batcharticle?ids=' + id_all + '';
+//                    window.location.hash = '#/batcharticle?ids=' + id_all + '';
                 }
             });
         },
@@ -600,15 +631,12 @@ function articleController($scope, $http, $location) {
         _searchWords: function () {
             $('.searcharticle').unbind('click').click(function () {
                 var search_word = $("[name='search_word']").val();
-                $.post('../article-word-search', {keyword: search_word}, function (data) {
-//                $.post('../article-manage', {keyword: search_word}, function (data) {
-                    console.log(data);
+                $scope.getArticleList({
+                    first: false,
+                    ser_active: true,
+                    ser_name: ser_name,
+                    search_word: search_word
                 });
-//                $scope.getArticleList({
-//                    first: false,
-//                    ser_active: true,
-//                    search_word: search_word
-//                });
             });
         }
     };
