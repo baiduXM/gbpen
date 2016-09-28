@@ -227,39 +227,39 @@ class ArticleController extends BaseController {
      */
     public function articleListData($c_id = 0, $is_star = 0, $per_page = 15, $search_word = '') {
         $cus_id = Auth::id();
-//        if (!empty($search_word)) {
-//            if ($c_id) {
-//                $cus_data = new PrintController();
-//                $c_ids = explode(',', $cus_data->getChirldenCid($c_id));
-//                if ($is_star) {
-//                    $article_list = Articles::whereIn('c_id', $c_ids)->where('title', 'like', '%' . $search_word . '%')->where('is_star', '=', $is_star)->orderBy('is_top', 'DESC')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->paginate($per_page);
-//                } else {
-//                    $article_list = Articles::whereIn('c_id', $c_ids)->where('title', 'like', '%' . $search_word . '%')->orderBy('is_top', 'DESC')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->paginate($per_page);
-//                }
-//            } else {
-//                if ($is_star) {
-//                    $article_list = Articles::where('cus_id', '=', $cus_id)->where('title', 'like', '%' . $search_word . '%')->where('is_star', '=', $is_star)->orderBy('is_top', 'DESC')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->paginate($per_page);
-//                } else {
-//                    $article_list = Articles::where('cus_id', '=', $cus_id)->where('title', 'like', '%' . $search_word . '%')->orderBy('is_top', 'DESC')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->paginate($per_page);
-//                }
-//            }
-//        } else {
-        if ($c_id) {
-            $cus_data = new PrintController();
-            $c_ids = explode(',', $cus_data->getChirldenCid($c_id));
-            if ($is_star) {
-                $article_list = Articles::whereIn('c_id', $c_ids)->where('is_star', '=', $is_star)->orderBy('is_top', 'DESC')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->paginate($per_page);
+        if (!empty($search_word)) {
+            if ($c_id) {
+                $cus_data = new PrintController();
+                $c_ids = explode(',', $cus_data->getChirldenCid($c_id));
+                if ($is_star) {
+                    $article_list = Articles::whereIn('c_id', $c_ids)->where('title', 'like', '%' . $search_word . '%')->where('is_star', '=', $is_star)->orderBy('is_top', 'DESC')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->paginate($per_page);
+                } else {
+                    $article_list = Articles::whereIn('c_id', $c_ids)->where('title', 'like', '%' . $search_word . '%')->orderBy('is_top', 'DESC')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->paginate($per_page);
+                }
             } else {
-                $article_list = Articles::whereIn('c_id', $c_ids)->orderBy('is_top', 'DESC')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->paginate($per_page);
+                if ($is_star) {
+                    $article_list = Articles::where('cus_id', '=', $cus_id)->where('title', 'like', '%' . $search_word . '%')->where('is_star', '=', $is_star)->orderBy('is_top', 'DESC')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->paginate($per_page);
+                } else {
+                    $article_list = Articles::where('cus_id', '=', $cus_id)->where('title', 'like', '%' . $search_word . '%')->orderBy('is_top', 'DESC')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->paginate($per_page);
+                }
             }
         } else {
-            if ($is_star) {
-                $article_list = Articles::where('cus_id', '=', $cus_id)->where('is_star', '=', $is_star)->orderBy('is_top', 'DESC')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->paginate($per_page);
+            if ($c_id) {
+                $cus_data = new PrintController();
+                $c_ids = explode(',', $cus_data->getChirldenCid($c_id));
+                if ($is_star) {
+                    $article_list = Articles::whereIn('c_id', $c_ids)->where('is_star', '=', $is_star)->orderBy('is_top', 'DESC')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->paginate($per_page);
+                } else {
+                    $article_list = Articles::whereIn('c_id', $c_ids)->orderBy('is_top', 'DESC')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->paginate($per_page);
+                }
             } else {
-                $article_list = Articles::where('cus_id', '=', $cus_id)->orderBy('is_top', 'DESC')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->paginate($per_page);
+                if ($is_star) {
+                    $article_list = Articles::where('cus_id', '=', $cus_id)->where('is_star', '=', $is_star)->orderBy('is_top', 'DESC')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->paginate($per_page);
+                } else {
+                    $article_list = Articles::where('cus_id', '=', $cus_id)->orderBy('is_top', 'DESC')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->paginate($per_page);
+                }
             }
         }
-//        }
         $article_arr = $article_list->toArray();
         if (count($article_arr['data'])) {
             foreach ($article_arr['data'] as $k => $v) {
@@ -511,7 +511,10 @@ class ArticleController extends BaseController {
         $cus_id = Auth::id();
         $keyword = Input::get('keyword');
         var_dump($keyword);
+        $data = $this->articleListData(0, 0, 15, $keyword);
+        var_dump($data);
         exit;
+//        $data['source_dir'] = asset("customers/$customer/images/s/articles") . '/';
         $return_msg = array('err' => 0, 'msg' => '', 'data' => $data);
         return Response::json($return_msg);
     }

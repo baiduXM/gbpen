@@ -1,4 +1,6 @@
 function articleController($scope, $http, $location) {
+    console.log($scope);
+    console.log('===1===');
     $scope.$parent.showbox = "main";
     $scope.$parent.homepreview = true;
     $scope.$parent.menu = [];
@@ -10,9 +12,11 @@ function articleController($scope, $http, $location) {
     $scope.cat_id = $_GET['id'] == undefined ? null : parseInt($_GET['id']);
     $scope.is_star = $_GET['is_star'] == undefined ? null : parseInt($_GET['is_star']);
     $scope.ser_name = $_GET['ser_name'] == undefined ? null : $_GET['ser_name'];
-    $scope.search_word = $_GET['search_word'] == undefined ? null : $_GET['search_word'];
+//    $scope.search_word = $_GET['search_word'] == undefined ? null : $_GET['search_word'];
     // Model
     $scope.getArticleList = function (option) {
+        console.log(option);
+        console.log('===2===');
         var page = option.page || $scope.page,
                 cat_id = option.cat_id || $scope.cat_id,
                 num_per_page = option.num_per_page || $scope.num_per_page,
@@ -596,8 +600,8 @@ function articleController($scope, $http, $location) {
         _searchWords: function () {
             $('.searcharticle').unbind('click').click(function () {
                 var search_word = $("[name='search_word']").val();
-                console.log(search_word);
                 $.post('../article-word-search', {keyword: search_word}, function (data) {
+//                $.post('../article-manage', {keyword: search_word}, function (data) {
                     console.log(data);
                 });
 //                $scope.getArticleList({
