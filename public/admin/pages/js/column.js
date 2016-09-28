@@ -209,28 +209,28 @@ function columnController($scope, $http) {
                 $(this).children().toggleClass("disnone");
             });
         },
-        classnamemodify:function(){
+        classnamemodify: function () {
             //分类标题修改
-            $(".class_name").click(function(){
-                    $(this).hide();
-                    $(this).parent('td').find(".name_modify").show();
-                    $(this).parent('td').find(".name_modify").focus().val($(this).parent('td').find(".name_modify").val());
-                });
-                $(".name_modify").blur(function(){
-                    if($(this).val()!==$(this).parent("td").find(".class_name").text()){
-                        $(this).parent("td").find(".class_name").text($(this).val());
-                        var name=$(this).val();
-                        var id =$(this).data("id");
-                        $http.post('../classify-name-modify', {id: id,name:name}).success(function(json) {
-                                checkJSON(json, function(json){
-                                    var hint_box = new Hint_box();
-                                    hint_box;
-                                });
-                            });
-                    }
-                    $(this).parent("td").find(".class_name").show();
-                    $(this).hide();
-                });
+            $(".class_name").click(function () {
+                $(this).hide();
+                $(this).parent('td').find(".name_modify").show();
+                $(this).parent('td').find(".name_modify").focus().val($(this).parent('td').find(".name_modify").val());
+            });
+            $(".name_modify").blur(function () {
+                if ($(this).val() !== $(this).parent("td").find(".class_name").text()) {
+                    $(this).parent("td").find(".class_name").text($(this).val());
+                    var name = $(this).val();
+                    var id = $(this).data("id");
+                    $http.post('../classify-name-modify', {id: id, name: name}).success(function (json) {
+                        checkJSON(json, function (json) {
+                            var hint_box = new Hint_box();
+                            hint_box;
+                        });
+                    });
+                }
+                $(this).parent("td").find(".class_name").show();
+                $(this).hide();
+            });
         },
         //type-->data.type
         column_type_info: function (data) {
