@@ -244,21 +244,21 @@ class ArticleController extends BaseController {
 //                }
 //            }
 //        } else {
-            if ($c_id) {
-                $cus_data = new PrintController();
-                $c_ids = explode(',', $cus_data->getChirldenCid($c_id));
-                if ($is_star) {
-                    $article_list = Articles::whereIn('c_id', $c_ids)->where('is_star', '=', $is_star)->orderBy('is_top', 'DESC')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->paginate($per_page);
-                } else {
-                    $article_list = Articles::whereIn('c_id', $c_ids)->orderBy('is_top', 'DESC')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->paginate($per_page);
-                }
+        if ($c_id) {
+            $cus_data = new PrintController();
+            $c_ids = explode(',', $cus_data->getChirldenCid($c_id));
+            if ($is_star) {
+                $article_list = Articles::whereIn('c_id', $c_ids)->where('is_star', '=', $is_star)->orderBy('is_top', 'DESC')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->paginate($per_page);
             } else {
-                if ($is_star) {
-                    $article_list = Articles::where('cus_id', '=', $cus_id)->where('is_star', '=', $is_star)->orderBy('is_top', 'DESC')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->paginate($per_page);
-                } else {
-                    $article_list = Articles::where('cus_id', '=', $cus_id)->orderBy('is_top', 'DESC')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->paginate($per_page);
-                }
+                $article_list = Articles::whereIn('c_id', $c_ids)->orderBy('is_top', 'DESC')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->paginate($per_page);
             }
+        } else {
+            if ($is_star) {
+                $article_list = Articles::where('cus_id', '=', $cus_id)->where('is_star', '=', $is_star)->orderBy('is_top', 'DESC')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->paginate($per_page);
+            } else {
+                $article_list = Articles::where('cus_id', '=', $cus_id)->orderBy('is_top', 'DESC')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->paginate($per_page);
+            }
+        }
 //        }
         $article_arr = $article_list->toArray();
         if (count($article_arr['data'])) {
@@ -501,6 +501,18 @@ class ArticleController extends BaseController {
             }
         }
         $return_msg = array('err' => 0, 'msg' => '');
+        return Response::json($return_msg);
+    }
+
+    /**
+     * 关键字搜索
+     */
+    public function articleWordSearch() {
+        $cus_id = Auth::id();
+        $keyword = Input::get('keyword');
+        var_dump($keyword);
+        exit;
+        $return_msg = array('err' => 0, 'msg' => '', 'data' => $data);
         return Response::json($return_msg);
     }
 
