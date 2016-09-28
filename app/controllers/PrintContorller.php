@@ -2702,7 +2702,7 @@ class PrintController extends BaseController {
             $paths[] = $path;
             $nowpercent = $last_html_precent + $html_precent;
             if (floor($nowpercent) !== floor($last_html_precent)) {
-                echo '<div class="prompt">' . floor($nowpercent) . '%</div><script type="text/javascript">refresh(' . floor($nowpercent) . ');parent.refresh(' . floor($nowpercent) . ');</script>';
+                echo '<div class="prompt">' . floor($nowpercent) . '%</div><script type="text/javascript">refresh(' . floor($nowpercent) . ');</script>';
                 ob_flush();
                 flush();
                 PushQueue::where('pushtime', '<', time() - 60)->delete();
@@ -2727,7 +2727,7 @@ class PrintController extends BaseController {
                     $paths[] = $path;
                     $nowpercent = $last_html_precent + $html_precent;
                     if (floor($nowpercent) !== floor($last_html_precent)) {
-                        echo '<div class="prompt">' . floor($nowpercent) . '%</div><script type="text/javascript">refresh(' . floor($nowpercent) . ');parent.refresh(' . floor($nowpercent) . ');</script>';
+                        echo '<div class="prompt">' . floor($nowpercent) . '%</div><script type="text/javascript">refresh(' . floor($nowpercent) . ');</script>';
                         ob_flush();
                         flush();
                         PushQueue::where('pushtime', '<', time() - 60)->delete();
@@ -3146,7 +3146,7 @@ class PrintController extends BaseController {
             $paths[] = $path;
             $nowpercent = $last_html_precent + $html_precent;
             if (floor($nowpercent) !== floor($last_html_precent)) {
-                echo '<div class="prompt">' . floor($nowpercent) . '%</div><script type="text/javascript">refresh(' . floor($nowpercent) . ');parent.refresh(' . floor($nowpercent) . ');</script>';
+                echo '<div class="prompt">' . floor($nowpercent) . '%</div><script type="text/javascript">refresh(' . floor($nowpercent) . ');</script>';
                 ob_flush();
                 flush();
                 PushQueue::where('pushtime', '<', time() - 60)->delete();
