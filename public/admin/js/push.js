@@ -7,7 +7,7 @@ var remember_token=getUrlParam("remember_token");
 function refresh(parameter) {
     if (grad_push == 1) {
         var per = 0;
-        per = Math.floor((100 * grad_key + parameter) / (count + 1));
+        per = Math.floor((100 * grad_key + parameter) / count);
         
     console.log(per);
         if (parameter == 100) {

@@ -667,7 +667,7 @@ class HtmlController extends BaseController {
         $pushqueue->id = $maxpushid ? $maxpushid + 1 : 1;
         $pushqueue->pushtime = time();
         $pushqueue->cus_id = $this->cus_id;
-        if ($pushqueuecount < 3) {
+        if ($pushqueuecount < 2) {
             $pushqueue->push = 1;
             $pushqueue->save();
         } else {
@@ -683,7 +683,7 @@ class HtmlController extends BaseController {
                     break;
                 } else {
                     $pushqueuecount = PushQueue::where('push', 1)->count();
-                    if ($pushqueuecount < 3) {
+                    if ($pushqueuecount < 2) {
                         PushQueue::where('cus_id', $this->cus_id)->update(['push' => 1]);
                         break;
                     }
@@ -952,6 +952,11 @@ class HtmlController extends BaseController {
             $this->percent=0;
             $this->lastpercent=0;
             $this->html_precent=0;
+            $this->last_html_precent=0;
+            $this->pcpush=0;
+            $this->mobilepush=0;
+            $this->quickbarpush=0;
+            $this->mobilehomepagepush=0;
         }else{
             if(!Input::has("name")){
                 echo '<script type="text/javascript">function refresh(str){parent.refresh(str);};</script>';

@@ -16,11 +16,11 @@
                 per=Math.floor((100*grad_key+parameter)/(count+1));
                 if(parameter == 100){
                     grad_key++;
-                    if(grad_key<count){
-                        $('#refresh_iframe').attr('src','http://182.61.23.43/pushlogin?name='+name+"&remember_token="+remember_token+'&end=0&push_c_id='+c_ids[grad_key]);
-                    }else if(grad_key==count){
-                        $('#refresh_iframe').attr('src','http://182.61.23.43/pushlogin?name='+name+"&remember_token="+remember_token+'&end=1&push_c_id=0');
-                    }
+//                    if(grad_key<count){
+//                        $('#refresh_iframe').attr('src','http://182.61.23.43/pushlogin?name='+name+"&remember_token="+remember_token+'&end=0&push_c_id='+c_ids[grad_key]);
+//                    }else if(grad_key==count){
+//                        $('#refresh_iframe').attr('src','http://182.61.23.43/pushlogin?name='+name+"&remember_token="+remember_token+'&end=1&push_c_id=0');
+//                    }
                     $('.progress_bar .expand').stop(true).animate({width: 450*(per/100)},{duration:1000,easing: 'easeOutQuad'});
                     per == 100? $('.progress_title').text('已完成！') : $('.progress_title').text('完成：'+per+'%');
                     if($('.progress_title').text() == '已完成！'){
