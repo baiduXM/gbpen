@@ -766,6 +766,26 @@ class HtmlController extends BaseController {
         PushQueue::where('cus_id', $this->cus_id)->update(['pushtime' => time()]);
     }
     /**
+     * 文件夹复制
+     * @param type $source_dir 资源文件夹
+     * @param type $dest_dir 目标文件夹
+     */
+    private function copydir($source_dir,$dest_dir){
+        $dir = opendir($source_dir);
+        if(is_dir($dest_dir)){
+            @mkdir($dest_dir);
+        }
+        while(false !== ( $file = readdir($dir)) ) {
+                 if (( $file != '.' ) && ( $file != '..' )) {
+                        if ( is_dir($source_dir . '/' . $file) ) {
+                                $this->copydir($source_dir . '/' . $file,$dest_dir . '/' . $file);
+                        }  else  {
+                                copy($source_dir . '/' . $file,$dest_dir.'/'.$file);
+                        }
+                }
+        }
+    }
+    /**
      * 带登录推送
      */
     public function pushLogin() {//带登录推送
@@ -778,12 +798,17 @@ class HtmlController extends BaseController {
                     $this->cus_id = Auth::id();
                     $this->customer = Auth::user()->name;
                     $this->push_html();
-                    $view_path = public_path('customers/' . $this->customer . '/view.zip');
-                    $json_path = public_path('customers/' . $this->customer . '/json.zip');
+                    $pc_path = public_path('customers/' . $this->customer . '/pc.zip');
+                    $mobile_path = public_path('customers/' . $this->customer . '/mobile.zip');
                     $view_dir = app_path('views/templates/');
                     $json_dir = public_path('templates/');
                     $customer_pack_path=public_path('packages/customernull.zip');
                     $customer_dir=public_path('customers/' . $this->customer);;
+                    $webinfo=WebsiteInfo::where("cus_id",$this->cus_id)->first();
+                    $pc_themename = Template::where("id",$webinfo->pc_tpl_id)->pluck("name");
+                    $mobile_themename = Template::where("id",$webinfo->mobile_tpl_id)->pluck("name");
+                    $pc_tpl=Template::where("id",$webinfo->pc_tpl_id)->first();
+                    $m_tpl=Template::where("id",$webinfo->mobile_tpl_id)->first();
                     if(file_exists($customer_pack_path)){
                         $zip = new ZipArchive;
                         if ($zip->open($customer_pack_path) === TRUE)
@@ -792,22 +817,46 @@ class HtmlController extends BaseController {
                         }
                         $zip->close();
                     }
-                    if(file_exists($view_path)){
-                        $zip = new ZipArchive;
-                        if ($zip->open($view_path) === TRUE)
-                        {
-                        $zip->extractTo($view_dir);
+                    if($pc_tpl->push_get_date==null||$pc_tpl->push_get_date==""||$pc_tpl->push_get_date<$pc_tpl->updated_at){
+                        if(file_exists($pc_path)){
+                            $zip = new ZipArchive;
+                            if ($zip->open($pc_path) === TRUE)
+                            {
+                                $zip->extractTo(public_path('customers/' . $this->customer."/temp"));
+                                $zip->close();
+                                $pc_config=  json_decode(file_get_contents(public_path('customers/' . $this->customer."/temp/".$pc_themename."/config.json")));
+                                if($pc_tpl->push_get_date==null||$pc_tpl->push_get_date==""||$pc_tpl->push_get_date<$pc_config["push_get_date"]){
+                                    $this->copydir(public_path('customers/' . $this->customer."/temp/".$pc_themename."/html"), $view_dir."/".$pc_themename);
+                                    $this->copydir(public_path('customers/' . $this->customer."/temp/".$pc_themename."/json"), $json_dir."/".$pc_themename);
+                                    Template::where("id",$webinfo->pc_tpl_id)->update(array("push_get_date"=>$pc_config["push_get_date"]));
+                                }
+                            }
                         }
-                        $zip->close();
                     }
-                    if(file_exists($json_path)){
-                        $zip = new ZipArchive;
-                        if ($zip->open($json_path) === TRUE)
-                        {
-                            $zip->extractTo($json_dir);
+                    if($m_tpl->push_get_date==null||$m_tpl->push_get_date==""||$m_tpl->push_get_date<$m_tpl->updated_at){
+                        if(file_exists($mobile_path)){
+                            $zip = new ZipArchive;
+                            if ($zip->open($mobile_path) === TRUE)
+                            {
+                                $zip->extractTo(public_path('customers/' . $this->customer."/temp"));
+                                $zip->close();
+                                $m_config=  json_decode(file_get_contents(public_path('customers/' . $this->customer."/temp/".$mobile_themename."/config.json")));
+                                if($m_tpl->push_get_date==null||$m_tpl->push_get_date==""||$m_tpl->push_get_date<$m_config["push_get_date"]){
+                                    $this->copydir(public_path('customers/' . $this->customer."/temp/".$mobile_themename."/html"), $view_dir."/".$mobile_themename);
+                                    $this->copydir(public_path('customers/' . $this->customer."/temp/".$mobile_themename."/json"), $json_dir."/".$mobile_themename);
+                                    Template::where("id",$webinfo->mobile_tpl_id)->update(array("push_get_date"=>$m_config["push_get_date"]));
+                                }
+                            }
                         }
-                        $zip->close();
                     }
+//                    if(file_exists($json_path)){
+//                        $zip = new ZipArchive;
+//                        if ($zip->open($json_path) === TRUE)
+//                        {
+//                            $zip->extractTo($json_dir);
+//                        }
+//                        $zip->close();
+//                    }
                     if(Input::has("pushgrad")==1){
                         $classify=new ClassifyController();
                         $data=$classify->classifyids();
@@ -901,28 +950,8 @@ class HtmlController extends BaseController {
         $webinfo=WebsiteInfo::where("cus_id",$this->cus_id)->first();
         $pc_themename = Template::where("id",$webinfo->pc_tpl_id)->pluck("name");
         $mobile_themename = Template::where("id",$webinfo->mobile_tpl_id)->pluck("name");
-        $view_dir = app_path('views/templates/');
-        $zipview = new ZipArchive;
-        $view_path = public_path('customers/' . $this->customer . '/view.zip');
-        if (file_exists($view_path)) {
-            @unlink($view_path);
-        }
-        if($zipview->open($view_path, ZipArchive::CREATE)=== TRUE){
-            $this->addFileToZip($view_dir.$pc_themename,$zipview,$pc_themename);
-            $this->addFileToZip($view_dir.$mobile_themename,$zipview,$mobile_themename);
-            $zipview->close();
-        }
-        $json_dir = public_path('templates/');
-        $zipjson = new ZipArchive;
-        $json_path = public_path('customers/' . $this->customer . '/json.zip');
-        if (file_exists($json_path)) {
-            @unlink($json_path);
-        }
-        if($zipjson->open($json_path, ZipArchive::CREATE)=== TRUE){
-            $this->addFileToZip($json_dir.$pc_themename,$zipjson,$pc_themename);
-            $this->addFileToZip($json_dir.$mobile_themename,$zipjson,$mobile_themename);
-            $zipjson->close();
-        }
+        $pc_tpl=Template::where("id",$webinfo->pc_tpl_id)->first();
+        $m_tpl=Template::where("id",$webinfo->mobile_tpl_id)->first();
         $conn = ftp_connect("182.61.23.43", "21");
         $path="gbpen/public/customers";
         if ($conn) {
@@ -931,12 +960,83 @@ class HtmlController extends BaseController {
             if (@ftp_chdir($conn,$path. "/" . $this->customer) == FALSE) {
                 ftp_mkdir($conn, $path."/" . $this->customer);
             }
-            if (file_exists($view_path)) {
-                ftp_put($conn, "view.zip", $view_path, FTP_BINARY);
+            if($pc_tpl->push_get_date==null||$pc_tpl->push_get_date==""||$pc_tpl->push_get_date<$pc_tpl->updated_at){
+                $pc_json=array();
+                $pc_json["themename"]=$pc_themename;
+                $pc_json["push_get_date"]=date("Y-m-d H:i:s", time());
+                file_put_contents(public_path('customers/' . $this->customer . '/pc_config.json'), json_encode($pc_json));
+                $view_dir = app_path('views/templates/');
+                $json_dir = public_path('templates/');
+                $pc_path = public_path('customers/' . $this->customer . '/pc.zip');
+                if (file_exists($pc_path)) {
+                    @unlink($pc_path);
+                }
+                $pc_zip = new ZipArchive;
+                if($pc_zip->open($pc_path, ZipArchive::CREATE)=== TRUE){
+                    $this->addFileToZip($view_dir.$pc_themename,$pc_zip,$pc_themename."/html");
+                    $this->addFileToZip($json_dir.$pc_themename,$pc_zip,$pc_themename."/json");
+                    $pc_zip->addFile(public_path('customers/' . $this->customer . '/pc_config.json'),$pc_themename."/config.json");
+                    $pc_zip->close();
+                    ftp_put($conn, "pc.zip", $pc_path, FTP_BINARY);
+                }
             }
-            ftp_put($conn, "json.zip", $json_path, FTP_BINARY);
+            if($m_tpl->push_get_date==null||$m_tpl->push_get_date==""||$m_tpl->push_get_date<$m_tpl->updated_at){
+                $m_json=array();
+                $m_json["themename"]=$pc_themename;
+                $m_json["push_get_date"]=date("Y-m-d H:i:s", time());
+                file_put_contents(public_path('customers/' . $this->customer . '/m_config.json'), json_encode($m_json));
+                $m_path = public_path('customers/' . $this->customer . '/mobile.zip');
+                if (file_exists($m_path)) {
+                    @unlink($m_path);
+                }
+                $m_zip = new ZipArchive;
+                if($m_zip->open($m_path, ZipArchive::CREATE)=== TRUE){
+                    $this->addFileToZip($view_dir.$mobile_themename,$m_zip,$mobile_themename."/html");
+                    $this->addFileToZip($json_dir.$mobile_themename,$m_zip,$mobile_themename."/json");
+                    $m_zip->addFile(public_path('customers/' . $this->customer . '/m_config.json'),$mobile_themename."/config.json");
+                    $m_zip->close();
+                    ftp_put($conn, "mobile.zip", $m_path, FTP_BINARY);
+                }
+            }
             ftp_close($conn);
         }
+        
+//        $view_dir = app_path('views/templates/');
+//        $zipview = new ZipArchive;
+//        $view_path = public_path('customers/' . $this->customer . '/view.zip');
+//        if (file_exists($view_path)) {
+//            @unlink($view_path);
+//        }
+//        if($zipview->open($view_path, ZipArchive::CREATE)=== TRUE){
+//            $this->addFileToZip($view_dir.$pc_themename,$zipview,$pc_themename);
+//            $this->addFileToZip($view_dir.$mobile_themename,$zipview,$mobile_themename);
+//            $zipview->close();
+//        }
+//        $json_dir = public_path('templates/');
+//        $zipjson = new ZipArchive;
+//        $json_path = public_path('customers/' . $this->customer . '/json.zip');
+//        if (file_exists($json_path)) {
+//            @unlink($json_path);
+//        }
+//        if($zipjson->open($json_path, ZipArchive::CREATE)=== TRUE){
+//            $this->addFileToZip($json_dir.$pc_themename,$zipjson,$pc_themename);
+//            $this->addFileToZip($json_dir.$mobile_themename,$zipjson,$mobile_themename);
+//            $zipjson->close();
+//        }
+//        $conn = ftp_connect("182.61.23.43", "21");
+//        $path="gbpen/public/customers";
+//        if ($conn) {
+//            ftp_login($conn, '12t', 'Db#907$LKF');
+//            ftp_pasv($conn, true);
+//            if (@ftp_chdir($conn,$path. "/" . $this->customer) == FALSE) {
+//                ftp_mkdir($conn, $path."/" . $this->customer);
+//            }
+//            if (file_exists($view_path)) {
+//                ftp_put($conn, "view.zip", $view_path, FTP_BINARY);
+//            }
+//            ftp_put($conn, "json.zip", $json_path, FTP_BINARY);
+//            ftp_close($conn);
+//        }
         return Response::json(array("name" => Auth::user()->name, "remember_token" => Auth::user()->remember_token));
     }
 
