@@ -537,23 +537,24 @@ function columnController($scope, $http) {
                         img_upload.push($(this).data('name'));
                     });
                     var savePostRequest = function (first) {
-//                        alert('保存uedit3');
-                        $http.post('../classify-modify', {id: id,
-                            p_id: vpid,
-                            name: vname,
-                            en_name: enname,
-                            type: vlayout,
-                            url: vurl,
-                            open_page: open_page,
-                            is_show: s_t,
-                            keywords: vkeywords,
-                            description: vdescription,
-                            form_id: vform_id,
-                            img: _this.upload_picname,
-                            icon: icons,
-                            force: (first ? 0 : 1),
-                            article_type: article_type,
-                            page_content: editor.getContent()}).success(function (json) {
+                        $http.post('../classify-modify',
+                                {id: id,
+                                    p_id: vpid,
+                                    name: vname,
+                                    en_name: enname,
+                                    type: vlayout,
+                                    url: vurl,
+                                    open_page: open_page,
+                                    is_show: s_t,
+                                    keywords: vkeywords,
+                                    description: vdescription,
+                                    form_id: vform_id,
+                                    img: _this.upload_picname,
+                                    icon: icons,
+                                    force: (first ? 0 : 1),
+                                    article_type: article_type,
+                                    page_content: editor.getContent()
+                                }).success(function (json) {
                             checkJSON(json, function (json) {
                                 if (img_upload.length) {
                                     $http.post('../imgupload?target=category', {files: img_upload});
