@@ -686,6 +686,7 @@ class WebsiteController extends BaseController{
             $template->list2showtypetotal=$tpl_info['template']['list2showtypetotal'];
             $template->list3showtypetotal=$tpl_info['template']['list3showtypetotal'];
             $template->list4showtypetotal=$tpl_info['template']['list4showtypetotal'];
+            $template->updated_at= date("Y-m-d H:i:s", time());
             $insert_rst=$template->save();
             if($insert_rst){
                 $insert_id=$template->id;
