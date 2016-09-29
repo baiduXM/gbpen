@@ -812,7 +812,7 @@ class HtmlController extends BaseController {
                         $classify=new ClassifyController();
                         $data=$classify->classifyids();
                         $count=  count($data);
-                        $num=0;
+                        $num=1;
                         foreach((array)$data as $val){
                             if($num<$count){
                                 $this->end=0;
