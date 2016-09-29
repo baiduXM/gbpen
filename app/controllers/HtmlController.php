@@ -821,6 +821,7 @@ class HtmlController extends BaseController {
                             }
                             $this->pushcid=$val;
                             $this->pushPrecent();
+                            $num++;
                         }
                     }else{
                         $this->pushPrecent();
