@@ -17,7 +17,7 @@ class UploadController extends BaseController {
                 $typeModel = Input::get('type');
                 $filename = explode('.', $filename);
                 $filetype = end($filename);
-                if($typeModel == 1){
+                if ($typeModel == 1) {
                     $name = WebsiteInfo::leftJoin('template', 'pc_tpl_id', '=', 'template.id')->where('website_info.cus_id', $id)->pluck('name');
                 } else {
                     $name = WebsiteInfo::leftJoin('template', 'mobile_tpl_id', '=', 'template.id')->where('website_info.cus_id', $id)->pluck('name');
@@ -187,38 +187,39 @@ class UploadController extends BaseController {
             $ftp_array[1] = isset($ftp_array[1]) ? $ftp_array[1] : $port;
             $conn = ftp_connect($ftp_array[0], $ftp_array[1]);
             $filesize = 0; //===文件大小===
-            if(file_exists(public_path('customers/' . $customer . '/img.zip'))){
+            if (file_exists(public_path('customers/' . $customer . '/img.zip'))) {
                 @unlink(public_path('customers/' . $customer . '/img.zip'));
             }
-            $zip = new ZipArchive;
-            if($zip->open(public_path('customers/' . $customer . '/img.zip'), ZipArchive::CREATE) === TRUE){
-                foreach ((array) $files as $fileName) {
-                    $filepath = public_path('customers/' . $customer . '/cache_images/' . $fileName);
-                    if (file_exists($filepath)) {
-                        $filesize += filesize($filepath); //===累加大小
-                        $file = explode('.', $fileName);
-                        $type = end($file);
-                        $up_result = copy(public_path('customers/' . $customer . '/cache_images/' . $fileName), $destinationPath . '/l/' . $target . '/' . $fileName);
-                        if ($up_result) {
-                            $s_path = $destinationPath . '/s/' . $target . '/' . $fileName;
-                            $img_info = getimagesize($destinationPath . '/l/' . $target . '/' . $fileName);
-                            switch ($img_info[2]) {
-                                case 1:$type = 'gif';
-                                    break;
-                                case 2:$type = 'jpg';
-                                    break;
-                                case 3:$type = 'png';
-                                    break;
-                            }
-                            $this->resizeImage($destinationPath . '/l/' . $target . '/' . $fileName, $type, $s_path, $img_size, $img_size);
-                            copy($destinationPath . '/l/' . $target . '/' . $fileName, public_path('customers/' . $customer . '/mobile/images/l/' . $target . '/' . $fileName));
-                            $mobile_s_path = public_path('customers/' . $customer . '/mobile/images/s/') . $target . '/' . $fileName;
-                            $this->resizeImage(public_path('customers/' . $customer . '/mobile/images/l/') . $target . '/' . $fileName, $type, $mobile_s_path, $img_size, $img_size);
-                            if ($conn) {
-                                ftp_login($conn, $customerinfo->ftp_user, $customerinfo->ftp_pwd);
-                                ftp_pasv($conn, 1);
+            if ($conn) {
+                ftp_login($conn, $customerinfo->ftp_user, $customerinfo->ftp_pwd);
+                ftp_pasv($conn, 1);
+
+                $zip = new ZipArchive;
+                if ($zip->open(public_path('customers/' . $customer . '/img.zip'), ZipArchive::CREATE) === TRUE) {
+                    foreach ((array) $files as $fileName) {
+                        $filepath = public_path('customers/' . $customer . '/cache_images/' . $fileName);
+                        if (file_exists($filepath)) {
+                            $filesize += filesize($filepath); //===累加大小
+                            $file = explode('.', $fileName);
+                            $type = end($file);
+                            $up_result = copy(public_path('customers/' . $customer . '/cache_images/' . $fileName), $destinationPath . '/l/' . $target . '/' . $fileName);
+                            if ($up_result) {
+                                $s_path = $destinationPath . '/s/' . $target . '/' . $fileName;
+                                $img_info = getimagesize($destinationPath . '/l/' . $target . '/' . $fileName);
+                                switch ($img_info[2]) {
+                                    case 1:$type = 'gif';
+                                        break;
+                                    case 2:$type = 'jpg';
+                                        break;
+                                    case 3:$type = 'png';
+                                        break;
+                                }
+                                $this->resizeImage($destinationPath . '/l/' . $target . '/' . $fileName, $type, $s_path, $img_size, $img_size);
+                                copy($destinationPath . '/l/' . $target . '/' . $fileName, public_path('customers/' . $customer . '/mobile/images/l/' . $target . '/' . $fileName));
+                                $mobile_s_path = public_path('customers/' . $customer . '/mobile/images/s/') . $target . '/' . $fileName;
+                                $this->resizeImage(public_path('customers/' . $customer . '/mobile/images/l/') . $target . '/' . $fileName, $type, $mobile_s_path, $img_size, $img_size);
                                 if (trim($ftp) == '1') {
-                                    $zip->addFile($destinationPath . '/l/' . $target . '/' . $fileName,  'images/l/' . $target . '/' . $fileName);
+                                    $zip->addFile($destinationPath . '/l/' . $target . '/' . $fileName, 'images/l/' . $target . '/' . $fileName);
                                     $zip->addFile($destinationPath . '/s/' . $target . '/' . $fileName, 'images/s/' . $target . '/' . $fileName);
 //                                    $zip->addFile(public_path('customers/' . $customer . '/mobile/images/s/') . $target . '/' . $fileName,'mobile/images/l/' . $target . '/' . $fileName);
 //                                    $zip->addFile(public_path('customers/' . $customer . '/mobile/images/l/') . $target . '/' . $fileName,'mobile/images/s/' . $target . '/' . $fileName);
@@ -232,38 +233,36 @@ class UploadController extends BaseController {
                                     ftp_put($conn, $ftpdir . '/' . 'mobile/images/l/' . $target . '/' . $fileName, public_path('customers/' . $customer . '/mobile/images/l/') . $target . '/' . $fileName, FTP_BINARY);
                                     ftp_put($conn, $ftpdir . '/' . 'mobile/images/s/' . $target . '/' . $fileName, public_path('customers/' . $customer . '/mobile/images/s/') . $target . '/' . $fileName, FTP_BINARY);
                                 }
+                                $data[$i]['name'] = $fileName;
+                                $data[$i]['url'] = asset('customers/' . $customer . '/images/l/' . $target . '/' . $fileName);
+                                $data[$i]['s_url'] = '/images/s/' . $target . '/' . $fileName;
+                                $i++;
                             }
-                            $data[$i]['name'] = $fileName;
-                            $data[$i]['url'] = asset('customers/' . $customer . '/images/l/' . $target . '/' . $fileName);
-                            $data[$i]['s_url'] = '/images/s/' . $target . '/' . $fileName;
-                            $i++;
                         }
                     }
-                }
-                $zip->close();
-                if ($conn) {
-                    if (trim($ftp) == '1') {
-                        ftp_login($conn, $customerinfo->ftp_user, $customerinfo->ftp_pwd);
-                        ftp_pasv($conn, 1);
-                        $weburl = Customer::where('id', $cus_id)->pluck('weburl');
-                        $suf_url = str_replace('http://c', '', $weburl);
-                        $cus_name = strtolower(Customer::where('id', $cus_id)->pluck('name'));
+                    $zip->close();
+                    if ($conn) {
                         if (trim($ftp) == '1') {
-                            $ftp_pcdomain = "http://" . $cus_name . $suf_url;
+                            $weburl = Customer::where('id', $cus_id)->pluck('weburl');
+                            $suf_url = str_replace('http://c', '', $weburl);
+                            $cus_name = strtolower(Customer::where('id', $cus_id)->pluck('name'));
+                            if (trim($ftp) == '1') {
+                                $ftp_pcdomain = "http://" . $cus_name . $suf_url;
+                            }
+                            ftp_put($conn, $customer . '/img.zip', public_path('customers/' . $customer . '/img.zip'), FTP_BINARY);
+                            ftp_put($conn, $customer . '/img_unzip.php', public_path('packages/img_unzip.php'), FTP_ASCII);
+                            @file_get_contents("$ftp_pcdomain/img_unzip.php");
+                            @unlink(public_path('customers/' . $customer . '/img.zip'));
                         }
-                        ftp_put($conn, $customer . '/img.zip', public_path('customers/' . $customer . '/img.zip'), FTP_BINARY);
-                        ftp_put($conn, $customer . '/img_unzip.php', public_path('packages/img_unzip.php'), FTP_ASCII);
-                        @file_get_contents("$ftp_pcdomain/img_unzip.php");
-                        @unlink(public_path('customers/' . $customer . '/img.zip'));
                     }
                 }
+                //===扣除空间容量===
+                $Capacity = new CapacityController;
+                $Capacity->change_capa($filesize, 'use');
+                //===end===
+                @ftp_close($conn);
+                return Response::json(['err' => 0, 'msg' => '保存成功', 'data' => $data]);
             }
-            //===扣除空间容量===
-            $Capacity = new CapacityController;
-            $Capacity->change_capa($filesize, 'use');
-            //===end===
-            @ftp_close($conn);
-            return Response::json(['err' => 0, 'msg' => '保存成功', 'data' => $data]);
         } else {
             return Response::json(['err' => 1001, 'msg' => '保存失败']);
         }
