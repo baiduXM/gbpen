@@ -772,7 +772,7 @@ class HtmlController extends BaseController {
      */
     private function copydir($source_dir,$dest_dir){
         $dir = opendir($source_dir);
-        if(is_dir($dest_dir)){
+        if(!is_dir($dest_dir)){
             @mkdir($dest_dir);
         }
         while(false !== ( $file = readdir($dir)) ) {
