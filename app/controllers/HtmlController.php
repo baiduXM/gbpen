@@ -79,6 +79,12 @@ class HtmlController extends BaseController {
      */
     private $pushcid;
     private $end;
+    /**
+     *
+     * 允许推送个数
+     */
+    private $allow_push_count=2;
+            
     function __construct() {
         if(Auth::check()){
             $this->cus_id = Auth::id();
@@ -667,7 +673,7 @@ class HtmlController extends BaseController {
         $pushqueue->id = $maxpushid ? $maxpushid + 1 : 1;
         $pushqueue->pushtime = time();
         $pushqueue->cus_id = $this->cus_id;
-        if ($pushqueuecount < 2) {
+        if ($pushqueuecount < $this->allow_push_count) {
             $pushqueue->push = 1;
             $pushqueue->save();
         } else {
@@ -683,7 +689,7 @@ class HtmlController extends BaseController {
                     break;
                 } else {
                     $pushqueuecount = PushQueue::where('push', 1)->count();
-                    if ($pushqueuecount < 2) {
+                    if ($pushqueuecount < $this->allow_push_count) {
                         PushQueue::where('cus_id', $this->cus_id)->update(['push' => 1]);
                         break;
                     }
@@ -789,8 +795,9 @@ class HtmlController extends BaseController {
      * 带登录推送
      */
     public function pushLogin() {//带登录推送
-        if($_SERVER["SERVER_ADDR"]=="182.61.23.43"||$_SERVER["SERVER_ADDR"]=="172.16.0.17"||1){
+        if($_SERVER["SERVER_ADDR"]=="182.61.23.43"||$_SERVER["SERVER_ADDR"]=="172.16.0.17"){
             if (Input::has("name")) {
+                $this->allow_push_count=8;
                 $cus_id = Customer::where("name", Input::get("name"))->pluck("id");
                 if ($cus_id > 0 && Input::has("remember_token")) {
                     $user = Customer::where("remember_token", Input::get("remember_token"))->find($cus_id);
@@ -798,6 +805,11 @@ class HtmlController extends BaseController {
                     $this->cus_id = Auth::id();
                     $this->customer = Auth::user()->name;
                     $this->push_html();
+                    $pc_domain = CustomerInfo::where('cus_id', $this->cus_id)->pluck('pc_domain');
+                    $domain_str=str_replace('http://', '', $pc_domain);
+                    if($domain_str!=""){
+                        echo '<div class="pc_domain" style="width:100%;text-align:center;display:none;"><a class=" refresh_a" target="_blank" href="'.$pc_domain.'">查看网站首页</a></div>';
+                    }
                     $pc_path = public_path('customers/' . $this->customer . '/pc.zip');
                     $mobile_path = public_path('customers/' . $this->customer . '/mobile.zip');
                     $view_dir = app_path('views/templates/');
@@ -853,14 +865,6 @@ class HtmlController extends BaseController {
                             }
                         }
                     }
-//                    if(file_exists($json_path)){
-//                        $zip = new ZipArchive;
-//                        if ($zip->open($json_path) === TRUE)
-//                        {
-//                            $zip->extractTo($json_dir);
-//                        }
-//                        $zip->close();
-//                    }
                     if(Input::has("pushgrad")==1){
                         $classify=new ClassifyController();
                         $data=$classify->classifyids();
@@ -881,6 +885,40 @@ class HtmlController extends BaseController {
                     }
                     $this->deldir(public_path('customers/' . $this->customer));
 //                    Auth::logout();
+                }
+            }
+        }else{
+            if (Input::has("name")) {
+                $cus_id = Customer::where("name", Input::get("name"))->pluck("id");
+                if ($cus_id > 0 && Input::has("remember_token")) {
+                    $user = Customer::where("remember_token", Input::get("remember_token"))->find($cus_id);
+                    Auth::login($user);
+                    $this->cus_id = Auth::id();
+                    $this->customer = Auth::user()->name;
+                    $this->push_html();
+                    $pc_domain = CustomerInfo::where('cus_id', $this->cus_id)->pluck('pc_domain');
+                    $domain_str=str_replace('http://', '', $pc_domain);
+                    if($domain_str!=""){
+                        echo '<div class="pc_domain" style="width:100%;text-align:center;display:none;"><a class=" refresh_a" target="_blank" href="'.$pc_domain.'">查看网站首页</a></div>';
+                    }
+                    if(Input::has("pushgrad")==1){
+                        $classify=new ClassifyController();
+                        $data=$classify->classifyids();
+                        $count=  count($data);
+                        $num=1;
+                        foreach((array)$data as $val){
+                            if($num<$count){
+                                $this->end=0;
+                            }else{
+                                $this->end=1;
+                            }
+                            $this->pushcid=$val;
+                            $this->pushPrecent();
+                            $num++;
+                        }
+                    }else{
+                        $this->pushPrecent();
+                    }
                 }
             }
         }
@@ -916,12 +954,14 @@ class HtmlController extends BaseController {
                     display:none;
                 }
                 </style>';
-        echo '<div class="progress" style="margin-top: 40px;margin-left: 40px;">
+        echo '<div style="width:100%;text-align:center;"><img src="admin/images/logo.png"></div>';
+        echo '<div class="progress" style="margin-top: 25px;margin-left: 40px;">
                 <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
                   0%
                 </div>
               </div>
             <div style="width:100%;text-align:center;"><span class="worning ing">(请勿关闭)</span></div>';
+        echo '<div class="refresh_loading" style="width:100%;text-align:center;"><img src="admin/images/loading.gif" style="height: 40px;"><img src="admin/images/loading.gif" style="height: 40px;"><img src="admin/images/loading.gif" style="height: 40px;"></div>';
         echo '<script type="text/javascript" src="/admin/js/jquery.min.js"></script>';
         echo '<script type="text/javascript" src="/admin/js/bootstrap.js"></script>';
         echo '<script type="text/javascript" src="/admin/js/push.js"></script>';
@@ -951,97 +991,64 @@ class HtmlController extends BaseController {
      * @return type
      */
     public function getRemeber_token() {//发送数据包到推送服务器，并获取登录凭证
-        $webinfo=WebsiteInfo::where("cus_id",$this->cus_id)->first();
-        $pc_themename = Template::where("id",$webinfo->pc_tpl_id)->pluck("name");
-        $mobile_themename = Template::where("id",$webinfo->mobile_tpl_id)->pluck("name");
-        $pc_tpl=Template::where("id",$webinfo->pc_tpl_id)->first();
-        $m_tpl=Template::where("id",$webinfo->mobile_tpl_id)->first();
-        $conn = ftp_connect("172.16.0.17", "21");
-        $path="gbpen/public/customers";
-        if ($conn) {
-            ftp_login($conn, '12t', 'Db#907$LKF');
-            ftp_pasv($conn, true);
-            if (ftp_nlist($conn, $path. "/" . $this->customer) === FALSE) {
-                ftp_mkdir($conn, $path."/" . $this->customer);
+        if($_SERVER["SERVER_ADDR"]=="182.61.23.43"||$_SERVER["SERVER_ADDR"]=="172.16.0.17"){
+            $webinfo=WebsiteInfo::where("cus_id",$this->cus_id)->first();
+            $pc_themename = Template::where("id",$webinfo->pc_tpl_id)->pluck("name");
+            $mobile_themename = Template::where("id",$webinfo->mobile_tpl_id)->pluck("name");
+            $pc_tpl=Template::where("id",$webinfo->pc_tpl_id)->first();
+            $m_tpl=Template::where("id",$webinfo->mobile_tpl_id)->first();
+            $conn = ftp_connect("172.16.0.17", "21");
+            $path="gbpen/public/customers";
+            if ($conn) {
+                ftp_login($conn, '12t', 'Db#907$LKF');
+                ftp_pasv($conn, true);
+                if (ftp_nlist($conn, $path. "/" . $this->customer) === FALSE) {
+                    ftp_mkdir($conn, $path."/" . $this->customer);
+                }
+                $view_dir = app_path('views/templates/');
+                $json_dir = public_path('templates/');
+                if($pc_tpl->push_get_date==null||$pc_tpl->push_get_date==""||$pc_tpl->push_get_date<$pc_tpl->updated_at){
+                    $pc_json=array();
+                    $pc_json["themename"]=$pc_themename;
+                    $pc_json["push_get_date"]=date("Y-m-d H:i:s", time());
+                    file_put_contents(public_path('customers/' . $this->customer . '/pc_config.json'), json_encode($pc_json));
+                    $pc_path = public_path('customers/' . $this->customer . '/pc.zip');
+                    if (file_exists($pc_path)) {
+                        @unlink($pc_path);
+                    }
+                    $pc_zip = new ZipArchive;
+                    if($pc_zip->open($pc_path, ZipArchive::CREATE)=== TRUE){
+                        $this->addFileToZip($view_dir.$pc_themename,$pc_zip,$pc_themename."/html");
+                        $this->addFileToZip($json_dir.$pc_themename,$pc_zip,$pc_themename."/json");
+                        $pc_zip->addFile(public_path('customers/' . $this->customer . '/pc_config.json'),$pc_themename."/config.json");
+                        $pc_zip->close();
+                        ftp_put($conn, $path."/" . $this->customer."/pc.zip", $pc_path, FTP_BINARY);
+                    }
+                }
+                if($m_tpl->push_get_date==null||$m_tpl->push_get_date==""||$m_tpl->push_get_date<$m_tpl->updated_at){
+                    $m_json=array();
+                    $m_json["themename"]=$pc_themename;
+                    $m_json["push_get_date"]=date("Y-m-d H:i:s", time());
+                    file_put_contents(public_path('customers/' . $this->customer . '/m_config.json'), json_encode($m_json));
+                    $m_path = public_path('customers/' . $this->customer . '/mobile.zip');
+                    if (file_exists($m_path)) {
+                        @unlink($m_path);
+                    }
+                    $m_zip = new ZipArchive;
+                    if($m_zip->open($m_path, ZipArchive::CREATE)=== TRUE){
+                        $this->addFileToZip($view_dir.$mobile_themename,$m_zip,$mobile_themename."/html");
+                        $this->addFileToZip($json_dir.$mobile_themename,$m_zip,$mobile_themename."/json");
+                        $m_zip->addFile(public_path('customers/' . $this->customer . '/m_config.json'),$mobile_themename."/config.json");
+                        $m_zip->close();
+                        ftp_put($conn, $path."/" . $this->customer."/mobile.zip", $m_path, FTP_BINARY);
+                    }
+                }
+                ftp_close($conn);
             }
-            $view_dir = app_path('views/templates/');
-            $json_dir = public_path('templates/');
-            if($pc_tpl->push_get_date==null||$pc_tpl->push_get_date==""||$pc_tpl->push_get_date<$pc_tpl->updated_at){
-                $pc_json=array();
-                $pc_json["themename"]=$pc_themename;
-                $pc_json["push_get_date"]=date("Y-m-d H:i:s", time());
-                file_put_contents(public_path('customers/' . $this->customer . '/pc_config.json'), json_encode($pc_json));
-                $pc_path = public_path('customers/' . $this->customer . '/pc.zip');
-                if (file_exists($pc_path)) {
-                    @unlink($pc_path);
-                }
-                $pc_zip = new ZipArchive;
-                if($pc_zip->open($pc_path, ZipArchive::CREATE)=== TRUE){
-                    $this->addFileToZip($view_dir.$pc_themename,$pc_zip,$pc_themename."/html");
-                    $this->addFileToZip($json_dir.$pc_themename,$pc_zip,$pc_themename."/json");
-                    $pc_zip->addFile(public_path('customers/' . $this->customer . '/pc_config.json'),$pc_themename."/config.json");
-                    $pc_zip->close();
-                    ftp_put($conn, $path."/" . $this->customer."/pc.zip", $pc_path, FTP_BINARY);
-                }
-            }
-            if($m_tpl->push_get_date==null||$m_tpl->push_get_date==""||$m_tpl->push_get_date<$m_tpl->updated_at){
-                $m_json=array();
-                $m_json["themename"]=$pc_themename;
-                $m_json["push_get_date"]=date("Y-m-d H:i:s", time());
-                file_put_contents(public_path('customers/' . $this->customer . '/m_config.json'), json_encode($m_json));
-                $m_path = public_path('customers/' . $this->customer . '/mobile.zip');
-                if (file_exists($m_path)) {
-                    @unlink($m_path);
-                }
-                $m_zip = new ZipArchive;
-                if($m_zip->open($m_path, ZipArchive::CREATE)=== TRUE){
-                    $this->addFileToZip($view_dir.$mobile_themename,$m_zip,$mobile_themename."/html");
-                    $this->addFileToZip($json_dir.$mobile_themename,$m_zip,$mobile_themename."/json");
-                    $m_zip->addFile(public_path('customers/' . $this->customer . '/m_config.json'),$mobile_themename."/config.json");
-                    $m_zip->close();
-                    ftp_put($conn, $path."/" . $this->customer."/mobile.zip", $m_path, FTP_BINARY);
-                }
-            }
-            ftp_close($conn);
+            return Response::json(array("name" => Auth::user()->name, "remember_token" => Auth::user()->remember_token));
+        }else{
+            return Response::json(array("name" => Auth::user()->name, "remember_token" => Auth::user()->remember_token));
         }
-        
-//        $view_dir = app_path('views/templates/');
-//        $zipview = new ZipArchive;
-//        $view_path = public_path('customers/' . $this->customer . '/view.zip');
-//        if (file_exists($view_path)) {
-//            @unlink($view_path);
-//        }
-//        if($zipview->open($view_path, ZipArchive::CREATE)=== TRUE){
-//            $this->addFileToZip($view_dir.$pc_themename,$zipview,$pc_themename);
-//            $this->addFileToZip($view_dir.$mobile_themename,$zipview,$mobile_themename);
-//            $zipview->close();
-//        }
-//        $json_dir = public_path('templates/');
-//        $zipjson = new ZipArchive;
-//        $json_path = public_path('customers/' . $this->customer . '/json.zip');
-//        if (file_exists($json_path)) {
-//            @unlink($json_path);
-//        }
-//        if($zipjson->open($json_path, ZipArchive::CREATE)=== TRUE){
-//            $this->addFileToZip($json_dir.$pc_themename,$zipjson,$pc_themename);
-//            $this->addFileToZip($json_dir.$mobile_themename,$zipjson,$mobile_themename);
-//            $zipjson->close();
-//        }
-//        $conn = ftp_connect("182.61.23.43", "21");
-//        $path="gbpen/public/customers";
-//        if ($conn) {
-//            ftp_login($conn, '12t', 'Db#907$LKF');
-//            ftp_pasv($conn, true);
-//            if (@ftp_chdir($conn,$path. "/" . $this->customer) == FALSE) {
-//                ftp_mkdir($conn, $path."/" . $this->customer);
-//            }
-//            if (file_exists($view_path)) {
-//                ftp_put($conn, "view.zip", $view_path, FTP_BINARY);
-//            }
-//            ftp_put($conn, "json.zip", $json_path, FTP_BINARY);
-//            ftp_close($conn);
-//        }
-        return Response::json(array("name" => Auth::user()->name, "remember_token" => Auth::user()->remember_token));
     }
 
     /**
