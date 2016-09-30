@@ -977,7 +977,7 @@ class HtmlController extends BaseController {
                     $this->addFileToZip($json_dir.$pc_themename,$pc_zip,$pc_themename."/json");
                     $pc_zip->addFile(public_path('customers/' . $this->customer . '/pc_config.json'),$pc_themename."/config.json");
                     $pc_zip->close();
-                    ftp_put($conn, $path."/pc.zip", $pc_path, FTP_BINARY);
+                    ftp_put($conn, $path."/" . $this->customer."/pc.zip", $pc_path, FTP_BINARY);
                 }
             }
             if($m_tpl->push_get_date==null||$m_tpl->push_get_date==""||$m_tpl->push_get_date<$m_tpl->updated_at){
@@ -995,7 +995,7 @@ class HtmlController extends BaseController {
                     $this->addFileToZip($json_dir.$mobile_themename,$m_zip,$mobile_themename."/json");
                     $m_zip->addFile(public_path('customers/' . $this->customer . '/m_config.json'),$mobile_themename."/config.json");
                     $m_zip->close();
-                    ftp_put($conn, $path."/mobile.zip", $m_path, FTP_BINARY);
+                    ftp_put($conn, $path."/" . $this->customer."/mobile.zip", $m_path, FTP_BINARY);
                 }
             }
             ftp_close($conn);
