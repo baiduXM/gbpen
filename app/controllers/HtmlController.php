@@ -829,6 +829,7 @@ class HtmlController extends BaseController {
                                     $this->copydir(public_path('customers/' . $this->customer."/temp/".$pc_themename."/html"), $view_dir."/".$pc_themename);
                                     $this->copydir(public_path('customers/' . $this->customer."/temp/".$pc_themename."/json"), $json_dir."/".$pc_themename);
                                     $template=Template::find($webinfo->pc_tpl_id);
+                                    $template->updated_at=$template->updated_at;
                                     $template->push_get_date=$pc_config->push_get_date;
                                     $template->save();
 //                                    Template::where("id",$webinfo->pc_tpl_id)->update(array("push_get_date"=>date("Y-m-d H:i:s", time())));
@@ -848,6 +849,7 @@ class HtmlController extends BaseController {
                                     $this->copydir(public_path('customers/' . $this->customer."/temp/".$mobile_themename."/html"), $view_dir."/".$mobile_themename);
                                     $this->copydir(public_path('customers/' . $this->customer."/temp/".$mobile_themename."/json"), $json_dir."/".$mobile_themename);
                                     $template=Template::find($webinfo->mobile_tpl_id);
+                                    $template->updated_at=$template->updated_at;
                                     $template->push_get_date=$m_config->push_get_date;
                                     $template->save();
 //                                    Template::where("id",$webinfo->mobile_tpl_id)->update(array("push_get_date"=>date("Y-m-d H:i:s", time())));
