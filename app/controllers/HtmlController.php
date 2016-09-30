@@ -846,9 +846,8 @@ class HtmlController extends BaseController {
                                 if($m_tpl->push_get_date==null||$m_tpl->push_get_date==""||$m_tpl->push_get_date<$m_config->push_get_date){
                                     $this->copydir(public_path('customers/' . $this->customer."/temp/".$mobile_themename."/html"), $view_dir."/".$mobile_themename);
                                     $this->copydir(public_path('customers/' . $this->customer."/temp/".$mobile_themename."/json"), $json_dir."/".$mobile_themename);
-                                        if($m_config->push_get_date>$m_tpl->updated_at){
-                                            Template::where("id",$webinfo->mobile_tpl_id)->update(array("push_get_date"=>date("Y-m-d H:i:s", time())));
-                                        }
+                                    if($m_config->push_get_date>$m_tpl->updated_at){
+                                        Template::where("id",$webinfo->mobile_tpl_id)->update(array("push_get_date"=>date("Y-m-d H:i:s", time())));
                                     }
                                 }
                             }
