@@ -795,7 +795,7 @@ class HtmlController extends BaseController {
      * 带登录推送
      */
     public function pushLogin() {//带登录推送
-        if($_SERVER["SERVER_ADDR"]=="182.61.23.43"||$_SERVER["SERVER_ADDR"]=="172.16.0.17"){
+        if($_SERVER["SERVER_ADDR"]=="182.61.23.43"||$_SERVER["SERVER_ADDR"]=="172.16.0.17"||1){
             if (Input::has("name")) {
                 $this->allow_push_count=8;
                 $cus_id = Customer::where("name", Input::get("name"))->pluck("id");
@@ -991,7 +991,7 @@ class HtmlController extends BaseController {
      * @return type
      */
     public function getRemeber_token() {//发送数据包到推送服务器，并获取登录凭证
-        if($_SERVER["SERVER_ADDR"]=="182.61.23.43"||$_SERVER["SERVER_ADDR"]=="172.16.0.17"){
+        if($_SERVER["SERVER_ADDR"]=="182.61.23.43"||$_SERVER["SERVER_ADDR"]=="172.16.0.17"||1){
             $webinfo=WebsiteInfo::where("cus_id",$this->cus_id)->first();
             $pc_themename = Template::where("id",$webinfo->pc_tpl_id)->pluck("name");
             $mobile_themename = Template::where("id",$webinfo->mobile_tpl_id)->pluck("name");
