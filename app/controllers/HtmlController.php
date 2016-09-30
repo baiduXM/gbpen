@@ -828,7 +828,10 @@ class HtmlController extends BaseController {
                                 if($pc_tpl->push_get_date==null||$pc_tpl->push_get_date==""||$pc_tpl->push_get_date<$pc_config->push_get_date){
                                     $this->copydir(public_path('customers/' . $this->customer."/temp/".$pc_themename."/html"), $view_dir."/".$pc_themename);
                                     $this->copydir(public_path('customers/' . $this->customer."/temp/".$pc_themename."/json"), $json_dir."/".$pc_themename);
-                                    Template::where("id",$webinfo->pc_tpl_id)->update(array("push_get_date"=>date("Y-m-d H:i:s", time())));
+                                    $template=Template::find($webinfo->pc_tpl_id);
+                                    $template->push_get_date=$pc_config->push_get_date;
+                                    $template->save();
+//                                    Template::where("id",$webinfo->pc_tpl_id)->update(array("push_get_date"=>date("Y-m-d H:i:s", time())));
                                 }
                             }
                         }
@@ -844,7 +847,10 @@ class HtmlController extends BaseController {
                                 if($m_tpl->push_get_date==null||$m_tpl->push_get_date==""||$m_tpl->push_get_date<$m_config->push_get_date){
                                     $this->copydir(public_path('customers/' . $this->customer."/temp/".$mobile_themename."/html"), $view_dir."/".$mobile_themename);
                                     $this->copydir(public_path('customers/' . $this->customer."/temp/".$mobile_themename."/json"), $json_dir."/".$mobile_themename);
-                                    Template::where("id",$webinfo->mobile_tpl_id)->update(array("push_get_date"=>date("Y-m-d H:i:s", time())));
+                                    $template=Template::find($webinfo->mobile_tpl_id);
+                                    $template->push_get_date=$m_config->push_get_date;
+                                    $template->save();
+//                                    Template::where("id",$webinfo->mobile_tpl_id)->update(array("push_get_date"=>date("Y-m-d H:i:s", time())));
                                 }
                             }
                         }
