@@ -960,13 +960,13 @@ class HtmlController extends BaseController {
             if (ftp_nlist($conn, $path. "/" . $this->customer) === FALSE) {
                 ftp_mkdir($conn, $path."/" . $this->customer);
             }
+            $view_dir = app_path('views/templates/');
+            $json_dir = public_path('templates/');
             if($pc_tpl->push_get_date==null||$pc_tpl->push_get_date==""||$pc_tpl->push_get_date<$pc_tpl->updated_at){
                 $pc_json=array();
                 $pc_json["themename"]=$pc_themename;
                 $pc_json["push_get_date"]=date("Y-m-d H:i:s", time());
                 file_put_contents(public_path('customers/' . $this->customer . '/pc_config.json'), json_encode($pc_json));
-                $view_dir = app_path('views/templates/');
-                $json_dir = public_path('templates/');
                 $pc_path = public_path('customers/' . $this->customer . '/pc.zip');
                 if (file_exists($pc_path)) {
                     @unlink($pc_path);
