@@ -828,7 +828,7 @@ class HtmlController extends BaseController {
                                 if($pc_tpl->push_get_date==null||$pc_tpl->push_get_date==""||$pc_tpl->push_get_date<$pc_config->push_get_date){
                                     $this->copydir(public_path('customers/' . $this->customer."/temp/".$pc_themename."/html"), $view_dir."/".$pc_themename);
                                     $this->copydir(public_path('customers/' . $this->customer."/temp/".$pc_themename."/json"), $json_dir."/".$pc_themename);
-                                    Template::where("id",$webinfo->pc_tpl_id)->update(array("push_get_date"=>$pc_config->push_get_date));
+                                    Template::where("id",$webinfo->pc_tpl_id)->update(array("push_get_date"=>date("Y-m-d H:i:s", time())));
                                 }
                             }
                         }
@@ -844,7 +844,7 @@ class HtmlController extends BaseController {
                                 if($m_tpl->push_get_date==null||$m_tpl->push_get_date==""||$m_tpl->push_get_date<$m_config->push_get_date){
                                     $this->copydir(public_path('customers/' . $this->customer."/temp/".$mobile_themename."/html"), $view_dir."/".$mobile_themename);
                                     $this->copydir(public_path('customers/' . $this->customer."/temp/".$mobile_themename."/json"), $json_dir."/".$mobile_themename);
-                                    Template::where("id",$webinfo->mobile_tpl_id)->update(array("push_get_date"=>$m_config->push_get_date));
+                                    Template::where("id",$webinfo->mobile_tpl_id)->update(array("push_get_date"=>date("Y-m-d H:i:s", time())));
                                 }
                             }
                         }
@@ -957,7 +957,7 @@ class HtmlController extends BaseController {
         if ($conn) {
             ftp_login($conn, '12t', 'Db#907$LKF');
             ftp_pasv($conn, true);
-            if (@ftp_chdir($conn,$path. "/" . $this->customer) == FALSE) {
+            if (ftp_nlist($conn, $path. "/" . $this->customer) === FALSE) {
                 ftp_mkdir($conn, $path."/" . $this->customer);
             }
             if($pc_tpl->push_get_date==null||$pc_tpl->push_get_date==""||$pc_tpl->push_get_date<$pc_tpl->updated_at){
@@ -977,7 +977,7 @@ class HtmlController extends BaseController {
                     $this->addFileToZip($json_dir.$pc_themename,$pc_zip,$pc_themename."/json");
                     $pc_zip->addFile(public_path('customers/' . $this->customer . '/pc_config.json'),$pc_themename."/config.json");
                     $pc_zip->close();
-                    ftp_put($conn, "pc.zip", $pc_path, FTP_BINARY);
+                    ftp_put($conn, $path."/pc.zip", $pc_path, FTP_BINARY);
                 }
             }
             if($m_tpl->push_get_date==null||$m_tpl->push_get_date==""||$m_tpl->push_get_date<$m_tpl->updated_at){
@@ -995,7 +995,7 @@ class HtmlController extends BaseController {
                     $this->addFileToZip($json_dir.$mobile_themename,$m_zip,$mobile_themename."/json");
                     $m_zip->addFile(public_path('customers/' . $this->customer . '/m_config.json'),$mobile_themename."/config.json");
                     $m_zip->close();
-                    ftp_put($conn, "mobile.zip", $m_path, FTP_BINARY);
+                    ftp_put($conn, $path."/mobile.zip", $m_path, FTP_BINARY);
                 }
             }
             ftp_close($conn);
