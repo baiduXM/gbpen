@@ -795,11 +795,11 @@ class HtmlController extends BaseController {
      * 带登录推送
      */
     public function pushLogin() {//带登录推送
-        if($_SERVER["SERVER_ADDR"]=="182.61.23.43"||$_SERVER["SERVER_ADDR"]=="172.16.0.17"||1){
+        if($_SERVER["SERVER_ADDR"]=="182.61.23.43"||$_SERVER["SERVER_ADDR"]=="172.16.0.17"){
             if (Input::has("name")) {
                 $this->allow_push_count=8;
                 $cus_id = Customer::where("name", Input::get("name"))->pluck("id");
-                if ($cus_id > 0 && Input::has("remember_token")) {
+                if ($cus_id > 0) {
                     $user = Customer::where("remember_token", Input::get("remember_token"))->find($cus_id);
                     Auth::login($user);
                     $this->cus_id = Auth::id();
@@ -868,17 +868,22 @@ class HtmlController extends BaseController {
                     if(Input::has("pushgrad")==1){
                         $classify=new ClassifyController();
                         $data=$classify->classifyids();
-                        $count=  count($data);
-                        $num=1;
-                        foreach((array)$data as $val){
-                            if($num<$count){
-                                $this->end=0;
-                            }else{
-                                $this->end=1;
-                            }
-                            $this->pushcid=$val;
-                            $this->pushPrecent();
-                            $num++;
+//                        $count=  count($data);
+//                        $num=1;
+//                        foreach((array)$data as $val){
+//                            if($num<$count){
+//                                $this->end=0;
+//                            }else{
+//                                $this->end=1;
+//                            }
+//                            $this->pushcid=$val;
+//                            $this->pushPrecent();
+//                            $num++;
+//                        }
+                        if(count($data)>0){
+                            echo '<iframe id="grad_push" src="../grad_push?pushgrad=1&end=0&push_c_id='.$data[0].'&name='.Input::get("name").'&remember_token='.Input::get("remember_token").'" frameborder="0" style="display:none;"></iframe>';
+                            ob_flush();
+                            flush();
                         }
                     }else{
                         $this->pushPrecent();
@@ -890,7 +895,7 @@ class HtmlController extends BaseController {
         }else{
             if (Input::has("name")) {
                 $cus_id = Customer::where("name", Input::get("name"))->pluck("id");
-                if ($cus_id > 0 && Input::has("remember_token")) {
+                if ($cus_id > 0) {
                     $user = Customer::where("remember_token", Input::get("remember_token"))->find($cus_id);
                     Auth::login($user);
                     $this->cus_id = Auth::id();
@@ -904,17 +909,22 @@ class HtmlController extends BaseController {
                     if(Input::has("pushgrad")==1){
                         $classify=new ClassifyController();
                         $data=$classify->classifyids();
-                        $count=  count($data);
-                        $num=1;
-                        foreach((array)$data as $val){
-                            if($num<$count){
-                                $this->end=0;
-                            }else{
-                                $this->end=1;
-                            }
-                            $this->pushcid=$val;
-                            $this->pushPrecent();
-                            $num++;
+//                        $count=  count($data);
+//                        $num=1;
+//                        foreach((array)$data as $val){
+//                            if($num<$count){
+//                                $this->end=0;
+//                            }else{
+//                                $this->end=1;
+//                            }
+//                            $this->pushcid=$val;
+//                            $this->pushPrecent();
+//                            $num++;
+//                        }
+                        if(count($data)>0){
+                            echo '<iframe id="grad_push" src="../grad_push?pushgrad=1&end=0&push_c_id='.$data[0].'" frameborder="0" style="display:none;"></iframe>';
+                            ob_flush();
+                            flush();
                         }
                     }else{
                         $this->pushPrecent();
@@ -928,7 +938,7 @@ class HtmlController extends BaseController {
      * 推送是获取所有栏目id
      */
     public function push_classify_ids() {//推送是获取所有栏目id
-        if($_SERVER["SERVER_ADDR"]=="182.61.23.43"||$_SERVER["SERVER_ADDR"]=="172.16.0.17"||1){
+        if($_SERVER["SERVER_ADDR"]=="182.61.23.43"||$_SERVER["SERVER_ADDR"]=="172.16.0.17"){
             if (Input::has("name")) {
                 $cus_id = Customer::where("name", Input::get("name"))->pluck("id");
                 if ($cus_id > 0 && Input::has("remember_token")) {
@@ -991,7 +1001,7 @@ class HtmlController extends BaseController {
      * @return type
      */
     public function getRemeber_token() {//发送数据包到推送服务器，并获取登录凭证
-        if($_SERVER["SERVER_ADDR"]=="182.61.23.43"||$_SERVER["SERVER_ADDR"]=="172.16.0.17"||1){
+        if($_SERVER["SERVER_ADDR"]=="182.61.23.52"||$_SERVER["SERVER_ADDR"]=="172.16.0.16"){
             $webinfo=WebsiteInfo::where("cus_id",$this->cus_id)->first();
             $pc_themename = Template::where("id",$webinfo->pc_tpl_id)->pluck("name");
             $mobile_themename = Template::where("id",$webinfo->mobile_tpl_id)->pluck("name");
@@ -1045,12 +1055,32 @@ class HtmlController extends BaseController {
                 }
                 ftp_close($conn);
             }
-            return Response::json(array("name" => Auth::user()->name, "remember_token" => Auth::user()->remember_token));
+            $remember_token=Auth::user()->remember_token;
+            if($remember_token==""||$remember_token==null){
+                $remember_token="";
+            }
+            return Response::json(array("name" => Auth::user()->name, "remember_token" => $remember_token));
         }else{
-            return Response::json(array("name" => Auth::user()->name, "remember_token" => Auth::user()->remember_token));
+            $remember_token=Auth::user()->remember_token;
+            if($remember_token==""||$remember_token==null){
+                $remember_token="";
+            }
+            return Response::json(array("name" => Auth::user()->name, "remember_token" => $remember_token));
         }
     }
-
+    public function grad_push(){
+        if (Input::has("name")) {
+            $this->allow_push_count=8;
+            $cus_id = Customer::where("name", Input::get("name"))->pluck("id");
+            if ($cus_id > 0 && Input::has("remember_token")) {
+                $user = Customer::where("remember_token", Input::get("remember_token"))->find($cus_id);
+                Auth::login($user);
+                $this->cus_id = Auth::id();
+                $this->customer = Auth::user()->name;
+                $this->pushPrecent();
+            }
+        }
+    }
     /**
      * 推送
      * 
@@ -1059,16 +1089,23 @@ class HtmlController extends BaseController {
     public function pushPrecent() {
         set_time_limit(0);
         if(Input::has("pushgrad")==1){
-            $pushcid = $this->pushcid;
-            $end = $this->end;
-            $this->percent=0;
-            $this->lastpercent=0;
-            $this->html_precent=0;
-            $this->last_html_precent=0;
-            $this->pcpush=0;
-            $this->mobilepush=0;
-            $this->quickbarpush=0;
-            $this->mobilehomepagepush=0;
+            echo '<script type="text/javascript">function refresh(str){parent.refresh(str);};</script>';
+            if (Input::has("push_c_id")) {
+                $pushcid = Input::get("push_c_id");
+            }
+            if (Input::has("end")) {
+                $end = Input::get("end");
+            }
+//            $pushcid = $this->pushcid;
+//            $end = $this->end;
+//            $this->percent=0;
+//            $this->lastpercent=0;
+//            $this->html_precent=0;
+//            $this->last_html_precent=0;
+//            $this->pcpush=0;
+//            $this->mobilepush=0;
+//            $this->quickbarpush=0;
+//            $this->mobilehomepagepush=0;
         }else{
             if(!Input::has("name")){
                 echo '<script type="text/javascript">function refresh(str){parent.refresh(str);};</script>';

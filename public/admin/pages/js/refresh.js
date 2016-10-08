@@ -48,7 +48,11 @@
             $('.push_refresh_ing').find('img').addClass('rotate');
             $http.get('../getremeber_token').success(function (json) {
                 name=json.name;
-                remember_token=json.remember_token;
+                if(json.remember_token==""||json.remember_token==null){
+                    remember_token='';
+                }else{
+                    remember_token=json.remember_token;
+                }
                 $(".push_refresh_ing").hide();
                 $('#refresh_iframe').attr('src','http://182.61.23.43/pushlogin?pushgrad=1&name='+json.name+"&remember_token="+json.remember_token);
             });
@@ -66,7 +70,11 @@
             $('.push_refresh_ing ').find('img').addClass('rotate');
             $http.get('../getremeber_token').success(function (json) {
                 name=json.name;
-                remember_token=json.remember_token;
+                if(json.remember_token==""||json.remember_token==null){
+                    remember_token='';
+                }else{
+                    remember_token=json.remember_token;
+                }
                 $(".push_refresh_ing").hide();
                 $('#refresh_iframe').attr('src','http://182.61.23.43/pushlogin?name='+json.name+"&remember_token="+json.remember_token);
             });

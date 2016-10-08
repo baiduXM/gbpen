@@ -44,6 +44,9 @@ Route::get('login-info', [//用户名称
 Route::get('pushlogin', [//推送时验证登录
     'uses' => 'HTMLController@pushLogin'
 ]);
+Route::get('grad_push', [//分组推送
+    'uses' => 'HTMLController@grad_push'
+]);
 Route::get('push-classify-ids', [//推送时验证登录
     'uses' => 'HTMLController@push_classify_ids'
 ]);

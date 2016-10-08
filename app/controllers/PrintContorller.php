@@ -509,11 +509,16 @@ class PrintController extends BaseController {
                     if ($k === 'link') {
                         $result[$k] = $this->domain . $v;
                     } else {
-                        if (file_exists(public_path("customers/" . $this->customer . '/images/') . "l/page_index/" . $v)) {
-                            $result[$k] = $this->source_dir . "l/page_index/" . $v;
-                        } else {
+                        if(file_exists(public_path("templates/" . $this->themename . '/images/') . preg_replace('/^images\/(.*?)$/', '$1', $v))){
                             $result[$k] = $this->site_url . 'images/' . preg_replace('/^images\/(.*?)$/', '$1', $v);
+                        }else{
+                            $result[$k] = $this->source_dir . "l/page_index/" . $v;
                         }
+//                        if (file_exists(public_path("customers/" . $this->customer . '/images/') . "l/page_index/" . $v)) {
+//                            $result[$k] = $this->source_dir . "l/page_index/" . $v;
+//                        } else {
+//                            $result[$k] = $this->site_url . 'images/' . preg_replace('/^images\/(.*?)$/', '$1', $v);
+//                        }
                     }
                 }
             }
