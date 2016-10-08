@@ -884,6 +884,12 @@ class HtmlController extends BaseController {
                             echo '<iframe id="grad_push" src="../grad_push?pushgrad=1&end=0&push_c_id='.$data[0].'&name='.Input::get("name").'&remember_token='.Input::get("remember_token").'" frameborder="0" style="display:none;"></iframe>';
                             ob_flush();
                             flush();
+                        }else{
+                            echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
+                            echo '<div class="prompt">没有文章不可推送</div><script type="text/javascript">alert("没有文章不可推送");refresh("没有文章不可推送");</script>';
+                            ob_flush();
+                            flush();
+                            exit();
                         }
                     }else{
                         $this->pushPrecent();
