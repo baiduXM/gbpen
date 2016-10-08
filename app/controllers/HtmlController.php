@@ -1057,13 +1057,15 @@ class HtmlController extends BaseController {
             }
             $remember_token=Auth::user()->remember_token;
             if($remember_token==""||$remember_token==null){
-                $remember_token="";
+                $remember_token=time() . str_random(4);
+                Customer::where("id",Auth::id())->update(array("remember_token"=>$remember_token));
             }
             return Response::json(array("name" => Auth::user()->name, "remember_token" => $remember_token));
         }else{
             $remember_token=Auth::user()->remember_token;
             if($remember_token==""||$remember_token==null){
-                $remember_token="";
+                $remember_token=time() . str_random(4);
+                Customer::where("id",Auth::id())->update(array("remember_token"=>$remember_token));
             }
             return Response::json(array("name" => Auth::user()->name, "remember_token" => $remember_token));
         }
