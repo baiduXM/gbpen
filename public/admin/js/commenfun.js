@@ -26,14 +26,24 @@ function tanchuang(ColumnInit) {
             clear_info();
         });
     });
+    //===添加栏目显示编辑框===
     $('.addcolumn,.addlist,.addauto').click(function () {
         $(this).hasClass('addcolumn') ? ColumnInit.Column_Upload('') : null;
-        $('#bomb-box').fadeIn(function () {
+        $('.single').fadeIn(function () {
             heightauto()
         });
-        $('#bomb-box').addClass('in');
+        $('.single').addClass('in');
         clear_info();
         ColumnInit._Save_id(1);
+    });
+    //===添加栏目显示编辑框===
+    $('.batchaddcolumn').click(function () {
+        $('.batch').fadeIn(function () {
+            heightauto()
+        });
+        $('.batch').addClass('in');
+        clear_info();
+//        ColumnInit._Save_id(1);
     });
     //数据清除
     function clear_info() {
