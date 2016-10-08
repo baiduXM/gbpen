@@ -887,8 +887,8 @@ class HtmlController extends BaseController {
                         }
                     }else{
                         $this->pushPrecent();
+                        $this->deldir(public_path('customers/' . $this->customer));
                     }
-                    $this->deldir(public_path('customers/' . $this->customer));
 //                    Auth::logout();
                 }
             }
@@ -1078,6 +1078,9 @@ class HtmlController extends BaseController {
                 $this->cus_id = Auth::id();
                 $this->customer = Auth::user()->name;
                 $this->pushPrecent();
+                if(Input::has("end")&&Input::get("end")==1){
+                    $this->deldir(public_path('customers/' . $this->customer));
+                }
             }
         }
     }
