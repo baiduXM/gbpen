@@ -209,28 +209,28 @@ function columnController($scope, $http) {
                 $(this).children().toggleClass("disnone");
             });
         },
-        classnamemodify:function(){
+        classnamemodify: function () {
             //分类标题修改
-            $(".class_name").click(function(){
-                    $(this).hide();
-                    $(this).parent('td').find(".name_modify").show();
-                    $(this).parent('td').find(".name_modify").focus().val($(this).parent('td').find(".name_modify").val());
-                });
-                $(".name_modify").blur(function(){
-                    if($(this).val()!==$(this).parent("td").find(".class_name").text()){
-                        $(this).parent("td").find(".class_name").text($(this).val());
-                        var name=$(this).val();
-                        var id =$(this).data("id");
-                        $http.post('../classify-name-modify', {id: id,name:name}).success(function(json) {
-                                checkJSON(json, function(json){
-                                    var hint_box = new Hint_box();
-                                    hint_box;
-                                });
-                            });
-                    }
-                    $(this).parent("td").find(".class_name").show();
-                    $(this).hide();
-                });
+            $(".class_name").click(function () {
+                $(this).hide();
+                $(this).parent('td').find(".name_modify").show();
+                $(this).parent('td').find(".name_modify").focus().val($(this).parent('td').find(".name_modify").val());
+            });
+            $(".name_modify").blur(function () {
+                if ($(this).val() !== $(this).parent("td").find(".class_name").text()) {
+                    $(this).parent("td").find(".class_name").text($(this).val());
+                    var name = $(this).val();
+                    var id = $(this).data("id");
+                    $http.post('../classify-name-modify', {id: id, name: name}).success(function (json) {
+                        checkJSON(json, function (json) {
+                            var hint_box = new Hint_box();
+                            hint_box;
+                        });
+                    });
+                }
+                $(this).parent("td").find(".class_name").show();
+                $(this).hide();
+            });
         },
         //type-->data.type
         column_type_info: function (data) {
@@ -537,23 +537,24 @@ function columnController($scope, $http) {
                         img_upload.push($(this).data('name'));
                     });
                     var savePostRequest = function (first) {
-//                        alert('保存uedit3');
-                        $http.post('../classify-modify', {id: id,
-                            p_id: vpid,
-                            name: vname,
-                            en_name: enname,
-                            type: vlayout,
-                            url: vurl,
-                            open_page: open_page,
-                            is_show: s_t,
-                            keywords: vkeywords,
-                            description: vdescription,
-                            form_id: vform_id,
-                            img: _this.upload_picname,
-                            icon: icons,
-                            force: (first ? 0 : 1),
-                            article_type: article_type,
-                            page_content: editor.getContent()}).success(function (json) {
+                        $http.post('../classify-modify',
+                                {id: id,
+                                    p_id: vpid,
+                                    name: vname,
+                                    en_name: enname,
+                                    type: vlayout,
+                                    url: vurl,
+                                    open_page: open_page,
+                                    is_show: s_t,
+                                    keywords: vkeywords,
+                                    description: vdescription,
+                                    form_id: vform_id,
+                                    img: _this.upload_picname,
+                                    icon: icons,
+                                    force: (first ? 0 : 1),
+                                    article_type: article_type,
+                                    page_content: editor.getContent()
+                                }).success(function (json) {
                             checkJSON(json, function (json) {
                                 if (img_upload.length) {
                                     $http.post('../imgupload?target=category', {files: img_upload});

@@ -39,11 +39,12 @@ class ClassifyController extends BaseController {
         $result['data'] = $this->toTree($classify);
         return Response::json($result);
     }
+
     /**
      * 栏目id列表
      */
     public function classifyids() {
-        $cus_id=Auth::id();
+        $cus_id = Auth::id();
         $classify = Classify::where('cus_id', $cus_id)->orderBy('sort')->orderBy('id')->lists("id");
         return $classify;
     }
@@ -162,6 +163,10 @@ class ClassifyController extends BaseController {
         if ($classify->p_id > 0) {
             if ($this->checkClassifyLevel($classify->p_id, 1, $cus_id)) {
                 $p_c_info = Classify::find($classify->p_id);
+                if ($p_c_info->p_id == $classify->id) {
+                    $result = ['err' => 1001, 'msg' => '不合法的父级分类', 'data' => []];
+                    $is_passed = false;
+                }
                 if (in_array($p_c_info->type, array(5, 6, 7, 8, 9))) {
                     $result = ['err' => 1001, 'msg' => '该类型不允许添加子栏目', 'data' => []];
                     $is_passed = false;
@@ -420,46 +425,47 @@ class ClassifyController extends BaseController {
         @MobileHomepage::where('cus_id', $cus_id)->where('c_id', $c_id)->delete();
     }
 
-	//删除分类及其子类
-	private function delChildClassify($c_id) {
-		$cus_id = Auth::id();
-		$del_imgs = array();
-		$child_ids = Classify::where('p_id', $c_id)->where('cus_id', $cus_id)->lists('id');
-		if (count($child_ids)) {
-			foreach ($child_ids as $id) {
-				$classify = Classify::find($id);
-				$c_del_img = $classify->img;
-				$ids = Articles::where('c_id', $id)->lists('id');
-				$a_del_imgs = Articles::where('c_id', $id)->lists('img');
-				if (count($ids)) {
-					$m_del_imgs = MoreImg::whereIn('a_id', (array) $ids)->lists('img');
-				} else {
-					$m_del_imgs = array();
-				}
-				$del_imgs = array_merge((array) $a_del_imgs, (array) $m_del_imgs);
-				Classify::where('id', $id)->where('cus_id', $cus_id)->delete();
-				Articles::where('c_id', $id)->where('cus_id', $cus_id)->delete();
-				foreach ((array) $del_imgs as $val) {
-					$imgdel = new ImgDel();
-					$imgdel->mysave($val);
-				}
-				$imgdel = new ImgDel();
-				$imgdel->mysave($c_del_img, 'category');
-				$this->delMobileHomepage($id);
-				$this->delChildClassify($id);
-			}
-		}
-	}
-        public function classifyNameModify() {
-		$cus_id = Auth::id();
-		$id = Input::get('id');
-                $name = Input::get('name');
-		$result = Classify::where('id', $id)->where('cus_id', $cus_id)->update(['name' => $name,'pushed'=>1]);
-		if ($result) {
-			return Response::json(['err' => 0, 'msg' => '修改成功']);
-		} else {
-			return Response::json(['err' => 3001, 'msg' => '修改失败']);
-		}
-	}
+    //删除分类及其子类
+    private function delChildClassify($c_id) {
+        $cus_id = Auth::id();
+        $del_imgs = array();
+        $child_ids = Classify::where('p_id', $c_id)->where('cus_id', $cus_id)->lists('id');
+        if (count($child_ids)) {
+            foreach ($child_ids as $id) {
+                $classify = Classify::find($id);
+                $c_del_img = $classify->img;
+                $ids = Articles::where('c_id', $id)->lists('id');
+                $a_del_imgs = Articles::where('c_id', $id)->lists('img');
+                if (count($ids)) {
+                    $m_del_imgs = MoreImg::whereIn('a_id', (array) $ids)->lists('img');
+                } else {
+                    $m_del_imgs = array();
+                }
+                $del_imgs = array_merge((array) $a_del_imgs, (array) $m_del_imgs);
+                Classify::where('id', $id)->where('cus_id', $cus_id)->delete();
+                Articles::where('c_id', $id)->where('cus_id', $cus_id)->delete();
+                foreach ((array) $del_imgs as $val) {
+                    $imgdel = new ImgDel();
+                    $imgdel->mysave($val);
+                }
+                $imgdel = new ImgDel();
+                $imgdel->mysave($c_del_img, 'category');
+                $this->delMobileHomepage($id);
+                $this->delChildClassify($id);
+            }
+        }
+    }
+
+    public function classifyNameModify() {
+        $cus_id = Auth::id();
+        $id = Input::get('id');
+        $name = Input::get('name');
+        $result = Classify::where('id', $id)->where('cus_id', $cus_id)->update(['name' => $name, 'pushed' => 1]);
+        if ($result) {
+            return Response::json(['err' => 0, 'msg' => '修改成功']);
+        } else {
+            return Response::json(['err' => 3001, 'msg' => '修改失败']);
+        }
+    }
 
 }

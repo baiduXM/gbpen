@@ -185,6 +185,9 @@ Route::group(array('before' => 'auth'), function() {
         'as' => 'article-batch-add',
         'uses' => 'ArticleController@articleBatchAdd'
     ]);
+    Route::post('article-word-search', [//文章关键词搜索
+        'uses' => 'ArticleController@articleWordSearch'
+    ]);
 
     //-----------------------------------------------
     //--------------------首页内容--------------------
