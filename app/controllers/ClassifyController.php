@@ -163,10 +163,10 @@ class ClassifyController extends BaseController {
         if ($classify->p_id > 0) {
             if ($this->checkClassifyLevel($classify->p_id, 1, $cus_id)) {
                 $p_c_info = Classify::find($classify->p_id);
-                if ($p_c_info->p_id == $classify->id) {
-                    $result = ['err' => 1001, 'msg' => '不合法的父级分类', 'data' => []];
-                    $is_passed = false;
-                }
+//                if ($p_c_info->p_id == $classify->id) {
+//                    $result = ['err' => 1001, 'msg' => '不合法的父级分类', 'data' => []];
+//                    $is_passed = false;
+//                }
                 if (in_array($p_c_info->type, array(5, 6, 7, 8, 9))) {
                     $result = ['err' => 1001, 'msg' => '该类型不允许添加子栏目', 'data' => []];
                     $is_passed = false;
