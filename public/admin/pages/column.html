@@ -4,6 +4,7 @@
         <div class="info-top clearfix">
             <a class="inline-block fl delcolumn all_button" href="javascript:void(0);"><i class="iconfont icon-delete mr5"></i>批量删除</a>
             <a class="inline-block fr addcolumn all_button" href="#/column"><i class="iconfont icon-jia mr5"></i>添加栏目</a>
+            <!--<a class="inline-block fr batchaddcolumn all_button" href="#/column"><i class="iconfont icon-jia mr5"></i>批量添加栏目</a>-->
         </div>
         <table width="305px" height="410px" class="a-table">
             <!-- 栏目列表内容 -->
@@ -21,8 +22,10 @@
                             <li class="f_column">
                                 <!-- 菜单 -->
                             </li>
-                            <li>栏目名称：<input type="text" name="column_name" class="column_name" /></li>
-                            <li>英文名称：<input type="text" name="en_name" class="en_name" /></li>
+                            <input type="hidden" name="box_flag" id="box_flag" value="" />
+                            <li class="single">栏目名称：<input type="text" name="column_name" class="column_name" /></li>
+                            <!--<li class="batch">栏目名称：<textarea name="batch_column_name"></textarea><i>用","号分割</i></li>-->
+                            <li class="single">英文名称：<input type="text" name="en_name" class="en_name" /></li>
                             <li>栏目类型：
                                 <select id="lottery">
                                     <option selected="selected" value="选择">请选择</option>

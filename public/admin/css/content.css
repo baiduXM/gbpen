@@ -15,8 +15,8 @@
 .delcolumn:hover{ background:#6a7c91}
 .movarticle{background-color: #7589a0;width: 105px;-webkit-transition: 0.2s;transition: 0.2s;}
 .setarticle{background-color: #7589a0;width: 85px;border-radius: 3px 3px 3px 0;}
-.addarticle,.addcolumn{background-color: #3878c0;width: 125px;padding-right: 10px;}
-.addarticle:hover,.addcolumn:hover{ background:#2160a7}
+.addarticle,.addcolumn,.batchaddcolumn{background-color: #3878c0;width: 125px;padding-right: 10px;}
+.addarticle:hover,.addcolumn:hover,.batchaddcolumn:hover{ background:#2160a7}
 .buttoneffect{background-color: #7589a0;width: 105px;border-radius: 3px 3px 3px 0;box-shadow: 2px 2px 4px #000;}
 .buttoneffect:active{box-shadow: 1px 1px 1px #000;-webkit-transition: 0.2s;transition: 0.2s;}
 .input_border{box-shadow: 0 0 4px #639cfb;border:solid 1px #639cfb;}

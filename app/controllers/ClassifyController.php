@@ -137,7 +137,7 @@ class ClassifyController extends BaseController {
     }
 
     /**
-     * 栏目添加、修改
+     * 栏目添加、修改/===批量添加栏目===
      * @return type
      */
     public function classifyModify() {
@@ -146,27 +146,29 @@ class ClassifyController extends BaseController {
         $is_forced = Input::get('force');
         $is_passed = true;
         $id = Input::get('id');
-        if ($id != NULL) {
+        if ($id != NULL) {//===修改===
             $classify = Classify::find($id);
             $c_imgs = $classify->img;
             $page_id = Classify::where('cus_id', $cus_id)->where('id', $id)->pluck('page_id');
-        } else {
+        } else {//===添加===
             $classify = new Classify();
             $maxsort = Classify::where('cus_id', $cus_id)->max('sort');
             $classify->sort = ($maxsort === NULL) ? 0 : $maxsort + 1;
             $classify->cus_id = $cus_id;
             $page_id = false;
+            $box_flag = Input::get('box_flag');
+            $batch_column_name = Input::get('batch_column_name');
         }
-        $classify->p_id = (Input::get('p_id') == "undefined") ? 0 : Input::get('p_id');
+        $classify->p_id = (Input::get('p_id') == "undefined") ? 0 : Input::get('p_id');//===要改变的父类===
         $classify->type = Input::get('type');
         $classify->form_id = Input::get('form_id');
         if ($classify->p_id > 0) {
             if ($this->checkClassifyLevel($classify->p_id, 1, $cus_id)) {
-                $p_c_info = Classify::find($classify->p_id);
-//                if ($p_c_info->p_id == $classify->id) {
-//                    $result = ['err' => 1001, 'msg' => '不合法的父级分类', 'data' => []];
-//                    $is_passed = false;
-//                }
+                $p_c_info = Classify::find($classify->p_id); //===父类信息
+                if ($p_c_info->p_id == $classify->id) {//===子类不能作为父类的父类===
+                    $result = ['err' => 1001, 'msg' => '不合法的父级分类', 'data' => []];
+                    $is_passed = false;
+                }
                 if (in_array($p_c_info->type, array(5, 6, 7, 8, 9))) {
                     $result = ['err' => 1001, 'msg' => '该类型不允许添加子栏目', 'data' => []];
                     $is_passed = false;

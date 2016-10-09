@@ -22,8 +22,10 @@ function tanchuang(ColumnInit) {
             $(".box_info").css({
                 "marginTop": "-" + 2000 + "px"
             });
-            $('.box-up').text('添加栏目');
+            $('.box-up').text('+添加栏目+');
             clear_info();
+            $('.single').show();
+            $('.batch').hide();
         });
     });
     $('.addcolumn,.addlist,.addauto').click(function () {
@@ -32,6 +34,23 @@ function tanchuang(ColumnInit) {
             heightauto()
         });
         $('#bomb-box').addClass('in');
+        $('#box_flag').val('single');
+        $('.box-up').text('添加栏目');
+        $('.single').show();
+        $('.batch').hide();
+        clear_info();
+        ColumnInit._Save_id(1);
+    });
+    $('.batchaddcolumn').click(function () {
+        $(this).hasClass('addcolumn') ? ColumnInit.Column_Upload('') : null;
+        $('#bomb-box').fadeIn(function () {
+            heightauto()
+        });
+        $('#bomb-box').addClass('in');
+        $('#box_flag').val('batch');
+        $('.box-up').text('批量添加栏目');
+        $('.batch').show();
+        $('.single').hide();
         clear_info();
         ColumnInit._Save_id(1);
     });
