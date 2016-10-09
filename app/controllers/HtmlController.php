@@ -429,6 +429,7 @@ class HtmlController extends BaseController {
         $zip = new ZipArchive;
         if ((!isset($end) || $end == 1) && ($zip->open($path, ZipArchive::CREATE) === TRUE)) {
             $this->lastpercent += 70 + $this->percent;
+            $this->addFileToZip(public_path("quickbar/"), $zip, "mobile/quickbar");
             $zip->addFile($mindexhtml, 'mobile/index.html');
             $zip->addFile($msearchhtml, 'mobile/search.html');
             $zip->addFile(public_path('customers/' . $this->customer . '/mobile/article_data.json'), 'mobile/article_data.json');
@@ -571,8 +572,8 @@ class HtmlController extends BaseController {
             if ($conn) {
                 ftp_login($conn, $customerinfo->ftp_user, $customerinfo->ftp_pwd);
                 ftp_pasv($conn, 1);
-                if (@ftp_chdir($conn, $this->customer) == FALSE) {
-                    ftp_mkdir($conn, $this->customer);
+                if (@ftp_nlist($conn,$this->customer) === FALSE) {
+                    ftp_mkdir($conn,$this->customer);
                 }
                 ftp_put($conn, "/" . $this->customer . "/quickbar.json", public_path('customers/' . $this->customer . '/quickbar.json'), FTP_ASCII);
                 ftp_put($conn, "/" . $this->customer . "/mobile/quickbar.json", public_path('customers/' . $this->customer . '/mobile/quickbar.json'), FTP_ASCII);
@@ -1241,6 +1242,7 @@ class HtmlController extends BaseController {
             $zip = new ZipArchive;
             if ((!isset($end) || $end == 1) && ($zip->open($path, ZipArchive::CREATE) === TRUE)) {
                 if ($this->pcpush) {
+                    $this->addFileToZip(public_path("quickbar/"), $zip, "quickbar");
                     $zip->addFile($indexhtml, 'index.html');
                     $zip->addFile($searchhtml, 'search.html');
                     $zip->addFile(public_path('customers/' . $this->customer . '/article_data.json'), 'article_data.json');
@@ -1254,6 +1256,7 @@ class HtmlController extends BaseController {
                 }
                 $this->lastpercent += 70 + $this->percent;
                 if ($this->mobilepush) {
+                    $this->addFileToZip(public_path("quickbar/"), $zip, "mobile/quickbar");
                     $zip->addFile($mindexhtml, 'mobile/index.html');
                     $zip->addFile($msearchhtml, 'mobile/search.html');
                     $zip->addFile(public_path('customers/' . $this->customer . '/mobile/article_data.json'), 'mobile/article_data.json');
