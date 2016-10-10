@@ -31,7 +31,7 @@ function tanchuang(ColumnInit) {
     //===添加栏目显示编辑框===
     $('.addcolumn,.addlist,.addauto').click(function () {
         $(this).hasClass('addcolumn') ? ColumnInit.Column_Upload('') : null;
-        $('.single').fadeIn(function () {
+        $('#bomb-box').fadeIn(function () {
             heightauto()
         });
         $('#bomb-box').addClass('in');
@@ -66,6 +66,7 @@ function tanchuang(ColumnInit) {
     });
     //数据清除
     function clear_info() {
+        $('[name="batch_column_name"]').val('');
         $('.selectBox').text('');
         $('.column_name').val('');
         $('.en_name').val('');

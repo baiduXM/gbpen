@@ -288,6 +288,8 @@ function columnController($scope, $http) {
             // 点击编辑
             var _this = this;
             $('.a-table').unbind('click').on('click', '.column-edit', function () {
+                $('.batch').hide();
+                $('.single').show();
                 _this.this_id = $(this).parent().siblings('.delv').attr('name');
                 $http.get('../classify-info?id=' + _this.this_id + '').success(function (json) {
                     // $http.get('json/classify-info.json').success(function(json) {

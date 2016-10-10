@@ -146,6 +146,7 @@ class ClassifyController extends BaseController {
         $is_forced = Input::get('force');
         $is_passed = true;
         $id = Input::get('id');
+        $box_flag = Input::get('box_flag') ? Input::get('box_flag') : 'single';
         if ($id != NULL) {//===修改===
             $classify = Classify::find($id);
             $c_imgs = $classify->img;
@@ -156,15 +157,17 @@ class ClassifyController extends BaseController {
             $classify->sort = ($maxsort === NULL) ? 0 : $maxsort + 1;
             $classify->cus_id = $cus_id;
             $page_id = false;
-            $box_flag = Input::get('box_flag');
-            $batch_column_name = Input::get('batch_column_name');
+            if ($box_flag == 'batch') {//===批量添加栏目===
+                $batch_column_name = Input::get('batch_column_name') ? Input::get('batch_column_name') : '';
+                $batch_array = explode(',', $batch_column_name);
+            }
         }
-        $classify->p_id = (Input::get('p_id') == "undefined") ? 0 : Input::get('p_id');//===要改变的父类===
+        $classify->p_id = (Input::get('p_id') == "undefined") ? 0 : Input::get('p_id'); //===要改变的父类===
         $classify->type = Input::get('type');
         $classify->form_id = Input::get('form_id');
         if ($classify->p_id > 0) {
             if ($this->checkClassifyLevel($classify->p_id, 1, $cus_id)) {
-                $p_c_info = Classify::find($classify->p_id); //===父类信息
+                $p_c_info = Classify::find($classify->p_id); //===父类信息===
                 if ($p_c_info->p_id == $classify->id) {//===子类不能作为父类的父类===
                     $result = ['err' => 1001, 'msg' => '不合法的父级分类', 'data' => []];
                     $is_passed = false;
@@ -196,7 +199,7 @@ class ClassifyController extends BaseController {
         }
 
         if ($is_passed) {
-            $classify->name = trim(Input::get('name'));
+
             $classify->en_name = trim(Input::get('en_name'));
             $images = Input::get('img'); //===新图片
             $classify->img = $images;
@@ -258,15 +261,57 @@ class ClassifyController extends BaseController {
                 }
             }
             $size = 0;
-            if ($classify->save()) {
-                if (isset($del_img)) {
-                    $imgdel = new ImgDel();
-                    $size = $imgdel->mysave($del_img, 'category');
+            //===批量栏目===
+            if ($box_flag == 'batch') {
+                $save_flag = true;
+//                var_dump($batch_array);
+//                echo "===";
+                foreach ($batch_array as $key => $value) {
+                    $classify->name = trim($value);
+                    var_dump($classify->name);
+                    echo "===";
+                    $save_flag = $classify->save();
+                    if ($save_flag) {
+                        var_dump($save_flag);
+                        echo "===";
+                        var_dump($classify->id);
+                        echo "===";
+                        if (isset($del_img)) {
+                            $imgdel = new ImgDel();
+                            $size = $imgdel->mysave($del_img, 'category');
+                        }
+                        $data[] = $classify->id;
+                        if ($is_forced) {
+                            Articles::where('cus_id', $cus_id)->whereIn('id', $a_ids)->update(array('c_id' => $classify->id));
+                        }
+                    }
                 }
-                $data['id'] = $classify->id;
-                if ($is_forced) {
-                    Articles::where('cus_id', $cus_id)->whereIn('id', $a_ids)->update(array('c_id' => $classify->id));
+                var_dump($data);
+                exit;
+            } else {
+                $classify->name = trim(Input::get('name'));
+                $save_flag = $classify->save();
+                if ($save_flag) {
+                    if (isset($del_img)) {
+                        $imgdel = new ImgDel();
+                        $size = $imgdel->mysave($del_img, 'category');
+                    }
+                    $data['id'] = $classify->id;
+                    if ($is_forced) {
+                        Articles::where('cus_id', $cus_id)->whereIn('id', $a_ids)->update(array('c_id' => $classify->id));
+                    }
                 }
+            }
+            //===批量栏目_end===
+            if ($save_flag) {
+//                if (isset($del_img)) {
+//                    $imgdel = new ImgDel();
+//                    $size = $imgdel->mysave($del_img, 'category');
+//                }
+//                $data['id'] = $classify->id;
+//                if ($is_forced) {
+//                    Articles::where('cus_id', $cus_id)->whereIn('id', $a_ids)->update(array('c_id' => $classify->id));//===修改所属文章分类===
+//                }
 
                 if ($id != NULL) {
                     $result = ['err' => 0, 'msg' => '栏目修改成功' . $size, 'data' => $data];
