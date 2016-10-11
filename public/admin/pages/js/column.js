@@ -538,8 +538,14 @@ function columnController($scope, $http) {
                     $('.preview>.img_upload').each(function () {
                         img_upload.push($(this).data('name'));
                     });
+                    var post_url = '';
                     var savePostRequest = function (first) {
-                        $http.post('../classify-modify',
+                        if (box_flag == 'batch') {
+                            post_url = 'classify-batch';
+                        } else {
+                            post_url = 'classify-modify';
+                        }
+                        $http.post('../' + post_url,
                                 {id: id,
                                     p_id: vpid,
                                     name: vname,
@@ -556,7 +562,6 @@ function columnController($scope, $http) {
                                     force: (first ? 0 : 1),
                                     article_type: article_type,
                                     page_content: editor.getContent(),
-                                    box_flag: box_flag,
                                     batch_column_name: batch_column_name
                                 }).success(function (json) {
                             checkJSON(json, function (json) {

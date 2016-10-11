@@ -114,6 +114,10 @@ Route::group(array('before' => 'auth'), function() {
         'as' => 'classify-list',
         'uses' => 'ClassifyController@classifyModify'
     ]);
+    
+    Route::post('classify-batch', [//===栏目批量添加===
+        'uses' => 'ClassifyController@classifyBatch'
+    ]);
 
     Route::post('classify-name-modify', [//栏目标题修改
         'as' => 'classify-name-modify',
