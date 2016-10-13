@@ -16,7 +16,7 @@ class TemplatesController extends BaseController {
 
     /**
      * 首页详情
-     * @param type $page
+     * @param type $page index首页/_aside其他/global全局
      * @return string
      */
     public function homepageInfo($page = 'index') {
@@ -406,23 +406,6 @@ class TemplatesController extends BaseController {
         } else {
             return Response::json(['err' => 1001, 'msg' => '数据保存失败', 'data' => null]);
         }
-    }
-
-    /**
-     * ===首页轮播排序===
-     */
-    public function homepageBannerOrder() {
-        $cus_id = Auth::id();
-        $data = Input::get();
-//        $act = Input::get('act');
-        var_dump($data);
-        exit();
-        return $data;
-//        foreach ($data as $key => $val) {
-//            var_dump($val);
-//        }
-        $return_data = array('err' => 0, 'msg' => '', 'data' => '1');
-        return Response::json($return_data);
     }
 
     public function getMobilePageData() {

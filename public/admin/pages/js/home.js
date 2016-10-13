@@ -298,9 +298,9 @@ function homeController($scope, $http) {
 //                console.log($(this).parent().siblings('input[name*="sort"]').val());
                 $('.box-down .column_name').val(href);
                 $('.box-down .keyword').val(title);
+                $('.box-down .sort').val(sort);
                 description == undefined ? $('.box-down .description').val('') : $('.box-down .description').val(description);
-//                description == undefined ? $('.box-down .description').val('') : $('.box-down .description').val(description);
-                _pics = '<div class="template-download fade fl in">\n\
+                        _pics = '<div class="template-download fade fl in">\n\
 					<div>\n\
 						<span class="preview">\n\
 							<img src="' + $(this).siblings('img').attr('src') + '" style="width:80px;height:64px;padding:5px;" data-preimg="preimg">\n\
