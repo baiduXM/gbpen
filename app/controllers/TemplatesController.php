@@ -227,7 +227,7 @@ class TemplatesController extends BaseController {
      * @return type
      */
     public function homepageList() {
-        $page = Input::get('page') ? Input::get('page') : 'index';//===index首页/_aside其他/global全局===
+        $page = Input::get('page') ? Input::get('page') : 'index'; //===index首页/_aside其他/global全局===
         $templedata = $this->homepageInfo($page);
         $data_final = ['err' => 0, 'msg' => '', 'data' => $templedata];
         return Response::json($data_final);
@@ -347,7 +347,10 @@ class TemplatesController extends BaseController {
         $page = Input::get('page');
         $website_config->key = $page;
         $websiteconfig = $website_config->where('cus_id', $cus_id)->where('template_id', $template_id)->where('key', $page)->pluck('value');
-        $org_imgs = $this->getimage(unserialize($websiteconfig));
+        $websitearray = unserialize($websiteconfig);
+        var_dump($websitearray);
+        exit;
+        $org_imgs = $this->getimage($websitearray);
         $count = $website_config->where('cus_id', $cus_id)->where('template_id', $template_id)->where('key', $page)->count();
         $website_config->template_id = $template_id;
         $data = Input::get('data');

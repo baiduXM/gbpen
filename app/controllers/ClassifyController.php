@@ -401,29 +401,29 @@ class ClassifyController extends BaseController {
             }
             $size = 0;
             $classify_arr = (array) $classify;
-            $ids = [];
+//            $ids = '';
             foreach ($batch_array as $key => $value) {
                 $classify_obj[$key] = $classify_arr;
                 $classify_obj[$key]["name"] = trim($value);
                 $temp_flag = Classify::insertGetId($classify_obj[$key]);
-                $ids[] = $temp_flag;
+//                $ids[] = $temp_flag;
                 $batch_flag = $batch_flag && $temp_flag;
             }
 
             if ($batch_flag) {
-                $data['ids'] = $ids;
-                if (in_array($classify->type, array(1, 2, 3, 4, 9)) && $classify->p_id == 0) {
-                    //===添加type:9万用表单===
-                    $mhomepage_config = new MobileHomepage();
-                    $mhomepage_config->c_id = $data['id'];
-                    $mhomepage_config->index_show = 1;
-                    $mhomepage_config->show_num = 0;
-                    $mhomepage_config->star_only = 0;
-                    $mhomepage_config->s_sort = 0;
-                    $mhomepage_config->cus_id = $cus_id;
-                    $mhomepage_config->save();
-                }
-                $result = ['err' => 0, 'msg' => '批量创建栏目成功', 'data' => $data];
+//                $data['ids'] = $ids;
+//                if (in_array($classify->type, array(1, 2, 3, 4, 9)) && $classify->p_id == 0) {
+//                    //===添加type:9万用表单===
+//                    $mhomepage_config = new MobileHomepage();
+//                    $mhomepage_config->c_id = $data['id'];
+//                    $mhomepage_config->index_show = 1;
+//                    $mhomepage_config->show_num = 0;
+//                    $mhomepage_config->star_only = 0;
+//                    $mhomepage_config->s_sort = 0;
+//                    $mhomepage_config->cus_id = $cus_id;
+//                    $mhomepage_config->save();
+//                }
+                $result = ['err' => 0, 'msg' => '批量创建栏目成功', 'data' => ''];
             } else {
                 $result = ['err' => 1001, 'msg' => '批量创建栏目失败', 'data' => []];
             }
