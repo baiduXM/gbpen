@@ -348,8 +348,6 @@ class TemplatesController extends BaseController {
         $website_config->key = $page;
         $websiteconfig = $website_config->where('cus_id', $cus_id)->where('template_id', $template_id)->where('key', $page)->pluck('value');
         $websitearray = unserialize($websiteconfig);
-        var_dump($websitearray);
-        exit;
         $org_imgs = $this->getimage($websitearray);
         $count = $website_config->where('cus_id', $cus_id)->where('template_id', $template_id)->where('key', $page)->count();
         $website_config->template_id = $template_id;

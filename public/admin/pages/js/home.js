@@ -295,9 +295,11 @@ function homeController($scope, $http) {
                         description = $(this).parent().siblings('input[name*="description"]').val(),
                         sort = $(this).parent().siblings('input[name*="sort"]').val(),
                         title = $(this).parent().siblings('input[name*="title"]').val();
+//                console.log($(this).parent().siblings('input[name*="sort"]').val());
                 $('.box-down .column_name').val(href);
                 $('.box-down .keyword').val(title);
                 description == undefined ? $('.box-down .description').val('') : $('.box-down .description').val(description);
+//                description == undefined ? $('.box-down .description').val('') : $('.box-down .description').val(description);
                 _pics = '<div class="template-download fade fl in">\n\
 					<div>\n\
 						<span class="preview">\n\
