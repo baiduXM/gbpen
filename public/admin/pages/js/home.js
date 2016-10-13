@@ -108,7 +108,7 @@ function homeController($scope, $http) {
 							<input type="hidden" value="' + j.title + '" name="data[' + k + '][' + num + '][title]" />\n\
 							<input type="hidden" value="' + (j.description || '') + '" name="data[' + k + '][' + num + '][description]" />\n\
 							<input type="hidden" value="' + j.link + '" name="data[' + k + '][' + num + '][href]" />\n\
-							<input type="hidden" value="' + j.link + '" name="data[' + k + '][' + num + '][sort]" />\n\
+							<input type="hidden" value="' + j.sort + '" name="data[' + k + '][' + num + '][sort]" />\n\
                                     </dd>';
 //                            <div class="movediv"><span class="moveup">前移</span><span class="movedown">后移</span></div>\n\
                             num++;
@@ -293,7 +293,8 @@ function homeController($scope, $http) {
                 var href = $(this).parent().attr('href'),
                         src = $(this).children('img').attr('src'),
                         description = $(this).parent().siblings('input[name*="description"]').val(),
-                        title = $(this).parent().siblings('input[name*="title"]').val();
+                        title = $(this).parent().siblings('input[name*="title"]').val(),
+                        sort = $(this).parent().siblings('input[name*="sort"]').val();
                 $('.box-down .column_name').val(href);
                 $('.box-down .keyword').val(title);
                 description == undefined ? $('.box-down .description').val('') : $('.box-down .description').val(description);
