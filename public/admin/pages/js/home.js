@@ -108,6 +108,7 @@ function homeController($scope, $http) {
 							<input type="hidden" value="' + j.title + '" name="data[' + k + '][' + num + '][title]" />\n\
 							<input type="hidden" value="' + (j.description || '') + '" name="data[' + k + '][' + num + '][description]" />\n\
 							<input type="hidden" value="' + j.link + '" name="data[' + k + '][' + num + '][href]" />\n\
+							<input type="hidden" value="' + j.link + '" name="data[' + k + '][' + num + '][sort]" />\n\
                                     </dd>';
 //                            <div class="movediv"><span class="moveup">前移</span><span class="movedown">后移</span></div>\n\
                             num++;
@@ -320,6 +321,7 @@ function homeController($scope, $http) {
                 this_edit.parent().siblings('input[name*="title"]').val($('.box-down .keyword').val());
                 this_edit.parent().siblings('input[name*="href"]').val($('.box-down .column_name').val());
                 this_edit.parent().siblings('input[name*="description"]').val($('.box-down .description').val());
+                this_edit.parent().siblings('input[name*="sort"]').val($('.box-down .sort').val());
             });
             //是否仅显示星标文章
             $('#temple-data input[id*=star_only]').on('click', function () {
