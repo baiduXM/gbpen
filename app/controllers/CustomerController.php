@@ -63,6 +63,9 @@ class CustomerController extends BaseController {
         $data['address'] = $customer_info->address;
         $data['enlarge'] = $customer_info->enlarge;
         $data['lang'] = $customer_info->lang;
+
+        $data['background_music'] = $customer_info->background_music;
+
         $data['lastpushtime'] = strtotime($customer_info->lastpushtime);
         $data['floatadv'] = json_decode($customer_info->floatadv);
         foreach ((array) $data['floatadv'] as $key => $val) {
@@ -106,6 +109,9 @@ class CustomerController extends BaseController {
                 $org_imgs[] = $v->adv;
             }
         }
+
+        $data['background_music'] = Input::get('background_music');
+
         $data['company'] = strtolower(Input::get('company_name'));
         $pc_domain = Input::get('domain_pc');
         $data['pc_domain'] = strstr($pc_domain, 'http') ? $pc_domain : 'http://' . $pc_domain;

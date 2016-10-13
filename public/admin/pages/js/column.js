@@ -288,6 +288,8 @@ function columnController($scope, $http) {
             // 点击编辑
             var _this = this;
             $('.a-table').unbind('click').on('click', '.column-edit', function () {
+                $('.batch').hide();
+                $('.single').show();
                 _this.this_id = $(this).parent().siblings('.delv').attr('name');
                 $http.get('../classify-info?id=' + _this.this_id + '').success(function (json) {
                     // $http.get('json/classify-info.json').success(function(json) {
@@ -299,7 +301,6 @@ function columnController($scope, $http) {
                             $('.f_column .selectBox').attr('data-id', d.p_id).text($(this).text());
                             $('.f_column .selectBox_val').val(d.p_id);
                         }
-                        ;
                     });
                     $('.index_showtype .dropdown li a').each(function () {
                         if ($(this).data('id') == d.index_key) {
@@ -530,14 +531,21 @@ function columnController($scope, $http) {
                             module_value = module_key = vlayout;
                             break;
                     }
-
+                    var box_flag = $('#box_flag').val();
+                    var batch_column_name = $('[name="batch_column_name"]').val() ? $('[name="batch_column_name"]').val() : '';
                     var first = true;
                     var img_upload = [];
                     $('.preview>.img_upload').each(function () {
                         img_upload.push($(this).data('name'));
                     });
+                    var post_url = '';
                     var savePostRequest = function (first) {
-                        $http.post('../classify-modify',
+                        if (box_flag == 'batch') {
+                            post_url = 'classify-batch';
+                        } else {
+                            post_url = 'classify-modify';
+                        }
+                        $http.post('../' + post_url,
                                 {id: id,
                                     p_id: vpid,
                                     name: vname,
@@ -553,7 +561,8 @@ function columnController($scope, $http) {
                                     icon: icons,
                                     force: (first ? 0 : 1),
                                     article_type: article_type,
-                                    page_content: editor.getContent()
+                                    page_content: editor.getContent(),
+                                    batch_column_name: batch_column_name
                                 }).success(function (json) {
                             checkJSON(json, function (json) {
                                 if (img_upload.length) {
