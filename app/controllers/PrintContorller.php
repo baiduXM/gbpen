@@ -999,6 +999,13 @@ class PrintController extends BaseController {
             $footscript = $customer_info->pc_footer_script;
             $footscript .= '<script type="text/javascript" src="/quickbar/js/quickbar.js?' . $this->cus_id . 'pc"></script>';
             $footscript .= '<script type="text/javascript" src="http://swap.5067.org/admin/statis.php?cus_id=' . $this->cus_id . '&platform=pc"></script>'; //===添加统计代码PC===
+            if($customer_info->background_music){
+                $bgm = str_replace('"', "", $customer_info->background_music);
+                $footscript .= '<script type="text/javascript">$("body").append("<div id=\"bg-music\">'.$bgm.'</div>")
+                    $("#bg-music").css("display","none");
+                </script>';
+            }
+            
 //            $footscript .= $tempscript_star . $tempscript . $tempscript_end;
 //            $footscript .= $language_css;
             $site_another_url = $this->showtype == 'preview' ? '' : $customer_info->mobile_domain;
