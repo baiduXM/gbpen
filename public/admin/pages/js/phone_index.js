@@ -380,7 +380,7 @@ function phone_indexController($scope, $http, $location) {
                             subimage: v.image,
                             id: v.id,
                             link: v.link,
-                            sort:v.PC_sort,
+                            sort:v.sort,
                             num: k
                         });
                         $('#phone_index_col_' + num + '_' + C_num + '').append(_div);

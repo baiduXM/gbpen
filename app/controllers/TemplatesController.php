@@ -468,12 +468,12 @@ class TemplatesController extends BaseController {
                 //===大图排序===
                 foreach ($config_arr['slidepics']['value'] as $k => &$v) {
                     if (is_array($v)) {
-                        if (isset($v['PC_sort'])) {
-                            $sort[$k] = is_numeric($v['PC_sort']) ? $v['PC_sort'] : 100;
-                            $v['PC_sort'] = is_numeric($v['PC_sort']) ? $v['PC_sort'] : 100;
+                        if (isset($v['sort'])) {
+                            $sort[$k] = is_numeric($v['sort']) ? $v['sort'] : 100;
+                            $v['sort'] = is_numeric($v['sort']) ? $v['sort'] : 100;
                         } else {
                             $sort[$k] = 100;
-                            $v['PC_sort'] = 100;
+                            $v['sort'] = 100;
                         }
                     }
                 }
@@ -531,14 +531,17 @@ class TemplatesController extends BaseController {
                             $data[$input_keys[0]][$key]['title'] = $data[$input_keys[0]][$key]['PC_name'];
                             $data[$input_keys[0]][$key]['image'] = basename($data[$input_keys[0]][$key]['phone_info_pic']);
                             $data[$input_keys[0]][$key]['link'] = $data[$input_keys[0]][$key]['PC_link'];
+                            $data[$input_keys[0]][$key]['sort'] = $data[$input_keys[0]][$key]['PC_sort'];
                             unset($data[$input_keys[0]][$key]['PC_name']);
                             unset($data[$input_keys[0]][$key]['phone_info_pic']);
                             unset($data[$input_keys[0]][$key]['PC_link']);
+                            unset($data[$input_keys[0]][$key]['PC_sort']);
                         }
                     } else {
                         $data[$input_keys[0]][0]['title'] = '';
                         $data[$input_keys[0]][0]['image'] = '';
                         $data[$input_keys[0]][0]['link'] = '';
+                        $data[$input_keys[0]][0]['sort'] = 100;
                     }
                 } else {
                     if ($data[$input_keys[0]] != '') {
@@ -546,12 +549,14 @@ class TemplatesController extends BaseController {
                             $data[$input_keys[0]]['title'] = $data[$input_keys[0]][$key]['PC_name'];
                             $data[$input_keys[0]]['image'] = basename($data[$input_keys[0]][$key]['phone_info_pic']);
                             $data[$input_keys[0]]['link'] = $data[$input_keys[0]][$key]['PC_link'];
+                            $data[$input_keys[0]]['sort'] = $data[$input_keys[0]][$key]['PC_sort'];
                             unset($data[$input_keys[0]][$key]);
                         }
                     } else {
                         $data[$input_keys[0]]['title'] = '';
                         $data[$input_keys[0]]['image'] = '';
                         $data[$input_keys[0]]['link'] = '';
+                        $data[$input_keys[0]]['sort'] = 100;
                     }
                 }
                 $config_arr[$input_keys[0]]['value'] = $data[$input_keys[0]];
@@ -564,9 +569,11 @@ class TemplatesController extends BaseController {
                     $data[$input_keys[0]][$key]['title'] = $data[$input_keys[0]][$key]['PC_name'];
                     $data[$input_keys[0]][$key]['image'] = basename($data[$input_keys[0]][$key]['phone_info_pic']);
                     $data[$input_keys[0]][$key]['link'] = $data[$input_keys[0]][$key]['PC_link'];
+                    $data[$input_keys[0]][$key]['sort'] = $data[$input_keys[0]][$key]['PC_sort'];
                     unset($data[$input_keys[0]][$key]['PC_name']);
                     unset($data[$input_keys[0]][$key]['phone_info_pic']);
                     unset($data[$input_keys[0]][$key]['PC_link']);
+                    unset($data[$input_keys[0]][$key]['PC_sort']);
                 }
             }
             $config_arr[$input_keys[0]]['value'] = $data[$input_keys[0]];
