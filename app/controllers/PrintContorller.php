@@ -143,27 +143,29 @@ class PrintController extends BaseController {
         }
         $website_confige = WebsiteConfig::where('cus_id', $this->cus_id)->where('key', $pagename)->where('type', 1)->where('template_id', $tpl_id)->pluck('value');
         $website_confige_value = unserialize($website_confige);
-//        var_dump($website_confige_value);
-//        exit;
         //===对多图进行排序===
-//        foreach ($website_confige_value as $key => &$value) {
+        if (is_array($website_confige_value)) {
+            foreach ($website_confige_value as $key => &$value) {
+                if ($key == 'slidepics') {
+                    $slidepics_data = $value['value'];
+                    if (is_array($slidepics_data)) {
+                        foreach ($slidepics_data as $k => $v) {
+                            $sort[$k] = is_numeric($v['sort']) ? $v['sort'] : 100;
+                        }
+                    }
+                    array_multisort($sort, $slidepics_data);
+                    $value['value'] = $slidepics_data;
+                }
+            }
+        }
+//        foreach ((array) $website_confige_value as $key => &$value) {
 //            if ($key == 'slidepics') {
-//                $slidepics_data = $value['value'];
+//                (array) $slidepics_data = $value['value'];
+//                $sort = array();
 //                foreach ($slidepics_data as $k => $v) {
 //                    $sort[$k] = is_numeric($v['sort']) ? $v['sort'] : 100;
 //                }
-//                array_multisort($sort, $slidepics_data);
-//                $value['value'] = $slidepics_data;
-//            }
-//        }
-//        foreach ((array)$website_confige_value as $key => &$value) {
-//            if ($key == 'slidepics') {
-//                $slidepics_data = $value['value'];
-//                $sort = array();
-//                foreach ((array) $slidepics_data as $k => $v) {
-//                    $sort[$k] = is_numeric($v['sort']) ? $v['sort'] : 100;
-//                }
-//                array_multisort((array) $sort, (array) $slidepics_data);
+//                array_multisort($sort, (array) $slidepics_data);
 //                $value['value'] = $slidepics_data;
 //            }
 //        }
@@ -180,6 +182,8 @@ class PrintController extends BaseController {
         if ($website_confige_value) {
             $default = json_decode(trim($json), TRUE);
             $result = $this->array_merge_recursive_new($default, $website_confige_value);
+//            var_dump($result);
+//            exit;
             $this->replaceUrl($result);
             $result = $this->dataDeal($result);
             foreach ($result as &$v) {
