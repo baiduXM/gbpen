@@ -465,6 +465,20 @@ class TemplatesController extends BaseController {
         if ($config_str) {
             $config_arr = unserialize($config_str);
             if ($config_arr['slidepics']['value']) {
+                //===大图排序===
+                foreach ($config_arr['slidepics']['value'] as $k => &$v) {
+                    if (is_array($v)) {
+                        if (isset($v['PC_sort'])) {
+                            $sort[$k] = is_numeric($v['PC_sort']) ? $v['PC_sort'] : 100;
+                            $v['PC_sort'] = is_numeric($v['PC_sort']) ? $v['PC_sort'] : 100;
+                        } else {
+                            $sort[$k] = 100;
+                            $v['PC_sort'] = 100;
+                        }
+                    }
+                }
+                array_multisort($sort, $config_arr['slidepics']['value']);
+                //===大图排序_end===
                 ksort($config_arr['slidepics']['value'], SORT_NUMERIC);
             }
             if ($config_arr['slidepics']['value']) {
