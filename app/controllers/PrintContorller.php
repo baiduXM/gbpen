@@ -152,7 +152,9 @@ class PrintController extends BaseController {
                         foreach ($slidepics_data as $k => $v) {
                             if (isset($v['sort'])) {
                                 $sort[$k] = is_numeric($v['sort']) ? $v['sort'] : 100;
-                            } 
+                            } else {
+                                $sort[$k] = 100;
+                            }
                         }
                     }
                     array_multisort($sort, $slidepics_data);
