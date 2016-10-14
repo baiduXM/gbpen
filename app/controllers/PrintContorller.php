@@ -143,6 +143,8 @@ class PrintController extends BaseController {
         }
         $website_confige = WebsiteConfig::where('cus_id', $this->cus_id)->where('key', $pagename)->where('type', 1)->where('template_id', $tpl_id)->pluck('value');
         $website_confige_value = unserialize($website_confige);
+//        var_dump($website_confige_value);
+//        exit;
         //===对多图进行排序===
 //        foreach ($website_confige_value as $key => &$value) {
 //            if ($key == 'slidepics') {
@@ -154,7 +156,7 @@ class PrintController extends BaseController {
 //                $value['value'] = $slidepics_data;
 //            }
 //        }
-        foreach ($website_confige_value as $key => &$value) {
+        foreach ((array)$website_confige_value as $key => &$value) {
             if ($key == 'slidepics') {
                 $slidepics_data = $value['value'];
                 $sort = array();
@@ -165,6 +167,8 @@ class PrintController extends BaseController {
                 $value['value'] = $slidepics_data;
             }
         }
+//        var_dump($website_confige_value);
+//        exit;
         //===对多图进行排序_end===
 
         if (count($jsondata)) {
