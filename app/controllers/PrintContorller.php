@@ -152,8 +152,10 @@ class PrintController extends BaseController {
                         foreach ($slidepics_data as $k => $v) {
                             if (isset($v['sort'])) {
                                 $sort[$k] = is_numeric($v['sort']) ? $v['sort'] : 100;
+                                $value['value'][$k]['sort'] = is_numeric($v['sort']) ? $v['sort'] : 100;
                             } else {
                                 $sort[$k] = 100;
+                                $value['value'][$k]['sort'] = 100;
                             }
                         }
                     }
