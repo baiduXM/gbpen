@@ -156,17 +156,17 @@ class PrintController extends BaseController {
 //                $value['value'] = $slidepics_data;
 //            }
 //        }
-        foreach ((array)$website_confige_value as $key => &$value) {
-            if ($key == 'slidepics') {
-                $slidepics_data = $value['value'];
-                $sort = array();
-                foreach ((array) $slidepics_data as $k => $v) {
-                    $sort[$k] = is_numeric($v['sort']) ? $v['sort'] : 100;
-                }
-                array_multisort((array) $sort, (array) $slidepics_data);
-                $value['value'] = $slidepics_data;
-            }
-        }
+//        foreach ((array)$website_confige_value as $key => &$value) {
+//            if ($key == 'slidepics') {
+//                $slidepics_data = $value['value'];
+//                $sort = array();
+//                foreach ((array) $slidepics_data as $k => $v) {
+//                    $sort[$k] = is_numeric($v['sort']) ? $v['sort'] : 100;
+//                }
+//                array_multisort((array) $sort, (array) $slidepics_data);
+//                $value['value'] = $slidepics_data;
+//            }
+//        }
 //        var_dump($website_confige_value);
 //        exit;
         //===对多图进行排序_end===
