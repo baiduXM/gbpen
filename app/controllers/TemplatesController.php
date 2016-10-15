@@ -16,7 +16,7 @@ class TemplatesController extends BaseController {
 
     /**
      * 首页详情
-     * @param type $page
+     * @param type $page index首页/_aside其他/global全局
      * @return string
      */
     public function homepageInfo($page = 'index') {
@@ -227,7 +227,7 @@ class TemplatesController extends BaseController {
      * @return type
      */
     public function homepageList() {
-        $page = Input::get('page') ? Input::get('page') : 'index';//===index首页/_aside其他/global全局===
+        $page = Input::get('page') ? Input::get('page') : 'index'; //===index首页/_aside其他/global全局===
         $templedata = $this->homepageInfo($page);
         $data_final = ['err' => 0, 'msg' => '', 'data' => $templedata];
         return Response::json($data_final);
@@ -347,7 +347,8 @@ class TemplatesController extends BaseController {
         $page = Input::get('page');
         $website_config->key = $page;
         $websiteconfig = $website_config->where('cus_id', $cus_id)->where('template_id', $template_id)->where('key', $page)->pluck('value');
-        $org_imgs = $this->getimage(unserialize($websiteconfig));
+        $websitearray = unserialize($websiteconfig);
+        $org_imgs = $this->getimage($websitearray);
         $count = $website_config->where('cus_id', $cus_id)->where('template_id', $template_id)->where('key', $page)->count();
         $website_config->template_id = $template_id;
         $data = Input::get('data');
@@ -407,23 +408,6 @@ class TemplatesController extends BaseController {
         }
     }
 
-    /**
-     * ===首页轮播排序===
-     */
-    public function homepageBannerOrder() {
-        $cus_id = Auth::id();
-        $data = Input::get();
-//        $act = Input::get('act');
-        var_dump($data);
-        exit();
-        return $data;
-//        foreach ($data as $key => $val) {
-//            var_dump($val);
-//        }
-        $return_data = array('err' => 0, 'msg' => '', 'data' => '1');
-        return Response::json($return_data);
-    }
-
     public function getMobilePageData() {
         $cus_id = Auth::id();
         $mobile = new PrintController('preview', 'mobile');
@@ -481,6 +465,20 @@ class TemplatesController extends BaseController {
         if ($config_str) {
             $config_arr = unserialize($config_str);
             if ($config_arr['slidepics']['value']) {
+                //===大图排序===
+                foreach ($config_arr['slidepics']['value'] as $k => &$v) {
+                    if (is_array($v)) {
+                        if (isset($v['sort'])) {
+                            $sort[$k] = is_numeric($v['sort']) ? $v['sort'] : 100;
+                            $v['sort'] = is_numeric($v['sort']) ? $v['sort'] : 100;
+                        } else {
+                            $sort[$k] = 100;
+                            $v['sort'] = 100;
+                        }
+                    }
+                }
+                array_multisort($sort, $config_arr['slidepics']['value']);
+                //===大图排序_end===
                 ksort($config_arr['slidepics']['value'], SORT_NUMERIC);
             }
             if ($config_arr['slidepics']['value']) {
@@ -533,14 +531,17 @@ class TemplatesController extends BaseController {
                             $data[$input_keys[0]][$key]['title'] = $data[$input_keys[0]][$key]['PC_name'];
                             $data[$input_keys[0]][$key]['image'] = basename($data[$input_keys[0]][$key]['phone_info_pic']);
                             $data[$input_keys[0]][$key]['link'] = $data[$input_keys[0]][$key]['PC_link'];
+                            $data[$input_keys[0]][$key]['sort'] = $data[$input_keys[0]][$key]['PC_sort'];
                             unset($data[$input_keys[0]][$key]['PC_name']);
                             unset($data[$input_keys[0]][$key]['phone_info_pic']);
                             unset($data[$input_keys[0]][$key]['PC_link']);
+                            unset($data[$input_keys[0]][$key]['PC_sort']);
                         }
                     } else {
                         $data[$input_keys[0]][0]['title'] = '';
                         $data[$input_keys[0]][0]['image'] = '';
                         $data[$input_keys[0]][0]['link'] = '';
+                        $data[$input_keys[0]][0]['sort'] = 100;
                     }
                 } else {
                     if ($data[$input_keys[0]] != '') {
@@ -548,12 +549,14 @@ class TemplatesController extends BaseController {
                             $data[$input_keys[0]]['title'] = $data[$input_keys[0]][$key]['PC_name'];
                             $data[$input_keys[0]]['image'] = basename($data[$input_keys[0]][$key]['phone_info_pic']);
                             $data[$input_keys[0]]['link'] = $data[$input_keys[0]][$key]['PC_link'];
+                            $data[$input_keys[0]]['sort'] = $data[$input_keys[0]][$key]['PC_sort'];
                             unset($data[$input_keys[0]][$key]);
                         }
                     } else {
                         $data[$input_keys[0]]['title'] = '';
                         $data[$input_keys[0]]['image'] = '';
                         $data[$input_keys[0]]['link'] = '';
+                        $data[$input_keys[0]]['sort'] = 100;
                     }
                 }
                 $config_arr[$input_keys[0]]['value'] = $data[$input_keys[0]];
@@ -566,9 +569,11 @@ class TemplatesController extends BaseController {
                     $data[$input_keys[0]][$key]['title'] = $data[$input_keys[0]][$key]['PC_name'];
                     $data[$input_keys[0]][$key]['image'] = basename($data[$input_keys[0]][$key]['phone_info_pic']);
                     $data[$input_keys[0]][$key]['link'] = $data[$input_keys[0]][$key]['PC_link'];
+                    $data[$input_keys[0]][$key]['sort'] = $data[$input_keys[0]][$key]['PC_sort'];
                     unset($data[$input_keys[0]][$key]['PC_name']);
                     unset($data[$input_keys[0]][$key]['phone_info_pic']);
                     unset($data[$input_keys[0]][$key]['PC_link']);
+                    unset($data[$input_keys[0]][$key]['PC_sort']);
                 }
             }
             $config_arr[$input_keys[0]]['value'] = $data[$input_keys[0]];

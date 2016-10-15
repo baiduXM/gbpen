@@ -510,10 +510,7 @@ class ArticleController extends BaseController {
     public function articleWordSearch() {
         $cus_id = Auth::id();
         $keyword = Input::get('keyword');
-        var_dump($keyword);
         $data = $this->articleListData(0, 0, 15, $keyword);
-        var_dump($data);
-        exit;
 //        $data['source_dir'] = asset("customers/$customer/images/s/articles") . '/';
         $return_msg = array('err' => 0, 'msg' => '', 'data' => $data);
         return Response::json($return_msg);

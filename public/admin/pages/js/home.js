@@ -108,8 +108,8 @@ function homeController($scope, $http) {
 							<input type="hidden" value="' + j.title + '" name="data[' + k + '][' + num + '][title]" />\n\
 							<input type="hidden" value="' + (j.description || '') + '" name="data[' + k + '][' + num + '][description]" />\n\
 							<input type="hidden" value="' + j.link + '" name="data[' + k + '][' + num + '][href]" />\n\
+							<input type="hidden" value="' + j.sort + '" name="data[' + k + '][' + num + '][sort]" />\n\
                                     </dd>';
-//							<input type="hidden" value="' + j.sort + '" name="data[' + k + '][' + num + '][sort]" />\n\
 //                            <div class="movediv"><span class="moveup">前移</span><span class="movedown">后移</span></div>\n\
                             num++;
                             pic++;
@@ -293,12 +293,14 @@ function homeController($scope, $http) {
                 var href = $(this).parent().attr('href'),
                         src = $(this).children('img').attr('src'),
                         description = $(this).parent().siblings('input[name*="description"]').val(),
-//                        sort = $(this).parent().siblings('input[name*="sort"]').val(),
+                        sort = $(this).parent().siblings('input[name*="sort"]').val(),
                         title = $(this).parent().siblings('input[name*="title"]').val();
+//                console.log($(this).parent().siblings('input[name*="sort"]').val());
                 $('.box-down .column_name').val(href);
                 $('.box-down .keyword').val(title);
+                $('.box-down .sort').val(sort);
                 description == undefined ? $('.box-down .description').val('') : $('.box-down .description').val(description);
-                _pics = '<div class="template-download fade fl in">\n\
+                        _pics = '<div class="template-download fade fl in">\n\
 					<div>\n\
 						<span class="preview">\n\
 							<img src="' + $(this).siblings('img').attr('src') + '" style="width:80px;height:64px;padding:5px;" data-preimg="preimg">\n\
@@ -322,7 +324,7 @@ function homeController($scope, $http) {
                 this_edit.parent().siblings('input[name*="title"]').val($('.box-down .keyword').val());
                 this_edit.parent().siblings('input[name*="href"]').val($('.box-down .column_name').val());
                 this_edit.parent().siblings('input[name*="description"]').val($('.box-down .description').val());
-//                this_edit.parent().siblings('input[name*="sort"]').val($('.box-down .sort').val());
+                this_edit.parent().siblings('input[name*="sort"]').val($('.box-down .sort').val());
             });
             //是否仅显示星标文章
             $('#temple-data input[id*=star_only]').on('click', function () {
@@ -366,59 +368,6 @@ function homeController($scope, $http) {
                     alert('超出上传数量！');
                 }
             });
-
-            //===轮播图片排序===
-            $('.moveup').click(function () {
-                var data = new Array;
-                var picdata = $("#temple-data").serializeJson();
-                var _this = $(this).parents('img_show');
-                var _this_parents = $(this).parent().parent().parent().children().serializeJson;
-                data['picdata'] = picdata;
-                console.log(_this_parents);
-//                $.ajax({
-//                    type:'POST',
-//                    url:'../homepage-bannerorder',
-//                    data:JSON.
-//                });
-                $http.post('../homepage-bannerorder', _this_parents).success(function (json) {
-//                $.post('../homepage-bannerorder', {data: _this_parents}, function (json) {
-                    console.log(json);
-                });
-//                $http.post('../homepage-modify', data1).success(function (json) {
-//                    checkJSON(json, function (json) {
-//                        if (img_upload.length) {
-//                            if (!$('.tpl_mask').attr('class')) {
-//                                var fade = '<div class="tpl_mask" style="display: block;"></div><div class="text_tishi">努力保存中<i class="icon-spin4 iconfont icon-shuaxin"></i></div>';
-//                                $('body').append(fade);
-//                            }
-//                            $('.tpl_mask').show();
-//                            $('.text_tishi').show();
-//                            $http.post('../imgupload?target=page_index',
-//                                    {
-//                                        files: img_upload
-//                                    }).success(function () {
-//                                $('.tpl_mask').hide();
-//                                $('.text_tishi').hide();
-//                                $('.home-content').append('<div class="hint_box">保存成功！</div>');
-//                                setTimeout(function () {
-//                                    $('.hint_box').remove();
-//                                }, 2000);
-//                                return false;
-//                            });
-//                        } else {
-//                            $('.home-content').append('<div class="hint_box">保存成功！</div>');
-//                            setTimeout(function () {
-//                                $('.hint_box').remove();
-//                            }, 2000);
-//                        }
-//
-//                    });
-//                });
-            });
-            $('.movedown').click(function () {
-                alert(2)
-            });
-
 
             $('.mask,.cancel,.save_column,.box_info .boxs .save').click(function () {
                 $('#bomb-box').fadeOut('400', function () {

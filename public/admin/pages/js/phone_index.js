@@ -327,8 +327,10 @@ function phone_indexController($scope, $http, $location) {
 			                <dd class="input"><input name="' + parameter.key + (parameter.num == undefined ? '[0]' : '[' + parameter.num + ']') + '[PC_name]" type="text" value="' + (parameter.title || '') + '" /></dd>\n\
 			                <dt class="title">编辑链接</dt>\n\
 			                <dd class="input"><input name="' + parameter.key + (parameter.num == undefined ? '[0]' : '[' + parameter.num + ']') + '[PC_link]" type="text" value="' + (parameter.link || '') + '" /></dd>\n\
+			                <dt class="title">图片排序</dt>\n\
+			                <dd class="input"><input name="' + parameter.key + (parameter.num == undefined ? '[0]' : '[' + parameter.num + ']') + '[PC_sort]" type="text" value="' + (parameter.sort || 100) + '" /></dd>\n\
 			                <dl class="btnbox">\n\
-			                	<dd class="surebtn">确定</dd>\n\
+                                            <dd class="surebtn">确定</dd>\n\
 			                    <dd class="cancebtn">取消</dd>\n\
 			                </dl>\n\
 			            </div>\n\
@@ -378,6 +380,7 @@ function phone_indexController($scope, $http, $location) {
                             subimage: v.image,
                             id: v.id,
                             link: v.link,
+                            sort:v.sort,
                             num: k
                         });
                         $('#phone_index_col_' + num + '_' + C_num + '').append(_div);
@@ -521,7 +524,7 @@ function phone_indexController($scope, $http, $location) {
                 $(this).parents(".phone_index-field").find(".materlist-secondbox,.detailbox").slideUp();
                 $(this).parents(".phone_index-field").find(".zz").hide();
             })
-            $('.detailbox .surebtn').click(function () {
+            $('.detailbox .surebtn').click(function () {//===删除确认===
                 var key = $(this).closest('form').data('key'),
                         str = '{"' + key + '":""}';
                 eval('var json = ' + str);
@@ -551,7 +554,7 @@ function phone_indexController($scope, $http, $location) {
                     });
                 }
             })
-            $('.materlist-secondbox .surebtn').click(function () {
+            $('.materlist-secondbox .surebtn').click(function () {//===保存确认===
                 var _this = $(this).closest('.phone_index-field');
                 $(this).parents(".phone_index-field").find(".materlist-secondbox,.detailbox").slideUp();
                 $(this).parents(".phone_index-field").find(".zz").hide();
@@ -564,10 +567,7 @@ function phone_indexController($scope, $http, $location) {
                     var data = $(this).closest('form').serializeJson();
                     $http.post('../mhomepage-modify', data).success(function () {
                         if (img_upload.length) {
-                            $http.post('../imgupload?target=page_index',
-                                    {
-                                        files: img_upload
-                                    });
+                            $http.post('../imgupload?target=page_index', {files: img_upload});
                         }
                         phoneindexinit.Save_hint();
                         _this.removeClass('new');

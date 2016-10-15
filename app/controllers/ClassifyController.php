@@ -401,7 +401,7 @@ class ClassifyController extends BaseController {
             }
             $size = 0;
             $classify_arr = (array) $classify;
-//            $ids = [];
+//            $ids = '';
             foreach ($batch_array as $key => $value) {
                 $classify_obj[$key] = $classify_arr;
                 $classify_obj[$key]["name"] = trim($value);
@@ -423,7 +423,7 @@ class ClassifyController extends BaseController {
 //                    $mhomepage_config->cus_id = $cus_id;
 //                    $mhomepage_config->save();
 //                }
-                $result = ['err' => 0, 'msg' => '批量创建栏目成功', 'data' => []];
+                $result = ['err' => 0, 'msg' => '批量创建栏目成功', 'data' => ''];
             } else {
                 $result = ['err' => 1001, 'msg' => '批量创建栏目失败', 'data' => []];
             }

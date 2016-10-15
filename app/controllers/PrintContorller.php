@@ -143,6 +143,29 @@ class PrintController extends BaseController {
         }
         $website_confige = WebsiteConfig::where('cus_id', $this->cus_id)->where('key', $pagename)->where('type', 1)->where('template_id', $tpl_id)->pluck('value');
         $website_confige_value = unserialize($website_confige);
+        //===对多图进行排序===
+        if (is_array($website_confige_value)) {
+            foreach ($website_confige_value as $key => &$value) {
+                if ($key == 'slidepics') {
+                    $slidepics_data = $value['value'];
+                    if (is_array($slidepics_data)) {
+                        foreach ($slidepics_data as $k => $v) {
+                            if (isset($v['sort'])) {
+                                $sort[$k] = is_numeric($v['sort']) ? $v['sort'] : 100;
+                                $value['value'][$k]['sort'] = is_numeric($v['sort']) ? $v['sort'] : 100;
+                            } else {
+                                $sort[$k] = 100;
+                                $value['value'][$k]['sort'] = 100;
+                            }
+                        }
+                    }
+                    array_multisort($sort, $slidepics_data);
+                    $value['value'] = $slidepics_data;
+                }
+            }
+        }
+        //===对多图进行排序_end===
+
         if (count($jsondata)) {
             $json = isset($jsondata[$pagename . '.json']) ? $jsondata[$pagename . '.json'] : '{}';
         } else {
@@ -152,7 +175,8 @@ class PrintController extends BaseController {
         if ($website_confige_value) {
             $default = json_decode(trim($json), TRUE);
             $result = $this->array_merge_recursive_new($default, $website_confige_value);
-
+//            var_dump($result);
+//            exit;
             $this->replaceUrl($result);
             $result = $this->dataDeal($result);
             foreach ($result as &$v) {
@@ -509,9 +533,9 @@ class PrintController extends BaseController {
                     if ($k === 'link') {
                         $result[$k] = $this->domain . $v;
                     } else {
-                        if(file_exists(public_path("templates/" . $this->themename . '/images/') . preg_replace('/^images\/(.*?)$/', '$1', $v))){
+                        if (file_exists(public_path("templates/" . $this->themename . '/images/') . preg_replace('/^images\/(.*?)$/', '$1', $v))) {
                             $result[$k] = $this->site_url . 'images/' . preg_replace('/^images\/(.*?)$/', '$1', $v);
-                        }else{
+                        } else {
                             $result[$k] = $this->source_dir . "l/page_index/" . $v;
                         }
 //                        if (file_exists(public_path("customers/" . $this->customer . '/images/') . "l/page_index/" . $v)) {
@@ -999,13 +1023,13 @@ class PrintController extends BaseController {
             $footscript = $customer_info->pc_footer_script;
             $footscript .= '<script type="text/javascript" src="/quickbar/js/quickbar.js?' . $this->cus_id . 'pc"></script>';
             $footscript .= '<script type="text/javascript" src="http://swap.5067.org/admin/statis.php?cus_id=' . $this->cus_id . '&platform=pc"></script>'; //===添加统计代码PC===
-            if($customer_info->background_music){
+            if ($customer_info->background_music) {
                 $bgm = str_replace('"', "", $customer_info->background_music);
-                $footscript .= '<script type="text/javascript">$("body").append("<div id=\"bg-music\">'.$bgm.'</div>")
+                $footscript .= '<script type="text/javascript">$("body").append("<div id=\"bg-music\">' . $bgm . '</div>")
                     $("#bg-music").css("display","none");
                 </script>';
             }
-            
+
 //            $footscript .= $tempscript_star . $tempscript . $tempscript_end;
 //            $footscript .= $language_css;
             $site_another_url = $this->showtype == 'preview' ? '' : $customer_info->mobile_domain;
@@ -1035,6 +1059,28 @@ class PrintController extends BaseController {
             } else {
                 $global_data = $this->mobilePageList('global', true);
             }
+            //===对多图进行排序===
+            if (is_array($global_data)) {
+                foreach ($global_data as $key => &$value) {
+                    if ($key == 'slidepics') {
+                        $slidepics_data = $value['value'];
+                        if (is_array($slidepics_data)) {
+                            foreach ($slidepics_data as $k => $v) {
+                                if (isset($v['sort'])) {
+                                    $sort[$k] = is_numeric($v['sort']) ? $v['sort'] : 100;
+                                    $value['value'][$k]['sort'] = is_numeric($v['sort']) ? $v['sort'] : 100;
+                                } else {
+                                    $sort[$k] = 100;
+                                    $value['value'][$k]['sort'] = 100;
+                                }
+                            }
+                        }
+                        array_multisort($sort, $slidepics_data);
+                        $value['value'] = $slidepics_data;
+                    }
+                }
+            }
+            //===对多图进行排序_end===
             if (count($global_data) > 0) {
                 $quickbarKey = false;
                 foreach ($global_data as $gkey => $gval) {
@@ -3636,6 +3682,12 @@ class PrintController extends BaseController {
         return $output;
     }
 
+    /**
+     * 
+     * @param type $old_arr 
+     * @param type $new_arr 
+     * @return array
+     */
     public function array_merge_recursive_new($old_arr, $new_arr) {
         foreach ((array) $old_arr as $key => $val) {
             if (array_key_exists($key, $new_arr)) {
