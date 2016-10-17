@@ -241,8 +241,8 @@ class WebsiteController extends BaseController{
             }else
                 return Response::json(['err'=>1002, 'msg' => '您未开启'.$type_name.'高级定制服务!']);
         }
-        if($had_name){
-            return Response::json(['err' => 0, 'msg' => '']);
+        if(!$had_name){
+            return Response::json(['err' => 0, 'msg' => '高级定制模板已存在，载入成功！']);
         }
         else{
             $count = Template::where('type',$type)->where('cus_id',$cus_id)->count();
