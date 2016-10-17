@@ -223,7 +223,12 @@ class PrintController extends BaseController {
                                 $c_arr = $classify->toTree($c_arr);
                                 $templates->unsetFalseClassify($c_arr, array(1, 2, 3));
                                 $templates->unsetLastClassify($c_arr);
-                                $c_arr = array_merge($c_arr);
+                                //===debug===
+                                if (is_array($c_arr)) {
+                                    $c_arr = array_merge($c_arr);
+                                }
+                                //===debug_end===
+//                                $c_arr = array_merge($c_arr);
                                 $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
                             } elseif ($v['config']['filter'] == 'feedback') {/* 20151021添加feeback filter */
                                 $c_arr = $classify->toTree($c_arr);
