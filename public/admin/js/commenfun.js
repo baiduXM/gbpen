@@ -243,7 +243,7 @@ WarningBox.prototype = {
 				</div>\n\
 			</div>\
 			<div class="btn-upload">\
-				<input type="file" class="sr-only" id="inputImage" name="file" accept="image/*" ' + (defaults.IsMultiple ? 'multiple' : '') + '>\
+				<input type="file" class="sr-only" id="inputImage" name="file" ' + (defaults.IsMultiple ? 'multiple' : '') + '>\
 				<div class="up_pic_btn">添加</div>\n\
 			</div><label class="cutsize fr w100"></label>';
         this.init();
