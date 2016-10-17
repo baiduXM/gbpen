@@ -990,10 +990,28 @@ class PrintController extends BaseController {
                     $_copyright = '厦门易尔通网络科技有限公司';
                     break;
             }
+            
+            switch ($customer_info->talent_support) {
+                case 'en_rencai':
+                    $talent_support = 'Talent support：<a href="http://www.xgzrc.com/">www.xgzrc.com</a>';
+                    break;
+                case 'en_null':
+                    $talent_support = '';
+                    break;
+                case 'cn_rencai':
+                    $talent_support = '人才支持：<a href="http://www.xgzrc.com/">厦门人才网</a>';
+                    break;
+                case 'cn_null':
+                    $talent_support = '';
+                    break;
+                default :
+                    $talent_support = '人才支持：<a href="http://www.xgzrc.com/">厦门人才网</a>';
+                    break;
+            }
             if ($customer_info->lang == 'en') {
-                $footprint = $customer_info->footer . '<p>Technology support：<a href="' . $_href . '">' . $_copyright . '</a> Talent support：<a href="http://www.xgzrc.com/">www.xgzrc.com.cn</a></p>';
+                $footprint = $customer_info->footer . '<p>Technology support：<a href="' . $_href . '">' . $_copyright . '</a> '.$talent_support.'</p>';
             } else {
-                $footprint = $customer_info->footer . '<p>技术支持：<a href="' . $_href . '">' . $_copyright . '</a> 人才支持：<a href="http://www.xgzrc.com/">厦门人才网</a></p>';
+                $footprint = $customer_info->footer . '<p>技术支持：<a href="' . $_href . '">' . $_copyright . '</a> '.$talent_support.'</p>';
             }
             //===end===
             $footscript = $customer_info->pc_footer_script;

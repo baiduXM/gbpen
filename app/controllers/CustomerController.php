@@ -65,6 +65,7 @@ class CustomerController extends BaseController {
         $data['lang'] = $customer_info->lang;
 
         $data['background_music'] = $customer_info->background_music;
+        $data['talent_support'] = $customer_info->talent_support;
 
         $data['lastpushtime'] = strtotime($customer_info->lastpushtime);
         $data['floatadv'] = json_decode($customer_info->floatadv);
@@ -111,6 +112,7 @@ class CustomerController extends BaseController {
         }
 
         $data['background_music'] = Input::get('background_music');
+        $data['talent_support'] = Input::get('talent_support');
 
         $data['company'] = strtolower(Input::get('company_name'));
         $pc_domain = Input::get('domain_pc');
