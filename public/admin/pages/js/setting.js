@@ -79,12 +79,19 @@ function settingController($scope, $http) {
                 if (set.lang == 'cn') {
                     _option = '<option value="cn_xiamen">厦门易尔通网络科技有限公司</option>' +
                             '<option value="cn_huizhou">惠州易瑞通网络科技有限公司</option>';
+                    _option2 = '<option value="cn_rencai">厦门人才网</option>'+
+                            '<option value="cn_null">无</option>';
                 } else if (set.lang == 'en') {
                     _option = '<option value="en_xiamen">XIAMEN 12t NETWORK TECHNOLOGY CO., LTD.</option>' +
                             '<option value="en_huizhou">HUIZHOU YIRUITONG NETWORK TECHNOLOGY CO., LTD.</option>';
+                    _option2 = '<option value="en_rencai">www.xgzrc.com</option>'+
+                            '<option value="en_null">Null</option>';
                 }
                 $('#copyright').html(_option);
                 $('#copyright option[value=' + set.copyright + ']').attr('selected', true);
+                $('#talent_support').html(_option2);
+                $('#talent_support option[value=' + set.talent_support + ']').attr('selected', true);
+                
                 $('#def_domain_m').MoveBox({
                     Trigger: 'mouseenter',
                     context: '<img src="http://s.jiathis.com/qrcode.php?url=http://' + set.def_domain_m + '" />'
@@ -250,13 +257,19 @@ function settingController($scope, $http) {
                 if (_lang == 'cn') {
                     var _option = '<option value="cn_xiamen">厦门易尔通网络科技有限公司</option>' +
                             '<option value="cn_huizhou">惠州易瑞通网络科技有限公司</option>';
+                    var _option2 = '<option value="cn_rencai">厦门人才网</option>'+
+                            '<option value="cn_null">无</option>';
                 } else if (_lang == 'en') {
                     var _option = '<option value="en_xiamen">XIAMEN 12t NETWORK TECHNOLOGY CO., LTD.</option>' +
                             '<option value="en_huizhou">HUIZHOU YIRUITONG NETWORK TECHNOLOGY CO., LTD.</option>';
+                    var _option2 = '<option value="en_rencai">www.xgzrc.com</option>'+
+                            '<option value="en_null">Null</option>';
                 } else {
                     var _option = '';
+                    var _option2 = '';
                 }
                 $('#copyright').html(_option);
+                $('#talent_support').html(_option2);
             });
         },
         _ModelAddPic: function (picurl, picname, num) {
