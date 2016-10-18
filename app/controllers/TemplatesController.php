@@ -230,9 +230,14 @@ class TemplatesController extends BaseController {
         $page = Input::get('page') ? Input::get('page') : 'index'; //===index首页/_aside其他/global全局===
         $templedata = $this->homepageInfo($page);
         $data_final = ['err' => 0, 'msg' => '', 'data' => $templedata];
+
         return Response::json($data_final);
     }
 
+    /**
+     * ===页面编辑navs加载===
+     * @return string
+     */
     public function buttonList() {
         $result = [];
         $cus_id = Auth::id();
@@ -263,7 +268,8 @@ class TemplatesController extends BaseController {
             } else {
                 $title = "其他";
             }
-            $result[$k]['title'] = Config::get('file.' . $file_type[0], $title);
+            $result[$k]['title'] = Config::get('file.' . $file_type[0], $title); //===embed-form
+//            var_dump($result[$k]['title']);
             if ($file_type[0] == 'index') {
                 $result[$k]['url'] = asset('homepage-preview');
             } elseif ($file_type[0] == 'list-text') {
@@ -279,6 +285,7 @@ class TemplatesController extends BaseController {
                 $result[$k]['url'] = '';
             }
         }
+//        exit;
         return $result;
     }
 
@@ -487,7 +494,6 @@ class TemplatesController extends BaseController {
         } else {
             $config_arr = $mobile->mobilePageList('global', true);
         }
-        //print_r($config_arr);exit;
         foreach ($config_arr as $key => $val) {
             $pagelist[] = array('page' => $key, 'title' => $config_arr[$key]['description'], 'type' => $config_arr[$key]['type']);
             $data[$key] = $config_arr[$key];

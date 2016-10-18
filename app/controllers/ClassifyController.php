@@ -46,7 +46,7 @@ class ClassifyController extends BaseController {
     public function classifyids() {
         $cus_id = Auth::id();
         $classify = Classify::where('cus_id', $cus_id)->orderBy('sort')->orderBy('id')->lists("id");
-        return $classify;
+        return $classify;        
     }
 
     public function classifyDelete() {

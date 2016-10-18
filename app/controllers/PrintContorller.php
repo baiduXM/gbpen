@@ -175,8 +175,6 @@ class PrintController extends BaseController {
         if ($website_confige_value) {
             $default = json_decode(trim($json), TRUE);
             $result = $this->array_merge_recursive_new($default, $website_confige_value);
-//            var_dump($result);
-//            exit;
             $this->replaceUrl($result);
             $result = $this->dataDeal($result);
             foreach ($result as &$v) {
@@ -223,12 +221,9 @@ class PrintController extends BaseController {
                                 $c_arr = $classify->toTree($c_arr);
                                 $templates->unsetFalseClassify($c_arr, array(1, 2, 3));
                                 $templates->unsetLastClassify($c_arr);
-                                //===debug===
                                 if (is_array($c_arr)) {
                                     $c_arr = array_merge($c_arr);
                                 }
-                                //===debug_end===
-//                                $c_arr = array_merge($c_arr);
                                 $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
                             } elseif ($v['config']['filter'] == 'feedback') {/* 20151021添加feeback filter */
                                 $c_arr = $classify->toTree($c_arr);
@@ -698,7 +693,6 @@ class PrintController extends BaseController {
 //                foreach($quickbar as $key=>$val){
 //   
 //                        }
-                // print_r($quickbar);exit;
                 //quickbar按钮
 //                $global_data=WebsiteConfig::where('cus_id',$this->cus_id)->where('type',2)->where('template_id',$this->tpl_id)->pluck('value');
 //                if($global_data){
@@ -2052,8 +2046,6 @@ class PrintController extends BaseController {
             $mIndexCats[$key]['childmenu'] = $classify->toTree($mIndexCats, $mIndexCats[$key]['id']);
         }
         $result['mIndexCats'] = $mIndexCats;
-        //print_r($mIndexCats);
-        //exit;
         $smarty = new Smarty;
         $smarty->setTemplateDir(app_path('views/templates/' . $this->themename));
         $smarty->setCompileDir(app_path('storage/views/compile'));
@@ -2201,8 +2193,6 @@ class PrintController extends BaseController {
             $mIndexCats[$key]['childmenu'] = $classify->toTree($mIndexCats, $mIndexCats[$key]['id']);
         }
         $result['mIndexCats'] = $mIndexCats;
-        //print_r($mIndexCats);
-        //exit;
         $content = $publicdata['repleace']['index.html'];
         $content = preg_replace($publicdata['pattern'], $publicdata['repleace'], $content);
         $smarty = new Smarty;
@@ -2544,7 +2534,6 @@ class PrintController extends BaseController {
             $formCdata = $formC->getFormdataForPrint($form_id);
         } else {//跳转404
         }
-        //echo $viewname;exit;
         if (in_array($classify->type, array(1, 2, 3, 4, 5, 9))) {
             $sub = str_replace('-', '_', $viewname);
             $data = $this->pagedata($viewname, $publicdata['pagedata']);
@@ -3542,7 +3531,6 @@ class PrintController extends BaseController {
             file_put_contents(public_path('customers/' . $this->customer . '/mobile/article_data.json'), $article_json);
         }
 
-        //print_r($result['search']);exit;
         $smarty = new Smarty;
         $smarty->setCompileDir(app_path('storage/views/compile'));
         $smarty->setTemplateDir(app_path('views/templates/' . $this->themename));
@@ -3664,7 +3652,6 @@ class PrintController extends BaseController {
             file_put_contents(public_path('customers/' . $this->customer . '/mobile/article_data.json'), $article_json);
         }
 
-        //print_r($result['search']);exit;
         $content = $publicdata['repleace']['searchresult_do.html'];
         $content = preg_replace($publicdata['pattern'], $publicdata['repleace'], $content);
         $smarty = new Smarty;
