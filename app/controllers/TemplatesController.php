@@ -18,6 +18,7 @@ class TemplatesController extends BaseController {
      * 首页详情
      * @param type $page index首页/_aside其他/global全局
      * @return string
+     * 
      */
     public function homepageInfo($page = 'index') {
         $pagedata = new PrintController;
