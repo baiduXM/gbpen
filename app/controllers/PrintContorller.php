@@ -135,7 +135,7 @@ class PrintController extends BaseController {
      * @return array 合并后的数组
      */
     public function pagedata($pagename, $jsondata = array()) {
-
+        //===debug===
         if ($this->type == 'pc') {
             $tpl_id = websiteInfo::where('cus_id', $this->cus_id)->pluck('pc_tpl_id');
         } else {
@@ -143,6 +143,8 @@ class PrintController extends BaseController {
         }
         $website_confige = WebsiteConfig::where('cus_id', $this->cus_id)->where('key', $pagename)->where('type', 1)->where('template_id', $tpl_id)->pluck('value');
         $website_confige_value = unserialize($website_confige);
+//        var_dump($website_confige_value);
+//        exit;
         //===对多图进行排序===
         if (is_array($website_confige_value)) {
             foreach ($website_confige_value as $key => &$value) {
@@ -1013,7 +1015,7 @@ class PrintController extends BaseController {
                     $_copyright = '厦门易尔通网络科技有限公司';
                     break;
             }
-            
+
             switch ($customer_info->talent_support) {
                 case 'en_rencai':
                     $talent_support = 'Talent support：<a href="http://www.xgzrc.com/">www.xgzrc.com</a>';
@@ -1032,11 +1034,11 @@ class PrintController extends BaseController {
                     break;
             }
             if ($customer_info->lang == 'en') {
-                $footprint = $customer_info->footer . '<p>Technology support：<a href="' . $_href . '">' . $_copyright . '</a> '.$talent_support.'</p>';
+                $footprint = $customer_info->footer . '<p>Technology support：<a href="' . $_href . '">' . $_copyright . '</a> ' . $talent_support . '</p>';
             } else {
-                $footprint = $customer_info->footer . '<p>技术支持：<a href="' . $_href . '">' . $_copyright . '</a> '.$talent_support.'</p>';
+                $footprint = $customer_info->footer . '<p>技术支持：<a href="' . $_href . '">' . $_copyright . '</a> ' . $talent_support . '</p>';
             }
-            //===end===
+            //===版权选择_end===
             $footscript = $customer_info->pc_footer_script;
             $footscript .= '<script type="text/javascript" src="/quickbar/js/quickbar.js?' . $this->cus_id . 'pc"></script>';
             $footscript .= '<script type="text/javascript" src="http://swap.5067.org/admin/statis.php?cus_id=' . $this->cus_id . '&platform=pc"></script>'; //===添加统计代码PC===
