@@ -240,6 +240,10 @@ Route::group(array('before' => 'auth'), function() {
         'uses' => 'TemplatesController@articlePreview'
     ])->where('id', '[0-9]+');
 
+    Route::get('downloadTemplate', [//模板下载
+        'uses' => 'TemplatesController@downloadTemplate'
+    ]);
+    
     Route::get('checkChange', [
         'uses' => 'HTMLController@checkChange'
     ]);
