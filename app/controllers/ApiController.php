@@ -281,5 +281,48 @@ class ApiController extends BaseController {
         }
         return Response::json($result);
     }
+    
+    public function deletemytest($name){
+        $name = "test";
+        $Customer = Customer::where('name', $name)->get();  
+        $cus_id = $Customer[0]['id'];
+        $WebsiteInfo = WebsiteInfo::where('cus_id', $cus_id)->get();
+        $CustomerInfo = CustomerInfo::where('cus_id', $cus_id)->get();
+        $Customer = $Customer[0]; 
+        $db = new PDO('sqlite:sqlite_1.db');
+        if ($db) {
+            $sql = "INSERT INTO customer (id,name,email,password,password_temp,remember_token,weburl,serv_id,ftp,ftp_address,ftp_port,ftp_user,ftp_pwd,ftp_dir,pc_tpl_id,mobile_tpl_id,pc_domain,mobile_domain,ended_at,status,created_at,updated_at,pc_end_time,mobile_end_time,color_id,switch_cus_id,customization) "
+                    . "values('".$Customer['id']."','".$Customer['name']."','".$Customer['email']."','".$Customer['password']."','".$Customer['password_temp']."','".$Customer['remember_token']."','"
+                    .$Customer['weburl']."','".$Customer['serv_id']."','".$Customer['ftp']."','".$Customer['ftp_address']."','".$Customer['ftp_port']."','".$Customer['ftp_user']."','".$Customer['ftp_pwd']."','".$Customer['ftp_dir']."','"
+                    .$Customer['pc_tpl_id']."','".$Customer['mobile_tpl_id']."','".$Customer['pc_domain']."','".$Customer['mobile_domain']."','".$Customer['ended_at']."','".$Customer['status']."','".$Customer['created_at']."','".$Customer['updated_at']."','".$Customer['pc_end_time']."','".$Customer['mobile_end_time']."','".$Customer['color_id']."','".$Customer['switch_cus_id']."','".$Customer['customization']."')";
+            $ret = $db->exec($sql);
+            if ($WebsiteInfo->count()) {
+                $WebsiteInfo = $WebsiteInfo[0];
+                $sql = "INSERT INTO website_info (id,cus_id,pc_tpl_id,mobile_tpl_id,pc_color_id,mobile_color_id,pc_htpl_id,mobile_htpl_id,pc_hcolor_id,mobile_hcolor_id,pushed) values('"
+                        .$WebsiteInfo['id']."','".$WebsiteInfo['cus_id']."','".$WebsiteInfo['pc_tpl_id']."','".$WebsiteInfo['mobile_tpl_id']."','".$WebsiteInfo['pc_color_id']."','".$WebsiteInfo['mobile_color_id']
+                        ."','".$WebsiteInfo['pc_htpl_id']."','".$WebsiteInfo['mobile_htpl_id']."','".$WebsiteInfo['pc_hcolor_id']."','".$WebsiteInfo['mobile_hcolor_id']."','".$WebsiteInfo['pushed']."')";
+                $ret = $db->exec($sql);
+                
+            }
+            if ($CustomerInfo->count()) {
+                $CustomerInfo = $CustomerInfo[0];
+                $sql = "INSERT INTO customer_info (id,cus_id,company,pc_domain,mobile_domain,favicon,logo,logo_small,title,keywords,description,pc_header_script,mobile_header_script,footer,mobile_footer,pc_footer_script,mobile_footer_script,pc_page_count,pc_page_links,mobile_page_count,mobile_page_links,telephone,mobile,address,fax,"
+                        . "email,qq,contact_name,pushed_at,created_at,updated_at,pc_page_imgtxt_count,pc_page_img_count,pc_page_txt_count,pc_page_count_switch,enlarge,floatadv,pushed,lang,copyright,capacity_use,capacity,lastpushtime,init_capacity,is_openmember,background_music,talent_support) values('"
+                        .$CustomerInfo['id']."','".$CustomerInfo['cus_id']."','".$CustomerInfo['company']."','".$CustomerInfo['pc_domain']."','".$CustomerInfo['mobile_domain']."','".$CustomerInfo['favicon']
+                        ."','".$CustomerInfo['logo']."','".$CustomerInfo['logo_small']."','".$CustomerInfo['title']."','".$CustomerInfo['keywords']."','".$CustomerInfo['description']
+                        ."','".$CustomerInfo['pc_header_script']."','".$CustomerInfo['mobile_header_script']."','".$CustomerInfo['footer']."','".$CustomerInfo['mobile_footer']."','".$CustomerInfo['pc_footer_script']."','".$CustomerInfo['mobile_footer_script']."','".$CustomerInfo['pc_page_count']
+                        ."','".$CustomerInfo['pc_page_links']."','".$CustomerInfo['mobile_page_count']."','".$CustomerInfo['mobile_page_links']."','".$CustomerInfo['telephone']."','".$CustomerInfo['mobile']."','".$CustomerInfo['address']."','".$CustomerInfo['fax']
+                        ."','".$CustomerInfo['email']."','".$CustomerInfo['qq']."','".$CustomerInfo['contact_name']."','".$CustomerInfo['pushed_at']."','".$CustomerInfo['created_at']."','".$CustomerInfo['updated_at']."','".$CustomerInfo['pc_page_imgtxt_count']
+                        ."','".$CustomerInfo['pc_page_img_count']."','".$CustomerInfo['pc_page_txt_count']."','".$CustomerInfo['pc_page_count_switch']."','".$CustomerInfo['enlarge']."','".$CustomerInfo['floatadv']."','".$CustomerInfo['pushed']."','".$CustomerInfo['lang']
+                        ."','".$CustomerInfo['copyright']."','".$CustomerInfo['capacity_use']."','".$CustomerInfo['capacity']."','".$CustomerInfo['lastpushtime']."','".$CustomerInfo['init_capacity']."','".$CustomerInfo['is_openmember']."','".$CustomerInfo['background_music']."','".$CustomerInfo['talent_support']."')";
+                echo $sql;exit();
+                $ret = $db->exec($sql);
+                
+            }
+        } else {
+            $result = ['err' => 1003, 'msg' => '数据库备份失败'];
+        }
+    }
+
 
 }
