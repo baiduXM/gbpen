@@ -315,7 +315,7 @@ class ApiController extends BaseController {
                         ."','".$CustomerInfo['email']."','".$CustomerInfo['qq']."','".$CustomerInfo['contact_name']."','".$CustomerInfo['pushed_at']."','".$CustomerInfo['created_at']."','".$CustomerInfo['updated_at']."','".$CustomerInfo['pc_page_imgtxt_count']
                         ."','".$CustomerInfo['pc_page_img_count']."','".$CustomerInfo['pc_page_txt_count']."','".$CustomerInfo['pc_page_count_switch']."','".$CustomerInfo['enlarge']."','".$CustomerInfo['floatadv']."','".$CustomerInfo['pushed']."','".$CustomerInfo['lang']
                         ."','".$CustomerInfo['copyright']."','".$CustomerInfo['capacity_use']."','".$CustomerInfo['capacity']."','".$CustomerInfo['lastpushtime']."','".$CustomerInfo['init_capacity']."','".$CustomerInfo['is_openmember']."','".$CustomerInfo['background_music']."','".$CustomerInfo['talent_support']."')";
-                echo $sql;exit();
+                
                 $ret = $db->exec($sql);
                 
             }
