@@ -282,7 +282,7 @@ class ApiController extends BaseController {
         return Response::json($result);
     }
     
-    public function deletemytest($name){
+    public function deletemytest($name=''){
         $name = "test";
         $Customer = Customer::where('name', $name)->get();  
         $cus_id = $Customer[0]['id'];
