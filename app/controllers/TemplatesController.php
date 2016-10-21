@@ -17,7 +17,7 @@ class TemplatesController extends BaseController {
     /**
      * 首页详情
      * @param type $page index首页/_aside其他/global全局
-     * @return string
+     * @return string     
      */
     public function homepageInfo($page = 'index') {
         $pagedata = new PrintController;
@@ -813,7 +813,68 @@ class TemplatesController extends BaseController {
         $my_tpl_name = Template::where('id', $tpl_id)->pluck('name');
         return $my_tpl_name;
     }
-
+    /**
+     * 模板下载
+     */
+    public function downloadTemplate(){
+        echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
+        if(Auth::user()->name!="test"){
+            return false;
+        }
+        $tplname=Input::get("name");
+        $tpl=Template::where('name', $tplname)->first();
+        if($tpl==null){
+            echo '没有该模板！';
+        }
+        if(!is_dir(public_path('temp_templates/tpl/'))){
+            @mkdir(public_path('temp_templates/tpl/'));
+        }else{
+            $dh=opendir(public_path('temp_templates/tpl/'));
+            while ($file=readdir($dh)) {
+                if($file!="." && $file!="..") {
+                    $fullpath=public_path('temp_templates/tpl/').$file;
+                    if(is_file($fullpath)) {
+                        unlink($fullpath);
+                    } 
+                }
+            }
+            closedir($dh);
+        }
+        $path = public_path('temp_templates/tpl/' . $tplname.'.zip');
+        $view_dir= app_path('views/templates/');
+        $json_dir = public_path('templates/');
+        if (file_exists($path)) {
+            @unlink($path);
+        }
+        $zip = new ZipArchive;
+        if($zip->open($path, ZipArchive::CREATE)=== TRUE){
+            $this->addFileToZip($json_dir.$tplname."/css",$zip,"css");
+            $this->addFileToZip($json_dir.$tplname."/js",$zip,"js");
+            $this->addFileToZip($json_dir.$tplname."/images",$zip,"images");
+            $this->addFileToZip($json_dir.$tplname."/json",$zip,"");
+            $this->addFileToZip($view_dir.$tplname,$zip,"");
+            $zip->close();
+        }
+        echo '<a href="/temp_templates/tpl/'.$tplname.'.zip">下载'.$tplname.'模板</a>';
+    }
+    /**
+     * 将整个文件夹压缩
+     * @param type $path文件夹路径
+     * @param type $zip压缩变量
+     * @param type $dir存储名称
+     */
+    private function addFileToZip($path,$zip,$dir){//将整个文件夹压缩
+        $handler=opendir($path);
+        while(($filename=readdir($handler))!==false){
+            if($filename != "." && $filename != ".."){
+                if(is_dir($path."/".$filename)){
+                    $this->addFileToZip($path."/".$filename, $zip,$dir."/".$filename);
+                }else{
+                    $zip->addFile($path."/".$filename,$dir."/".$filename);
+                }
+            }
+        }
+    }
     /*
       public function searchPreview($url,$type='pc'){
       $template = new PrintController('online',$type);
