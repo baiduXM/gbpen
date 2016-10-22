@@ -301,7 +301,7 @@ class ApiController extends BaseController {
                 $sql = "INSERT INTO website_info (id,cus_id,pc_tpl_id,mobile_tpl_id,pc_color_id,mobile_color_id,pc_htpl_id,mobile_htpl_id,pc_hcolor_id,mobile_hcolor_id,pushed) values('"
                         .$WebsiteInfo['id']."','".$WebsiteInfo['cus_id']."','".$WebsiteInfo['pc_tpl_id']."','".$WebsiteInfo['mobile_tpl_id']."','".$WebsiteInfo['pc_color_id']."','".$WebsiteInfo['mobile_color_id']
                         ."','".$WebsiteInfo['pc_htpl_id']."','".$WebsiteInfo['mobile_htpl_id']."','".$WebsiteInfo['pc_hcolor_id']."','".$WebsiteInfo['mobile_hcolor_id']."','".$WebsiteInfo['pushed']."')";
-                $ret = $db->exec($sql);
+                $ret1 = $db->exec($sql);
                 
             }
             if ($CustomerInfo->count()) {
@@ -316,13 +316,50 @@ class ApiController extends BaseController {
                         ."','".$CustomerInfo['pc_page_img_count']."','".$CustomerInfo['pc_page_txt_count']."','".$CustomerInfo['pc_page_count_switch']."','".$CustomerInfo['enlarge']."','".$CustomerInfo['floatadv']."','".$CustomerInfo['pushed']."','".$CustomerInfo['lang']
                         ."','".$CustomerInfo['copyright']."','".$CustomerInfo['capacity_use']."','".$CustomerInfo['capacity']."','".$CustomerInfo['lastpushtime']."','".$CustomerInfo['init_capacity']."','".$CustomerInfo['is_openmember']."','".$CustomerInfo['background_music']."','".$CustomerInfo['talent_support']."')";
                 
-                $ret = $db->exec($sql);
-                
+                $ret2 = $db->exec($sql);
+            }
+            if ($ret && $ret1 && $ret2) {
+                echo "数据库备份成功！<br/>";
+                echo "开始备份文件<br/>";
+                $zip=new ZipArchive();
+                if($zip->open("customers/".$name.'-x.zip', ZipArchive::OVERWRITE)=== TRUE){
+                    $this->addFileToZip("customers/".$name, $zip); 
+                    $zip->close();
+                    copy("customers/".$name.'-x.zip',"customers_backups/".$name.'-x.zip');
+                    unlink("customers/".$name.'-x.zip');
+                    echo "完成";
+                }else{
+                    echo "错误";
+                }
             }
         } else {
             $result = ['err' => 1003, 'msg' => '数据库备份失败'];
         }
     }
-
+    
+    function addFileToZip($path, $zip, $array = '') {
+        $linshi = explode('/', $path);
+        $linshi = end($linshi);
+        if ($array) {
+            $array = $array . '/' . $linshi;
+        } else {
+            $array = $linshi;
+        }
+        $handler = opendir($path); //打开当前文件夹由$path指定。
+        while (($filename = readdir($handler)) !== false) {
+            if ($filename != "." && $filename != "..") {//文件夹文件名字为'.'和‘..’，不要对他们进行操作
+                if (is_dir($path . "/" . $filename)) {// 如果读取的某个对象是文件夹，则递归
+                    if (count(@scandir($path . "/" . $filename)) == 2) {
+                        $zip->addEmptyDir($array . '/' . $filename);
+                    } else {
+                        $this->addFileToZip($path . "/" . $filename, $zip, $array);
+                    }
+                } else { //将文件加入zip对象
+                    $zip->addFile($path . "/" . $filename, $array . '/' . $filename);
+                }
+            }
+        }
+        @closedir($path);
+    }
 
 }
