@@ -135,7 +135,6 @@ class PrintController extends BaseController {
      * @return array 合并后的数组
      */
     public function pagedata($pagename, $jsondata = array()) {
-        //===debug===
         if ($this->type == 'pc') {
             $tpl_id = websiteInfo::where('cus_id', $this->cus_id)->pluck('pc_tpl_id');
         } else {
@@ -143,8 +142,6 @@ class PrintController extends BaseController {
         }
         $website_confige = WebsiteConfig::where('cus_id', $this->cus_id)->where('key', $pagename)->where('type', 1)->where('template_id', $tpl_id)->pluck('value');
         $website_confige_value = unserialize($website_confige);
-//        var_dump($website_confige_value);
-//        exit;
         //===对多图进行排序===
         if (is_array($website_confige_value)) {
             foreach ($website_confige_value as $key => &$value) {
@@ -167,14 +164,13 @@ class PrintController extends BaseController {
             }
         }
         //===对多图进行排序_end===
-
         if (count($jsondata)) {
             $json = isset($jsondata[$pagename . '.json']) ? $jsondata[$pagename . '.json'] : '{}';
         } else {
             $json_path = public_path('templates/' . $this->themename . '/json/' . $pagename . '.json');
             $json = file_exists($json_path) ? file_get_contents($json_path) : '{}';
         }
-        if ($website_confige_value) {
+        if ($website_confige_value) {//===数据库中有模板数据===
             $default = json_decode(trim($json), TRUE);
             $result = $this->array_merge_recursive_new($default, $website_confige_value);
             $this->replaceUrl($result);
@@ -196,7 +192,7 @@ class PrintController extends BaseController {
                     }
                 }
             }
-        } else {
+        } else {//===数据库中无模板数据，从文件中读取===
             $result = json_decode(trim($json), TRUE);
             if ($result === NULL) {
                 dd("$pagename.json文件错误");
@@ -355,7 +351,7 @@ class PrintController extends BaseController {
                 }
             }
         }
-
+//        exit;
         return $result;
     }
 
@@ -367,26 +363,30 @@ class PrintController extends BaseController {
      *
      */
     public function dataDeal($data) {
+//        dd($data);
         if (!is_array($data))
             dd('json格式错误！');
         $slimming = array();
         foreach ($data as $k => $v) {
             $checkDataK = true;
-            foreach ($v as $dk => $vv)
-                if (!preg_match('/^(value|type|description|config)$/', $dk))
+            foreach ($v as $dk => $vv) {
+                if (!preg_match('/^(value|type|description|config)$/', $dk)) {
                     $checkDataK = false;
-            if (!$checkDataK || !array_key_exists('value', $v) || !array_key_exists('type', $v) || !array_key_exists('description', $v))
-                dd('json文件中每个变量的元素必须包含【value、type、description】元素，可选【config】\r\n详情参见：http://pme/wiki/doku.php?id=ued:template:json');
+                }
+            }
+            if (!$checkDataK || !array_key_exists('value', $v) || !array_key_exists('type', $v) || !array_key_exists('description', $v)) {
+                dd('json文件中每个变量的元素必须包含【value、type、description】元素，可选【config】\r\n详情参见：http://pme.eexx.me/doku.php?id=ued:template:json');
+            }
             $slimming[$k] = $v;
             // PHP端数据填充与验证
             switch ($v['type']) {
                 case 'text':
                     if (!is_string($slimming[$k]['value']))
-                        dd('json文件中type为【text】格式的value值必须为【字符串】\r\n详情参见：http://pme/wiki/doku.php?id=ued:template:json#typetext');
+                        dd('json文件中type为【text】格式的value值必须为【字符串】\r\n详情参见：http://pme.eexx.me/doku.php?id=ued:template:json#typetext');
                     break;
                 case 'textarea':
                     if (!is_string($slimming[$k]['value']))
-                        dd('json文件中type为【textarea】格式的value值必须为【字符串】\r\n详情参见：http://pme/wiki/doku.php?id=ued:template:json#typetextarea');
+                        dd('json文件中type为【textarea】格式的value值必须为【字符串】\r\n详情参见：http://pme.eexx.me/doku.php?id=ued:template:json#typetextarea');
                     $slimming[$k] = preg_replace("/\r\n/", "<br />", $slimming[$k]);
                     $slimming[$k] = preg_replace("/\n/", "<br />", $slimming[$k]);
                     break;
@@ -396,13 +396,13 @@ class PrintController extends BaseController {
                       echo json_encode(array(
                       'err' => 2001,
                       'data' => null,
-                      'msg' => 'json文件中type为【image】格式的value值必须包含【title、image、link】元素，可选【description】\r\n详情参见：http://pme/wiki/doku.php?id=ued:template:json#typeimage'
+                      'msg' => 'json文件中type为【image】格式的value值必须包含【title、image、link】元素，可选【description】\r\n详情参见：http://pme.eexx.me/doku.php?id=ued:template:json#typeimage'
                       ));
                       exit;
                       }
 
                       if (!array_key_exists('config', $slimming[$k]) || !is_array($slimming[$k]['config']) || (!is_numeric($slimming[$k]['config']['width']) && !is_numeric($slimming[$k]['config']['height']))) {
-                      $msg = 'json文件中type为【image】格式应配置【config】的【width】【height】配置项\r\n详情参见：http://pme/wiki/doku.php?id=ued:template:json#typeimage';
+                      $msg = 'json文件中type为【image】格式应配置【config】的【width】【height】配置项\r\n详情参见：http://pme.eexx.me/doku.php?id=ued:template:json#typeimage';
                       if (array_key_exists('config', $slimming[$k]) && is_array($slimming[$k]['config']) && array_key_exists('forcesize', $slimming[$k]['config']) && $slimming[$k]['config']['forcesize'] === true) {
                       dd($msg);
                       }else{
@@ -414,14 +414,14 @@ class PrintController extends BaseController {
                     break;
                 case 'images':
                     if (!is_array($slimming[$k]) || !count($slimming[$k]))
-                        dd('json文件中type为【images】格式不正确！\r\n详情参见：http://pme/wiki/doku.php?id=ued:template:json#typeimages');
+                        dd('json文件中type为【images】格式不正确！\r\n详情参见：http://pme.eexx.me/doku.php?id=ued:template:json#typeimages');
                     foreach ($slimming[$k]['value'] as $key => $val) {
                         if (!array_key_exists('title', $val) || !array_key_exists('image', $val) || !array_key_exists('link', $val))
-                            dd('json文件中type为【images】格式value值的每个子元素必须包含【title、image、link】元素，可选【description】\r\n详情参见：http://pme/wiki/doku.php?id=ued:template:json#typeimages');
+                            dd('json文件中type为【images】格式value值的每个子元素必须包含【title、image、link】元素，可选【description】\r\n详情参见：http://pme.eexx.me/doku.php?id=ued:template:json#typeimages');
                     }
                     /*
                       if (!array_key_exists('config',$slimming[$k]) || !is_array($slimming[$k]['config']) || (!is_numeric($slimming[$k]['config']['width']) && !is_numeric($slimming[$k]['config']['height']))) {
-                      $msg = 'json文件中type为【images】格式应配置【config】的【width】【height】配置项\r\n详情参见：http://pme/wiki/doku.php?id=ued:template:json#typeimages';
+                      $msg = 'json文件中type为【images】格式应配置【config】的【width】【height】配置项\r\n详情参见：http://pme.eexx.me/doku.php?id=ued:template:json#typeimages';
                       if (array_key_exists('config', $slimming[$k]) && is_array($slimming[$k]['config']) && array_key_exists('forcesize', $slimming[$k]['config']) && $slimming[$k]['config']['forcesize'] === true) {
                       dd($msg);
                       }else{
@@ -434,7 +434,6 @@ class PrintController extends BaseController {
                         $slimming[$k]['config'] = array();
                     $slimming[$k]['config']['filter'] = "page";
                     $slimming[$k]['type'] = "list";
-
                 case 'nav':
                     if (!array_key_exists('config', $slimming[$k]) || !is_array($slimming[$k]['config']))
                         $slimming[$k]['config'] = array();
@@ -459,17 +458,14 @@ class PrintController extends BaseController {
                 case 'quickbar':
                     //if ($this->type == 'pc') dd('PC模板的json文件中没有type为【quickbar】的变量！\r\n如果你现在制作的是手机模板，请修改config.ini文件对应参数。详情参见：http://pme.eexx.me/doku.php?id=ued:template:config#config_%E6%A8%A1%E6%9D%BF%E9%85%8D%E7%BD%AE%E9%83%A8%E5%88%86');
                     if (!is_string($slimming[$k]) || !count($slimming[$k]))
-                        dd('json文件中type为【navs】格式不正确！\r\n详情参见：http://pme/wiki/doku.php?id=ued:template:mindex#%E5%BA%95%E9%83%A8%E5%AF%BC%E8%88%AA%E5%AE%9A%E4%B9%89%E6%96%B9%E6%B3%95');
+                        dd('json文件中type为【navs】格式不正确！\r\n详情参见：http://pme.eexx.me/doku.php?id=ued:template:mindex#%E5%BA%95%E9%83%A8%E5%AF%BC%E8%88%AA%E5%AE%9A%E4%B9%89%E6%96%B9%E6%B3%95');
                     foreach ($slimming[$k] as $i => $v) {
-                        if (!array_key_exists('name', $v) ||
-                                !array_key_exists('image', $v) ||
-                                !array_key_exists('data', $v) ||
-                                !array_key_exists('type', $v) ||
-                                !array_key_exists('enable', $v)
-                        )
-                            dd('json文件中type为【navs】格式value值的每个子元素必须包【name、image、data、type、enable】元素，可选【childmenu】\r\n详情参见：http://pme/wiki/doku.php?id=ued:template:mindex#%E5%BA%95%E9%83%A8%E5%AF%BC%E8%88%AA%E5%AE%9A%E4%B9%89%E6%96%B9%E6%B3%95');
-                        if (!preg_match("/^(tel|sms|im|link|share)$/", $v['type']))
-                            dd('json文件中type为【navs】格式value值的子元素的【type】值只能为【tel、sms、im、link、share】其中之一\r\n详情参见：http://pme/wiki/doku.php?id=ued:template:mindex#%E5%BA%95%E9%83%A8%E5%AF%BC%E8%88%AA%E5%AE%9A%E4%B9%89%E6%96%B9%E6%B3%95');
+                        if (!array_key_exists('name', $v) || !array_key_exists('image', $v) || !array_key_exists('data', $v) || !array_key_exists('type', $v) || !array_key_exists('enable', $v)) {
+                            dd('json文件中type为【navs】格式value值的每个子元素必须包【name、image、data、type、enable】元素，可选【childmenu】\r\n详情参见：http://pme.eexx.me/doku.php?id=ued:template:mindex#%E5%BA%95%E9%83%A8%E5%AF%BC%E8%88%AA%E5%AE%9A%E4%B9%89%E6%96%B9%E6%B3%95');
+                        }
+                        if (!preg_match("/^(tel|sms|im|link|share)$/", $v['type'])) {
+                            dd('json文件中type为【navs】格式value值的子元素的【type】值只能为【tel、sms、im、link、share】其中之一\r\n详情参见：http://pme.eexx.me/doku.php?id=ued:template:mindex#%E5%BA%95%E9%83%A8%E5%AF%BC%E8%88%AA%E5%AE%9A%E4%B9%89%E6%96%B9%E6%B3%95');
+                        }
                         if (!array_key_exists('enable', $v)) {
                             unset($slimming[$k][$i]);
                         }
@@ -508,11 +504,16 @@ class PrintController extends BaseController {
                         }
                     }
                     break;
+                case 'form':
+                    
+//                    dd($slimming);
+                    break;
             }
         }
         if (isset($slimming['feedback'])) {
             $slimming['feedback']['value']['posturl'] = 'http://swap.5067.org/message/' . $this->cus_id;
         }
+//        dd($slimming);
         return $slimming;
     }
 
@@ -1065,7 +1066,7 @@ class PrintController extends BaseController {
             $site_another_url = $this->showtype == 'preview' ? '' : $customer_info->pc_domain;
             $config_arr = parse_ini_file(public_path('/templates/' . $this->themename) . '/config.ini', true);
             if (!is_array($config_arr))
-                dd('【config.ini】文件不存在！文件格式说明详见：http://pme/wiki/doku.php?id=ued:template:config');
+                dd('【config.ini】文件不存在！文件格式说明详见：http://pme.eexx.me/doku.php?id=ued:template:config');
         }
         //获取global信息
         if ($this->type == 'pc') {

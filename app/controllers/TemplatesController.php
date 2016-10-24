@@ -22,11 +22,9 @@ class TemplatesController extends BaseController {
     public function homepageInfo($page = 'index') {
         $pagedata = new PrintController;
         $data = $pagedata->pagedata($page);
-
         $data_final = $data;
         $classify = new Classify;
         foreach ($data as $k => $v) {
-            var_dump($v);
             if ($v['type'] == 'list') {
                 $type_arr = array(1, 2, 3);
                 $list = Classify::where('cus_id', '=', $pagedata->cus_id)->whereIn('type', array(1, 2, 3, 4, 5, 6, 9))->where('pc_show', '=', 1)->get()->toArray();
@@ -156,7 +154,7 @@ class TemplatesController extends BaseController {
                 }
             }
         }
-        exit;
+//        exit;
         return $data_final;
     }
 
@@ -271,7 +269,7 @@ class TemplatesController extends BaseController {
             } else {
                 $title = "其他";
             }
-            $result[$k]['title'] = Config::get('file.' . $file_type[0], $title); //===embed-form
+            $result[$k]['title'] = Config::get('file.' . $file_type[0], $title); //===form===
             if ($file_type[0] == 'index') {
                 $result[$k]['url'] = asset('homepage-preview');
             } elseif ($file_type[0] == 'list-text') {
