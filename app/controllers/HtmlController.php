@@ -3,7 +3,7 @@
 /**
  * @author 小余、財財
  * @package HtmlController
- * @copyright 厦门易尔通
+ * @copyright 厦门易尔通 
  */
 
 /**
@@ -840,6 +840,9 @@ class HtmlController extends BaseController {
                                 $pc_config=  json_decode(file_get_contents(public_path('customers/' . $this->customer."/temp/".$pc_themename."/config.json")));
                                 if($pc_tpl->push_get_date==null||$pc_tpl->push_get_date==""||$pc_tpl->push_get_date<$pc_config->push_get_date){
                                     $this->copydir(public_path('customers/' . $this->customer."/temp/".$pc_themename."/html"), $view_dir."/".$pc_themename);
+                                    if(file_exists($view_dir."/".$pc_themename."/searchresult_do.html")){
+                                        @unlink($view_dir."/".$pc_themename."/searchresult_do.html");
+                                    }
                                     $this->copydir(public_path('customers/' . $this->customer."/temp/".$pc_themename."/json"), $json_dir."/".$pc_themename);
                                     if($pc_config->push_get_date>$pc_tpl->updated_at){
                                         Template::where("id",$webinfo->pc_tpl_id)->update(array("push_get_date"=>date("Y-m-d H:i:s", time())));
@@ -858,6 +861,9 @@ class HtmlController extends BaseController {
                                 $m_config=  json_decode(file_get_contents(public_path('customers/' . $this->customer."/temp/".$mobile_themename."/config.json")));
                                 if($m_tpl->push_get_date==null||$m_tpl->push_get_date==""||$m_tpl->push_get_date<$m_config->push_get_date){
                                     $this->copydir(public_path('customers/' . $this->customer."/temp/".$mobile_themename."/html"), $view_dir."/".$mobile_themename);
+                                    if(file_exists($view_dir."/".$mobile_themename."/searchresult_do.html")){
+                                        @unlink($view_dir."/".$mobile_themename."/searchresult_do.html");
+                                    }
                                     $this->copydir(public_path('customers/' . $this->customer."/temp/".$mobile_themename."/json"), $json_dir."/".$mobile_themename);
                                     if($m_config->push_get_date>$m_tpl->updated_at){
                                         Template::where("id",$webinfo->mobile_tpl_id)->update(array("push_get_date"=>date("Y-m-d H:i:s", time())));

@@ -198,7 +198,6 @@ class PrintController extends BaseController {
                 dd("$pagename.json文件错误");
             }
             $this->replaceUrl($result);
-            //dd($result);
             $result = $this->dataDeal($result);
             $classify = new Classify;
             $templates = new TemplatesController;
@@ -207,151 +206,158 @@ class PrintController extends BaseController {
                 $c_arr = array();
             }
             foreach ($result as &$v) {
-                if ($v['type'] == 'list') {
-                    if (isset($v['config']['mustchild']) && $v['config']['mustchild'] == true) {
-                        if (isset($v['config']['filter'])) {
-                            if ($v['config']['filter'] == 'page') {
-                                $c_arr = $classify->toTree($c_arr);
-                                $templates->unsetFalseClassify($c_arr, array(4));
-                                $templates->unsetLastClassify($c_arr);
-                                $c_arr = array_merge($c_arr);
-                            } elseif ($v['config']['filter'] == 'list') {
+                switch ($v['type']) {
+                    case 'list':
+                        if (isset($v['config']['mustchild']) && $v['config']['mustchild'] == true) {
+                            if (isset($v['config']['filter'])) {
+                                if ($v['config']['filter'] == 'page') {
+                                    $c_arr = $classify->toTree($c_arr);
+                                    $templates->unsetFalseClassify($c_arr, array(4));
+                                    $templates->unsetLastClassify($c_arr);
+                                    $c_arr = array_merge($c_arr);
+                                } elseif ($v['config']['filter'] == 'list') {
+                                    $c_arr = $classify->toTree($c_arr);
+                                    $templates->unsetFalseClassify($c_arr, array(1, 2, 3));
+                                    $templates->unsetLastClassify($c_arr);
+                                    if (is_array($c_arr)) {
+                                        $c_arr = array_merge($c_arr);
+                                    }
+                                    $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
+                                } elseif ($v['config']['filter'] == 'feedback') {/* 20151021添加feeback filter */
+                                    $c_arr = $classify->toTree($c_arr);
+                                    $templates->unsetFalseClassify($c_arr, array(5, 9));
+                                    $templates->unsetLastClassify($c_arr);
+                                    $c_arr = array_merge($c_arr);
+                                } elseif ($v['config']['filter'] == 'ALL') {
+                                    $c_arr = $classify->toTree($c_arr);
+                                    $templates->unsetFalseClassify($c_arr, array(1, 2, 3, 4, 5, 6));
+                                    $templates->unsetLastClassify($c_arr);
+                                    $c_arr = array_merge($c_arr);
+                                    $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
+                                } else {
+                                    $c_arr = $classify->toTree($c_arr);
+                                    $templates->unsetFalseClassify($c_arr, array(1, 2, 3, 4));
+                                    $templates->unsetLastClassify($c_arr);
+                                    if (is_array($c_arr)) {
+                                        $c_arr = array_merge($c_arr);
+                                    }
+                                    $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
+                                }
+                            } else {
                                 $c_arr = $classify->toTree($c_arr);
                                 $templates->unsetFalseClassify($c_arr, array(1, 2, 3));
                                 $templates->unsetLastClassify($c_arr);
-                                if (is_array($c_arr)) {
-                                    $c_arr = array_merge($c_arr);
-                                }
-                                $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
-                            } elseif ($v['config']['filter'] == 'feedback') {/* 20151021添加feeback filter */
-                                $c_arr = $classify->toTree($c_arr);
-                                $templates->unsetFalseClassify($c_arr, array(5, 9));
-                                $templates->unsetLastClassify($c_arr);
                                 $c_arr = array_merge($c_arr);
-                            } elseif ($v['config']['filter'] == 'ALL') {
-                                $c_arr = $classify->toTree($c_arr);
-                                $templates->unsetFalseClassify($c_arr, array(1, 2, 3, 4, 5, 6));
-                                $templates->unsetLastClassify($c_arr);
-                                $c_arr = array_merge($c_arr);
-                                $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
-                            } else {
-                                $c_arr = $classify->toTree($c_arr);
-                                $templates->unsetFalseClassify($c_arr, array(1, 2, 3, 4));
-                                $templates->unsetLastClassify($c_arr);
-                                if (is_array($c_arr)) {
-                                    $c_arr = array_merge($c_arr);
-                                }
                                 $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
                             }
+                            if (count($c_arr)) {
+                                $v['config']['id'] = $c_arr[0]['id'];
+                            }
                         } else {
-                            $c_arr = $classify->toTree($c_arr);
-                            $templates->unsetFalseClassify($c_arr, array(1, 2, 3));
-                            $templates->unsetLastClassify($c_arr);
-                            $c_arr = array_merge($c_arr);
-                            $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
-                        }
-                        if (count($c_arr)) {
-                            $v['config']['id'] = $c_arr[0]['id'];
-                        }
-                    } else {
-                        if (isset($v['config']['filter'])) {
-                            if ($v['config']['filter'] == 'page') {
-                                $v['config']['id'] = Classify::where('cus_id', $this->cus_id)->where('type', 4)->where($this->type . '_show', 1)->pluck('id');
-                            } elseif ($v['config']['filter'] == 'list') {
+                            if (isset($v['config']['filter'])) {
+                                if ($v['config']['filter'] == 'page') {
+                                    $v['config']['id'] = Classify::where('cus_id', $this->cus_id)->where('type', 4)->where($this->type . '_show', 1)->pluck('id');
+                                } elseif ($v['config']['filter'] == 'list') {
+                                    $v['config']['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3))->where($this->type . '_show', 1)->pluck('id');
+                                    $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
+                                } elseif ($v['config']['filter'] == 'feedback') {/* 20151021添加feeback filter */
+                                    $v['config']['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(5, 9))->where($this->type . '_show', 1)->pluck('id');
+                                } elseif ($v['config']['filter'] == 'ALL') {
+                                    $v['config']['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3, 4, 5, 6))->where($this->type . '_show', 1)->pluck('id');
+                                    $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
+                                } else {
+                                    $v['config']['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3, 4))->where($this->type . '_show', 1)->pluck('id');
+                                    $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
+                                }
+                            } else {
                                 $v['config']['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3))->where($this->type . '_show', 1)->pluck('id');
                                 $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
-                            } elseif ($v['config']['filter'] == 'feedback') {/* 20151021添加feeback filter */
-                                $v['config']['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(5, 9))->where($this->type . '_show', 1)->pluck('id');
-                            } elseif ($v['config']['filter'] == 'ALL') {
-                                $v['config']['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3, 4, 5, 6))->where($this->type . '_show', 1)->pluck('id');
-                                $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
-                            } else {
-                                $v['config']['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3, 4))->where($this->type . '_show', 1)->pluck('id');
-                                $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
+                            }
+                        }
+                        break;
+                    case 'page':
+                        if (isset($v['config']['mustchild']) && $v['config']['mustchild'] == true) {
+                            $c_arr = Classify::where('cus_id', $this->cus_id)->where('type', 4)->where($this->type . '_show', 1)->get()->toArray();
+                            $c_arr = $classify->toTree($c_arr);
+                            $templates->unsetLastClassify($c_arr);
+                            $c_arr = array_merge($c_arr);
+                            if (count($c_arr)) {
+                                $v['config']['id'] = $c_arr[0]['id'];
                             }
                         } else {
-                            $v['config']['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3))->where($this->type . '_show', 1)->pluck('id');
-                            $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
+                            $v['config']['id'] = Classify::where('cus_id', $this->cus_id)->where('type', 4)->where($this->type . '_show', 1)->pluck('id');
                         }
-                    }
-                } elseif ($v['type'] == 'page') {
-                    if (isset($v['config']['mustchild']) && $v['config']['mustchild'] == true) {
-                        $c_arr = Classify::where('cus_id', $this->cus_id)->where('type', 4)->where($this->type . '_show', 1)->get()->toArray();
-                        $c_arr = $classify->toTree($c_arr);
-                        $templates->unsetLastClassify($c_arr);
-                        $c_arr = array_merge($c_arr);
-                        if (count($c_arr)) {
-                            $v['config']['id'] = $c_arr[0]['id'];
-                        }
-                    } else {
-                        $v['config']['id'] = Classify::where('cus_id', $this->cus_id)->where('type', 4)->where($this->type . '_show', 1)->pluck('id');
-                    }
-                } elseif ($v['type'] == 'navs') {
-                    if (isset($v['config']['mustchild']) && $v['config']['mustchild'] == true) {
-                        if (isset($v['config']['filter'])) {
-                            if ($v['config']['filter'] == 'page') {
-                                $c_arr = $classify->toTree($c_arr);
-                                $templates->unsetFalseClassify($c_arr, array(4));
-                                $templates->unsetLastClassify($c_arr);
-                                $c_arr = array_merge($c_arr);
-                            } elseif ($v['config']['filter'] == 'list') {
+                        break;
+                    case 'navs':
+                        if (isset($v['config']['mustchild']) && $v['config']['mustchild'] == true) {
+                            if (isset($v['config']['filter'])) {
+                                if ($v['config']['filter'] == 'page') {
+                                    $c_arr = $classify->toTree($c_arr);
+                                    $templates->unsetFalseClassify($c_arr, array(4));
+                                    $templates->unsetLastClassify($c_arr);
+                                    $c_arr = array_merge($c_arr);
+                                } elseif ($v['config']['filter'] == 'list') {
+                                    $c_arr = $classify->toTree($c_arr);
+                                    $templates->unsetFalseClassify($c_arr, array(1, 2, 3));
+                                    $templates->unsetLastClassify($c_arr);
+                                    $c_arr = array_merge($c_arr);
+                                    $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
+                                } elseif ($v['config']['filter'] == 'ALL') {
+                                    $c_arr = $classify->toTree($c_arr);
+                                    $templates->unsetFalseClassify($c_arr, array(1, 2, 3, 4, 6));
+                                    $templates->unsetLastClassify($c_arr);
+                                    $c_arr = array_merge($c_arr);
+                                    $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
+                                } else {
+                                    $c_arr = $classify->toTree($c_arr);
+                                    $templates->unsetFalseClassify($c_arr, array(1, 2, 3, 4));
+                                    $templates->unsetLastClassify($c_arr);
+                                    $c_arr = array_merge($c_arr);
+                                    $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
+                                }
+                            } else {
                                 $c_arr = $classify->toTree($c_arr);
                                 $templates->unsetFalseClassify($c_arr, array(1, 2, 3));
                                 $templates->unsetLastClassify($c_arr);
                                 $c_arr = array_merge($c_arr);
                                 $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
-                            } elseif ($v['config']['filter'] == 'ALL') {
-                                $c_arr = $classify->toTree($c_arr);
-                                $templates->unsetFalseClassify($c_arr, array(1, 2, 3, 4, 6));
-                                $templates->unsetLastClassify($c_arr);
-                                $c_arr = array_merge($c_arr);
-                                $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
-                            } else {
-                                $c_arr = $classify->toTree($c_arr);
-                                $templates->unsetFalseClassify($c_arr, array(1, 2, 3, 4));
-                                $templates->unsetLastClassify($c_arr);
-                                $c_arr = array_merge($c_arr);
-                                $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
                             }
                         } else {
-                            $c_arr = $classify->toTree($c_arr);
-                            $templates->unsetFalseClassify($c_arr, array(1, 2, 3));
-                            $templates->unsetLastClassify($c_arr);
-                            $c_arr = array_merge($c_arr);
-                            $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
-                        }
-                    } else {
-                        if (isset($v['config']['filter'])) {
-                            if ($v['config']['filter'] == 'page') {
-                                $c_arr[0]['id'] = Classify::where('cus_id', $this->cus_id)->where('type', 4)->where($this->type . '_show', 1)->pluck('id');
-                            } elseif ($v['config']['filter'] == 'list') {
+                            if (isset($v['config']['filter'])) {
+                                if ($v['config']['filter'] == 'page') {
+                                    $c_arr[0]['id'] = Classify::where('cus_id', $this->cus_id)->where('type', 4)->where($this->type . '_show', 1)->pluck('id');
+                                } elseif ($v['config']['filter'] == 'list') {
+                                    $c_arr[0]['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3))->where($this->type . '_show', 1)->pluck('id');
+                                    $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
+                                } elseif ($v['config']['filter'] == 'ALL') {
+                                    $c_arr[0]['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3, 4, 6))->where($this->type . '_show', 1)->pluck('id');
+                                    $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
+                                } else {
+                                    $c_arr[0]['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3, 4))->where($this->type . '_show', 1)->pluck('id');
+                                    $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
+                                }
+                            } else {
                                 $c_arr[0]['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3))->where($this->type . '_show', 1)->pluck('id');
                                 $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
-                            } elseif ($v['config']['filter'] == 'ALL') {
-                                $c_arr[0]['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3, 4, 6))->where($this->type . '_show', 1)->pluck('id');
-                                $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
-                            } else {
-                                $c_arr[0]['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3, 4))->where($this->type . '_show', 1)->pluck('id');
-                                $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
                             }
-                        } else {
-                            $c_arr[0]['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3))->where($this->type . '_show', 1)->pluck('id');
-                            $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
                         }
-                    }
-                    $ids = "";
-                    $num = $v['config']['limit'];
-                    if (count($c_arr)) {
-                        $ids = array();
-                        for ($i = 0; $i < $num; $i++) {
-                            $ids[$i] = $c_arr[0]['id'];
+                        $ids = "";
+                        $num = $v['config']['limit'];
+                        if (count($c_arr)) {
+                            $ids = array();
+                            for ($i = 0; $i < $num; $i++) {
+                                $ids[$i] = $c_arr[0]['id'];
+                            }
                         }
-                    }
-                    $v['config']['ids'] = $ids;
+                        $v['config']['ids'] = $ids;
+                        break;
+                    case 'form'://===
+                        break;
+                    default:
+                        break;
                 }
             }
         }
-//        exit;
         return $result;
     }
 
@@ -363,7 +369,6 @@ class PrintController extends BaseController {
      *
      */
     public function dataDeal($data) {
-//        dd($data);
         if (!is_array($data))
             dd('json格式错误！');
         $slimming = array();
@@ -446,7 +451,6 @@ class PrintController extends BaseController {
                     if (!array_key_exists('filter', $slimming[$k]['config']) || empty($slimming[$k]['config']['filter']))
                         $slimming[$k]['config']['filter'] = "ALL";
                     $slimming[$k]['config']['limit'] = array_key_exists('limit', $slimming[$k]['config']) ? $slimming[$k]['config']['limit'] : 0;
-
                 case 'list':
                     if (!array_key_exists('config', $slimming[$k]) || !is_array($slimming[$k]['config']))
                         $slimming[$k]['config'] = array();
@@ -457,8 +461,9 @@ class PrintController extends BaseController {
                     break;
                 case 'quickbar':
                     //if ($this->type == 'pc') dd('PC模板的json文件中没有type为【quickbar】的变量！\r\n如果你现在制作的是手机模板，请修改config.ini文件对应参数。详情参见：http://pme.eexx.me/doku.php?id=ued:template:config#config_%E6%A8%A1%E6%9D%BF%E9%85%8D%E7%BD%AE%E9%83%A8%E5%88%86');
-                    if (!is_string($slimming[$k]) || !count($slimming[$k]))
+                    if (!is_string($slimming[$k]) || !count($slimming[$k])) {
                         dd('json文件中type为【navs】格式不正确！\r\n详情参见：http://pme.eexx.me/doku.php?id=ued:template:mindex#%E5%BA%95%E9%83%A8%E5%AF%BC%E8%88%AA%E5%AE%9A%E4%B9%89%E6%96%B9%E6%B3%95');
+                    }
                     foreach ($slimming[$k] as $i => $v) {
                         if (!array_key_exists('name', $v) || !array_key_exists('image', $v) || !array_key_exists('data', $v) || !array_key_exists('type', $v) || !array_key_exists('enable', $v)) {
                             dd('json文件中type为【navs】格式value值的每个子元素必须包【name、image、data、type、enable】元素，可选【childmenu】\r\n详情参见：http://pme.eexx.me/doku.php?id=ued:template:mindex#%E5%BA%95%E9%83%A8%E5%AF%BC%E8%88%AA%E5%AE%9A%E4%B9%89%E6%96%B9%E6%B3%95');
@@ -505,15 +510,13 @@ class PrintController extends BaseController {
                     }
                     break;
                 case 'form':
-                    
-//                    dd($slimming);
+                    $slimming[$k] = $v;
                     break;
             }
         }
         if (isset($slimming['feedback'])) {
             $slimming['feedback']['value']['posturl'] = 'http://swap.5067.org/message/' . $this->cus_id;
         }
-//        dd($slimming);
         return $slimming;
     }
 
@@ -584,14 +587,14 @@ class PrintController extends BaseController {
         $customerC = new CustomerController;
         $domain = $customerC->getSwitchCustomer(); //双站用户
         if (!empty($domain)) {
-            if ($flagPlatform == 'GM') {//===手机
+            if ($flagPlatform == 'GM') {//===手机===
                 $language_url = $domain['switch_mobile_domain'];
-            } elseif ($flagPlatform == 'GP') {//===PC
+            } elseif ($flagPlatform == 'GP') {//===PC===
                 $language_url = $domain['switch_pc_domain'];
             }
-            if ($flagLanguage == 9) {//===英文
+            if ($flagLanguage == 9) {//===英文===
                 $language = '中文版';
-            } elseif ($flagLanguage == 0) {//===中文
+            } elseif ($flagLanguage == 0) {//===中文===
                 $language = 'English';
             }
         }

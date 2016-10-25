@@ -15,146 +15,163 @@
 class TemplatesController extends BaseController {
 
     /**
-     * 首页详情
+
+     *  * 首页详情
      * @param type $page index首页/_aside其他/global全局/form表单
      * @return string
      */
     public function homepageInfo($page = 'index') {
+
         $pagedata = new PrintController;
         $data = $pagedata->pagedata($page);
         $data_final = $data;
         $classify = new Classify;
         foreach ($data as $k => $v) {
-            if ($v['type'] == 'list') {
-                $type_arr = array(1, 2, 3);
-                $list = Classify::where('cus_id', '=', $pagedata->cus_id)->whereIn('type', array(1, 2, 3, 4, 5, 6, 9))->where('pc_show', '=', 1)->get()->toArray();
-                $value = array();
-                $selected = false;
-                foreach ($list as $key => $l) {
-                    $value[$key]['id'] = $l['id'];
-                    $value[$key]['name'] = $l['name'];
-                    $value[$key]['p_id'] = $l['p_id'];
-                    $value[$key]['type'] = $l['type'];
-                    if (isset($v['config']['id']) && $l['id'] == $v['config']['id']) {
-                        $value[$key]['selected'] = 1;
-                        $selected = true;
+            switch ($v['type']) {
+                case 'list':
+                    $type_arr = array(1, 2, 3);
+                    $list = Classify::where('cus_id', '=', $pagedata->cus_id)->whereIn('type', array(1, 2, 3, 4, 5, 6, 9))->where('pc_show', '=', 1)->get()->toArray();
+                    $value = array();
+                    $selected = false;
+                    foreach ($list as $key => $l) {
+                        $value[$key]['id'] = $l['id'];
+                        $value[$key]['name'] = $l['name'];
+                        $value[$key]['p_id'] = $l['p_id'];
+                        $value[$key]['type'] = $l['type'];
+                        if (isset($v['config']['id']) && $l['id'] == $v['config']['id']) {
+                            $value[$key]['selected'] = 1;
+                            $selected = true;
+                        } else {
+                            $value[$key]['selected'] = 0;
+                        }
+                    }
+                    if (isset($v['config']['filter'])) {
+                        if ($v['config']['filter'] == 'page') {
+                            $value = $classify->toTree($value);
+                            $type_arr = array(4);
+                        } elseif ($v['config']['filter'] == 'list') {
+                            $value = $classify->toTree($value);
+                            $type_arr = array(1, 2, 3);
+                        } elseif ($v['config']['filter'] == 'feedback') {/* 20151021添加feeback filter */
+                            $value = $classify->toTree($value);
+                            $type_arr = array(5, 9);
+                        } elseif ($v['config']['filter'] == 'ALL') {
+                            $value = $classify->toTree($value);
+                            $type_arr = array(1, 2, 3, 4, 5, 6);
+                        } else {
+                            $value = $classify->toTree($value);
+                            $type_arr = array(1, 2, 3, 4, 9);
+                        }
+                    }
+                    $this->unsetFalseClassify($value, $type_arr);
+                    if (!$selected && count($value)) {
+                        foreach ($value as $key => $v) {
+                            $value[$key]['selected'] = 1;
+                            break;
+                        }
+                    }
+                    if (isset($v['config']['mustchild']) && $v['config']['mustchild'] == true) {
+                        $this->unsetLastClassify($value);
+                    }
+                    $data_final[$k]['config']['list'] = $value;
+                    if (isset($v['config']['star_only'])) {
+                        $data_final[$k]['config']['star_only'] = $v['config']['star_only'];
                     } else {
-                        $value[$key]['selected'] = 0;
+                        $data_final[$k]['config']['star_only'] = "0";
                     }
-                }
-                if (isset($v['config']['filter'])) {
-                    if ($v['config']['filter'] == 'page') {
-                        $value = $classify->toTree($value);
-                        $type_arr = array(4);
-                    } elseif ($v['config']['filter'] == 'list') {
-                        $value = $classify->toTree($value);
-                        $type_arr = array(1, 2, 3);
-                    } elseif ($v['config']['filter'] == 'feedback') {/* 20151021添加feeback filter */
-                        $value = $classify->toTree($value);
-                        $type_arr = array(5, 9);
-                    } elseif ($v['config']['filter'] == 'ALL') {
-                        $value = $classify->toTree($value);
-                        $type_arr = array(1, 2, 3, 4, 5, 6);
+                    break;
+                case 'page':
+                    $list = Classify::where('cus_id', '=', $pagedata->cus_id)->where('type', 4)->where('pc_show', '=', 1)->get()->toArray();
+                    $value = array();
+                    $selected = false;
+                    foreach ($list as $key => $l) {
+                        $value[$key]['id'] = $l['id'];
+                        $value[$key]['name'] = $l['name'];
+                        $value[$key]['p_id'] = $l['p_id'];
+                        $value[$key]['type'] = $l['type'];
+                        if (isset($v['config']['id']) && $l['id'] == $v['config']['id']) {
+                            $value[$key]['selected'] = "1";
+                            $selected = true;
+                        } else {
+                            $value[$key]['selected'] = "0";
+                        }
+                    }
+                    if (!$selected) {
+                        $value[0]['selected'] = 1;
+                    }
+                    if (isset($v['config']['mustchild']) && $v['config']['mustchild'] == true) {
+                        $this->unsetLastClassify($value);
+                    }
+                    $data_final[$k]['config']['list'] = $value;
+                    if (isset($v['config']['star_only'])) {
+                        $data_final[$k]['config']['star_only'] = $v['config']['star_only'];
                     } else {
-                        $value = $classify->toTree($value);
-                        $type_arr = array(1, 2, 3, 4, 9);
+                        $data_final[$k]['config']['star_only'] = "0";
                     }
-                }
-                $this->unsetFalseClassify($value, $type_arr);
-                if (!$selected && count($value)) {
-                    foreach ($value as $key => $v) {
-                        $value[$key]['selected'] = 1;
-                        break;
+                    break;
+                case 'navs':
+                    $type_arr = array(1, 2, 3, 4, 6, 9);
+                    $list = Classify::where('cus_id', '=', $pagedata->cus_id)->whereIn('type', array(1, 2, 3, 4, 6, 9))->where('pc_show', '=', 1)->get()->toArray();
+                    $value = array();
+                    $selected = false;
+                    foreach ($list as $key => $l) {
+                        $value[$key]['id'] = $l['id'];
+                        $value[$key]['name'] = $l['name'];
+                        $value[$key]['p_id'] = $l['p_id'];
+                        $value[$key]['type'] = $l['type'];
+                        if (isset($v['config']['id']) && $l['id'] == $v['config']['id']) {
+                            $value[$key]['selected'] = 1;
+                            $selected = true;
+                        } else {
+                            $value[$key]['selected'] = 0;
+                        }
                     }
-                }
-                if (isset($v['config']['mustchild']) && $v['config']['mustchild'] == true) {
-                    $this->unsetLastClassify($value);
-                }
-                $data_final[$k]['config']['list'] = $value;
-                if (isset($v['config']['star_only'])) {
-                    $data_final[$k]['config']['star_only'] = $v['config']['star_only'];
-                } else {
-                    $data_final[$k]['config']['star_only'] = "0";
-                }
-            } elseif ($v['type'] == 'page') {
-                $list = Classify::where('cus_id', '=', $pagedata->cus_id)->where('type', 4)->where('pc_show', '=', 1)->get()->toArray();
-                $value = array();
-                $selected = false;
-                foreach ($list as $key => $l) {
-                    $value[$key]['id'] = $l['id'];
-                    $value[$key]['name'] = $l['name'];
-                    $value[$key]['p_id'] = $l['p_id'];
-                    $value[$key]['type'] = $l['type'];
-                    if (isset($v['config']['id']) && $l['id'] == $v['config']['id']) {
-                        $value[$key]['selected'] = "1";
-                        $selected = true;
+                    if (isset($v['config']['filter'])) {
+                        if ($v['config']['filter'] == 'page') {
+                            $value = $classify->toTree($value);
+                            $type_arr = array(4);
+                        } elseif ($v['config']['filter'] == 'list') {
+                            $value = $classify->toTree($value);
+                            $type_arr = array(1, 2, 3);
+                        } elseif ($v['config']['filter'] == 'ALL') {
+                            $value = $classify->toTree($value);
+                            $type_arr = array(1, 2, 3, 4, 6);
+                        } else {
+                            $value = $classify->toTree($value);
+                            $type_arr = array(1, 2, 3, 4);
+                        }
+                    }
+                    $this->unsetFalseClassify($value, $type_arr);
+                    if (!$selected && count($value)) {
+                        foreach ($value as $key => $v) {
+                            $value[$key]['selected'] = 1;
+                            break;
+                        }
+                    }
+                    if (isset($v['config']['mustchild']) && $v['config']['mustchild'] == true) {
+                        $this->unsetLastClassify($value);
+                    }
+                    $data_final[$k]['config']['list'] = $value;
+                    if (isset($v['config']['star_only'])) {
+                        $data_final[$k]['config']['star_only'] = $v['config']['star_only'];
                     } else {
-                        $value[$key]['selected'] = "0";
+                        $data_final[$k]['config']['star_only'] = "0";
                     }
-                }
-                if (!$selected) {
-                    $value[0]['selected'] = 1;
-                }
-                if (isset($v['config']['mustchild']) && $v['config']['mustchild'] == true) {
-                    $this->unsetLastClassify($value);
-                }
-                $data_final[$k]['config']['list'] = $value;
-                if (isset($v['config']['star_only'])) {
-                    $data_final[$k]['config']['star_only'] = $v['config']['star_only'];
-                } else {
-                    $data_final[$k]['config']['star_only'] = "0";
-                }
-            } elseif ($v['type'] == 'navs') {
-                $type_arr = array(1, 2, 3, 4, 6, 9);
-                $list = Classify::where('cus_id', '=', $pagedata->cus_id)->whereIn('type', array(1, 2, 3, 4, 6, 9))->where('pc_show', '=', 1)->get()->toArray();
-                $value = array();
-                $selected = false;
-                foreach ($list as $key => $l) {
-                    $value[$key]['id'] = $l['id'];
-                    $value[$key]['name'] = $l['name'];
-                    $value[$key]['p_id'] = $l['p_id'];
-                    $value[$key]['type'] = $l['type'];
-                    if (isset($v['config']['id']) && $l['id'] == $v['config']['id']) {
-                        $value[$key]['selected'] = 1;
-                        $selected = true;
-                    } else {
-                        $value[$key]['selected'] = 0;
-                    }
-                }
-                if (isset($v['config']['filter'])) {
-                    if ($v['config']['filter'] == 'page') {
-                        $value = $classify->toTree($value);
-                        $type_arr = array(4);
-                    } elseif ($v['config']['filter'] == 'list') {
-                        $value = $classify->toTree($value);
-                        $type_arr = array(1, 2, 3);
-                    } elseif ($v['config']['filter'] == 'ALL') {
-                        $value = $classify->toTree($value);
-                        $type_arr = array(1, 2, 3, 4, 6);
-                    } else {
-                        $value = $classify->toTree($value);
-                        $type_arr = array(1, 2, 3, 4);
-                    }
-                }
-                $this->unsetFalseClassify($value, $type_arr);
-                if (!$selected && count($value)) {
-                    foreach ($value as $key => $v) {
-                        $value[$key]['selected'] = 1;
-                        break;
-                    }
-                }
-                if (isset($v['config']['mustchild']) && $v['config']['mustchild'] == true) {
-                    $this->unsetLastClassify($value);
-                }
-                $data_final[$k]['config']['list'] = $value;
-                if (isset($v['config']['star_only'])) {
-                    $data_final[$k]['config']['star_only'] = $v['config']['star_only'];
-                } else {
-                    $data_final[$k]['config']['star_only'] = "0";
-                }
+                    break;
+                case 'form':
+                    break;
+                default:
+                    break;
             }
+
+//            if ($v['type'] == 'list') {
+//                
+//            } elseif ($v['type'] == 'page') {
+//                
+//            } elseif ($v['type'] == 'navs') {
+//                
+//            }
         }
-//        exit;
         return $data_final;
     }
 
@@ -817,6 +834,70 @@ class TemplatesController extends BaseController {
         $tpl_id = WebsiteInfo::where('cus_id', $cus_id)->pluck($tpl_name);
         $my_tpl_name = Template::where('id', $tpl_id)->pluck('name');
         return $my_tpl_name;
+    }
+
+    /**
+     * 模板下载
+     */
+    public function downloadTemplate() {
+        echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
+        if (Auth::user()->name != "test") {
+            return false;
+        }
+        $tplname = Input::get("name");
+        $tpl = Template::where('name', $tplname)->first();
+        if ($tpl == null) {
+            echo '没有该模板！';
+        }
+        if (!is_dir(public_path('temp_templates/tpl/'))) {
+            @mkdir(public_path('temp_templates/tpl/'));
+        } else {
+            $dh = opendir(public_path('temp_templates/tpl/'));
+            while ($file = readdir($dh)) {
+                if ($file != "." && $file != "..") {
+                    $fullpath = public_path('temp_templates/tpl/') . $file;
+                    if (is_file($fullpath)) {
+                        unlink($fullpath);
+                    }
+                }
+            }
+            closedir($dh);
+        }
+        $path = public_path('temp_templates/tpl/' . $tplname . '.zip');
+        $view_dir = app_path('views/templates/');
+        $json_dir = public_path('templates/');
+        if (file_exists($path)) {
+            @unlink($path);
+        }
+        $zip = new ZipArchive;
+        if ($zip->open($path, ZipArchive::CREATE) === TRUE) {
+            $this->addFileToZip($json_dir . $tplname . "/css", $zip, "css");
+            $this->addFileToZip($json_dir . $tplname . "/js", $zip, "js");
+            $this->addFileToZip($json_dir . $tplname . "/images", $zip, "images");
+            $this->addFileToZip($json_dir . $tplname . "/json", $zip, "");
+            $this->addFileToZip($view_dir . $tplname, $zip, "");
+            $zip->close();
+        }
+        echo '<a href="/temp_templates/tpl/' . $tplname . '.zip">下载' . $tplname . '模板</a>';
+    }
+
+    /**
+     * 将整个文件夹压缩
+     * @param type $path文件夹路径
+     * @param type $zip压缩变量
+     * @param type $dir存储名称
+     */
+    private function addFileToZip($path, $zip, $dir) {//将整个文件夹压缩
+        $handler = opendir($path);
+        while (($filename = readdir($handler)) !== false) {
+            if ($filename != "." && $filename != "..") {
+                if (is_dir($path . "/" . $filename)) {
+                    $this->addFileToZip($path . "/" . $filename, $zip, $dir . "/" . $filename);
+                } else {
+                    $zip->addFile($path . "/" . $filename, $dir . "/" . $filename);
+                }
+            }
+        }
     }
 
     /*

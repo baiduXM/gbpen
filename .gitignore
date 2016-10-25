@@ -11,6 +11,8 @@ app/config/local/*
 app/views/templates/*
 public/temp_templates/*
 public/templates/*
+public/customers_backups/*
+public/sqlite_1.db
 public/customers/*
 app/storage/cache/*
 app/storage/logs/*

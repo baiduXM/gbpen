@@ -360,6 +360,7 @@ function homeController($scope, $http) {
 									<input type="hidden" value="" name="data[' + pic_name + ']' + (upload_Classname == 'images' ? '[' + new_num + ']' : '') + '[title]" />\n\
 									<input type="hidden" value="" name="data[' + pic_name + ']' + (upload_Classname == 'images' ? '[' + new_num + ']' : '') + '[href]" />\n\
 									<input type="hidden" value="" name="data[' + pic_name + ']' + (upload_Classname == 'images' ? '[' + new_num + ']' : '') + '[description]" />\n\
+									<input type="hidden" value="" name="data[' + pic_name + ']' + (upload_Classname == 'images' ? '[' + new_num + ']' : '') + '[sort]" />\n\
 									</dd>';
                             $('.new_add[data-role=' + role + ']').before(_newpic);
                         }
