@@ -3633,6 +3633,7 @@ class PrintController extends BaseController {
             }
             //分页结束
             file_put_contents(app_path('views/templates/' . $this->themename . '/searchresult_do.html'), $page_content);
+            $publicdata['repleace']['searchresult_do.html']=$page_content;
         }
         $result['search'] = array('total' => '-1000_search', 'keyword' => 'search_$keyword', 'data' => array(0 => array('link' => '', 'title' => '', 'pubdate' => '', 'description' => '')));
         $result['page_links'] = array('current_page' => '100-1_search', 'per_page' => '100-2_search', 'page_count' => '100-3_search', 'first_link' => '100-4_search', 'prev_link' => '100-5_search', 'next_link' => '100-6_search', 'last_link' => '100-7_search', 'nears_link' => $page_link_array);
@@ -3689,11 +3690,7 @@ class PrintController extends BaseController {
         $smarty->registerPlugin('function', 'shareExt', array('PrintController', 'createShare'));
         $smarty->assign($result);
         ob_start();
-        if ($content == '') {
-            $smarty->display('searchresult_do.html');
-        } else {
-            $smarty->display('string:' . $content);
-        }
+        $smarty->display('string:' . $content);
         $output = ob_get_contents();
         ob_end_clean();
         if (!count($result['footer_navs'])) {
