@@ -209,10 +209,28 @@ function homeController($scope, $http) {
                         }
                         break;
                     case 'form':
-                        console.log(v.config);
+                        var temp = v.config;
+                        var _r = '';
+//                        if (temp.kind != undefined) {//有kind对象
+                        switch (temp.kind) {
+                            case 'div':
+                            case 'css':
+                                var array = v.config.name.split(",");
+                                _r += '<select>';
+                                $.each(array, function (k, v) {
+                                    _r += '<option value="' + v + '">' + v + '</option>';
+                                });
+                                _r += '</select>';
+                                break;
+                            case undefined:
+                            default :
+                                _r += '<select>';
+                                _r += '<option value=""></option>';
+                                _r += '</select>';
+                                break;
+                        }
                         var _rel = '';
-                        _rel += '1111';
-                        
+                        _rel += _r;
                         break;
                 }// switch结束
                 _rt += '<li><dl class="homeed-left">' + v.description + '：' + (typeof v.prompt == 'undefined' ? '' : v.prompt) +
