@@ -23,7 +23,7 @@ class TemplatesController extends BaseController {
     public function homepageInfo($page = 'index') {
 
         $pagedata = new PrintController;
-        $data = $pagedata->pagedata($page);
+        $data = $pagedata->pagedata($page); //===step:3===
         $data_final = $data;
         $classify = new Classify;
         foreach ($data as $k => $v) {
@@ -244,11 +244,16 @@ class TemplatesController extends BaseController {
      * ===首页列表===
      * @return type
      */
-    public function homepageList() {
-        $page = Input::get('page') ? Input::get('page') : 'index'; //===index首页/_aside其他/global全局===
-        $templedata = $this->homepageInfo($page);
-        $data_final = ['err' => 0, 'msg' => '', 'data' => $templedata];
 
+    /**
+     * hao de hsieh
+     * shen m e gui mei cuo zhe shi  hao de ,
+     * @return typesadjf
+     */
+    public function homepageList() {
+        $page = Input::get('page') ? Input::get('page') : 'index'; //===index首页/_aside其他/global全局/form表单===
+        $templedata = $this->homepageInfo($page); //===step:2===
+        $data_final = ['err' => 0, 'msg' => '', 'data' => $templedata];
         return Response::json($data_final);
     }
 

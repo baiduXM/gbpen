@@ -198,7 +198,8 @@ class PrintController extends BaseController {
                 dd("$pagename.json文件错误");
             }
             $this->replaceUrl($result);
-            $result = $this->dataDeal($result);
+            $result = $this->dataDeal($result); //===step:4===
+
             $classify = new Classify;
             $templates = new TemplatesController;
             $c_arr = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3, 4, 5, 6, 9))->where($this->type . '_show', '=', 1)->get()->toArray();
@@ -351,7 +352,7 @@ class PrintController extends BaseController {
                         }
                         $v['config']['ids'] = $ids;
                         break;
-                    case 'form'://===
+                    case 'form':
                         break;
                     default:
                         break;

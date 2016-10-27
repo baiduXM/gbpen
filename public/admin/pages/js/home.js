@@ -66,10 +66,8 @@ function homeController($scope, $http) {
     }
     function getTempledata(templeType, templePage) {
         $('.home-edite').html('loading...');
-        $http.get('../homepage-list?type=' + templeType + '&page=' + templePage + '').success(function (json) {
-            var _rt = '',
-                    pic = 0,
-                    pic_Classname = '', pic_name = '';
+        $http.get('../homepage-list?type=' + templeType + '&page=' + templePage + '').success(function (json) {//===step:1===
+            var _rt = '', pic = 0, pic_Classname = '', pic_name = '';
             $.each(json.data, function (k, v) {
                 var type = v.type;
                 switch (type) {
@@ -110,7 +108,6 @@ function homeController($scope, $http) {
 							<input type="hidden" value="' + j.link + '" name="data[' + k + '][' + num + '][href]" />\n\
 							<input type="hidden" value="' + j.sort + '" name="data[' + k + '][' + num + '][sort]" />\n\
                                     </dd>';
-//                            <div class="movediv"><span class="moveup">前移</span><span class="movedown">后移</span></div>\n\
                             num++;
                             pic++;
                         });
@@ -211,12 +208,22 @@ function homeController($scope, $http) {
                             list1 += '<li><a >暂无内容！</a></li>'
                         }
                         break;
+                    case 'form':
+                        console.log(v.config);
+                        var _rel = '';
+                        _rel += '1111';
+                        
+                        break;
                 }// switch结束
-                _rt += '<li><dl class="homeed-left">' + v.description + '：' + (typeof v.prompt == 'undefined' ? '' : v.prompt) + (typeof v.config == 'undefined' ? '' : v.type == 'images' || v.type == 'image' ? '<div class="ratio">' + (v.config.width == undefined ? '自适应' : v.config.width) + '*' + (v.config.height == 'undefined' ? '自适应' : v.config.height) + '</div>' + (v.type == 'image' ? '' : '<div>限制数量：<span class="pic_limit">' + (v.config.limit == undefined ? '0' : v.config.limit) + '</span></div>') : '') + '</dl><dl class="homeed-right">' + (v.type == 'navs' ? '<div id="move_navs">' + _rel + '</div>' : '' + _rel + '') + '</dl></li>';
+                _rt += '<li><dl class="homeed-left">' + v.description + '：' + (typeof v.prompt == 'undefined' ? '' : v.prompt) +
+                        (typeof v.config == 'undefined' ? '' : v.type == 'images' || v.type == 'image' ? '<div class="ratio">' + (v.config.width == undefined ? '自适应' : v.config.width) +
+                                '*' + (v.config.height == 'undefined' ? '自适应' : v.config.height) + '</div>' + (v.type == 'image' ? '' : '<div>限制数量：<span class="pic_limit">' +
+                                (v.config.limit == undefined ? '0' : v.config.limit) + '</span></div>') : '') + '</dl><dl class="homeed-right">' + (v.type == 'navs' ? '<div id="move_navs">' +
+                        _rel + '</div>' : '' + _rel + '') + '</dl></li>';
             }); // each结束
 
             $('.home-edite').html('<form id="temple-data">' + _rt + '<input type="hidden" name="page" value="' + templePage + '" /><input type="hidden" name="type" value="' + templeType + '" /></form>');
-            //下拉框更改
+            // 下拉框更改
             DropdownEvent();
             // 提示移动框
             $('.not-allowed').MoveBox({context: '此为单页类型或者父级分类下带有子级，不支持选择！'});
