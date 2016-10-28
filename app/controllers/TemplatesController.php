@@ -24,6 +24,7 @@ class TemplatesController extends BaseController {
 
         $pagedata = new PrintController;
         $data = $pagedata->pagedata($page); //===step:3===
+//        dd($data);
         $data_final = $data;
         $classify = new Classify;
         foreach ($data as $k => $v) {
@@ -159,18 +160,11 @@ class TemplatesController extends BaseController {
                     }
                     break;
                 case 'form':
+//                    $FormC = new FormController;
                     break;
                 default:
                     break;
             }
-
-//            if ($v['type'] == 'list') {
-//                
-//            } elseif ($v['type'] == 'page') {
-//                
-//            } elseif ($v['type'] == 'navs') {
-//                
-//            }
         }
         return $data_final;
     }
@@ -253,6 +247,7 @@ class TemplatesController extends BaseController {
     public function homepageList() {
         $page = Input::get('page') ? Input::get('page') : 'index'; //===index首页/_aside其他/global全局/form表单===
         $templedata = $this->homepageInfo($page); //===step:2===
+//        dd($templedata);
         $data_final = ['err' => 0, 'msg' => '', 'data' => $templedata];
         return Response::json($data_final);
     }
@@ -374,22 +369,16 @@ class TemplatesController extends BaseController {
         $website_config->cus_id = $cus_id;
         $page = Input::get('page');
         $website_config->key = $page;
+        //===判断是否已保存模板数据===
         $websiteconfig = $website_config->where('cus_id', $cus_id)->where('template_id', $template_id)->where('key', $page)->pluck('value');
         $websitearray = unserialize($websiteconfig);
+        dd($websitearray);
         $org_imgs = $this->getimage($websitearray);
         $count = $website_config->where('cus_id', $cus_id)->where('template_id', $template_id)->where('key', $page)->count();
         $website_config->template_id = $template_id;
-        $data = Input::get('data');
-        /*
-          if(isset($data['slidepics']) && count($data['slidepics'])){
-          foreach($data['slidepics'] as &$arr){
-          $arr['link']=$arr['href'];
-          $arr['image']=basename($arr['src']);
-          unset($arr['href']);
-          unset($arr['src']);
-          }
-          }
-         */
+        $data = Input::get();
+//        dd($data);
+
         foreach ($data as $key => $val) {
             if (is_array($data[$key]) && count($data[$key])) {
                 if (array_key_exists("href", $data[$key]) || array_key_exists("src", $data[$key])) {
@@ -416,6 +405,7 @@ class TemplatesController extends BaseController {
             unset($data[$key]);
             $data[$key]['value'] = $temp_arr;
         }
+//        dd($data);
         $website_config->value = serialize($data);
         if ($count) {
             $result = $website_config->where('cus_id', $cus_id)->where('template_id', $template_id)->where('key', $page)->update(['value' => $website_config->value]);
@@ -657,6 +647,10 @@ class TemplatesController extends BaseController {
         return Response::json($return_msg);
     }
 
+    /**
+     * ===首页批量添加===
+     * @return type
+     */
     public function homepageBatchModify() {
         $ids = Input::get('id');
         $index_show = Input::get('show');

@@ -173,8 +173,9 @@ class PrintController extends BaseController {
         if ($website_confige_value) {//===数据库中有模板数据===
             $default = json_decode(trim($json), TRUE);
             $result = $this->array_merge_recursive_new($default, $website_confige_value);
+//            dd($result); //===step:bug===
             $this->replaceUrl($result);
-            $result = $this->dataDeal($result);
+            $result = $this->dataDeal($result); //===step:4===
             foreach ($result as &$v) {
                 if ($v['type'] == 'list') {
                     if (isset($v['config']['filter'])) {
@@ -353,6 +354,8 @@ class PrintController extends BaseController {
                         $v['config']['ids'] = $ids;
                         break;
                     case 'form':
+//                        var_dump($v);
+//                        exit;
                         break;
                     default:
                         break;

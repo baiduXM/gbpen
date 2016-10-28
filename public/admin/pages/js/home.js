@@ -70,6 +70,7 @@ function homeController($scope, $http) {
             var _rt = '', pic = 0, pic_Classname = '', pic_name = '';
             $.each(json.data, function (k, v) {
                 var type = v.type;
+                console.log(v);
                 switch (type) {
                     case 'image':
                         var _rel = '';
@@ -210,22 +211,56 @@ function homeController($scope, $http) {
                         break;
                     case 'form':
                         var temp = v.config;
+                        console.log(temp);
                         var _r = '';
-//                        if (temp.kind != undefined) {//有kind对象
                         switch (temp.kind) {
                             case 'div':
-                            case 'css':
                                 var array = v.config.name.split(",");
-                                _r += '<select>';
+                                _r += '<select name="data[' + k + '][div]">';
+                                _r += '<option value="0" selected>请选择</option>';
                                 $.each(array, function (k, v) {
                                     _r += '<option value="' + v + '">' + v + '</option>';
                                 });
                                 _r += '</select>';
                                 break;
+                            case 'css':
+                                var array = v.config.name.split(",");
+                                _r += '<select name="data[' + k + '][css]">';
+                                _r += '<option value="0" selected>请选择</option>';
+                                $.each(array, function (k, v) {
+                                    _r += '<option value="' + v + '">' + v + '</option>';
+                                });
+                                _r += '</select>';
+                                break;
+                            case 'formid':
+                                var _div = '';
+                                $.ajax({
+                                    url: "../form-list",
+                                    type: "GET",
+                                    async: false,
+                                    data: {status: '1', showmodel: '1'},
+                                    dataType: "json",
+                                    success: function (json) {
+                                        checkJSON(json, function (json) {
+                                            _div += '<select name="data[' + k + '][form_id]">';
+                                            if (json.data != null) {
+                                                _div += '<option value="0" selected>请选择</option>';
+                                                $.each(json.data, function (kk, vv) {
+                                                    _div += '<option value="' + vv.id + '">' + vv.name + '</option>';
+                                                });
+                                            } else {
+                                                _div += '<option value="0" selected>无表单可绑定</option>';
+                                            }
+                                            _div += '</select>';
+                                        });
+                                    }
+                                });
+                                _r = _div;
+                                break;
                             case undefined:
                             default :
-                                _r += '<select>';
-                                _r += '<option value=""></option>';
+                                _r += '<select >';
+                                _r += '<option value="0" selected>请选择</option>';
                                 _r += '</select>';
                                 break;
                         }
@@ -320,7 +355,6 @@ function homeController($scope, $http) {
                         description = $(this).parent().siblings('input[name*="description"]').val(),
                         sort = $(this).parent().siblings('input[name*="sort"]').val(),
                         title = $(this).parent().siblings('input[name*="title"]').val();
-//                console.log($(this).parent().siblings('input[name*="sort"]').val());
                 $('.box-down .column_name').val(href);
                 $('.box-down .keyword').val(title);
                 $('.box-down .sort').val(sort);
@@ -419,12 +453,12 @@ function homeController($scope, $http) {
                 return false;
             }
             var data1 = $("#temple-data").serializeJson();
+            console.log(data1);
             var img_upload = [];
             $('.preview>.img_upload').each(function () {
                 img_upload.push($(this).data('name'));
             });
             $http.post('../homepage-modify', data1).success(function (json) {
-//                console.log(json);
                 checkJSON(json, function (json) {
                     if (img_upload.length) {
                         if (!$('.tpl_mask').attr('class')) {
