@@ -70,7 +70,6 @@ function homeController($scope, $http) {
             var _rt = '', pic = 0, pic_Classname = '', pic_name = '';
             $.each(json.data, function (k, v) {
                 var type = v.type;
-                console.log(v);
                 switch (type) {
                     case 'image':
                         var _rel = '';
@@ -453,7 +452,6 @@ function homeController($scope, $http) {
                 return false;
             }
             var data1 = $("#temple-data").serializeJson();
-            console.log(data1);
             var img_upload = [];
             $('.preview>.img_upload').each(function () {
                 img_upload.push($(this).data('name'));
