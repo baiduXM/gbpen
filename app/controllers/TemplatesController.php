@@ -743,7 +743,7 @@ class TemplatesController extends BaseController {
         $result=array();
         if($_SERVER["HTTP_HOST"]=="preview.5067.org"){
             $json=file_get_contents("http://172.16.0.17/category-no-auth/".$id."_".$page."?name=".(Auth::user()->name)."&remember_token=".(Auth::user()->remember_token?Auth::user()->remember_token:""));
-            $result=  json_decode($json);
+            $result=  json_decode($json,true);
         }
         $template = new PrintController;
         return $template->categoryPreview($id, $page,$result);
