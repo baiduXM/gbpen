@@ -101,17 +101,14 @@ Route::group(array('before' => 'auth'), function() {
     ]);
 
     Route::post('classify-delete', [//栏目删除
-        'as' => 'classify-list',
         'uses' => 'ClassifyController@classifyDelete'
     ]);
 
     Route::get('classify-info', [//栏目详情
-        'as' => 'classify-list',
         'uses' => 'ClassifyController@classifyInfo'
     ]);
 
     Route::post('classify-modify', [//栏目修改
-        'as' => 'classify-list',
         'uses' => 'ClassifyController@classifyModify'
     ]);
     
@@ -130,7 +127,6 @@ Route::group(array('before' => 'auth'), function() {
     ]);
 
     Route::post('classify-sort', [//栏目排序
-        'as' => 'classify-list',
         'uses' => 'ClassifyController@classifySort'
     ]);
     Route::get('classify-ids', [//栏目id列表
