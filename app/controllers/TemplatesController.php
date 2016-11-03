@@ -744,6 +744,8 @@ class TemplatesController extends BaseController {
         if($_SERVER["HTTP_HOST"]=="preview.5067.org"){
             $json=file_get_contents("http://172.16.0.17/category-no-auth/".$id."_".$page."?name=".(Auth::user()->name)."&remember_token=".(Auth::user()->remember_token?Auth::user()->remember_token:""));
             $result=  json_decode($json);
+            var_dump($result);
+            exit();
         }
         $template = new PrintController;
         return $template->categoryPreview($id, $page,$result);
@@ -756,6 +758,8 @@ class TemplatesController extends BaseController {
         $result=array();
         if($_SERVER["HTTP_HOST"]=="preview.5067.org"){
             $json=file_get_contents("http://172.16.0.17/detail-no-auth/".$id."?name=".(Auth::user()->name)."&remember_token=".(Auth::user()->remember_token?Auth::user()->remember_token:""));
+            var_dump($json);
+            exit();
             $result=  json_decode($json);
         }
         $template = new PrintController;
