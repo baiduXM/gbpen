@@ -8,6 +8,38 @@ Route::get('get-remind', [//忘记密码
     'as' => 'get-remind',
     'uses' => 'RemindersController@getRemind'
 ]);
+Route::get('homepage-preview-no-auth', [//首页预览
+        'as' => 'homepage-preview-no-auth',
+        'uses' => 'TemplatesController@homepagePreview_no_auth'
+]);
+
+Route::get('category-no-auth/{id}', [//栏目页预览
+    'uses' => 'TemplatesController@categoryPreview_no_auth'
+])->where('id', '[0-9]+');
+
+Route::get('category-no-auth/{id}_{page}', [//栏目页分页预览
+    'uses' => 'TemplatesController@categoryPreview_no_auth'
+])->where(['id' => '[0-9]+', 'page' => '[0-9]+']);
+
+Route::get('detail-no-auth/{id}', [//详情页预览
+    'uses' => 'TemplatesController@articlePreview_no_auth'
+])->where('id', '[0-9]+');
+
+Route::get('mobile/homepage-preview-no-auth', [//首页预览
+    'uses' => 'TemplatesController@mhomepagePreview_no_auth'
+]);
+
+Route::get('mobile/category-no-auth/{id}', [//栏目页预览
+    'uses' => 'TemplatesController@mcategoryPreview_no_auth'
+])->where('id', '[0-9]+');
+
+Route::get('mobile/category-no-auth/{id}_{page}', [//栏目页分页预览
+    'uses' => 'TemplatesController@mcategoryPreview_no_auth'
+])->where(['id' => '[0-9]+', 'page' => '[0-9]+']);
+
+Route::get('mobile/detail-no-auth/{id}', [//详情页预览
+    'uses' => 'TemplatesController@marticlePreview_no_auth'
+])->where('id', '[0-9]+');
 
 Route::post('post-remind', [//忘记密码处理
     'as' => 'post-remind',

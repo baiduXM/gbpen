@@ -727,6 +727,11 @@ class TemplatesController extends BaseController {
      * PC首页预览
      */
     public function homepagePreview() {
+        if($_SERVER["HTTP_HOST"]=="preview.5067.org"){
+            $html=file_get_contents("http://172.16.0.17/homepage-preview-no-auth?name=".(Auth::user()->name)."&remember_token=".(Auth::user()->remember_token?Auth::user()->remember_token:""));
+            echo $html;
+            exit();
+        }
         $template = new PrintController();
         return $template->homepagePreview();
     }
@@ -735,6 +740,11 @@ class TemplatesController extends BaseController {
      * PC栏目页预览
      */
     public function categoryPreview($id, $page = 1) {
+        if($_SERVER["HTTP_HOST"]=="preview.5067.org"){
+            $html=file_get_contents("http://172.16.0.17/category-no-auth/".$id."_".$page."?name=".(Auth::user()->name)."&remember_token=".(Auth::user()->remember_token?Auth::user()->remember_token:""));
+            echo $html;
+            exit();
+        }
         $template = new PrintController;
         return $template->categoryPreview($id, $page);
     }
@@ -743,6 +753,11 @@ class TemplatesController extends BaseController {
      * PC内容页预览
      */
     public function articlePreview($id) {
+        if($_SERVER["HTTP_HOST"]=="preview.5067.org"){
+            $html=file_get_contents("http://172.16.0.17/detail-no-auth/".$id."?name=".(Auth::user()->name)."&remember_token=".(Auth::user()->remember_token?Auth::user()->remember_token:""));
+            echo $html;
+            exit();
+        }
         $template = new PrintController;
         return $template->articlePreview($id);
     }
@@ -751,10 +766,105 @@ class TemplatesController extends BaseController {
      * 手机首页预览
      */
     public function mhomepagePreview() {
+        if($_SERVER["HTTP_HOST"]=="preview.5067.org"){
+            $html=file_get_contents("http://172.16.0.17/mobile/homepage-preview-no-auth?name=".(Auth::user()->name)."&remember_token=".(Auth::user()->remember_token?Auth::user()->remember_token:""));
+            echo $html;
+            exit();
+        }
         $template = new PrintController('preview', 'mobile');
         return $template->mhomepagePreview();
     }
 
+    /**
+     * 手机栏目预览
+     */
+    public function mcategoryPreview($id, $page = 1) {
+        if($_SERVER["HTTP_HOST"]=="preview.5067.org"){
+            $html=file_get_contents("http://172.16.0.17/mobile/category-no-auth/{$id}_{$page}?name=".(Auth::user()->name)."&remember_token=".(Auth::user()->remember_token?Auth::user()->remember_token:""));
+            echo $html;
+            exit();
+        }
+        $template = new PrintController('preview', 'mobile');
+        return $template->categoryPreview($id, $page);
+    }
+
+    /**
+     * 手机内容页预览
+     */
+    public function marticlePreview($id) {
+        if($_SERVER["HTTP_HOST"]=="preview.5067.org"){
+            $html=file_get_contents("http://172.16.0.17/mobile/detail-no-auth/{$id}?name=".(Auth::user()->name)."&remember_token=".(Auth::user()->remember_token?Auth::user()->remember_token:""));
+            echo $html;
+            exit();
+        }
+        $template = new PrintController('preview', 'mobile');
+        return $template->articlePreview($id);
+    }
+    private function preview_login(){
+        if($_SERVER["HTTP_HOST"]=="172.16.0.17"&&Input::has("name")){
+            if(Input::has("remember_token")&&Input::get("remember_token")==""&&Input::get("remember_token")==null){
+                $user=Customer::where("name",Input::get("name"))->first();
+            }else{
+                $user=Customer::where("name",Input::get("name"))->where("remember_token",Input::get("remember_token"))->first();
+            }
+            Auth::login($user);
+            Session::put('isAdmin', TRUE);
+        }
+    }
+    /**
+     * PC首页预览
+     */
+    public function homepagePreview_no_auth() {
+        $this->preview_login();
+        $template = new PrintController();
+        return $template->homepagePreview();
+    }
+
+    /**
+     * PC栏目页预览
+     */
+    public function categoryPreview_no_auth($id, $page = 1) {
+        $this->preview_login();
+        $template = new PrintController;
+        return $template->categoryPreview($id, $page);
+    }
+
+    /**
+     * PC内容页预览
+     */
+    public function articlePreview_no_auth($id) {
+        $this->preview_login();
+        $template = new PrintController;
+        return $template->articlePreview($id);
+    }
+
+    /**
+     * 手机首页预览
+     */
+    public function mhomepagePreview_no_auth() {
+        $this->preview_login();
+        $template = new PrintController('preview', 'mobile');
+        return $template->mhomepagePreview();
+    }
+
+    /**
+     * 手机栏目预览
+     */
+    public function mcategoryPreview_no_auth($id, $page = 1) {
+        $this->preview_login();
+        $template = new PrintController('preview', 'mobile');
+        return $template->categoryPreview($id, $page);
+    }
+
+    /**
+     * 手机内容页预览
+     */
+    public function marticlePreview_no_auth($id) {
+        $this->preview_login();
+        $template = new PrintController('preview', 'mobile');
+        return $template->articlePreview($id);
+    }
+    
     /**
      * 手机底部功能条
      */
@@ -765,22 +875,6 @@ class TemplatesController extends BaseController {
             $template = new PrintController('preview', 'pc');
         }
         return $template->quickBarJson();
-    }
-
-    /**
-     * 手机栏目预览
-     */
-    public function mcategoryPreview($id, $page = 1) {
-        $template = new PrintController('preview', 'mobile');
-        return $template->categoryPreview($id, $page);
-    }
-
-    /**
-     * 手机内容页预览
-     */
-    public function marticlePreview($id) {
-        $template = new PrintController('preview', 'mobile');
-        return $template->articlePreview($id);
     }
 
     /**
