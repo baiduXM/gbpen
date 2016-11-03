@@ -1097,6 +1097,26 @@ class TemplatesController extends BaseController {
             }
         }
     }
+    /**
+     * 文件夹复制
+     * @param type $source_dir 资源文件夹
+     * @param type $dest_dir 目标文件夹
+     */
+    private function copydir($source_dir,$dest_dir){
+        $dir = opendir($source_dir);
+        if(!is_dir($dest_dir)){
+            @mkdir($dest_dir);
+        }
+        while(false !== ( $file = readdir($dir)) ) {
+                 if (( $file != '.' ) && ( $file != '..' )) {
+                        if ( is_dir($source_dir . '/' . $file) ) {
+                                $this->copydir($source_dir . '/' . $file,$dest_dir . '/' . $file);
+                        }  else  {
+                                copy($source_dir . '/' . $file,$dest_dir.'/'.$file);
+                        }
+                }
+        }
+    }
     /*
       public function searchPreview($url,$type='pc'){
       $template = new PrintController('online',$type);
