@@ -2527,6 +2527,7 @@ class PrintController extends BaseController {
                 
                 //return View::make('templates.'.$this->themename.'.'.$viewname,$result);
             }
+            $result["viewname"]=$viewname;
         
         }
         if($_SERVER["HTTP_HOST"]=="172.16.0.17"){
@@ -2538,7 +2539,7 @@ class PrintController extends BaseController {
         $smarty->registerPlugin('function', 'mapExt', array('PrintController', 'createMap'));
         $smarty->registerPlugin('function', 'shareExt', array('PrintController', 'createShare'));
         $smarty->assign($result);
-        $smarty->display($viewname . '.html');
+        $smarty->display($result["viewname"] . '.html');
     }
 
     /**
@@ -3082,6 +3083,7 @@ class PrintController extends BaseController {
                     $result[$key] = $this->detailList($this->pagedata($key));
                 }
             }
+            $result["viewname"]=$viewname;
         }
         if($_SERVER["HTTP_HOST"]=="172.16.0.17"){
             return json_encode($result);
@@ -3092,7 +3094,7 @@ class PrintController extends BaseController {
         $smarty->registerPlugin('function', 'mapExt', array('PrintController', 'createMap'));
         $smarty->registerPlugin('function', 'shareExt', array('PrintController', 'createShare'));
         $smarty->assign($result);
-        $smarty->display($viewname . '.html');
+        $smarty->display($result["viewname"] . '.html');
     }
 
     /**
