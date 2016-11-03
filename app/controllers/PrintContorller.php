@@ -85,11 +85,11 @@ class PrintController extends BaseController {
      * @param string $type
      */
     function __construct($showtpye = 'preview', $type = 'pc') {
-        $this->showtype = $showtpye;
-        $this->type = $type;
-        $this->cus_id = Auth::id();
-        $this->customer = Auth::user()->name;
-        if ($this->showtype == 'preview') {
+        if($_SERVER["HTTP_HOST"]=="preview.5067.org"&&$showtpye == 'preview'){
+            $this->showtype = $showtpye;
+            $this->type = $type;
+            $this->cus_id = Auth::id();
+            $this->customer = Auth::user()->name;
             $this->source_dir = '/customers/' . $this->customer . '/images/'; //asset('customers/' . $this->customer . '/images/') . '/';
             if ($this->type == 'mobile') {
                 $this->domain = '/mobile'; //url() . '/mobile';
@@ -105,24 +105,46 @@ class PrintController extends BaseController {
             }
             $this->site_url = '/templates/' . $this->themename . '/';
             url('/templates/' . $this->themename) . '/';
-        } else {
-            if ($this->type == 'mobile') {
-                $this->tpl_id = WebsiteInfo::where('cus_id', $this->cus_id)->pluck('mobile_tpl_id');
-                $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.mobile_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
-                $mobile_domain = CustomerInfo::where('cus_id', $this->cus_id)->pluck('mobile_domain');
-                $mobile_domain = str_replace('http://', '', $mobile_domain);
-                if (strpos($mobile_domain, '/mobile')) {
-                    $this->domain = '/mobile';
+        }else{
+            $this->showtype = $showtpye;
+            $this->type = $type;
+            $this->cus_id = Auth::id();
+            $this->customer = Auth::user()->name;
+            if ($this->showtype == 'preview') {
+                $this->source_dir = '/customers/' . $this->customer . '/images/'; //asset('customers/' . $this->customer . '/images/') . '/';
+                if ($this->type == 'mobile') {
+                    $this->domain = '/mobile'; //url() . '/mobile';
+                    $this->tpl_id = WebsiteInfo::where('cus_id', $this->cus_id)->pluck('mobile_tpl_id');
+                    $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.mobile_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
+                    $this->source_dir = '/customers/' . $this->customer . '/mobile/images/'; //asset('customers/' . $this->customer . '/mobile/images/') . '/';
+                    self::$cus_domain = ''; //CustomerInfo::where('cus_id', $this->cus_id)->pluck('mobile_domain');
+                } else {
+                    $this->domain = ''; //url();
+                    $this->tpl_id = WebsiteInfo::where('cus_id', $this->cus_id)->pluck('pc_tpl_id');
+                    $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.pc_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
+                    self::$cus_domain = ''; //CustomerInfo::where('cus_id', $this->cus_id)->pluck('pc_domain');
                 }
-                //$this->domain = '';//CustomerInfo::where('cus_id', $this->cus_id)->pluck('mobile_domain');
+                $this->site_url = '/templates/' . $this->themename . '/';
+                url('/templates/' . $this->themename) . '/';
             } else {
-                $this->tpl_id = WebsiteInfo::where('cus_id', $this->cus_id)->pluck('pc_tpl_id');
-                $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.pc_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
-                $this->domain = ''; //CustomerInfo::where('cus_id', $this->cus_id)->pluck('pc_domain');
+                if ($this->type == 'mobile') {
+                    $this->tpl_id = WebsiteInfo::where('cus_id', $this->cus_id)->pluck('mobile_tpl_id');
+                    $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.mobile_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
+                    $mobile_domain = CustomerInfo::where('cus_id', $this->cus_id)->pluck('mobile_domain');
+                    $mobile_domain = str_replace('http://', '', $mobile_domain);
+                    if (strpos($mobile_domain, '/mobile')) {
+                        $this->domain = '/mobile';
+                    }
+                    //$this->domain = '';//CustomerInfo::where('cus_id', $this->cus_id)->pluck('mobile_domain');
+                } else {
+                    $this->tpl_id = WebsiteInfo::where('cus_id', $this->cus_id)->pluck('pc_tpl_id');
+                    $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.pc_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
+                    $this->domain = ''; //CustomerInfo::where('cus_id', $this->cus_id)->pluck('pc_domain');
+                }
+                self::$cus_domain = ''; // $this->domain;
+                $this->site_url = $this->domain . '/';
+                $this->source_dir = '/images/'; //$this->domain . '/images/';
             }
-            self::$cus_domain = ''; // $this->domain;
-            $this->site_url = $this->domain . '/';
-            $this->source_dir = '/images/'; //$this->domain . '/images/';
         }
     }
 
@@ -1863,22 +1885,27 @@ class PrintController extends BaseController {
     /**
      * PC显示首页
      */
-    public function homepagePreview() {
-        $result = $this->pagePublic();
-        $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
-        $result['title'] = $customer_info->title;
-        $result['keywords'] = $customer_info->keywords;
-        $result['description'] = $customer_info->description;
-        $result['pagenavs'] = false;
-        $result['posnavs'] = false;
-        $data = $this->pagedata('index');
-        $index = $this->detailList($data);
-        $result = array_add($result, 'index', $index);
-        $json_keys = $this->getJsonKey('index.html');
-        if (count($json_keys)) {
-            foreach ($json_keys as $key) {
-                $result[$key] = $this->detailList($this->pagedata($key));
+    public function homepagePreview($result=array()) {
+        if($_SERVER["HTTP_HOST"]!="preview.5067.org"){
+            $result = $this->pagePublic();
+            $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
+            $result['title'] = $customer_info->title;
+            $result['keywords'] = $customer_info->keywords;
+            $result['description'] = $customer_info->description;
+            $result['pagenavs'] = false;
+            $result['posnavs'] = false;
+            $data = $this->pagedata('index');
+            $index = $this->detailList($data);
+            $result = array_add($result, 'index', $index);
+            $json_keys = $this->getJsonKey('index.html');
+            if (count($json_keys)) {
+                foreach ($json_keys as $key) {
+                    $result[$key] = $this->detailList($this->pagedata($key));
+                }
             }
+        }
+        if($_SERVER["HTTP_HOST"]=="172.16.0.17"){
+            return json_encode($result);
         }
         $smarty = new Smarty;
         $smarty->setCompileDir(app_path('storage/views/compile'));
@@ -1934,141 +1961,144 @@ class PrintController extends BaseController {
     /**
      * 手机首页
      */
-    public function mhomepagePreview() {
-        $result = $this->pagePublic();
-        $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
-        $result['title'] = $customer_info->title;
-        $result['keywords'] = $customer_info->keywords;
-        $result['description'] = $customer_info->description;
-        //获取模板目录
-        $data = $this->pagedata('index');
-        $show_navs = DB::table('mobile_homepage')->leftJoin('classify', 'classify.id', '=', 'mobile_homepage.c_id')->where('mobile_homepage.index_show', 1)->where('classify.mobile_show', 1)->where('mobile_homepage.cus_id', '=', $this->cus_id)->orderBy('mobile_homepage.s_sort', 'asc')->select('classify.id', 'classify.p_id', 'classify.name', 'classify.en_name', 'classify.type', 'classify.meta_description', 'classify.page_id', 'classify.url', 'classify.img', 'classify.icon', 'mobile_homepage.star_only', 'mobile_homepage.show_num', 'mobile_homepage.m_index_showtype')->get();
-        //===调试测试账号===
-        $mIndexCats = array();
-        if (count($show_navs) > 0) {
-            if ($this->showtype == 'preview') {
-                foreach ($show_navs as $nav) {
-                    $mIndexCat = array();
-                    $mIndexCat['id'] = $nav->id;
-                    $mIndexCat['p_id'] = $nav->p_id;
-                    $mIndexCat['name'] = $nav->name;
-                    $mIndexCat['en_name'] = $nav->en_name;
-                    $mIndexCat['icon'] = '<i class="iconfont">' . $nav->icon . '</i>';
-                    $mIndexCat['image'] = $nav->img ? ($this->source_dir . 'l/category/' . $nav->img) : '';
-                    if ($nav->url) {
-                        $mIndexCat['link'] = $nav->url;
-                    } else {
-                        $mIndexCat['link'] = $this->domain . "/category/" . $nav->id;
-                    }
-                    $mIndexCat['type'] = $nav->type;
-                    $mIndexCat['showtype'] = $nav->m_index_showtype;
-                    $mIndexCat['description'] = $nav->meta_description;
-                    $id_arr = explode(',', $this->getChildrenClassify($nav->id, 1));
-                    if ($nav->type == 1 || $nav->type == 2 || $nav->type == 3) {
-                        $art_arr = array();
-                        if ($nav->star_only) {
-                            //是否只显示推荐
-                            $articles = Articles::whereIn('c_id', $id_arr)->where('mobile_show', 1)->where('is_star', 1)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->take($nav->show_num)->get();
+    public function mhomepagePreview($result=array()) {
+        if($_SERVER["HTTP_HOST"]!="preview.5067.org"){
+            $result = $this->pagePublic();
+            $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
+            $result['title'] = $customer_info->title;
+            $result['keywords'] = $customer_info->keywords;
+            $result['description'] = $customer_info->description;
+            //获取模板目录
+            $data = $this->pagedata('index');
+            $show_navs = DB::table('mobile_homepage')->leftJoin('classify', 'classify.id', '=', 'mobile_homepage.c_id')->where('mobile_homepage.index_show', 1)->where('classify.mobile_show', 1)->where('mobile_homepage.cus_id', '=', $this->cus_id)->orderBy('mobile_homepage.s_sort', 'asc')->select('classify.id', 'classify.p_id', 'classify.name', 'classify.en_name', 'classify.type', 'classify.meta_description', 'classify.page_id', 'classify.url', 'classify.img', 'classify.icon', 'mobile_homepage.star_only', 'mobile_homepage.show_num', 'mobile_homepage.m_index_showtype')->get();
+            //===调试测试账号===
+            $mIndexCats = array();
+            if (count($show_navs) > 0) {
+                if ($this->showtype == 'preview') {
+                    foreach ($show_navs as $nav) {
+                        $mIndexCat = array();
+                        $mIndexCat['id'] = $nav->id;
+                        $mIndexCat['p_id'] = $nav->p_id;
+                        $mIndexCat['name'] = $nav->name;
+                        $mIndexCat['en_name'] = $nav->en_name;
+                        $mIndexCat['icon'] = '<i class="iconfont">' . $nav->icon . '</i>';
+                        $mIndexCat['image'] = $nav->img ? ($this->source_dir . 'l/category/' . $nav->img) : '';
+                        if ($nav->url) {
+                            $mIndexCat['link'] = $nav->url;
                         } else {
-                            $articles = Articles::whereIn('c_id', $id_arr)->where('mobile_show', 1)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->take($nav->show_num)->get();
+                            $mIndexCat['link'] = $this->domain . "/category/" . $nav->id;
                         }
-                        if (count($articles) > 0) {
-                            $i = 0;
-                            foreach ($articles as &$article) {
-                                $art_arr[$i]['title'] = $article->title;
-                                $art_arr[$i]['image'] = $article->img ? ($this->source_dir . 's/articles/' . $article->img) : '';
-                                $art_arr[$i]['link'] = $this->domain . "/detail/" . $article->id;
-                                if ($article->use_url) {
-                                    $art_arr[$i]['link'] = $article->url;
-                                }
-                                $art_arr[$i]['description'] = $article->introduction;
-                                $art_arr[$i]['pubdate'] = $article->created_at;
-                                $art_arr[$i]['pubtimestamp'] = strtotime($article->created_at);
-                                $art_arr[$i]['category']['name'] = $nav->name;
-                                $art_arr[$i]['category']['en_name'] = $nav->name;
-                                if ($nav->url) {
-                                    $art_arr[$i]['category']['link'] = $nav->url;
-                                } else {
-                                    $art_arr[$i]['category']['link'] = $this->domain . "/category/" . $nav->id;
-                                }
-                                $i++;
+                        $mIndexCat['type'] = $nav->type;
+                        $mIndexCat['showtype'] = $nav->m_index_showtype;
+                        $mIndexCat['description'] = $nav->meta_description;
+                        $id_arr = explode(',', $this->getChildrenClassify($nav->id, 1));
+                        if ($nav->type == 1 || $nav->type == 2 || $nav->type == 3) {
+                            $art_arr = array();
+                            if ($nav->star_only) {
+                                //是否只显示推荐
+                                $articles = Articles::whereIn('c_id', $id_arr)->where('mobile_show', 1)->where('is_star', 1)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->take($nav->show_num)->get();
+                            } else {
+                                $articles = Articles::whereIn('c_id', $id_arr)->where('mobile_show', 1)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->take($nav->show_num)->get();
                             }
+                            if (count($articles) > 0) {
+                                $i = 0;
+                                foreach ($articles as &$article) {
+                                    $art_arr[$i]['title'] = $article->title;
+                                    $art_arr[$i]['image'] = $article->img ? ($this->source_dir . 's/articles/' . $article->img) : '';
+                                    $art_arr[$i]['link'] = $this->domain . "/detail/" . $article->id;
+                                    if ($article->use_url) {
+                                        $art_arr[$i]['link'] = $article->url;
+                                    }
+                                    $art_arr[$i]['description'] = $article->introduction;
+                                    $art_arr[$i]['pubdate'] = $article->created_at;
+                                    $art_arr[$i]['pubtimestamp'] = strtotime($article->created_at);
+                                    $art_arr[$i]['category']['name'] = $nav->name;
+                                    $art_arr[$i]['category']['en_name'] = $nav->name;
+                                    if ($nav->url) {
+                                        $art_arr[$i]['category']['link'] = $nav->url;
+                                    } else {
+                                        $art_arr[$i]['category']['link'] = $this->domain . "/category/" . $nav->id;
+                                    }
+                                    $i++;
+                                }
+                            }
+                            $mIndexCat['data'] = $art_arr;
+                        } elseif ($nav->type == 4) {
+                            $content = Page::where('id', $nav->page_id)->pluck('content');
+                            $mIndexCat['content'] = $content;
+                        } elseif ($nav->type == 5 || $nav->type == 6 || $nav->type == 7 || $nav->type == 8 || $nav->type == 9) {
+                            //暂时缺省
                         }
-                        $mIndexCat['data'] = $art_arr;
-                    } elseif ($nav->type == 4) {
-                        $content = Page::where('id', $nav->page_id)->pluck('content');
-                        $mIndexCat['content'] = $content;
-                    } elseif ($nav->type == 5 || $nav->type == 6 || $nav->type == 7 || $nav->type == 8 || $nav->type == 9) {
-                        //暂时缺省
+                        $mIndexCats[] = $mIndexCat;
                     }
-                    $mIndexCats[] = $mIndexCat;
-                }
-            } else {
-                foreach ($show_navs as $nav) {
-                    $mIndexCat = array();
-                    $mIndexCat['id'] = $nav->id;
-                    $mIndexCat['p_id'] = $nav->p_id;
-                    $mIndexCat['name'] = $nav->name;
-                    $mIndexCat['en_name'] = $nav->en_name;
-                    $mIndexCat['icon'] = '<i class="iconfont">' . $nav->icon . '</i>';
-                    $mIndexCat['image'] = $nav->img ? ($this->source_dir . "/l/category/" . $nav->img) : '';
-                    if ($nav->url) {
-                        $mIndexCat['link'] = $nav->url;
-                    } else {
-                        $mIndexCat['link'] = $this->domain . "/category/" . $nav->id . ".html";
-                    }
-                    $mIndexCat['type'] = $nav->type;
-                    $mIndexCat['showtype'] = $nav->m_index_showtype;
-                    $mIndexCat['description'] = $nav->meta_description;
-                    $id_arr = explode(',', $this->getChildrenClassify($nav->id, 1));
-                    if ($nav->type == 1 || $nav->type == 2 || $nav->type == 3) {
-                        $art_arr = array();
-                        if ($nav->star_only) {
-                            //是否只显示推荐
-                            $articles = Articles::whereIn('c_id', $id_arr)->where('mobile_show', 1)->where('is_star', 1)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->take($nav->show_num)->get();
+                } else {
+                    foreach ($show_navs as $nav) {
+                        $mIndexCat = array();
+                        $mIndexCat['id'] = $nav->id;
+                        $mIndexCat['p_id'] = $nav->p_id;
+                        $mIndexCat['name'] = $nav->name;
+                        $mIndexCat['en_name'] = $nav->en_name;
+                        $mIndexCat['icon'] = '<i class="iconfont">' . $nav->icon . '</i>';
+                        $mIndexCat['image'] = $nav->img ? ($this->source_dir . "/l/category/" . $nav->img) : '';
+                        if ($nav->url) {
+                            $mIndexCat['link'] = $nav->url;
                         } else {
-                            $articles = Articles::whereIn('c_id', $id_arr)->where('mobile_show', 1)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->take($nav->show_num)->get();
+                            $mIndexCat['link'] = $this->domain . "/category/" . $nav->id . ".html";
                         }
-                        if (count($articles) > 0) {
-                            $i = 0;
-                            foreach ($articles as &$article) {
-                                $art_arr[$i]['title'] = $article->title;
-                                $art_arr[$i]['image'] = $article->img ? ($this->source_dir . "/s/articles/" . $article->img) : '';
-                                $art_arr[$i]['link'] = $this->domain . "/detail/" . $article->id . ".html";
-                                if ($article->use_url) {
-                                    $art_arr[$i]['link'] = $article->url;
-                                }
-                                $art_arr[$i]['description'] = $article->introduction;
-                                $art_arr[$i]['pubdate'] = $article->created_at;
-                                $art_arr[$i]['pubtimestamp'] = strtotime($article->created_at);
-                                $art_arr[$i]['category']['name'] = $nav->name;
-                                $art_arr[$i]['category']['en_name'] = $nav->name;
-                                if ($nav->url) {
-                                    $art_arr[$i]['category']['link'] = $nav->url;
-                                } else {
-                                    $art_arr[$i]['category']['link'] = $this->domain . "/category/" . $nav->id;
-                                }
-                                $i++;
+                        $mIndexCat['type'] = $nav->type;
+                        $mIndexCat['showtype'] = $nav->m_index_showtype;
+                        $mIndexCat['description'] = $nav->meta_description;
+                        $id_arr = explode(',', $this->getChildrenClassify($nav->id, 1));
+                        if ($nav->type == 1 || $nav->type == 2 || $nav->type == 3) {
+                            $art_arr = array();
+                            if ($nav->star_only) {
+                                //是否只显示推荐
+                                $articles = Articles::whereIn('c_id', $id_arr)->where('mobile_show', 1)->where('is_star', 1)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->take($nav->show_num)->get();
+                            } else {
+                                $articles = Articles::whereIn('c_id', $id_arr)->where('mobile_show', 1)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->take($nav->show_num)->get();
                             }
+                            if (count($articles) > 0) {
+                                $i = 0;
+                                foreach ($articles as &$article) {
+                                    $art_arr[$i]['title'] = $article->title;
+                                    $art_arr[$i]['image'] = $article->img ? ($this->source_dir . "/s/articles/" . $article->img) : '';
+                                    $art_arr[$i]['link'] = $this->domain . "/detail/" . $article->id . ".html";
+                                    if ($article->use_url) {
+                                        $art_arr[$i]['link'] = $article->url;
+                                    }
+                                    $art_arr[$i]['description'] = $article->introduction;
+                                    $art_arr[$i]['pubdate'] = $article->created_at;
+                                    $art_arr[$i]['pubtimestamp'] = strtotime($article->created_at);
+                                    $art_arr[$i]['category']['name'] = $nav->name;
+                                    $art_arr[$i]['category']['en_name'] = $nav->name;
+                                    if ($nav->url) {
+                                        $art_arr[$i]['category']['link'] = $nav->url;
+                                    } else {
+                                        $art_arr[$i]['category']['link'] = $this->domain . "/category/" . $nav->id;
+                                    }
+                                    $i++;
+                                }
+                            }
+                            $mIndexCat['data'] = $art_arr;
+                        } elseif ($nav->type == 4) {
+                            $content = Page::where('id', $nav->page_id)->pluck('content');
+                            $mIndexCat['content'] = $content;
+                        } elseif ($nav->type == 5 || $nav->type == 6 || $nav->type == 7 || $nav->type == 8 || $nav->type == 9) {
+                            //暂时缺省
                         }
-                        $mIndexCat['data'] = $art_arr;
-                    } elseif ($nav->type == 4) {
-                        $content = Page::where('id', $nav->page_id)->pluck('content');
-                        $mIndexCat['content'] = $content;
-                    } elseif ($nav->type == 5 || $nav->type == 6 || $nav->type == 7 || $nav->type == 8 || $nav->type == 9) {
-                        //暂时缺省
+                        $mIndexCats[] = $mIndexCat;
                     }
-                    $mIndexCats[] = $mIndexCat;
                 }
             }
+            $classify = new Classify;
+            foreach ($mIndexCats as $key => $val) {
+                $mIndexCats[$key]['childmenu'] = $classify->toTree($mIndexCats, $mIndexCats[$key]['id']);
+            }
+            $result['mIndexCats'] = $mIndexCats;
         }
-        $classify = new Classify;
-        foreach ($mIndexCats as $key => $val) {
-            $mIndexCats[$key]['childmenu'] = $classify->toTree($mIndexCats, $mIndexCats[$key]['id']);
+        if($_SERVER["HTTP_HOST"]=="172.16.0.17"){
+            return json_encode($result);
         }
-        $result['mIndexCats'] = $mIndexCats;
-        //print_r($mIndexCats);
-        //exit;
         $smarty = new Smarty;
         $smarty->setTemplateDir(app_path('views/templates/' . $this->themename));
         $smarty->setCompileDir(app_path('storage/views/compile'));
@@ -2239,269 +2269,276 @@ class PrintController extends BaseController {
      * @param int $id 栏目id
      * @param int $page 当前页码
      */
-    public function categoryPreview($id, $page) {
-        $result = $this->pagePublic($id);
-        $customerinfo = CustomerInfo::where("cus_id", $this->cus_id)->first();
-        foreach ((array) $result['navs'] as $nav) {
-            if ($nav['current'] == 1) {
-                $pagenavs = $nav['childmenu'];
-                break;
-            } else {
-                $pagenavs = [];
-            }
-        }
-        $classify = Classify::find($id);
-        $result['title'] = ($customerinfo->title != "") ? $customerinfo->title . '-' . $classify->name : $classify->name;
-        $result['keywords'] = ($classify->meta_keywords != "") ? $classify->meta_keywords : $customerinfo->keywords;
-        $result['description'] = ($classify->meta_description != "") ? $classify->meta_description : $customerinfo->description;
-        $result['list']['name'] = $classify->name;
-        $result['list']['en_name'] = $classify->en_name;
-        $result['list']['description'] = $classify->meta_description;
-        $result['list']['icon'] = '<i class="iconfont">' . $classify->icon . '</i>';
-        $result['list']['image'] = $classify->img ? ($this->source_dir . 's/category/' . $classify->img) : '';
-        $result['list']['type'] = $classify->type;
-        if ($this->showtype == 'preview') {
-            $result['list']['link'] = $this->domain . '/category/' . $id;
-        } else {
-            $result['list']['link'] = $this->domain . '/category/' . $id . '.html';
-        }
-        $result['pagenavs'] = $pagenavs;
-        $result['posnavs'] = $this->getPosNavs($id);
-        if ($classify->type == 1) {//文字列表
-            $viewname = 'list-text';
-        } elseif ($classify->type == 2) {//图片列表
-            $viewname = 'list-image';
-        } elseif ($classify->type == 3) {//图文列表
-            $viewname = 'list-imagetext';
-        } elseif ($classify->type == 4) {//内容单页
-            $viewname = 'list-page';
-        } elseif ($classify->type == 5) {//留言板
-            $viewname = 'list-page';
-        } elseif ($classify->type == 9) {//万用表单
-            //===获取数据===
-            $viewname = 'list-page';
-            $form_id = $classify->form_id;
-            $formC = new FormController();
-            $formCdata = $formC->getFormdataForPrint($form_id);
-        } else {//跳转404
-        }
-        if (in_array($classify->type, array(1, 2, 3, 4, 5, 9))) {
-            $sub = str_replace('-', '_', $viewname);
-            $data = $this->pagedata($viewname);
-            $index = $this->detailList($data);
-            $result = array_add($result, $sub, $index);
-            $data_index = $this->pagedata($viewname);
-            $index_list = $this->pageList($id, $page);
-            if ($classify->type == 4) {
-                if ($this->showtype == 'preview') {
-                    $result['list']['content'] = Page::where('id', $classify->page_id)->pluck('content');
+    public function categoryPreview($id, $page,$result=array()) {
+        if($_SERVER["HTTP_HOST"]!="preview.5067.org"){
+            $result = $this->pagePublic($id);
+            $customerinfo = CustomerInfo::where("cus_id", $this->cus_id)->first();
+            foreach ((array) $result['navs'] as $nav) {
+                if ($nav['current'] == 1) {
+                    $pagenavs = $nav['childmenu'];
+                    break;
                 } else {
-                    $result['list']['content'] = preg_replace('/\/customers\/' . $this->customer . '/i', '', Page::where('id', $classify->page_id)->pluck('content'));
+                    $pagenavs = [];
                 }
-            } elseif ($classify->type == 5) {
-                $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
-                if ($customer_info->lang == 'en') {
-                    $result['list']['content'] = '<form action="http://swap.5067.org/message/' . $this->cus_id . '" method="post" name="messageboard" onsubmit="return CheckPost();" class="elegant-aero">
-                    <h1>' . $classify->name . '
-                    <span>' . $classify->en_name . '</span>
-                    </h1>
-                    <label>
-                    <span>Name :</span>
-                    <input id="name" type="text" name="name" placeholder="Name" />
-                    </label>
-                    <label>
-                    <span>Email :</span>
-                    <input id="email" type="email" name="email" placeholder="Email Address" />
-                    </label>
-                    <label>
-                    <span>Tel :</span>
-                    <input id="telephone" type="tel" name="telephone" placeholder="Telephone" />
-                    </label>
-                    <label>
-                    <label>
-                    <span>Content :</span>
-                    <textarea id="content" name="content" placeholder="You mind ...."></textarea>
-                    </label>
-                    <label>
-                    <span>&nbsp;</span>
-                    <input type="submit" class="button" name="submit" value="Submit" />
-                    </label>
-                    </form>';
-                } else {
-                    $result['list']['content'] = '<form action="http://swap.5067.org/message/' . $this->cus_id . '" method="post" name="messageboard" onsubmit="return CheckPost();" class="elegant-aero">
-                    <h1>' . $classify->name . '
-                    <span>' . $classify->en_name . '</span>
-                    </h1>
-                    <label>
-                    <span>姓名 :</span>
-                    <input id="name" type="text" name="name" placeholder="Name" />
-                    </label>
-                    <label>
-                    <span>Email :</span>
-                    <input id="email" type="email" name="email" placeholder="Email Address" />
-                    </label>
-                    <label>
-                    <span>联系电话 :</span>
-                    <input id="telephone" type="tel" name="telephone" placeholder="Telephone" />
-                    </label>
-                    <label>
-                    <span>内容 :</span>
-                    <textarea id="content" name="content" placeholder="You mind ...."></textarea>
-                    </label>
-                    <label>
-                    <span>&nbsp;</span>
-                    <input type="submit" class="button" name="submit" value="提交" />
-                    </label>
-                    </form>';
-                }
-            } elseif ($classify->type == 9) {
-                //===显示前端===
-                $result['list']['content'] = $formC->showFormHtmlForPrint($formCdata);
+            }
+            $classify = Classify::find($id);
+            $result['title'] = ($customerinfo->title != "") ? $customerinfo->title . '-' . $classify->name : $classify->name;
+            $result['keywords'] = ($classify->meta_keywords != "") ? $classify->meta_keywords : $customerinfo->keywords;
+            $result['description'] = ($classify->meta_description != "") ? $classify->meta_description : $customerinfo->description;
+            $result['list']['name'] = $classify->name;
+            $result['list']['en_name'] = $classify->en_name;
+            $result['list']['description'] = $classify->meta_description;
+            $result['list']['icon'] = '<i class="iconfont">' . $classify->icon . '</i>';
+            $result['list']['image'] = $classify->img ? ($this->source_dir . 's/category/' . $classify->img) : '';
+            $result['list']['type'] = $classify->type;
+            if ($this->showtype == 'preview') {
+                $result['list']['link'] = $this->domain . '/category/' . $id;
             } else {
-                $result['list']['data'] = $index_list['data'];
-                $result['list']['total'] = $index_list['page_links']['total'];
+                $result['list']['link'] = $this->domain . '/category/' . $id . '.html';
             }
-            $result['page_links'] = $index_list['page_links'];
-            $json_keys = $this->getJsonKey($viewname . '.html');
-            if (count($json_keys)) {
-                foreach ($json_keys as $key) {
-                    $result[$key] = $this->detailList($this->pagedata($key));
-                }
+            $result['pagenavs'] = $pagenavs;
+            $result['posnavs'] = $this->getPosNavs($id);
+            if ($classify->type == 1) {//文字列表
+                $viewname = 'list-text';
+            } elseif ($classify->type == 2) {//图片列表
+                $viewname = 'list-image';
+            } elseif ($classify->type == 3) {//图文列表
+                $viewname = 'list-imagetext';
+            } elseif ($classify->type == 4) {//内容单页
+                $viewname = 'list-page';
+            } elseif ($classify->type == 5) {//留言板
+                $viewname = 'list-page';
+            } elseif ($classify->type == 9) {//万用表单
+                //===获取数据===
+                $viewname = 'list-page';
+                $form_id = $classify->form_id;
+                $formC = new FormController();
+                $formCdata = $formC->getFormdataForPrint($form_id);
+            } else {//跳转404
             }
-            $smarty = new Smarty;
-            $smarty->setTemplateDir(app_path('views/templates/' . $this->themename));
-            $smarty->setCompileDir(app_path('storage/views/compile'));
-            $smarty->registerPlugin('function', 'mapExt', array('PrintController', 'createMap'));
-            $smarty->registerPlugin('function', 'shareExt', array('PrintController', 'createShare'));
-            if ($classify->type == 5) {
-                $result['footscript'] .='<STYLE TYPE="text/css"> 
-                <!-- 
-                .elegant-aero {
-                margin-left:auto;
-                margin-right:auto;
-                width: 90%;
-                max-width: 500px;
-                /*background: #D2E9FF;*/
-                padding: 20px 20px 20px 20px;
-                color: #666;
+            if (in_array($classify->type, array(1, 2, 3, 4, 5, 9))) {
+                $sub = str_replace('-', '_', $viewname);
+                $data = $this->pagedata($viewname);
+                $index = $this->detailList($data);
+                $result = array_add($result, $sub, $index);
+                $data_index = $this->pagedata($viewname);
+                $index_list = $this->pageList($id, $page);
+                if ($classify->type == 4) {
+                    if ($this->showtype == 'preview') {
+                        $result['list']['content'] = Page::where('id', $classify->page_id)->pluck('content');
+                    } else {
+                        $result['list']['content'] = preg_replace('/\/customers\/' . $this->customer . '/i', '', Page::where('id', $classify->page_id)->pluck('content'));
+                    }
+                } elseif ($classify->type == 5) {
+                    $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
+                    if ($customer_info->lang == 'en') {
+                        $result['list']['content'] = '<form action="http://swap.5067.org/message/' . $this->cus_id . '" method="post" name="messageboard" onsubmit="return CheckPost();" class="elegant-aero">
+                        <h1>' . $classify->name . '
+                        <span>' . $classify->en_name . '</span>
+                        </h1>
+                        <label>
+                        <span>Name :</span>
+                        <input id="name" type="text" name="name" placeholder="Name" />
+                        </label>
+                        <label>
+                        <span>Email :</span>
+                        <input id="email" type="email" name="email" placeholder="Email Address" />
+                        </label>
+                        <label>
+                        <span>Tel :</span>
+                        <input id="telephone" type="tel" name="telephone" placeholder="Telephone" />
+                        </label>
+                        <label>
+                        <label>
+                        <span>Content :</span>
+                        <textarea id="content" name="content" placeholder="You mind ...."></textarea>
+                        </label>
+                        <label>
+                        <span>&nbsp;</span>
+                        <input type="submit" class="button" name="submit" value="Submit" />
+                        </label>
+                        </form>';
+                    } else {
+                        $result['list']['content'] = '<form action="http://swap.5067.org/message/' . $this->cus_id . '" method="post" name="messageboard" onsubmit="return CheckPost();" class="elegant-aero">
+                        <h1>' . $classify->name . '
+                        <span>' . $classify->en_name . '</span>
+                        </h1>
+                        <label>
+                        <span>姓名 :</span>
+                        <input id="name" type="text" name="name" placeholder="Name" />
+                        </label>
+                        <label>
+                        <span>Email :</span>
+                        <input id="email" type="email" name="email" placeholder="Email Address" />
+                        </label>
+                        <label>
+                        <span>联系电话 :</span>
+                        <input id="telephone" type="tel" name="telephone" placeholder="Telephone" />
+                        </label>
+                        <label>
+                        <span>内容 :</span>
+                        <textarea id="content" name="content" placeholder="You mind ...."></textarea>
+                        </label>
+                        <label>
+                        <span>&nbsp;</span>
+                        <input type="submit" class="button" name="submit" value="提交" />
+                        </label>
+                        </form>';
+                    }
+                } elseif ($classify->type == 9) {
+                    //===显示前端===
+                    $result['list']['content'] = $formC->showFormHtmlForPrint($formCdata);
+                } else {
+                    $result['list']['data'] = $index_list['data'];
+                    $result['list']['total'] = $index_list['page_links']['total'];
                 }
-                .input[placeholder]{color:#5c5c5c;}
-                .elegant-aero h1 {
-                font: 24px "Trebuchet MS", Arial, Helvetica, sans-serif;
-                padding: 10px 10px 10px 20px;
-                display: block;
-                /*background: #C0E1FF;*/
-                border-bottom: 1px solid #B8DDFF;
-                margin: -20px -20px 15px;
+                $result['page_links'] = $index_list['page_links'];
+                $json_keys = $this->getJsonKey($viewname . '.html');
+                if (count($json_keys)) {
+                    foreach ($json_keys as $key) {
+                        $result[$key] = $this->detailList($this->pagedata($key));
+                    }
                 }
-                .elegant-aero h1>span {
-                display: block;
-                font-size: 11px;
-                }
-                .elegant-aero label>span {
-                float: left;
-                margin-top: 10px;
-                color: #5E5E5E;
-                }
-                .elegant-aero label {
-                display: block;
-                margin: 0px 0px 5px;
-                }
-                .elegant-aero label>span {
+                if ($classify->type == 5) {
+                    $result['footscript'] .='<STYLE TYPE="text/css"> 
+                    <!-- 
+                    .elegant-aero {
+                    margin-left:auto;
+                    margin-right:auto;
+                    width: 90%;
+                    max-width: 500px;
+                    /*background: #D2E9FF;*/
+                    padding: 20px 20px 20px 20px;
+                    color: #666;
+                    }
+                    .input[placeholder]{color:#5c5c5c;}
+                    .elegant-aero h1 {
+                    font: 24px "Trebuchet MS", Arial, Helvetica, sans-serif;
+                    padding: 10px 10px 10px 20px;
+                    display: block;
+                    /*background: #C0E1FF;*/
+                    border-bottom: 1px solid #B8DDFF;
+                    margin: -20px -20px 15px;
+                    }
+                    .elegant-aero h1>span {
+                    display: block;
+                    font-size: 11px;
+                    }
+                    .elegant-aero label>span {
                     float: left;
-                    width: 25%;
-                    text-align: right;
-                    padding-right: 15px;
                     margin-top: 10px;
-                    font-weight: bold;
-                    text-overflow: ellipsis;
-                    overflow: hidden;
-                    white-space: nowrap;
-                }
-                .elegant-aero input[type="text"], .elegant-aero input[type="tel"], .elegant-aero input[type="email"], .elegant-aero textarea, .elegant-aero select {
-                color: #888;
-                width: 60%;
-                padding: 0px 0px 0px 5px;
-                border: 1px solid #C5E2FF;
-                background: #FBFBFB;
-                outline: 0;
-                -webkit-box-shadow:inset 0px 1px 6px #ECF3F5;
-                box-shadow: inset 0px 1px 6px #ECF3F5;
-                height: 30px;
-                line-height:15px;
-                margin: 2px 6px 16px 0px;
-                }
-                .elegant-aero textarea{
-                height:100px;
-                padding: 5px 0px 0px 5px;
-                width: 60%;
-                }
-                .elegant-aero select {
-                background: #fbfbfb url(\'down-arrow.png\') no-repeat right;
-                background: #fbfbfb url(\'down-arrow.png\') no-repeat right;
-                appearance:none;
-                -webkit-appearance:none;
-                -moz-appearance: none;
-                text-indent: 0.01px;
-                text-overflow: \'\';
-                width: 60%;
-                }
-                .elegant-aero .button{
-                padding: 10px 30px 10px 30px;
-                background: #ACB5B7;
-                border: none;
-                color: #FFF;
-                box-shadow: 1px 1px 1px #4C6E91;
-                -webkit-box-shadow: 1px 1px 1px #4C6E91;
-                -moz-box-shadow: 1px 1px 1px #4C6E91;
-                text-shadow: 1px 1px 1px #5079A3;
-                }
-                .elegant-aero .button:hover{
-                background: #C5CFD2;
-                color: #6B6262;
-                }--> 
-                </STYLE>
-                <SCRIPT language=javascript>
-		function CheckPost()
-		{   
-                    var _name       =messageboard.name.value;
-                    var _content    =messageboard.content.value;
-                    var _telephone  =messageboard.telephone.value;
-				if (_name=="")
-				{
-                                    alert("请填写您的姓名");
-                                    messageboard.name.focus();
-                                    return false;
-				}
-				if (_content=="")
-				{
-                                    alert("必须要填写留言内容");
-                                    messageboard.content.focus();
-                                    return false;
-				}
-				if (_telephone!="")
-				{
-                                    if(isNaN(_telephone)){
-                                            alert("电话号码请填写数字");
-                                            messageboard.telephone.focus();
-                                            return false;
+                    color: #5E5E5E;
+                    }
+                    .elegant-aero label {
+                    display: block;
+                    margin: 0px 0px 5px;
+                    }
+                    .elegant-aero label>span {
+                        float: left;
+                        width: 25%;
+                        text-align: right;
+                        padding-right: 15px;
+                        margin-top: 10px;
+                        font-weight: bold;
+                        text-overflow: ellipsis;
+                        overflow: hidden;
+                        white-space: nowrap;
+                    }
+                    .elegant-aero input[type="text"], .elegant-aero input[type="tel"], .elegant-aero input[type="email"], .elegant-aero textarea, .elegant-aero select {
+                    color: #888;
+                    width: 60%;
+                    padding: 0px 0px 0px 5px;
+                    border: 1px solid #C5E2FF;
+                    background: #FBFBFB;
+                    outline: 0;
+                    -webkit-box-shadow:inset 0px 1px 6px #ECF3F5;
+                    box-shadow: inset 0px 1px 6px #ECF3F5;
+                    height: 30px;
+                    line-height:15px;
+                    margin: 2px 6px 16px 0px;
+                    }
+                    .elegant-aero textarea{
+                    height:100px;
+                    padding: 5px 0px 0px 5px;
+                    width: 60%;
+                    }
+                    .elegant-aero select {
+                    background: #fbfbfb url(\'down-arrow.png\') no-repeat right;
+                    background: #fbfbfb url(\'down-arrow.png\') no-repeat right;
+                    appearance:none;
+                    -webkit-appearance:none;
+                    -moz-appearance: none;
+                    text-indent: 0.01px;
+                    text-overflow: \'\';
+                    width: 60%;
+                    }
+                    .elegant-aero .button{
+                    padding: 10px 30px 10px 30px;
+                    background: #ACB5B7;
+                    border: none;
+                    color: #FFF;
+                    box-shadow: 1px 1px 1px #4C6E91;
+                    -webkit-box-shadow: 1px 1px 1px #4C6E91;
+                    -moz-box-shadow: 1px 1px 1px #4C6E91;
+                    text-shadow: 1px 1px 1px #5079A3;
+                    }
+                    .elegant-aero .button:hover{
+                    background: #C5CFD2;
+                    color: #6B6262;
+                    }--> 
+                    </STYLE>
+                    <SCRIPT language=javascript>
+                    function CheckPost()
+                    {   
+                        var _name       =messageboard.name.value;
+                        var _content    =messageboard.content.value;
+                        var _telephone  =messageboard.telephone.value;
+                                    if (_name=="")
+                                    {
+                                        alert("请填写您的姓名");
+                                        messageboard.name.focus();
+                                        return false;
                                     }
-                                    if(!(/^1[3|4|5|7|8]\d{9}$/.test(_telephone))){
-                                            alert("手机号码有误");
-                                            messageboard.telephone.focus();
-                                            return false;
+                                    if (_content=="")
+                                    {
+                                        alert("必须要填写留言内容");
+                                        messageboard.content.focus();
+                                        return false;
                                     }
-				}
-		}
-                </SCRIPT>';
-            } elseif ($classify->type == 9) {
-                //===加载css\js===
-                $result['footscript'].=$formC->assignFormCSSandJSForPrint();
+                                    if (_telephone!="")
+                                    {
+                                        if(isNaN(_telephone)){
+                                                alert("电话号码请填写数字");
+                                                messageboard.telephone.focus();
+                                                return false;
+                                        }
+                                        if(!(/^1[3|4|5|7|8]\d{9}$/.test(_telephone))){
+                                                alert("手机号码有误");
+                                                messageboard.telephone.focus();
+                                                return false;
+                                        }
+                                    }
+                    }
+                    </SCRIPT>';
+                } elseif ($classify->type == 9) {
+                    //===加载css\js===
+                    $result['footscript'].=$formC->assignFormCSSandJSForPrint();
+                }
+                
+                //return View::make('templates.'.$this->themename.'.'.$viewname,$result);
             }
-            $smarty->assign($result);
-            $smarty->display($viewname . '.html');
-            //return View::make('templates.'.$this->themename.'.'.$viewname,$result);
+        
         }
+        if($_SERVER["HTTP_HOST"]=="172.16.0.17"){
+            return json_encode($result);
+        }
+        $smarty = new Smarty;
+        $smarty->setTemplateDir(app_path('views/templates/' . $this->themename));
+        $smarty->setCompileDir(app_path('storage/views/compile'));
+        $smarty->registerPlugin('function', 'mapExt', array('PrintController', 'createMap'));
+        $smarty->registerPlugin('function', 'shareExt', array('PrintController', 'createShare'));
+        $smarty->assign($result);
+        $smarty->display($viewname . '.html');
     }
 
     /**
@@ -2857,194 +2894,198 @@ class PrintController extends BaseController {
      *
      * @param int $id 文章id
      */
-    public function articlePreview($id) {
-        $article = Articles::find($id);
-        $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
-        if ($customer_info->lang == 'en') {
-            $lang['the_last'] = 'The last one';
-            $lang['the_first'] = 'The first one';
-        } else {
-            $lang['the_last'] = '已经是最后一篇';
-            $lang['the_first'] = '已经是第一篇';
-        }
-        $a_moreimg = Moreimg::where('a_id', $id)->get()->toArray();
-        array_unshift($a_moreimg, array('title' => $article->title, 'img' => $article->img));
-        $images = array();
-        if (count($a_moreimg)) {
-            $i = 0;
-            foreach ($a_moreimg as $a_img) {
-                $images[$i]['title'] = $a_img['title'];
-                $images[$i]['image'] = $a_img['img'] ? ($this->source_dir . 'l/articles/' . $a_img['img']) : '';
-                $i++;
+    public function articlePreview($id,$result=array()) {
+        if($_SERVER["HTTP_HOST"]!="preview.5067.org"){
+            $article = Articles::find($id);
+            $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
+            if ($customer_info->lang == 'en') {
+                $lang['the_last'] = 'The last one';
+                $lang['the_first'] = 'The first one';
+            } else {
+                $lang['the_last'] = '已经是最后一篇';
+                $lang['the_first'] = '已经是第一篇';
             }
-        }
-        $list_id = Articles::where('c_id', $article->c_id)->where($this->type . '_show', '1')->where('use_url', '0')->orderBy('is_top', 'desc')->orderBy('sort', 'asc')->orderBy('created_at', 'desc')->select('id', 'title', 'img', 'introduction', 'created_at')->lists('id');
-        foreach ((array) $list_id as $key => $val) {
-            $article_prev = NULL;
-            $article_next = NULL;
-            if ($val == $id) {
-                if ($key != 0) {
-                    $prev_id = $list_id[$key - 1];
-                    $article_prev = Articles::find($prev_id);
+            $a_moreimg = Moreimg::where('a_id', $id)->get()->toArray();
+            array_unshift($a_moreimg, array('title' => $article->title, 'img' => $article->img));
+            $images = array();
+            if (count($a_moreimg)) {
+                $i = 0;
+                foreach ($a_moreimg as $a_img) {
+                    $images[$i]['title'] = $a_img['title'];
+                    $images[$i]['image'] = $a_img['img'] ? ($this->source_dir . 'l/articles/' . $a_img['img']) : '';
+                    $i++;
                 }
-                if ($key < (count($list_id) - 1)) {
-                    $next_id = $list_id[$key + 1];
-                    $article_next = Articles::find($next_id);
-                }
-                break;
             }
-        }
-        $result = $this->pagePublic($article->c_id);
-        if (is_array($result['navs']) && !empty($result['navs'])) {
-            foreach ((array) $result['navs'] as $nav) {
-                if ($nav['current'] == 1) {
-                    $pagenavs = $nav['childmenu'];
+            $list_id = Articles::where('c_id', $article->c_id)->where($this->type . '_show', '1')->where('use_url', '0')->orderBy('is_top', 'desc')->orderBy('sort', 'asc')->orderBy('created_at', 'desc')->select('id', 'title', 'img', 'introduction', 'created_at')->lists('id');
+            foreach ((array) $list_id as $key => $val) {
+                $article_prev = NULL;
+                $article_next = NULL;
+                if ($val == $id) {
+                    if ($key != 0) {
+                        $prev_id = $list_id[$key - 1];
+                        $article_prev = Articles::find($prev_id);
+                    }
+                    if ($key < (count($list_id) - 1)) {
+                        $next_id = $list_id[$key + 1];
+                        $article_next = Articles::find($next_id);
+                    }
                     break;
+                }
+            }
+            $result = $this->pagePublic($article->c_id);
+            if (is_array($result['navs']) && !empty($result['navs'])) {
+                foreach ((array) $result['navs'] as $nav) {
+                    if ($nav['current'] == 1) {
+                        $pagenavs = $nav['childmenu'];
+                        break;
+                    } else {
+                        $pagenavs = array();
+                    }
+                }
+            }
+            if (empty($pagenavs)) {
+                $pagenavs = array();
+            }
+            $result['pagenavs'] = $pagenavs;
+            $result['posnavs'] = $this->getPosNavs($article->c_id);
+            $result['title'] = ($customer_info->title != "") ? $customer_info->title . '-' . $article->title : $article->title;
+            $result['keywords'] = ($article->keywords != "") ? $article->keywords : $customer_info->keywords;
+            $result['description'] = ($article->introduction != "") ? $article->introduction : $customer_info->description;
+            $result['article']['title'] = $article->title;
+            $result['article']['keywords'] = $article->keywords;
+            $result['article']['description'] = $article->introduction;
+            $result['article']['viewcount'] = '<em id="article-viewcount">0</em>';
+            $result['enlarge'] = 0;
+            $article_type = Articles::leftJoin('classify', 'classify.id', '=', 'article.c_id')->where('article.id', $id)->pluck('article_type');
+            if ($article_type == 1) {//新闻内容
+                $viewname = 'content-news';
+            } elseif ($article_type == 2) {//产品内容
+                $viewname = 'content-product';
+                $result['enlarge'] = $customer_info->enlarge;
+                if ($result['enlarge'] && $this->type == 'pc') {
+                    $result['footscript'] .= '<script type="text/javascript" src="http://swap.5067.org/js/img.js"></script>';
+                }
+            } else {//跳转404
+            }
+            //关联文章查询
+    //        $pa = new PhpAnalysis();
+    //
+    //        $pa->SetSource($article->title);
+    //
+    //        //设置分词属性
+    //        $pa->resultType = 2;
+    //        $pa->differMax = true;
+    //        $pa->StartAnalysis();
+    //
+    //        //获取你想要的结果
+    //        $keywords = $pa->GetFinallyIndex();
+    //        if (count($keywords)) {
+    //            $relation_where = "";
+    //            foreach ((array) $keywords as $key => $word) {
+    //                $relation_where.="or title like '%$key%' ";
+    //            }
+    //            $relation_where = ltrim($relation_where, 'or');
+    //            $prefix = Config::get('database.connections.mysql.prefix');
+    //            $related_data = DB::select("select id,title,img as image,introduction,created_at,c_id from {$prefix}article where cus_id={$this->cus_id} and ($relation_where)");
+    //            $related = array();
+    //            if (count($related_data)) {
+    //                foreach ((array) $related_data as $val) {
+    //                    $temp_arr = [];
+    //                    $temp_arr['title'] = $val->title;
+    //                    $temp_arr['description'] = $val->introduction;
+    //                    $temp_arr['image'] = $this->source_dir . 'l/articles/' . $val->image;
+    //                    if ($this->showtype == 'preview') {
+    //                        $temp_arr['link'] = $this->domain . '/detail/' . $val->id;
+    //                        $temp_arr['category']['link'] = $this->domain . '/category/' . $val->id . '.html';
+    //                    } else {
+    //                        $temp_arr['link'] = $this->domain . '/detail/' . $val->id . '.html';
+    //                        $temp_arr['category']['link'] = $this->domain . '/category/' . $val->id . '.html';
+    //                    }
+    //                    $temp_arr['pubdate'] = $val->created_at;
+    //                    $temp_arr['pubtimestamp'] = strtotime($val->created_at);
+    //                    $a_c_info = Classify::where('id', $val->c_id)->first();
+    //                    $temp_arr['category']['name'] = $a_c_info->name;
+    //                    $temp_arr['category']['en_name'] = $a_c_info->en_name;
+    //                    $temp_arr['category']['icon'] = '<i class="iconfont">' . $a_c_info->icon . '</i>';
+    //                    $related[] = $temp_arr;
+    //                }
+    //            }
+    //        }
+            $articles = Articles::where($this->type . '_show', '1')->where('c_id', $article->c_id)->where('use_url', '0')->orderBy('is_top', 'desc')->orderBy('sort', 'asc')->orderBy('created_at', 'desc')->get()->toArray();
+            $related = array();
+            for (; count($related) < 6 && count($related) < count($articles);) {
+                $k = rand(0, count($articles) - 1);
+                if ($this->showtype == 'preview') {
+                    $related[$k]['link'] = $this->domain . '/detail/' . $articles[$k]['id'];
+                    $related[$k]['category']['link'] = $this->domain . '/category/' . $articles[$k]['id'] . '.html';
                 } else {
-                    $pagenavs = array();
+                    $related[$k]['link'] = $this->domain . '/detail/' . $articles[$k]['id'] . '.html';
+                    $related[$k]['category']['link'] = $this->domain . '/category/' . $articles[$k]['id'] . '.html';
+                }
+                $related[$k]['title'] = $articles[$k]['title'];
+                $related[$k]['description'] = $articles[$k]['introduction'];
+                $related[$k]['image'] = $articles[$k]['img'] ? ($this->source_dir . 'l/articles/' . $articles[$k]['img']) : '';
+                $related[$k]['pubdate'] = $articles[$k]['created_at'];
+                $related[$k]['pubtimestamp'] = strtotime($articles[$k]['created_at']);
+                $a_c_info = Classify::where('id', $articles[$k]['c_id'])->first();
+                $related[$k]['category']['name'] = $a_c_info->name;
+                $related[$k]['category']['en_name'] = $a_c_info->en_name;
+                $related[$k]['category']['icon'] = '<i class="iconfont">' . $a_c_info->icon . '</i>';
+            }
+            //dd($article_prev);
+            if ($this->showtype == 'preview') {
+                if ($article_next === NULL) {
+                    $result['article']['next']['title'] = $lang['the_last'];
+                    $result['article']['next']['link'] = '';
+                } else {
+                    $result['article']['next']['title'] = $article_next->title;
+                    $result['article']['next']['link'] = $this->domain . '/detail/' . $article_next->id;
+                }
+                if ($article_prev === NULL) {
+                    $result['article']['prev']['title'] = $lang['the_first'];
+                    $result['article']['prev']['link'] = '';
+                } else {
+                    $result['article']['prev']['title'] = $article_prev->title;
+                    $result['article']['prev']['link'] = $this->domain . '/detail/' . $article_prev->id;
+                }
+                $result['article']['image'] = $article->img ? ($this->source_dir . 'l/articles/' . $article->img) : '';
+                $result['article']['images'] = $images;
+                $result['article']['content'] = $article->content;
+            } else {
+                if ($article_next === NULL) {
+                    $result['article']['next']['title'] = $lang['the_last'];
+                    $result['article']['next']['link'] = '';
+                } else {
+                    $result['article']['next']['title'] = $article_next->title;
+                    $result['article']['next']['link'] = $this->domain . '/detail/' . $article_next->id . '.html';
+                }
+                if ($article_prev === NULL) {
+                    $result['article']['prev']['title'] = $lang['the_first'];
+                    $result['article']['prev']['link'] = '';
+                } else {
+                    $result['article']['prev']['title'] = $article_prev->title;
+                    $result['article']['prev']['link'] = $this->domain . '/detail/' . $article_prev->id . '.html';
+                }
+                $result['article']['image'] = $article->img ? ($this->source_dir . 'l/articles/' . $article->img) : '';
+                $result['article']['images'] = $images;
+                $result['article']['content'] = preg_replace('/\/customers\/' . $this->customer . '/i', '', $article->content);
+            }
+            $result['article']['description'] = $article->introduction;
+            $result['article']['pubdate'] = $article->created_at;
+            $result['article']['pubtimestamp'] = strtotime($article->created_at);
+
+            $result['article']['category'] = $result['posnavs'][count($result['posnavs']) - 1];
+            $result['related'] = $related;
+            $json_keys = $this->getJsonKey($viewname . '.html');
+            if (count($json_keys)) {
+                foreach ((array) $json_keys as $key) {
+                    $result[$key] = $this->detailList($this->pagedata($key));
                 }
             }
         }
-        if (empty($pagenavs)) {
-            $pagenavs = array();
+        if($_SERVER["HTTP_HOST"]=="172.16.0.17"){
+            return json_encode($result);
         }
-        $result['pagenavs'] = $pagenavs;
-        $result['posnavs'] = $this->getPosNavs($article->c_id);
-        $result['title'] = ($customer_info->title != "") ? $customer_info->title . '-' . $article->title : $article->title;
-        $result['keywords'] = ($article->keywords != "") ? $article->keywords : $customer_info->keywords;
-        $result['description'] = ($article->introduction != "") ? $article->introduction : $customer_info->description;
-        $result['article']['title'] = $article->title;
-        $result['article']['keywords'] = $article->keywords;
-        $result['article']['description'] = $article->introduction;
-        $result['article']['viewcount'] = '<em id="article-viewcount">0</em>';
-        $result['enlarge'] = 0;
-        $article_type = Articles::leftJoin('classify', 'classify.id', '=', 'article.c_id')->where('article.id', $id)->pluck('article_type');
-        if ($article_type == 1) {//新闻内容
-            $viewname = 'content-news';
-        } elseif ($article_type == 2) {//产品内容
-            $viewname = 'content-product';
-            $result['enlarge'] = $customer_info->enlarge;
-            if ($result['enlarge'] && $this->type == 'pc') {
-                $result['footscript'] .= '<script type="text/javascript" src="http://swap.5067.org/js/img.js"></script>';
-            }
-        } else {//跳转404
-        }
-        //关联文章查询
-//        $pa = new PhpAnalysis();
-//
-//        $pa->SetSource($article->title);
-//
-//        //设置分词属性
-//        $pa->resultType = 2;
-//        $pa->differMax = true;
-//        $pa->StartAnalysis();
-//
-//        //获取你想要的结果
-//        $keywords = $pa->GetFinallyIndex();
-//        if (count($keywords)) {
-//            $relation_where = "";
-//            foreach ((array) $keywords as $key => $word) {
-//                $relation_where.="or title like '%$key%' ";
-//            }
-//            $relation_where = ltrim($relation_where, 'or');
-//            $prefix = Config::get('database.connections.mysql.prefix');
-//            $related_data = DB::select("select id,title,img as image,introduction,created_at,c_id from {$prefix}article where cus_id={$this->cus_id} and ($relation_where)");
-//            $related = array();
-//            if (count($related_data)) {
-//                foreach ((array) $related_data as $val) {
-//                    $temp_arr = [];
-//                    $temp_arr['title'] = $val->title;
-//                    $temp_arr['description'] = $val->introduction;
-//                    $temp_arr['image'] = $this->source_dir . 'l/articles/' . $val->image;
-//                    if ($this->showtype == 'preview') {
-//                        $temp_arr['link'] = $this->domain . '/detail/' . $val->id;
-//                        $temp_arr['category']['link'] = $this->domain . '/category/' . $val->id . '.html';
-//                    } else {
-//                        $temp_arr['link'] = $this->domain . '/detail/' . $val->id . '.html';
-//                        $temp_arr['category']['link'] = $this->domain . '/category/' . $val->id . '.html';
-//                    }
-//                    $temp_arr['pubdate'] = $val->created_at;
-//                    $temp_arr['pubtimestamp'] = strtotime($val->created_at);
-//                    $a_c_info = Classify::where('id', $val->c_id)->first();
-//                    $temp_arr['category']['name'] = $a_c_info->name;
-//                    $temp_arr['category']['en_name'] = $a_c_info->en_name;
-//                    $temp_arr['category']['icon'] = '<i class="iconfont">' . $a_c_info->icon . '</i>';
-//                    $related[] = $temp_arr;
-//                }
-//            }
-//        }
-        $articles = Articles::where($this->type . '_show', '1')->where('c_id', $article->c_id)->where('use_url', '0')->orderBy('is_top', 'desc')->orderBy('sort', 'asc')->orderBy('created_at', 'desc')->get()->toArray();
-        $related = array();
-        for (; count($related) < 6 && count($related) < count($articles);) {
-            $k = rand(0, count($articles) - 1);
-            if ($this->showtype == 'preview') {
-                $related[$k]['link'] = $this->domain . '/detail/' . $articles[$k]['id'];
-                $related[$k]['category']['link'] = $this->domain . '/category/' . $articles[$k]['id'] . '.html';
-            } else {
-                $related[$k]['link'] = $this->domain . '/detail/' . $articles[$k]['id'] . '.html';
-                $related[$k]['category']['link'] = $this->domain . '/category/' . $articles[$k]['id'] . '.html';
-            }
-            $related[$k]['title'] = $articles[$k]['title'];
-            $related[$k]['description'] = $articles[$k]['introduction'];
-            $related[$k]['image'] = $articles[$k]['img'] ? ($this->source_dir . 'l/articles/' . $articles[$k]['img']) : '';
-            $related[$k]['pubdate'] = $articles[$k]['created_at'];
-            $related[$k]['pubtimestamp'] = strtotime($articles[$k]['created_at']);
-            $a_c_info = Classify::where('id', $articles[$k]['c_id'])->first();
-            $related[$k]['category']['name'] = $a_c_info->name;
-            $related[$k]['category']['en_name'] = $a_c_info->en_name;
-            $related[$k]['category']['icon'] = '<i class="iconfont">' . $a_c_info->icon . '</i>';
-        }
-        //dd($article_prev);
-        if ($this->showtype == 'preview') {
-            if ($article_next === NULL) {
-                $result['article']['next']['title'] = $lang['the_last'];
-                $result['article']['next']['link'] = '';
-            } else {
-                $result['article']['next']['title'] = $article_next->title;
-                $result['article']['next']['link'] = $this->domain . '/detail/' . $article_next->id;
-            }
-            if ($article_prev === NULL) {
-                $result['article']['prev']['title'] = $lang['the_first'];
-                $result['article']['prev']['link'] = '';
-            } else {
-                $result['article']['prev']['title'] = $article_prev->title;
-                $result['article']['prev']['link'] = $this->domain . '/detail/' . $article_prev->id;
-            }
-            $result['article']['image'] = $article->img ? ($this->source_dir . 'l/articles/' . $article->img) : '';
-            $result['article']['images'] = $images;
-            $result['article']['content'] = $article->content;
-        } else {
-            if ($article_next === NULL) {
-                $result['article']['next']['title'] = $lang['the_last'];
-                $result['article']['next']['link'] = '';
-            } else {
-                $result['article']['next']['title'] = $article_next->title;
-                $result['article']['next']['link'] = $this->domain . '/detail/' . $article_next->id . '.html';
-            }
-            if ($article_prev === NULL) {
-                $result['article']['prev']['title'] = $lang['the_first'];
-                $result['article']['prev']['link'] = '';
-            } else {
-                $result['article']['prev']['title'] = $article_prev->title;
-                $result['article']['prev']['link'] = $this->domain . '/detail/' . $article_prev->id . '.html';
-            }
-            $result['article']['image'] = $article->img ? ($this->source_dir . 'l/articles/' . $article->img) : '';
-            $result['article']['images'] = $images;
-            $result['article']['content'] = preg_replace('/\/customers\/' . $this->customer . '/i', '', $article->content);
-        }
-        $result['article']['description'] = $article->introduction;
-        $result['article']['pubdate'] = $article->created_at;
-        $result['article']['pubtimestamp'] = strtotime($article->created_at);
-
-        $result['article']['category'] = $result['posnavs'][count($result['posnavs']) - 1];
-        $result['related'] = $related;
-        $json_keys = $this->getJsonKey($viewname . '.html');
-        if (count($json_keys)) {
-            foreach ((array) $json_keys as $key) {
-                $result[$key] = $this->detailList($this->pagedata($key));
-            }
-        }
-
         $smarty = new Smarty;
         $smarty->setTemplateDir(app_path('views/templates/' . $this->themename));
         $smarty->setCompileDir(app_path('storage/views/compile'));
