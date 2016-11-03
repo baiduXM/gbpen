@@ -722,13 +722,135 @@ class TemplatesController extends BaseController {
         }
         return $tree;
     }
-
+    
+    private function sendTemplate(){
+        if($_SERVER["HTTP_HOST"]=="preview.5067.org"){
+            $cus_id = Auth::id();
+            $customer = Auth::user()->name;
+            $webinfo=WebsiteInfo::where("cus_id",$cus_id)->first();
+            $pc_themename = Template::where("id",$webinfo->pc_tpl_id)->pluck("name");
+            $mobile_themename = Template::where("id",$webinfo->mobile_tpl_id)->pluck("name");
+            $pc_tpl=Template::where("id",$webinfo->pc_tpl_id)->first();
+            $m_tpl=Template::where("id",$webinfo->mobile_tpl_id)->first();
+            $conn = ftp_connect("172.16.0.17", "21");
+            $path="gbpen/public/customers";
+            if ($conn) {
+                ftp_login($conn, '12t', 'Db#907$LKF');
+                ftp_pasv($conn, true);
+                if (ftp_nlist($conn, $path. "/" . $customer) === FALSE) {
+                    ftp_mkdir($conn, $path."/" . $customer);
+                }
+                $view_dir = app_path('views/templates/');
+                $json_dir = public_path('templates/');
+                if($pc_tpl->push_get_date==null||$pc_tpl->push_get_date==""||$pc_tpl->push_get_date<$pc_tpl->updated_at){
+                    $pc_json=array();
+                    $pc_json["themename"]=$pc_themename;
+                    $pc_json["push_get_date"]=date("Y-m-d H:i:s", time());
+                    file_put_contents(public_path('customers/' . $customer . '/pc_config.json'), json_encode($pc_json));
+                    $pc_path = public_path('customers/' . $customer . '/pc.zip');
+                    if (file_exists($pc_path)) {
+                        @unlink($pc_path);
+                    }
+                    $pc_zip = new ZipArchive;
+                    if($pc_zip->open($pc_path, ZipArchive::CREATE)=== TRUE){
+                        $this->addFileToZip($view_dir.$pc_themename,$pc_zip,$pc_themename."/html");
+                        $this->addFileToZip($json_dir.$pc_themename,$pc_zip,$pc_themename."/json");
+                        $pc_zip->addFile(public_path('customers/' . $customer . '/pc_config.json'),$pc_themename."/config.json");
+                        $pc_zip->close();
+                        ftp_put($conn, $path."/" . $customer."/pc.zip", $pc_path, FTP_BINARY);
+                    }
+                }
+                if($m_tpl->push_get_date==null||$m_tpl->push_get_date==""||$m_tpl->push_get_date<$m_tpl->updated_at){
+                    $m_json=array();
+                    $m_json["themename"]=$pc_themename;
+                    $m_json["push_get_date"]=date("Y-m-d H:i:s", time());
+                    file_put_contents(public_path('customers/' . $customer . '/m_config.json'), json_encode($m_json));
+                    $m_path = public_path('customers/' . $customer . '/mobile.zip');
+                    if (file_exists($m_path)) {
+                        @unlink($m_path);
+                    }
+                    $m_zip = new ZipArchive;
+                    if($m_zip->open($m_path, ZipArchive::CREATE)=== TRUE){
+                        $this->addFileToZip($view_dir.$mobile_themename,$m_zip,$mobile_themename."/html");
+                        $this->addFileToZip($json_dir.$mobile_themename,$m_zip,$mobile_themename."/json");
+                        $m_zip->addFile(public_path('customers/' . $customer . '/m_config.json'),$mobile_themename."/config.json");
+                        $m_zip->close();
+                        ftp_put($conn, $path."/" . $customer."/mobile.zip", $m_path, FTP_BINARY);
+                    }
+                }
+                ftp_close($conn);
+            }
+            $remember_token=Auth::user()->remember_token;
+            if($remember_token==""||$remember_token==null){
+                $remember_token=time() . str_random(4);
+                Customer::where("id",Auth::id())->update(array("remember_token"=>$remember_token));
+            }
+        }
+    }
+    private function unpackTemplate(){
+        if($_SERVER["HTTP_HOST"]=="172.16.0.17"){
+            $cus_id = Auth::id();
+            $customer = Auth::user()->name;
+            $pc_path = public_path('customers/' . $customer . '/pc.zip');
+            $mobile_path = public_path('customers/' . $customer . '/mobile.zip');
+            $view_dir = app_path('views/templates/');
+            $json_dir = public_path('templates/');
+            $webinfo=WebsiteInfo::where("cus_id",$cus_id)->first();
+            $pc_themename = Template::where("id",$webinfo->pc_tpl_id)->pluck("name");
+            $mobile_themename = Template::where("id",$webinfo->mobile_tpl_id)->pluck("name");
+            $pc_tpl=Template::where("id",$webinfo->pc_tpl_id)->first();
+            $m_tpl=Template::where("id",$webinfo->mobile_tpl_id)->first();
+            if($pc_tpl->push_get_date==null||$pc_tpl->push_get_date==""||$pc_tpl->push_get_date<$pc_tpl->updated_at){
+                if(file_exists($pc_path)){
+                    $zip = new ZipArchive;
+                    if ($zip->open($pc_path) === TRUE)
+                    {
+                        $zip->extractTo(public_path('customers/' . $customer."/temp"));
+                        $zip->close();
+                        $pc_config=  json_decode(file_get_contents(public_path('customers/' . $customer."/temp/".$pc_themename."/config.json")));
+                        if($pc_tpl->push_get_date==null||$pc_tpl->push_get_date==""||$pc_tpl->push_get_date<$pc_config->push_get_date){
+                            $this->copydir(public_path('customers/' . $customer."/temp/".$pc_themename."/html"), $view_dir."/".$pc_themename);
+                            if(file_exists($view_dir."/".$pc_themename."/searchresult_do.html")){
+                                @unlink($view_dir."/".$pc_themename."/searchresult_do.html");
+                            }
+                            $this->copydir(public_path('customers/' . $customer."/temp/".$pc_themename."/json"), $json_dir."/".$pc_themename);
+                            if($pc_config->push_get_date>$pc_tpl->updated_at){
+                                Template::where("id",$webinfo->pc_tpl_id)->update(array("push_get_date"=>date("Y-m-d H:i:s", time())));
+                            }
+                        }
+                    }
+                }
+            }
+            if($m_tpl->push_get_date==null||$m_tpl->push_get_date==""||$m_tpl->push_get_date<$m_tpl->updated_at){
+                if(file_exists($mobile_path)){
+                    $zip = new ZipArchive;
+                    if ($zip->open($mobile_path) === TRUE)
+                    {
+                        $zip->extractTo(public_path('customers/' . $customer."/temp"));
+                        $zip->close();
+                        $m_config=  json_decode(file_get_contents(public_path('customers/' . $customer."/temp/".$mobile_themename."/config.json")));
+                        if($m_tpl->push_get_date==null||$m_tpl->push_get_date==""||$m_tpl->push_get_date<$m_config->push_get_date){
+                            $this->copydir(public_path('customers/' . $customer."/temp/".$mobile_themename."/html"), $view_dir."/".$mobile_themename);
+                            if(file_exists($view_dir."/".$mobile_themename."/searchresult_do.html")){
+                                @unlink($view_dir."/".$mobile_themename."/searchresult_do.html");
+                            }
+                            $this->copydir(public_path('customers/' . $customer."/temp/".$mobile_themename."/json"), $json_dir."/".$mobile_themename);
+                            if($m_config->push_get_date>$m_tpl->updated_at){
+                                Template::where("id",$webinfo->mobile_tpl_id)->update(array("push_get_date"=>date("Y-m-d H:i:s", time())));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
     /**
      * PC首页预览
      */
     public function homepagePreview() {
         $result=array();
         if($_SERVER["HTTP_HOST"]=="preview.5067.org"){
+            $this->sendTemplate();
             $json=file_get_contents("http://172.16.0.17/homepage-preview-no-auth?name=".(Auth::user()->name)."&remember_token=".(Auth::user()->remember_token?Auth::user()->remember_token:""));
             $result=  json_decode($json,true);
         }
@@ -742,6 +864,7 @@ class TemplatesController extends BaseController {
     public function categoryPreview($id, $page = 1) {
         $result=array();
         if($_SERVER["HTTP_HOST"]=="preview.5067.org"){
+            $this->sendTemplate(); 
             $json=file_get_contents("http://172.16.0.17/category-no-auth/".$id."_".$page."?name=".(Auth::user()->name)."&remember_token=".(Auth::user()->remember_token?Auth::user()->remember_token:""));
             $result=  json_decode($json,true);
         }
@@ -755,6 +878,7 @@ class TemplatesController extends BaseController {
     public function articlePreview($id) {
         $result=array();
         if($_SERVER["HTTP_HOST"]=="preview.5067.org"){
+            $this->sendTemplate(); 
             $json=file_get_contents("http://172.16.0.17/detail-no-auth/".$id."?name=".(Auth::user()->name)."&remember_token=".(Auth::user()->remember_token?Auth::user()->remember_token:""));
             $result=  json_decode($json,true);
         }
@@ -768,6 +892,7 @@ class TemplatesController extends BaseController {
     public function mhomepagePreview() {
         $result=array();
         if($_SERVER["HTTP_HOST"]=="preview.5067.org"){
+            $this->sendTemplate(); 
             $json=file_get_contents("http://172.16.0.17/mobile/homepage-preview-no-auth?name=".(Auth::user()->name)."&remember_token=".(Auth::user()->remember_token?Auth::user()->remember_token:""));
             $result=  json_decode($json,true);
         }
@@ -781,6 +906,7 @@ class TemplatesController extends BaseController {
     public function mcategoryPreview($id, $page = 1) {
         $result=array();
         if($_SERVER["HTTP_HOST"]=="preview.5067.org"){
+            $this->sendTemplate(); 
             $json=file_get_contents("http://172.16.0.17/mobile/category-no-auth/{$id}_{$page}?name=".(Auth::user()->name)."&remember_token=".(Auth::user()->remember_token?Auth::user()->remember_token:""));
             $result=  json_decode($json,true);
         }
@@ -794,6 +920,7 @@ class TemplatesController extends BaseController {
     public function marticlePreview($id) {
         $result=array();
         if($_SERVER["HTTP_HOST"]=="preview.5067.org"){
+            $this->sendTemplate(); 
             $json=file_get_contents("http://172.16.0.17/mobile/detail-no-auth/{$id}?name=".(Auth::user()->name)."&remember_token=".(Auth::user()->remember_token?Auth::user()->remember_token:""));
             $result=  json_decode($json,true);
         }
@@ -809,6 +936,7 @@ class TemplatesController extends BaseController {
             }
             Auth::login($user);
             Session::put('isAdmin', TRUE);
+            $this->unpackTemplate();
         }
     }
     /**
