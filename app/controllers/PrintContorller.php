@@ -89,22 +89,11 @@ class PrintController extends BaseController {
             $this->showtype = $showtpye;
             $this->type = $type;
             $this->cus_id = Auth::id();
-            $this->customer = Auth::user()->name;
-            $this->source_dir = '/customers/' . $this->customer . '/images/'; //asset('customers/' . $this->customer . '/images/') . '/';
             if ($this->type == 'mobile') {
-                $this->domain = '/mobile'; //url() . '/mobile';
-                $this->tpl_id = WebsiteInfo::where('cus_id', $this->cus_id)->pluck('mobile_tpl_id');
-                $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.mobile_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
-                $this->source_dir = '/customers/' . $this->customer . '/mobile/images/'; //asset('customers/' . $this->customer . '/mobile/images/') . '/';
-                self::$cus_domain = ''; //CustomerInfo::where('cus_id', $this->cus_id)->pluck('mobile_domain');
+               $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.mobile_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
             } else {
-                $this->domain = ''; //url();
-                $this->tpl_id = WebsiteInfo::where('cus_id', $this->cus_id)->pluck('pc_tpl_id');
                 $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.pc_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
-                self::$cus_domain = ''; //CustomerInfo::where('cus_id', $this->cus_id)->pluck('pc_domain');
             }
-            $this->site_url = '/templates/' . $this->themename . '/';
-            url('/templates/' . $this->themename) . '/';
         }else{
             $this->showtype = $showtpye;
             $this->type = $type;
@@ -1905,6 +1894,9 @@ class PrintController extends BaseController {
             }
         }
         if($_SERVER["HTTP_HOST"]=="172.16.0.17"){
+//            var_dump($result["index"]["pro"]["childmenu"]);
+//            exit();
+//            return $result;
             return json_encode($result);
         }
         $smarty = new Smarty;
@@ -1913,7 +1905,7 @@ class PrintController extends BaseController {
         $smarty->registerPlugin('function', 'mapExt', array('PrintController', 'createMap'));
         $smarty->registerPlugin('function', 'shareExt', array('PrintController', 'createShare'));
         $smarty->assign($result);
-        $smarty->display('index.html');
+        @$smarty->display('index.html');
         //return View::make('templates.'.$this->themename.'.index',$result);
     }
 
@@ -2105,7 +2097,7 @@ class PrintController extends BaseController {
         $smarty->registerPlugin('function', 'mapExt', array('PrintController', 'createMap'));
         $smarty->registerPlugin('function', 'shareExt', array('PrintController', 'createShare'));
         $smarty->assign($result);
-        $smarty->display('index.html');
+        @$smarty->display('index.html');
         //return View::make('templates.'.$this->themename.'.index',$result);
     }
 
@@ -2539,7 +2531,7 @@ class PrintController extends BaseController {
         $smarty->registerPlugin('function', 'mapExt', array('PrintController', 'createMap'));
         $smarty->registerPlugin('function', 'shareExt', array('PrintController', 'createShare'));
         $smarty->assign($result);
-        $smarty->display($result["viewname"] . '.html');
+        @$smarty->display($result["viewname"] . '.html');
     }
 
     /**
@@ -3094,7 +3086,7 @@ class PrintController extends BaseController {
         $smarty->registerPlugin('function', 'mapExt', array('PrintController', 'createMap'));
         $smarty->registerPlugin('function', 'shareExt', array('PrintController', 'createShare'));
         $smarty->assign($result);
-        $smarty->display($result["viewname"] . '.html');
+        @$smarty->display($result["viewname"] . '.html');
     }
 
     /**
