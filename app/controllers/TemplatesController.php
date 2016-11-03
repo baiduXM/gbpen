@@ -730,7 +730,7 @@ class TemplatesController extends BaseController {
         $result=array();
         if($_SERVER["HTTP_HOST"]=="preview.5067.org"){
             $json=file_get_contents("http://172.16.0.17/homepage-preview-no-auth?name=".(Auth::user()->name)."&remember_token=".(Auth::user()->remember_token?Auth::user()->remember_token:""));
-            $result=  json_decode($json);
+            $result=  json_decode($json,true);
         }
         $template = new PrintController();
         return $template->homepagePreview($result);
@@ -744,8 +744,6 @@ class TemplatesController extends BaseController {
         if($_SERVER["HTTP_HOST"]=="preview.5067.org"){
             $json=file_get_contents("http://172.16.0.17/category-no-auth/".$id."_".$page."?name=".(Auth::user()->name)."&remember_token=".(Auth::user()->remember_token?Auth::user()->remember_token:""));
             $result=  json_decode($json);
-            var_dump($result);
-            exit();
         }
         $template = new PrintController;
         return $template->categoryPreview($id, $page,$result);
@@ -758,9 +756,7 @@ class TemplatesController extends BaseController {
         $result=array();
         if($_SERVER["HTTP_HOST"]=="preview.5067.org"){
             $json=file_get_contents("http://172.16.0.17/detail-no-auth/".$id."?name=".(Auth::user()->name)."&remember_token=".(Auth::user()->remember_token?Auth::user()->remember_token:""));
-            var_dump($json);
-            exit();
-            $result=  json_decode($json);
+            $result=  json_decode($json,true);
         }
         $template = new PrintController;
         return $template->articlePreview($id,$result);
@@ -773,7 +769,7 @@ class TemplatesController extends BaseController {
         $result=array();
         if($_SERVER["HTTP_HOST"]=="preview.5067.org"){
             $json=file_get_contents("http://172.16.0.17/mobile/homepage-preview-no-auth?name=".(Auth::user()->name)."&remember_token=".(Auth::user()->remember_token?Auth::user()->remember_token:""));
-            $result=  json_decode($json);
+            $result=  json_decode($json,true);
         }
         $template = new PrintController('preview', 'mobile');
         return $template->mhomepagePreview($result);
@@ -786,7 +782,7 @@ class TemplatesController extends BaseController {
         $result=array();
         if($_SERVER["HTTP_HOST"]=="preview.5067.org"){
             $json=file_get_contents("http://172.16.0.17/mobile/category-no-auth/{$id}_{$page}?name=".(Auth::user()->name)."&remember_token=".(Auth::user()->remember_token?Auth::user()->remember_token:""));
-            $result=  json_decode($json);
+            $result=  json_decode($json,true);
         }
         $template = new PrintController('preview', 'mobile');
         return $template->categoryPreview($id, $page,$result);
@@ -799,7 +795,7 @@ class TemplatesController extends BaseController {
         $result=array();
         if($_SERVER["HTTP_HOST"]=="preview.5067.org"){
             $json=file_get_contents("http://172.16.0.17/mobile/detail-no-auth/{$id}?name=".(Auth::user()->name)."&remember_token=".(Auth::user()->remember_token?Auth::user()->remember_token:""));
-            $result=  json_decode($json);
+            $result=  json_decode($json,true);
         }
         $template = new PrintController('preview', 'mobile');
         return $template->articlePreview($id,$result);
