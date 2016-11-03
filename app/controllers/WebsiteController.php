@@ -736,7 +736,7 @@ class WebsiteController extends BaseController{
             }
             // 其他json文件验证
             $config_arr=parse_ini_file($dir_site.'/config.ini',true);
-            if(!is_array($config_arr)) dd('【config.ini】文件不存在！文件格式说明详见：http://pme/wiki/doku.php?id=ued:template:config');
+            if(!is_array($config_arr)) dd('【config.ini】文件不存在！文件格式说明详见：http://pme.eexx.me/doku.php?id=ued:template:config');
             $type=$config_arr['Config']['Type'];
             if($tpl_exists){
                 if(substr_count(strtolower($type),'pc')){
