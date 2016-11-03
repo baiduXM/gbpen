@@ -770,12 +770,12 @@ function phone_indexController($scope, $http, $location) {
                             var newArr = v.data.split('|'), _li = '';
                             for (var x in newArr) {
                                 _li += '<li class="consultation-item">\
-															<span><input class="consultation-name message-box" value="' + newArr[x] + '" /></span>\
-															<div class="crl_icon fr"><i class="iconfont icon-guanbi"></i></div>\
-														</li>';
+                                        <span><input class="consultation-name message-box" value="' + newArr[x] + '" /></span>\
+                                        <div class="crl_icon fr"><i class="iconfont icon-guanbi"></i></div>\
+                                </li>';
                             }
                             return _li;
-                        }() + '</ul><div class="crl_icon"><i class="iconfont icon-add"></i></div>\
+                        }() + '</ul><div class="crl_icon"></i></div>\
 								</div>';
                         break;
                     case 'search':
