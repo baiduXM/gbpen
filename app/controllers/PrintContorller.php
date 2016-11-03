@@ -85,55 +85,43 @@ class PrintController extends BaseController {
      * @param string $type
      */
     function __construct($showtpye = 'preview', $type = 'pc') {
-        if($_SERVER["HTTP_HOST"]=="preview.5067.org"&&$showtpye == 'preview'){
-            $this->showtype = $showtpye;
-            $this->type = $type;
-            $this->cus_id = Auth::id();
+        $this->showtype = $showtpye;
+        $this->type = $type;
+        $this->cus_id = Auth::id();
+        $this->customer = Auth::user()->name;
+        if ($this->showtype == 'preview') {
+            $this->source_dir = '/customers/' . $this->customer . '/images/'; //asset('customers/' . $this->customer . '/images/') . '/';
             if ($this->type == 'mobile') {
-               $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.mobile_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
+                $this->domain = '/mobile'; //url() . '/mobile';
+                $this->tpl_id = WebsiteInfo::where('cus_id', $this->cus_id)->pluck('mobile_tpl_id');
+                $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.mobile_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
+                $this->source_dir = '/customers/' . $this->customer . '/mobile/images/'; //asset('customers/' . $this->customer . '/mobile/images/') . '/';
+                self::$cus_domain = ''; //CustomerInfo::where('cus_id', $this->cus_id)->pluck('mobile_domain');
             } else {
+                $this->domain = ''; //url();
+                $this->tpl_id = WebsiteInfo::where('cus_id', $this->cus_id)->pluck('pc_tpl_id');
                 $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.pc_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
+                self::$cus_domain = ''; //CustomerInfo::where('cus_id', $this->cus_id)->pluck('pc_domain');
             }
-        }else{
-            $this->showtype = $showtpye;
-            $this->type = $type;
-            $this->cus_id = Auth::id();
-            $this->customer = Auth::user()->name;
-            if ($this->showtype == 'preview') {
-                $this->source_dir = '/customers/' . $this->customer . '/images/'; //asset('customers/' . $this->customer . '/images/') . '/';
-                if ($this->type == 'mobile') {
-                    $this->domain = '/mobile'; //url() . '/mobile';
-                    $this->tpl_id = WebsiteInfo::where('cus_id', $this->cus_id)->pluck('mobile_tpl_id');
-                    $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.mobile_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
-                    $this->source_dir = '/customers/' . $this->customer . '/mobile/images/'; //asset('customers/' . $this->customer . '/mobile/images/') . '/';
-                    self::$cus_domain = ''; //CustomerInfo::where('cus_id', $this->cus_id)->pluck('mobile_domain');
-                } else {
-                    $this->domain = ''; //url();
-                    $this->tpl_id = WebsiteInfo::where('cus_id', $this->cus_id)->pluck('pc_tpl_id');
-                    $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.pc_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
-                    self::$cus_domain = ''; //CustomerInfo::where('cus_id', $this->cus_id)->pluck('pc_domain');
+            $this->site_url = '/templates/' . $this->themename . '/';
+        } else {
+            if ($this->type == 'mobile') {
+                $this->tpl_id = WebsiteInfo::where('cus_id', $this->cus_id)->pluck('mobile_tpl_id');
+                $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.mobile_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
+                $mobile_domain = CustomerInfo::where('cus_id', $this->cus_id)->pluck('mobile_domain');
+                $mobile_domain = str_replace('http://', '', $mobile_domain);
+                if (strpos($mobile_domain, '/mobile')) {
+                    $this->domain = '/mobile';
                 }
-                $this->site_url = '/templates/' . $this->themename . '/';
-                url('/templates/' . $this->themename) . '/';
+                //$this->domain = '';//CustomerInfo::where('cus_id', $this->cus_id)->pluck('mobile_domain');
             } else {
-                if ($this->type == 'mobile') {
-                    $this->tpl_id = WebsiteInfo::where('cus_id', $this->cus_id)->pluck('mobile_tpl_id');
-                    $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.mobile_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
-                    $mobile_domain = CustomerInfo::where('cus_id', $this->cus_id)->pluck('mobile_domain');
-                    $mobile_domain = str_replace('http://', '', $mobile_domain);
-                    if (strpos($mobile_domain, '/mobile')) {
-                        $this->domain = '/mobile';
-                    }
-                    //$this->domain = '';//CustomerInfo::where('cus_id', $this->cus_id)->pluck('mobile_domain');
-                } else {
-                    $this->tpl_id = WebsiteInfo::where('cus_id', $this->cus_id)->pluck('pc_tpl_id');
-                    $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.pc_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
-                    $this->domain = ''; //CustomerInfo::where('cus_id', $this->cus_id)->pluck('pc_domain');
-                }
-                self::$cus_domain = ''; // $this->domain;
-                $this->site_url = $this->domain . '/';
-                $this->source_dir = '/images/'; //$this->domain . '/images/';
+                $this->tpl_id = WebsiteInfo::where('cus_id', $this->cus_id)->pluck('pc_tpl_id');
+                $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.pc_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
+                $this->domain = ''; //CustomerInfo::where('cus_id', $this->cus_id)->pluck('pc_domain');
             }
+            self::$cus_domain = ''; // $this->domain;
+            $this->site_url = $this->domain . '/';
+            $this->source_dir = '/images/'; //$this->domain . '/images/';
         }
     }
 
