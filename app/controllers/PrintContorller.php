@@ -85,16 +85,16 @@ class PrintController extends BaseController {
      * @param string $type
      */
     function __construct($showtpye = 'preview', $type = 'pc') {
-        if($_SERVER["HTTP_HOST"]=="preview.5067.org"&&$showtpye == 'preview'){
+        if ($_SERVER["HTTP_HOST"] == "preview.5067.org" && $showtpye == 'preview') {
             $this->showtype = $showtpye;
             $this->type = $type;
             $this->cus_id = Auth::id();
             if ($this->type == 'mobile') {
-               $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.mobile_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
+                $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.mobile_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
             } else {
                 $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.pc_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
             }
-        }else{
+        } else {
             $this->showtype = $showtpye;
             $this->type = $type;
             $this->cus_id = Auth::id();
@@ -437,8 +437,11 @@ class PrintController extends BaseController {
                     if (!is_array($slimming[$k]) || !count($slimming[$k]))
                         dd('json文件中type为【images】格式不正确！\r\n详情参见：http://pme.eexx.me/doku.php?id=ued:template:json#typeimages');
                     foreach ($slimming[$k]['value'] as $key => $val) {
-                        if (!array_key_exists('title', $val) || !array_key_exists('image', $val) || !array_key_exists('link', $val))
-                            dd('json文件中type为【images】格式value值的每个子元素必须包含【title、image、link】元素，可选【description】\r\n详情参见：http://pme.eexx.me/doku.php?id=ued:template:json#typeimages');
+                        if (is_array($val)) {
+                            if (!array_key_exists('title', $val) || !array_key_exists('image', $val) || !array_key_exists('link', $val)) {
+                                dd('json文件中type为【images】格式value值的每个子元素必须包含【title、image、link】元素，可选【description】\r\n详情参见：http://pme.eexx.me/doku.php?id=ued:template:json#typeimages');
+                            }
+                        }
                     }
                     /*
                       if (!array_key_exists('config',$slimming[$k]) || !is_array($slimming[$k]['config']) || (!is_numeric($slimming[$k]['config']['width']) && !is_numeric($slimming[$k]['config']['height']))) {
@@ -1958,8 +1961,8 @@ class PrintController extends BaseController {
     /**
      * PC显示首页
      */
-    public function homepagePreview($result=array()) {
-        if($_SERVER["HTTP_HOST"]!="preview.5067.org"){
+    public function homepagePreview($result = array()) {
+        if ($_SERVER["HTTP_HOST"] != "preview.5067.org") {
             $result = $this->pagePublic();
             $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
             $result['title'] = $customer_info->title;
@@ -1977,7 +1980,7 @@ class PrintController extends BaseController {
                 }
             }
         }
-        if($_SERVER["HTTP_HOST"]=="172.16.0.17"){
+        if ($_SERVER["HTTP_HOST"] == "172.16.0.17") {
 //            var_dump($result["index"]["pro"]["childmenu"]);
 //            exit();
 //            return $result;
@@ -2037,8 +2040,8 @@ class PrintController extends BaseController {
     /**
      * 手机首页
      */
-    public function mhomepagePreview($result=array()) {
-        if($_SERVER["HTTP_HOST"]!="preview.5067.org"){
+    public function mhomepagePreview($result = array()) {
+        if ($_SERVER["HTTP_HOST"] != "preview.5067.org") {
             $result = $this->pagePublic();
             $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
             $result['title'] = $customer_info->title;
@@ -2172,7 +2175,7 @@ class PrintController extends BaseController {
             }
             $result['mIndexCats'] = $mIndexCats;
         }
-        if($_SERVER["HTTP_HOST"]=="172.16.0.17"){
+        if ($_SERVER["HTTP_HOST"] == "172.16.0.17") {
             return json_encode($result);
         }
         $smarty = new Smarty;
@@ -2343,8 +2346,8 @@ class PrintController extends BaseController {
      * @param int $id 栏目id
      * @param int $page 当前页码
      */
-    public function categoryPreview($id, $page,$result=array()) {
-        if($_SERVER["HTTP_HOST"]!="preview.5067.org"){
+    public function categoryPreview($id, $page, $result = array()) {
+        if ($_SERVER["HTTP_HOST"] != "preview.5067.org") {
             $result = $this->pagePublic($id);
             $customerinfo = CustomerInfo::where("cus_id", $this->cus_id)->first();
             foreach ((array) $result['navs'] as $nav) {
@@ -2598,13 +2601,12 @@ class PrintController extends BaseController {
                     //===加载css\js===
                     $result['footscript'].=$formC->assignFormCSSandJSForPrint();
                 }
-                
+
                 //return View::make('templates.'.$this->themename.'.'.$viewname,$result);
             }
-            $result["viewname"]=$viewname;
-        
+            $result["viewname"] = $viewname;
         }
-        if($_SERVER["HTTP_HOST"]=="172.16.0.17"){
+        if ($_SERVER["HTTP_HOST"] == "172.16.0.17") {
             return json_encode($result);
         }
         $smarty = new Smarty;
@@ -2979,8 +2981,8 @@ class PrintController extends BaseController {
      *
      * @param int $id 文章id
      */
-    public function articlePreview($id,$result=array()) {
-        if($_SERVER["HTTP_HOST"]!="preview.5067.org"){
+    public function articlePreview($id, $result = array()) {
+        if ($_SERVER["HTTP_HOST"] != "preview.5067.org") {
             $article = Articles::find($id);
             $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
             if ($customer_info->lang == 'en') {
@@ -3053,49 +3055,49 @@ class PrintController extends BaseController {
             } else {//跳转404
             }
             //关联文章查询
-    //        $pa = new PhpAnalysis();
-    //
+            //        $pa = new PhpAnalysis();
+            //
     //        $pa->SetSource($article->title);
-    //
+            //
     //        //设置分词属性
-    //        $pa->resultType = 2;
-    //        $pa->differMax = true;
-    //        $pa->StartAnalysis();
-    //
+            //        $pa->resultType = 2;
+            //        $pa->differMax = true;
+            //        $pa->StartAnalysis();
+            //
     //        //获取你想要的结果
-    //        $keywords = $pa->GetFinallyIndex();
-    //        if (count($keywords)) {
-    //            $relation_where = "";
-    //            foreach ((array) $keywords as $key => $word) {
-    //                $relation_where.="or title like '%$key%' ";
-    //            }
-    //            $relation_where = ltrim($relation_where, 'or');
-    //            $prefix = Config::get('database.connections.mysql.prefix');
-    //            $related_data = DB::select("select id,title,img as image,introduction,created_at,c_id from {$prefix}article where cus_id={$this->cus_id} and ($relation_where)");
-    //            $related = array();
-    //            if (count($related_data)) {
-    //                foreach ((array) $related_data as $val) {
-    //                    $temp_arr = [];
-    //                    $temp_arr['title'] = $val->title;
-    //                    $temp_arr['description'] = $val->introduction;
-    //                    $temp_arr['image'] = $this->source_dir . 'l/articles/' . $val->image;
-    //                    if ($this->showtype == 'preview') {
-    //                        $temp_arr['link'] = $this->domain . '/detail/' . $val->id;
-    //                        $temp_arr['category']['link'] = $this->domain . '/category/' . $val->id . '.html';
-    //                    } else {
-    //                        $temp_arr['link'] = $this->domain . '/detail/' . $val->id . '.html';
-    //                        $temp_arr['category']['link'] = $this->domain . '/category/' . $val->id . '.html';
-    //                    }
-    //                    $temp_arr['pubdate'] = $val->created_at;
-    //                    $temp_arr['pubtimestamp'] = strtotime($val->created_at);
-    //                    $a_c_info = Classify::where('id', $val->c_id)->first();
-    //                    $temp_arr['category']['name'] = $a_c_info->name;
-    //                    $temp_arr['category']['en_name'] = $a_c_info->en_name;
-    //                    $temp_arr['category']['icon'] = '<i class="iconfont">' . $a_c_info->icon . '</i>';
-    //                    $related[] = $temp_arr;
-    //                }
-    //            }
-    //        }
+            //        $keywords = $pa->GetFinallyIndex();
+            //        if (count($keywords)) {
+            //            $relation_where = "";
+            //            foreach ((array) $keywords as $key => $word) {
+            //                $relation_where.="or title like '%$key%' ";
+            //            }
+            //            $relation_where = ltrim($relation_where, 'or');
+            //            $prefix = Config::get('database.connections.mysql.prefix');
+            //            $related_data = DB::select("select id,title,img as image,introduction,created_at,c_id from {$prefix}article where cus_id={$this->cus_id} and ($relation_where)");
+            //            $related = array();
+            //            if (count($related_data)) {
+            //                foreach ((array) $related_data as $val) {
+            //                    $temp_arr = [];
+            //                    $temp_arr['title'] = $val->title;
+            //                    $temp_arr['description'] = $val->introduction;
+            //                    $temp_arr['image'] = $this->source_dir . 'l/articles/' . $val->image;
+            //                    if ($this->showtype == 'preview') {
+            //                        $temp_arr['link'] = $this->domain . '/detail/' . $val->id;
+            //                        $temp_arr['category']['link'] = $this->domain . '/category/' . $val->id . '.html';
+            //                    } else {
+            //                        $temp_arr['link'] = $this->domain . '/detail/' . $val->id . '.html';
+            //                        $temp_arr['category']['link'] = $this->domain . '/category/' . $val->id . '.html';
+            //                    }
+            //                    $temp_arr['pubdate'] = $val->created_at;
+            //                    $temp_arr['pubtimestamp'] = strtotime($val->created_at);
+            //                    $a_c_info = Classify::where('id', $val->c_id)->first();
+            //                    $temp_arr['category']['name'] = $a_c_info->name;
+            //                    $temp_arr['category']['en_name'] = $a_c_info->en_name;
+            //                    $temp_arr['category']['icon'] = '<i class="iconfont">' . $a_c_info->icon . '</i>';
+            //                    $related[] = $temp_arr;
+            //                }
+            //            }
+            //        }
             $articles = Articles::where($this->type . '_show', '1')->where('c_id', $article->c_id)->where('use_url', '0')->orderBy('is_top', 'desc')->orderBy('sort', 'asc')->orderBy('created_at', 'desc')->get()->toArray();
             $related = array();
             for (; count($related) < 6 && count($related) < count($articles);) {
@@ -3167,9 +3169,9 @@ class PrintController extends BaseController {
                     $result[$key] = $this->detailList($this->pagedata($key));
                 }
             }
-            $result["viewname"]=$viewname;
+            $result["viewname"] = $viewname;
         }
-        if($_SERVER["HTTP_HOST"]=="172.16.0.17"){
+        if ($_SERVER["HTTP_HOST"] == "172.16.0.17") {
             return json_encode($result);
         }
         $smarty = new Smarty;
