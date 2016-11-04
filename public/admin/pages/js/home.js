@@ -94,7 +94,8 @@ function homeController($scope, $http) {
                     case 'images':
                         var _rel = '';
                         var num = 0, src, srclen;
-                        $.each(v.value, function (i, j) {
+                        $.each(v.value, function (i, j) {  
+                            console.log(j);
                             srclen = j.image.split('/').length;
                             src = j.image.split('/')[srclen - 1];
                             _rel += '<dd class="img_show" ><a href="' + j.link + '" class="preview" onclick="return false">\n\
