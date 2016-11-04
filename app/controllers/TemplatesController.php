@@ -405,7 +405,7 @@ class TemplatesController extends BaseController {
             unset($data[$key]);
             $data[$key]['value'] = $temp_arr;
         }
-//        dd($data);
+        dd($data);
         $website_config->value = serialize($data);
         if ($count) {
             $result = $website_config->where('cus_id', $cus_id)->where('template_id', $template_id)->where('key', $page)->update(['value' => $website_config->value]);
