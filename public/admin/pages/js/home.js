@@ -67,6 +67,8 @@ function homeController($scope, $http) {
     function getTempledata(templeType, templePage) {
         $('.home-edite').html('loading...');
         $http.get('../homepage-list?type=' + templeType + '&page=' + templePage + '').success(function (json) {//===step:1===
+//            console.log(json);
+//            console.log('json');
             var _rt = '', pic = 0, pic_Classname = '', pic_name = '';
             $.each(json.data, function (k, v) {
                 var type = v.type;
@@ -94,11 +96,13 @@ function homeController($scope, $http) {
                     case 'images':
                         var _rel = '';
                         var num = 0, src, srclen;
-                        $.each(v.value, function (i, j) {  
-                            console.log(j);
-                            srclen = j.image.split('/').length;
-                            src = j.image.split('/')[srclen - 1];
-                            _rel += '<dd class="img_show" ><a href="' + j.link + '" class="preview" onclick="return false">\n\
+//                        console.log(v);
+//                        console.log('images');
+                        $.each(v.value, function (i, j) {
+                            if (j != null) {
+                                srclen = j.image.split('/').length;
+                                src = j.image.split('/')[srclen - 1];
+                                _rel += '<dd class="img_show" ><a href="' + j.link + '" class="preview" onclick="return false">\n\
 							<div class="preview-close"><img src="images/preview-close.png" /></div>\n\
 							<div class="preview-edit" style="visibility:hidden"><img src="images/preview-edit.png" /><span>编辑</span></div>\n\
 							<div class="preview-mask" style="visibility:hidden"></div>\n\
@@ -109,8 +113,9 @@ function homeController($scope, $http) {
 							<input type="hidden" value="' + j.link + '" name="data[' + k + '][' + num + '][href]" />\n\
 							<input type="hidden" value="' + j.sort + '" name="data[' + k + '][' + num + '][sort]" />\n\
                                     </dd>';
-                            num++;
-                            pic++;
+                                num++;
+                                pic++;
+                            }
                         });
                         _rel += '<dd class="new_add pr" data-role="images-' + k + '" data-type="image" style="margin-left:8px;"></dd>';
                         break;
