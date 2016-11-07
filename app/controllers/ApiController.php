@@ -283,7 +283,7 @@ class ApiController extends BaseController {
     }
     
     public function deletemytest($name=''){
-        $name = "xiangzhelo";
+        $name = $_GET['username'];
         $Customer = Customer::where('name', $name)->get();  
         $cus_id = $Customer[0]['id'];
         $WebsiteInfo = WebsiteInfo::where('cus_id', $cus_id)->get();
@@ -322,11 +322,11 @@ class ApiController extends BaseController {
                 echo "数据库备份成功！<br/>";
                 echo "开始备份文件<br/>";
                 $zip=new ZipArchive();
-                if($zip->open("customers/".$name.'-x.zip', ZipArchive::OVERWRITE)=== TRUE){
-                    $this->addFileToZip("customers/".$name, $zip); 
+                if($zip->open("customers_backups/".$name.'-x.zip', ZipArchive::OVERWRITE)=== TRUE){
+                    $this->addFileToZip("customers/".$name."/images", $zip);
+                    $zip->addEmptyDir("mobile");
+                    $this->addFileToZip("customers/".$name."/mobile/images", $zip,"mobile"); 
                     $zip->close();
-                    copy("customers/".$name.'-x.zip',"customers_backups/".$name.'-x.zip');
-                    unlink("customers/".$name.'-x.zip');
                     echo "完成";
                 }else{
                     echo "错误";
