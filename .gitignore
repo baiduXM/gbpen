@@ -12,10 +12,10 @@ app/views/templates/*
 public/temp_templates/*
 public/templates/*
 public/customers_backups/*
-public/sqlite_1.db
 public/customers/*
 app/storage/cache/*
 app/storage/logs/*
 app/storage/views/*
 app/storage/sessions/*
 app/controllers/FormController.php.rej
+/public/sqlite_1.db
