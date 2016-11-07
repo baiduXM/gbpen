@@ -605,8 +605,8 @@ class PrintController extends BaseController {
                 $language = 'English';
             }
         }
-        if ($result != 0) {
-            if (trim($config_arr[1]) != "custom") {
+        if ($result != 0) {//===?===
+            if (trim($config_arr[1]) != "custom") {//===非自定义===
                 $quickbar_arr = explode('|', $config_arr[1]);
                 $config['enable'] = true;
                 if ($this->type == 'pc') {
@@ -698,64 +698,10 @@ class PrintController extends BaseController {
                             }
                         }
                     }
-
                     //TODO:删除enable_pc/enable_mobile键值
                     unset($quickbar[$key]['enable_pc']);
                     unset($quickbar[$key]['enable_mobile']);
                 }
-//                foreach($quickbar as $key=>$val){
-//   
-//                        }
-                //quickbar按钮
-//                $global_data=WebsiteConfig::where('cus_id',$this->cus_id)->where('type',2)->where('template_id',$this->tpl_id)->pluck('value');
-//                if($global_data){
-//                    $global_data = unserialize($global_data);
-//                    $global_data=$this->detailList($global_data);
-//                }else{
-//                    $global_data=$this->mobilePageList('global',true);
-//                    $global_data=$this->detailList($global_data);
-//                }
-//                $this->replaceUrl($global_data);
-//                $quickbar="";
-//                if(isset($global_data['bottomnavs']) && is_array($global_data['bottomnavs'])){
-//                    foreach($global_data['bottomnavs'] as &$val){
-//                        $val['id']=isset($val['id'])?$val['id']:'';                 
-//                        switch($val['type']){
-//                            case "tel" :
-//                                $val['icon']=isset($val['icon'])?$val['icon']:'&#xe602;';
-//                                $val['link']="tel:".$val['data'];
-//                                break;
-//                            case "sms" :
-//                                $val['icon']=isset($val['icon'])?$val['icon']:'&#xe604;';
-//                                $val['link']="sms:".$val['data'];
-//                                break;
-//                            case "im"  :
-//                                $val['icon']=isset($val['icon'])?$val['icon']:'&#xe606;';
-//                                $val['link']=$val['data'];
-//                                $val['enable']=0;
-//                                break;
-//                            case "share" :
-//                                $val['icon']=isset($val['icon'])?$val['icon']:'&#xe600;';
-//                                $val['link']='javascript:void(0);';
-//                                break;
-//                            case "link" :                 
-//                                $val['icon']=isset($val['icon'])?$val['icon']:'&#xe605;';
-//                                $address=CustomerInfo::where('cus_id',$this->cus_id)->pluck('address');
-//                                $val['link']='http://map.baidu.com/mobile/webapp/search/search/qt=s&wd='.$address.'/vt=map/?fromhash=1';
-//                                break;
-//                            }
-//                    }
-//                    $quickbar=$global_data['bottomnavs'];
-//                }else{
-//                    $quickbar=[
-//                        ['name'=>'电话','icon'=>'&#xe602;','image'=>'icon/2.png','data'=>'','link'=>'tel://','type'=>'tel','enable'=>1],
-//                        ['name'=>'短信','icon'=>'&#xe604;','image'=>'icon/3.png','data'=>'','link'=>'sms://','type'=>'sms','enable'=>1],
-//                        ['name'=>'咨询','icon'=>'&#xe606;','image'=>'icon/5.png','data'=>'10000@QQ','link'=>'javascript:void(0);','type'=>'im','enable'=>0],
-//                        ['name'=>'地图','icon'=>'&#xe605;','image'=>'icon/4.png','data'=>'','link'=>'http://map.baidu.com','type'=>'link','enable'=>1],
-//                        ['name'=>'分享','icon'=>'&#xe600;','image'=>'icon/8.png','data'=>'','link'=>'javascript:void(0);','type'=>'share','enable'=>1],
-//                        ['name'=>'搜索','icon'=>'&#xe636;','image'=>'icon/8.png','data'=>'','link'=>'javascript:void(0);','type'=>'search','enable'=>0],
-//                    ];  
-//                }
                 //快捷导航
                 $navs = Classify::where('cus_id', $this->cus_id)->where('mobile_show', 1)->select('id', 'type', 'open_page', 'name', 'en_name', 'view_name', 'icon', 'url', 'p_id', 'en_name')->OrderBy('sort', 'asc')->get()->toArray();
                 if (count($navs)) {
@@ -763,7 +709,7 @@ class PrintController extends BaseController {
                         foreach ($navs as &$nav) {
                             $nav['icon'] = '<i class="iconfont">' . $nav['icon'] . '</i>';
                             if (in_array($nav['type'], array('1', '2', '3', '4', '5', '9'))) {
-                                if ($navs['view_name']) {
+                                if ($nav['view_name']) {
                                     $nav['url'] = $this->domain . "/category/" . $nav['view_name'];
                                 } else {
                                     $nav['url'] = $this->domain . "/category/" . $nav['id'];
@@ -774,7 +720,7 @@ class PrintController extends BaseController {
                         foreach ($navs as &$nav) {
                             $nav['icon'] = '<i class="iconfont">' . $nav['icon'] . '</i>';
                             if (in_array($nav['type'], array('1', '2', '3', '4', '5', '9'))) {
-                                if ($navs['view_name']) {
+                                if ($nav['view_name']) {
                                     $nav['url'] = $this->domain . "/category/" . $nav['view_name'] . '.html';
                                 } else {
                                     $nav['url'] = $this->domain . "/category/" . $nav['id'] . '.html';
@@ -784,18 +730,14 @@ class PrintController extends BaseController {
                     }
                 }
                 $classify = new Classify();
-
                 $catlist = $classify->toTree($navs);
                 if (!is_array($catlist)) {
                     $catlist = array();
                 }
                 array_unshift($catlist, array('id' => null, 'name' => '首页', 'en_name' => 'Home', 'url' => $this->site_url, 'childmenu' => null));
-//                if (!empty($domain)) {
-//                    $catlist[] = array('id' => null, 'name' => $language, 'en_name' => 'language', 'url' => $language_url, 'childmenu' => null); //===
-//                }
                 $quickbarCallback = array('config' => $config, 'quickbar' => $quickbar, 'catlist' => $catlist);
                 if ($this->showtype == 'preview') {
-                    echo "quickbarCallback(" . json_encode($quickbarCallback) . ")";
+                    echo "quickbarCallback(" . json_encode($quickbarCallback) . ")"; //===返回===
                 } else {
                     if ($this->type == 'pc') {
                         file_put_contents(public_path("customers/" . $this->customer . '/quickbar.json'), "quickbarCallback(" . json_encode($quickbarCallback) . ")");
@@ -803,7 +745,7 @@ class PrintController extends BaseController {
                         file_put_contents(public_path("customers/" . $this->customer . '/mobile' . '/quickbar.json'), "quickbarCallback(" . json_encode($quickbarCallback) . ")");
                     }
                 }
-            } else {
+            } else {//===自定义===
                 $config_arr[1] = '#AAA,#BBB,#FFF|tel';
                 $quickbar_arr = explode('|', $config_arr[1]);
                 $tmpStyleConfigQuickbar = explode(',', $quickbar_arr[0]);
@@ -883,7 +825,7 @@ class PrintController extends BaseController {
                         foreach ($navs as &$nav) {
                             $nav['icon'] = '<i class="iconfont">' . $nav['icon'] . '</i>';
                             if (in_array($nav['type'], array('1', '2', '3', '4'))) {
-                                if ($navs['view_name']) {
+                                if ($nav['view_name']) {
                                     $nav['url'] = $this->domain . "/category/" . $nav['view_name'];
                                 } else {
                                     $nav['url'] = $this->domain . "/category/" . $nav['id'];
@@ -894,7 +836,7 @@ class PrintController extends BaseController {
                         foreach ($navs as &$nav) {
                             $nav['icon'] = '<i class="iconfont">' . $nav['icon'] . '</i>';
                             if (in_array($nav['type'], array('1', '2', '3', '4'))) {
-                                if ($navs['view_name']) {
+                                if ($nav['view_name']) {
                                     $nav['url'] = $this->domain . "/category/" . $nav['view_name'] . '.html';
                                 } else {
                                     $nav['url'] = $this->domain . "/category/" . $nav['id'] . '.html';
@@ -913,7 +855,6 @@ class PrintController extends BaseController {
                 if (!empty($domain)) {
                     $catlist[] = array('id' => null, 'name' => $language, 'en_name' => 'language', 'url' => $language_url, 'childmenu' => null); //===
                 }
-//                $catlist[] = array('id' => null, 'name' => $language, 'en_name' => 'language', 'url' => $language_url, 'childmenu' => null); //===
                 $quickbarCallback = array('config' => $config, 'quickbar' => $quickbar, 'catlist' => $catlist);
                 if ($this->showtype == 'preview') {
                     echo "quickbarCallback(" . json_encode($quickbarCallback) . ")";
