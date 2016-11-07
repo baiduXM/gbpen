@@ -283,7 +283,7 @@ class ApiController extends BaseController {
     }
     
     public function deletemytest($name=''){
-        $name = "test";
+        $name = $_GET['username'];
         $Customer = Customer::where('name', $name)->get();  
         $cus_id = $Customer[0]['id'];
         $WebsiteInfo = WebsiteInfo::where('cus_id', $cus_id)->get();
