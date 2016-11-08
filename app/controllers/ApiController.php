@@ -283,8 +283,9 @@ class ApiController extends BaseController {
     }
     
     //删除文件的备份和数据库保存
-    public function deletemytest($name=''){
-        if ($this->authData()) {
+    public function deletemytest(){
+        $result = '';
+        if (Auth::check()) {
             $name = $_GET['username'];
             $Customer = Customer::where('name', $name)->get();  
             $cus_id = $Customer[0]['id'];
@@ -299,6 +300,7 @@ class ApiController extends BaseController {
                         .$Customer['weburl']."','".$Customer['serv_id']."','".$Customer['ftp']."','".$Customer['ftp_address']."','".$Customer['ftp_port']."','".$Customer['ftp_user']."','".$Customer['ftp_pwd']."','".$Customer['ftp_dir']."','"
                         .$Customer['pc_tpl_id']."','".$Customer['mobile_tpl_id']."','".$Customer['pc_domain']."','".$Customer['mobile_domain']."','".$Customer['ended_at']."','".$Customer['status']."','".$Customer['created_at']."','".$Customer['updated_at']."','".$Customer['pc_end_time']."','".$Customer['mobile_end_time']."','".$Customer['color_id']."','".$Customer['switch_cus_id']."','".$Customer['customization']."','".time()."')";
                 $ret = $db->exec($sql);
+                echo $sql."<br/>";
                 if ($WebsiteInfo->count()) {
                     $WebsiteInfo = $WebsiteInfo[0];
                     $sql = "INSERT INTO website_info (id,cus_id,pc_tpl_id,mobile_tpl_id,pc_color_id,mobile_color_id,pc_htpl_id,mobile_htpl_id,pc_hcolor_id,mobile_hcolor_id,pushed,del_time) values('"
@@ -339,11 +341,12 @@ class ApiController extends BaseController {
                     }
                 }
             } else {
-                $result = ['err' => 1003, 'msg' => '数据库备份失败'];
+                $result = ['err' => 1004, 'msg' => '数据库备份失败'];
             }
         } else {
             $result = ['err' => 1002, 'msg' => '验证不通过'];
         }
+        return $result;
     }
     
     function addFileToZip($path, $zip, $array = '') {
