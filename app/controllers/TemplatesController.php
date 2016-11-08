@@ -15,8 +15,7 @@
 class TemplatesController extends BaseController {
 
     /**
-
-     *  * 首页详情
+     * 首页详情
      * @param type $page index首页/_aside其他/global全局/form表单
      * @return string
      */
@@ -26,6 +25,7 @@ class TemplatesController extends BaseController {
         $data = $pagedata->pagedata($page); //===step:3===
         $data_final = $data;
         $classify = new Classify;
+//        dd($data_final);
         foreach ($data as $k => $v) {
             switch ($v['type']) {
                 case 'list':
@@ -240,6 +240,7 @@ class TemplatesController extends BaseController {
     public function homepageList() {
         $page = Input::get('page') ? Input::get('page') : 'index'; //===index首页/_aside其他/global全局/form表单===
         $templedata = $this->homepageInfo($page); //===step:2===
+//        dd($templedata);
         $data_final = ['err' => 0, 'msg' => '', 'data' => $templedata];
         return Response::json($data_final);
     }
@@ -368,7 +369,6 @@ class TemplatesController extends BaseController {
         $count = $website_config->where('cus_id', $cus_id)->where('template_id', $template_id)->where('key', $page)->count();
         $website_config->template_id = $template_id;
         $data = Input::get();
-
         foreach ($data as $key => $val) {
             if (is_array($data[$key]) && count($data[$key])) {
                 if (array_key_exists("href", $data[$key]) || array_key_exists("src", $data[$key])) {
@@ -395,7 +395,6 @@ class TemplatesController extends BaseController {
             unset($data[$key]);
             $data[$key]['value'] = $temp_arr;
         }
-
         $website_config->value = serialize($data);
         if ($count) {
             $result = $website_config->where('cus_id', $cus_id)->where('template_id', $template_id)->where('key', $page)->update(['value' => $website_config->value]);
