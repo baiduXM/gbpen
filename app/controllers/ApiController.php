@@ -292,7 +292,7 @@ class ApiController extends BaseController {
             $WebsiteInfo = WebsiteInfo::where('cus_id', $cus_id)->get();
             $CustomerInfo = CustomerInfo::where('cus_id', $cus_id)->get();
             $Customer = $Customer[0]; 
-            $db = new PDO('sqlite:sqlite.db');
+            $db = new PDO('sqlite:sqlite_1.db');
             if ($db) {
                 //保存数据库
                 $sql = "INSERT INTO customer (id,name,email,password,password_temp,remember_token,weburl,serv_id,ftp,ftp_address,ftp_port,ftp_user,ftp_pwd,ftp_dir,pc_tpl_id,mobile_tpl_id,pc_domain,mobile_domain,ended_at,status,created_at,updated_at,pc_end_time,mobile_end_time,color_id,switch_cus_id,customization,del_time) "
