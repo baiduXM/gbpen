@@ -18,4 +18,4 @@ app/storage/logs/*
 app/storage/views/*
 app/storage/sessions/*
 app/controllers/FormController.php.rej
-/public/sqlite_1.db
+/public/sqlite.db
