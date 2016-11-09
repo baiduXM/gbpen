@@ -1015,7 +1015,7 @@ class PrintController extends BaseController {
                     $_copyright = '厦门易尔通网络科技有限公司';
                     break;
             }
-            
+
             switch ($customer_info->talent_support) {
                 case 'en_rencai':
                     $talent_support = 'Talent support：<a href="http://www.xgzrc.com/">www.xgzrc.com</a>';
@@ -1034,9 +1034,9 @@ class PrintController extends BaseController {
                     break;
             }
             if ($customer_info->lang == 'en') {
-                $footprint = $customer_info->footer . '<p>Technology support：<a href="' . $_href . '">' . $_copyright . '</a> '.$talent_support.'</p>';
+                $footprint = $customer_info->footer . '<p>Technology support：<a href="' . $_href . '">' . $_copyright . '</a> ' . $talent_support . '</p>';
             } else {
-                $footprint = $customer_info->footer . '<p>技术支持：<a href="' . $_href . '">' . $_copyright . '</a> '.$talent_support.'</p>';
+                $footprint = $customer_info->footer . '<p>技术支持：<a href="' . $_href . '">' . $_copyright . '</a> ' . $talent_support . '</p>';
             }
             //===end===
             $footscript = $customer_info->pc_footer_script;
@@ -1172,8 +1172,9 @@ class PrintController extends BaseController {
             }
             $global_data = $this->detailList($global_data);
             $this->replaceUrl($global_data);
-            if ($quickbarKey)
+            if (!isset($quickbarKey)) {
                 $global_data[$quickbarKey] = $quickbar;
+            }
         }
         $contact = CustomerInfo::where('cus_id', $this->cus_id)->select('company', 'contact_name as name', 'mobile', 'telephone', 'fax', 'email as mail', 'qq', 'address')->first()->toArray();
         if ($this->showtype == 'preview') {
@@ -1862,8 +1863,8 @@ class PrintController extends BaseController {
     /**
      * PC显示首页
      */
-    public function homepagePreview($result=array()) {
-        if($_SERVER["HTTP_HOST"]!="preview.5067.org"){
+    public function homepagePreview($result = array()) {
+        if ($_SERVER["HTTP_HOST"] != "preview.5067.org") {
             $result = $this->pagePublic();
             $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
             $result['title'] = $customer_info->title;
@@ -1881,7 +1882,7 @@ class PrintController extends BaseController {
                 }
             }
         }
-        if($_SERVER["HTTP_HOST"]=="172.16.0.17"){
+        if ($_SERVER["HTTP_HOST"] == "172.16.0.17") {
 //            var_dump($result["index"]["pro"]["childmenu"]);
 //            exit();
 //            return $result;
@@ -1941,8 +1942,8 @@ class PrintController extends BaseController {
     /**
      * 手机首页
      */
-    public function mhomepagePreview($result=array()) {
-        if($_SERVER["HTTP_HOST"]!="preview.5067.org"){
+    public function mhomepagePreview($result = array()) {
+        if ($_SERVER["HTTP_HOST"] != "preview.5067.org") {
             $result = $this->pagePublic();
             $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
             $result['title'] = $customer_info->title;
@@ -2076,7 +2077,7 @@ class PrintController extends BaseController {
             }
             $result['mIndexCats'] = $mIndexCats;
         }
-        if($_SERVER["HTTP_HOST"]=="172.16.0.17"){
+        if ($_SERVER["HTTP_HOST"] == "172.16.0.17") {
             return json_encode($result);
         }
         $smarty = new Smarty;
@@ -2249,8 +2250,8 @@ class PrintController extends BaseController {
      * @param int $id 栏目id
      * @param int $page 当前页码
      */
-    public function categoryPreview($id, $page,$result=array()) {
-        if($_SERVER["HTTP_HOST"]!="preview.5067.org"){
+    public function categoryPreview($id, $page, $result = array()) {
+        if ($_SERVER["HTTP_HOST"] != "preview.5067.org") {
             $result = $this->pagePublic($id);
             $customerinfo = CustomerInfo::where("cus_id", $this->cus_id)->first();
             foreach ((array) $result['navs'] as $nav) {
@@ -2504,13 +2505,12 @@ class PrintController extends BaseController {
                     //===加载css\js===
                     $result['footscript'].=$formC->assignFormCSSandJSForPrint();
                 }
-                
+
                 //return View::make('templates.'.$this->themename.'.'.$viewname,$result);
             }
-            $result["viewname"]=$viewname;
-        
+            $result["viewname"] = $viewname;
         }
-        if($_SERVER["HTTP_HOST"]=="172.16.0.17"){
+        if ($_SERVER["HTTP_HOST"] == "172.16.0.17") {
             return json_encode($result);
         }
         $smarty = new Smarty;
@@ -2875,8 +2875,8 @@ class PrintController extends BaseController {
      *
      * @param int $id 文章id
      */
-    public function articlePreview($id,$result=array()) {
-        if($_SERVER["HTTP_HOST"]!="preview.5067.org"){
+    public function articlePreview($id, $result = array()) {
+        if ($_SERVER["HTTP_HOST"] != "preview.5067.org") {
             $article = Articles::find($id);
             $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
             if ($customer_info->lang == 'en') {
@@ -2949,49 +2949,49 @@ class PrintController extends BaseController {
             } else {//跳转404
             }
             //关联文章查询
-    //        $pa = new PhpAnalysis();
-    //
+            //        $pa = new PhpAnalysis();
+            //
     //        $pa->SetSource($article->title);
-    //
+            //
     //        //设置分词属性
-    //        $pa->resultType = 2;
-    //        $pa->differMax = true;
-    //        $pa->StartAnalysis();
-    //
+            //        $pa->resultType = 2;
+            //        $pa->differMax = true;
+            //        $pa->StartAnalysis();
+            //
     //        //获取你想要的结果
-    //        $keywords = $pa->GetFinallyIndex();
-    //        if (count($keywords)) {
-    //            $relation_where = "";
-    //            foreach ((array) $keywords as $key => $word) {
-    //                $relation_where.="or title like '%$key%' ";
-    //            }
-    //            $relation_where = ltrim($relation_where, 'or');
-    //            $prefix = Config::get('database.connections.mysql.prefix');
-    //            $related_data = DB::select("select id,title,img as image,introduction,created_at,c_id from {$prefix}article where cus_id={$this->cus_id} and ($relation_where)");
-    //            $related = array();
-    //            if (count($related_data)) {
-    //                foreach ((array) $related_data as $val) {
-    //                    $temp_arr = [];
-    //                    $temp_arr['title'] = $val->title;
-    //                    $temp_arr['description'] = $val->introduction;
-    //                    $temp_arr['image'] = $this->source_dir . 'l/articles/' . $val->image;
-    //                    if ($this->showtype == 'preview') {
-    //                        $temp_arr['link'] = $this->domain . '/detail/' . $val->id;
-    //                        $temp_arr['category']['link'] = $this->domain . '/category/' . $val->id . '.html';
-    //                    } else {
-    //                        $temp_arr['link'] = $this->domain . '/detail/' . $val->id . '.html';
-    //                        $temp_arr['category']['link'] = $this->domain . '/category/' . $val->id . '.html';
-    //                    }
-    //                    $temp_arr['pubdate'] = $val->created_at;
-    //                    $temp_arr['pubtimestamp'] = strtotime($val->created_at);
-    //                    $a_c_info = Classify::where('id', $val->c_id)->first();
-    //                    $temp_arr['category']['name'] = $a_c_info->name;
-    //                    $temp_arr['category']['en_name'] = $a_c_info->en_name;
-    //                    $temp_arr['category']['icon'] = '<i class="iconfont">' . $a_c_info->icon . '</i>';
-    //                    $related[] = $temp_arr;
-    //                }
-    //            }
-    //        }
+            //        $keywords = $pa->GetFinallyIndex();
+            //        if (count($keywords)) {
+            //            $relation_where = "";
+            //            foreach ((array) $keywords as $key => $word) {
+            //                $relation_where.="or title like '%$key%' ";
+            //            }
+            //            $relation_where = ltrim($relation_where, 'or');
+            //            $prefix = Config::get('database.connections.mysql.prefix');
+            //            $related_data = DB::select("select id,title,img as image,introduction,created_at,c_id from {$prefix}article where cus_id={$this->cus_id} and ($relation_where)");
+            //            $related = array();
+            //            if (count($related_data)) {
+            //                foreach ((array) $related_data as $val) {
+            //                    $temp_arr = [];
+            //                    $temp_arr['title'] = $val->title;
+            //                    $temp_arr['description'] = $val->introduction;
+            //                    $temp_arr['image'] = $this->source_dir . 'l/articles/' . $val->image;
+            //                    if ($this->showtype == 'preview') {
+            //                        $temp_arr['link'] = $this->domain . '/detail/' . $val->id;
+            //                        $temp_arr['category']['link'] = $this->domain . '/category/' . $val->id . '.html';
+            //                    } else {
+            //                        $temp_arr['link'] = $this->domain . '/detail/' . $val->id . '.html';
+            //                        $temp_arr['category']['link'] = $this->domain . '/category/' . $val->id . '.html';
+            //                    }
+            //                    $temp_arr['pubdate'] = $val->created_at;
+            //                    $temp_arr['pubtimestamp'] = strtotime($val->created_at);
+            //                    $a_c_info = Classify::where('id', $val->c_id)->first();
+            //                    $temp_arr['category']['name'] = $a_c_info->name;
+            //                    $temp_arr['category']['en_name'] = $a_c_info->en_name;
+            //                    $temp_arr['category']['icon'] = '<i class="iconfont">' . $a_c_info->icon . '</i>';
+            //                    $related[] = $temp_arr;
+            //                }
+            //            }
+            //        }
             $articles = Articles::where($this->type . '_show', '1')->where('c_id', $article->c_id)->where('use_url', '0')->orderBy('is_top', 'desc')->orderBy('sort', 'asc')->orderBy('created_at', 'desc')->get()->toArray();
             $related = array();
             for (; count($related) < 6 && count($related) < count($articles);) {
@@ -3063,9 +3063,9 @@ class PrintController extends BaseController {
                     $result[$key] = $this->detailList($this->pagedata($key));
                 }
             }
-            $result["viewname"]=$viewname;
+            $result["viewname"] = $viewname;
         }
-        if($_SERVER["HTTP_HOST"]=="172.16.0.17"){
+        if ($_SERVER["HTTP_HOST"] == "172.16.0.17") {
             return json_encode($result);
         }
         $smarty = new Smarty;
@@ -3656,7 +3656,7 @@ class PrintController extends BaseController {
             }
             //分页结束
             file_put_contents(app_path('views/templates/' . $this->themename . '/searchresult_do.html'), $page_content);
-            $publicdata['repleace']['searchresult_do.html']=$page_content;
+            $publicdata['repleace']['searchresult_do.html'] = $page_content;
         }
         $result['search'] = array('total' => '-1000_search', 'keyword' => 'search_$keyword', 'data' => array(0 => array('link' => '', 'title' => '', 'pubdate' => '', 'description' => '')));
         $result['page_links'] = array('current_page' => '100-1_search', 'per_page' => '100-2_search', 'page_count' => '100-3_search', 'first_link' => '100-4_search', 'prev_link' => '100-5_search', 'next_link' => '100-6_search', 'last_link' => '100-7_search', 'nears_link' => $page_link_array);
