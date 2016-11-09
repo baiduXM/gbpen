@@ -1172,7 +1172,7 @@ class PrintController extends BaseController {
             }
             $global_data = $this->detailList($global_data);
             $this->replaceUrl($global_data);
-            if (!isset($quickbarKey)) {
+            if (!empty($quickbarKey)) {
                 $global_data[$quickbarKey] = $quickbar;
             }
         }
