@@ -1172,8 +1172,9 @@ class PrintController extends BaseController {
             }
             $global_data = $this->detailList($global_data);
             $this->replaceUrl($global_data);
-            if ($quickbarKey)
+            if (!empty($quickbarKey)) {
                 $global_data[$quickbarKey] = $quickbar;
+            }
         }
         $contact = CustomerInfo::where('cus_id', $this->cus_id)->select('company', 'contact_name as name', 'mobile', 'telephone', 'fax', 'email as mail', 'qq', 'address')->first()->toArray();
         if ($this->showtype == 'preview') {
