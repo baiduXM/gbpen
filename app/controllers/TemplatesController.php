@@ -487,14 +487,14 @@ class TemplatesController extends BaseController {
         } else {
             $config_arr = $mobile->mobilePageList('global', true);
         }
+        //print_r($config_arr);exit;
         if (is_array($config_arr)) {
             foreach ($config_arr as $key => $val) {
                 $pagelist[] = array('page' => $key, 'title' => $config_arr[$key]['description'], 'type' => $config_arr[$key]['type']);
                 $data[$key] = $config_arr[$key];
                 if ($data[$key]['type'] == 'image') {
-                    if (!$data[$key]['value']['title'] and ! $data[$key]['value']['image'] and ! $data[$key]['value']['link']) {
+                    if (!$data[$key]['value']['title'] and ! $data[$key]['value']['image'] and ! $data[$key]['value']['link'])
                         $data[$key]['value'] = array();
-                    }
                 }
             }
         }
