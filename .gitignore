@@ -11,9 +11,12 @@ app/config/local/*
 app/views/templates/*
 public/temp_templates/*
 public/templates/*
+public/customers_backups/*
 public/customers/*
 app/storage/cache/*
 app/storage/logs/*
 app/storage/views/*
 app/storage/sessions/*
 app/controllers/FormController.php.rej
+public/sqlite.db
+public/sqlite_1.db

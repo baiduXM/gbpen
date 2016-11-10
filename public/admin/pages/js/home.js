@@ -66,10 +66,10 @@ function homeController($scope, $http) {
     }
     function getTempledata(templeType, templePage) {
         $('.home-edite').html('loading...');
-        $http.get('../homepage-list?type=' + templeType + '&page=' + templePage + '').success(function (json) {
-            var _rt = '',
-                    pic = 0,
-                    pic_Classname = '', pic_name = '';
+        $http.get('../homepage-list?type=' + templeType + '&page=' + templePage + '').success(function (json) {//===step:1===
+//            console.log(json);
+//            console.log('json');
+            var _rt = '', pic = 0, pic_Classname = '', pic_name = '';
             $.each(json.data, function (k, v) {
                 var type = v.type;
                 switch (type) {
@@ -96,10 +96,13 @@ function homeController($scope, $http) {
                     case 'images':
                         var _rel = '';
                         var num = 0, src, srclen;
+//                        console.log(v);
+//                        console.log('images');
                         $.each(v.value, function (i, j) {
-                            srclen = j.image.split('/').length;
-                            src = j.image.split('/')[srclen - 1];
-                            _rel += '<dd class="img_show" ><a href="' + j.link + '" class="preview" onclick="return false">\n\
+                            if (j != null) {
+                                srclen = j.image.split('/').length;
+                                src = j.image.split('/')[srclen - 1];
+                                _rel += '<dd class="img_show" ><a href="' + j.link + '" class="preview" onclick="return false">\n\
 							<div class="preview-close"><img src="images/preview-close.png" /></div>\n\
 							<div class="preview-edit" style="visibility:hidden"><img src="images/preview-edit.png" /><span>编辑</span></div>\n\
 							<div class="preview-mask" style="visibility:hidden"></div>\n\
@@ -110,9 +113,9 @@ function homeController($scope, $http) {
 							<input type="hidden" value="' + j.link + '" name="data[' + k + '][' + num + '][href]" />\n\
 							<input type="hidden" value="' + j.sort + '" name="data[' + k + '][' + num + '][sort]" />\n\
                                     </dd>';
-//                            <div class="movediv"><span class="moveup">前移</span><span class="movedown">后移</span></div>\n\
-                            num++;
-                            pic++;
+                                num++;
+                                pic++;
+                            }
                         });
                         _rel += '<dd class="new_add pr" data-role="images-' + k + '" data-type="image" style="margin-left:8px;"></dd>';
                         break;
@@ -211,12 +214,74 @@ function homeController($scope, $http) {
                             list1 += '<li><a >暂无内容！</a></li>'
                         }
                         break;
+                    case 'form':
+                        var temp = v.config;
+                        console.log(temp);
+                        var _r = '';
+                        switch (temp.kind) {
+                            case 'div':
+                                var array = v.config.name.split(",");
+                                _r += '<select name="data[' + k + '][div]">';
+                                _r += '<option value="0" selected>请选择</option>';
+                                $.each(array, function (k, v) {
+                                    _r += '<option value="' + v + '">' + v + '</option>';
+                                });
+                                _r += '</select>';
+                                break;
+                            case 'css':
+                                var array = v.config.name.split(",");
+                                _r += '<select name="data[' + k + '][css]">';
+                                _r += '<option value="0" selected>请选择</option>';
+                                $.each(array, function (k, v) {
+                                    _r += '<option value="' + v + '">' + v + '</option>';
+                                });
+                                _r += '</select>';
+                                break;
+                            case 'formid':
+                                var _div = '';
+                                $.ajax({
+                                    url: "../form-list",
+                                    type: "GET",
+                                    async: false,
+                                    data: {status: '1', showmodel: '1'},
+                                    dataType: "json",
+                                    success: function (json) {
+                                        checkJSON(json, function (json) {
+                                            _div += '<select name="data[' + k + '][form_id]">';
+                                            if (json.data != null) {
+                                                _div += '<option value="0" selected>请选择</option>';
+                                                $.each(json.data, function (kk, vv) {
+                                                    _div += '<option value="' + vv.id + '">' + vv.name + '</option>';
+                                                });
+                                            } else {
+                                                _div += '<option value="0" selected>无表单可绑定</option>';
+                                            }
+                                            _div += '</select>';
+                                        });
+                                    }
+                                });
+                                _r = _div;
+                                break;
+                            case undefined:
+                            default :
+                                _r += '<select >';
+                                _r += '<option value="0" selected>请选择</option>';
+                                _r += '</select>';
+                                break;
+                        }
+                        var _rel = '';
+                        _rel += _r;
+                        break;
                 }// switch结束
-                _rt += '<li><dl class="homeed-left">' + v.description + '：' + (typeof v.prompt == 'undefined' ? '' : v.prompt) + (typeof v.config == 'undefined' ? '' : v.type == 'images' || v.type == 'image' ? '<div class="ratio">' + (v.config.width == undefined ? '自适应' : v.config.width) + '*' + (v.config.height == 'undefined' ? '自适应' : v.config.height) + '</div>' + (v.type == 'image' ? '' : '<div>限制数量：<span class="pic_limit">' + (v.config.limit == undefined ? '0' : v.config.limit) + '</span></div>') : '') + '</dl><dl class="homeed-right">' + (v.type == 'navs' ? '<div id="move_navs">' + _rel + '</div>' : '' + _rel + '') + '</dl></li>';
+                _rt += '<li><dl class="homeed-left">' + v.description + '：' + (typeof v.prompt == 'undefined' ? '' : v.prompt) +
+                        (typeof v.config == 'undefined' ? '' : v.type == 'images' || v.type == 'image' ? '<div class="ratio">' + (v.config.width == undefined ? '自适应' : v.config.width) +
+                                '*' + (v.config.height == 'undefined' ? '自适应' : v.config.height) + '</div>' + (v.type == 'image' ? '' : '<div>限制数量：<span class="pic_limit">' +
+                                (v.config.limit == undefined ? '0' : v.config.limit) + '</span></div>') : '') + '</dl><dl class="homeed-right">' + (v.type == 'navs' ? '<div id="move_navs">' +
+                        _rel + '</div>' : '' + _rel + '') + '</dl></li>';
             }); // each结束
 
             $('.home-edite').html('<form id="temple-data">' + _rt + '<input type="hidden" name="page" value="' + templePage + '" /><input type="hidden" name="type" value="' + templeType + '" /></form>');
-            //下拉框更改
+            // 下拉框更改
             DropdownEvent();
             // 提示移动框
             $('.not-allowed').MoveBox({context: '此为单页类型或者父级分类下带有子级，不支持选择！'});
@@ -295,12 +360,11 @@ function homeController($scope, $http) {
                         description = $(this).parent().siblings('input[name*="description"]').val(),
                         sort = $(this).parent().siblings('input[name*="sort"]').val(),
                         title = $(this).parent().siblings('input[name*="title"]').val();
-//                console.log($(this).parent().siblings('input[name*="sort"]').val());
                 $('.box-down .column_name').val(href);
                 $('.box-down .keyword').val(title);
                 $('.box-down .sort').val(sort);
                 description == undefined ? $('.box-down .description').val('') : $('.box-down .description').val(description);
-                        _pics = '<div class="template-download fade fl in">\n\
+                _pics = '<div class="template-download fade fl in">\n\
 					<div>\n\
 						<span class="preview">\n\
 							<img src="' + $(this).siblings('img').attr('src') + '" style="width:80px;height:64px;padding:5px;" data-preimg="preimg">\n\
@@ -399,7 +463,6 @@ function homeController($scope, $http) {
                 img_upload.push($(this).data('name'));
             });
             $http.post('../homepage-modify', data1).success(function (json) {
-//                console.log(json);
                 checkJSON(json, function (json) {
                     if (img_upload.length) {
                         if (!$('.tpl_mask').attr('class')) {

@@ -164,20 +164,18 @@ class PrintController extends BaseController {
             }
         }
         //===对多图进行排序_end===
-
         if (count($jsondata)) {
             $json = isset($jsondata[$pagename . '.json']) ? $jsondata[$pagename . '.json'] : '{}';
         } else {
             $json_path = public_path('templates/' . $this->themename . '/json/' . $pagename . '.json');
             $json = file_exists($json_path) ? file_get_contents($json_path) : '{}';
         }
-        if ($website_confige_value) {
+        if ($website_confige_value) {//===数据库中有模板数据===
             $default = json_decode(trim($json), TRUE);
             $result = $this->array_merge_recursive_new($default, $website_confige_value);
-//            var_dump($result);
-//            exit;
+//            dd($result); //===step:bug===
             $this->replaceUrl($result);
-            $result = $this->dataDeal($result);
+            $result = $this->dataDeal($result); //===step:4===
             foreach ($result as &$v) {
                 if ($v['type'] == 'list') {
                     if (isset($v['config']['filter'])) {
@@ -195,14 +193,14 @@ class PrintController extends BaseController {
                     }
                 }
             }
-        } else {
+        } else {//===数据库中无模板数据，从文件中读取===
             $result = json_decode(trim($json), TRUE);
             if ($result === NULL) {
                 dd("$pagename.json文件错误");
             }
             $this->replaceUrl($result);
-            //dd($result);
-            $result = $this->dataDeal($result);
+            $result = $this->dataDeal($result); //===step:4===
+
             $classify = new Classify;
             $templates = new TemplatesController;
             $c_arr = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3, 4, 5, 6, 9))->where($this->type . '_show', '=', 1)->get()->toArray();
@@ -210,151 +208,160 @@ class PrintController extends BaseController {
                 $c_arr = array();
             }
             foreach ($result as &$v) {
-                if ($v['type'] == 'list') {
-                    if (isset($v['config']['mustchild']) && $v['config']['mustchild'] == true) {
-                        if (isset($v['config']['filter'])) {
-                            if ($v['config']['filter'] == 'page') {
-                                $c_arr = $classify->toTree($c_arr);
-                                $templates->unsetFalseClassify($c_arr, array(4));
-                                $templates->unsetLastClassify($c_arr);
-                                $c_arr = array_merge($c_arr);
-                            } elseif ($v['config']['filter'] == 'list') {
+                switch ($v['type']) {
+                    case 'list':
+                        if (isset($v['config']['mustchild']) && $v['config']['mustchild'] == true) {
+                            if (isset($v['config']['filter'])) {
+                                if ($v['config']['filter'] == 'page') {
+                                    $c_arr = $classify->toTree($c_arr);
+                                    $templates->unsetFalseClassify($c_arr, array(4));
+                                    $templates->unsetLastClassify($c_arr);
+                                    $c_arr = array_merge($c_arr);
+                                } elseif ($v['config']['filter'] == 'list') {
+                                    $c_arr = $classify->toTree($c_arr);
+                                    $templates->unsetFalseClassify($c_arr, array(1, 2, 3));
+                                    $templates->unsetLastClassify($c_arr);
+                                    if (is_array($c_arr)) {
+                                        $c_arr = array_merge($c_arr);
+                                    }
+                                    $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
+                                } elseif ($v['config']['filter'] == 'feedback') {/* 20151021添加feeback filter */
+                                    $c_arr = $classify->toTree($c_arr);
+                                    $templates->unsetFalseClassify($c_arr, array(5, 9));
+                                    $templates->unsetLastClassify($c_arr);
+                                    $c_arr = array_merge($c_arr);
+                                } elseif ($v['config']['filter'] == 'ALL') {
+                                    $c_arr = $classify->toTree($c_arr);
+                                    $templates->unsetFalseClassify($c_arr, array(1, 2, 3, 4, 5, 6));
+                                    $templates->unsetLastClassify($c_arr);
+                                    $c_arr = array_merge($c_arr);
+                                    $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
+                                } else {
+                                    $c_arr = $classify->toTree($c_arr);
+                                    $templates->unsetFalseClassify($c_arr, array(1, 2, 3, 4));
+                                    $templates->unsetLastClassify($c_arr);
+                                    if (is_array($c_arr)) {
+                                        $c_arr = array_merge($c_arr);
+                                    }
+                                    $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
+                                }
+                            } else {
                                 $c_arr = $classify->toTree($c_arr);
                                 $templates->unsetFalseClassify($c_arr, array(1, 2, 3));
                                 $templates->unsetLastClassify($c_arr);
-                                if (is_array($c_arr)) {
-                                    $c_arr = array_merge($c_arr);
-                                }
-                                $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
-                            } elseif ($v['config']['filter'] == 'feedback') {/* 20151021添加feeback filter */
-                                $c_arr = $classify->toTree($c_arr);
-                                $templates->unsetFalseClassify($c_arr, array(5, 9));
-                                $templates->unsetLastClassify($c_arr);
                                 $c_arr = array_merge($c_arr);
-                            } elseif ($v['config']['filter'] == 'ALL') {
-                                $c_arr = $classify->toTree($c_arr);
-                                $templates->unsetFalseClassify($c_arr, array(1, 2, 3, 4, 5, 6));
-                                $templates->unsetLastClassify($c_arr);
-                                $c_arr = array_merge($c_arr);
-                                $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
-                            } else {
-                                $c_arr = $classify->toTree($c_arr);
-                                $templates->unsetFalseClassify($c_arr, array(1, 2, 3, 4));
-                                $templates->unsetLastClassify($c_arr);
-                                if (is_array($c_arr)) {
-                                    $c_arr = array_merge($c_arr);
-                                }
                                 $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
                             }
+                            if (count($c_arr)) {
+                                $v['config']['id'] = $c_arr[0]['id'];
+                            }
                         } else {
-                            $c_arr = $classify->toTree($c_arr);
-                            $templates->unsetFalseClassify($c_arr, array(1, 2, 3));
-                            $templates->unsetLastClassify($c_arr);
-                            $c_arr = array_merge($c_arr);
-                            $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
-                        }
-                        if (count($c_arr)) {
-                            $v['config']['id'] = $c_arr[0]['id'];
-                        }
-                    } else {
-                        if (isset($v['config']['filter'])) {
-                            if ($v['config']['filter'] == 'page') {
-                                $v['config']['id'] = Classify::where('cus_id', $this->cus_id)->where('type', 4)->where($this->type . '_show', 1)->pluck('id');
-                            } elseif ($v['config']['filter'] == 'list') {
+                            if (isset($v['config']['filter'])) {
+                                if ($v['config']['filter'] == 'page') {
+                                    $v['config']['id'] = Classify::where('cus_id', $this->cus_id)->where('type', 4)->where($this->type . '_show', 1)->pluck('id');
+                                } elseif ($v['config']['filter'] == 'list') {
+                                    $v['config']['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3))->where($this->type . '_show', 1)->pluck('id');
+                                    $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
+                                } elseif ($v['config']['filter'] == 'feedback') {/* 20151021添加feeback filter */
+                                    $v['config']['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(5, 9))->where($this->type . '_show', 1)->pluck('id');
+                                } elseif ($v['config']['filter'] == 'ALL') {
+                                    $v['config']['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3, 4, 5, 6))->where($this->type . '_show', 1)->pluck('id');
+                                    $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
+                                } else {
+                                    $v['config']['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3, 4))->where($this->type . '_show', 1)->pluck('id');
+                                    $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
+                                }
+                            } else {
                                 $v['config']['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3))->where($this->type . '_show', 1)->pluck('id');
                                 $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
-                            } elseif ($v['config']['filter'] == 'feedback') {/* 20151021添加feeback filter */
-                                $v['config']['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(5, 9))->where($this->type . '_show', 1)->pluck('id');
-                            } elseif ($v['config']['filter'] == 'ALL') {
-                                $v['config']['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3, 4, 5, 6))->where($this->type . '_show', 1)->pluck('id');
-                                $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
-                            } else {
-                                $v['config']['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3, 4))->where($this->type . '_show', 1)->pluck('id');
-                                $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
+                            }
+                        }
+                        break;
+                    case 'page':
+                        if (isset($v['config']['mustchild']) && $v['config']['mustchild'] == true) {
+                            $c_arr = Classify::where('cus_id', $this->cus_id)->where('type', 4)->where($this->type . '_show', 1)->get()->toArray();
+                            $c_arr = $classify->toTree($c_arr);
+                            $templates->unsetLastClassify($c_arr);
+                            $c_arr = array_merge($c_arr);
+                            if (count($c_arr)) {
+                                $v['config']['id'] = $c_arr[0]['id'];
                             }
                         } else {
-                            $v['config']['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3))->where($this->type . '_show', 1)->pluck('id');
-                            $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
+                            $v['config']['id'] = Classify::where('cus_id', $this->cus_id)->where('type', 4)->where($this->type . '_show', 1)->pluck('id');
                         }
-                    }
-                } elseif ($v['type'] == 'page') {
-                    if (isset($v['config']['mustchild']) && $v['config']['mustchild'] == true) {
-                        $c_arr = Classify::where('cus_id', $this->cus_id)->where('type', 4)->where($this->type . '_show', 1)->get()->toArray();
-                        $c_arr = $classify->toTree($c_arr);
-                        $templates->unsetLastClassify($c_arr);
-                        $c_arr = array_merge($c_arr);
-                        if (count($c_arr)) {
-                            $v['config']['id'] = $c_arr[0]['id'];
-                        }
-                    } else {
-                        $v['config']['id'] = Classify::where('cus_id', $this->cus_id)->where('type', 4)->where($this->type . '_show', 1)->pluck('id');
-                    }
-                } elseif ($v['type'] == 'navs') {
-                    if (isset($v['config']['mustchild']) && $v['config']['mustchild'] == true) {
-                        if (isset($v['config']['filter'])) {
-                            if ($v['config']['filter'] == 'page') {
-                                $c_arr = $classify->toTree($c_arr);
-                                $templates->unsetFalseClassify($c_arr, array(4));
-                                $templates->unsetLastClassify($c_arr);
-                                $c_arr = array_merge($c_arr);
-                            } elseif ($v['config']['filter'] == 'list') {
+                        break;
+                    case 'navs':
+                        if (isset($v['config']['mustchild']) && $v['config']['mustchild'] == true) {
+                            if (isset($v['config']['filter'])) {
+                                if ($v['config']['filter'] == 'page') {
+                                    $c_arr = $classify->toTree($c_arr);
+                                    $templates->unsetFalseClassify($c_arr, array(4));
+                                    $templates->unsetLastClassify($c_arr);
+                                    $c_arr = array_merge($c_arr);
+                                } elseif ($v['config']['filter'] == 'list') {
+                                    $c_arr = $classify->toTree($c_arr);
+                                    $templates->unsetFalseClassify($c_arr, array(1, 2, 3));
+                                    $templates->unsetLastClassify($c_arr);
+                                    $c_arr = array_merge($c_arr);
+                                    $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
+                                } elseif ($v['config']['filter'] == 'ALL') {
+                                    $c_arr = $classify->toTree($c_arr);
+                                    $templates->unsetFalseClassify($c_arr, array(1, 2, 3, 4, 6));
+                                    $templates->unsetLastClassify($c_arr);
+                                    $c_arr = array_merge($c_arr);
+                                    $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
+                                } else {
+                                    $c_arr = $classify->toTree($c_arr);
+                                    $templates->unsetFalseClassify($c_arr, array(1, 2, 3, 4));
+                                    $templates->unsetLastClassify($c_arr);
+                                    $c_arr = array_merge($c_arr);
+                                    $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
+                                }
+                            } else {
                                 $c_arr = $classify->toTree($c_arr);
                                 $templates->unsetFalseClassify($c_arr, array(1, 2, 3));
                                 $templates->unsetLastClassify($c_arr);
                                 $c_arr = array_merge($c_arr);
                                 $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
-                            } elseif ($v['config']['filter'] == 'ALL') {
-                                $c_arr = $classify->toTree($c_arr);
-                                $templates->unsetFalseClassify($c_arr, array(1, 2, 3, 4, 6));
-                                $templates->unsetLastClassify($c_arr);
-                                $c_arr = array_merge($c_arr);
-                                $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
-                            } else {
-                                $c_arr = $classify->toTree($c_arr);
-                                $templates->unsetFalseClassify($c_arr, array(1, 2, 3, 4));
-                                $templates->unsetLastClassify($c_arr);
-                                $c_arr = array_merge($c_arr);
-                                $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
                             }
                         } else {
-                            $c_arr = $classify->toTree($c_arr);
-                            $templates->unsetFalseClassify($c_arr, array(1, 2, 3));
-                            $templates->unsetLastClassify($c_arr);
-                            $c_arr = array_merge($c_arr);
-                            $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
-                        }
-                    } else {
-                        if (isset($v['config']['filter'])) {
-                            if ($v['config']['filter'] == 'page') {
-                                $c_arr[0]['id'] = Classify::where('cus_id', $this->cus_id)->where('type', 4)->where($this->type . '_show', 1)->pluck('id');
-                            } elseif ($v['config']['filter'] == 'list') {
+                            if (isset($v['config']['filter'])) {
+                                if ($v['config']['filter'] == 'page') {
+                                    $c_arr[0]['id'] = Classify::where('cus_id', $this->cus_id)->where('type', 4)->where($this->type . '_show', 1)->pluck('id');
+                                } elseif ($v['config']['filter'] == 'list') {
+                                    $c_arr[0]['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3))->where($this->type . '_show', 1)->pluck('id');
+                                    $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
+                                } elseif ($v['config']['filter'] == 'ALL') {
+                                    $c_arr[0]['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3, 4, 6))->where($this->type . '_show', 1)->pluck('id');
+                                    $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
+                                } else {
+                                    $c_arr[0]['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3, 4))->where($this->type . '_show', 1)->pluck('id');
+                                    $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
+                                }
+                            } else {
                                 $c_arr[0]['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3))->where($this->type . '_show', 1)->pluck('id');
                                 $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
-                            } elseif ($v['config']['filter'] == 'ALL') {
-                                $c_arr[0]['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3, 4, 6))->where($this->type . '_show', 1)->pluck('id');
-                                $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
-                            } else {
-                                $c_arr[0]['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3, 4))->where($this->type . '_show', 1)->pluck('id');
-                                $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
                             }
-                        } else {
-                            $c_arr[0]['id'] = Classify::where('cus_id', $this->cus_id)->whereIn('type', array(1, 2, 3))->where($this->type . '_show', 1)->pluck('id');
-                            $v['config']['limit'] = isset($v['config']['limit']) ? $v['config']['limit'] : 20;
                         }
-                    }
-                    $ids = "";
-                    $num = $v['config']['limit'];
-                    if (count($c_arr)) {
-                        $ids = array();
-                        for ($i = 0; $i < $num; $i++) {
-                            $ids[$i] = $c_arr[0]['id'];
+                        $ids = "";
+                        $num = $v['config']['limit'];
+                        if (count($c_arr)) {
+                            $ids = array();
+                            for ($i = 0; $i < $num; $i++) {
+                                $ids[$i] = $c_arr[0]['id'];
+                            }
                         }
-                    }
-                    $v['config']['ids'] = $ids;
+                        $v['config']['ids'] = $ids;
+                        break;
+                    case 'form':
+//                        var_dump($v);
+//                        exit;
+                        break;
+                    default:
+                        break;
                 }
             }
         }
-
         return $result;
     }
 
@@ -371,21 +378,24 @@ class PrintController extends BaseController {
         $slimming = array();
         foreach ($data as $k => $v) {
             $checkDataK = true;
-            foreach ($v as $dk => $vv)
-                if (!preg_match('/^(value|type|description|config)$/', $dk))
+            foreach ($v as $dk => $vv) {
+                if (!preg_match('/^(value|type|description|config)$/', $dk)) {
                     $checkDataK = false;
-            if (!$checkDataK || !array_key_exists('value', $v) || !array_key_exists('type', $v) || !array_key_exists('description', $v))
-                dd('json文件中每个变量的元素必须包含【value、type、description】元素，可选【config】\r\n详情参见：http://pme/wiki/doku.php?id=ued:template:json');
+                }
+            }
+            if (!$checkDataK || !array_key_exists('value', $v) || !array_key_exists('type', $v) || !array_key_exists('description', $v)) {
+                dd('json文件中每个变量的元素必须包含【value、type、description】元素，可选【config】\r\n详情参见：http://pme.eexx.me/doku.php?id=ued:template:json');
+            }
             $slimming[$k] = $v;
             // PHP端数据填充与验证
             switch ($v['type']) {
                 case 'text':
                     if (!is_string($slimming[$k]['value']))
-                        dd('json文件中type为【text】格式的value值必须为【字符串】\r\n详情参见：http://pme/wiki/doku.php?id=ued:template:json#typetext');
+                        dd('json文件中type为【text】格式的value值必须为【字符串】\r\n详情参见：http://pme.eexx.me/doku.php?id=ued:template:json#typetext');
                     break;
                 case 'textarea':
                     if (!is_string($slimming[$k]['value']))
-                        dd('json文件中type为【textarea】格式的value值必须为【字符串】\r\n详情参见：http://pme/wiki/doku.php?id=ued:template:json#typetextarea');
+                        dd('json文件中type为【textarea】格式的value值必须为【字符串】\r\n详情参见：http://pme.eexx.me/doku.php?id=ued:template:json#typetextarea');
                     $slimming[$k] = preg_replace("/\r\n/", "<br />", $slimming[$k]);
                     $slimming[$k] = preg_replace("/\n/", "<br />", $slimming[$k]);
                     break;
@@ -395,13 +405,13 @@ class PrintController extends BaseController {
                       echo json_encode(array(
                       'err' => 2001,
                       'data' => null,
-                      'msg' => 'json文件中type为【image】格式的value值必须包含【title、image、link】元素，可选【description】\r\n详情参见：http://pme/wiki/doku.php?id=ued:template:json#typeimage'
+                      'msg' => 'json文件中type为【image】格式的value值必须包含【title、image、link】元素，可选【description】\r\n详情参见：http://pme.eexx.me/doku.php?id=ued:template:json#typeimage'
                       ));
                       exit;
                       }
 
                       if (!array_key_exists('config', $slimming[$k]) || !is_array($slimming[$k]['config']) || (!is_numeric($slimming[$k]['config']['width']) && !is_numeric($slimming[$k]['config']['height']))) {
-                      $msg = 'json文件中type为【image】格式应配置【config】的【width】【height】配置项\r\n详情参见：http://pme/wiki/doku.php?id=ued:template:json#typeimage';
+                      $msg = 'json文件中type为【image】格式应配置【config】的【width】【height】配置项\r\n详情参见：http://pme.eexx.me/doku.php?id=ued:template:json#typeimage';
                       if (array_key_exists('config', $slimming[$k]) && is_array($slimming[$k]['config']) && array_key_exists('forcesize', $slimming[$k]['config']) && $slimming[$k]['config']['forcesize'] === true) {
                       dd($msg);
                       }else{
@@ -413,14 +423,17 @@ class PrintController extends BaseController {
                     break;
                 case 'images':
                     if (!is_array($slimming[$k]) || !count($slimming[$k]))
-                        dd('json文件中type为【images】格式不正确！\r\n详情参见：http://pme/wiki/doku.php?id=ued:template:json#typeimages');
+                        dd('json文件中type为【images】格式不正确！\r\n详情参见：http://pme.eexx.me/doku.php?id=ued:template:json#typeimages');
                     foreach ($slimming[$k]['value'] as $key => $val) {
-                        if (!array_key_exists('title', $val) || !array_key_exists('image', $val) || !array_key_exists('link', $val))
-                            dd('json文件中type为【images】格式value值的每个子元素必须包含【title、image、link】元素，可选【description】\r\n详情参见：http://pme/wiki/doku.php?id=ued:template:json#typeimages');
+                        if (is_array($val)) {
+                            if (!array_key_exists('title', $val) || !array_key_exists('image', $val) || !array_key_exists('link', $val)) {
+                                dd('json文件中type为【images】格式value值的每个子元素必须包含【title、image、link】元素，可选【description】\r\n详情参见：http://pme.eexx.me/doku.php?id=ued:template:json#typeimages');
+                            }
+                        }
                     }
                     /*
                       if (!array_key_exists('config',$slimming[$k]) || !is_array($slimming[$k]['config']) || (!is_numeric($slimming[$k]['config']['width']) && !is_numeric($slimming[$k]['config']['height']))) {
-                      $msg = 'json文件中type为【images】格式应配置【config】的【width】【height】配置项\r\n详情参见：http://pme/wiki/doku.php?id=ued:template:json#typeimages';
+                      $msg = 'json文件中type为【images】格式应配置【config】的【width】【height】配置项\r\n详情参见：http://pme.eexx.me/doku.php?id=ued:template:json#typeimages';
                       if (array_key_exists('config', $slimming[$k]) && is_array($slimming[$k]['config']) && array_key_exists('forcesize', $slimming[$k]['config']) && $slimming[$k]['config']['forcesize'] === true) {
                       dd($msg);
                       }else{
@@ -433,7 +446,6 @@ class PrintController extends BaseController {
                         $slimming[$k]['config'] = array();
                     $slimming[$k]['config']['filter'] = "page";
                     $slimming[$k]['type'] = "list";
-
                 case 'nav':
                     if (!array_key_exists('config', $slimming[$k]) || !is_array($slimming[$k]['config']))
                         $slimming[$k]['config'] = array();
@@ -446,7 +458,6 @@ class PrintController extends BaseController {
                     if (!array_key_exists('filter', $slimming[$k]['config']) || empty($slimming[$k]['config']['filter']))
                         $slimming[$k]['config']['filter'] = "ALL";
                     $slimming[$k]['config']['limit'] = array_key_exists('limit', $slimming[$k]['config']) ? $slimming[$k]['config']['limit'] : 0;
-
                 case 'list':
                     if (!array_key_exists('config', $slimming[$k]) || !is_array($slimming[$k]['config']))
                         $slimming[$k]['config'] = array();
@@ -457,18 +468,16 @@ class PrintController extends BaseController {
                     break;
                 case 'quickbar':
                     //if ($this->type == 'pc') dd('PC模板的json文件中没有type为【quickbar】的变量！\r\n如果你现在制作的是手机模板，请修改config.ini文件对应参数。详情参见：http://pme.eexx.me/doku.php?id=ued:template:config#config_%E6%A8%A1%E6%9D%BF%E9%85%8D%E7%BD%AE%E9%83%A8%E5%88%86');
-                    if (!is_string($slimming[$k]) || !count($slimming[$k]))
-                        dd('json文件中type为【navs】格式不正确！\r\n详情参见：http://pme/wiki/doku.php?id=ued:template:mindex#%E5%BA%95%E9%83%A8%E5%AF%BC%E8%88%AA%E5%AE%9A%E4%B9%89%E6%96%B9%E6%B3%95');
+                    if (!is_string($slimming[$k]) || !count($slimming[$k])) {
+                        dd('json文件中type为【navs】格式不正确！\r\n详情参见：http://pme.eexx.me/doku.php?id=ued:template:mindex#%E5%BA%95%E9%83%A8%E5%AF%BC%E8%88%AA%E5%AE%9A%E4%B9%89%E6%96%B9%E6%B3%95');
+                    }
                     foreach ($slimming[$k] as $i => $v) {
-                        if (!array_key_exists('name', $v) ||
-                                !array_key_exists('image', $v) ||
-                                !array_key_exists('data', $v) ||
-                                !array_key_exists('type', $v) ||
-                                !array_key_exists('enable', $v)
-                        )
-                            dd('json文件中type为【navs】格式value值的每个子元素必须包【name、image、data、type、enable】元素，可选【childmenu】\r\n详情参见：http://pme/wiki/doku.php?id=ued:template:mindex#%E5%BA%95%E9%83%A8%E5%AF%BC%E8%88%AA%E5%AE%9A%E4%B9%89%E6%96%B9%E6%B3%95');
-                        if (!preg_match("/^(tel|sms|im|link|share)$/", $v['type']))
-                            dd('json文件中type为【navs】格式value值的子元素的【type】值只能为【tel、sms、im、link、share】其中之一\r\n详情参见：http://pme/wiki/doku.php?id=ued:template:mindex#%E5%BA%95%E9%83%A8%E5%AF%BC%E8%88%AA%E5%AE%9A%E4%B9%89%E6%96%B9%E6%B3%95');
+                        if (!array_key_exists('name', $v) || !array_key_exists('image', $v) || !array_key_exists('data', $v) || !array_key_exists('type', $v) || !array_key_exists('enable', $v)) {
+                            dd('json文件中type为【navs】格式value值的每个子元素必须包【name、image、data、type、enable】元素，可选【childmenu】\r\n详情参见：http://pme.eexx.me/doku.php?id=ued:template:mindex#%E5%BA%95%E9%83%A8%E5%AF%BC%E8%88%AA%E5%AE%9A%E4%B9%89%E6%96%B9%E6%B3%95');
+                        }
+                        if (!preg_match("/^(tel|sms|im|link|share)$/", $v['type'])) {
+                            dd('json文件中type为【navs】格式value值的子元素的【type】值只能为【tel、sms、im、link、share】其中之一\r\n详情参见：http://pme.eexx.me/doku.php?id=ued:template:mindex#%E5%BA%95%E9%83%A8%E5%AF%BC%E8%88%AA%E5%AE%9A%E4%B9%89%E6%96%B9%E6%B3%95');
+                        }
                         if (!array_key_exists('enable', $v)) {
                             unset($slimming[$k][$i]);
                         }
@@ -506,6 +515,9 @@ class PrintController extends BaseController {
                                 $slimming[$k]['link'] = $v['data'];
                         }
                     }
+                    break;
+                case 'form':
+                    $slimming[$k] = $v;
                     break;
             }
         }
@@ -582,19 +594,19 @@ class PrintController extends BaseController {
         $customerC = new CustomerController;
         $domain = $customerC->getSwitchCustomer(); //双站用户
         if (!empty($domain)) {
-            if ($flagPlatform == 'GM') {//===手机
+            if ($flagPlatform == 'GM') {//===手机===
                 $language_url = $domain['switch_mobile_domain'];
-            } elseif ($flagPlatform == 'GP') {//===PC
+            } elseif ($flagPlatform == 'GP') {//===PC===
                 $language_url = $domain['switch_pc_domain'];
             }
-            if ($flagLanguage == 9) {//===英文
+            if ($flagLanguage == 9) {//===英文===
                 $language = '中文版';
-            } elseif ($flagLanguage == 0) {//===中文
+            } elseif ($flagLanguage == 0) {//===中文===
                 $language = 'English';
             }
         }
-        if ($result != 0) {
-            if (trim($config_arr[1]) != "custom") {
+        if ($result != 0) {//===?===
+            if (trim($config_arr[1]) != "custom") {//===非自定义===
                 $quickbar_arr = explode('|', $config_arr[1]);
                 $config['enable'] = true;
                 if ($this->type == 'pc') {
@@ -686,97 +698,46 @@ class PrintController extends BaseController {
                             }
                         }
                     }
-
                     //TODO:删除enable_pc/enable_mobile键值
                     unset($quickbar[$key]['enable_pc']);
                     unset($quickbar[$key]['enable_mobile']);
                 }
-//                foreach($quickbar as $key=>$val){
-//   
-//                        }
-                // print_r($quickbar);exit;
-                //quickbar按钮
-//                $global_data=WebsiteConfig::where('cus_id',$this->cus_id)->where('type',2)->where('template_id',$this->tpl_id)->pluck('value');
-//                if($global_data){
-//                    $global_data = unserialize($global_data);
-//                    $global_data=$this->detailList($global_data);
-//                }else{
-//                    $global_data=$this->mobilePageList('global',true);
-//                    $global_data=$this->detailList($global_data);
-//                }
-//                $this->replaceUrl($global_data);
-//                $quickbar="";
-//                if(isset($global_data['bottomnavs']) && is_array($global_data['bottomnavs'])){
-//                    foreach($global_data['bottomnavs'] as &$val){
-//                        $val['id']=isset($val['id'])?$val['id']:'';                 
-//                        switch($val['type']){
-//                            case "tel" :
-//                                $val['icon']=isset($val['icon'])?$val['icon']:'&#xe602;';
-//                                $val['link']="tel:".$val['data'];
-//                                break;
-//                            case "sms" :
-//                                $val['icon']=isset($val['icon'])?$val['icon']:'&#xe604;';
-//                                $val['link']="sms:".$val['data'];
-//                                break;
-//                            case "im"  :
-//                                $val['icon']=isset($val['icon'])?$val['icon']:'&#xe606;';
-//                                $val['link']=$val['data'];
-//                                $val['enable']=0;
-//                                break;
-//                            case "share" :
-//                                $val['icon']=isset($val['icon'])?$val['icon']:'&#xe600;';
-//                                $val['link']='javascript:void(0);';
-//                                break;
-//                            case "link" :                 
-//                                $val['icon']=isset($val['icon'])?$val['icon']:'&#xe605;';
-//                                $address=CustomerInfo::where('cus_id',$this->cus_id)->pluck('address');
-//                                $val['link']='http://map.baidu.com/mobile/webapp/search/search/qt=s&wd='.$address.'/vt=map/?fromhash=1';
-//                                break;
-//                            }
-//                    }
-//                    $quickbar=$global_data['bottomnavs'];
-//                }else{
-//                    $quickbar=[
-//                        ['name'=>'电话','icon'=>'&#xe602;','image'=>'icon/2.png','data'=>'','link'=>'tel://','type'=>'tel','enable'=>1],
-//                        ['name'=>'短信','icon'=>'&#xe604;','image'=>'icon/3.png','data'=>'','link'=>'sms://','type'=>'sms','enable'=>1],
-//                        ['name'=>'咨询','icon'=>'&#xe606;','image'=>'icon/5.png','data'=>'10000@QQ','link'=>'javascript:void(0);','type'=>'im','enable'=>0],
-//                        ['name'=>'地图','icon'=>'&#xe605;','image'=>'icon/4.png','data'=>'','link'=>'http://map.baidu.com','type'=>'link','enable'=>1],
-//                        ['name'=>'分享','icon'=>'&#xe600;','image'=>'icon/8.png','data'=>'','link'=>'javascript:void(0);','type'=>'share','enable'=>1],
-//                        ['name'=>'搜索','icon'=>'&#xe636;','image'=>'icon/8.png','data'=>'','link'=>'javascript:void(0);','type'=>'search','enable'=>0],
-//                    ];  
-//                }
                 //快捷导航
-                $navs = Classify::where('cus_id', $this->cus_id)->where('mobile_show', 1)->select('id', 'type', 'open_page', 'name', 'en_name', 'icon', 'url', 'p_id', 'en_name')->OrderBy('sort', 'asc')->get()->toArray();
+                $navs = Classify::where('cus_id', $this->cus_id)->where('mobile_show', 1)->select('id', 'type', 'open_page', 'name', 'en_name', 'view_name', 'icon', 'url', 'p_id', 'en_name')->OrderBy('sort', 'asc')->get()->toArray();
                 if (count($navs)) {
                     if ($this->showtype == 'preview') {
                         foreach ($navs as &$nav) {
                             $nav['icon'] = '<i class="iconfont">' . $nav['icon'] . '</i>';
                             if (in_array($nav['type'], array('1', '2', '3', '4', '5', '9'))) {
-                                $nav['url'] = $this->domain . "/category/" . $nav['id'];
+                                if ($nav['view_name']) {
+                                    $nav['url'] = $this->domain . "/category/" . $nav['view_name'];
+                                } else {
+                                    $nav['url'] = $this->domain . "/category/" . $nav['id'];
+                                }
                             }
                         }
                     } else {
                         foreach ($navs as &$nav) {
                             $nav['icon'] = '<i class="iconfont">' . $nav['icon'] . '</i>';
                             if (in_array($nav['type'], array('1', '2', '3', '4', '5', '9'))) {
-                                $nav['url'] = $this->domain . "/category/" . $nav['id'] . '.html';
+                                if ($nav['view_name']) {
+                                    $nav['url'] = $this->domain . "/category/" . $nav['view_name'] . '.html';
+                                } else {
+                                    $nav['url'] = $this->domain . "/category/" . $nav['id'] . '.html';
+                                }
                             }
                         }
                     }
                 }
                 $classify = new Classify();
-
                 $catlist = $classify->toTree($navs);
                 if (!is_array($catlist)) {
                     $catlist = array();
                 }
                 array_unshift($catlist, array('id' => null, 'name' => '首页', 'en_name' => 'Home', 'url' => $this->site_url, 'childmenu' => null));
-//                if (!empty($domain)) {
-//                    $catlist[] = array('id' => null, 'name' => $language, 'en_name' => 'language', 'url' => $language_url, 'childmenu' => null); //===
-//                }
                 $quickbarCallback = array('config' => $config, 'quickbar' => $quickbar, 'catlist' => $catlist);
                 if ($this->showtype == 'preview') {
-                    echo "quickbarCallback(" . json_encode($quickbarCallback) . ")";
+                    echo "quickbarCallback(" . json_encode($quickbarCallback) . ")"; //===返回===
                 } else {
                     if ($this->type == 'pc') {
                         file_put_contents(public_path("customers/" . $this->customer . '/quickbar.json'), "quickbarCallback(" . json_encode($quickbarCallback) . ")");
@@ -784,7 +745,7 @@ class PrintController extends BaseController {
                         file_put_contents(public_path("customers/" . $this->customer . '/mobile' . '/quickbar.json'), "quickbarCallback(" . json_encode($quickbarCallback) . ")");
                     }
                 }
-            } else {
+            } else {//===自定义===
                 $config_arr[1] = '#AAA,#BBB,#FFF|tel';
                 $quickbar_arr = explode('|', $config_arr[1]);
                 $tmpStyleConfigQuickbar = explode(',', $quickbar_arr[0]);
@@ -858,20 +819,28 @@ class PrintController extends BaseController {
                     }
                 }
 
-                $navs = Classify::where('cus_id', $this->cus_id)->where('mobile_show', 1)->select('id', 'type', 'name', 'en_name', 'icon', 'url', 'p_id', 'en_name')->OrderBy('sort', 'asc')->get()->toArray();
+                $navs = Classify::where('cus_id', $this->cus_id)->where('mobile_show', 1)->select('id', 'type', 'name', 'en_name', 'view_name', 'icon', 'url', 'p_id', 'en_name')->OrderBy('sort', 'asc')->get()->toArray();
                 if (count($navs)) {
                     if ($this->showtype == 'preview') {
                         foreach ($navs as &$nav) {
                             $nav['icon'] = '<i class="iconfont">' . $nav['icon'] . '</i>';
                             if (in_array($nav['type'], array('1', '2', '3', '4'))) {
-                                $nav['url'] = $this->domain . "/category/" . $nav['id'];
+                                if ($nav['view_name']) {
+                                    $nav['url'] = $this->domain . "/category/" . $nav['view_name'];
+                                } else {
+                                    $nav['url'] = $this->domain . "/category/" . $nav['id'];
+                                }
                             }
                         }
                     } else {
                         foreach ($navs as &$nav) {
                             $nav['icon'] = '<i class="iconfont">' . $nav['icon'] . '</i>';
                             if (in_array($nav['type'], array('1', '2', '3', '4'))) {
-                                $nav['url'] = $this->domain . "/category/" . $nav['id'] . '.html';
+                                if ($nav['view_name']) {
+                                    $nav['url'] = $this->domain . "/category/" . $nav['view_name'] . '.html';
+                                } else {
+                                    $nav['url'] = $this->domain . "/category/" . $nav['id'] . '.html';
+                                }
                             }
                         }
                     }
@@ -886,7 +855,6 @@ class PrintController extends BaseController {
                 if (!empty($domain)) {
                     $catlist[] = array('id' => null, 'name' => $language, 'en_name' => 'language', 'url' => $language_url, 'childmenu' => null); //===
                 }
-//                $catlist[] = array('id' => null, 'name' => $language, 'en_name' => 'language', 'url' => $language_url, 'childmenu' => null); //===
                 $quickbarCallback = array('config' => $config, 'quickbar' => $quickbar, 'catlist' => $catlist);
                 if ($this->showtype == 'preview') {
                     echo "quickbarCallback(" . json_encode($quickbarCallback) . ")";
@@ -1038,7 +1006,7 @@ class PrintController extends BaseController {
             } else {
                 $footprint = $customer_info->footer . '<p>技术支持：<a href="' . $_href . '">' . $_copyright . '</a> ' . $talent_support . '</p>';
             }
-            //===end===
+            //===版权选择_end===
             $footscript = $customer_info->pc_footer_script;
             $footscript .= '<script type="text/javascript" src="/quickbar/js/quickbar.js?' . $this->cus_id . 'pc"></script>';
             $footscript .= '<script type="text/javascript" src="http://swap.5067.org/admin/statis.php?cus_id=' . $this->cus_id . '&platform=pc"></script>'; //===添加统计代码PC===
@@ -1065,7 +1033,7 @@ class PrintController extends BaseController {
             $site_another_url = $this->showtype == 'preview' ? '' : $customer_info->pc_domain;
             $config_arr = parse_ini_file(public_path('/templates/' . $this->themename) . '/config.ini', true);
             if (!is_array($config_arr))
-                dd('【config.ini】文件不存在！文件格式说明详见：http://pme/wiki/doku.php?id=ued:template:config');
+                dd('【config.ini】文件不存在！文件格式说明详见：http://pme.eexx.me/doku.php?id=ued:template:config');
         }
         //获取global信息
         if ($this->type == 'pc') {
@@ -1270,6 +1238,7 @@ class PrintController extends BaseController {
                                 $articles = Articles::where($this->type . '_show', '1')->where('cus_id', $this->cus_id)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
                             }
                         }
+
                         if ($articles->count() != 0) {
                             $abc = [];
                             foreach ($articles as $key => $d) {
@@ -1283,10 +1252,18 @@ class PrintController extends BaseController {
                                 $d_c_info = Classify::where('id', $d->c_id)->first();
                                 $abc['data'][$key]['image'] = $d->img ? ($this->source_dir . 'l/articles/' . $d->img) : '';
                                 if ($this->showtype == 'preview') {
-                                    $abc['data'][$key]['category']['link'] = $this->domain . '/category/' . $d->c_id;
+                                    if ($cate[$d->c_id]) {//===判断栏目是否有别名===
+                                        $abc['data'][$key]['category']['link'] = $this->domain . '/category/' . $cate[$d->c_id];
+                                    } else {
+                                        $abc['data'][$key]['category']['link'] = $this->domain . '/category/' . $d->c_id;
+                                    }
                                     $abc['data'][$key]['link'] = $this->domain . '/detail/' . $d->id;
                                 } else {
-                                    $abc['data'][$key]['category']['link'] = $this->domain . '/category/' . $d->c_id . '.html';
+                                    if ($cate[$d->c_id]) {//===判断栏目是否有别名===
+                                        $abc['data'][$key]['category']['link'] = $this->domain . '/category/' . $cate[$d->c_id] . '.html';
+                                    } else {
+                                        $abc['data'][$key]['category']['link'] = $this->domain . '/category/' . $d->c_id . '.html';
+                                    }
                                     $abc['data'][$key]['link'] = $this->domain . '/detail/' . $d->id . '.html';
                                 }
                                 if ($d->use_url) {
@@ -1343,10 +1320,18 @@ class PrintController extends BaseController {
                             $d_c_info = Classify::where('id', $d->c_id)->first();
                             $abc['data'][$key]['image'] = $d->img ? ($this->source_dir . 'l/articles/' . $d->img) : '';
                             if ($this->showtype == 'preview') {
-                                $abc['data'][$key]['category']['link'] = $this->domain . '/category/' . $d->c_id;
+                                if ($cate[$d->c_id]) {//===判断栏目是否有别名===
+                                    $abc['data'][$key]['category']['link'] = $this->domain . '/category/' . $cate[$d->c_id];
+                                } else {
+                                    $abc['data'][$key]['category']['link'] = $this->domain . '/category/' . $d->c_id;
+                                }
                                 $abc['data'][$key]['link'] = $this->domain . '/detail/' . $d->id;
                             } else {
-                                $abc['data'][$key]['category']['link'] = $this->domain . '/category/' . $d->c_id . '.html';
+                                if ($cate[$d->c_id]) {//===判断栏目是否有别名===
+                                    $abc['data'][$key]['category']['link'] = $this->domain . '/category/' . $cate[$d->c_id] . '.html';
+                                } else {
+                                    $abc['data'][$key]['category']['link'] = $this->domain . '/category/' . $d->c_id . '.html';
+                                }
                                 $abc['data'][$key]['link'] = $this->domain . '/detail/' . $d->id . '.html';
                             }
                             if ($d->use_url) {
@@ -1413,10 +1398,18 @@ class PrintController extends BaseController {
                                     $d_c_info = Classify::where('id', $d->c_id)->first();
                                     $abc[$key]['image'] = $d->img ? ($this->source_dir . 'l/articles/' . $d->img) : '';
                                     if ($this->showtype == 'preview') {
-                                        $abc[$key]['category']['link'] = $this->domain . '/category/' . $d->c_id;
+                                        if ($cate[$d->c_id]) {//===判断栏目是否有别名===
+                                            $abc[$key]['category']['link'] = $this->domain . '/category/' . $cate[$d->c_id];
+                                        } else {
+                                            $abc[$key]['category']['link'] = $this->domain . '/category/' . $d->c_id;
+                                        }
                                         $abc[$key]['link'] = $this->domain . '/detail/' . $d->id;
                                     } else {
-                                        $abc[$key]['category']['link'] = $this->domain . '/category/' . $d->c_id . '.html';
+                                        if ($cate[$d->c_id]) {//===判断栏目是否有别名===
+                                            $abc[$key]['category']['link'] = $this->domain . '/category/' . $cate[$d->c_id] . '.html';
+                                        } else {
+                                            $abc[$key]['category']['link'] = $this->domain . '/category/' . $d->c_id . '.html';
+                                        }
                                         $abc[$key]['link'] = $this->domain . '/detail/' . $d->id . '.html';
                                     }
                                     if ($d->use_url) {
@@ -1459,10 +1452,18 @@ class PrintController extends BaseController {
                     $v['value']['link'] = '';
                     if ($this->showtype == 'preview') {
                         $v['value']['image'] = $c_info->img ? ($this->source_dir . 'l/category/' . $c_info->img) : '';
-                        $v['value']['link'] = $this->domain . '/category/' . $c_info->id;
+                        if ($cate[$c_info->c_id]) {//===判断栏目是否有别名===
+                            $v['value']['link'] = $this->domain . '/category/' . $cate[$c_info->c_id];
+                        } else {
+                            $v['value']['link'] = $this->domain . '/category/' . $c_info->id;
+                        }
                     } else {
                         $v['value']['image'] = $c_info->img ? ($this->domain . '/images/l/category/' . $c_info->img) : '';
-                        $v['value']['link'] = $this->domain . '/category/' . $c_info->id . '.html';
+                        if ($cate[$c_info->c_id]) {//===判断栏目是否有别名===
+                            $v['value']['link'] = $this->domain . '/category/' . $cate[$c_info->c_id] . '.html';
+                        } else {
+                            $v['value']['link'] = $this->domain . '/category/' . $c_info->id . '.html';
+                        }
                     }
                     $v['value']['description'] = $c_info->meta_description;
                     $v['value']['type'] = $c_info->type;
@@ -1470,15 +1471,25 @@ class PrintController extends BaseController {
                 $childrenMenu = array();
                 if ($cids) {
                     foreach ($cids as $cid) {
-                        $c_c_info = Classify::where('id', $cid)->where('cus_id', $this->cus_id)->where($this->type . '_show', 1)->select('id', 'name', 'type', 'url', 'open_page', 'en_name', 'img as image', 'icon', 'meta_description as description', 'p_id')->first();
+                        $c_c_info = Classify::where('id', $cid)->where('cus_id', $this->cus_id)->where($this->type . '_show', 1)->select('id', 'name', 'type', 'url', 'open_page', 'en_name', 'view_name', 'img as image', 'icon', 'meta_description as description', 'p_id')->first();
                         if ($c_c_info) {
                             $c_c_info = $c_c_info->toArray();
                             if ($this->showtype == 'preview') {
-                                $c_c_info['image'] = ($c_c_info ? $this->source_dir . 'l/category/' . $c_c_info['image'] : '');
-                                $c_c_info['link'] = ($c_c_info ? $this->domain . '/category/' . $c_c_info['id'] : '');
+                                if ($c_c_info) {//===判断栏目是否有别名===
+                                    $c_c_info['image'] = $this->source_dir . 'l/category/' . $c_c_info['image'];
+                                    $c_c_info['link'] = ($c_c_info['view_name'] ? $this->domain . '/category/' . $c_c_info['view_name'] : $this->domain . '/category/' . $c_c_info['id'] );
+                                } else {
+                                    $c_c_info['image'] = '';
+                                    $c_c_info['link'] = '';
+                                }
                             } else {
-                                $c_c_info['image'] = ($c_c_info ? $this->domain . '/images/l/category/' . $c_c_info['image'] : '');
-                                $c_c_info['link'] = ($c_c_info ? $this->domain . '/category/' . $c_c_info['id'] . '.html' : '');
+                                if ($c_c_info) {//===判断栏目是否有别名===
+                                    $c_c_info['image'] = $this->source_dir . 'l/category/' . $c_c_info['image'];
+                                    $c_c_info['link'] = ($c_c_info['view_name'] ? $this->domain . '/category/' . $c_c_info['view_name'] . '.html' : $this->domain . '/category/' . $c_c_info['id'] . '.html');
+                                } else {
+                                    $c_c_info['image'] = '';
+                                    $c_c_info['link'] = '';
+                                }
                             }
                             $c_c_info['current'] = 0;
                             $c_c_info['selected'] = 0;
@@ -1501,11 +1512,21 @@ class PrintController extends BaseController {
                         $v['value'][$i]['en_name'] = $c_info ? $c_info->en_name : '';
                         $v['value'][$i]['icon'] = $c_info ? '<i class="iconfont">' . $c_info->icon . '</i>' : '';
                         if ($this->showtype == 'preview') {
-                            $v['value'][$i]['image'] = $c_info ? $this->source_dir . 'l/category/' . $c_info->img : '';
-                            $v['value'][$i]['link'] = $c_info ? $this->domain . '/category/' . $c_info->id : '';
+                            if ($c_info) {//===判断栏目是否有别名===
+                                $v['value'][$i]['image'] = $this->source_dir . 'l/category/' . $c_info->img;
+                                $v['value'][$i]['link'] = ($cate[$c_info->id] ? $this->domain . '/category/' . $cate[$c_info->id] : $this->domain . '/category/' . $c_info->id);
+                            } else {
+                                $v['value'][$i]['image'] = '';
+                                $v['value'][$i]['link'] = '';
+                            }
                         } else {
-                            $v['value'][$i]['image'] = $c_info ? $this->domain . '/images/l/category/' . $c_info->img : '';
-                            $v['value'][$i]['link'] = $c_info ? $this->domain . '/category/' . $c_info->id . '.html' : '';
+                            if ($c_info) {//===判断栏目是否有别名===
+                                $v['value'][$i]['image'] = $this->domain . '/images/l/category/' . $c_info->img;
+                                $v['value'][$i]['link'] = ($cate[$c_info->id] ? $this->domain . '/category/' . $cate[$c_info->id] . '.html' : $this->domain . '/category/' . $c_info->id . '.html');
+                            } else {
+                                $v['value'][$i]['image'] = '';
+                                $v['value'][$i]['link'] = '';
+                            }
                         }
                         $v['value'][$i]['current'] = 0;
                         $v['value'][$i]['selected'] = 0;
@@ -2234,8 +2255,6 @@ class PrintController extends BaseController {
             $mIndexCats[$key]['childmenu'] = $classify->toTree($mIndexCats, $mIndexCats[$key]['id']);
         }
         $result['mIndexCats'] = $mIndexCats;
-        //print_r($mIndexCats);
-        //exit;
         $content = $publicdata['repleace']['index.html'];
         $content = preg_replace($publicdata['pattern'], $publicdata['repleace'], $content);
         $smarty = new Smarty;
@@ -2584,7 +2603,6 @@ class PrintController extends BaseController {
             $formCdata = $formC->getFormdataForPrint($form_id);
         } else {//跳转404
         }
-        //echo $viewname;exit;
         if (in_array($classify->type, array(1, 2, 3, 4, 5, 9))) {
             $sub = str_replace('-', '_', $viewname);
             $data = $this->pagedata($viewname, $publicdata['pagedata']);
@@ -2793,7 +2811,12 @@ class PrintController extends BaseController {
                 $the_result['list']['data'] = $index_list['data'];
                 $the_result['list']['total'] = $index_list['page_links']['total'];
             }
-            $path = $this->type == 'pc' ? public_path('customers/' . $this->customer . '/category/' . $id . '.html') : public_path('customers/' . $this->customer . '/mobile/category/' . $id . '.html');
+            //===页面名字.html===
+            if ($classify->view_name) {
+                $path = $this->type == 'pc' ? public_path('customers/' . $this->customer . '/category/' . $classify->view_name . '.html') : public_path('customers/' . $this->customer . '/mobile/category/' . $classify->view_name . '.html');
+            } else {
+                $path = $this->type == 'pc' ? public_path('customers/' . $this->customer . '/category/' . $id . '.html') : public_path('customers/' . $this->customer . '/mobile/category/' . $id . '.html');
+            }
             $content = $publicdata['repleace'][$viewname . '.html'];
             $content = preg_replace($publicdata['pattern'], $publicdata['repleace'], $content);
             $output = $this->pushdisplay($the_result, $content);
@@ -2820,7 +2843,13 @@ class PrintController extends BaseController {
                     $the_result['page_links'] = $index_list['page_links'];
                     $the_result['list']['data'] = $index_list['data'];
                     $the_result['list']['total'] = $index_list['page_links']['total'];
-                    $path = $this->type == 'pc' ? public_path('customers/' . $this->customer . '/category/' . $id . '_' . $i . '.html') : public_path('customers/' . $this->customer . '/mobile/category/' . $id . '_' . $i . '.html');
+                    //===页面名字.html===
+                    if ($classify->view_name) {
+                        $path = $this->type == 'pc' ? public_path('customers/' . $this->customer . '/category/' . $classify->view_name . '_' . $i . '.html') : public_path('customers/' . $this->customer . '/mobile/category/' . $classify->view_name . '_' . $i . '.html');
+                    } else {
+                        $path = $this->type == 'pc' ? public_path('customers/' . $this->customer . '/category/' . $id . '_' . $i . '.html') : public_path('customers/' . $this->customer . '/mobile/category/' . $id . '_' . $i . '.html');
+                    }
+                    //===end===
                     $output = $this->pushdisplay($the_result, $content);
                     if (!count($result['footer_navs'])) {
                         $output = preg_replace('/<a href="' . str_replace("/", "\/", $result['site_url']) . '"( target="_blank")?( )?>首页<\/a>( )?\|([\s]+)?(<br \/>)?(<br>)?/is', "", $output);
@@ -3587,7 +3616,6 @@ class PrintController extends BaseController {
             file_put_contents(public_path('customers/' . $this->customer . '/mobile/article_data.json'), $article_json);
         }
 
-        //print_r($result['search']);exit;
         $smarty = new Smarty;
         $smarty->setCompileDir(app_path('storage/views/compile'));
         $smarty->setTemplateDir(app_path('views/templates/' . $this->themename));
@@ -3710,7 +3738,6 @@ class PrintController extends BaseController {
             file_put_contents(public_path('customers/' . $this->customer . '/mobile/article_data.json'), $article_json);
         }
 
-        //print_r($result['search']);exit;
         $content = $publicdata['repleace']['searchresult_do.html'];
         $content = preg_replace($publicdata['pattern'], $publicdata['repleace'], $content);
         $smarty = new Smarty;
