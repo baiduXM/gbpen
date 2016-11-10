@@ -2700,7 +2700,7 @@ class PrintController extends BaseController {
                 }
                 .elegant-aero label>span {
                 float: left;
-                width: 20%;
+                width: 25%;
                 text-align: right;
                 padding-right: 15px;
                 margin-top: 10px;
