@@ -1864,7 +1864,7 @@ class PrintController extends BaseController {
      * PC显示首页
      */
     public function homepagePreview($result = array()) {
-        if ($_SERVER["HTTP_HOST"] != "preview.5067.org") {
+        if ($_SERVER["HTTP_HOST"] != "ht.5067.org") {
             $result = $this->pagePublic();
             $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
             $result['title'] = $customer_info->title;
@@ -1943,7 +1943,7 @@ class PrintController extends BaseController {
      * 手机首页
      */
     public function mhomepagePreview($result = array()) {
-        if ($_SERVER["HTTP_HOST"] != "preview.5067.org") {
+        if ($_SERVER["HTTP_HOST"] != "ht.5067.org") {
             $result = $this->pagePublic();
             $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
             $result['title'] = $customer_info->title;
@@ -2251,7 +2251,7 @@ class PrintController extends BaseController {
      * @param int $page 当前页码
      */
     public function categoryPreview($id, $page, $result = array()) {
-        if ($_SERVER["HTTP_HOST"] != "preview.5067.org") {
+        if ($_SERVER["HTTP_HOST"] != "ht.5067.org") {
             $result = $this->pagePublic($id);
             $customerinfo = CustomerInfo::where("cus_id", $this->cus_id)->first();
             foreach ((array) $result['navs'] as $nav) {
@@ -2876,7 +2876,7 @@ class PrintController extends BaseController {
      * @param int $id 文章id
      */
     public function articlePreview($id, $result = array()) {
-        if ($_SERVER["HTTP_HOST"] != "preview.5067.org") {
+        if ($_SERVER["HTTP_HOST"] != "ht.5067.org") {
             $article = Articles::find($id);
             $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
             if ($customer_info->lang == 'en') {
