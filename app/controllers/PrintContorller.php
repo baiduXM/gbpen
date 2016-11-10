@@ -2418,7 +2418,7 @@ class PrintController extends BaseController {
                         float: left;
                         width: 25%;
                         text-align: right;
-                        padding-right: 15px;
+                        padding-right: 10px;
                         margin-top: 10px;
                         font-weight: bold;
                         text-overflow: ellipsis;
@@ -2427,7 +2427,7 @@ class PrintController extends BaseController {
                     }
                     .elegant-aero input[type="text"], .elegant-aero input[type="tel"], .elegant-aero input[type="email"], .elegant-aero textarea, .elegant-aero select {
                     color: #888;
-                    width: 60%;
+                    width: 65%;
                     padding: 0px 0px 0px 5px;
                     border: 1px solid #C5E2FF;
                     background: #FBFBFB;
@@ -2436,12 +2436,12 @@ class PrintController extends BaseController {
                     box-shadow: inset 0px 1px 6px #ECF3F5;
                     height: 30px;
                     line-height:15px;
-                    margin: 2px 6px 16px 0px;
+                    margin: 2px 4px 16px 0px;
                     }
                     .elegant-aero textarea{
                     height:100px;
                     padding: 5px 0px 0px 5px;
-                    width: 60%;
+                    width: 65%;
                     }
                     .elegant-aero select {
                     background: #fbfbfb url(\'down-arrow.png\') no-repeat right;
@@ -2693,15 +2693,15 @@ class PrintController extends BaseController {
                 }
                 .elegant-aero label>span {
                 float: left;
-                width: 20%;
+                width: 25%;
                 text-align: right;
-                padding-right: 15px;
+                padding-right: 10px;
                 margin-top: 10px;
                 font-weight: bold;
                 }
                 .elegant-aero input[type="text"], .elegant-aero input[type="tel"], .elegant-aero input[type="email"], .elegant-aero textarea, .elegant-aero select {
                 color: #888;
-                width: 70%;
+                width: 65%;
                 padding: 0px 0px 0px 5px;
                 border: 1px solid #C5E2FF;
                 background: #FBFBFB;
@@ -2711,12 +2711,12 @@ class PrintController extends BaseController {
                 font: 200 12px/25px Arial, Helvetica, sans-serif;
                 height: 30px;
                 line-height:15px;
-                margin: 2px 6px 16px 0px;
+                margin: 2px 4px 16px 0px;
                 }
                 .elegant-aero textarea{
                 height:100px;
                 padding: 5px 0px 0px 5px;
-                width: 70%;
+                width: 65%;
                 }
                 .elegant-aero select {
                 background: #fbfbfb url(\'down-arrow.png\') no-repeat right;
