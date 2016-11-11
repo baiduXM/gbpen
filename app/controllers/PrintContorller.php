@@ -2343,7 +2343,7 @@ class PrintController extends BaseController {
                         </h1>
                         <label>
                         <span>Name :</span>
-                        <input id="name" type="text" name="name" placeholder="Name++" />
+                        <input id="name" type="text" name="name" placeholder="Name" />
                         </label>
                         <label>
                         <span>Email :</span>
@@ -2370,7 +2370,7 @@ class PrintController extends BaseController {
                         </h1>
                         <label>
                         <span>姓名 :</span>
-                        <input id="name" type="text" name="name" placeholder="++Name" />
+                        <input id="name" type="text" name="name" placeholder="Name" />
                         </label>
                         <label>
                         <span>Email :</span>
