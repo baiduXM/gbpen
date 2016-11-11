@@ -776,6 +776,7 @@ class PrintController extends BaseController {
                     unset($quickbar[$key]['enable_pc']);
                     unset($quickbar[$key]['enable_mobile']);
                 }
+
                 foreach ($quickbar as $key => $val) {
                     if ($quickbar[$key]['type'] == 'tel') {
                         $quickbar[$key]['link'] = "tel:" . $quickbar[$key]['data'];
@@ -1911,9 +1912,6 @@ class PrintController extends BaseController {
             }
         }
         if ($_SERVER["HTTP_HOST"] == "172.16.0.17") {
-//            var_dump($result["index"]["pro"]["childmenu"]);
-//            exit();
-//            return $result;
             return json_encode($result);
         }
         $smarty = new Smarty;
@@ -2345,7 +2343,7 @@ class PrintController extends BaseController {
                         </h1>
                         <label>
                         <span>Name :</span>
-                        <input id="name" type="text" name="name" placeholder="Name" />
+                        <input id="name" type="text" name="name" placeholder="Name++" />
                         </label>
                         <label>
                         <span>Email :</span>
@@ -2372,7 +2370,7 @@ class PrintController extends BaseController {
                         </h1>
                         <label>
                         <span>姓名 :</span>
-                        <input id="name" type="text" name="name" placeholder="Name" />
+                        <input id="name" type="text" name="name" placeholder="++Name" />
                         </label>
                         <label>
                         <span>Email :</span>

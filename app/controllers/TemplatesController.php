@@ -942,6 +942,9 @@ class TemplatesController extends BaseController {
         return $template->articlePreview($id, $result);
     }
 
+    /**
+     * 预览登录
+     */
     private function preview_login() {
         if ($_SERVER["HTTP_HOST"] == "172.16.0.17" && Input::has("name")) {
             if (Input::has("remember_token") && Input::get("remember_token") == "" && Input::get("remember_token") == null) {
