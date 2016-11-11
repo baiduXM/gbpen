@@ -494,12 +494,15 @@ class TemplatesController extends BaseController {
         } else {
             $config_arr = $mobile->mobilePageList('global', true);
         }
-        foreach ($config_arr as $key => $val) {
-            $pagelist[] = array('page' => $key, 'title' => $config_arr[$key]['description'], 'type' => $config_arr[$key]['type']);
-            $data[$key] = $config_arr[$key];
-            if ($data[$key]['type'] == 'image') {
-                if (!$data[$key]['value']['title'] and ! $data[$key]['value']['image'] and ! $data[$key]['value']['link'])
-                    $data[$key]['value'] = array();
+        //print_r($config_arr);exit;
+        if (is_array($config_arr)) {
+            foreach ($config_arr as $key => $val) {
+                $pagelist[] = array('page' => $key, 'title' => $config_arr[$key]['description'], 'type' => $config_arr[$key]['type']);
+                $data[$key] = $config_arr[$key];
+                if ($data[$key]['type'] == 'image') {
+                    if (!$data[$key]['value']['title'] and ! $data[$key]['value']['image'] and ! $data[$key]['value']['link'])
+                        $data[$key]['value'] = array();
+                }
             }
         }
         $templatedata['templatedata'] = $data;
@@ -938,6 +941,9 @@ class TemplatesController extends BaseController {
         return $template->articlePreview($id, $result);
     }
 
+    /**
+     * 预览登录
+     */
     private function preview_login() {
         if ($_SERVER["HTTP_HOST"] == "172.16.0.17" && Input::has("name")) {
             if (Input::has("remember_token") && Input::get("remember_token") == "" && Input::get("remember_token") == null) {

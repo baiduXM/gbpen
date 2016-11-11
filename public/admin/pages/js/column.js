@@ -506,7 +506,7 @@ function columnController($scope, $http) {
                     var vurl = $('#out_url input').val() ? $('#out_url input').val() : '';
                     var vname = $('.column_name').val();
                     var enname = $('.en_name').val();
-                    var viewname = $('.view_name').val();
+                    var view_name = $('.view_name').val();
                     var vpid = $('.selectBox_val').val();
                     var vkeywords = $('.keyword').val();
                     var icons = $('.icon_input').val();
@@ -552,7 +552,7 @@ function columnController($scope, $http) {
                                     p_id: vpid,
                                     name: vname,
                                     en_name: enname,
-                                    viewname: viewname,
+                                    view_name: view_name,
                                     type: vlayout,
                                     url: vurl,
                                     open_page: open_page,
