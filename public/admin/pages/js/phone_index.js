@@ -890,7 +890,12 @@ function phone_indexController($scope, $http, $location) {
         },
         //颜色3位转换成六位16进制
         ColorRet: function (color) {
-            if (color.length <= 5) {
+            if (color.length < 5) {
+                var colorstr = color.replace('#', '');
+                color += colorstr;
+            }
+            if (color.length == 5) {
+                color=color.substring(0,color.length-1);
                 var colorstr = color.replace('#', '');
                 color += colorstr;
             }
