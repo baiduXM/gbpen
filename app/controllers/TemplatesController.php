@@ -1079,7 +1079,7 @@ class TemplatesController extends BaseController {
             $this->addFileToZip($json_dir . $tplname . "/js", $zip, "js/");
             $this->addFileToZip($json_dir . $tplname . "/images", $zip, "images/");
             $this->addFileToZip($json_dir . $tplname . "/json", $zip, "");
-            $this->addFileToZip($view_dir . $tplname, $zip, "");
+            $this->addFileToZip($view_dir . $tplname, $zip, "","searchresult_do.html");
             $zip->addFile($json_dir . $tplname ."/config.ini", "config.ini");
             $zip->addFile($json_dir . $tplname ."/screenshot.jpg", "screenshot.jpg");
             $zip->close();
@@ -1093,14 +1093,16 @@ class TemplatesController extends BaseController {
      * @param type $zip压缩变量
      * @param type $dir存储名称
      */
-    private function addFileToZip($path, $zip, $dir) {//将整个文件夹压缩
+    private function addFileToZip($path, $zip, $dir,$notcopyfile="") {//将整个文件夹压缩
         $handler = opendir($path);
         while (($filename = readdir($handler)) !== false) {
             if ($filename != "." && $filename != "..") {
                 if (is_dir($path . "/" . $filename)) {
                     $this->addFileToZip($path . "/" . $filename, $zip, $dir  . $filename. "/");
                 } else {
-                    $zip->addFile($path . "/" . $filename, $dir . $filename);
+                    if($notcopyfile==""||$filename!=$notcopyfile){
+                        $zip->addFile($path . "/" . $filename, $dir . $filename);
+                    }
                 }
             }
         }
