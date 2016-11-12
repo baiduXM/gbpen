@@ -1056,10 +1056,10 @@ class TemplatesController extends BaseController {
         if (!is_dir(public_path('temp_templates/tpl/'))) {
             @mkdir(public_path('temp_templates/tpl/'));
         } else {
-            $dh = opendir(public_path('temp_templates/tpl/'));
+            $dh = opendir(public_path('temp_templates/tpl'));
             while ($file = readdir($dh)) {
                 if ($file != "." && $file != "..") {
-                    $fullpath = public_path('temp_templates/tpl/') . $file;
+                    $fullpath = public_path('temp_templates/tpl/' . $file);
                     if (is_file($fullpath)) {
                         unlink($fullpath);
                     }
@@ -1075,11 +1075,13 @@ class TemplatesController extends BaseController {
         }
         $zip = new ZipArchive;
         if ($zip->open($path, ZipArchive::CREATE) === TRUE) {
-            $this->addFileToZip($json_dir . $tplname . "/css", $zip, "css");
-            $this->addFileToZip($json_dir . $tplname . "/js", $zip, "js");
-            $this->addFileToZip($json_dir . $tplname . "/images", $zip, "images");
+            $this->addFileToZip($json_dir . $tplname . "/css", $zip, "css/");
+            $this->addFileToZip($json_dir . $tplname . "/js", $zip, "js/");
+            $this->addFileToZip($json_dir . $tplname . "/images", $zip, "images/");
             $this->addFileToZip($json_dir . $tplname . "/json", $zip, "");
             $this->addFileToZip($view_dir . $tplname, $zip, "");
+            $zip->addFile($json_dir . $tplname ."/config.ini", "config.ini");
+            $zip->addFile($json_dir . $tplname ."/screenshot.jpg", "screenshot.jpg");
             $zip->close();
         }
         echo '<a href="/temp_templates/tpl/' . $tplname . '.zip">下载' . $tplname . '模板</a>';
@@ -1096,9 +1098,9 @@ class TemplatesController extends BaseController {
         while (($filename = readdir($handler)) !== false) {
             if ($filename != "." && $filename != "..") {
                 if (is_dir($path . "/" . $filename)) {
-                    $this->addFileToZip($path . "/" . $filename, $zip, $dir . "/" . $filename);
+                    $this->addFileToZip($path . "/" . $filename, $zip, $dir  . $filename. "/");
                 } else {
-                    $zip->addFile($path . "/" . $filename, $dir . "/" . $filename);
+                    $zip->addFile($path . "/" . $filename, $dir . $filename);
                 }
             }
         }
