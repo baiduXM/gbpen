@@ -1259,6 +1259,7 @@ class PrintController extends BaseController {
                                         $abc['data'][$key]['category']['link'] = $this->domain . '/category/' . $d->c_id;
                                     }
                                     $abc['data'][$key]['link'] = $this->domain . '/detail/' . $d->id;
+                                    var_dump( $abc['data'][$key]);
                                 } else {
                                     if ($cate[$d->c_id]) {//===判断栏目是否有别名===
                                         $abc['data'][$key]['category']['link'] = $this->domain . '/category/' . $cate[$d->c_id] . '.html';
@@ -1272,6 +1273,7 @@ class PrintController extends BaseController {
                                 }
                                 $abc['data'][$key]['category']['name'] = $d_c_info->name;
                                 $abc['data'][$key]['category']['en_name'] = $d_c_info->en_name;
+                                $abc['data'][$key]['category']['view_name'] = $d_c_info->view_name;
                                 $abc['data'][$key]['category']['icon'] = '<i class="iconfont">' . $d_c_info->icon . '</i>';
                                 $abc['data'][$key]['description'] = $d->introduction;
                                 $abc['data'][$key]['pubdate'] = $d->created_at;
@@ -1340,6 +1342,7 @@ class PrintController extends BaseController {
                             }
                             $abc['data'][$key]['category']['name'] = $d_c_info->name;
                             $abc['data'][$key]['category']['en_name'] = $d_c_info->en_name;
+                            $abc['data'][$key]['category']['view_name'] = $d_c_info->view_name;
                             $abc['data'][$key]['category']['icon'] = '<i class="iconfont">' . $d_c_info->icon . '</i>';
                             $abc['data'][$key]['description'] = $d->introduction;
                             $abc['data'][$key]['pubdate'] = $d->created_at;
