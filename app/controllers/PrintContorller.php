@@ -1358,6 +1358,7 @@ class PrintController extends BaseController {
                         $v['value'] = array('data' => null);
                     }
                 }
+                
                 $v['value']['name'] = ($c_info ? $c_info->name : '');
                 $v['value']['en_name'] = ($c_info ? $c_info->en_name : '');
                 $v['value']['icon'] = ($c_info ? '<i class="iconfont">' . $c_info->icon . '</i>' : '');
