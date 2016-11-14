@@ -755,8 +755,8 @@ class TemplatesController extends BaseController {
                     }
                     $pc_zip = new ZipArchive;
                     if ($pc_zip->open($pc_path, ZipArchive::CREATE) === TRUE) {
-                        $this->addFileToZip($view_dir . $pc_themename, $pc_zip, $pc_themename . "/html");
-                        $this->addFileToZip($json_dir . $pc_themename, $pc_zip, $pc_themename . "/json");
+                        $this->addFileToZip($view_dir . $pc_themename, $pc_zip, $pc_themename . "/html/");
+                        $this->addFileToZip($json_dir . $pc_themename, $pc_zip, $pc_themename . "/json/");
                         $pc_zip->addFile(public_path('customers/' . $customer . '/pc_config.json'), $pc_themename . "/config.json");
                         $pc_zip->close();
                         ftp_put($conn, $path . "/" . $customer . "/pc.zip", $pc_path, FTP_BINARY);
@@ -773,8 +773,8 @@ class TemplatesController extends BaseController {
                     }
                     $m_zip = new ZipArchive;
                     if ($m_zip->open($m_path, ZipArchive::CREATE) === TRUE) {
-                        $this->addFileToZip($view_dir . $mobile_themename, $m_zip, $mobile_themename . "/html");
-                        $this->addFileToZip($json_dir . $mobile_themename, $m_zip, $mobile_themename . "/json");
+                        $this->addFileToZip($view_dir . $mobile_themename, $m_zip, $mobile_themename . "/html/");
+                        $this->addFileToZip($json_dir . $mobile_themename, $m_zip, $mobile_themename . "/json/");
                         $m_zip->addFile(public_path('customers/' . $customer . '/m_config.json'), $mobile_themename . "/config.json");
                         $m_zip->close();
                         ftp_put($conn, $path . "/" . $customer . "/mobile.zip", $m_path, FTP_BINARY);
