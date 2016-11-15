@@ -1043,48 +1043,87 @@ class TemplatesController extends BaseController {
     /**
      * 模板下载
      */
-    public function downloadTemplate() {
-        echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
-        if (Auth::user()->name != "test") {
-            return false;
-        }
-        $tplname = Input::get("name");
-        $tpl = Template::where('name', $tplname)->first();
-        if ($tpl == null) {
-            echo '没有该模板！';
-        }
-        if (!is_dir(public_path('temp_templates/tpl/'))) {
-            @mkdir(public_path('temp_templates/tpl/'));
-        } else {
-            $dh = opendir(public_path('temp_templates/tpl'));
-            while ($file = readdir($dh)) {
-                if ($file != "." && $file != "..") {
-                    $fullpath = public_path('temp_templates/tpl/' . $file);
-                    if (is_file($fullpath)) {
-                        unlink($fullpath);
+    public function downloadTemplate($tplname="") {
+        if($tplname!=""){
+            $tpl = Template::where('name', $tplname)->first();
+            if ($tpl == null) {
+                return json_encode(array("err"=>1,"msg"=>"没有该模板！"));
+            }
+            if (!is_dir(public_path('temp_templates/tpl/'))) {
+                @mkdir(public_path('temp_templates/tpl/'));
+            } else {
+                $dh = opendir(public_path('temp_templates/tpl'));
+                while ($file = readdir($dh)) {
+                    if ($file != "." && $file != "..") {
+                        $fullpath = public_path('temp_templates/tpl/' . $file);
+                        if (is_file($fullpath)) {
+                            unlink($fullpath);
+                        }
                     }
                 }
+                closedir($dh);
             }
-            closedir($dh);
+            $path = public_path('temp_templates/tpl/' . $tplname . '.zip');
+            $view_dir = app_path('views/templates/');
+            $json_dir = public_path('templates/');
+            if (file_exists($path)) {
+                @unlink($path);
+            }
+            $zip = new ZipArchive;
+            if ($zip->open($path, ZipArchive::CREATE) === TRUE) {
+                $this->addFileToZip($json_dir . $tplname . "/css", $zip, "css/");
+                $this->addFileToZip($json_dir . $tplname . "/js", $zip, "js/");
+                $this->addFileToZip($json_dir . $tplname . "/images", $zip, "images/");
+                $this->addFileToZip($json_dir . $tplname . "/json", $zip, "");
+                $this->addFileToZip($view_dir . $tplname, $zip, "","searchresult_do.html");
+                $zip->addFile($json_dir . $tplname ."/config.ini", "config.ini");
+                $zip->addFile($json_dir . $tplname ."/screenshot.jpg", "screenshot.jpg");
+                $zip->close();
+            }
+            return json_encode(array("err"=>0,"msg"=>'http://'.$_SERVER['HTTP_HOST'].'/temp_templates/tpl/' . $tplname . '.zip'));
+        }else{
+            echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
+            if (Auth::user()->name != "test") {
+                return false;
+            }
+            $tplname = Input::get("name");
+            $tpl = Template::where('name', $tplname)->first();
+            if ($tpl == null) {
+                echo '没有该模板！';
+            }
+            if (!is_dir(public_path('temp_templates/tpl/'))) {
+                @mkdir(public_path('temp_templates/tpl/'));
+            } else {
+                $dh = opendir(public_path('temp_templates/tpl'));
+                while ($file = readdir($dh)) {
+                    if ($file != "." && $file != "..") {
+                        $fullpath = public_path('temp_templates/tpl/' . $file);
+                        if (is_file($fullpath)) {
+                            unlink($fullpath);
+                        }
+                    }
+                }
+                closedir($dh);
+            }
+            $path = public_path('temp_templates/tpl/' . $tplname . '.zip');
+            $view_dir = app_path('views/templates/');
+            $json_dir = public_path('templates/');
+            if (file_exists($path)) {
+                @unlink($path);
+            }
+            $zip = new ZipArchive;
+            if ($zip->open($path, ZipArchive::CREATE) === TRUE) {
+                $this->addFileToZip($json_dir . $tplname . "/css", $zip, "css/");
+                $this->addFileToZip($json_dir . $tplname . "/js", $zip, "js/");
+                $this->addFileToZip($json_dir . $tplname . "/images", $zip, "images/");
+                $this->addFileToZip($json_dir . $tplname . "/json", $zip, "");
+                $this->addFileToZip($view_dir . $tplname, $zip, "","searchresult_do.html");
+                $zip->addFile($json_dir . $tplname ."/config.ini", "config.ini");
+                $zip->addFile($json_dir . $tplname ."/screenshot.jpg", "screenshot.jpg");
+                $zip->close();
+            }
+            echo '<a href="/temp_templates/tpl/' . $tplname . '.zip">下载' . $tplname . '模板</a>';
         }
-        $path = public_path('temp_templates/tpl/' . $tplname . '.zip');
-        $view_dir = app_path('views/templates/');
-        $json_dir = public_path('templates/');
-        if (file_exists($path)) {
-            @unlink($path);
-        }
-        $zip = new ZipArchive;
-        if ($zip->open($path, ZipArchive::CREATE) === TRUE) {
-            $this->addFileToZip($json_dir . $tplname . "/css", $zip, "css/");
-            $this->addFileToZip($json_dir . $tplname . "/js", $zip, "js/");
-            $this->addFileToZip($json_dir . $tplname . "/images", $zip, "images/");
-            $this->addFileToZip($json_dir . $tplname . "/json", $zip, "");
-            $this->addFileToZip($view_dir . $tplname, $zip, "","searchresult_do.html");
-            $zip->addFile($json_dir . $tplname ."/config.ini", "config.ini");
-            $zip->addFile($json_dir . $tplname ."/screenshot.jpg", "screenshot.jpg");
-            $zip->close();
-        }
-        echo '<a href="/temp_templates/tpl/' . $tplname . '.zip">下载' . $tplname . '模板</a>';
     }
 
     /**

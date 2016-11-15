@@ -594,6 +594,11 @@ Route::post('api/deleteuser', [//删除用户
     'uses' => 'ApiController@deleteCustomer'
 ]);
 
+Route::post('api/downloadtemplate', [//代理平台下载模板接口
+    'as' => 'template-fileedit',
+    'uses' => 'ApiController@DownloadTemplate'
+]);
+
 Route::get('test/{cid}', [
     'uses' => 'PrintController@getChirldenCid'
 ]);

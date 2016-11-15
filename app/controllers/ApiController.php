@@ -281,5 +281,19 @@ class ApiController extends BaseController {
         }
         return Response::json($result);
     }
-
+    
+    /**
+     * 代理平台下载模板
+     * @param type name 用户名
+     * @return string
+     */
+    public function DownloadTemplate() {
+        if (Input::has("token")&&Input::get("token")== md5("linshimingma")) {
+            $template=new TemplatesController();
+            return $template->downloadTemplate(Input::get("name"));
+        }
+        else{
+            return json_encode(array("err"=>1,"msg"=>"err！"));
+        }
+    }
 }
