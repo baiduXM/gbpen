@@ -46,7 +46,7 @@ class ClassifyController extends BaseController {
     public function classifyids() {
         $cus_id = Auth::id();
         $classify = Classify::where('cus_id', $cus_id)->orderBy('sort')->orderBy('id')->lists("id");
-        return $classify;
+        return $classify;        
     }
 
     public function classifyDelete() {
@@ -199,6 +199,7 @@ class ClassifyController extends BaseController {
         if ($is_passed) {
             $classify->name = trim(Input::get('name'));
             $classify->en_name = trim(Input::get('en_name'));
+            $classify->view_name = trim(Input::get('view_name'));//===页面别名===
             $images = Input::get('img'); //===新图片
             $classify->img = $images;
             if (!empty($c_imgs) && $c_imgs != 'undefined') {
@@ -270,7 +271,7 @@ class ClassifyController extends BaseController {
                 }
 
                 if ($id != NULL) {
-                    $result = ['err' => 0, 'msg' => '栏目修改成功' . $size, 'data' => $data];
+                    $result = ['err' => 0, 'msg' => 'Success栏目修改成功' . $size, 'data' => $data];
                 } else {
                     if (in_array($classify->type, array(1, 2, 3, 4, 9)) && $classify->p_id == 0) {
                         //===添加type:9万用表单===
