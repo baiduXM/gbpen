@@ -886,6 +886,20 @@ class TemplatesController extends BaseController {
     }
 
     /**
+     * ===PC栏目页预览(栏目别名)===
+     */
+    public function categoryPreviewV($view_name, $page = 1) {
+        $result = array();
+        if ($_SERVER["HTTP_HOST"] == "preview.5067.org") {
+            $this->sendTemplate();
+            $json = file_get_contents("http://172.16.0.17/category-no-auth/" . $view_name . "_" . $page . "?name=" . (Auth::user()->name) . "&remember_token=" . (Auth::user()->remember_token ? Auth::user()->remember_token : ""));
+            $result = json_decode($json, true);
+        }
+        $template = new PrintController;
+        return $template->categoryPreview($view_name, $page, $result);
+    }
+
+    /**
      * PC内容页预览
      */
     public function articlePreview($id) {

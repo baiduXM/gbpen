@@ -9,8 +9,8 @@ Route::get('get-remind', [//忘记密码
     'uses' => 'RemindersController@getRemind'
 ]);
 Route::get('homepage-preview-no-auth', [//首页预览
-        'as' => 'homepage-preview-no-auth',
-        'uses' => 'TemplatesController@homepagePreview_no_auth'
+    'as' => 'homepage-preview-no-auth',
+    'uses' => 'TemplatesController@homepagePreview_no_auth'
 ]);
 
 Route::get('category-no-auth/{id}', [//栏目页预览
@@ -143,7 +143,7 @@ Route::group(array('before' => 'auth'), function() {
     Route::post('classify-modify', [//栏目修改
         'uses' => 'ClassifyController@classifyModify'
     ]);
-    
+
     Route::post('classify-batch', [//===栏目批量添加===
         'uses' => 'ClassifyController@classifyBatch'
     ]);
@@ -264,6 +264,14 @@ Route::group(array('before' => 'auth'), function() {
         'uses' => 'TemplatesController@categoryPreview'
     ])->where(['id' => '[0-9]+', 'page' => '[0-9]+']);
 
+    Route::get('category/v/{view_name}', [//===栏目页预览（栏目别名）===
+        'uses' => 'TemplatesController@categoryPreviewV'
+    ])->where('view_name', '[a-z0-9]+');
+
+    Route::get('category/v/{view_name}_{page}', [//===栏目页分页预览(栏目别名)===
+        'uses' => 'TemplatesController@categoryPreviewV'
+    ])->where(['view_name' => '[a-z0-9]+', 'page' => '[0-9]+']);
+
     Route::get('detail/{id}', [//详情页预览
         'uses' => 'TemplatesController@articlePreview'
     ])->where('id', '[0-9]+');
@@ -271,15 +279,15 @@ Route::group(array('before' => 'auth'), function() {
     Route::get('downloadTemplate', [//模板下载
         'uses' => 'TemplatesController@downloadTemplate'
     ]);
-    
+
     Route::get('checkChange', [
         'uses' => 'HTMLController@checkChange'
     ]);
-    
+
     Route::get('getremeber_token', [
         'uses' => 'HTMLController@getRemeber_token'
     ]);
-    
+
     Route::get('pushold', [
         'uses' => 'HTMLController@pushPrecent'
     ]);
