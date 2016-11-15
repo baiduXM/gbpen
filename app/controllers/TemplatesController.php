@@ -896,7 +896,7 @@ class TemplatesController extends BaseController {
             $result = json_decode($json, true);
         }
         $template = new PrintController;
-        return $template->categoryPreview($view_name, $page, $result);
+        return $template->categoryPreview($view_name, $page, $result, 'view_name');
     }
 
     /**
@@ -939,6 +939,20 @@ class TemplatesController extends BaseController {
         }
         $template = new PrintController('preview', 'mobile');
         return $template->categoryPreview($id, $page, $result);
+    }
+
+    /**
+     * ===手机栏目预览(栏目别名)===
+     */
+    public function mcategoryPreviewV($view_name, $page = 1) {
+        $result = array();
+        if ($_SERVER["HTTP_HOST"] == "preview.5067.org") {
+            $this->sendTemplate();
+            $json = file_get_contents("http://172.16.0.17/mobile/category-no-auth/{$view_name}_{$page}?name=" . (Auth::user()->name) . "&remember_token=" . (Auth::user()->remember_token ? Auth::user()->remember_token : ""));
+            $result = json_decode($json, true);
+        }
+        $template = new PrintController('preview', 'mobile');
+        return $template->categoryPreview($view_name, $page, $result, 'view_name');
     }
 
     /**
