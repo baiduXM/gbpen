@@ -1259,7 +1259,6 @@ class PrintController extends BaseController {
                                         $abc['data'][$key]['category']['link'] = $this->domain . '/category/' . $d->c_id;
                                     }
                                     $abc['data'][$key]['link'] = $this->domain . '/detail/' . $d->id;
-                                    var_dump( $abc['data'][$key]);
                                 } else {
                                     if ($cate[$d->c_id]) {//===判断栏目是否有别名===
                                         $abc['data'][$key]['category']['link'] = $this->domain . '/category/' . $cate[$d->c_id] . '.html';
@@ -3105,6 +3104,8 @@ class PrintController extends BaseController {
         if ($_SERVER["HTTP_HOST"] == "172.16.0.17") {
             return json_encode($result);
         }
+//        var_dump($result['pubdate']);
+//        exit();
         $smarty = new Smarty;
         $smarty->setTemplateDir(app_path('views/templates/' . $this->themename));
         $smarty->setCompileDir(app_path('storage/views/compile'));
