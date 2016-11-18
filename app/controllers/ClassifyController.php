@@ -46,7 +46,7 @@ class ClassifyController extends BaseController {
     public function classifyids() {
         $cus_id = Auth::id();
         $classify = Classify::where('cus_id', $cus_id)->orderBy('sort')->orderBy('id')->lists("id");
-        return $classify;        
+        return $classify;
     }
 
     public function classifyDelete() {
@@ -170,21 +170,23 @@ class ClassifyController extends BaseController {
                         $is_passed = false;
                     }
                 }
-                if (in_array($p_c_info->type, array(5, 6, 7, 8, 9))) {
-                    $result = ['err' => 1001, 'msg' => '该类型不允许添加子栏目', 'data' => []];
-                    $is_passed = false;
-                } else {
-                    $c_c_ids = Classify::where('p_id', $p_c_info->id)->lists('id');
-                    if (!count($c_c_ids)) {
-                        $a_ids = Articles::where('c_id', $p_c_info->id)->lists('id');
-                        if (count($a_ids)) {
-                            if (in_array($classify->type, array(4, 5, 6, 7, 8, 9))) {
-                                $result = ['err' => 1001, 'msg' => '存在文章的栏目不允许添加该类型子栏目', 'data' => []];
-                                $is_passed = false;
-                            } else {
-                                if (!$is_forced) {
-                                    $result = ['err' => 1002, 'msg' => '该栏目存在文章，需转移才能创建子栏目', 'data' => []];
+                if ($is_passed) {
+                    if (in_array($p_c_info->type, array(5, 6, 7, 8, 9))) {
+                        $result = ['err' => 1001, 'msg' => '该类型不允许添加子栏目', 'data' => []];
+                        $is_passed = false;
+                    } else {
+                        $c_c_ids = Classify::where('p_id', $p_c_info->id)->lists('id');
+                        if (!count($c_c_ids)) {
+                            $a_ids = Articles::where('c_id', $p_c_info->id)->lists('id');
+                            if (count($a_ids)) {
+                                if (in_array($classify->type, array(4, 5, 6, 7, 8, 9))) {
+                                    $result = ['err' => 1001, 'msg' => '存在文章的栏目不允许添加该类型子栏目', 'data' => []];
                                     $is_passed = false;
+                                } else {
+                                    if (!$is_forced) {
+                                        $result = ['err' => 1002, 'msg' => '该栏目存在文章，需转移才能创建子栏目', 'data' => []];
+                                        $is_passed = false;
+                                    }
                                 }
                             }
                         }
@@ -199,7 +201,7 @@ class ClassifyController extends BaseController {
         if ($is_passed) {
             $classify->name = trim(Input::get('name'));
             $classify->en_name = trim(Input::get('en_name'));
-            $classify->view_name = trim(Input::get('view_name'));//===页面别名===
+            $classify->view_name = trim(Input::get('view_name')); //===页面别名===
             $images = Input::get('img'); //===新图片
             $classify->img = $images;
             if (!empty($c_imgs) && $c_imgs != 'undefined') {
