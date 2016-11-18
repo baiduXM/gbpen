@@ -2297,7 +2297,7 @@ class PrintController extends BaseController {
         } else {
             $id = Classify::where('view_name', $param)->pluck('id');
         }
-        if ($_SERVER["HTTP_HOST"] != "preview.5067.org") {
+        if ($_SERVER["HTTP_HOST"] != "ht.5067.org") {
             $result = $this->pagePublic($id);
             $customerinfo = CustomerInfo::where("cus_id", $this->cus_id)->first();
             foreach ((array) $result['navs'] as $nav) {

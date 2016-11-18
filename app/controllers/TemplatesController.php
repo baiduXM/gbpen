@@ -737,7 +737,7 @@ class TemplatesController extends BaseController {
     }
 
     private function sendTemplate() {
-        if ($_SERVER["HTTP_HOST"] == "preview.5067.org") {
+        if ($_SERVER["HTTP_HOST"] == "ht.5067.org") {
             $cus_id = Auth::id();
             $customer = Auth::user()->name;
             $webinfo = WebsiteInfo::where("cus_id", $cus_id)->first();
@@ -862,7 +862,7 @@ class TemplatesController extends BaseController {
      */
     public function homepagePreview() {
         $result = array();
-        if ($_SERVER["HTTP_HOST"] == "preview.5067.org") {
+        if ($_SERVER["HTTP_HOST"] == "ht.5067.org") {
             $this->sendTemplate();
             $json = file_get_contents("http://172.16.0.17/homepage-preview-no-auth?name=" . (Auth::user()->name) . "&remember_token=" . (Auth::user()->remember_token ? Auth::user()->remember_token : ""));
             $result = json_decode($json, true);
@@ -876,7 +876,7 @@ class TemplatesController extends BaseController {
      */
     public function categoryPreview($id, $page = 1) {
         $result = array();
-        if ($_SERVER["HTTP_HOST"] == "preview.5067.org") {
+        if ($_SERVER["HTTP_HOST"] == "ht.5067.org") {
             $this->sendTemplate();
             $json = file_get_contents("http://172.16.0.17/category-no-auth/" . $id . "_" . $page . "?name=" . (Auth::user()->name) . "&remember_token=" . (Auth::user()->remember_token ? Auth::user()->remember_token : ""));
             $result = json_decode($json, true);
@@ -890,7 +890,7 @@ class TemplatesController extends BaseController {
      */
     public function categoryPreviewV($view_name, $page = 1) {
         $result = array();
-        if ($_SERVER["HTTP_HOST"] == "preview.5067.org") {
+        if ($_SERVER["HTTP_HOST"] == "ht.5067.org") {
             $this->sendTemplate();
             $json = file_get_contents("http://172.16.0.17/category-no-auth/" . $view_name . "_" . $page . "?name=" . (Auth::user()->name) . "&remember_token=" . (Auth::user()->remember_token ? Auth::user()->remember_token : ""));
             $result = json_decode($json, true);
@@ -904,7 +904,7 @@ class TemplatesController extends BaseController {
      */
     public function articlePreview($id) {
         $result = array();
-        if ($_SERVER["HTTP_HOST"] == "preview.5067.org") {
+        if ($_SERVER["HTTP_HOST"] == "ht.5067.org") {
             $this->sendTemplate();
             $json = file_get_contents("http://172.16.0.17/detail-no-auth/" . $id . "?name=" . (Auth::user()->name) . "&remember_token=" . (Auth::user()->remember_token ? Auth::user()->remember_token : ""));
             $result = json_decode($json, true);
@@ -918,7 +918,7 @@ class TemplatesController extends BaseController {
      */
     public function mhomepagePreview() {
         $result = array();
-        if ($_SERVER["HTTP_HOST"] == "preview.5067.org") {
+        if ($_SERVER["HTTP_HOST"] == "ht.5067.org") {
             $this->sendTemplate();
             $json = file_get_contents("http://172.16.0.17/mobile/homepage-preview-no-auth?name=" . (Auth::user()->name) . "&remember_token=" . (Auth::user()->remember_token ? Auth::user()->remember_token : ""));
             $result = json_decode($json, true);
@@ -932,7 +932,7 @@ class TemplatesController extends BaseController {
      */
     public function mcategoryPreview($id, $page = 1) {
         $result = array();
-        if ($_SERVER["HTTP_HOST"] == "preview.5067.org") {
+        if ($_SERVER["HTTP_HOST"] == "ht.5067.org") {
             $this->sendTemplate();
             $json = file_get_contents("http://172.16.0.17/mobile/category-no-auth/{$id}_{$page}?name=" . (Auth::user()->name) . "&remember_token=" . (Auth::user()->remember_token ? Auth::user()->remember_token : ""));
             $result = json_decode($json, true);
@@ -946,7 +946,7 @@ class TemplatesController extends BaseController {
      */
     public function mcategoryPreviewV($view_name, $page = 1) {
         $result = array();
-        if ($_SERVER["HTTP_HOST"] == "preview.5067.org") {
+        if ($_SERVER["HTTP_HOST"] == "ht.5067.org") {
             $this->sendTemplate();
             $json = file_get_contents("http://172.16.0.17/mobile/category-no-auth/{$view_name}_{$page}?name=" . (Auth::user()->name) . "&remember_token=" . (Auth::user()->remember_token ? Auth::user()->remember_token : ""));
             $result = json_decode($json, true);
@@ -960,7 +960,7 @@ class TemplatesController extends BaseController {
      */
     public function marticlePreview($id) {
         $result = array();
-        if ($_SERVER["HTTP_HOST"] == "preview.5067.org") {
+        if ($_SERVER["HTTP_HOST"] == "ht.5067.org") {
             $this->sendTemplate();
             $json = file_get_contents("http://172.16.0.17/mobile/detail-no-auth/{$id}?name=" . (Auth::user()->name) . "&remember_token=" . (Auth::user()->remember_token ? Auth::user()->remember_token : ""));
             $result = json_decode($json, true);
