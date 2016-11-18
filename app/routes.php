@@ -9,8 +9,8 @@ Route::get('get-remind', [//忘记密码
     'uses' => 'RemindersController@getRemind'
 ]);
 Route::get('homepage-preview-no-auth', [//首页预览
-        'as' => 'homepage-preview-no-auth',
-        'uses' => 'TemplatesController@homepagePreview_no_auth'
+    'as' => 'homepage-preview-no-auth',
+    'uses' => 'TemplatesController@homepagePreview_no_auth'
 ]);
 
 Route::get('category-no-auth/{id}', [//栏目页预览
@@ -133,20 +133,17 @@ Route::group(array('before' => 'auth'), function() {
     ]);
 
     Route::post('classify-delete', [//栏目删除
-        'as' => 'classify-list',
         'uses' => 'ClassifyController@classifyDelete'
     ]);
 
     Route::get('classify-info', [//栏目详情
-        'as' => 'classify-list',
         'uses' => 'ClassifyController@classifyInfo'
     ]);
 
     Route::post('classify-modify', [//栏目修改
-        'as' => 'classify-list',
         'uses' => 'ClassifyController@classifyModify'
     ]);
-    
+
     Route::post('classify-batch', [//===栏目批量添加===
         'uses' => 'ClassifyController@classifyBatch'
     ]);
@@ -162,7 +159,6 @@ Route::group(array('before' => 'auth'), function() {
     ]);
 
     Route::post('classify-sort', [//栏目排序
-        'as' => 'classify-list',
         'uses' => 'ClassifyController@classifySort'
     ]);
     Route::get('classify-ids', [//栏目id列表
@@ -268,6 +264,14 @@ Route::group(array('before' => 'auth'), function() {
         'uses' => 'TemplatesController@categoryPreview'
     ])->where(['id' => '[0-9]+', 'page' => '[0-9]+']);
 
+    Route::get('category/v/{view_name}', [//===栏目页预览（栏目别名）===
+        'uses' => 'TemplatesController@categoryPreviewV'
+    ])->where('view_name', '[a-z0-9]+');
+
+    Route::get('category/v/{view_name}_{page}', [//===栏目页分页预览(栏目别名)===
+        'uses' => 'TemplatesController@categoryPreviewV'
+    ])->where(['view_name' => '[a-z0-9]+', 'page' => '[0-9]+']);
+
     Route::get('detail/{id}', [//详情页预览
         'uses' => 'TemplatesController@articlePreview'
     ])->where('id', '[0-9]+');
@@ -275,15 +279,15 @@ Route::group(array('before' => 'auth'), function() {
     Route::get('downloadTemplate', [//模板下载
         'uses' => 'TemplatesController@downloadTemplate'
     ]);
-    
+
     Route::get('checkChange', [
         'uses' => 'HTMLController@checkChange'
     ]);
-    
+
     Route::get('getremeber_token', [
         'uses' => 'HTMLController@getRemeber_token'
     ]);
-    
+
     Route::get('pushold', [
         'uses' => 'HTMLController@pushPrecent'
     ]);
@@ -330,6 +334,14 @@ Route::group(array('before' => 'auth'), function() {
         'uses' => 'TemplatesController@mcategoryPreview'
     ])->where(['id' => '[0-9]+', 'page' => '[0-9]+']);
 
+    Route::get('mobile/category/v/{view_name}', [//===栏目页预览（栏目别名）===
+        'uses' => 'TemplatesController@mcategoryPreviewV'
+    ])->where('view_name', '[a-z0-9]+');
+    
+    Route::get('mobile/category/v/{view_name}_{page}', [//===栏目页分页预览(栏目别名)===
+        'uses' => 'TemplatesController@mcategoryPreviewV'
+    ])->where(['view_name' => '[a-z0-9]+', 'page' => '[0-9]+']);
+    
     Route::get('mobile/detail/{id}', [//详情页预览
         'uses' => 'TemplatesController@marticlePreview'
     ])->where('id', '[0-9]+');
@@ -442,74 +454,54 @@ Route::group(array('before' => 'auth'), function() {
         'uses' => 'FormController@getFormList'
     ]);
     Route::get('form-data', [//获取表单信息
-        'as' => 'form-list',
         'uses' => 'FormController@getFormData'
     ]);
     Route::get('form-view', [//获取表单信息
-        'as' => 'form-list',
         'uses' => 'FormController@getFormView'
     ]);
     Route::post('form-create', [//创建表单
-        'as' => 'form-list',
         'uses' => 'FormController@createForm'
     ]);
     Route::post('form-delete', [//删除表单
-        'as' => 'form-list',
         'uses' => 'FormController@deleteForm'
     ]);
     Route::post('form-edit', [//保存表单，仅表单信息
-        'as' => 'form-list',
         'uses' => 'FormController@editForm'
     ]);
     Route::post('form-save', [//保存表单，表单信息包括栏目信息
-        'as' => 'form-list',
         'uses' => 'FormController@saveForm'
     ]);
-
     Route::get('form-element-list', [//获取组件元素
-        'as' => 'form-list',
         'uses' => 'FormController@getFormElementList'
     ]);
-
     Route::get('form-column-list', [//获取组件列表
-        'as' => 'form-list',
         'uses' => 'FormController@getFormColumnList'
     ]);
     Route::get('form-column', [//获取组件
-        'as' => 'form-list',
         'uses' => 'FormController@getFormColumn'
     ]);
     Route::post('form-column-add', [//添加组件
-        'as' => 'form-list',
         'uses' => 'FormController@addFormColumn'
     ]);
     Route::post('form-column-delete', [//删除组件
-        'as' => 'form-list',
         'uses' => 'FormController@deleteFormColumn'
     ]);
     Route::post('form-column-edit', [//编辑组件
-        'as' => 'form-list',
         'uses' => 'FormController@editFormColumn'
     ]);
     Route::post('form-column-move', [//移动组件
-        'as' => 'form-list',
         'uses' => 'FormController@moveFormColumn'
     ]);
-
     Route::get('form-userdata-list', [//用户表单数据列表
-        'as' => 'form-list',
         'uses' => 'FormController@getFormUserdataList'
     ]);
     Route::get('form-userdata', [//用户单条数据
-        'as' => 'form-list',
         'uses' => 'FormController@getFormUserdata'
     ]);
     Route::post('form-userdata-delete', [//用户数据删除
-        'as' => 'form-list',
         'uses' => 'FormController@deleteFormUserdata'
     ]);
     Route::any('form-userdata-submit', [//用户数据提交
-        'as' => 'form-list',
         'uses' => 'FormController@submitFormUserdata'
     ]);
     //===万用表单end===
@@ -602,4 +594,5 @@ Route::post('api/downloadtemplate', [//代理平台下载模板接口
 Route::get('test/{cid}', [
     'uses' => 'PrintController@getChirldenCid'
 ]);
+
 
