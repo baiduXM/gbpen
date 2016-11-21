@@ -16,7 +16,7 @@ class TemplatesController extends BaseController {
 
     /**
      * 首页详情
-     * @param type $page index首页/_aside其他/global全局
+     * @param type $page index首页/_aside其他/global全局/form表单
      * @return string     
      */
     public function homepageInfo($page = 'index') {
@@ -1043,11 +1043,11 @@ class TemplatesController extends BaseController {
     /**
      * 模板下载
      */
-    public function downloadTemplate($tplname="") {
-        if($tplname!=""){
+    public function downloadTemplate($tplname = "") {
+        if ($tplname != "") {
             $tpl = Template::where('name', $tplname)->first();
             if ($tpl == null) {
-                return json_encode(array("err"=>1,"msg"=>"没有该模板！"));
+                return json_encode(array("err" => 1, "msg" => "没有该模板！"));
             }
             if (!is_dir(public_path('temp_templates/tpl/'))) {
                 @mkdir(public_path('temp_templates/tpl/'));
@@ -1075,13 +1075,13 @@ class TemplatesController extends BaseController {
                 $this->addFileToZip($json_dir . $tplname . "/js", $zip, "js/");
                 $this->addFileToZip($json_dir . $tplname . "/images", $zip, "images/");
                 $this->addFileToZip($json_dir . $tplname . "/json", $zip, "");
-                $this->addFileToZip($view_dir . $tplname, $zip, "","searchresult_do.html");
-                $zip->addFile($json_dir . $tplname ."/config.ini", "config.ini");
-                $zip->addFile($json_dir . $tplname ."/screenshot.jpg", "screenshot.jpg");
+                $this->addFileToZip($view_dir . $tplname, $zip, "", "searchresult_do.html");
+                $zip->addFile($json_dir . $tplname . "/config.ini", "config.ini");
+                $zip->addFile($json_dir . $tplname . "/screenshot.jpg", "screenshot.jpg");
                 $zip->close();
             }
-            return json_encode(array("err"=>0,"msg"=>'http://'.$_SERVER['HTTP_HOST'].'/temp_templates/tpl/' . $tplname . '.zip'));
-        }else{
+            return json_encode(array("err" => 0, "msg" => 'http://' . $_SERVER['HTTP_HOST'] . '/temp_templates/tpl/' . $tplname . '.zip'));
+        } else {
             echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
             if (Auth::user()->name != "test") {
                 return false;
@@ -1117,9 +1117,9 @@ class TemplatesController extends BaseController {
                 $this->addFileToZip($json_dir . $tplname . "/js", $zip, "js/");
                 $this->addFileToZip($json_dir . $tplname . "/images", $zip, "images/");
                 $this->addFileToZip($json_dir . $tplname . "/json", $zip, "");
-                $this->addFileToZip($view_dir . $tplname, $zip, "","searchresult_do.html");
-                $zip->addFile($json_dir . $tplname ."/config.ini", "config.ini");
-                $zip->addFile($json_dir . $tplname ."/screenshot.jpg", "screenshot.jpg");
+                $this->addFileToZip($view_dir . $tplname, $zip, "", "searchresult_do.html");
+                $zip->addFile($json_dir . $tplname . "/config.ini", "config.ini");
+                $zip->addFile($json_dir . $tplname . "/screenshot.jpg", "screenshot.jpg");
                 $zip->close();
             }
             echo '<a href="/temp_templates/tpl/' . $tplname . '.zip">下载' . $tplname . '模板</a>';
@@ -1132,14 +1132,14 @@ class TemplatesController extends BaseController {
      * @param type $zip压缩变量
      * @param type $dir存储名称
      */
-    private function addFileToZip($path, $zip, $dir,$notcopyfile="") {//将整个文件夹压缩
+    private function addFileToZip($path, $zip, $dir, $notcopyfile = "") {//将整个文件夹压缩
         $handler = opendir($path);
         while (($filename = readdir($handler)) !== false) {
             if ($filename != "." && $filename != "..") {
                 if (is_dir($path . "/" . $filename)) {
-                    $this->addFileToZip($path . "/" . $filename, $zip, $dir  . $filename. "/");
+                    $this->addFileToZip($path . "/" . $filename, $zip, $dir . $filename . "/");
                 } else {
-                    if($notcopyfile==""||$filename!=$notcopyfile){
+                    if ($notcopyfile == "" || $filename != $notcopyfile) {
                         $zip->addFile($path . "/" . $filename, $dir . $filename);
                     }
                 }
