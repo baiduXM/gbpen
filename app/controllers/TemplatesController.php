@@ -368,7 +368,7 @@ class TemplatesController extends BaseController {
         $org_imgs = $this->getimage($websitearray);
         $count = $website_config->where('cus_id', $cus_id)->where('template_id', $template_id)->where('key', $page)->count();
         $website_config->template_id = $template_id;
-        $data = Input::get();
+        $data = Input::get('data');
         foreach ($data as $key => $val) {
             if (is_array($data[$key]) && count($data[$key])) {
                 if (array_key_exists("href", $data[$key]) || array_key_exists("src", $data[$key])) {
