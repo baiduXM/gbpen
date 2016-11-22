@@ -1286,7 +1286,7 @@ class PrintController extends BaseController {
                                 $abc['data'][$key]['category']['view_name'] = $d_c_info->view_name;
                                 $abc['data'][$key]['category']['icon'] = '<i class="iconfont">' . $d_c_info->icon . '</i>';
                                 $abc['data'][$key]['description'] = $d->introduction;
-                                $abc['data'][$key]['pubdate'] = $d->created_at;
+                                $abc['data'][$key]['pubdate'] = (string)$d->created_at;
                                 $abc['data'][$key]['pubtimestamp'] = strtotime($d->created_at);
                                 unset($v['value']);
                             }
@@ -1355,7 +1355,7 @@ class PrintController extends BaseController {
                             $abc['data'][$key]['category']['view_name'] = $d_c_info->view_name;
                             $abc['data'][$key]['category']['icon'] = '<i class="iconfont">' . $d_c_info->icon . '</i>';
                             $abc['data'][$key]['description'] = $d->introduction;
-                            $abc['data'][$key]['pubdate'] = $d->created_at;
+                            $abc['data'][$key]['pubdate'] = (string)$d->created_at;
                             $abc['data'][$key]['pubtimestamp'] = strtotime($d->created_at);
                             unset($v['value']);
                         }
@@ -1434,7 +1434,7 @@ class PrintController extends BaseController {
                                     $abc[$key]['category']['en_name'] = $d_c_info->en_name;
                                     $abc[$key]['category']['icon'] = '<i class="iconfont">' . $d_c_info->icon . '</i>';
                                     $abc[$key]['description'] = $d->introduction;
-                                    $abc[$key]['pubdate'] = $d->created_at;
+                                    $abc[$key]['pubdate'] = (string)$d->created_at;
                                     $abc[$key]['pubtimestamp'] = strtotime($d->created_at);
                                 }
                                 $c_c_info['data'] = $abc;
@@ -1617,7 +1617,7 @@ class PrintController extends BaseController {
                         $article[$key]['link'] = $d->url;
                     }
                     $article[$key]['description'] = $d->introduction;
-                    $article[$key]['pubdate'] = $d->created_at;
+                    $article[$key]['pubdate'] = (string)$d->created_at;
                     $article[$key]['pubtimestamp'] = strtotime($d->created_at);
                 }
             } else {
@@ -1641,7 +1641,7 @@ class PrintController extends BaseController {
                         $article[$key]['link'] = $d->url;
                     }
                     $article[$key]['description'] = $d->introduction;
-                    $article[$key]['pubdate'] = $d->created_at;
+                    $article[$key]['pubdate'] = (string)$d->created_at;
                     $article[$key]['pubtimestamp'] = strtotime($d->created_at);
                 }
             }
@@ -2031,7 +2031,7 @@ class PrintController extends BaseController {
                                         $art_arr[$i]['link'] = $article->url;
                                     }
                                     $art_arr[$i]['description'] = $article->introduction;
-                                    $art_arr[$i]['pubdate'] = $article->created_at;
+                                    $art_arr[$i]['pubdate'] = (string)$article->created_at;
                                     $art_arr[$i]['pubtimestamp'] = strtotime($article->created_at);
                                     $art_arr[$i]['category']['name'] = $nav->name;
                                     $art_arr[$i]['category']['en_name'] = $nav->name;
@@ -2088,7 +2088,7 @@ class PrintController extends BaseController {
                                         $art_arr[$i]['link'] = $article->url;
                                     }
                                     $art_arr[$i]['description'] = $article->introduction;
-                                    $art_arr[$i]['pubdate'] = $article->created_at;
+                                    $art_arr[$i]['pubdate'] = (string)$article->created_at;
                                     $art_arr[$i]['pubtimestamp'] = strtotime($article->created_at);
                                     $art_arr[$i]['category']['name'] = $nav->name;
                                     $art_arr[$i]['category']['en_name'] = $nav->name;
@@ -2182,7 +2182,7 @@ class PrintController extends BaseController {
                                     $art_arr[$i]['link'] = $article->url;
                                 }
                                 $art_arr[$i]['description'] = $article->introduction;
-                                $art_arr[$i]['pubdate'] = $article->created_at;
+                                $art_arr[$i]['pubdate'] = (string)$article->created_at;
                                 $art_arr[$i]['pubtimestamp'] = strtotime($article->created_at);
                                 $art_arr[$i]['category']['name'] = $nav->name;
                                 $art_arr[$i]['category']['en_name'] = $nav->name;
@@ -2239,7 +2239,7 @@ class PrintController extends BaseController {
                                     $art_arr[$i]['link'] = $article->url;
                                 }
                                 $art_arr[$i]['description'] = $article->introduction;
-                                $art_arr[$i]['pubdate'] = $article->created_at;
+                                $art_arr[$i]['pubdate'] = (string)$article->created_at;
                                 $art_arr[$i]['pubtimestamp'] = strtotime($article->created_at);
                                 $art_arr[$i]['category']['name'] = $nav->name;
                                 $art_arr[$i]['category']['en_name'] = $nav->name;
@@ -2297,7 +2297,7 @@ class PrintController extends BaseController {
         } else {
             $id = Classify::where('view_name', $param)->pluck('id');
         }
-        if ($_SERVER["HTTP_HOST"] != "preview.5067.org") {
+        if ($_SERVER["HTTP_HOST"] != "ht.5067.org") {
             $result = $this->pagePublic($id);
             $customerinfo = CustomerInfo::where("cus_id", $this->cus_id)->first();
             foreach ((array) $result['navs'] as $nav) {
@@ -3110,7 +3110,7 @@ class PrintController extends BaseController {
                 $result['article']['content'] = preg_replace('/\/customers\/' . $this->customer . '/i', '', $article->content);
             }
             $result['article']['description'] = $article->introduction;
-            $result['article']['pubdate'] = $article->created_at;
+            $result['article']['pubdate'] = (string)$article->created_at;
             $result['article']['pubtimestamp'] = strtotime($article->created_at);
 
             $result['article']['category'] = $result['posnavs'][count($result['posnavs']) - 1];
@@ -3437,7 +3437,7 @@ class PrintController extends BaseController {
                             $data[$key]['category']['en_name'] = $classify->en_name;
                             $data[$key]['category']['icon'] = '<i class="iconfont">' . $classify->icon . '</i>';
                             $data[$key]['description'] = $d->introduction;
-                            $data[$key]['pubdate'] = $d->created_at;
+                            $data[$key]['pubdate'] = (string)$d->created_at;
                             $data[$key]['pubtimestamp'] = strtotime($d->created_at);
                             unset($v['value']);
                         }
