@@ -66,7 +66,7 @@ function homeController($scope, $http) {
     }
     function getTempledata(templeType, templePage) {
         $('.home-edite').html('loading...');
-        $http.get('../homepage-list?type=' + templeType + '&page=' + templePage + '').success(function (json) {//===step:1===
+        $http.get('../homepage-list?type=' + templeType + '&page=' + templePage + '').success(function (json) {
             var _rt = '', pic = 0, pic_Classname = '', pic_name = '';
             $.each(json.data, function (k, v) {
                 var type = v.type;

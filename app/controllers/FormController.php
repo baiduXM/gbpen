@@ -490,14 +490,17 @@ class FormController extends BaseController {
 
     /**
      * 显示表单前端
+     * @param type $data
+     * @param type $site
+     * @return string
      */
     public function showFormHtmlForPrint($data = null, $site = 'page') {
         $_form = '';
         if (empty($data)) {
             $_form .= "<div class='fv-add-show'>
-                    <div class='fv-as-description'>
-                            表单已停用
-                    </div>
+                        <div class='fv-as-description'>
+                                表单已停用
+                        </div>
                     <hr></div>";
         } else {
             $form_data = $data['form'];

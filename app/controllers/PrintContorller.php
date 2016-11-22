@@ -173,9 +173,8 @@ class PrintController extends BaseController {
         if ($website_confige_value) {//===数据库中有模板数据===
             $default = json_decode(trim($json), TRUE);
             $result = $this->array_merge_recursive_new($default, $website_confige_value);
-//            dd($result); //===step:bug===
             $this->replaceUrl($result);
-            $result = $this->dataDeal($result); //===step:4===
+            $result = $this->dataDeal($result);
             foreach ($result as &$v) {
                 if ($v['type'] == 'list') {
                     if (isset($v['config']['filter'])) {
@@ -199,7 +198,7 @@ class PrintController extends BaseController {
                 dd("$pagename.json文件错误");
             }
             $this->replaceUrl($result);
-            $result = $this->dataDeal($result); //===step:4===
+            $result = $this->dataDeal($result);
 
             $classify = new Classify;
             $templates = new TemplatesController;
@@ -925,9 +924,10 @@ class PrintController extends BaseController {
 //            $tempscript = '$("#header").prepend(\'' . $language_div . '\');'
 //                    . '$("#header").css("position","relative");';
         }
-        $language_css = '<link rel="stylesheet" href="http://swap.5067.org/css/language.css">'; //===
+        $language_css = '<link rel="stylesheet" href="http://swap.5067.org/css/language.css">'; 
         //===显示版本切换链接-end===
         $formC = new FormController();
+        $stylecolor = websiteConfig::leftJoin('color', 'color.id', '=', 'website_info.pc_color_id')->where('cus_id', $this->cus_id)->pluck('color_en');
         if ($this->type == 'pc') {
             $stylecolor = websiteInfo::leftJoin('color', 'color.id', '=', 'website_info.pc_color_id')->where('cus_id', $this->cus_id)->pluck('color_en');
             $logo = $this->showtype == 'preview' ? '/customers/' . $this->customer . '/images/l/common/' . $customer_info->logo : $this->domain . '/images/l/common/' . $customer_info->logo; //'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $customer_info->logo) : $this->domain . '/images/l/common/' . $customer_info->logo;
@@ -1015,6 +1015,7 @@ class PrintController extends BaseController {
             //===版权选择_end===
             $footscript = $customer_info->pc_footer_script;
             $footscript .= '<script type="text/javascript" src="/quickbar/js/quickbar.js?' . $this->cus_id . 'pc"></script>';
+//            $footscript .= '<script type="text/javascript" src="/quickbar/js/form.js"></script>';
             $footscript .= '<script type="text/javascript" src="http://swap.5067.org/admin/statis.php?cus_id=' . $this->cus_id . '&platform=pc"></script>'; //===添加统计代码PC===
             if ($customer_info->background_music) {
                 $bgm = str_replace('"', "", $customer_info->background_music);
@@ -1022,7 +1023,6 @@ class PrintController extends BaseController {
                     $("#bg-music").css("display","none");
                 </script>';
             }
-
 //            $footscript .= $tempscript_star . $tempscript . $tempscript_end;
 //            $footscript .= $language_css;
             $site_another_url = $this->showtype == 'preview' ? '' : $customer_info->mobile_domain;
@@ -1034,6 +1034,7 @@ class PrintController extends BaseController {
             $footprint = $customer_info->mobile_footer;
             $footscript = $customer_info->mobile_footer_script;
             $footscript .= '<script type="text/javascript" src="/quickbar/js/quickbar.js?' . $this->cus_id . 'mobile"></script>';
+//            $footscript .= '<script type="text/javascript" src="/quickbar/js/form.js"></script>';
             $footscript .= '<script type="text/javascript" src="http://swap.5067.org/admin/statis.php?cus_id=' . $this->cus_id . '&platform=mobile"></script>'; //===添加统计代码MOBILE===
 //            $footscript .= $tempscript;
             $site_another_url = $this->showtype == 'preview' ? '' : $customer_info->pc_domain;
@@ -1286,7 +1287,7 @@ class PrintController extends BaseController {
                                 $abc['data'][$key]['category']['view_name'] = $d_c_info->view_name;
                                 $abc['data'][$key]['category']['icon'] = '<i class="iconfont">' . $d_c_info->icon . '</i>';
                                 $abc['data'][$key]['description'] = $d->introduction;
-                                $abc['data'][$key]['pubdate'] = (string)$d->created_at;
+                                $abc['data'][$key]['pubdate'] = (string) $d->created_at;
                                 $abc['data'][$key]['pubtimestamp'] = strtotime($d->created_at);
                                 unset($v['value']);
                             }
@@ -1355,7 +1356,7 @@ class PrintController extends BaseController {
                             $abc['data'][$key]['category']['view_name'] = $d_c_info->view_name;
                             $abc['data'][$key]['category']['icon'] = '<i class="iconfont">' . $d_c_info->icon . '</i>';
                             $abc['data'][$key]['description'] = $d->introduction;
-                            $abc['data'][$key]['pubdate'] = (string)$d->created_at;
+                            $abc['data'][$key]['pubdate'] = (string) $d->created_at;
                             $abc['data'][$key]['pubtimestamp'] = strtotime($d->created_at);
                             unset($v['value']);
                         }
@@ -1364,7 +1365,7 @@ class PrintController extends BaseController {
                         $v['value'] = array('data' => null);
                     }
                 }
-                
+
                 $v['value']['name'] = ($c_info ? $c_info->name : '');
                 $v['value']['en_name'] = ($c_info ? $c_info->en_name : '');
                 $v['value']['icon'] = ($c_info ? '<i class="iconfont">' . $c_info->icon . '</i>' : '');
@@ -1434,7 +1435,7 @@ class PrintController extends BaseController {
                                     $abc[$key]['category']['en_name'] = $d_c_info->en_name;
                                     $abc[$key]['category']['icon'] = '<i class="iconfont">' . $d_c_info->icon . '</i>';
                                     $abc[$key]['description'] = $d->introduction;
-                                    $abc[$key]['pubdate'] = (string)$d->created_at;
+                                    $abc[$key]['pubdate'] = (string) $d->created_at;
                                     $abc[$key]['pubtimestamp'] = strtotime($d->created_at);
                                 }
                                 $c_c_info['data'] = $abc;
@@ -1617,7 +1618,7 @@ class PrintController extends BaseController {
                         $article[$key]['link'] = $d->url;
                     }
                     $article[$key]['description'] = $d->introduction;
-                    $article[$key]['pubdate'] = (string)$d->created_at;
+                    $article[$key]['pubdate'] = (string) $d->created_at;
                     $article[$key]['pubtimestamp'] = strtotime($d->created_at);
                 }
             } else {
@@ -1641,7 +1642,7 @@ class PrintController extends BaseController {
                         $article[$key]['link'] = $d->url;
                     }
                     $article[$key]['description'] = $d->introduction;
-                    $article[$key]['pubdate'] = (string)$d->created_at;
+                    $article[$key]['pubdate'] = (string) $d->created_at;
                     $article[$key]['pubtimestamp'] = strtotime($d->created_at);
                 }
             }
@@ -1739,7 +1740,6 @@ class PrintController extends BaseController {
             $startpage = $pageCount - ($showPageNum - 1);
             $endpage = $pageCount;
         }
-
         for ($i = $startpage; $i <= $endpage; $i++) {
             if ($i == $page) {
                 $links[$i] = $i;
@@ -2031,7 +2031,7 @@ class PrintController extends BaseController {
                                         $art_arr[$i]['link'] = $article->url;
                                     }
                                     $art_arr[$i]['description'] = $article->introduction;
-                                    $art_arr[$i]['pubdate'] = (string)$article->created_at;
+                                    $art_arr[$i]['pubdate'] = (string) $article->created_at;
                                     $art_arr[$i]['pubtimestamp'] = strtotime($article->created_at);
                                     $art_arr[$i]['category']['name'] = $nav->name;
                                     $art_arr[$i]['category']['en_name'] = $nav->name;
@@ -2088,7 +2088,7 @@ class PrintController extends BaseController {
                                         $art_arr[$i]['link'] = $article->url;
                                     }
                                     $art_arr[$i]['description'] = $article->introduction;
-                                    $art_arr[$i]['pubdate'] = (string)$article->created_at;
+                                    $art_arr[$i]['pubdate'] = (string) $article->created_at;
                                     $art_arr[$i]['pubtimestamp'] = strtotime($article->created_at);
                                     $art_arr[$i]['category']['name'] = $nav->name;
                                     $art_arr[$i]['category']['en_name'] = $nav->name;
@@ -2182,7 +2182,7 @@ class PrintController extends BaseController {
                                     $art_arr[$i]['link'] = $article->url;
                                 }
                                 $art_arr[$i]['description'] = $article->introduction;
-                                $art_arr[$i]['pubdate'] = (string)$article->created_at;
+                                $art_arr[$i]['pubdate'] = (string) $article->created_at;
                                 $art_arr[$i]['pubtimestamp'] = strtotime($article->created_at);
                                 $art_arr[$i]['category']['name'] = $nav->name;
                                 $art_arr[$i]['category']['en_name'] = $nav->name;
@@ -2239,7 +2239,7 @@ class PrintController extends BaseController {
                                     $art_arr[$i]['link'] = $article->url;
                                 }
                                 $art_arr[$i]['description'] = $article->introduction;
-                                $art_arr[$i]['pubdate'] = (string)$article->created_at;
+                                $art_arr[$i]['pubdate'] = (string) $article->created_at;
                                 $art_arr[$i]['pubtimestamp'] = strtotime($article->created_at);
                                 $art_arr[$i]['category']['name'] = $nav->name;
                                 $art_arr[$i]['category']['en_name'] = $nav->name;
@@ -3110,7 +3110,7 @@ class PrintController extends BaseController {
                 $result['article']['content'] = preg_replace('/\/customers\/' . $this->customer . '/i', '', $article->content);
             }
             $result['article']['description'] = $article->introduction;
-            $result['article']['pubdate'] = (string)$article->created_at;
+            $result['article']['pubdate'] = (string) $article->created_at;
             $result['article']['pubtimestamp'] = strtotime($article->created_at);
 
             $result['article']['category'] = $result['posnavs'][count($result['posnavs']) - 1];
@@ -3437,7 +3437,7 @@ class PrintController extends BaseController {
                             $data[$key]['category']['en_name'] = $classify->en_name;
                             $data[$key]['category']['icon'] = '<i class="iconfont">' . $classify->icon . '</i>';
                             $data[$key]['description'] = $d->introduction;
-                            $data[$key]['pubdate'] = (string)$d->created_at;
+                            $data[$key]['pubdate'] = (string) $d->created_at;
                             $data[$key]['pubtimestamp'] = strtotime($d->created_at);
                             unset($v['value']);
                         }
