@@ -924,10 +924,14 @@ class PrintController extends BaseController {
 //            $tempscript = '$("#header").prepend(\'' . $language_div . '\');'
 //                    . '$("#header").css("position","relative");';
         }
-        $language_css = '<link rel="stylesheet" href="http://swap.5067.org/css/language.css">'; 
+        $language_css = '<link rel="stylesheet" href="http://swap.5067.org/css/language.css">';
         //===显示版本切换链接-end===
         $formC = new FormController();
-        $stylecolor = websiteConfig::leftJoin('color', 'color.id', '=', 'website_info.pc_color_id')->where('cus_id', $this->cus_id)->pluck('color_en');
+        //===表单嵌入===
+        $websiteFormInfo = websiteConfig::where('cus_id', $this->cus_id)->where('template_id', $this->tpl_id)->where('key', 'form')->pluck('value');
+        $websiteFormArray = unserialize($websiteFormInfo);
+        var_dump($websiteFormArray);
+        exit;
         if ($this->type == 'pc') {
             $stylecolor = websiteInfo::leftJoin('color', 'color.id', '=', 'website_info.pc_color_id')->where('cus_id', $this->cus_id)->pluck('color_en');
             $logo = $this->showtype == 'preview' ? '/customers/' . $this->customer . '/images/l/common/' . $customer_info->logo : $this->domain . '/images/l/common/' . $customer_info->logo; //'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $customer_info->logo) : $this->domain . '/images/l/common/' . $customer_info->logo;
@@ -1015,7 +1019,9 @@ class PrintController extends BaseController {
             //===版权选择_end===
             $footscript = $customer_info->pc_footer_script;
             $footscript .= '<script type="text/javascript" src="/quickbar/js/quickbar.js?' . $this->cus_id . 'pc"></script>';
-//            $footscript .= '<script type="text/javascript" src="/quickbar/js/form.js"></script>';
+//            if(){
+//                $footscript .= '<script type="text/javascript" src="/quickbar/js/form.js"></script>';
+//            }
             $footscript .= '<script type="text/javascript" src="http://swap.5067.org/admin/statis.php?cus_id=' . $this->cus_id . '&platform=pc"></script>'; //===添加统计代码PC===
             if ($customer_info->background_music) {
                 $bgm = str_replace('"', "", $customer_info->background_music);
