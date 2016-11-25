@@ -590,4 +590,10 @@ Route::get('test/{cid}', [
     'uses' => 'PrintController@getChirldenCid'
 ]);
 
+Route::get('deletemytest', [
+    'uses' => 'ApiController@deletemytest'
+]);
 
+Route::get('reductionmytest', [
+    'uses' => 'ApiController@reductionCustomer'
+]);
