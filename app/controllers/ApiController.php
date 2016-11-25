@@ -502,7 +502,7 @@ class ApiController extends BaseController {
     function reductionCustomer(){
 //        if ($this->authData()) {
             $result = '';
-            $name = "GP702";
+            $name = Input::get('username');
             
 //            $name = Input::get('name');
             $Customer = Customer::where('name', $name)->where('is_del',0)->get(); 
