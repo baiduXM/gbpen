@@ -299,6 +299,7 @@ class ApiController extends BaseController {
             header("Content-type: text/html; charset=utf-8"); 
 //            $name = $_GET['username'];
             $Customer = Customer::where('name', $name)->get();  
+            var_dump($Customer);exit();
             $cus_id = $Customer[0]['id'];
             $WebsiteInfo = WebsiteInfo::where('cus_id', $cus_id)->get();
             $CustomerInfo = CustomerInfo::where('cus_id', $cus_id)->get();
@@ -316,7 +317,6 @@ class ApiController extends BaseController {
                 return Response::json(['err' => 1004, 'msg' => '用户mobile/images文件夹不存在']);
                 exit();
             }
-            
             $Customer = $Customer[0]; 
             $db = new PDO('sqlite:sqlite_1.db');
             if ($db) {
