@@ -359,7 +359,6 @@ class ApiController extends BaseController {
                 }
                 
                 if ($ret && $ret1 && $ret2) {
-                    var_dump("a");exit();
 //                    echo "数据库备份成功！<br/>";
                     $update['is_del'] = 0;
                     Customer::where('id', $cus_id)->update($update);
@@ -391,6 +390,8 @@ class ApiController extends BaseController {
 //                        echo "数据库备份失败";
                         return Response::json(['err' => 1004, 'msg' => '数据库备份失败']);
                     }
+                }else {
+                    return Response::json(['err' => 1004, 'msg' => '数据库备份失败']);
                 }
             } else {
                 return Response::json(['err' => 1004, 'msg' => '数据库备份失败']);
