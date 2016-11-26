@@ -299,7 +299,7 @@ class ApiController extends BaseController {
             header("Content-type: text/html; charset=utf-8"); 
 //            $name = $_GET['username'];
             $Customer = Customer::where('name', $name)->get();  
-            var_dump($Customer);exit();
+            var_dump($Customer);exit();//==
             $cus_id = $Customer[0]['id'];
             $WebsiteInfo = WebsiteInfo::where('cus_id', $cus_id)->get();
             $CustomerInfo = CustomerInfo::where('cus_id', $cus_id)->get();
