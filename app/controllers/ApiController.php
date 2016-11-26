@@ -318,8 +318,8 @@ class ApiController extends BaseController {
             }
             $Customer = $Customer[0]; 
             $db = new PDO('sqlite:sqlite_1.db');
-            var_dump("a");exit();
             if ($db) {
+                var_dump("b");
                 $conn = @ftp_connect($Customer['ftp_address'], $Customer['ftp_port']);
                 if(!$conn){
                     return Response::json(['err' => 1004, 'msg' => 'FTP服务器连接失败']);
@@ -329,7 +329,7 @@ class ApiController extends BaseController {
                     return Response::json(['err' => 1004, 'msg' => 'FTP服务器登陆失败']);
                     exit();
                 }
-                
+                var_dump("a");exit();
                 //保存数据库
                 $sql = "INSERT INTO customer (id,name,email,password,password_temp,remember_token,weburl,serv_id,ftp,ftp_address,ftp_port,ftp_user,ftp_pwd,ftp_dir,pc_tpl_id,mobile_tpl_id,pc_domain,mobile_domain,ended_at,status,created_at,updated_at,pc_end_time,mobile_end_time,color_id,switch_cus_id,customization,del_time) "
                         . "values('".$Customer['id']."','".$Customer['name']."','".$Customer['email']."','".$Customer['password']."','".$Customer['password_temp']."','".$Customer['remember_token']."','"
