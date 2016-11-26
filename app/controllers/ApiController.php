@@ -357,8 +357,9 @@ class ApiController extends BaseController {
 
                     $ret2 = $db->exec($sql);
                 }
-                var_dump("a");exit();
+                
                 if ($ret && $ret1 && $ret2) {
+                    var_dump("a");exit();
 //                    echo "数据库备份成功！<br/>";
                     $update['is_del'] = 0;
                     Customer::where('id', $cus_id)->update($update);
