@@ -586,14 +586,11 @@ Route::post('api/deleteuser', [//删除用户
     'uses' => 'ApiController@deleteCustomer'
 ]);
 
+Route::post('api/reductionCustomer', [//还原被删除的用户
+    'as' => 'template-fileedit',
+    'uses' => 'ApiController@reductionCustomer'
+]);
+
 Route::get('test/{cid}', [
     'uses' => 'PrintController@getChirldenCid'
-]);
-
-Route::get('deletemytest', [
-    'uses' => 'ApiController@deletemytest'
-]);
-
-Route::get('reductionmytest', [
-    'uses' => 'ApiController@reductionCustomer'
 ]);

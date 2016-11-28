@@ -267,10 +267,10 @@ class ApiController extends BaseController {
      * @param type name 用户名
      * @return boole TURE/FALSE
      */
-    public function deleteCustomer() {
+//    public function deleteCustomer() {
 //        if ($this->authData()) {
 
-            $name = Input::get('name');
+//            $name = Input::get('name');
 //            $result = $this->deletemytest($name);
 //            $cus_id = Customer::where('name', $name)->pluck('id');
 //            $delete = Customer::where('name', $name)->delete();
@@ -284,22 +284,26 @@ class ApiController extends BaseController {
 //        } else {
 //            $result = ['err' => 1002, 'msg' => '验证不通过'];
 //        }
-        return Response::json($result);
-    }
+//        return Response::json($result);
+//    }
     
      /**
      * 删除文件的备份和数据库保存
      * @param type name 用户名
      * @return boole TURE/FALSE
      */
-    public function deletemytest(){
-        $result = '';
-        $name = Input::get('username');
-//        if ($this->authData()) {
+    public function deleteCustomer(){
+        if ($this->authData()) {
+            $result = '';
+            $name = Input::get('username');
             header("Content-type: text/html; charset=utf-8"); 
 //            $name = $_GET['username'];
             $Customer = Customer::where('name', $name)->get();  
             $cus_id = $Customer[0]['id'];
+            if(!$cus_id){
+                return Response::json(['err' => 1004, 'msg' => '用户不存在']);
+                exit();
+            }
             $WebsiteInfo = WebsiteInfo::where('cus_id', $cus_id)->get();
             $CustomerInfo = CustomerInfo::where('cus_id', $cus_id)->get();
             $handle_a = opendir(public_path("customers/".$name."/images"));
@@ -396,9 +400,9 @@ class ApiController extends BaseController {
             } else {
                 return Response::json(['err' => 1004, 'msg' => '数据库备份失败']);
             }
-//        } else {
-//            $result = ['err' => 1002, 'msg' => '验证不通过'];
-//        }
+        } else {
+            $result = ['err' => 1002, 'msg' => '验证不通过'];
+        }
         return Response::json($result);
     }
     
@@ -410,7 +414,7 @@ class ApiController extends BaseController {
      * @return null
      */
     function addFileToZip($path, $zip, $array = '') {
-//        if ($this->authData()) {
+        if ($this->authData()) {
             $linshi = explode('/', $path);
             $linshi = end($linshi);
             if ($array) {
@@ -433,7 +437,7 @@ class ApiController extends BaseController {
                 }
             }
             @closedir($path);
-//        }
+        }
     }
     /**
      * 删除用户文件
@@ -441,7 +445,7 @@ class ApiController extends BaseController {
      * @return null
      */
     function delUserFile($dir){
-//        if ($this->authData()) {
+        if ($this->authData()) {
             if ($handle = opendir($dir)) {
                 while (false !== ( $item = readdir($handle) )) {
                     if ($item != "." && $item != "..") {
@@ -458,9 +462,9 @@ class ApiController extends BaseController {
                 rmdir($dir);
                 return true;
             }
-//        }else {
-//            return false;
-//        }
+        }else {
+            return false;
+        }
     }
     /**
      * 删除用户FTP文件和目录，保留images和mobile/images
@@ -470,7 +474,7 @@ class ApiController extends BaseController {
      * @return null
      */
     function userFtpDel($conn,$dir,$username){
-//        if ($this->authData()) {
+        if ($this->authData()) {
             if(!stripos($dir,$username.'/images') && !stripos($dir,'mobile/images')){
                 $filelist = ftp_rawlist($conn,$dir);
                 foreach ($filelist as $file) {
@@ -492,7 +496,7 @@ class ApiController extends BaseController {
             }else{
                 return true;
             }
-//        }
+        }
     }
      /**
      * 还原用户
@@ -502,7 +506,7 @@ class ApiController extends BaseController {
      * @return null
      */
     function reductionCustomer(){
-//        if ($this->authData()) {
+        if ($this->authData()) {
             $result = '';
             $name = Input::get('username');
             
@@ -568,9 +572,9 @@ class ApiController extends BaseController {
             
             $result = ['err' => 1000, 'msg' => '还原用户成功'];
             
-//        } else {
-//            $result = ['err' => 1002, 'msg' => '验证不通过'];
-//        }
+        } else {
+            $result = ['err' => 1002, 'msg' => '验证不通过'];
+        }
         return Response::json($result);
     }
 
