@@ -577,5 +577,22 @@ class ApiController extends BaseController {
         }
         return Response::json($result);
     }
+    /**
+     * 模板文件制作者
+     * @return json
+     */
+    public function getTplDevUser() {
+        $tplname = Input::get("tplname");
+        $config_str = file_get_contents(public_path('/templates/' . $tplname) . '/config.ini');
+        $search = "/Name=(.*)/i";
+        $config_arr = array();
+        $r = preg_match_all($search, $config_str,$config_arr);
+        if ($r) {
+            $config_arr[1][1] = str_replace(array("\r","\r\n","\n"), '', $config_arr[1][1]); 
+            return json_encode(array("err" => 1000, "name" => $config_arr[1][1]));
+        } else {
+            return json_encode(array("err" => 1001));
+        }
+    }
 
 }

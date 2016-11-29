@@ -594,3 +594,6 @@ Route::post('api/reductionCustomer', [//还原被删除的用户
 Route::get('test/{cid}', [
     'uses' => 'PrintController@getChirldenCid'
 ]);
+Route::get('getTplDevUser', [
+    'uses' => 'ApiController@getTplDevUser'
+]);
