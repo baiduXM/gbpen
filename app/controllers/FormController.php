@@ -135,7 +135,8 @@ class FormController extends BaseController {
     }
 
     /**
-     * 获取表单信息	 
+     * 获取表单信息
+     * @return type
      */
     public function getFormData() {
         $cus_id = Auth::id();
@@ -147,6 +148,19 @@ class FormController extends BaseController {
             $json = Response::json(['err' => 1, 'msg' => '获取表单信息失败', 'data' => null]);
         }
         return $json;
+    }
+
+    /**
+     * 根据表单ids查找表单信息
+     * @param array $ids
+     */
+    public function getFormInfoByIds($ids) {
+
+        $formInfo = DB::table('form')->whereIn('id', $ids)->where('status', 1)->get();
+        foreach ($formInfo as $key => $value) {
+            $formInfo[$key]['data'] = DB::table('form_column_' . $id % 10)->where('form_id', $id)->orderBy('order', 'asc')->get();
+        }
+        return $forInfo; //===返回数据===
     }
 
     /**

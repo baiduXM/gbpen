@@ -1,7 +1,6 @@
 <?php
 
 /**
-  /**
  * ===容量控制器===
  * @author xieqixiang
  * @date 2016.07.18
@@ -25,7 +24,7 @@
  * 数据库：
  *      表up_customer_info、添加init_capacity字段：是否初始化:0-未初始化，1-已初始化
  * 
- * attention：
+ * 注意：
  *      此方法原理统计出的空间容量并非真实用户占用空间，真实占用空间容量>>统计占用空间容量
  *      所以在非必要时候，请勿手动！直接！删除文件夹中文件
  * 
@@ -34,11 +33,10 @@ class CapacityController extends BaseController {
 
     private $size; //容量大小
 
-    /*   (●'◡'●)   */
-
     /**
      * 初始化、统计物理容量大小
      */
+
     function init() {
         $customer = Auth::user()->name;
         $path = public_path('customers/' . $customer);
@@ -54,19 +52,14 @@ class CapacityController extends BaseController {
      */
     private function tree($directory) {
         $mydir = dir($directory);
-//        echo "<ul>\n";
         while ($file = $mydir->read()) {
             if ((is_dir("$directory/$file")) && ( $file != ".") && ( $file != "..") && ( $file != "cache_images") && ( $file != "s") && ( $file != "mobile")) {
-//                echo "<li><font color=\"#ff00cc\"><b>$file</b></font></li>\n";
                 $this->tree("$directory/$file");
             } else if (( $file != ".") && ( $file != "..") && ( $file != "cache_images") && ( $file != "s") && ( $file != "mobile")) {
-//                echo $directory . '/' . $file;
                 $_size = filesize($directory . '/' . $file);
                 $this->size += $_size;
-//                echo "<li>---$file---$_size---</li>\n";
             }
         }
-//        echo "</ul>\n";
         $mydir->close();
     }
 
