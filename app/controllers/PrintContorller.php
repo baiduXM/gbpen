@@ -930,25 +930,13 @@ class PrintController extends BaseController {
         //===表单嵌入：查找表单数据===
 
         /*
-         * 1、
+         * 1、查找表单信息
          */
         $websiteFormInfo = websiteConfig::where('cus_id', $this->cus_id)->where('template_id', $this->tpl_id)->where('key', 'form')->pluck('value');
+        $formJS = '';
         if (!empty($websiteFormInfo)) {
-            $websiteFormArray = unserialize($websiteFormInfo);
-            $ids = array();
-            foreach ($websiteFormArray as $key => $value) {
-                if (array_key_exists('form_id', $value['value'])) {
-//                    echo 111;
-                    if (!in_array($value['value']['form_id'], $ids)) {
-//                        echo 222;
-                        $ids[] = $value['value']['form_id'];
-                    }
-                }
-            }
-            $formInfo = $formC->getFormInfoByIds($ids);
-//            var_dump($formInfo);
+            $formJS = '<script type="text/javascript" src="/quickbar/js/form.js"></script>';
         }
-//        exit;
 
         //===表单嵌入：end===
         if ($this->type == 'pc') {
@@ -1037,10 +1025,8 @@ class PrintController extends BaseController {
             }
             //===版权选择_end===
             $footscript = $customer_info->pc_footer_script;
+            $footscript .= $formJS;
             $footscript .= '<script type="text/javascript" src="/quickbar/js/quickbar.js?' . $this->cus_id . 'pc"></script>';
-//            if(){
-//                $footscript .= '<script type="text/javascript" src="/quickbar/js/form.js"></script>';
-//            }
             $footscript .= '<script type="text/javascript" src="http://swap.5067.org/admin/statis.php?cus_id=' . $this->cus_id . '&platform=pc"></script>'; //===添加统计代码PC===
             if ($customer_info->background_music) {
                 $bgm = str_replace('"', "", $customer_info->background_music);
@@ -1208,6 +1194,22 @@ class PrintController extends BaseController {
             $result['type'] = 'pc';
         }
         return $result;
+    }
+
+    /**
+     * 嵌入表单
+     */
+    public function insetForm() {
+        $websiteFormArray = unserialize($websiteFormInfo);
+        $ids = array();
+        foreach ($websiteFormArray as $key => $value) {
+            if (array_key_exists('form_id', $value['value'])) {
+                if (!in_array($value['value']['form_id'], $ids)) {
+                    $ids[] = $value['value']['form_id'];
+                }
+            }
+        }
+        $formInfo = $formC->getFormInfoByIds($ids);
     }
 
     /**

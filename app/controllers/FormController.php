@@ -157,10 +157,10 @@ class FormController extends BaseController {
     public function getFormInfoByIds($ids) {
 
         $formInfo = DB::table('form')->whereIn('id', $ids)->where('status', 1)->get();
-        foreach ($formInfo as $key => $value) {
-            $formInfo[$key]['data'] = DB::table('form_column_' . $id % 10)->where('form_id', $id)->orderBy('order', 'asc')->get();
+        foreach ($formInfo as &$value) {
+            $value->data = DB::table('form_column_' . $value->id % 10)->where('form_id', $value->id)->orderBy('order', 'asc')->get();
         }
-        return $forInfo; //===返回数据===
+        return $formInfo;
     }
 
     /**
@@ -182,7 +182,6 @@ class FormController extends BaseController {
      */
     public function getFormElementList() {
         $data = DB::table('form_element')->where('status', 1)->get();
-        //===返回数据===
         if ($data != NULL) {
             $res = Response::json(['err' => 0, 'msg' => '组件元素列表获取成功', 'data' => $data]);
         } else {
