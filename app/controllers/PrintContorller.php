@@ -935,7 +935,8 @@ class PrintController extends BaseController {
         $websiteFormInfo = websiteConfig::where('cus_id', $this->cus_id)->where('template_id', $this->tpl_id)->where('key', 'form')->pluck('value');
         $formJS = '';
         if (!empty($websiteFormInfo)) {
-            $formJS = '<script type="text/javascript" src="/quickbar/js/form.js"></script>';
+//            $formJS = '<script type="text/javascript" src="/quickbar/js/form.js"></script>';
+            $this->insetForm();
         }
 
         //===表单嵌入：end===
@@ -1197,9 +1198,19 @@ class PrintController extends BaseController {
     }
 
     /**
-     * 嵌入表单
+     * ===嵌入表单===
+     * 
      */
     public function insetForm() {
+
+        file_put_contents(public_path("customers/" . $this->customer . '/formdata.json'), "quickbarCallback");
+        var_dump(public_path("customers/" . $this->customer . '/formdata.json'));
+        exit;
+
+        /*
+         * 1、查找表单信息
+         */
+        $websiteFormInfo = websiteConfig::where('cus_id', $this->cus_id)->where('template_id', $this->tpl_id)->where('key', 'form')->pluck('value');
         $websiteFormArray = unserialize($websiteFormInfo);
         $ids = array();
         foreach ($websiteFormArray as $key => $value) {

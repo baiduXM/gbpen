@@ -304,22 +304,22 @@ function openpcController($scope, $http, $location) {
         $(this).find(".boxbtn").addClass("hidden").find(".iconbtn").addClass("hidden")
         $(this).siblings('.title').css('visibility', 'hidden');
         //色块取消选择
-        $(this).find(".chose_icon").addClass("hidden")
-        $(this).attr("data-color", "chose")
-        $(this).find(".colorchoose a").removeAttr("data-color")
+        $(this).find(".chose_icon").addClass("hidden");
+        $(this).attr("data-color", "chose");
+        $(this).find(".colorchoose a").removeAttr("data-color");
     }).on('click', '.colorchoose a', function () {
-        $(this).parent().siblings('.zz').removeClass("hidden")
+        $(this).parent().siblings('.zz').removeClass("hidden");
         if ($(this).parent().siblings('.chose_bg').hasClass("hidden")) {
-            $(this).parent().siblings('.boxbtn').removeClass("hidden").find(".iconbtn").removeClass("hidden")
+            $(this).parent().siblings('.boxbtn').removeClass("hidden").find(".iconbtn").removeClass("hidden");
         } else {
-            $(this).parent().siblings('.boxbtn').removeClass("hidden").find(".iconbtn").removeClass("hidden").find(".true").removeClass("hidden")
+            $(this).parent().siblings('.boxbtn').removeClass("hidden").find(".iconbtn").removeClass("hidden").find(".true").removeClass("hidden");
         }
         //色块选择
         if ($(this).parent().siblings(".chose_bg").hasClass("hidden")) {// 未选模板
-            $(this).siblings().find(".chose_icon").addClass("hidden")
-            $(this).find(".chose_icon").removeClass("hidden")
-            $(this).attr("data-color", "chose")
-            $(this).siblings().removeAttr("data-color", "chose")
+            $(this).siblings().find(".chose_icon").addClass("hidden");
+            $(this).find(".chose_icon").removeClass("hidden");
+            $(this).attr("data-color", "chose");
+            $(this).siblings().removeAttr("data-color", "chose");
         } else {// 已选模板
             $(this).siblings().find(".chose_icon1").addClass("hidden")
             $(this).find(".chose_icon1").removeClass("hidden")
