@@ -337,11 +337,11 @@ Route::group(array('before' => 'auth'), function() {
     Route::get('mobile/category/v/{view_name}', [//===栏目页预览（栏目别名）===
         'uses' => 'TemplatesController@mcategoryPreviewV'
     ])->where('view_name', '[a-z0-9]+');
-    
+
     Route::get('mobile/category/v/{view_name}_{page}', [//===栏目页分页预览(栏目别名)===
         'uses' => 'TemplatesController@mcategoryPreviewV'
     ])->where(['view_name' => '[a-z0-9]+', 'page' => '[0-9]+']);
-    
+
     Route::get('mobile/detail/{id}', [//详情页预览
         'uses' => 'TemplatesController@marticlePreview'
     ])->where('id', '[0-9]+');
@@ -591,8 +591,14 @@ Route::post('api/downloadtemplate', [//代理平台下载模板接口
     'uses' => 'ApiController@DownloadTemplate'
 ]);
 
+Route::post('api/reductionCustomer', [//还原被删除的用户
+    'as' => 'template-fileedit',
+    'uses' => 'ApiController@reductionCustomer'
+]);
+
 Route::get('test/{cid}', [
     'uses' => 'PrintController@getChirldenCid'
 ]);
-
-
+Route::get('getTplDevUser', [
+    'uses' => 'ApiController@getTplDevUser'
+]);

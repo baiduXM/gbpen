@@ -267,11 +267,11 @@ class ApiController extends BaseController {
      * @param type name 用户名
      * @return boole TURE/FALSE
      */
-    public function deleteCustomer() {
-        if ($this->authData()) {
+//    public function deleteCustomer() {
+//        if ($this->authData()) {
 
-            $name = Input::get('name');
-            $result = $this->deletemytest($name);
+//            $name = Input::get('name');
+//            $result = $this->deletemytest($name);
 //            $cus_id = Customer::where('name', $name)->pluck('id');
 //            $delete = Customer::where('name', $name)->delete();
 //            if ($delete) {
@@ -281,31 +281,57 @@ class ApiController extends BaseController {
 //            } else {
 //                $result = ['err' => 1001, 'msg' => '删除用户失败'];
 //            }
-        } else {
-            $result = ['err' => 1002, 'msg' => '验证不通过'];
-        }
-        return Response::json($result);
-    }
+//        } else {
+//            $result = ['err' => 1002, 'msg' => '验证不通过'];
+//        }
+//        return Response::json($result);
+//    }
     
      /**
      * 删除文件的备份和数据库保存
      * @param type name 用户名
      * @return boole TURE/FALSE
      */
-    public function deletemytest($name){
-        $result = '';
+    public function deleteCustomer(){
         if ($this->authData()) {
+            $result = '';
+            $name = Input::get('username');
             header("Content-type: text/html; charset=utf-8"); 
 //            $name = $_GET['username'];
             $Customer = Customer::where('name', $name)->get();  
             $cus_id = $Customer[0]['id'];
+            if(!$cus_id){
+                return Response::json(['err' => 1004, 'msg' => '用户不存在']);
+                exit();
+            }
             $WebsiteInfo = WebsiteInfo::where('cus_id', $cus_id)->get();
             $CustomerInfo = CustomerInfo::where('cus_id', $cus_id)->get();
+            $handle_a = opendir(public_path("customers/".$name."/images"));
+            $handle_b = opendir(public_path("customers/".$name."/mobile/images"));
+            if($handle_a){
+                closedir($handle_a);
+            }else{
+                return Response::json(['err' => 1004, 'msg' => '用户images文件夹不存在']);
+                exit();
+            }
+            if($handle_b){
+                closedir($handle_b);
+            }else{
+                return Response::json(['err' => 1004, 'msg' => '用户mobile/images文件夹不存在']);
+                exit();
+            }
             $Customer = $Customer[0]; 
             $db = new PDO('sqlite:sqlite_1.db');
             if ($db) {
-                $conn = @ftp_connect($Customer['ftp_address'], $Customer['ftp_port']) or die("FTP服务器连接失败");
-                @ftp_login($conn, $Customer['ftp_user'], $Customer['ftp_pwd']) or die("FTP服务器登陆失败");
+                $conn = @ftp_connect($Customer['ftp_address'], $Customer['ftp_port']);
+                if(!$conn){
+                    return Response::json(['err' => 1004, 'msg' => 'FTP服务器连接失败']);
+                    exit();
+                }
+                if(!@ftp_login($conn, $Customer['ftp_user'], $Customer['ftp_pwd'])){
+                    return Response::json(['err' => 1004, 'msg' => 'FTP服务器登陆失败']);
+                    exit();
+                }
                 
                 //保存数据库
                 $sql = "INSERT INTO customer (id,name,email,password,password_temp,remember_token,weburl,serv_id,ftp,ftp_address,ftp_port,ftp_user,ftp_pwd,ftp_dir,pc_tpl_id,mobile_tpl_id,pc_domain,mobile_domain,ended_at,status,created_at,updated_at,pc_end_time,mobile_end_time,color_id,switch_cus_id,customization,del_time) "
@@ -335,19 +361,20 @@ class ApiController extends BaseController {
 
                     $ret2 = $db->exec($sql);
                 }
+                
                 if ($ret && $ret1 && $ret2) {
-                    echo "数据库备份成功！<br/>";
+//                    echo "数据库备份成功！<br/>";
                     $update['is_del'] = 0;
                     Customer::where('id', $cus_id)->update($update);
-                    WebsiteInfo::where('id', $cus_id)->update($update);
-                    CustomerInfo::where('id', $cus_id)->update($update);
-                    echo "开始备份文件<br/>";
+                    WebsiteInfo::where('cus_id', $cus_id)->update($update);
+                    CustomerInfo::where('cus_id', $cus_id)->update($update);
+//                    echo "开始备份文件<br/>";
                     $zip=new ZipArchive();
-                    if($zip->open("customers_backups/".$name.'.zip', ZipArchive::OVERWRITE)=== TRUE){
+                    if($zip->open(public_path("customers_backups/".$name.'.zip'), ZipArchive::OVERWRITE)=== TRUE){
                         //备份文件
-                        $this->addFileToZip("customers/".$name."/images", $zip);
+                        $this->addFileToZip(public_path("customers/".$name."/images"), $zip);
                         $zip->addEmptyDir("mobile");
-                        $this->addFileToZip("customers/".$name."/mobile/images", $zip,"mobile"); 
+                        $this->addFileToZip(public_path("customers/".$name."/mobile/images"), $zip,"mobile"); 
                         $zip->close();
                         $dir = "./customers/".$name; // 文件夹的名称
                         if($this->delUserFile($dir)){
@@ -361,20 +388,22 @@ class ApiController extends BaseController {
 //                            echo "删除完成！";
                             $result = ['err' => 1000, 'msg' => '删除用户成功'];
                         }else{
-                            $result = ['err' => 1002, 'msg' => '验证不通过'];
+                            return Response::json(['err' => 1002, 'msg' => '文件备份失败']);
                         }
                     }else{
 //                        echo "数据库备份失败";
-                        $result = ['err' => 1004, 'msg' => '数据库备份失败'];
+                        return Response::json(['err' => 1004, 'msg' => '数据库备份失败']);
                     }
+                }else {
+                    return Response::json(['err' => 1004, 'msg' => '数据库备份失败']);
                 }
             } else {
-                $result = ['err' => 1004, 'msg' => '数据库备份失败'];
+                return Response::json(['err' => 1004, 'msg' => '数据库备份失败']);
             }
         } else {
             $result = ['err' => 1002, 'msg' => '验证不通过'];
         }
-        return $result;
+        return Response::json($result);
     }
     
     /**
@@ -484,6 +513,101 @@ class ApiController extends BaseController {
             }
         }
     }
-
+     /**
+     * 还原用户
+     * @param ftp_connect $conn ftp对象
+     * @param string $dir 路径
+     * @param string $username 用户名
+     * @return null
+     */
+    function reductionCustomer(){
+        if ($this->authData()) {
+            $result = '';
+            $name = Input::get('username');
+            
+//            $name = Input::get('name');
+            $Customer = Customer::where('name', $name)->where('is_del',0)->get(); 
+            
+            if(!isset($Customer[0])){
+                return Response::json(['err' => 1004, 'msg' => '用户不存在或未删除']);
+                exit();
+            }
+            
+            //修改静态服务器文件名
+            $conn = @ftp_connect($Customer[0]['ftp_address'], $Customer[0]['ftp_port']);
+            if(!$conn){
+                return Response::json(['err' => 1004, 'msg' => 'FTP服务器连接失败']);
+                exit();
+            }
+            if(!@ftp_login($conn, $Customer[0]['ftp_user'], $Customer[0]['ftp_pwd'])){
+                return Response::json(['err' => 1004, 'msg' => 'FTP服务器登陆失败']);
+                exit();
+            }
+            @ftp_pasv($conn, 1); // 打开被动模拟
+            if(!@ftp_rename($conn,$name."_beifen",$name)){
+                return Response::json(['err' => 1004, 'msg' => 'FTP服务器静态没有备份']);
+                exit();
+            }
+            @ftp_close($conn);
+            
+            //解压备份的图片文件
+            $zip=new ZipArchive();
+            if(!is_dir((public_path("customers/".$name)))){
+                mkdir("customers/".$name);
+            }
+            if($zip->open(public_path("customers_backups/".$name.'.zip'))=== TRUE){
+                $zip->extractTo(public_path("customers/".$name));
+                $zip->close();
+            }else{
+                return Response::json(['err' => 1004, 'msg' => '解压失败']);
+                exit();
+            }
+            if($zip->open(public_path("packages/customernull.zip"))=== TRUE){
+                $zip->extractTo(public_path("customers/".$name));
+            }else{
+                return Response::json(['err' => 1004, 'msg' => '解压失败2']);
+                exit();
+            }
+            $zip->close();
+            
+            //更新数据库
+            $update['is_del'] = 1;
+            $cus_id = $Customer[0]['id'];
+            $WebsiteInfo = WebsiteInfo::where('cus_id', $cus_id)->where('is_del',0)->get();
+            if($WebsiteInfo){
+                WebsiteInfo::where('cus_id', $cus_id)->update($update);
+            }
+            $CustomerInfo = CustomerInfo::where('cus_id', $cus_id)->where('is_del',0)->get();
+            if($CustomerInfo){
+                CustomerInfo::where('cus_id', $cus_id)->update($update);
+            }
+            Customer::where('id', $cus_id)->update($update);
+            
+            unlink(public_path("customers_backups/".$name.".zip"));
+            
+            $result = ['err' => 1000, 'msg' => '还原用户成功'];
+            
+        } else {
+            $result = ['err' => 1002, 'msg' => '验证不通过'];
+        }
+        return Response::json($result);
+    }
+    /**
+     * 模板文件制作者
+     * @return json
+     */
+    public function getTplDevUser() {
+        $tplname = Input::get("tplname");
+        $config_str = file_get_contents(public_path('/templates/' . $tplname) . '/config.ini');
+        $search = "/Name=(.*)/i";
+        $config_arr = array();
+        $r = preg_match_all($search, $config_str,$config_arr);
+        if ($r) {
+            $config_arr[1][1] = str_replace(array("\r","\r\n","\n"), '', $config_arr[1][1]); 
+            return json_encode(array("err" => 1000, "name" => $config_arr[1][1]));
+        } else {
+            return json_encode(array("err" => 1001));
+        }
+    }
 
 }
