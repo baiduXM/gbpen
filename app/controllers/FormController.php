@@ -135,7 +135,8 @@ class FormController extends BaseController {
     }
 
     /**
-     * 获取表单信息	 
+     * 获取表单信息
+     * @return type
      */
     public function getFormData() {
         $cus_id = Auth::id();
@@ -147,6 +148,23 @@ class FormController extends BaseController {
             $json = Response::json(['err' => 1, 'msg' => '获取表单信息失败', 'data' => null]);
         }
         return $json;
+    }
+
+    /**
+     * 根据表单ids查找表单信息
+     * @param array $ids
+     */
+    public function getFormInfoByIds($ids) {
+        $formArray = array();
+        $formInfo = DB::table('form')->whereIn('id', $ids)->where('status', 1)->get();
+        foreach ($formInfo as $value) {
+            $value->data = DB::table('form_column_' . $value->id % 10)->where('form_id', $value->id)->orderBy('order', 'asc')->get();
+            foreach ($value->data as $vk => &$vv) {
+                $vv->config = unserialize($vv->config);
+            }
+            $formArray[$value->id] = $value;
+        }
+        return $formArray;
     }
 
     /**
@@ -168,7 +186,6 @@ class FormController extends BaseController {
      */
     public function getFormElementList() {
         $data = DB::table('form_element')->where('status', 1)->get();
-        //===返回数据===
         if ($data != NULL) {
             $res = Response::json(['err' => 0, 'msg' => '组件元素列表获取成功', 'data' => $data]);
         } else {
@@ -490,14 +507,17 @@ class FormController extends BaseController {
 
     /**
      * 显示表单前端
+     * @param type $data
+     * @param type $site
+     * @return string
      */
     public function showFormHtmlForPrint($data = null, $site = 'page') {
         $_form = '';
         if (empty($data)) {
             $_form .= "<div class='fv-add-show'>
-                    <div class='fv-as-description'>
-                            表单已停用
-                    </div>
+                        <div class='fv-as-description'>
+                                表单已停用
+                        </div>
                     <hr></div>";
         } else {
             $form_data = $data['form'];
@@ -537,7 +557,8 @@ class FormController extends BaseController {
                     . "<input type='hidden' name='action_text' value=" . $tempform['action_text'] . " />";
 
             if (empty($site) || $site == 'page') {//===普通表单===
-                $_form.="<form class='fv-unit-preview unit-preview' id='box_show' action='http://swap.5067.org/userdata/' method='post' ><ul class='fv-element-show'>";
+                $_form.="<form class='fv-unit-preview unit-preview' id='box_show' action='http://swap.5067.org/userdata/' method='post' >"
+                        . "<ul class='fv-element-show'>";
             } elseif ($site == 'float') {//===悬浮表单===
                 $_form.="<form class='adv-unit-preview unit-preview' id='box_show' action='http://swap.5067.org/userdata/' method='post' style='width:100%;'>"
                         . "<ul class='fv-element-show'>";

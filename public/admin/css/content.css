@@ -401,7 +401,7 @@ ul.made_tpl_list li .iconfont{ font-size: 24px;}
 .showbox .chose_bg{ width:31px; height:27px; line-height:24px;background: url(../images/chose_bg.png) center center no-repeat; text-align:center; color:#fff; position:absolute; top:3px; right:3px; z-index:4; font-size:15px; text-indent:1px; }
 .showbox .boxbtn .hidden,ul.System_tpl_list li .hidden{ display:none;}
 ul.System_tpl_list li .number,ul.made_tpl_list li .number{ height:50px; line-height:40px; text-align:center; color:#333333; width:100%; position:absolute; bottom:0px; left:0px; z-index:1; font-size:15px;}
-ul.System_tpl_list li .title,ul.made_tpl_list li .title{text-align: center;margin-bottom: 10px;visibility: hidden;font-size: 15px;}
+ul.System_tpl_list li .title,ul.made_tpl_list li .title{text-align: center;margin-bottom: 10px;visibility: hidden;font-size: 15px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
 .tpl_mask{ width:100%; height:100%; background:#000; opacity:0.6;filter:alpha(opacity=60); position:fixed; top:0px; left:0px; z-index:8888; display:none;cursor: pointer;}
 .text_tishi{ width:100%; text-align:center; height:28px; line-height:28px; position:fixed; top:50%; margin-top:-14px; left:0px; z-index:9999; color:#fff; display:none;font-size:15px;}
 .text_tishi .icon-spin4{margin-left: 10px;
