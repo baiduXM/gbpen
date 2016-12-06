@@ -1,0 +1,62 @@
+{
+    "bind_div0": {
+        "value": [
+        ],
+        "description": "绑定显示区域",
+        "type": "form",
+        "config": {
+            "kind": "div",
+            "name": "div_area0,div_area1"
+        }
+    },
+    "bind_css0": {
+        "value": [
+        ],
+        "description": "绑定样式",
+        "type": "form",
+        "config": {
+            "kind": "css",
+            "name": "form_css0,form_css1"
+        }
+    },
+    "bind_form0": {
+        "value": [
+        ],
+        "description": "绑定表单",
+        "type": "form",
+        "config": {
+            "kind": "form_id",
+            "form_id": "1"
+        }
+    },
+    "bind_div1": {
+        "value": [
+        ],
+        "description": "绑定显示区域",
+        "type": "form",
+        "config": {
+            "kind": "div",
+            "name": "div_area0,div_area1"
+        }
+    },
+    "bind_css1": {
+        "value": [
+        ],
+        "description": "绑定样式",
+        "type": "form",
+        "config": {
+            "kind": "css",
+            "name": "form_css0,form_css1"
+        }
+    },
+    "bind_form1": {
+        "value": [
+        ],
+        "description": "绑定表单",
+        "type": "form",
+        "config": {
+            "kind": "form_id",
+            "form_id": "1"
+        }
+    }
+}

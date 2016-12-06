@@ -155,12 +155,16 @@ class FormController extends BaseController {
      * @param array $ids
      */
     public function getFormInfoByIds($ids) {
-
+        $formArray = array();
         $formInfo = DB::table('form')->whereIn('id', $ids)->where('status', 1)->get();
-        foreach ($formInfo as &$value) {
+        foreach ($formInfo as $value) {
             $value->data = DB::table('form_column_' . $value->id % 10)->where('form_id', $value->id)->orderBy('order', 'asc')->get();
+            foreach ($value->data as $vk => &$vv) {
+                $vv->config = unserialize($vv->config);
+            }
+            $formArray[$value->id] = $value;
         }
-        return $formInfo;
+        return $formArray;
     }
 
     /**
@@ -553,7 +557,8 @@ class FormController extends BaseController {
                     . "<input type='hidden' name='action_text' value=" . $tempform['action_text'] . " />";
 
             if (empty($site) || $site == 'page') {//===普通表单===
-                $_form.="<form class='fv-unit-preview unit-preview' id='box_show' action='http://swap.5067.org/userdata/' method='post' ><ul class='fv-element-show'>";
+                $_form.="<form class='fv-unit-preview unit-preview' id='box_show' action='http://swap.5067.org/userdata/' method='post' >"
+                        . "<ul class='fv-element-show'>";
             } elseif ($site == 'float') {//===悬浮表单===
                 $_form.="<form class='adv-unit-preview unit-preview' id='box_show' action='http://swap.5067.org/userdata/' method='post' style='width:100%;'>"
                         . "<ul class='fv-element-show'>";

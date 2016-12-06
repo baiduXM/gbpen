@@ -927,19 +927,7 @@ class PrintController extends BaseController {
         $language_css = '<link rel="stylesheet" href="http://swap.5067.org/css/language.css">';
         //===显示版本切换链接-end===
         $formC = new FormController();
-        //===表单嵌入：查找表单数据===
-
-        /*
-         * 1、查找表单信息
-         */
-        $websiteFormInfo = websiteConfig::where('cus_id', $this->cus_id)->where('template_id', $this->tpl_id)->where('key', 'form')->pluck('value');
-        $formJS = '';
-        if (!empty($websiteFormInfo)) {
-//            $formJS = '<script type="text/javascript" src="/quickbar/js/form.js"></script>';
-            $this->insetForm();
-        }
-
-        //===表单嵌入：end===
+        $formJS = $this->insetForm(); //===表单嵌入===
         if ($this->type == 'pc') {
             $stylecolor = websiteInfo::leftJoin('color', 'color.id', '=', 'website_info.pc_color_id')->where('cus_id', $this->cus_id)->pluck('color_en');
             $logo = $this->showtype == 'preview' ? '/customers/' . $this->customer . '/images/l/common/' . $customer_info->logo : $this->domain . '/images/l/common/' . $customer_info->logo; //'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $customer_info->logo) : $this->domain . '/images/l/common/' . $customer_info->logo;
@@ -1028,7 +1016,7 @@ class PrintController extends BaseController {
             $footscript = $customer_info->pc_footer_script;
             $footscript .= $formJS;
             $footscript .= '<script type="text/javascript" src="/quickbar/js/quickbar.js?' . $this->cus_id . 'pc"></script>';
-            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/admin/statis.php?cus_id=' . $this->cus_id . '&platform=pc"></script>'; //===添加统计代码PC===
+//            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/admin/statis.php?cus_id=' . $this->cus_id . '&platform=pc"></script>'; //===添加统计代码PC===
             if ($customer_info->background_music) {
                 $bgm = str_replace('"', "", $customer_info->background_music);
                 $footscript .= '<script type="text/javascript">$("body").append("<div id=\"bg-music\">' . $bgm . '</div>")
@@ -1045,9 +1033,9 @@ class PrintController extends BaseController {
 //            $headscript .= $language_css;
             $footprint = $customer_info->mobile_footer;
             $footscript = $customer_info->mobile_footer_script;
+//            $footscript .= $formJS;
             $footscript .= '<script type="text/javascript" src="/quickbar/js/quickbar.js?' . $this->cus_id . 'mobile"></script>';
-//            $footscript .= '<script type="text/javascript" src="/quickbar/js/form.js"></script>';
-            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/admin/statis.php?cus_id=' . $this->cus_id . '&platform=mobile"></script>'; //===添加统计代码MOBILE===
+//            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/admin/statis.php?cus_id=' . $this->cus_id . '&platform=mobile"></script>'; //===添加统计代码MOBILE===
 //            $footscript .= $tempscript;
             $site_another_url = $this->showtype == 'preview' ? '' : $customer_info->pc_domain;
             $config_arr = parse_ini_file(public_path('/templates/' . $this->themename) . '/config.ini', true);
@@ -1199,28 +1187,31 @@ class PrintController extends BaseController {
 
     /**
      * ===嵌入表单===
-     * 
+     * 获取表单信息保存到json
      */
     public function insetForm() {
-
-        file_put_contents(public_path("customers/" . $this->customer . '/formdata.json'), "quickbarCallback");
-        var_dump(public_path("customers/" . $this->customer . '/formdata.json'));
-        exit;
-
-        /*
-         * 1、查找表单信息
-         */
         $websiteFormInfo = websiteConfig::where('cus_id', $this->cus_id)->where('template_id', $this->tpl_id)->where('key', 'form')->pluck('value');
-        $websiteFormArray = unserialize($websiteFormInfo);
-        $ids = array();
-        foreach ($websiteFormArray as $key => $value) {
-            if (array_key_exists('form_id', $value['value'])) {
-                if (!in_array($value['value']['form_id'], $ids)) {
-                    $ids[] = $value['value']['form_id'];
+        if (!empty($websiteFormInfo)) {
+            $websiteFormArray = unserialize($websiteFormInfo);
+            $ids = array();
+            $bind = array();
+            foreach ($websiteFormArray as $key => $value) {
+                $bind[substr($key, strlen($key) - 1)][substr($key, 0, -1)] = $value['value'];
+                if (array_key_exists('form_id', $value['value'])) {
+                    if (!in_array($value['value']['form_id'], $ids)) {
+                        $ids[] = $value['value']['form_id'];
+                    }
                 }
             }
+            $FormC = new FormController();
+            $formInfo = $FormC->getFormInfoByIds($ids);
+            $data['forminfo'] = $formInfo;
+            $data['website'] = $bind;
+            file_put_contents(public_path("customers/" . $this->customer . '/formdata.json'), json_encode($data));
+            return '<script type="text/javascript" src="/quickbar/js/form.js?name=' . $this->customer . '"></script>';
+        } else {
+            return '';
         }
-        $formInfo = $formC->getFormInfoByIds($ids);
     }
 
     /**
@@ -1238,7 +1229,6 @@ class PrintController extends BaseController {
             $navs = Classify::where('cus_id', $this->cus_id)->where('mobile_show', 1)->select('id', 'type', 'img', 'icon', 'name', 'url', 'p_id', 'en_name', 'view_name', 'meta_description as description', 'open_page')->OrderBy('sort', 'asc')->get()->toArray();
         }
         $navs = $this->toTree($navs, 0, TRUE);
-
         if ($c_id) {
             $current_arr = $this->currentCidArray($c_id);
             $navs = $this->addCurrent($navs, $current_arr);
