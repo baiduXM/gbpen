@@ -3542,7 +3542,7 @@ class PrintController extends BaseController {
     public function searchPreview() {
         error_reporting(E_ALL ^ E_NOTICE);
         $result = $this->pagePublic();
-        $result['navs'] = $publicdata['navs'];
+//        $result['navs'] = $publicdata['navs'];
         $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
         $result['title'] = $customer_info->title;
         $result['keywords'] = $customer_info->keywords;
@@ -3665,7 +3665,7 @@ class PrintController extends BaseController {
     public function searchPush($publicdata) {
         error_reporting(E_ALL ^ E_NOTICE);
         $result = $publicdata['result'];
-        $result['navs'] = $publicdata['navs'];
+//        $result['navs'] = $publicdata['navs'];
         $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
         $result['title'] = $customer_info->title;
         $result['keywords'] = $customer_info->keywords;
