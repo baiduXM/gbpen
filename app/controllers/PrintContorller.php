@@ -3563,7 +3563,7 @@ class PrintController extends BaseController {
             }
         }
         $result['pagenavs'] = $pagenavs;
-        $result['posnavs'] = array(0 => array('en_name' => 'Search', 'name' => '搜索', 'link' => 'javascript:;', 'icon' => ''));
+        $result['posnavs'] = $this->getPosNavs($c_id);//array(0 => array('en_name' => 'Search', 'name' => '搜索', 'link' => 'javascript:;', 'icon' => ''));
 
         //搜索数据替换
         if (!is_file(app_path('views/templates/' . $this->themename . '/searchresult_do.html'))) {
@@ -3665,7 +3665,7 @@ class PrintController extends BaseController {
     public function searchPush($publicdata) {
         error_reporting(E_ALL ^ E_NOTICE);
         $result = $publicdata['result'];
-//        $result['navs'] = $publicdata['navs'];
+        $result['navs'] = $publicdata['navs'];
         $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
         $result['title'] = $customer_info->title;
         $result['keywords'] = $customer_info->keywords;
@@ -3686,7 +3686,7 @@ class PrintController extends BaseController {
             }
         }
         $result['pagenavs'] = $pagenavs;
-        $result['posnavs'] = array(0 => array('en_name' => 'Search', 'name' => '搜索', 'link' => 'javascript:;', 'icon' => ''));
+        $result['posnavs'] = $this->getPosNavs($c_id);//array(0 => array('en_name' => 'Search', 'name' => '搜索', 'link' => 'javascript:;', 'icon' => ''));
 
         //搜索数据替换
         if (!is_file(app_path('views/templates/' . $this->themename . '/searchresult_do.html'))) {
