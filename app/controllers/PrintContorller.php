@@ -1039,8 +1039,9 @@ class PrintController extends BaseController {
 //            $footscript .= $tempscript;
             $site_another_url = $this->showtype == 'preview' ? '' : $customer_info->pc_domain;
             $config_arr = parse_ini_file(public_path('/templates/' . $this->themename) . '/config.ini', true);
-            if (!is_array($config_arr))
+            if (!is_array($config_arr)) {
                 dd('【config.ini】文件不存在！文件格式说明详见：http://pme.eexx.me/doku.php?id=ued:template:config');
+            }
         }
         //获取global信息
         if ($this->type == 'pc') {
