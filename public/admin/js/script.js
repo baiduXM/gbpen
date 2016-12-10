@@ -2,8 +2,6 @@
 // create the module and name it mainApp
 // also include ngRoute for all our routing needs
 var mainApp = angular.module('mainApp', ['ngRoute']);
-var xhr = new XMLHttpRequest();
-xhr.setRequestHeader("Cache-Control", "no-cache");
 // configure our routes
 mainApp.config(function ($routeProvider, $httpProvider) {
     var pageLoading, timerPageLoading = 0, initRouter = location.hash;
@@ -194,13 +192,6 @@ mainApp.controller('indexController', function ($scope) {
 });
 
 $(document).ready(function ($scope) {
-    var version = "1.1";
-    $.getJSON("/version.json", function (json) {
-        if (json.version != version) {
-            var xhr = new XMLHttpRequest();
-            xhr.setRequestHeader("Cache-Control", "no-cache");
-        }
-    })
     // 初始化 ----------
     var bgImg = new Image();
     bgImg.src = 'images/bg_top.jpg';
