@@ -102,7 +102,7 @@ function openpcController($scope, $http, $location) {
 	                        	<span class="iconbtn true"><i class="iconfont icon-zhengque "></i></span>\n\
 	                            <span class="iconbtn"><i class="iconfont icon-sousuo" onClick="window.open(\'../homepage-preview\',\'_blank\')"></i></span>\n\
 	                        </dl>\n\
-	                        <dl class="colorchoose hidden">';
+                                <dl class="colorchoose hidden">';
             $.each(d_temp.data[i].colors, function (k, j) {
                 _div2 += '<a href="javascript:void(0)" data-imgid="' + j.id + '" style="background:' + j.value + '" ' + (d_temp.data[i].selected_style == j.description ? 'data-color="chose"' : '') + ' >\n\
                         <span class="chose_icon hidden"></span>\n\
@@ -368,7 +368,7 @@ function openpcController($scope, $http, $location) {
                     }, 2500);
                 });
             }, function () {
-                alert(json.msg)
+                alert(json.msg);
             });
         } else {
             alert('请选择模板颜色');
