@@ -9,35 +9,55 @@ function userController($scope, $http) {
     };
     $scope.userInit.prototype = {
         _init: function () {
+            this.is_true = 0;
             this._modifyPassword();
         },
         _modifyPassword: function () {
-            $("#modifyPassword .addsave").on("click", function () {
-
-            });
-            $("input[name=rewritepassword]").on("change", function () {
-                if ($("input[name=rewritepassword]").val() != $("input[name=newpassword]").val()) {
+            var _this = this;
+            $("input[name=newpassword]").on("change", function () {
+                if ($("input[name=newpassword]").val() == '') {
+                    $(".error").show();
+                    $("#modifyPassword .errmessage").text("请输入新密码");
+                    _this.is_true = 0;
+                } else if ($("input[name=rewritepassword]").val() != $("input[name=newpassword]").val()) {
                     $(".error").show();
                     $("#modifyPassword .errmessage").text("两次输入密码不一致");
+                    _this.is_true = 0;
                 } else {
                     $(".error").hide();
+                    _this.is_true = 1;
+                }
+            });
+            $("input[name=rewritepassword]").on("change", function () {
+                if ($("input[name=rewritepassword]").val() == '') {
+                    $(".error").show();
+                    $("#modifyPassword .errmessage").text("请再次输入密码");
+                    _this.is_true = 0;
+                } else if ($("input[name=rewritepassword]").val() != $("input[name=newpassword]").val()) {
+                    $(".error").show();
+                    $("#modifyPassword .errmessage").text("两次输入密码不一致");
+                    _this.is_true = 0;
+                } else {
+                    $(".error").hide();
+                    _this.is_true = 1;
                 }
 
             });
-            $("input[name=newpassword]").on("change", function () {
-//                passwordStrong($("input[name=newpassword]").val());
-                if ($("input[name=rewritepassword]").val() != '') {
-                    if ($("input[name=rewritepassword]").val() != $("input[name=newpassword]").val()) {
-                        $(".error").show();
-                        $("#modifyPassword .errmessage").text("两次输入密码不一致");
-                    } else {
-                        $(".error").hide();
-                    }
-                } else {
-                    $(".error").hide();
-                }
-            });
             $('#modifyPassword .addsave').on('click', function () {
+                if ($("input[name=newpassword]").val() == '' || $("input[name=rewritepassword]").val() == '') {
+                    $(".error").show();
+                    $("#modifyPassword .errmessage").text("密码不能为空");
+                    _this.is_true = 0;
+                } else if ($("input[name=rewritepassword]").val() != $("input[name=newpassword]").val()) {
+                    $(".error").show();
+                    $("#modifyPassword .errmessage").text("两次输入密码不一致");
+                    _this.is_true = 0;
+                } else {
+                    passwordStrong($("input[name=newpassword]").val());
+                }
+                if (_this.is_true == 0) {
+                    return false;
+                }
                 var data = $('#password_info').serializeJson();
                 $http.post('../modify-password', data).success(function (json) {
                     checkJSON(json, function (json) {
@@ -50,51 +70,30 @@ function userController($scope, $http) {
                         } else {
                             $(".error").show();
                             $("#modifyPassword .errmessage").text(json.msg);
+                            _this.is_true = 0;
                         }
                     });
                 });
             });
+            function passwordStrong(psw) {
+                var reg = /^\w+$/;
+                if (psw.length < 8) {
+                    $(".error").show();
+                    $("#modifyPassword .errmessage").text("密码太短，密码不得少于8位");
+                    _this.is_true = 0;
+                    return false;
+                } else if (!reg.test(psw)) {
+                    $(".error").show();
+                    $("#modifyPassword .errmessage").text("密码格式不对");
+                    _this.is_true = 0;
+                    return false;
+                } else {
+                    $(".error").hide();
+                    _this.is_true = 1;
+                }
+            }
         }
     };
     var init = new $scope.userInit();
 
-//    function passwordStrong(psw) {
-//        var reg = /^\w+$/;
-//        if (!reg.test(psw)) {
-//            alert('密码格式不对');
-//            return;
-//        }
-//        alert(psw);
-//        var rules = [{
-//                reg: /\d+/,
-//                weight: 2
-//            }, {
-//                reg: /[a-z]+/,
-//                weight: 4
-//            }, {
-//                reg: /[A-Z]+/,
-//                weight: 8
-//            }, {
-//                reg: /[~!@#\$%^&*\(\)\{\};,.\?\/'"]/,
-//                weight: 16
-//            }];
-//
-//        var strongLevel = {
-//            '0-10': '弱',
-//            '10-20': '中',
-//            '20-30': '强'
-//        };
-//        var weight = 0;
-//        for (var j = rules.length - 1; j >= 0; j--) {
-//            if (rules[j].reg.test(testPasswords[i])) {
-//                weight |= rules[j].weight;
-//            }
-//        }
-//        var key = '20-30';
-//        if (weight <= 10)
-//            key = '0-10';
-//        else if (weight <= 20)
-//            key = '10-20';
-//        console.log(testPasswords[i], strongLevel[key]);
-//    }
 }
