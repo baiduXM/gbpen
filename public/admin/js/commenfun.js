@@ -620,14 +620,23 @@ function column_type(type) {
 }
 // 错误验证
 function checkJSON(json, callback, fail_callback) {
-    if (json.err == 0) {
-        typeof (callback) === 'function' ? callback(json) : null;
-    } else if (json.err == 401) {
-        alert('登入失效！');
-        location.hash = 'login';
-    } else {
-        alert(json.msg);
-        typeof (callback) === 'function' ? fail_callback == undefined ? null : fail_callback(json) : null;
+    switch (json.err) {
+        case 0:
+            typeof (callback) === 'function' ? callback(json) : null;
+            break;
+        case 401:
+            alert('登入失效！');
+            location.hash = 'login';
+            break;
+        case 303:
+            alert('账号密码相同，请先修改密码！');
+            location.hash = '#/user';
+            break;
+        default:
+            alert(json.msg);
+            typeof (callback) === 'function' ? fail_callback == undefined ? null : fail_callback(json) : null;
+            break;
+
     }
 }
 //保存提示效果

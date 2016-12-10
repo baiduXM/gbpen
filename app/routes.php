@@ -82,9 +82,12 @@ Route::get('grad_push', [//分组推送
 Route::get('push-classify-ids', [//推送时验证登录
     'uses' => 'HTMLController@push_classify_ids'
 ]);
+Route::get('log-out', [//用户登出===
+    'as' => 'log-out',
+    'uses' => 'SignController@logOut'
+]);
 //路由组--所有登录后的操作放入本组
 Route::group(array('before' => 'auth'), function() {
-
     //===获取用户统计数据-start===
     Route::get('statis-get', [//首页统计数据
         'as' => 'statis',
@@ -92,10 +95,10 @@ Route::group(array('before' => 'auth'), function() {
     ]);
     //===获取用户统计数据-end===
 
-    Route::get('log-out', [//用户登出
-        'as' => 'log-out',
-        'uses' => 'SignController@logOut'
-    ]);
+//    Route::get('log-out', [//用户登出
+//        'as' => 'log-out',
+//        'uses' => 'SignController@logOut'
+//    ]);
     //-----------------------------------------------
     //--------------------用户配置路由---------------
     Route::get('customer-info', [//获取用户信息
@@ -586,14 +589,14 @@ Route::post('api/deleteuser', [//删除用户
     'uses' => 'ApiController@deleteCustomer'
 ]);
 
-Route::post('api/reductionCustomer', [//还原被删除的用户
-    'as' => 'template-fileedit',
-    'uses' => 'ApiController@reductionCustomer'
-]);
-
 Route::post('api/downloadtemplate', [//代理平台下载模板接口
     'as' => 'template-fileedit',
     'uses' => 'ApiController@DownloadTemplate'
+]);
+
+Route::post('api/reductionCustomer', [//还原被删除的用户
+    'as' => 'template-fileedit',
+    'uses' => 'ApiController@reductionCustomer'
 ]);
 
 Route::get('test/{cid}', [

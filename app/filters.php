@@ -32,24 +32,20 @@ App::after(function($request, $response) {
  */
 
 Route::filter('auth', function() {
-	if (Auth::guest()) {
-		return Response::json(['err' => 401, 'msg' => '']);
-		/*
-		  if (Request::ajax())
-		  {
-		  return Response::json(['err' => 401, 'msg' => '']);
-		  //return Response::make('Unauthorized', 401);
-		  }
-		  else
-		  {
-		  return Redirect::guest('/');
-		  } */
-	}
+    if (Auth::guest()) {
+        return Response::json(['err' => 401, 'msg' => '']);
+    } else if (Auth::check()) {
+        $name = Auth::user()->name;
+        $hashpassword = Auth::user()->password;
+        if (Hash::check($name, $hashpassword)) {
+            return Response::json(['err' => 303, 'msg' => '账号密码相同']);
+        }
+    }
 });
 
 
 Route::filter('auth.basic', function() {
-	return Auth::basic();
+    return Auth::basic();
 });
 
 /*
@@ -64,8 +60,9 @@ Route::filter('auth.basic', function() {
  */
 
 Route::filter('guest', function() {
-	if (Auth::check())
-		return Redirect::to('admin/index.html');
+    if (Auth::check()) {
+        return Redirect::to('admin/index.html');
+    }
 });
 
 
@@ -81,7 +78,7 @@ Route::filter('guest', function() {
  */
 
 Route::filter('csrf', function() {
-	if (Session::token() !== Input::get('_token')) {
-		throw new Illuminate\Session\TokenMismatchException;
-	}
+    if (Session::token() !== Input::get('_token')) {
+        throw new Illuminate\Session\TokenMismatchException;
+    }
 });

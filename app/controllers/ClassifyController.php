@@ -341,7 +341,7 @@ class ClassifyController extends BaseController {
                 $is_passed = false;
             }
         }
-
+        
         if ($is_passed) {
             $classify->en_name = trim(Input::get('en_name'));
             $images = Input::get('img'); //===新图片

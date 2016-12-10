@@ -66,9 +66,7 @@ function homeController($scope, $http) {
     }
     function getTempledata(templeType, templePage) {
         $('.home-edite').html('loading...');
-        $http.get('../homepage-list?type=' + templeType + '&page=' + templePage + '').success(function (json) {//===step:1===
-//            console.log(json);
-//            console.log('json');
+        $http.get('../homepage-list?type=' + templeType + '&page=' + templePage + '').success(function (json) {
             var _rt = '', pic = 0, pic_Classname = '', pic_name = '';
             $.each(json.data, function (k, v) {
                 var type = v.type;
@@ -96,8 +94,6 @@ function homeController($scope, $http) {
                     case 'images':
                         var _rel = '';
                         var num = 0, src, srclen;
-//                        console.log(v);
-//                        console.log('images');
                         $.each(v.value, function (i, j) {
                             if (j != null) {
                                 srclen = j.image.split('/').length;
@@ -216,15 +212,19 @@ function homeController($scope, $http) {
                         break;
                     case 'form':
                         var temp = v.config;
-                        console.log(temp);
+                        var vdata = v.value;
                         var _r = '';
                         switch (temp.kind) {
                             case 'div':
                                 var array = v.config.name.split(",");
                                 _r += '<select name="data[' + k + '][div]">';
-                                _r += '<option value="0" selected>请选择</option>';
+                                _r += '<option value="0" >请选择</option>';
                                 $.each(array, function (k, v) {
-                                    _r += '<option value="' + v + '">' + v + '</option>';
+                                    if (vdata[temp.kind] == v) {
+                                        _r += '<option value="' + v + '" selected>' + v + '</option>';
+                                    } else {
+                                        _r += '<option value="' + v + '" >' + v + '</option>';
+                                    }
                                 });
                                 _r += '</select>';
                                 break;
@@ -233,11 +233,15 @@ function homeController($scope, $http) {
                                 _r += '<select name="data[' + k + '][css]">';
                                 _r += '<option value="0" selected>请选择</option>';
                                 $.each(array, function (k, v) {
-                                    _r += '<option value="' + v + '">' + v + '</option>';
+                                    if (vdata[temp.kind] == v) {
+                                        _r += '<option value="' + v + '" selected>' + v + '</option>';
+                                    } else {
+                                        _r += '<option value="' + v + '">' + v + '</option>';
+                                    }
                                 });
                                 _r += '</select>';
                                 break;
-                            case 'formid':
+                            case 'form_id':
                                 var _div = '';
                                 $.ajax({
                                     url: "../form-list",
@@ -251,7 +255,11 @@ function homeController($scope, $http) {
                                             if (json.data != null) {
                                                 _div += '<option value="0" selected>请选择</option>';
                                                 $.each(json.data, function (kk, vv) {
-                                                    _div += '<option value="' + vv.id + '">' + vv.name + '</option>';
+                                                    if (vdata[temp.kind] == vv.id) {
+                                                        _div += '<option value="' + vv.id + '" selected>' + vv.name + '</option>';
+                                                    } else {
+                                                        _div += '<option value="' + vv.id + '">' + vv.name + '</option>';
+                                                    }
                                                 });
                                             } else {
                                                 _div += '<option value="0" selected>无表单可绑定</option>';
