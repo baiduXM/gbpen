@@ -35,7 +35,7 @@
     <body>
 
         <div class="welcome">
-            <h1>忘记密码+++</h1>
+            <h1>忘记密码</h1>
             {{Session::get('error')}}
             {{Session::get('status')}}
             {{Form::open(['url' => action('RemindersController@postRemind')])}}
