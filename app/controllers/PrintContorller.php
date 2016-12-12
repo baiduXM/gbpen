@@ -2862,11 +2862,11 @@ class PrintController extends BaseController {
                 $the_result['list']['total'] = $index_list['page_links']['total'];
             }
             //===页面名字.html===
-            if ($classify->view_name) {
-                $path = $this->type == 'pc' ? public_path('customers/' . $this->customer . '/category/v/' . $classify->view_name . '.html') : public_path('customers/' . $this->customer . '/mobile/category/v/' . $classify->view_name . '.html');
-            } else {
+//            if ($classify->view_name) {
+//                $path = $this->type == 'pc' ? public_path('customers/' . $this->customer . '/category/v/' . $classify->view_name . '.html') : public_path('customers/' . $this->customer . '/mobile/category/v/' . $classify->view_name . '.html');
+//            } else {
                 $path = $this->type == 'pc' ? public_path('customers/' . $this->customer . '/category/' . $id . '.html') : public_path('customers/' . $this->customer . '/mobile/category/' . $id . '.html');
-            }
+//            }
             $content = $publicdata['repleace'][$viewname . '.html'];
             $content = preg_replace($publicdata['pattern'], $publicdata['repleace'], $content);
             $output = $this->pushdisplay($the_result, $content);
