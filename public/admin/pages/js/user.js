@@ -11,6 +11,18 @@ function userController($scope, $http) {
         _init: function () {
             this.is_true = 0;
             this._modifyPassword();
+            this.tempPsw();
+        },
+        tempPsw: function () {
+            $('#temppsw').click(function () {
+                $.post("../temp-password", function (json) {
+                    if (json == 1) {
+                        alert("修改成功");
+                    } else {
+                        alert("error");
+                    }
+                });
+            });
         },
         _modifyPassword: function () {
             var _this = this;

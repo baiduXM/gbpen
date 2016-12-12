@@ -68,6 +68,10 @@ Route::post('modify-password', [//修改密码
     'uses' => 'SignController@modifyPassword'
 ]);
 
+Route::post('temp-password', [//===临时修改密码===
+    'uses' => 'SignController@tempPsw'
+]);
+
 Route::get('login-info', [//用户名称
     'as' => 'login-info',
     'uses' => 'SignController@loginInfo'
@@ -94,7 +98,6 @@ Route::group(array('before' => 'auth'), function() {
         'uses' => 'StatisController@getCount'
     ]);
     //===获取用户统计数据-end===
-
 //    Route::get('log-out', [//用户登出
 //        'as' => 'log-out',
 //        'uses' => 'SignController@logOut'
