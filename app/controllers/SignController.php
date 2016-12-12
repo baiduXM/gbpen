@@ -75,7 +75,6 @@ class SignController extends BaseController {
         if (Auth::check()) {
             $name = Auth::user()->name;
             if (Hash::check($oldpassword, Auth::user()->password)) {
-                $msg = $name . '+++' . $newpassword;
                 if ($name != $newpassword) {
                     $msg = '修改成功';
                     $result = Customer::where('id', Auth::id())->update(['password' => Hash::make($newpassword)]);
@@ -110,6 +109,29 @@ class SignController extends BaseController {
             $result = ['err' => 1001, 'msg' => '登录失败'];
         }
         return Response::json($result);
+    }
+
+    /**
+     * 临时修改密码
+     * 1、读取全部用户
+     * 2、实用用户名hash加密匹配密码，确认密码与账号是否相同
+     * 3、修改密码，并记录明文密码
+     * $2y$10$hJXVlXIyWePAso0awrGJMunciA1FWdtrjOi9kaSsvV5u.crI/bDqq
+     */
+    public function tempPsw() {
+        $flag = false;
+        $Customer = DB::table('customer')->where('status', '1')->where('is_del', '1')->select('id', 'name', 'password')->get();
+        $num = array();
+        foreach ($Customer as $key => $value) {
+            if (Hash::check($value->name, $value->password)) {//===密码匹配，修改密码===
+                $num = rand(1000, 9999);
+                $password = $value->name . $num;
+                $hashpassword = Hash::make($password);
+                DB::table('customer')->where('id', $value->id)->update(array('password' => $hashpassword, 'password_temp' => $password));
+                $flag = true;
+            }
+        }
+        return 1;
     }
 
 }
