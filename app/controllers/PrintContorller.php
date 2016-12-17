@@ -884,10 +884,13 @@ class PrintController extends BaseController {
 
     /**
      * 公共数据
-     * 
      * @return string
      */
     public function publicdata() {
+        $color = $this->changeCss();
+//        DB::table('color')
+//        dd($color);
+
         $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
         //===显示版本切换链接===
         $templatesC = new TemplatesController;
@@ -2865,7 +2868,7 @@ class PrintController extends BaseController {
 //            if ($classify->view_name) {
 //                $path = $this->type == 'pc' ? public_path('customers/' . $this->customer . '/category/v/' . $classify->view_name . '.html') : public_path('customers/' . $this->customer . '/mobile/category/v/' . $classify->view_name . '.html');
 //            } else {
-                $path = $this->type == 'pc' ? public_path('customers/' . $this->customer . '/category/' . $id . '.html') : public_path('customers/' . $this->customer . '/mobile/category/' . $id . '.html');
+            $path = $this->type == 'pc' ? public_path('customers/' . $this->customer . '/category/' . $id . '.html') : public_path('customers/' . $this->customer . '/mobile/category/' . $id . '.html');
 //            }
             $content = $publicdata['repleace'][$viewname . '.html'];
             $content = preg_replace($publicdata['pattern'], $publicdata['repleace'], $content);
@@ -3954,6 +3957,16 @@ class PrintController extends BaseController {
             closedir($handle);
         }
         return $fileArray;
+    }
+
+    /**
+     * ===更换样式===
+     */
+    public function changeCss() {
+        $colorArr = websiteInfo::where('cus_id', $this->cus_id)->select('pc_color_id', 'mobile_color_id')->first();
+        $color['pc'] = DB::table('color')->where('id', $colorArr->pc_color_id)->pluck('color_en');
+        $color['mobile'] = DB::table('color')->where('id', $colorArr->mobile_color_id)->pluck('color_en');
+        return $color;
     }
 
 }
