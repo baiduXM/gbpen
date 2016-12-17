@@ -617,7 +617,6 @@ class ApiController extends BaseController {
      * 3、ftp传输资料，解压
      */
     public function webRemove() {
-        $result = ['err' => 0, 'msg' => ''];
         //获取用户名
         $username = Input::get('username');
 
@@ -641,18 +640,14 @@ class ApiController extends BaseController {
         //删除文件夹
         $this->ftp_delete_file($conn_old, $cus_ftp['dir']);
         ftp_close($conn_old);
-        dd(1);
-        exit;
-
-
         //获取新FTP数据
-        $ftpAddr = '182.61.7.87'; //Input::get('ftp_address');//182.61.7.87
-        $ftpPort = '21'; //Input::get('ftp_port');
-        $ftpUser = 'tongYi'; //Input::get('ftp_user');
-        $ftpPwd = 'B164RLFh'; //Input::get('ftp_pwd');
-        $ftpDir = "/"; //Input::get('ftp_dir');
-        $ftpFlag = "1"; //Input::get('ftp_flag');//1:women ,0:kehu
-        $ftpUrl = "http://test6.n01.5067.org/"; //Input::get('ftp_url');
+        $ftpAddr = Input::get('ftp_address'); //182.61.7.87
+        $ftpPort = Input::get('ftp_port'); // '21';
+        $ftpUser = Input::get('ftp_user'); //'tongYi'; 
+        $ftpPwd = Input::get('ftp_pwd'); //'B164RLFh';
+        $ftpDir = Input::get('ftp_dir'); //"./";
+        $ftpFlag = Input::get('ftp_flag'); //1:women ,0:kehu//"1";
+        $ftpUrl = Input::get('ftp_url'); //"http://test6.n01.5067.org/"; 
         $conn_new = @ftp_connect($ftpAddr, $ftpPort);
         if (!$conn_new) {
             return Response::json(['err' => 1004, 'msg' => 'FTP服务器连接失败']);
@@ -660,21 +655,18 @@ class ApiController extends BaseController {
         if (!@ftp_login($conn_new, $ftpUser, $ftpPwd)) {
             return Response::json(['err' => 1004, 'msg' => 'FTP服务器登陆失败']);
         }
-        //判断文件夹是否存在（新）
-//        if (0) {
-        //删除文件夹
-//            $this->ftp_delete_file($conn_old, $cus_ftp['dir']);
-        //创建mobile文件夹
-//        @ftp_mkdir($conn_new, $ftpDir . "/mobile");
-//        }
+
         //压缩文件
         $zip = new ZipArchive();
         $zip->open(public_path("customers/" . $username . "/img.zip"), ZipArchive::OVERWRITE);
         $this->addFileToZip(public_path("customers/" . $username . "/images"), $zip);
         $zip->close();
+        $ftpDir = preg_replace("/^(\.)?\//", "", $ftpDir);
         if ($ftpFlag) {
             $ftpDir = $ftpDir . "/" . $username;
         }
+        //创建mobile文件夹
+        @ftp_mkdir($conn_new, $ftpDir . "/mobile");
         $ftp_put = ftp_put($conn_new, $ftpDir . "/img.zip", public_path("customers/" . $username . "/img.zip"), FTP_ASCII, 0);
         $ftp_put = $ftp_put & ftp_put($conn_new, $ftpDir . '/img_unzip.php', public_path("/packages/img_unzip.php"), FTP_ASCII, 0);
         if (!$ftp_put) {
@@ -702,6 +694,7 @@ class ApiController extends BaseController {
         $dir = preg_replace("/^(\.)?\//", "", $dir);
         $filelist = ftp_nlist($conn, $dir);
         foreach ($filelist as $filename) {
+            $filename = str_replace($dir . "/", '', $filename);
             if ($filename !== '.' && $filename !== '..') {
                 if (stripos($filename, '.')) {//===确认是否是文件===
                     @ftp_delete($conn, $dir . '/' . $filename);
