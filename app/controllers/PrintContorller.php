@@ -3886,6 +3886,13 @@ class PrintController extends BaseController {
         return $id_str;
     }
 
+    /**
+     * ===获取当前栏目===
+     * 若c_id空，获取默认栏目导航
+     * @param type $c_id        当前栏目id
+     * @param type $posnavs     当前栏目导航内容
+     * @return type
+     */
     private function getPosNavs($c_id, &$posnavs = array()) {
         $classify = Classify::where('id', $c_id)->first();
         $arr['name'] = $classify->name;

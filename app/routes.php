@@ -601,7 +601,7 @@ Route::post('api/reductionCustomer', [//还原被删除的用户
     'as' => 'template-fileedit',
     'uses' => 'ApiController@reductionCustomer'
 ]);
-Route::post('api/webremove', [//网站迁移
+Route::any('api/webremove', [//网站迁移
     'as' => 'web-remove',
     'uses' => 'ApiController@webRemove'
 ]);
