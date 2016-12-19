@@ -887,7 +887,7 @@ class PrintController extends BaseController {
      * @return string
      */
     public function publicdata() {
-        $color = $this->changeCss();
+//        $color = $this->changeCss();
 //        DB::table('color')
 //        dd($color);
 
