@@ -622,23 +622,20 @@ class ApiController extends BaseController {
         $username = Input::get('username');
 
         //获取新FTP数据
-//        $ftpAddr = Input::get('ftp_address'); //182.61.7.87
-//        $ftpPort = Input::get('ftp_port'); // '21';
-//        $ftpUser = Input::get('ftp_user'); //'tongYi'; 
-//        $ftpPwd = Input::get('ftp_pwd'); //'B164RLFh';
-//        $ftpDir = Input::get('ftp_dir'); //"./";
-//        $ftpFlag = Input::get('ftp_flag'); //1:women ,0:kehu//"1";
-//        $ftpUrl = Input::get('ftp_url'); //"http://test6.n01.5067.org/"; 
-
-        $ftpAddr = "182.61.7.87";
-        $ftpPort = '21';
-        $ftpUser = 'tongYi';
-        $ftpPwd = 'B164RLFh';
-        $ftpDir = "./";
-        $ftpFlag = "1"; //1:women ,0:kehu//
-        $ftpUrl = "http://test.n01.5067.org";
-
-
+        $ftpAddr = Input::get('ftp_address'); //182.61.7.87
+        $ftpPort = Input::get('ftp_port'); // '21';
+        $ftpUser = Input::get('ftp_user'); //'tongYi'; 
+        $ftpPwd = Input::get('ftp_pwd'); //'B164RLFh';
+        $ftpDir = Input::get('ftp_dir'); //"./";
+        $ftpFlag = Input::get('ftp_flag'); //1:women ,0:kehu//"1";
+        $ftpUrl = Input::get('ftp_url'); //"http://test6.n01.5067.org/"; 
+//        $ftpAddr = "182.61.7.87";
+//        $ftpPort = '21';
+//        $ftpUser = 'tongYi';
+//        $ftpPwd = 'B164RLFh';
+//        $ftpDir = "./";
+//        $ftpFlag = "1"; //1:women ,0:kehu//
+//        $ftpUrl = "http://test.n01.5067.org";
         //压缩文件
         $zip = new ZipArchive();
         $zip->open(public_path("customers/" . $username . "/img.zip"), ZipArchive::OVERWRITE);
@@ -661,9 +658,11 @@ class ApiController extends BaseController {
             $ftpDir = $ftpDir . "/" . $username;
         }
         //创建mobile文件夹
+//        @ftp_mkdir($conn_new, $ftpDir . "/mobile");
+        @ftp_mkdir($conn_new, $ftpDir);
         @ftp_mkdir($conn_new, $ftpDir . "/mobile");
-        $ftp_put = ftp_put($conn_new, $ftpDir . "/img.zip", public_path("customers/" . $username . "/img.zip"), FTP_ASCII, 0);
-        $ftp_put = $ftp_put & ftp_put($conn_new, $ftpDir . '/img_unzip.php', public_path("/packages/img_unzip.php"), FTP_ASCII, 0);
+        $ftp_put = ftp_put($conn_new, $ftpDir . "/img.zip", public_path("customers/" . $username . "/img.zip"), FTP_BINARY);
+        $ftp_put = $ftp_put && ftp_put($conn_new, $ftpDir . '/img_unzip.php', public_path("/packages/img_unzip.php"), FTP_ASCII);
         if (!$ftp_put) {
             return Response::json(array(['err' => 1003, 'msg' => '文件传输失败']));
         }
