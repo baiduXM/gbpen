@@ -207,6 +207,7 @@ class WebsiteController extends BaseController {
             }
             $update_result = WebsiteInfo::where('cus_id', $cus_id)->update($update);
             if ($update_result) {
+                Template::where("name", $tpl_dir)->update(array("updated_at" => date("Y-m-d H:i:s", time())));
                 $result = ['err' => 0, 'msg' => ''];
             } else {
                 $result = ['err' => 1001, 'msg' => '恢复原模板失败,需重新选择模板'];
@@ -312,8 +313,10 @@ class WebsiteController extends BaseController {
         }
         if (isset($error))
             return Response::json(['err' => 1001, 'msg' => '错误的文件名后缀', 'data' => '']);
-        else
+        else {
+            Template::where("name", $name)->update(array("updated_at" => date("Y-m-d H:i:s", time())));
             return Response::json(['err' => 0, 'msg' => '新建文件成功', 'data' => '']);
+        }
     }
 
     public function fileList() {
@@ -504,6 +507,7 @@ class WebsiteController extends BaseController {
                 if ($edit == FALSE) {
                     $result = ['err' => 1001, 'msg' => '无法编辑文件'];
                 } else {
+                    Template::where("name", $template)->update(array("updated_at" => date("Y-m-d H:i:s", time())));
                     $result = ['err' => 0, 'msg' => '', 'data' => $fail];
                 }
             } else {
