@@ -621,26 +621,6 @@ class ApiController extends BaseController {
             //获取用户名
             $username = Input::get('username');
 
-            //删除原FTP的资料
-            $CustomerInfo = Customer::where('name', $username)->first();
-            if (empty($CustomerInfo)) {
-                return Response::json(['err' => 1001, 'msg' => '用户不存在']);
-            }
-            $cus_ftp['addr'] = $CustomerInfo->ftp_address;
-            $cus_ftp['port'] = $CustomerInfo->ftp_port;
-            $cus_ftp['user'] = $CustomerInfo->ftp_user;
-            $cus_ftp['pwd'] = $CustomerInfo->ftp_pwd;
-            $cus_ftp['dir'] = $CustomerInfo->ftp_dir;
-            $conn_old = @ftp_connect($cus_ftp['addr'], $cus_ftp['port']);
-            if (!$conn_old) {
-                return Response::json(['err' => 1004, 'msg' => 'FTP服务器连接失败']);
-            }
-            if (!@ftp_login($conn_old, $cus_ftp['user'], $cus_ftp['pwd'])) {
-                return Response::json(['err' => 1004, 'msg' => 'FTP服务器登陆失败']);
-            }
-            //删除文件夹
-            $this->ftp_delete_file($conn_old, $cus_ftp['dir']);
-            ftp_close($conn_old);
             //获取新FTP数据
             $ftpAddr = Input::get('ftp_address'); //182.61.7.87
             $ftpPort = Input::get('ftp_port'); // '21';
@@ -673,15 +653,35 @@ class ApiController extends BaseController {
             if (!$ftp_put) {
                 return Response::json(array(['err' => 1003, 'msg' => '文件传输失败']));
             }
-
             //解压文件
             file_get_contents($ftpUrl . "/img_unzip.php");
-
             //删除压缩文件
-//        @ftp_delete($conn_new, $ftpDir . "/img.zip");
+//            @ftp_delete($conn_new, $ftpDir . "/img.zip");
             @ftp_delete($conn_new, $ftpDir . "/img_unzip.php");
-
             ftp_close($conn_new);
+
+            //删除原FTP的资料
+            $CustomerInfo = Customer::where('name', $username)->first();
+            if (empty($CustomerInfo)) {
+                return Response::json(['err' => 1001, 'msg' => '用户不存在']);
+            }
+            $cus_ftp['addr'] = $CustomerInfo->ftp_address;
+            $cus_ftp['port'] = $CustomerInfo->ftp_port;
+            $cus_ftp['user'] = $CustomerInfo->ftp_user;
+            $cus_ftp['pwd'] = $CustomerInfo->ftp_pwd;
+            $cus_ftp['dir'] = $CustomerInfo->ftp_dir;
+            $conn_old = @ftp_connect($cus_ftp['addr'], $cus_ftp['port']);
+            if (!$conn_old) {
+                return Response::json(['err' => 1004, 'msg' => 'FTP服务器连接失败']);
+            }
+            if (!@ftp_login($conn_old, $cus_ftp['user'], $cus_ftp['pwd'])) {
+                return Response::json(['err' => 1004, 'msg' => 'FTP服务器登陆失败']);
+            }
+            //删除文件夹
+            $this->ftp_delete_file($conn_old, $cus_ftp['dir']);
+            ftp_close($conn_old);
+            
+            
             return Response::json(array(['err' => 1000, 'msg' => '图片数据迁移成功']));
         }
     }

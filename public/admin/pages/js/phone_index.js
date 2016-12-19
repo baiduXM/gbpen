@@ -353,8 +353,7 @@ function phone_indexController($scope, $http, $location) {
         },
         slidepics_info: function () {
             // 幻灯片列表
-            var htmlColumn = '', num = 1,
-                    _this = this;
+            var htmlColumn = '', num = 1, _this = this;
             $.each(this.jsonData, function (index, ele) {
                 var aspectRatio = ele.config.width / ele.config.height || '';
                 if (ele.type == 'images') {
@@ -380,7 +379,7 @@ function phone_indexController($scope, $http, $location) {
                             subimage: v.image,
                             id: v.id,
                             link: v.link,
-                            sort:v.sort,
+                            sort: v.sort,
                             num: k
                         });
                         $('#phone_index_col_' + num + '_' + C_num + '').append(_div);
@@ -895,7 +894,7 @@ function phone_indexController($scope, $http, $location) {
                 color += colorstr;
             }
             if (color.length == 5) {
-                color=color.substring(0,color.length-1);
+                color = color.substring(0, color.length - 1);
                 var colorstr = color.replace('#', '');
                 color += colorstr;
             }
