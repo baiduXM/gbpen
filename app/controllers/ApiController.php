@@ -617,18 +617,18 @@ class ApiController extends BaseController {
      * 3、ftp传输资料，解压
      */
     public function webRemove() {
-//        if ($this->authData()) {
-        //获取用户名
-        $username = Input::get('username');
+        if ($this->authData()) {
+            //获取用户名
+            $username = Input::get('username');
 
-        //获取新FTP数据
-        $ftpAddr = Input::get('ftp_address'); //182.61.7.87
-        $ftpPort = Input::get('ftp_port'); // '21';
-        $ftpUser = Input::get('ftp_user'); //'tongYi'; 
-        $ftpPwd = Input::get('ftp_pwd'); //'B164RLFh';
-        $ftpDir = Input::get('ftp_dir'); //"./";
-        $ftpFlag = Input::get('ftp_flag'); //1:women ,0:kehu//"1";
-        $ftpUrl = Input::get('ftp_url'); //"http://test6.n01.5067.org/"; 
+            //获取新FTP数据
+            $ftpAddr = Input::get('ftp_address'); //182.61.7.87
+            $ftpPort = Input::get('ftp_port'); // '21';
+            $ftpUser = Input::get('ftp_user'); //'tongYi'; 
+            $ftpPwd = Input::get('ftp_pwd'); //'B164RLFh';
+            $ftpDir = Input::get('ftp_dir'); //"./";
+            $ftpFlag = Input::get('ftp_flag'); //1:women ,0:kehu//"1";
+            $ftpUrl = Input::get('ftp_url'); //"http://test6.n01.5067.org/"; 
 //        $ftpAddr = "182.61.7.87";
 //        $ftpPort = '21';
 //        $ftpUser = 'tongYi';
@@ -636,77 +636,77 @@ class ApiController extends BaseController {
 //        $ftpDir = "./";
 //        $ftpFlag = "1"; //1:women ,0:kehu//
 //        $ftpUrl = "http://test.n01.5067.org";
-        //压缩文件
-        $zip = new ZipArchive();
-        $zip->open(public_path("customers/" . $username . "/img.zip"), ZipArchive::OVERWRITE);
-        $this->addFileToZip(public_path("customers/" . $username . "/images"), $zip);
-        $zip->close();
+            //压缩文件
+            $zip = new ZipArchive();
+            $zip->open(public_path("customers/" . $username . "/img.zip"), ZipArchive::OVERWRITE);
+            $this->addFileToZip(public_path("customers/" . $username . "/images"), $zip);
+            $zip->close();
 //        dd("压缩文件");
 
 
-        $conn_new = @ftp_connect($ftpAddr, $ftpPort);
-        if (!$conn_new) {
-            return Response::json(['err' => 1004, 'msg' => 'FTP服务器连接失败']);
-        }
-        if (!@ftp_login($conn_new, $ftpUser, $ftpPwd)) {
-            return Response::json(['err' => 1004, 'msg' => 'FTP服务器登陆失败']);
-        }
+            $conn_new = @ftp_connect($ftpAddr, $ftpPort);
+            if (!$conn_new) {
+                return Response::json(['err' => 1004, 'msg' => 'FTP服务器连接失败']);
+            }
+            if (!@ftp_login($conn_new, $ftpUser, $ftpPwd)) {
+                return Response::json(['err' => 1004, 'msg' => 'FTP服务器登陆失败']);
+            }
 
 
-        $ftpDir = preg_replace("/^(\.)?\//", "", $ftpDir);
-        if ($ftpFlag) {
-            $ftpDir = $ftpDir . "/" . $username;
-        }
-        //创建mobile文件夹
+            $ftpDir = preg_replace("/^(\.)?\//", "", $ftpDir);
+            if ($ftpFlag) {
+                $ftpDir = $ftpDir . "/" . $username;
+            }
+            //创建mobile文件夹
 //        @ftp_mkdir($conn_new, $ftpDir . "/mobile");
-        @ftp_mkdir($conn_new, $ftpDir);
-        @ftp_mkdir($conn_new, $ftpDir . "/mobile");
-        $ftp_put = ftp_put($conn_new, $ftpDir . "/img.zip", public_path("customers/" . $username . "/img.zip"), FTP_BINARY);
-        $ftp_put = $ftp_put && ftp_put($conn_new, $ftpDir . '/img_unzip.php', public_path("/packages/img_unzip.php"), FTP_ASCII);
-        if (!$ftp_put) {
-            return Response::json(array(['err' => 1003, 'msg' => '文件传输失败']));
-        }
+            @ftp_mkdir($conn_new, $ftpDir);
+            @ftp_mkdir($conn_new, $ftpDir . "/mobile");
+            $ftp_put = ftp_put($conn_new, $ftpDir . "/img.zip", public_path("customers/" . $username . "/img.zip"), FTP_BINARY);
+            $ftp_put = $ftp_put && ftp_put($conn_new, $ftpDir . '/img_unzip.php', public_path("/packages/img_unzip.php"), FTP_ASCII);
+            if (!$ftp_put) {
+                return Response::json(array(['err' => 1003, 'msg' => '文件传输失败']));
+            }
 
 
-        //解压文件
-        file_get_contents($ftpUrl . "/img_unzip.php");
-        //删除压缩文件
+            //解压文件
+            file_get_contents($ftpUrl . "/img_unzip.php");
+            //删除压缩文件
 //            @ftp_delete($conn_new, $ftpDir . "/img.zip");
-        @ftp_delete($conn_new, $ftpDir . "/img_unzip.php");
-        ftp_close($conn_new);
+            @ftp_delete($conn_new, $ftpDir . "/img_unzip.php");
+            ftp_close($conn_new);
 //        dd("迁移文件并删除解压文件");
-        //删除原FTP的资料
-        $CustomerInfo = Customer::where('name', $username)->first();
-        if (empty($CustomerInfo)) {
-            return Response::json(['err' => 1001, 'msg' => '用户不存在']);
-        }
-        $cus_ftp['addr'] = $CustomerInfo->ftp_address;
-        $cus_ftp['port'] = $CustomerInfo->ftp_port;
-        $cus_ftp['user'] = $CustomerInfo->ftp_user;
-        $cus_ftp['pwd'] = $CustomerInfo->ftp_pwd;
-        $cus_ftp['dir'] = $CustomerInfo->ftp_dir;
-        $cus_ftp['ftp'] = $CustomerInfo->ftp; //1：我们，0：客户的
-        $conn_old = @ftp_connect($cus_ftp['addr'], $cus_ftp['port']);
-        if (!$conn_old) {
-            return Response::json(['err' => 1004, 'msg' => 'FTP服务器连接失败']);
-        }
-        if (!@ftp_login($conn_old, $cus_ftp['user'], $cus_ftp['pwd'])) {
-            return Response::json(['err' => 1004, 'msg' => 'FTP服务器登陆失败']);
-        }
-        //删除文件夹
-        $cus_ftp['dir'] = preg_replace("/^(\.)?\//", "", $cus_ftp['dir']);
-        if ($cus_ftp['ftp']) {
-            $cus_ftp['dir'] = $cus_ftp['dir'] . "/" . $username;
-        }
+            //删除原FTP的资料
+            $CustomerInfo = Customer::where('name', $username)->first();
+            if (empty($CustomerInfo)) {
+                return Response::json(['err' => 1001, 'msg' => '用户不存在']);
+            }
+            $cus_ftp['addr'] = $CustomerInfo->ftp_address;
+            $cus_ftp['port'] = $CustomerInfo->ftp_port;
+            $cus_ftp['user'] = $CustomerInfo->ftp_user;
+            $cus_ftp['pwd'] = $CustomerInfo->ftp_pwd;
+            $cus_ftp['dir'] = $CustomerInfo->ftp_dir;
+            $cus_ftp['ftp'] = $CustomerInfo->ftp; //1：我们，0：客户的
+            $conn_old = @ftp_connect($cus_ftp['addr'], $cus_ftp['port']);
+            if (!$conn_old) {
+                return Response::json(['err' => 1004, 'msg' => 'FTP服务器连接失败']);
+            }
+            if (!@ftp_login($conn_old, $cus_ftp['user'], $cus_ftp['pwd'])) {
+                return Response::json(['err' => 1004, 'msg' => 'FTP服务器登陆失败']);
+            }
+            //删除文件夹
+            $cus_ftp['dir'] = preg_replace("/^(\.)?\//", "", $cus_ftp['dir']);
+            if ($cus_ftp['ftp']) {
+                $cus_ftp['dir'] = $cus_ftp['dir'] . "/" . $username;
+            }
 //        dd($cus_ftp['dir']);
-        $this->ftp_delete_file($conn_old, $cus_ftp['dir']);
-        ftp_close($conn_old);
+            if (ftp_nlist($conn_old, $cus_ftp['dir'] . "/mobile")) {
+                $this->ftp_delete_file($conn_old, $cus_ftp['dir']);
+            }
+            ftp_close($conn_old);
 //        dd("删除原文件");
-
-        return Response::json(array(['err' => 1000, 'msg' => '图片数据迁移成功']));
+            return Response::json(array(['err' => 1000, 'msg' => '图片数据迁移成功']));
+        }
     }
-
-//    }
 
     /**
      * 删除FTP上的文件夹
