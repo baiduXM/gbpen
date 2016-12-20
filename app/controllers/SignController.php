@@ -69,18 +69,19 @@ class SignController extends BaseController {
      * @return type
      */
     public function modifyPassword() {
-        $oldpassword = Input::get('oldpassword');
+//        $oldpassword = Input::get('oldpassword');
         $newpassword = Input::get('newpassword');
         $msg = '密码修改失败';
         if (Auth::check()) {
             $name = Auth::user()->name;
-            if (Hash::check($oldpassword, Auth::user()->password)) {
-                if ($name != $newpassword) {
-                    $msg = '修改成功';
-                    $result = Customer::where('id', Auth::id())->update(['password' => Hash::make($newpassword)]);
-                }
+//            if (Hash::check($oldpassword, Auth::user()->password)) {
+            if ($name != $newpassword) {
+                $msg = '修改成功';
+                $result = Customer::where('id', Auth::id())->update(['password' => Hash::make($newpassword)]);
+            } else {
                 $msg = '密码与账号相同，请重新输入';
             }
+//            }
         }
         if (isset($result) && ($result)) {
             Auth::logout();
