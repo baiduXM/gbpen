@@ -411,31 +411,29 @@ class ApiController extends BaseController {
      * @param string $array 要压缩在压缩包中的位置
      * @return null
      */
-    function addFileToZip($path, $zip, $array = '') {
-        if ($this->authData()) {
-            $linshi = explode('/', $path);
-            $linshi = end($linshi);
-            if ($array) {
-                $array = $array . '/' . $linshi;
-            } else {
-                $array = $linshi;
-            }
-            $handler = opendir($path); //打开当前文件夹由$path指定。
-            while (($filename = readdir($handler)) !== false) {
-                if ($filename != "." && $filename != "..") {//文件夹文件名字为'.'和‘..’，不要对他们进行操作
-                    if (is_dir($path . "/" . $filename)) {// 如果读取的某个对象是文件夹，则递归
-                        if (count(@scandir($path . "/" . $filename)) == 2) {
-                            $zip->addEmptyDir($array . '/' . $filename);
-                        } else {
-                            $this->addFileToZip($path . "/" . $filename, $zip, $array);
-                        }
-                    } else { //将文件加入zip对象
-                        $zip->addFile($path . "/" . $filename, $array . '/' . $filename);
+    private function addFileToZip($path, $zip, $array = '') {
+        $linshi = explode('/', $path);
+        $linshi = end($linshi);
+        if ($array) {
+            $array = $array . '/' . $linshi;
+        } else {
+            $array = $linshi;
+        }
+        $handler = opendir($path); //打开当前文件夹由$path指定。
+        while (($filename = readdir($handler)) !== false) {
+            if ($filename != "." && $filename != "..") {//文件夹文件名字为'.'和‘..’，不要对他们进行操作
+                if (is_dir($path . "/" . $filename)) {// 如果读取的某个对象是文件夹，则递归
+                    if (count(@scandir($path . "/" . $filename)) == 2) {
+                        $zip->addEmptyDir($array . '/' . $filename);
+                    } else {
+                        $this->addFileToZip($path . "/" . $filename, $zip, $array);
                     }
+                } else { //将文件加入zip对象
+                    $zip->addFile($path . "/" . $filename, $array . '/' . $filename);
                 }
             }
-            @closedir($path);
         }
+        @closedir($path);
     }
 
     /**
