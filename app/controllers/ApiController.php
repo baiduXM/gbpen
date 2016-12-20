@@ -646,6 +646,7 @@ class ApiController extends BaseController {
             if (!@ftp_login($conn_new, $ftpUser, $ftpPwd)) {
                 return Response::json(['err' => 1004, 'msg' => 'FTP服务器登陆失败']);
             }
+            ftp_pasv($conn_new, TRUE);
             $ftpDir = preg_replace("/^(\.)?\//", "", $ftpDir);
             if ($ftpFlag) {
                 $ftpDir = $ftpDir . "/" . $username;
@@ -681,6 +682,7 @@ class ApiController extends BaseController {
             if (!@ftp_login($conn_old, $cus_ftp['user'], $cus_ftp['pwd'])) {
                 return Response::json(['err' => 1004, 'msg' => 'FTP服务器登陆失败']);
             }
+            ftp_pasv($conn_old, TRUE);
             //删除文件夹
             $cus_ftp['dir'] = preg_replace("/^(\.)?\//", "", $cus_ftp['dir']);
             if ($cus_ftp['ftp']) {
