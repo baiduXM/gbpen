@@ -616,6 +616,7 @@ class ApiController extends BaseController {
      */
     public function webRemove() {
         if ($this->authData()) {
+            set_time_limit(0);
             //获取用户名
             $username = Input::get('username');
             //获取新FTP数据
