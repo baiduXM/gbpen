@@ -683,7 +683,7 @@ class ApiController extends BaseController {
             //删除文件夹
             $cus_ftp['dir'] = preg_replace("/^(\.)?\//", "", $cus_ftp['dir']);
             if ($cus_ftp['ftp']) {
-                $cus_ftp['dir'] = $cus_ftp['dir'] . "/" . $username;
+                $cus_ftp['dir'] = $cus_ftp['dir'] . "/" . $CustomerInfo->name;
             }
             if (ftp_nlist($conn_old, $cus_ftp['dir'] . "/mobile") !== false) {
                 $this->ftp_delete_file($conn_old, $cus_ftp['dir']);
