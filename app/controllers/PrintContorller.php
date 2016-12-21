@@ -887,10 +887,6 @@ class PrintController extends BaseController {
      * @return string
      */
     public function publicdata() {
-//        $color = $this->changeCss();
-//        DB::table('color')
-//        dd($color);
-
         $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
         //===显示版本切换链接===
         $templatesC = new TemplatesController;
@@ -898,13 +894,14 @@ class PrintController extends BaseController {
         $flagPlatform = substr($tempname, 0, 2);
         $flagLanguage = substr($tempname, 2, 1);
         $tempscript = '';
+        $language_css = "";
         $customerC = new CustomerController;
         $domain = $customerC->getSwitchCustomer(); //双站用户
         $current_url = '#';
         $language_url = '#';
         $tempscript_star = '<script>$(function(){';
         $tempscript_end = '});</script>';
-        if (!empty($domain)) {
+        if (!empty($domain)) {//===中英文双站===
             if ($flagPlatform == 'GM') {//===手机
                 $language_url = $domain['switch_mobile_domain'];
                 $current_url = $domain['current_mobile_domain'];
@@ -919,15 +916,17 @@ class PrintController extends BaseController {
                 $language = '<li><a href="' . $current_url . '">中文版</a></li>';
                 $language .= '<li><a href="' . $language_url . '">English</a></li>';
             }
-            $language_div = '<div class="language_div">'
+            $language_div = '<div class="language_div" style="position:relative;">'
                     . '<ul>'
                     . $language
                     . '</ul>'
                     . '</div>';
-//            $tempscript = '$("#header").prepend(\'' . $language_div . '\');'
+
+            $tempscript = '$("body").prepend(\'' . $language_div . '\');';
 //                    . '$("#header").css("position","relative");';
+//        $language_css = '<link rel="stylesheet" href="http://swap.5067.org/css/language.css">';
+            $language_css = '<link rel="stylesheet" href="http://swap.5067.org/css/language.css">';
         }
-        $language_css = '<link rel="stylesheet" href="http://swap.5067.org/css/language.css">';
         //===显示版本切换链接-end===
         $formC = new FormController();
         $formJS = $this->insetForm(); //===表单嵌入===
@@ -968,7 +967,7 @@ class PrintController extends BaseController {
                 curl_close($ch);
             }
             $headscript = $customer_info->pc_header_script;
-//            $headscript .= $language_css;
+            $headscript .= $language_css;
             //===版权选择===
             switch ($customer_info->copyright) {
                 case 'en_xiamen':
@@ -1026,7 +1025,7 @@ class PrintController extends BaseController {
                     $("#bg-music").css("display","none");
                 </script>';
             }
-//            $footscript .= $tempscript_star . $tempscript . $tempscript_end;
+            $footscript .= $tempscript_star . $tempscript . $tempscript_end;
 //            $footscript .= $language_css;
             $site_another_url = $this->showtype == 'preview' ? '' : $customer_info->mobile_domain;
         } else {
@@ -2469,7 +2468,7 @@ class PrintController extends BaseController {
                     max-width: 500px;
                     /*background: #D2E9FF;*/
                     padding: 20px 20px 20px 20px;
-                    color: #666;
+                    /*color: #666;*/
                     }
                     .input[placeholder]{color:#5c5c5c;}
                     .elegant-aero h1 {
@@ -2487,7 +2486,7 @@ class PrintController extends BaseController {
                     .elegant-aero label>span {
                     float: left;
                     margin-top: 10px;
-                    color: #5E5E5E;
+                    /*color: #5E5E5E;*/
                     }
                     .elegant-aero label {
                     display: block;
@@ -2505,7 +2504,7 @@ class PrintController extends BaseController {
                         white-space: nowrap;
                     }
                     .elegant-aero input[type="text"], .elegant-aero input[type="tel"], .elegant-aero input[type="email"], .elegant-aero textarea, .elegant-aero select {
-                    color: #888;
+                    /*color: #888;*/
                     width: 65%;
                     padding: 0px 0px 0px 5px;
                     border: 1px solid #C5E2FF;
@@ -2536,7 +2535,7 @@ class PrintController extends BaseController {
                     padding: 10px 30px 10px 30px;
                     background: #ACB5B7;
                     border: none;
-                    color: #FFF;
+                    /*color: #FFF;*/
                     box-shadow: 1px 1px 1px #4C6E91;
                     -webkit-box-shadow: 1px 1px 1px #4C6E91;
                     -moz-box-shadow: 1px 1px 1px #4C6E91;
@@ -3595,7 +3594,7 @@ class PrintController extends BaseController {
             }
         }
         $result['pagenavs'] = $pagenavs;
-        $result['posnavs'] = $this->getPosNavs($c_id); //array(0 => array('en_name' => 'Search', 'name' => '搜索', 'link' => 'javascript:;', 'icon' => ''));
+        $result['posnavs'] = $this->getPosNavs(); //array(0 => array('en_name' => 'Search', 'name' => '搜索', 'link' => 'javascript:;', 'icon' => ''));
         //搜索数据替换
         if (!is_file(app_path('views/templates/' . $this->themename . '/searchresult_do.html'))) {
             //搜索数据标记与替换
@@ -3893,27 +3892,36 @@ class PrintController extends BaseController {
      * @param type $posnavs     当前栏目导航内容
      * @return type
      */
-    private function getPosNavs($c_id, &$posnavs = array()) {
-        $classify = Classify::where('id', $c_id)->first();
-        $arr['name'] = $classify->name;
-        $arr['en_name'] = $classify->en_name;
-        if ($classify->type == 6) {
-            if ($classify->open_page == 2) {
-                $arr['link'] = $classify->url . '" target="_blank';
-            } else {
-                $arr['link'] = $classify->url;
-            }
+//    private function getPosNavs($c_id = 0, &$posnavs = array()) {
+    function getPosNavs($c_id = 0, &$posnavs = array()) {
+        if ($c_id == 0) {
+            $webinfo = WebsiteConfig::where("cus_id", $this->cus_id)->where("key", "_pagenavs_sub3")->pluck("value");
+            $webinfo = unserialize($webinfo);
+            $c_id = $webinfo["pagenavs"]["value"]["id"];
+//            var_dump($c_id);
+//            exit;
         } else {
-            if ($this->showtype == 'preview') {
-                $arr['link'] = $this->domain . '/category/' . $c_id;
+            $classify = Classify::where('id', $c_id)->first();
+            $arr['name'] = $classify->name;
+            $arr['en_name'] = $classify->en_name;
+            if ($classify->type == 6) {
+                if ($classify->open_page == 2) {
+                    $arr['link'] = $classify->url . '" target="_blank';
+                } else {
+                    $arr['link'] = $classify->url;
+                }
             } else {
-                $arr['link'] = $this->domain . '/category/' . $c_id . '.html';
+                if ($this->showtype == 'preview') {
+                    $arr['link'] = $this->domain . '/category/' . $c_id;
+                } else {
+                    $arr['link'] = $this->domain . '/category/' . $c_id . '.html';
+                }
             }
-        }
-        $arr['icon'] = '<i class="iconfont">' . $classify->icon . '</i>';
-        array_unshift($posnavs, $arr);
-        if ($classify->p_id > 0) {
-            $this->getPosNavs($classify->p_id, $posnavs);
+            $arr['icon'] = '<i class="iconfont">' . $classify->icon . '</i>';
+            array_unshift($posnavs, $arr);
+            if ($classify->p_id > 0) {
+                $this->getPosNavs($classify->p_id, $posnavs);
+            }
         }
         return $posnavs;
     }
