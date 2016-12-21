@@ -2469,7 +2469,7 @@ class PrintController extends BaseController {
                     max-width: 500px;
                     /*background: #D2E9FF;*/
                     padding: 20px 20px 20px 20px;
-                    color: #666;
+                    /*color: #666;*/
                     }
                     .input[placeholder]{color:#5c5c5c;}
                     .elegant-aero h1 {
@@ -2487,7 +2487,7 @@ class PrintController extends BaseController {
                     .elegant-aero label>span {
                     float: left;
                     margin-top: 10px;
-                    color: #5E5E5E;
+                    /*color: #5E5E5E;*/
                     }
                     .elegant-aero label {
                     display: block;
@@ -2745,7 +2745,7 @@ class PrintController extends BaseController {
                 /*background: #D2E9FF;*/
                 padding: 20px 20px 20px 20px;
                 font: 12px Arial, Helvetica, sans-serif;
-                color: #666;
+                /*color: #666;*/
                 }
                 .input[placeholder]{color:#5c5c5c;}
                 .elegant-aero h1 {
@@ -2763,7 +2763,7 @@ class PrintController extends BaseController {
                 .elegant-aero label>span {
                 float: left;
                 margin-top: 10px;
-                color: #5E5E5E;
+                /*color: #5E5E5E;*/
                 }
                 .elegant-aero label {
                 display: block;
