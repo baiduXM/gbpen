@@ -2415,6 +2415,7 @@ class PrintController extends BaseController {
                         </label>
                         <label>
                         <span>&nbsp;</span>
+                        <input type="hidden" name="language" value="en" />
                         <input type="submit" class="button" name="submit" value="Submit" />
                         </label>
                         </form>';
@@ -2441,6 +2442,7 @@ class PrintController extends BaseController {
                         </label>
                         <label>
                         <span>&nbsp;</span>
+                        <input type="hidden" name="language" value="cn" />
                         <input type="submit" class="button" name="submit" value="提交" />
                         </label>
                         </form>';
@@ -2553,6 +2555,8 @@ class PrintController extends BaseController {
                         var _name       =messageboard.name.value;
                         var _content    =messageboard.content.value;
                         var _telephone  =messageboard.telephone.value;
+                        var _language   =messageboard._language.value;
+                        if(_language=="cn"){
                                     if (_name=="")
                                     {
                                         alert("请填写您的姓名");
@@ -2578,6 +2582,33 @@ class PrintController extends BaseController {
                                                 return false;
                                         }
                                     }
+                        }else{
+                                    if (_name=="")
+                                    {
+                                        alert("Please fill in your name");
+                                        messageboard.name.focus();
+                                        return false;
+                                    }
+                                    if (_content=="")
+                                    {
+                                        alert("Please fill out the message content");
+                                        messageboard.content.focus();
+                                        return false;
+                                    }
+                                    if (_telephone!="")
+                                    {
+                                        if(isNaN(_telephone)){
+                                                alert("Please fill in the Numbers");
+                                                messageboard.telephone.focus();
+                                                return false;
+                                        }
+                                        if(!(/^1[3|4|5|7|8]\d{9}$/.test(_telephone))){
+                                                alert("Mobile phone number is wrong");
+                                                messageboard.telephone.focus();
+                                                return false;
+                                        }
+                                    }
+                        }
                     }
                     </SCRIPT>';
                 } elseif ($classify->type == 9) {
@@ -2824,6 +2855,7 @@ class PrintController extends BaseController {
                 <SCRIPT language=javascript>
                 function CheckPost()
                 {
+                    if(messageboard.language.value=="cn"){
                         if (messageboard.name.value=="")
                         {
                                 alert("请填写您的姓名");
@@ -2849,6 +2881,33 @@ class PrintController extends BaseController {
                                         return false;
                                 }
                         }
+                    }else{
+                        if (messageboard.name.value=="")
+                        {
+                                alert("Please fill in your name");
+                                messageboard.name.focus();
+                                return false;
+                        }
+                        if (messageboard.content.value=="")
+                        {
+                                alert("Please fill out the message content");
+                                messageboard.content.focus();
+                                return false;
+                        }
+                        if (messageboard.telephone.value!="")
+                        {
+                                if(isNaN(messageboard.telephone.value)){
+                                    alert("Please fill in the Numbers");
+                                    messageboard.telephone.focus();
+                                    return false;
+                                }
+                                if(!(/^1[3|4|5|7|8]\d{9}$/.test(messageboard.telephone.value))){
+                                        alert("Mobile phone number is wrong");
+                                        messageboard.telephone.focus();
+                                        return false;
+                                }
+                        }
+                    }
                 }
                 </SCRIPT>';
             }
