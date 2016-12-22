@@ -2555,7 +2555,7 @@ class PrintController extends BaseController {
                         var _name       =messageboard.name.value;
                         var _content    =messageboard.content.value;
                         var _telephone  =messageboard.telephone.value;
-                        var _language   =messageboard._language.value;
+                        var _language   =messageboard.language.value;
                         if(_language=="cn"){
                                     if (_name=="")
                                     {
@@ -2725,6 +2725,7 @@ class PrintController extends BaseController {
                     </label>
                     <label>
                     <span>&nbsp;</span>
+                    <input type="hidden" name="language" value="en" />
                     <input type="submit" class="button" name="submit" value="Submit" />
                     </label>
                     </form>';
@@ -2751,6 +2752,7 @@ class PrintController extends BaseController {
                     </label>
                     <label>
                     <span>&nbsp;</span>
+                    <input type="hidden" name="language" value="cn" />
                     <input type="submit" class="button" name="submit" value="提交" />
                     </label>
                     </form>';
