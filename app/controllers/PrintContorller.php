@@ -893,7 +893,7 @@ class PrintController extends BaseController {
         $tempname = $templatesC->getTemplatesName($this->type);
         $flagPlatform = substr($tempname, 0, 2);
         $flagLanguage = substr($tempname, 2, 1);
-        $tempscript = '';
+        $tempscript = "";
         $language_css = "";
         $customerC = new CustomerController;
         $domain = $customerC->getSwitchCustomer(); //双站用户
@@ -916,15 +916,13 @@ class PrintController extends BaseController {
                 $language = '<li><a href="' . $current_url . '">中文版</a></li>';
                 $language .= '<li><a href="' . $language_url . '">English</a></li>';
             }
-            $language_div = '<div class="language_div" style="position:relative;">'
+            $language_div = '<div class="language_div" >'
                     . '<ul>'
                     . $language
                     . '</ul>'
                     . '</div>';
 
             $tempscript = '$("body").prepend(\'' . $language_div . '\');';
-//                    . '$("#header").css("position","relative");';
-//        $language_css = '<link rel="stylesheet" href="http://swap.5067.org/css/language.css">';
             $language_css = '<link rel="stylesheet" href="http://swap.5067.org/css/language.css">';
         }
         //===显示版本切换链接-end===
@@ -967,28 +965,32 @@ class PrintController extends BaseController {
                 curl_close($ch);
             }
             $headscript = $customer_info->pc_header_script;
-            $headscript .= $language_css;
+//            $headscript .= $language_css;
             //===版权选择===
             switch ($customer_info->copyright) {
                 case 'en_xiamen':
                     $_href = 'http://www.12t.cn/';
-                    $_copyright = 'XIAMEN 12t NETWORK TECHNOLOGY CO., LTD.';
+                    $_copyright = 'Technology support：<a href="' . $_href . '">XIAMEN 12t NETWORK TECHNOLOGY CO., LTD.</a>';
                     break;
                 case 'en_huizhou':
                     $_href = 'http://www.ydbaidu.net/';
-                    $_copyright = 'HUIZHOU YIRUITONG NETWORK TECHNOLOGY CO., LTD.';
+                    $_copyright = 'Technology support：<a href="' . $_href . '">HUIZHOU YIRUITONG NETWORK TECHNOLOGY CO., LTD.</a>';
                     break;
                 case 'cn_xiamen':
                     $_href = 'http://www.12t.cn/';
-                    $_copyright = '厦门易尔通网络科技有限公司';
+                    $_copyright = '技术支持：<a href="' . $_href . '">厦门易尔通网络科技有限公司</a> ';
                     break;
                 case 'cn_huizhou':
                     $_href = 'http://www.ydbaidu.net/';
-                    $_copyright = '惠州易瑞通网络科技有限公司';
+                    $_copyright = '技术支持：<a href="' . $_href . '">惠州易瑞通网络科技有限公司</a> ';
+                    break;
+                case 'null':
+                    $_href = '';
+                    $_copyright = '';
                     break;
                 default :
-                    $_href = 'http://www.12t.cn/';
-                    $_copyright = '厦门易尔通网络科技有限公司';
+                    $_href = '<a href="http://www.12t.cn/">';
+                    $_copyright = '技术支持：' . $_href . '厦门易尔通网络科技有限公司</a>';
                     break;
             }
 
@@ -1010,9 +1012,9 @@ class PrintController extends BaseController {
                     break;
             }
             if ($customer_info->lang == 'en') {
-                $footprint = $customer_info->footer . '<p>Technology support：<a href="' . $_href . '">' . $_copyright . '</a> ' . $talent_support . '</p>';
+                $footprint = $customer_info->footer . '<p>' . $_copyright . $talent_support . '</p>';
             } else {
-                $footprint = $customer_info->footer . '<p>技术支持：<a href="' . $_href . '">' . $_copyright . '</a> ' . $talent_support . '</p>';
+                $footprint = $customer_info->footer . '<p>' . $_copyright . $talent_support . '</p>';
             }
             //===版权选择_end===
             $footscript = $customer_info->pc_footer_script;
@@ -1026,7 +1028,7 @@ class PrintController extends BaseController {
                 </script>';
             }
             $footscript .= $tempscript_star . $tempscript . $tempscript_end;
-//            $footscript .= $language_css;
+            $footscript .= $language_css;
             $site_another_url = $this->showtype == 'preview' ? '' : $customer_info->mobile_domain;
         } else {
             $logo = $this->showtype == 'preview' ? ('/customers/' . $this->customer . '/images/l/common/' . $customer_info->logo_small) : $this->domain . '/images/l/common/' . $customer_info->logo_small; //'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $customer_info->logo_small) : $this->domain . '/images/l/common/' . $customer_info->logo_small;
@@ -2744,7 +2746,7 @@ class PrintController extends BaseController {
                 /*background: #D2E9FF;*/
                 padding: 20px 20px 20px 20px;
                 font: 12px Arial, Helvetica, sans-serif;
-                color: #666;
+                /*color: #666;*/
                 }
                 .input[placeholder]{color:#5c5c5c;}
                 .elegant-aero h1 {
@@ -2762,7 +2764,7 @@ class PrintController extends BaseController {
                 .elegant-aero label>span {
                 float: left;
                 margin-top: 10px;
-                color: #5E5E5E;
+                /*color: #5E5E5E;*/
                 }
                 .elegant-aero label {
                 display: block;
