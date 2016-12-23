@@ -899,8 +899,6 @@ class PrintController extends BaseController {
         $domain = $customerC->getSwitchCustomer(); //双站用户
         $current_url = '#';
         $language_url = '#';
-        $tempscript_star = '<script>$(function(){';
-        $tempscript_end = '});</script>';
         if (!empty($domain)) {//===中英文双站===
             if ($flagPlatform == 'GM') {//===手机
                 $language_url = $domain['switch_mobile_domain'];
@@ -922,7 +920,9 @@ class PrintController extends BaseController {
                     . '</ul>'
                     . '</div>';
 
-            $tempscript = '$("body").prepend(\'' . $language_div . '\');';
+            $tempscript = '<script>$(function(){'
+                    . '$("body").prepend(\'' . $language_div . '\');'
+                    . '});</script>';
             $language_css = '<link rel="stylesheet" href="http://swap.5067.org/css/language.css">';
         }
         //===显示版本切换链接-end===
@@ -1027,8 +1027,8 @@ class PrintController extends BaseController {
                     $("#bg-music").css("display","none");
                 </script>';
             }
-            $footscript .= $tempscript_star . $tempscript . $tempscript_end;
-            $footscript .= $language_css;
+//            $footscript .= $tempscript;
+//            $footscript .= $language_css;
             $site_another_url = $this->showtype == 'preview' ? '' : $customer_info->mobile_domain;
         } else {
             $logo = $this->showtype == 'preview' ? ('/customers/' . $this->customer . '/images/l/common/' . $customer_info->logo_small) : $this->domain . '/images/l/common/' . $customer_info->logo_small; //'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $customer_info->logo_small) : $this->domain . '/images/l/common/' . $customer_info->logo_small;
