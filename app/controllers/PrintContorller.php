@@ -887,24 +887,19 @@ class PrintController extends BaseController {
      * @return string
      */
     public function publicdata() {
-//        $color = $this->changeCss();
-//        DB::table('color')
-//        dd($color);
-
         $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
         //===显示版本切换链接===
         $templatesC = new TemplatesController;
         $tempname = $templatesC->getTemplatesName($this->type);
         $flagPlatform = substr($tempname, 0, 2);
         $flagLanguage = substr($tempname, 2, 1);
-        $tempscript = '';
+        $tempscript = "";
+        $language_css = "";
         $customerC = new CustomerController;
         $domain = $customerC->getSwitchCustomer(); //双站用户
         $current_url = '#';
         $language_url = '#';
-        $tempscript_star = '<script>$(function(){';
-        $tempscript_end = '});</script>';
-        if (!empty($domain)) {
+        if (!empty($domain)) {//===中英文双站===
             if ($flagPlatform == 'GM') {//===手机
                 $language_url = $domain['switch_mobile_domain'];
                 $current_url = $domain['current_mobile_domain'];
@@ -919,15 +914,17 @@ class PrintController extends BaseController {
                 $language = '<li><a href="' . $current_url . '">中文版</a></li>';
                 $language .= '<li><a href="' . $language_url . '">English</a></li>';
             }
-            $language_div = '<div class="language_div">'
+            $language_div = '<div class="language_div" >'
                     . '<ul>'
                     . $language
                     . '</ul>'
                     . '</div>';
-//            $tempscript = '$("#header").prepend(\'' . $language_div . '\');'
-//                    . '$("#header").css("position","relative");';
+
+            $tempscript = '<script>$(function(){'
+                    . '$("body").prepend(\'' . $language_div . '\');'
+                    . '});</script>';
+            $language_css = '<link rel="stylesheet" href="http://swap.5067.org/css/language.css">';
         }
-        $language_css = '<link rel="stylesheet" href="http://swap.5067.org/css/language.css">';
         //===显示版本切换链接-end===
         $formC = new FormController();
         $formJS = $this->insetForm(); //===表单嵌入===
@@ -973,23 +970,27 @@ class PrintController extends BaseController {
             switch ($customer_info->copyright) {
                 case 'en_xiamen':
                     $_href = 'http://www.12t.cn/';
-                    $_copyright = 'XIAMEN 12t NETWORK TECHNOLOGY CO., LTD.';
+                    $_copyright = 'Technology support：<a href="' . $_href . '">XIAMEN 12t NETWORK TECHNOLOGY CO., LTD.</a>';
                     break;
                 case 'en_huizhou':
                     $_href = 'http://www.ydbaidu.net/';
-                    $_copyright = 'HUIZHOU YIRUITONG NETWORK TECHNOLOGY CO., LTD.';
+                    $_copyright = 'Technology support：<a href="' . $_href . '">HUIZHOU YIRUITONG NETWORK TECHNOLOGY CO., LTD.</a>';
                     break;
                 case 'cn_xiamen':
                     $_href = 'http://www.12t.cn/';
-                    $_copyright = '厦门易尔通网络科技有限公司';
+                    $_copyright = '技术支持：<a href="' . $_href . '">厦门易尔通网络科技有限公司</a> ';
                     break;
                 case 'cn_huizhou':
                     $_href = 'http://www.ydbaidu.net/';
-                    $_copyright = '惠州易瑞通网络科技有限公司';
+                    $_copyright = '技术支持：<a href="' . $_href . '">惠州易瑞通网络科技有限公司</a> ';
+                    break;
+                case 'null':
+                    $_href = '';
+                    $_copyright = '';
                     break;
                 default :
-                    $_href = 'http://www.12t.cn/';
-                    $_copyright = '厦门易尔通网络科技有限公司';
+                    $_href = '<a href="http://www.12t.cn/">';
+                    $_copyright = '技术支持：' . $_href . '厦门易尔通网络科技有限公司</a>';
                     break;
             }
 
@@ -1011,9 +1012,9 @@ class PrintController extends BaseController {
                     break;
             }
             if ($customer_info->lang == 'en') {
-                $footprint = $customer_info->footer . '<p>Technology support：<a href="' . $_href . '">' . $_copyright . '</a> ' . $talent_support . '</p>';
+                $footprint = $customer_info->footer . '<p>' . $_copyright . $talent_support . '</p>';
             } else {
-                $footprint = $customer_info->footer . '<p>技术支持：<a href="' . $_href . '">' . $_copyright . '</a> ' . $talent_support . '</p>';
+                $footprint = $customer_info->footer . '<p>' . $_copyright . $talent_support . '</p>';
             }
             //===版权选择_end===
             $footscript = $customer_info->pc_footer_script;
@@ -1026,7 +1027,7 @@ class PrintController extends BaseController {
                     $("#bg-music").css("display","none");
                 </script>';
             }
-//            $footscript .= $tempscript_star . $tempscript . $tempscript_end;
+//            $footscript .= $tempscript;
 //            $footscript .= $language_css;
             $site_another_url = $this->showtype == 'preview' ? '' : $customer_info->mobile_domain;
         } else {
@@ -2507,7 +2508,7 @@ class PrintController extends BaseController {
                         white-space: nowrap;
                     }
                     .elegant-aero input[type="text"], .elegant-aero input[type="tel"], .elegant-aero input[type="email"], .elegant-aero textarea, .elegant-aero select {
-                    color: #888;
+                    /*color: #888;*/
                     width: 65%;
                     padding: 0px 0px 0px 5px;
                     border: 1px solid #C5E2FF;
@@ -2538,7 +2539,7 @@ class PrintController extends BaseController {
                     padding: 10px 30px 10px 30px;
                     background: #ACB5B7;
                     border: none;
-                    color: #FFF;
+                    /*color: #FFF;*/
                     box-shadow: 1px 1px 1px #4C6E91;
                     -webkit-box-shadow: 1px 1px 1px #4C6E91;
                     -moz-box-shadow: 1px 1px 1px #4C6E91;
@@ -3656,8 +3657,8 @@ class PrintController extends BaseController {
             }
         }
         $result['pagenavs'] = $pagenavs;
-        $result['posnavs'] = array(0 => array('en_name' => 'Search', 'name' => '搜索', 'link' => 'javascript:;', 'icon' => ''));
-
+        $result['posnavs'] = $this->getPosNavs($c_id); //array(0 => array('en_name' => 'Search', 'name' => '搜索', 'link' => 'javascript:;', 'icon' => ''));
+//        $result['posnavs'] = array(0 => array('en_name' => 'Search', 'name' => '搜索', 'link' => 'javascript:;', 'icon' => ''));
         //搜索数据替换
         if (!is_file(app_path('views/templates/' . $this->themename . '/searchresult_do.html'))) {
             //搜索数据标记与替换
@@ -3957,26 +3958,35 @@ class PrintController extends BaseController {
      * @return type
      */
     private function getPosNavs($c_id, &$posnavs = array()) {
-        $classify = Classify::where('id', $c_id)->first();
-        $arr['name'] = $classify->name;
-        $arr['en_name'] = $classify->en_name;
-        if ($classify->type == 6) {
-            if ($classify->open_page == 2) {
-                $arr['link'] = $classify->url . '" target="_blank';
-            } else {
-                $arr['link'] = $classify->url;
-            }
+//    function getPosNavs($c_id = 0, &$posnavs = array()) {
+        if ($c_id == 0) {
+            $webinfo = WebsiteConfig::where("cus_id", $this->cus_id)->where("key", "_pagenavs_sub3")->pluck("value");
+            $webinfo = unserialize($webinfo);
+            $c_id = $webinfo["pagenavs"]["value"]["id"];
+//            var_dump($c_id);
+//            exit;
         } else {
-            if ($this->showtype == 'preview') {
-                $arr['link'] = $this->domain . '/category/' . $c_id;
+            $classify = Classify::where('id', $c_id)->first();
+            $arr['name'] = $classify->name;
+            $arr['en_name'] = $classify->en_name;
+            if ($classify->type == 6) {
+                if ($classify->open_page == 2) {
+                    $arr['link'] = $classify->url . '" target="_blank';
+                } else {
+                    $arr['link'] = $classify->url;
+                }
             } else {
-                $arr['link'] = $this->domain . '/category/' . $c_id . '.html';
+                if ($this->showtype == 'preview') {
+                    $arr['link'] = $this->domain . '/category/' . $c_id;
+                } else {
+                    $arr['link'] = $this->domain . '/category/' . $c_id . '.html';
+                }
             }
-        }
-        $arr['icon'] = '<i class="iconfont">' . $classify->icon . '</i>';
-        array_unshift($posnavs, $arr);
-        if ($classify->p_id > 0) {
-            $this->getPosNavs($classify->p_id, $posnavs);
+            $arr['icon'] = '<i class="iconfont">' . $classify->icon . '</i>';
+            array_unshift($posnavs, $arr);
+            if ($classify->p_id > 0) {
+                $this->getPosNavs($classify->p_id, $posnavs);
+            }
         }
         return $posnavs;
     }
