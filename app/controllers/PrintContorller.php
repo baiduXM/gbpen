@@ -1027,8 +1027,8 @@ class PrintController extends BaseController {
                     $("#bg-music").css("display","none");
                 </script>';
             }
-//            $footscript .= $tempscript;
-//            $footscript .= $language_css;
+            $footscript .= $tempscript;
+            $footscript .= $language_css;
             $site_another_url = $this->showtype == 'preview' ? '' : $customer_info->mobile_domain;
         } else {
             $logo = $this->showtype == 'preview' ? ('/customers/' . $this->customer . '/images/l/common/' . $customer_info->logo_small) : $this->domain . '/images/l/common/' . $customer_info->logo_small; //'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $customer_info->logo_small) : $this->domain . '/images/l/common/' . $customer_info->logo_small;
@@ -3718,7 +3718,7 @@ class PrintController extends BaseController {
             }
         }
         $result['pagenavs'] = $pagenavs;
-        $result['posnavs'] = $this->getPosNavs($c_id); //array(0 => array('en_name' => 'Search', 'name' => '搜索', 'link' => 'javascript:;', 'icon' => ''));
+        $result['posnavs'] = $this->getPosNavs(); //array(0 => array('en_name' => 'Search', 'name' => '搜索', 'link' => 'javascript:;', 'icon' => ''));
         //搜索数据替换
         if (!is_file(app_path('views/templates/' . $this->themename . '/searchresult_do.html'))) {
             //搜索数据标记与替换
@@ -3900,30 +3900,27 @@ class PrintController extends BaseController {
             $webinfo = WebsiteConfig::where("cus_id", $this->cus_id)->where("key", "_pagenavs_sub3")->pluck("value");
             $webinfo = unserialize($webinfo);
             $c_id = $webinfo["pagenavs"]["value"]["id"];
-//            var_dump($c_id);
-//            exit;
-        } else {
-            $classify = Classify::where('id', $c_id)->first();
-            $arr['name'] = $classify->name;
-            $arr['en_name'] = $classify->en_name;
-            if ($classify->type == 6) {
-                if ($classify->open_page == 2) {
-                    $arr['link'] = $classify->url . '" target="_blank';
-                } else {
-                    $arr['link'] = $classify->url;
-                }
+        }
+        $classify = Classify::where('id', $c_id)->first();
+        $arr['name'] = $classify->name;
+        $arr['en_name'] = $classify->en_name;
+        if ($classify->type == 6) {
+            if ($classify->open_page == 2) {
+                $arr['link'] = $classify->url . '" target="_blank';
             } else {
-                if ($this->showtype == 'preview') {
-                    $arr['link'] = $this->domain . '/category/' . $c_id;
-                } else {
-                    $arr['link'] = $this->domain . '/category/' . $c_id . '.html';
-                }
+                $arr['link'] = $classify->url;
             }
-            $arr['icon'] = '<i class="iconfont">' . $classify->icon . '</i>';
-            array_unshift($posnavs, $arr);
-            if ($classify->p_id > 0) {
-                $this->getPosNavs($classify->p_id, $posnavs);
+        } else {
+            if ($this->showtype == 'preview') {
+                $arr['link'] = $this->domain . '/category/' . $c_id;
+            } else {
+                $arr['link'] = $this->domain . '/category/' . $c_id . '.html';
             }
+        }
+        $arr['icon'] = '<i class="iconfont">' . $classify->icon . '</i>';
+        array_unshift($posnavs, $arr);
+        if ($classify->p_id > 0) {
+            $this->getPosNavs($classify->p_id, $posnavs);
         }
         return $posnavs;
     }
