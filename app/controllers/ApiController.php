@@ -134,7 +134,7 @@ class ApiController extends BaseController {
                 }
             } else {
                 //增加操作
-                $update['password'] = Hash::make($update['name']);
+                $update['password'] = isset(Input::get("password"))? Hash::make(Input::get("password")):Hash::make($update['name']);
                 $insert_id = Customer::insertGetId($update);
                 if ($insert_id) {
                     $pc_id = Template::where('tpl_num', $update['pc_tpl_num'])->where('type', 1)->pluck('id');
