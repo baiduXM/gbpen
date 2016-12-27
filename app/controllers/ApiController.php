@@ -134,7 +134,8 @@ class ApiController extends BaseController {
                 }
             } else {
                 //增加操作
-                if (isset(Input::get("password"))) {
+                $password = Input::get("password");
+                if ($password != null) {
                     $update['password'] = Hash::make(Input::get("password"));
                 } else {
                     $update['password'] = Hash::make($update['name']);
