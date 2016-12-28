@@ -900,43 +900,46 @@ class PrintController extends BaseController {
         $current_url = '#';
         $language_url = '#';
         if (!empty($domain)) {//===中英文双站===
-            if ($flagPlatform == 'GM') {//===手机
-                $language_url = $domain['switch_mobile_domain'];
-                $current_url = $domain['current_mobile_domain'];
-            } elseif ($flagPlatform == 'GP') {//===PC
-                $language_url = $domain['switch_pc_domain'];
-                $current_url = $domain['current_pc_domain'];
-            }
-            if ($flagLanguage == 9) {//===英文
-                $language = '<li><a href="' . $language_url . '" style="color:' . $customer_info->bilingual_font_color . ';">中文版</a></li>';
-                $language .= '<li><a href="' . $current_url . '" style="color:' . $customer_info->bilingual_font_color . ';">English</a></li>';
-            } elseif ($flagLanguage == 0) {//===中文
-                $language = '<li><a href="' . $current_url . '" style="color:' . $customer_info->bilingual_font_color . ';">中文版</a></li>';
-                $language .= '<li><a href="' . $language_url . '" style="color:' . $customer_info->bilingual_font_color . ';">English</a></li>';
-            }
-            $styleself = '';
             if ($customer_info->bilingual_v) {
-                $styleself.="right:" . $customer_info->bilingual_position . "px; ";
-                $styleself.="background-color:" . $customer_info->bilingual_background_color . "; ";
-                $styleself.="opacity" . $customer_info->bilingual_background_opacity . "; ";
-            }
-//            $styleself = '<style type="text/css">
-//                    .language_div{z-index:1001; width:160px; height: 36px; position: absolute;top:0px; right:' . $customer_info->bilingual_position . 'px;background-color: ' . $customer_info->bilingual_background_color . '; opacity: ' . $customer_info->bilingual_background_opacity . ';}
-//                    .language_div ul{ margin: 0 auto;}
-//                    .language_div ul li{width: 80px;height: 36px;float: right;text-align: center; }
-//                    .language_div ul li a{ line-height: 36px; display: inline-block; padding: 0 10px;color: wheat;}
-//                    .language_div ul li a:hover{color: #aaaaaa;}
-//                </style>';
-            $language_div = '<div class="language_div" style="' . $styleself . '">'
-                    . '<ul>'
-                    . $language
-                    . '</ul>'
-                    . '</div>';
+                if ($flagPlatform == 'GM') {//===手机
+                    $language_url = $domain['switch_mobile_domain'];
+                    $current_url = $domain['current_mobile_domain'];
+                } elseif ($flagPlatform == 'GP') {//===PC
+                    $language_url = $domain['switch_pc_domain'];
+                    $current_url = $domain['current_pc_domain'];
+                }
+                if ($flagLanguage == 9) {//===英文
+                    $language = '<li><a href="' . $language_url . '">中文版</a></li>';
+                    $language .= '<li><a href="' . $current_url . '">English</a></li>';
+                } elseif ($flagLanguage == 0) {//===中文
+                    $language = '<li><a href="' . $current_url . '">中文版</a></li>';
+                    $language .= '<li><a href="' . $language_url . '">English</a></li>';
+                }
+//                $styleself = '';
+//
+//                $styleself.="right:" . $customer_info->bilingual_position . "px; ";
+//                $styleself.="background-color:" . $customer_info->bilingual_background_color . "; ";
+//                $styleself.="opacity" . $customer_info->bilingual_background_opacity . "; ";
 
-            $tempscript = '<script>$(function(){'
-                    . '$("body").prepend(\'' . $language_div . '\');'
-                    . '});</script>';
-            $language_css = '<link rel="stylesheet" href="http://swap.5067.org/css/language.css">';
+//                $language_div = '<div class="language_div" style="' . $styleself . '">'
+                $language_div = '<div class="language_div" >'
+                        . '<ul>'
+                        . $language
+                        . '</ul>'
+                        . '</div>';
+
+                $tempscript = '<script>$(function(){'
+                        . '$("body").prepend(\'' . $language_div . '\');'
+                        . '});</script>';
+//            $language_css = '<link rel="stylesheet" href="http://swap.5067.org/css/language.css">';
+                $language_css = '<style type="text/css">
+                    .language_div{z-index:1001; width:160px; height: 36px; position: absolute;top:0px; right:' . $customer_info->bilingual_position . 'px;background-color: ' . $customer_info->bilingual_background_color . '; opacity: ' . $customer_info->bilingual_background_opacity . ';}
+                    .language_div ul{ margin: 0 auto;}
+                    .language_div ul li{width: 80px;height: 36px;float: right;text-align: center; }
+                    .language_div ul li a{ line-height: 36px; display: inline-block; padding: 0 10px;color:' . $customer_info->bilingual_font_color . ';}
+                    .language_div ul li a:hover{color:' . $customer_info->bilingual_font_active_color . ';}
+                </style>';
+            }
         }
         //===显示版本切换链接-end===
         $formC = new FormController();
