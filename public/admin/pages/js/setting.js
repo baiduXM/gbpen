@@ -45,7 +45,11 @@ function settingController($scope, $http) {
                 } else {
                     $(".bilingual_box_encn").hide();
                 }
-                $('.setting-content input[name=company_name]').val(set.company_name);
+                $('.setting-content input[name=bilingual_position]').val(set.bilingual_position);
+                $('.setting-content input[name=bilingual_font_color]').val(set.bilingual_font_color);
+                $('.setting-content input[name=bilingual_font_active_color]').val(set.bilingual_font_active_color);
+                $('.setting-content input[name=bilingual_background_color]').val(set.bilingual_background_color);
+                $('.setting-content input[name=bilingual_background_opacity]').val(set.bilingual_background_opacity);
                 $('.setting-content input[name=domain_pc]').val(set.domain_pc);
                 $('.setting-content input[name=domain_m]').val(set.domain_m);
                 $('.setting-content input[name=def_domain_pc]').val(set.def_domain_pc);
