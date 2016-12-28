@@ -64,6 +64,13 @@ class CustomerController extends BaseController {
         $data['enlarge'] = $customer_info->enlarge;
         $data['lang'] = $customer_info->lang;
 
+        $data['bilingual'] = Customer::where('id', $cus_id)->pluck('switch_cus_id');
+        $data['bilingual_v'] = $customer_info->bilingual_v;
+        $data['bilingual_position'] = $customer_info->bilingual_position;
+        $data['bilingual_font_color'] = $customer_info->bilingual_font_color;
+        $data['bilingual_background_color'] = $customer_info->bilingual_background_color;
+        $data['bilingual_background_opacity'] = $customer_info->bilingual_background_opacity;
+
         $data['background_music'] = $customer_info->background_music;
         $data['talent_support'] = $customer_info->talent_support;
 
@@ -111,9 +118,13 @@ class CustomerController extends BaseController {
             }
         }
 
+        $data['bilingual_v'] = Input::get('bilingual_v') ? Input::get('bilingual_v') : 0;
+        $data['bilingual_position'] = Input::get('bilingual_position') ? Input::get('bilingual_position') : 300;
+        $data['bilingual_font_color'] = Input::get('bilingual_font_color') ? Input::get('bilingual_font_color') : "#aaaaaa";
+        $data['bilingual_background_color'] = Input::get('bilingual_background_color') ? Input::get('bilingual_background_color') : "#000000";
+        $data['bilingual_background_opacity'] = Input::get('bilingual_background_opacity') ? Input::get('bilingual_background_opacity') : 0.5;
         $data['background_music'] = Input::get('background_music');
         $data['talent_support'] = Input::get('talent_support');
-
         $data['company'] = strtolower(Input::get('company_name'));
         $pc_domain = Input::get('domain_pc');
         $data['pc_domain'] = strstr($pc_domain, 'http') ? $pc_domain : 'http://' . $pc_domain;

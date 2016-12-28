@@ -20,13 +20,11 @@ function settingController($scope, $http) {
         },
         _changeTab: function () {
             $(".setting-name").click(function (e) {
-//                console.log(_this);
                 $(this).siblings('div').removeClass("select");
                 $(this).addClass("select");
                 var _name = this.id;
                 $('[name="' + _name + '"]').siblings(".setting-feild").hide();
                 $('[name="' + _name + '"]').show();
-
             });
         },
         _settingGetInfo: function () {
@@ -34,12 +32,24 @@ function settingController($scope, $http) {
             // 数据读取
             $http.get('../customer-info').success(function (json) {
                 var set = json.data;
+                if (set.bilingual) {
+                    $(".bilingual_box_encn").show();
+                    $('.setting-content input[name=bilingual_v]').val(set.bilingual_v);
+                    if (set.bilingual_v) {
+                        $("input.benl").attr("checked", true);
+                        $(".bilingual_box").show();
+                    } else {
+                        $("input.benl").attr("checked", false);
+                        $(".bilingual_box").hide();
+                    }
+                } else {
+                    $(".bilingual_box_encn").hide();
+                }
                 $('.setting-content input[name=company_name]').val(set.company_name);
                 $('.setting-content input[name=domain_pc]').val(set.domain_pc);
                 $('.setting-content input[name=domain_m]').val(set.domain_m);
                 $('.setting-content input[name=def_domain_pc]').val(set.def_domain_pc);
                 $('.setting-content input[name=def_domain_m]').val(set.def_domain_m);
-                $('.setting-content input[name=company_name]').val(set.company_name);
                 $('.setting-content input[name=company_name]').val(set.company_name);
                 $('.setting-content input[name=title]').val(set.title);
                 $('.setting-content textarea[name=keywords]').val(set.keywords);
@@ -369,11 +379,24 @@ function settingController($scope, $http) {
                 Trigger: 'mouseenter',
                 context: '开启产品介绍图片放大功能'
             });
+            $('.bilingual').MoveBox({
+                Trigger: 'mouseenter',
+                context: '开启顶部中英双站切换'
+            });
             $('.enlarge').click(function () {
                 if ($("#enlargev").val() == '1') {
                     $("#enlargev").val("0");
                 } else {
                     $("#enlargev").val("1");
+                }
+            });
+            $('.bilingual').click(function () {
+                if ($("#bilingual_v").val() == '1') {
+                    $("#bilingual_v").val("0");
+                    $(".bilingual_box").hide();
+                } else {
+                    $("#bilingual_v").val("1");
+                    $(".bilingual_box").show();
                 }
             });
             $('input.chk').click(function (event) {
