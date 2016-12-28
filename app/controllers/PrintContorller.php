@@ -921,9 +921,11 @@ class PrintController extends BaseController {
                         . '</ul>'
                         . '</div>';
 
-                $tempscript = '<script>$(document).ready(function(){'
-                        . '$("body").prepend(\'' . $language_div . '\');'
-                        . '});</script>';
+                $tempscript = '<script type="text/javascript">'
+                        .'var div=document.createElement("div");'
+                        .'div.innerHTML=\'' . $language_div . '\';'
+                        . 'document.getElementsByTagName("body")[0].appendChild(div);'
+                        . '</script>';
 //            $language_css = '<link rel="stylesheet" href="http://swap.5067.org/css/language.css">';
                 $language_css = '<style type="text/css">
                     .language_div{z-index:1001; width:160px; height: 36px; position: absolute;top:0px; right:' . $customer_info->bilingual_position . 'px;background-color: ' . $customer_info->bilingual_background_color . '; opacity: ' . $customer_info->bilingual_background_opacity . ';}
