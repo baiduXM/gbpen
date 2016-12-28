@@ -17,21 +17,6 @@ function settingController($scope, $http) {
             this._Addform();
             this._changeLang();
             this._changeTab();//选项卡切换
-            this._bilingual();//双语样式设置
-        },
-        _bilingual: function () {
-            var info = '<div class="quicklist-r inline-block">\
-                        <div class="ml5">\
-                            <ul class="fl consultation colorsetting">\n\
-                                <li class="consultation-item">\
-                                    <label class="message-name">pc主色：</label><div><input type="color" class="colors" value="' + this.ColorRet(colors['pc'][0]) + '" name="pc_mainColor" id="pc_mainColor" data-id="pc_mainColor"/><input type="text" class="pc_mainColor" value="' + this.ColorRet(colors['pc'][0]) + '" data-id="pc_mainColor" /></div>\
-                                    <label class="message-name">pc鼠标停留时颜色：</label><div><input type="color" class="colors" value="' + this.ColorRet(colors['pc'][1]) + '" name="pc_secondColor" id="pc_secondColor" data-id="pc_secondColor"/><input type="text" class="pc_secondColor" value="' + this.ColorRet(colors['pc'][1]) + '" data-id="pc_secondColor"/></div>\
-                                    <label class="message-name">pc图标颜色：</label><div><input type="color" class="colors" value="' + this.ColorRet(colors['pc'][2]) + '" name="pc_textColor" id="pc_textColor" data-id="pc_textColor"/><input type="text" class="pc_textColor" value="' + this.ColorRet(colors['pc'][2]) + '" data-id="pc_textColor" /></div>\
-				</li>\n\
-                            </ul>\
-                            <button class="colorsclear btn btn-default" >还原</button>\
-			</div>\n\
-                    </div>';
         },
         _changeTab: function () {
             $(".setting-name").click(function (e) {
@@ -47,12 +32,24 @@ function settingController($scope, $http) {
             // 数据读取
             $http.get('../customer-info').success(function (json) {
                 var set = json.data;
+                if (set.bilingual) {
+                    $(".bilingual_box_encn").show();
+                    $('.setting-content input[name=bilingual_v]').val(set.bilingual_v);
+                    if (set.bilingual_v) {
+                        $("input.benl").attr("checked", true);
+                        $(".bilingual_box").show();
+                    } else {
+                        $("input.benl").attr("checked", false);
+                        $(".bilingual_box").hide();
+                    }
+                } else {
+                    $(".bilingual_box_encn").hide();
+                }
                 $('.setting-content input[name=company_name]').val(set.company_name);
                 $('.setting-content input[name=domain_pc]').val(set.domain_pc);
                 $('.setting-content input[name=domain_m]').val(set.domain_m);
                 $('.setting-content input[name=def_domain_pc]').val(set.def_domain_pc);
                 $('.setting-content input[name=def_domain_m]').val(set.def_domain_m);
-                $('.setting-content input[name=company_name]').val(set.company_name);
                 $('.setting-content input[name=company_name]').val(set.company_name);
                 $('.setting-content input[name=title]').val(set.title);
                 $('.setting-content textarea[name=keywords]').val(set.keywords);
@@ -382,11 +379,24 @@ function settingController($scope, $http) {
                 Trigger: 'mouseenter',
                 context: '开启产品介绍图片放大功能'
             });
+            $('.bilingual').MoveBox({
+                Trigger: 'mouseenter',
+                context: '开启顶部中英双站切换'
+            });
             $('.enlarge').click(function () {
                 if ($("#enlargev").val() == '1') {
                     $("#enlargev").val("0");
                 } else {
                     $("#enlargev").val("1");
+                }
+            });
+            $('.bilingual').click(function () {
+                if ($("#bilingual_v").val() == '1') {
+                    $("#bilingual_v").val("0");
+                    $(".bilingual_box").hide();
+                } else {
+                    $("#bilingual_v").val("1");
+                    $(".bilingual_box").show();
                 }
             });
             $('input.chk').click(function (event) {
