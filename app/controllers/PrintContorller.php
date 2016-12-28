@@ -921,7 +921,7 @@ class PrintController extends BaseController {
                         . '</ul>'
                         . '</div>';
 
-                $tempscript = '<script>$(function(){'
+                $tempscript = '<script>$(document).ready(function(){'
                         . 'alert(1);'
                         . '$("body").prepend(\'' . $language_div . '\');'
                         . '});</script>';
