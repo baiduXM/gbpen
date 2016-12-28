@@ -922,7 +922,6 @@ class PrintController extends BaseController {
                         . '</div>';
 
                 $tempscript = '<script>$(document).ready(function(){'
-                        . 'alert(1);'
                         . '$("body").prepend(\'' . $language_div . '\');'
                         . '});</script>';
 //            $language_css = '<link rel="stylesheet" href="http://swap.5067.org/css/language.css">';
