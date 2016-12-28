@@ -921,18 +921,22 @@ class PrintController extends BaseController {
 //                $styleself.="background-color:" . $customer_info->bilingual_background_color . "; ";
 //                $styleself.="opacity" . $customer_info->bilingual_background_opacity . "; ";
 //                $language_div = '<div class="language_div" style="' . $styleself . '">'
-                $language_div = '<div class="language_div" >'
-                        . '<ul>'
+//                $language_ul = '<div class="language_div" >'
+//                        . '<ul>'
+//                        . $language
+//                        . '</ul>'
+//                        . '</div>';
+                $language_ul = '<ul>'
                         . $language
-                        . '</ul>'
-                        . '</div>';
+                        . '</ul>';
 
                 $tempscript = '<script type="text/javascript">'
-                        . 'var div=document.createElement("div");'
-                        . 'div.innerHTML=\'' . $language_div . '\';'
-                        . 'document.getElementsByTagName("body")[0].appendChild(div);'
+                        . 'var _body=document.body;'
+                        . 'var _div=document.createElement("div");'
+                        . '_div.setAttribute("class", "language_div");'
+                        . '_div.innerHTML=\'' . $language_ul . '\';'
+                        . '_body.appendChild(_div);'
                         . '</script>';
-                
 //            $language_css = '<link rel="stylesheet" href="http://swap.5067.org/css/language.css">';
                 $language_css = '<style type="text/css">
                     .language_div{z-index:1001; width:160px; height: 36px; position: absolute;top:0px; right:' . $customer_info->bilingual_position . 'px;background-color: ' . $customer_info->bilingual_background_color . '; opacity: ' . $customer_info->bilingual_background_opacity . ';}
@@ -983,7 +987,6 @@ class PrintController extends BaseController {
                 curl_close($ch);
             }
             $headscript = $customer_info->pc_header_script;
-//            $headscript .= $language_css;
             //===版权选择===
             switch ($customer_info->copyright) {
                 case 'en_xiamen':
@@ -1052,13 +1055,13 @@ class PrintController extends BaseController {
             $logo = $this->showtype == 'preview' ? ('/customers/' . $this->customer . '/images/l/common/' . $customer_info->logo_small) : $this->domain . '/images/l/common/' . $customer_info->logo_small; //'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $customer_info->logo_small) : $this->domain . '/images/l/common/' . $customer_info->logo_small;
             $stylecolor = websiteInfo::leftJoin('color', 'color.id', '=', 'website_info.mobile_color_id')->where('cus_id', $this->cus_id)->pluck('color_en');
             $headscript = $customer_info->mobile_header_script;
-//            $headscript .= $language_css;
             $footprint = $customer_info->mobile_footer;
             $footscript = $customer_info->mobile_footer_script;
 //            $footscript .= $formJS;
             $footscript .= '<script type="text/javascript" src="/quickbar/js/quickbar.js?' . $this->cus_id . 'mobile"></script>';
 //            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/admin/statis.php?cus_id=' . $this->cus_id . '&platform=mobile"></script>'; //===添加统计代码MOBILE===
 //            $footscript .= $tempscript;
+//            $footscript .= $language_css;
             $site_another_url = $this->showtype == 'preview' ? '' : $customer_info->pc_domain;
             $config_arr = parse_ini_file(public_path('/templates/' . $this->themename) . '/config.ini', true);
             if (!is_array($config_arr)) {
