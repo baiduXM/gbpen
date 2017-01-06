@@ -174,9 +174,11 @@ function phone_indexController($scope, $http, $location) {
                     _divF += '<tr class="firsttab" data-aid="' + v.id + '">\n\
 		            	<td>\n\
 	            			<i class="fa iconfont icon-phonehome ' + (v.index_show == 1 ? 'blue' : 'grey') + ' not-allowed"></i>\n\
-	            			<div class="style_choose"><select disabled class="not-allowed">\n\
+	            			<div class="style_choose">\n\
+                                                <select disabled class="not-allowed">\n\
 								<option >无样式</option>\n\
-	    					</select></div>\n\
+	    					</select>\n\
+                                        </div>\n\
 		            	</td>\n\
 		            	<td><div class="tit_info">' + v.name + '</div>' + layout + '</td>\n\
 		            	<td></td>\n\
@@ -356,57 +358,63 @@ function phone_indexController($scope, $http, $location) {
             var htmlColumn = '', num = 1, _this = this;
             $.each(this.jsonData, function (index, ele) {
                 var aspectRatio = ele.config.width / ele.config.height || '';
-                if (ele.type == 'images') {
-                    var data = ele.value,
-                            oddColumnWidth = 315, // 单列宽
-                            mainWidth = $('#phone_index').width(), // 区域总宽
-                            ColumnNum = Math.floor(mainWidth / oddColumnWidth), // 列数
-                            lastColumnNum = (data.length % ColumnNum);				// 记录最终添加完的是第几列
-                    // 添加瀑布流列
-                    $('#phone_index_image').before('<form id="phone_index_images_' + num + '" data-key="' + index + '"></form>');
-                    $('#phone_index_images_' + num).append('<div class="pictitle">(多图文&nbsp;' + ele.config.width + '*' + ele.config.height + ')<span class="red">' + ele.description + '</span></div>').data({'lastColumnNum': lastColumnNum, 'ColumnNum': ColumnNum, 'aspectRatio': aspectRatio});
-                    for (var i = 1; i <= ColumnNum; i++) {
-                        $('#phone_index_images_' + num).append('<ul id="phone_index_col_' + num + '_' + i + '" class="phone_index_col" style="width:' + oddColumnWidth + 'px"></ul>');
-                    }
-                    $.each(data, function (k, v) {
-                        _this.count = k;
-                        // 除余取列
-                        var C_num = (k + 1) % ColumnNum == 0 ? (k % ColumnNum) + 1 : (k + 1) % ColumnNum;
-                        var _div = _this.ModelSlidepicsInfo({
-                            key: index,
-                            title: v.title,
-                            image: v.image,
-                            subimage: v.image,
-                            id: v.id,
-                            link: v.link,
-                            sort: v.sort,
-                            num: k
-                        });
-                        $('#phone_index_col_' + num + '_' + C_num + '').append(_div);
-                    });
-                    // 添加按钮
-                    var addButton = '<div class="phone_index-add">\
-										<div class="up_pic up_phone"></div>\
-									</div>';
-                    $('#phone_index_col_' + num + '_' + (lastColumnNum + 1) + '').append(addButton);
-                    num++;
-                } else {
-                    var data = (ele.value instanceof(Array) && ele.value.length != 0 ? ele.value[0] : ele.value), aspectRatio = ele.config.width / ele.config.height || '',
-                            _div = data.length == 0 || data == null ? '' : _this.ModelSlidepicsInfo({
+                switch (ele.type) {
+                    case "images":
+                        var data = ele.value,
+                                oddColumnWidth = 315, // 单列宽
+                                mainWidth = $('#phone_index').width(), // 区域总宽
+                                ColumnNum = Math.floor(mainWidth / oddColumnWidth), // 列数
+                                lastColumnNum = (data.length % ColumnNum);				// 记录最终添加完的是第几列
+                        // 添加瀑布流列
+                        $('#phone_index_image').before('<form id="phone_index_images_' + num + '" data-key="' + index + '"></form>');
+                        $('#phone_index_images_' + num).append('<div class="pictitle">(多图文&nbsp;' + ele.config.width + '*' + ele.config.height + ')<span class="red">' + ele.description + '</span></div>').data({'lastColumnNum': lastColumnNum, 'ColumnNum': ColumnNum, 'aspectRatio': aspectRatio});
+                        for (var i = 1; i <= ColumnNum; i++) {
+                            $('#phone_index_images_' + num).append('<ul id="phone_index_col_' + num + '_' + i + '" class="phone_index_col" style="width:' + oddColumnWidth + 'px"></ul>');
+                        }
+                        $.each(data, function (k, v) {
+                            _this.count = k;
+                            // 除余取列
+                            var C_num = (k + 1) % ColumnNum == 0 ? (k % ColumnNum) + 1 : (k + 1) % ColumnNum;
+                            var _div = _this.ModelSlidepicsInfo({
                                 key: index,
-                                title: data.title,
-                                image: data.image,
-                                subimage: data.image,
-                                id: data.id,
-                                link: data.link,
-                                Tag: 'div'
-                            }),
-                            addButton = '<div class="phone_index-add">\
-										<div class="up_pic up_phone"></div>\
-									</div>';
-                    $('#phone_index_image').attr('data-key', index);
-                    $('#phone_index_image').append('<div class="pictitle">(单图)<span class="red">' + ele.description + '</span></div>');
-                    $('#phone_index_image').append(_div + addButton).data('aspectRatio', aspectRatio);
+                                title: v.title,
+                                image: v.image,
+                                subimage: v.image,
+                                id: v.id,
+                                link: v.link,
+                                sort: v.sort,
+                                num: k
+                            });
+                            $('#phone_index_col_' + num + '_' + C_num + '').append(_div);
+                        });
+                        // 添加按钮
+                        var addButton = '<div class="phone_index-add">\
+                                            <div class="up_pic up_phone"></div>\
+                                    </div>';
+                        $('#phone_index_col_' + num + '_' + (lastColumnNum + 1) + '').append(addButton);
+                        num++;
+                        break;
+                    case "image":
+                        var data = (ele.value instanceof(Array) && ele.value.length != 0 ? ele.value[0] : ele.value), aspectRatio = ele.config.width / ele.config.height || '',
+                                _div = data.length == 0 || data == null ? '' : _this.ModelSlidepicsInfo({
+                                    key: index,
+                                    title: data.title,
+                                    image: data.image,
+                                    subimage: data.image,
+                                    id: data.id,
+                                    link: data.link,
+                                    Tag: 'div'
+                                }),
+                                addButton = '<div class="phone_index-add">\
+                                                    <div class="up_pic up_phone"></div>\
+                                            </div>';
+                        $('#phone_index_image').attr('data-key', index);
+                        $('#phone_index_image').append('<div class="pictitle">(单图)<span class="red">' + ele.description + '</span></div>');
+                        $('#phone_index_image').append(_div + addButton).data('aspectRatio', aspectRatio);
+                        break;
+                    default:
+                        console.log(ele.type);
+                        break;
                 }
             });
             _this.slidepics_upload();
