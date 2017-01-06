@@ -524,6 +524,7 @@ class HtmlController extends BaseController {
 
             $this->folderClear();
             echo '<div class="prompt">'.'100%</div><script type="text/javascript">refresh(100);</script>';
+            $this->logsAdd('null',__FUNCTION__,__CLASS__,999,"手机推送成功：",0,Auth::id());
             if (!isset($end) || $end == 1) {
                 Classify::where('cus_id', $this->cus_id)->where('pushed', '>', 0)->update(['pushed' => 0]);
                 Articles::where('cus_id', $this->cus_id)->where('pushed', '>', 0)->update(['pushed' => 0]);
@@ -578,6 +579,7 @@ class HtmlController extends BaseController {
                 ftp_put($conn, "/" . $this->customer . "/quickbar.json", public_path('customers/' . $this->customer . '/quickbar.json'), FTP_ASCII);
                 ftp_put($conn, "/" . $this->customer . "/mobile/quickbar.json", public_path('customers/' . $this->customer . '/mobile/quickbar.json'), FTP_ASCII);
                 ftp_close($conn);
+                $this->logsAdd('null',__FUNCTION__,__CLASS__,999,"快捷导航推送",0,'');
             }
         } else {
             if ($conn) {
@@ -586,6 +588,7 @@ class HtmlController extends BaseController {
                 ftp_put($conn, $ftpdir . "/quickbar.json", public_path('customers/' . $this->customer . '/quickbar.json'), FTP_ASCII);
                 ftp_put($conn, $ftpdir . "/mobile/quickbar.json", public_path('customers/' . $this->customer . '/mobile/quickbar.json'), FTP_ASCII);
                 ftp_close($conn);
+                $this->logsAdd('null',__FUNCTION__,__CLASS__,999,"快捷导航推送",0,'');
             }
         }
     }
@@ -1382,6 +1385,7 @@ class HtmlController extends BaseController {
 
                 $this->folderClear();
                 echo '<div class="prompt">'.'100%</div><script type="text/javascript">refresh(100);</script>';
+                $this->logsAdd('null',__FUNCTION__,__CLASS__,999,"推送成功：",0,Auth::id());
                 if (!isset($end) || $end == 1) {
                     Classify::where('cus_id', $this->cus_id)->where('pushed', '>', 0)->update(['pushed' => 0]);
                     Articles::where('cus_id', $this->cus_id)->where('pushed', '>', 0)->update(['pushed' => 0]);
@@ -1408,6 +1412,7 @@ class HtmlController extends BaseController {
             ob_end_flush();
         } else {
             echo '<div class="prompt">'.'100%</div><script type="text/javascript">refresh(100);</script>';
+            $this->logsAdd('null',__FUNCTION__,__CLASS__,999,"推送成功：",0,Auth::id());
             if (!isset($end) || $end == 1) {
                 Classify::where('cus_id', $this->cus_id)->where('pushed', '>', 0)->update(['pushed' => 0]);
                 Articles::where('cus_id', $this->cus_id)->where('pushed', '>', 0)->update(['pushed' => 0]);

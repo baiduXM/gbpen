@@ -608,6 +608,6 @@ Route::post('api/webremove', [//网站迁移
 Route::get('test/{cid}', [
     'uses' => 'PrintController@getChirldenCid'
 ]);
-Route::get('getTplDevUser', [
+Route::post('getTplDevUser', [
     'uses' => 'ApiController@getTplDevUser'
 ]);

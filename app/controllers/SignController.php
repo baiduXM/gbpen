@@ -38,6 +38,7 @@ class SignController extends BaseController {
                 return Redirect::to('admin/index.html#/user');
             }
             $customername = Auth::user()->name;
+            $this->logsAdd("customer",__FUNCTION__,__CLASS__,100,"用户登录",0);
             return Redirect::to('admin/index.html');
         } else {
             echo '<meta charset="UTF-8"><script language="javascript">alert("登录失败!");window.history.back(-1);</script> ';
@@ -54,6 +55,7 @@ class SignController extends BaseController {
     }
 
     public function logOut() {
+        $this->logsAdd("customer",__FUNCTION__,__CLASS__,101,"用户退出",0);
         Auth::logout();
         return Redirect::to('/');
     }
@@ -85,7 +87,8 @@ class SignController extends BaseController {
         }
         if (isset($result) && ($result)) {
             Auth::logout();
-            return Response::json(['err' => 0, 'msg' => $msg, 'success' => 1]);
+            $this->logsAdd("customer",__FUNCTION__,__CLASS__,999,"修改密码",0);
+            return Response::json(['err' => 0, 'msg' => '修改成功', 'success' => 1]);
         } else {
             return Response::json(['err' => 0, 'msg' => $msg, 'success' => 0]);
         }
@@ -99,6 +102,7 @@ class SignController extends BaseController {
         if (!empty($bind_id)) {
             $user = Customer::find($bind_id);
             Auth::login($user);
+            $this->logsAdd("customer",__FUNCTION__,__CLASS__,100,"自动登陆绑定账户",0);
         } else {
             $result = ['err' => 1001, 'msg' => '未绑定'];
             return Response::json($result);

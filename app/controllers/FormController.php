@@ -52,6 +52,7 @@ class FormController extends BaseController {
         $id = DB::table('form')->insertGetId($data);
         //===返回数据===
         if ($id != NULL) {
+            $this->logsAdd("form",__FUNCTION__,__CLASS__,1,"创建万用表单",0,$id);
             $res = Response::json(['err' => 0, 'msg' => '创建表单成功', 'data' => $id]);
         } else {
             $res = Response::json(['err' => 1, 'msg' => '创建表单失败', 'data' => null]);
@@ -81,6 +82,7 @@ class FormController extends BaseController {
         $res3 = DB::table('form')->where('id', $form_id)->delete();
         //返回数据
         if ($res3) {
+            $this->logsAdd('form',__FUNCTION__,__CLASS__,2,"删除万用表单及其所属组件",0,$form_id);
             $json = Response::json(['err' => 0, 'msg' => '删除成功', 'data' => $res3]);
         } else {
             $json = Response::json(['err' => 1, 'msg' => '删除失败', 'data' => '']);
@@ -127,6 +129,7 @@ class FormController extends BaseController {
         $res = DB::table('form')->where('id', $form_id)->update($data);
         //===返回数据===
         if ($res != NULL) {
+            $this->logsAdd('form',__FUNCTION__,__CLASS__,3,"修改万用表单信息",0,$form_id);
             $json = Response::json(['err' => 0, 'msg' => '更新表单信息成功', 'data' => $res]);
         } else {
             $json = Response::json(['err' => 1, 'msg' => '更新表单信息失败', 'data' => null]);
@@ -261,6 +264,7 @@ class FormController extends BaseController {
         $column_data['column_id'] = $column_id;
         //===返回数据===
         if ($column_id != NULL) {
+            $this->logsAdd('form_column_' . $form_id % 10,__FUNCTION__,__CLASS__,1,"添加万用表单组件,所属表单id：".$form_id.",组件类型：".$element_data->type,0,$column_id);
             $json = Response::json(['err' => 0, 'msg' => '添加组件成功', 'data' => $column_data]);
         } else {
             $json = Response::json(['err' => 1, 'msg' => '添加组件失败', 'data' => null]);
@@ -314,6 +318,7 @@ class FormController extends BaseController {
         $column_data['config'] = $config;
 
         if ($res != NULL) {
+            $this->logsAdd('form_column_' . $form_id % 10,__FUNCTION__,__CLASS__,3,"修改万用表单组件信息,所属表单id：".$form_id.",组件类型：".$type,0,$column_id);
             $json = Response::json(['err' => 0, 'msg' => '保存组件信息成功', 'data' => $column_data]);
         } else {
             $json = Response::json(['err' => 1, 'msg' => '保存组件信息失败', 'data' => null]);
@@ -414,6 +419,7 @@ class FormController extends BaseController {
         Classify::where('form_id', $form_id)->update(['pushed' => 1]);
         $res = DB::table('form_column_' . $form_id % 10)->where('id', $column_id)->delete();
         if ($res != NULL) {
+            $this->logsAdd('form_column_' . $form_id % 10,__FUNCTION__,__CLASS__,2,"删除万用表单组件,所属表单id：".$form_id,0,$column_id);
             $json = Response::json(['err' => 0, 'msg' => '删除成功', 'data' => $res]);
         } else {
             $json = Response::json(['err' => 1, 'msg' => '删除组件失败', 'data' => '']);
@@ -480,6 +486,7 @@ class FormController extends BaseController {
         $postFun = new CommonController;
         $res = $postFun->postsend("http://swap.5067.org/admin/form_userdata_delete.php", $param);
         if ($res == 1) {
+            $this->logsAdd('null',__FUNCTION__,__CLASS__,2,"删除用户表单数据,所属表单id：".$form_id,0,$column_id);
             $json = Response::json(['err' => 0, 'msg' => '删除成功', 'data' => $res]);
         } else {
             $json = Response::json(['err' => 1, 'msg' => '删除失败', 'data' => '']);
