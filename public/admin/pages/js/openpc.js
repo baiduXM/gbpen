@@ -218,9 +218,9 @@ function openpcController($scope, $http, $location) {
                                              <dl class="colorchoose hidden">';
                                 $.each(j.colors, function (k, v) {
                                     _serv += '<a href="javascript:void(0)" data-imgid="' + v.id + '" style="background:' + v.value + '" ' + (j.selected_style == v.description ? 'data-color="chose"' : '') + ' >\n\
-                                                            <span class="chose_icon hidden"></span>\n\
-                                                            <span class="chose_icon1 ' + (j.selected_style == v.description ? '' : 'hidden') + '"><i class="iconfont icon-zhengque "></i></span>\n\
-                                                        </a>';
+                                                <span class="chose_icon hidden"></span>\n\
+                                                <span class="chose_icon1 ' + (j.selected_style == v.description ? '' : 'hidden') + '"><i class="iconfont icon-zhengque "></i></span>\n\
+                                            </a>';
                                 });
                                 _serv += '</dl></div>\n\
                                         <dl class="number">' + j.serial + '</dl>\n\
