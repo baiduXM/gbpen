@@ -3916,9 +3916,12 @@ class PrintController extends BaseController {
      * @return type
      */
 //    private function getPosNavs($c_id = 0, &$posnavs = array()) {
-    function getPosNavs($c_id = 0, &$posnavs = array()) {
-        if ($c_id == 0) {
+    private function getPosNavs($c_id = 0, &$posnavs = array()) {
+        if (!$c_id) {
             $webinfo = WebsiteConfig::where("cus_id", $this->cus_id)->where("key", "_pagenavs_sub3")->pluck("value");
+            if (!$webinfo) {
+                $webinfo = WebsiteConfig::where("cus_id", $this->cus_id)->where("key", "_aside")->pluck("value");
+            }
             $webinfo = unserialize($webinfo);
             $c_id = $webinfo["pagenavs"]["value"]["id"];
         }
