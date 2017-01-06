@@ -3978,9 +3978,13 @@ class PrintController extends BaseController {
      * @param type $posnavs     当前栏目导航内容
      * @return type
      */
+//    private function getPosNavs($c_id = 0, &$posnavs = array()) {
     private function getPosNavs($c_id = 0, &$posnavs = array()) {
-        if ($c_id == 0) {
+        if (!$c_id) {
             $webinfo = WebsiteConfig::where("cus_id", $this->cus_id)->where("key", "_pagenavs_sub3")->pluck("value");
+            if (!$webinfo) {
+                $webinfo = WebsiteConfig::where("cus_id", $this->cus_id)->where("key", "_aside")->pluck("value");
+            }
             $webinfo = unserialize($webinfo);
             $c_id = $webinfo["pagenavs"]["value"]["id"];
         }
