@@ -581,19 +581,19 @@ Route::post('api/modifyuser', [//修改用户
     'uses' => 'ApiController@modifyCustomer'
 ]);
 
-Route::post('api/deleteuser', [//删除用户
-    'as' => 'template-fileedit',
-    'uses' => 'ApiController@deleteCustomer'
-]);
-
-Route::post('api/reductionCustomer', [//还原被删除的用户
-    'as' => 'template-fileedit',
-    'uses' => 'ApiController@reductionCustomer'
-]);
+//Route::post('api/deleteuser', [//删除用户
+//    'as' => 'template-fileedit',
+//    'uses' => 'ApiController@deleteCustomer'
+//]);
+//
+//Route::post('api/reductionCustomer', [//还原被删除的用户
+//    'as' => 'template-fileedit',
+//    'uses' => 'ApiController@reductionCustomer'
+//]);
 
 Route::get('test/{cid}', [
     'uses' => 'PrintController@getChirldenCid'
 ]);
-Route::get('getTplDevUser', [
+Route::post('getTplDevUser', [
     'uses' => 'ApiController@getTplDevUser'
 ]);

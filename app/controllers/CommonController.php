@@ -147,6 +147,7 @@ class CommonController extends BaseController {
                 $imgdel = new ImgDel();
                 $imgdel->mysave($org_img, 'common');
             }
+            $this->logsAdd("website_config",__FUNCTION__,__CLASS__,3,"快捷导航修改",0,$QuickData->id);
             $json_result = ['err' => 0, 'msg' => '保存成功'];
         } else {
             $json_result = ['err' => 1001, 'msg' => '该栏目存在文章，需转移才能创建子栏目', 'data' => []];
@@ -188,6 +189,7 @@ class CommonController extends BaseController {
 
     public function quickBarRewrite() {
         $result = WebsiteConfig::where('cus_id', Auth::id())->where('key', 'quickbar')->delete();
+        $this->logsAdd("website_config",__FUNCTION__,__CLASS__,3,"快捷导航设置重置,cus_id",0,Auth::id());
         $json_result = ['err' => 0, 'msg' => '重置成功'];
         return $json_result;
     }

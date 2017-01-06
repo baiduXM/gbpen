@@ -99,6 +99,7 @@ class ArticleController extends BaseController {
                     $moreimg->save();
                 }
             }
+            $this->logsAdd("article",__FUNCTION__,__CLASS__,1,"添加文章",0,$article->id);
             $return_msg = array('err' => 0, 'msg' => '', 'data' => array($article->id));
         } else {
             $return_msg = array('err' => 3001, 'msg' => '文章添加失败');
@@ -132,8 +133,10 @@ class ArticleController extends BaseController {
                 $imgdel->mysave($v, 'articles');
             }
             if ($failed) {
+                $this->logsAdd("article",__FUNCTION__,__CLASS__,5,"批量删除文章，".$failed."条删除失败",0,$ids);
                 $return_msg = array('err' => 3001, 'msg' => $failed . '条记录删除失败');
             } else {
+                $this->logsAdd("article",__FUNCTION__,__CLASS__,5,"批量删除文章",0,$ids);
                 $return_msg = array('err' => 0, 'msg' => '');
             }
         } else {
@@ -151,6 +154,7 @@ class ArticleController extends BaseController {
                     $imgdel = new ImgDel();
                     $imgdel->mysave($v, 'articles');
                 }
+                $this->logsAdd("article",__FUNCTION__,__CLASS__,2,"删除文章",0,$ids[0]);
                 $return_msg = array('err' => 0, 'msg' => '');
             } else {
                 $return_msg = array('err' => 3001, 'msg' => '文章删除失败');
@@ -183,6 +187,7 @@ class ArticleController extends BaseController {
         $sort = Input::get('sort');
         $result = Articles::where('id', $id)->where('cus_id', $cus_id)->update(['sort' => $sort, 'pushed' => 1]);
         if ($result) {
+            $this->logsAdd("article",__FUNCTION__,__CLASS__,3,"修改文章排序",0,$id);
             return Response::json(['err' => 0, 'msg' => '修改成功']);
         } else {
             return Response::json(['err' => 3001, 'msg' => '修改失败']);
@@ -195,6 +200,7 @@ class ArticleController extends BaseController {
         $title = Input::get('title');
         $result = Articles::where('id', $id)->where('cus_id', $cus_id)->update(['title' => $title, 'pushed' => 1]);
         if ($result) {
+            $this->logsAdd("article",__FUNCTION__,__CLASS__,3,"修改文章标题",0,$id);
             return Response::json(['err' => 0, 'msg' => '修改成功']);
         } else {
             return Response::json(['err' => 3001, 'msg' => '修改失败']);
@@ -313,6 +319,7 @@ class ArticleController extends BaseController {
                 if ($up_rst) {
                     $up_rst = Articles::where('id', '=', $search_article['id'])->update(array('sort' => $now_sort));
                     if ($up_rst) {
+                        $this->logsAdd("article",__FUNCTION__,__CLASS__,3,"修改文章排序",0,$id);
                         $return_msg = array('err' => 0, 'msg' => '');
                     } else {
                         $now_article->sort = $now_sort;
@@ -376,8 +383,10 @@ class ArticleController extends BaseController {
                     }
                 }
                 if ($err) {
+                    $this->logsAdd("article",__FUNCTION__,__CLASS__,6,"修改文章所属栏目到:".$c_id.",部分移动失败",0,$ids);
                     $return_msg = array('err' => 3001, 'msg' => '部分移动失败', 'data' => $data);
                 } else {
+                    $this->logsAdd("article",__FUNCTION__,__CLASS__,6,"修改文章所属栏目到:".$c_id,0,$ids);
                     $return_msg = array('err' => 0, 'msg' => '');
                 }
             } else {
@@ -385,6 +394,7 @@ class ArticleController extends BaseController {
                 $article->c_id = $c_id;
                 $result = $article->save();
                 if ($result) {
+                    $this->logsAdd("article",__FUNCTION__,__CLASS__,3,"修改文章所属栏目到:".$c_id,0,$ids[0]);
                     $return_msg = array('err' => 0, 'msg' => '');
                 } else {
                     $return_mag = array('err' => 3001, 'msg' => '移动失败');
@@ -439,8 +449,10 @@ class ArticleController extends BaseController {
                 }
             }
             if ($err) {
+                $this->logsAdd("article",__FUNCTION__,__CLASS__,6,"批量修改文章状态:{".$relation[$action]."：".$value."},部分变更失败",0,$ids);
                 $return_msg = array('err' => 3001, 'msg' => '部分变更失败', 'data' => $data);
             } else {
+                $this->logsAdd("article",__FUNCTION__,__CLASS__,6,"批量修改文章状态:{".$relation[$action]."：".$value."}",0,$ids);
                 $return_msg = array('err' => 0, 'msg' => '');
             }
         } else {
@@ -467,6 +479,7 @@ class ArticleController extends BaseController {
             websiteInfo::where('cus_id', $cus_id)->update(['pushed' => $pushed]);
             $result = $article->save();
             if ($result) {
+                $this->logsAdd("article",__FUNCTION__,__CLASS__,3,"修改文章显示:{".$relation[$action]."：".$value."}",0,$ids);
                 $return_msg = array('err' => 0, 'msg' => '');
             } else {
                 $return_mag = array('err' => 3001, 'msg' => '变更失败');
@@ -481,6 +494,7 @@ class ArticleController extends BaseController {
         $c_id = Input::get('c_id');
         $pc_show = Input::get('pc_show');
         $mobile_show = Input::get('mobile_show');
+        $data = array();
         foreach ($ArticleArray as $Article) {
             $article = new Articles();
             $article->cus_id = $cus_id;
@@ -498,8 +512,11 @@ class ArticleController extends BaseController {
             if (!$ret) {
                 $return_mag = array('err' => 3001, 'msg' => '添加失败');
                 return Response::json($return_msg);
+            }else{
+                $data[] = $ret;
             }
         }
+        $this->logsAdd("article",__FUNCTION__,__CLASS__,4,"批量添加文章",0,$data);
         $return_msg = array('err' => 0, 'msg' => '');
         return Response::json($return_msg);
     }

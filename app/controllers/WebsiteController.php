@@ -180,6 +180,11 @@ class WebsiteController extends BaseController{
             $update_result = WebsiteInfo::where('cus_id',$cus_id)->update($update);
             if($update_result){
                 WebsiteConfig::where('cus_id',$cus_id)->where('key','quickbar')->update(['value'=>$websiteconfig,'pushed'=>1]);
+                if($type==1){
+                    $this->logsAdd('websiteinfo',__FUNCTION__,__CLASS__,999,"切换PC模板，id：".$id."，颜色id：".$color_id."，cus_id",0,$cus_id);
+                }else{
+                    $this->logsAdd('websiteinfo',__FUNCTION__,__CLASS__,999,"切换手机模板，id：".$id."，颜色id：".$color_id."，cus_id",0,$cus_id);
+                }
                 $result = ['err' => 0, 'msg' => ''];
             }
             else{
@@ -211,6 +216,11 @@ class WebsiteController extends BaseController{
             }
             $update_result = WebsiteInfo::where('cus_id',$cus_id)->update($update);
             if($update_result){
+                if($type == 1){
+                    $this->logsAdd('websiteinfo',__FUNCTION__,__CLASS__,2,"删除PC模板，id：".$former_id."，颜色id：".$color_list[0],0,$id);
+                }else{
+                    $this->logsAdd('websiteinfo',__FUNCTION__,__CLASS__,2,"删除手机模板，id：".$former_id."，颜色id：".$color_list[0],0,$id);
+                }
                 $result = ['err' => 0, 'msg' => ''];
             }else{
                 $result = ['err' => 1001, 'msg' => '恢复原模板失败,需重新选择模板'];
@@ -705,6 +715,7 @@ class WebsiteController extends BaseController{
                 }
             }
             $result = ['err' => 1000, 'msg' => '上传模板成功'];
+            $this->logsAdd('null',__FUNCTION__,__CLASS__,999,"模板上传",0,$truth_name);
         }else{
             $result = ['err' => 1003, 'msg' => '解压文件失败'];
         }
@@ -893,6 +904,7 @@ class WebsiteController extends BaseController{
             if($type=="zip"){
                 if(file_exists(public_path("temp_templates/$truth_name"))){
                    $result = ['err'=>1000,'msg'=>'模板覆盖成功'];
+                   $this->logsAdd('null',__FUNCTION__,__CLASS__,999,"高级定制模板上传",0,$truth_name);
                 }else{
                     $up_result=$file->move(public_path("temp_templates/"),$truth_name);
                     if($up_result){

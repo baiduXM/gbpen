@@ -81,6 +81,7 @@ class ClassifyController extends BaseController {
                     $failed .= $v . ',';
                 }
             }
+            $this->logsAdd("classify",__FUNCTION__,__CLASS__,5,"批量删除栏目",0,$id);
         } else {
             $classify = Classify::find($id);
             $c_del_img = $classify->img;
@@ -104,6 +105,7 @@ class ClassifyController extends BaseController {
                 $imgdel = new ImgDel();
                 $imgdel->mysave($c_del_img, 'category');
                 $success[] = $id;
+                $this->logsAdd("classify",__FUNCTION__,__CLASS__,2,"删除栏目",0,$id);
             } else {
                 return Response::json(['err' => 1001, 'msg' => '栏目' . $id . '存在子目录或文章,删除失败']);
             }
@@ -273,6 +275,7 @@ class ClassifyController extends BaseController {
                 }
 
                 if ($id != NULL) {
+                    $this->logsAdd("classify",__FUNCTION__,__CLASS__,3,"修改栏目",0,$data['id']);
                     $result = ['err' => 0, 'msg' => 'Success栏目修改成功' . $size, 'data' => $data];
                 } else {
                     if (in_array($classify->type, array(1, 2, 3, 4, 9)) && $classify->p_id == 0) {
@@ -286,6 +289,7 @@ class ClassifyController extends BaseController {
                         $mhomepage_config->cus_id = $cus_id;
                         $mhomepage_config->save();
                     }
+                    $this->logsAdd("classify",__FUNCTION__,__CLASS__,1,"创建栏目",0,$data['id']);
                     $result = ['err' => 0, 'msg' => '创建栏目成功', 'data' => $data];
                 }
             } else {
@@ -409,7 +413,7 @@ class ClassifyController extends BaseController {
                 $classify_obj[$key] = $classify_arr;
                 $classify_obj[$key]["name"] = trim($value);
                 $temp_flag = Classify::insertGetId($classify_obj[$key]);
-//                $ids[] = $temp_flag;
+                $ids[] = $temp_flag;
                 $batch_flag = $batch_flag && $temp_flag;
             }
 
@@ -426,6 +430,7 @@ class ClassifyController extends BaseController {
 //                    $mhomepage_config->cus_id = $cus_id;
 //                    $mhomepage_config->save();
 //                }
+                $this->logsAdd("classify",__FUNCTION__,__CLASS__,4,"批量创建栏目",0,$ids);
                 $result = ['err' => 0, 'msg' => '批量创建栏目成功', 'data' => ''];
             } else {
                 $result = ['err' => 1001, 'msg' => '批量创建栏目失败', 'data' => []];
@@ -480,6 +485,7 @@ class ClassifyController extends BaseController {
                     if ($operate == 'mobile_show') {
                         @MobileHomepage::where('c_id', $c_id)->where('cus_id', $cus_id)->update(['index_show' => 0]);
                     }
+                    $this->logsAdd("classify",__FUNCTION__,__CLASS__,3,"修改栏目显示{".$operate."：".$value."}",0,$id);
                     $result = ['err' => 0, 'msg' => ''];
                 } else {
                     $result = ['err' => 1001, 'msg' => '栏目关闭操作失败'];
@@ -495,6 +501,7 @@ class ClassifyController extends BaseController {
                 }
                 if ($is_passed) {
                     if (Classify::where('id', $id)->where('cus_id', $cus_id)->update($update)) {
+                        $this->logsAdd("classify",__FUNCTION__,__CLASS__,3,"修改栏目显示{".$operate."：".$value."}",0,$id);
                         $result = ['err' => 0, 'msg' => ''];
                     } else {
                         $result = ['err' => 1001, 'msg' => '栏目开启操作失败'];

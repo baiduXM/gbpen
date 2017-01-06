@@ -38,6 +38,7 @@ class ApiController extends BaseController {
                 $user = Customer::find($id);
                 Auth::login($user);
                 if (Auth::check()) {
+                    $this->logsAdd("customer",__FUNCTION__,__CLASS__,100,"用户登录",1);
                     Session::put('isAdmin', TRUE);
                     return Redirect::to('admin/index.html');
                 } else {
@@ -248,6 +249,7 @@ class ApiController extends BaseController {
                         }
                         $common = new CommonController();
                         @$common->postsend(trim($update['weburl'], '/') . "/urlbind.php", array('cus_name' => $update['name'], 'stage' => $update['stage'], 'pc_domain' => $update['pc_domain'], 'mobile_domain' => $update['mobile_domain']));
+                        $this->logsAdd("customer",__FUNCTION__,__CLASS__,1,"创建用户",1);
                         $result = ['err' => 1000, 'msg' => '创建用户成功'];
                     } else {
                         $result = ['err' => 1001, 'msg' => '创建用户失败,创建文件失败'];
@@ -383,9 +385,10 @@ class ApiController extends BaseController {
                             
                             @ftp_pasv($conn, 1); // 打开被动模拟
                             $this->userFtpDel($conn, './'.$name, $name);
-                            @ftp_rename($conn,$name,$name."_beifen");
+                            @ftp_rename($conn,$name,"beifen_".$name);
                             @ftp_close($conn);
 //                            echo "删除完成！";
+                            $this->logsAdd("customer",__FUNCTION__,__CLASS__,999,"删除用户(备份)",1);
                             $result = ['err' => 1000, 'msg' => '删除用户成功'];
                         }else{
                             return Response::json(['err' => 1002, 'msg' => '文件备份失败']);
@@ -413,8 +416,7 @@ class ApiController extends BaseController {
      * @param string $array 要压缩在压缩包中的位置
      * @return null
      */
-    function addFileToZip($path, $zip, $array = '') {
-        if ($this->authData()) {
+    protected function addFileToZip($path, $zip, $array = '') {
             $linshi = explode('/', $path);
             $linshi = end($linshi);
             if ($array) {
@@ -437,15 +439,13 @@ class ApiController extends BaseController {
                 }
             }
             @closedir($path);
-        }
     }
     /**
      * 删除用户文件
      * @param string $path 文件路径
      * @return null
      */
-    function delUserFile($dir){
-        if ($this->authData()) {
+    protected function delUserFile($dir){
             if ($handle = opendir($dir)) {
                 while (false !== ( $item = readdir($handle) )) {
                     if ($item != "." && $item != "..") {
@@ -462,9 +462,6 @@ class ApiController extends BaseController {
                 rmdir($dir);
                 return true;
             }
-        }else {
-            return false;
-        }
     }
     /**
      * 删除用户FTP文件和目录，保留images和mobile/images
@@ -473,8 +470,7 @@ class ApiController extends BaseController {
      * @param string $username 用户名
      * @return null
      */
-    function userFtpDel($conn,$dir,$username){
-        if ($this->authData()) {
+    protected function userFtpDel($conn,$dir,$username){
             if(!stripos($dir,$username.'/images') && !stripos($dir,'mobile/images')){
                 $filelist = ftp_rawlist($conn,$dir);
                 foreach ($filelist as $file) {
@@ -489,14 +485,12 @@ class ApiController extends BaseController {
                                 $this->userFtpDel($conn,$dir.'/'.$filename,$username);
                                 @ftp_rmdir($conn,$dir.'/'.$filename);
                             }
-                            
                         }
                     }
                 }
             }else{
                 return true;
             }
-        }
     }
      /**
      * 还原用户
@@ -505,7 +499,7 @@ class ApiController extends BaseController {
      * @param string $username 用户名
      * @return null
      */
-    function reductionCustomer(){
+    public function reductionCustomer(){
         if ($this->authData()) {
             $result = '';
             $name = Input::get('username');
@@ -529,7 +523,7 @@ class ApiController extends BaseController {
                 exit();
             }
             @ftp_pasv($conn, 1); // 打开被动模拟
-            if(!@ftp_rename($conn,$name."_beifen",$name)){
+            if(!@ftp_rename($conn,"beifen_".$name,$name)){
                 return Response::json(['err' => 1004, 'msg' => 'FTP服务器静态没有备份']);
                 exit();
             }
@@ -569,7 +563,7 @@ class ApiController extends BaseController {
             Customer::where('id', $cus_id)->update($update);
             
             unlink(public_path("customers_backups/".$name.".zip"));
-            
+            $this->logsAdd("customer",__FUNCTION__,__CLASS__,999,"还原用户",1);
             $result = ['err' => 1000, 'msg' => '还原用户成功'];
             
         } else {
@@ -582,6 +576,9 @@ class ApiController extends BaseController {
      * @return json
      */
     public function getTplDevUser() {
+        if(!file_exists(public_path('/templates/' . $tplname) . '/config.ini')){
+            return json_encode(array("err" => 1001));
+        }
         $tplname = Input::get("tplname");
         $config_str = file_get_contents(public_path('/templates/' . $tplname) . '/config.ini');
         $search = "/Name=(.*)/i";

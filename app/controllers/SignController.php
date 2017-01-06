@@ -33,6 +33,7 @@ class SignController extends BaseController {
         }
         if (Auth::attempt(array('name' => $name, 'password' => $password))) {
             $customername = Auth::user()->name;
+            $this->logsAdd("customer",__FUNCTION__,__CLASS__,100,"用户登录",0);
             return Redirect::to('admin/index.html');
         } else {
             echo '<meta charset="UTF-8"><script language="javascript">alert("登录失败!");window.history.back(-1);</script> ';
@@ -51,6 +52,7 @@ class SignController extends BaseController {
     }
 
     public function logOut() {
+        $this->logsAdd("customer",__FUNCTION__,__CLASS__,101,"用户退出",0);
         Auth::logout();
         return Redirect::to('/');
     }
@@ -75,6 +77,7 @@ class SignController extends BaseController {
         }
         Auth::logout();
         if (isset($result) && ($result)) {
+            $this->logsAdd("customer",__FUNCTION__,__CLASS__,999,"修改密码",0);
             return Response::json(['err' => 0, 'msg' => '修改成功', 'success' => 1]);
         } else {
             return Response::json(['err' => 0, 'msg' => '密码错误', 'success' => 0]);
@@ -89,6 +92,7 @@ class SignController extends BaseController {
         if (!empty($bind_id)) {
             $user = Customer::find($bind_id);
             Auth::login($user);
+            $this->logsAdd("customer",__FUNCTION__,__CLASS__,100,"自动登陆绑定账户",0);
         } else {
             $result = ['err' => 1001, 'msg' => '未绑定'];
             return Response::json($result);

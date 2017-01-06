@@ -187,6 +187,7 @@ class CustomerController extends BaseController {
                     $imgdel->mysave($v, 'common');
                 }
             }
+            $this->logsAdd("customerinfo",__FUNCTION__,__CLASS__,3,"用户修改设置,cus_id",0,$cus_id);
             $result = ['err' => 0, 'msg' => '', 'data' => ''];
         } else {
             $result = ['err' => 1002, 'msg' => '无法保存数据', 'data' => ''];
