@@ -401,7 +401,7 @@ ul.made_tpl_list li .iconfont{ font-size: 24px;}
 .showbox .chose_bg{ width:31px; height:27px; line-height:24px;background: url(../images/chose_bg.png) center center no-repeat; text-align:center; color:#fff; position:absolute; top:3px; right:3px; z-index:4; font-size:15px; text-indent:1px; }
 .showbox .boxbtn .hidden,ul.System_tpl_list li .hidden{ display:none;}
 ul.System_tpl_list li .number,ul.made_tpl_list li .number{ height:50px; line-height:40px; text-align:center; color:#333333; width:100%; position:absolute; bottom:0px; left:0px; z-index:1; font-size:15px;}
-ul.System_tpl_list li .title,ul.made_tpl_list li .title{text-align: center;margin-bottom: 10px;visibility: hidden;font-size: 15px;}
+ul.System_tpl_list li .title,ul.made_tpl_list li .title{text-align: center;margin-bottom: 10px;visibility: hidden;font-size: 15px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
 .tpl_mask{ width:100%; height:100%; background:#000; opacity:0.6;filter:alpha(opacity=60); position:fixed; top:0px; left:0px; z-index:8888; display:none;cursor: pointer;}
 .text_tishi{ width:100%; text-align:center; height:28px; line-height:28px; position:fixed; top:50%; margin-top:-14px; left:0px; z-index:9999; color:#fff; display:none;font-size:15px;}
 .text_tishi .icon-spin4{margin-left: 10px;
@@ -486,18 +486,18 @@ ul.made_style li.list_a .list_box a.cu{ background:none; color:#d91f1f}
 .floatxy{padding-top: 10px;float:left;height:20px;text-align: left;}
 .settingpos{width:30px;}
 .floathref{position: relative;width:300px;height: 20px;}
-.enl + label {background-color: #fafbfa;padding: 9px;border-radius: 50px;display: inline-block;position: relative;margin-right: 30px;
-              -webkit-transition: all 0.1s ease-in;transition: all 0.1s ease-in;width: 40px;height: 15px;}
-.enl + label:after {content: ' ';position: absolute;top: 0;-webkit-transition: box-shadow 0.1s ease-in;transition: box-shadow 0.1s ease-in;
-                    left: 0;width: 100%;height: 100%;border-radius: 100px;box-shadow: inset 0 0 0 0 #eee, 0 0 1px rgba(0,0,0,0.4);}
-.enl  + label:before {content: ' ';position: absolute;background: white;cursor: pointer;top: 1px;left: 1px;z-index: 99;width: 31px;
-                      -webkit-transition: all 0.1s ease-in;transition: all 0.1s ease-in;height: 31px;border-radius: 100px;box-shadow: 0 3px 1px rgba(98, 95, 95, 0.6), 0 0px 1px rgba(255, 255, 255, 0.3);}
-.enl:active + label:after {box-shadow: inset 0 0 0 20px #eee, 0 0 1px #eee;}
-.enl:active + label:before {width: 37px;}
-.enl:checked:active + label:before {width: 37px;left: 20px;}
-.enl  + label:active {box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px 1px 3px rgba(0,0,0,0.1);}
-.enl:checked + label:before {content: '';position: absolute;left: 26px;border-radius: 100px;}
-.enl:checked + label:after {content: ' ';font-size: 1.5em;position: absolute;background: #4cda60;box-shadow: 0 0 1px #4cda60;}
+.benl+ label ,.enl + label {background-color: #fafbfa;padding: 9px;border-radius: 50px;display: inline-block;position: relative;margin-right: 30px;
+                            -webkit-transition: all 0.1s ease-in;transition: all 0.1s ease-in;width: 40px;height: 15px;}
+.benl+ label:after,.enl + label:after {content: ' ';position: absolute;top: 0;-webkit-transition: box-shadow 0.1s ease-in;transition: box-shadow 0.1s ease-in;
+                                       left: 0;width: 100%;height: 100%;border-radius: 100px;box-shadow: inset 0 0 0 0 #eee, 0 0 1px rgba(0,0,0,0.4);}
+.benl + label:before,.enl  + label:before {content: ' ';position: absolute;background: white;cursor: pointer;top: 1px;left: 1px;z-index: 99;width: 31px;
+                                           -webkit-transition: all 0.1s ease-in;transition: all 0.1s ease-in;height: 31px;border-radius: 100px;box-shadow: 0 3px 1px rgba(98, 95, 95, 0.6), 0 0px 1px rgba(255, 255, 255, 0.3);}
+.benl:active + label:after,.enl:active + label:after {box-shadow: inset 0 0 0 20px #eee, 0 0 1px #eee;}
+.benl:active + label:before,.enl:active + label:before {width: 37px;}
+.benl:checked:active + label:before,.enl:checked:active + label:before {width: 37px;left: 20px;}
+.benl + label:active,.enl  + label:active {box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px 1px 3px rgba(0,0,0,0.1);}
+.benl:checked + label:before,.enl:checked + label:before {content: '';position: absolute;left: 26px;border-radius: 100px;}
+.benl:checked + label:after,.enl:checked + label:after {content: ' ';font-size: 1.5em;position: absolute;background: #4cda60;box-shadow: 0 0 1px #4cda60;}
 
 .chk + label {background-color: #fafbfa;padding: 9px;border-radius: 50px;display: inline-block;position: relative;margin-right: 30px;
               -webkit-transition: all 0.1s ease-in;transition: all 0.1s ease-in;width: 40px;height: 15px;}

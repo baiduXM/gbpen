@@ -13,6 +13,7 @@ class ClassifyController extends BaseController {
       |classifyModify    栏目添加、修改
       |classifyShow      栏目显隐
       |classifySort      栏目排序
+      |classifyBatch     栏目批量添加
       |toTree            将数组递归为树形结构
      */
 
@@ -344,7 +345,7 @@ class ClassifyController extends BaseController {
                 $is_passed = false;
             }
         }
-
+        
         if ($is_passed) {
             $classify->en_name = trim(Input::get('en_name'));
             $images = Input::get('img'); //===新图片

@@ -68,6 +68,10 @@ Route::post('modify-password', [//修改密码
     'uses' => 'SignController@modifyPassword'
 ]);
 
+Route::post('temp-password', [//===临时修改密码===
+    'uses' => 'SignController@tempPsw'
+]);
+
 Route::get('login-info', [//用户名称
     'as' => 'login-info',
     'uses' => 'SignController@loginInfo'
@@ -82,20 +86,22 @@ Route::get('grad_push', [//分组推送
 Route::get('push-classify-ids', [//推送时验证登录
     'uses' => 'HTMLController@push_classify_ids'
 ]);
+Route::get('log-out', [//用户登出===
+    'as' => 'log-out',
+    'uses' => 'SignController@logOut'
+]);
 //路由组--所有登录后的操作放入本组
 Route::group(array('before' => 'auth'), function() {
-
     //===获取用户统计数据-start===
     Route::get('statis-get', [//首页统计数据
         'as' => 'statis',
         'uses' => 'StatisController@getCount'
     ]);
     //===获取用户统计数据-end===
-
-    Route::get('log-out', [//用户登出
-        'as' => 'log-out',
-        'uses' => 'SignController@logOut'
-    ]);
+//    Route::get('log-out', [//用户登出
+//        'as' => 'log-out',
+//        'uses' => 'SignController@logOut'
+//    ]);
     //-----------------------------------------------
     //--------------------用户配置路由---------------
     Route::get('customer-info', [//获取用户信息
@@ -337,11 +343,11 @@ Route::group(array('before' => 'auth'), function() {
     Route::get('mobile/category/v/{view_name}', [//===栏目页预览（栏目别名）===
         'uses' => 'TemplatesController@mcategoryPreviewV'
     ])->where('view_name', '[a-z0-9]+');
-    
+
     Route::get('mobile/category/v/{view_name}_{page}', [//===栏目页分页预览(栏目别名)===
         'uses' => 'TemplatesController@mcategoryPreviewV'
     ])->where(['view_name' => '[a-z0-9]+', 'page' => '[0-9]+']);
-    
+
     Route::get('mobile/detail/{id}', [//详情页预览
         'uses' => 'TemplatesController@marticlePreview'
     ])->where('id', '[0-9]+');
@@ -581,16 +587,24 @@ Route::post('api/modifyuser', [//修改用户
     'uses' => 'ApiController@modifyCustomer'
 ]);
 
-//Route::post('api/deleteuser', [//删除用户
-//    'as' => 'template-fileedit',
-//    'uses' => 'ApiController@deleteCustomer'
-//]);
-//
-//Route::post('api/reductionCustomer', [//还原被删除的用户
-//    'as' => 'template-fileedit',
-//    'uses' => 'ApiController@reductionCustomer'
-//]);
+Route::post('api/deleteuser', [//删除用户
+    'as' => 'template-fileedit',
+    'uses' => 'ApiController@deleteCustomer'
+]);
 
+Route::post('api/downloadtemplate', [//代理平台下载模板接口
+    'as' => 'template-fileedit',
+    'uses' => 'ApiController@DownloadTemplate'
+]);
+
+Route::post('api/reductionCustomer', [//还原被删除的用户
+    'as' => 'template-fileedit',
+    'uses' => 'ApiController@reductionCustomer'
+]);
+Route::post('api/webremove', [//网站迁移
+    'as' => 'web-remove',
+    'uses' => 'ApiController@webRemove'
+]);
 Route::get('test/{cid}', [
     'uses' => 'PrintController@getChirldenCid'
 ]);

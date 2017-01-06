@@ -32,8 +32,8 @@ class ApiController extends BaseController {
         if ($this->authData()) {
 
             $name = Input::get('name');
-            $id_del = Customer::where('name', $name)->where('is_del','0')->pluck('id');
-            if(!$id_del){
+            $id_del = Customer::where('name', $name)->where('is_del', '0')->pluck('id');
+            if (!$id_del) {
                 $id = Customer::where('name', $name)->where('is_del', '1')->pluck('id');
                 $user = Customer::find($id);
                 Auth::login($user);
@@ -44,7 +44,7 @@ class ApiController extends BaseController {
                 } else {
                     $result = ['err' => 1001, 'msg' => '登录失败'];
                 }
-            }else{
+            } else {
                 $result = ['err' => 1001, 'msg' => '用户已删除'];
             }
         } else {
@@ -135,7 +135,12 @@ class ApiController extends BaseController {
                 }
             } else {
                 //增加操作
-                $update['password'] = Hash::make($update['name']);
+                $password = Input::get("password");
+                if ($password != null) {
+                    $update['password'] = Hash::make($password);
+                } else {
+                    $update['password'] = Hash::make($update['name']);
+                }
                 $insert_id = Customer::insertGetId($update);
                 if ($insert_id) {
                     $pc_id = Template::where('tpl_num', $update['pc_tpl_num'])->where('type', 1)->pluck('id');
@@ -271,7 +276,6 @@ class ApiController extends BaseController {
      */
 //    public function deleteCustomer() {
 //        if ($this->authData()) {
-
 //            $name = Input::get('name');
 //            $result = $this->deletemytest($name);
 //            $cus_id = Customer::where('name', $name)->pluck('id');
@@ -288,82 +292,81 @@ class ApiController extends BaseController {
 //        }
 //        return Response::json($result);
 //    }
-    
-     /**
+
+    /**
      * 删除文件的备份和数据库保存
      * @param type name 用户名
      * @return boole TURE/FALSE
      */
-    public function deleteCustomer(){
+    public function deleteCustomer() {
         if ($this->authData()) {
             $result = '';
             $name = Input::get('username');
-            header("Content-type: text/html; charset=utf-8"); 
+            header("Content-type: text/html; charset=utf-8");
 //            $name = $_GET['username'];
-            $Customer = Customer::where('name', $name)->get();  
+            $Customer = Customer::where('name', $name)->get();
             $cus_id = $Customer[0]['id'];
-            if(!$cus_id){
+            if (!$cus_id) {
                 return Response::json(['err' => 1004, 'msg' => '用户不存在']);
                 exit();
             }
             $WebsiteInfo = WebsiteInfo::where('cus_id', $cus_id)->get();
             $CustomerInfo = CustomerInfo::where('cus_id', $cus_id)->get();
-            $handle_a = opendir(public_path("customers/".$name."/images"));
-            $handle_b = opendir(public_path("customers/".$name."/mobile/images"));
-            if($handle_a){
+            $handle_a = opendir(public_path("customers/" . $name . "/images"));
+            $handle_b = opendir(public_path("customers/" . $name . "/mobile/images"));
+            if ($handle_a) {
                 closedir($handle_a);
-            }else{
+            } else {
                 return Response::json(['err' => 1004, 'msg' => '用户images文件夹不存在']);
                 exit();
             }
-            if($handle_b){
+            if ($handle_b) {
                 closedir($handle_b);
-            }else{
+            } else {
                 return Response::json(['err' => 1004, 'msg' => '用户mobile/images文件夹不存在']);
                 exit();
             }
-            $Customer = $Customer[0]; 
+            $Customer = $Customer[0];
             $db = new PDO('sqlite:sqlite_1.db');
             if ($db) {
                 $conn = @ftp_connect($Customer['ftp_address'], $Customer['ftp_port']);
-                if(!$conn){
+                if (!$conn) {
                     return Response::json(['err' => 1004, 'msg' => 'FTP服务器连接失败']);
                     exit();
                 }
-                if(!@ftp_login($conn, $Customer['ftp_user'], $Customer['ftp_pwd'])){
+                if (!@ftp_login($conn, $Customer['ftp_user'], $Customer['ftp_pwd'])) {
                     return Response::json(['err' => 1004, 'msg' => 'FTP服务器登陆失败']);
                     exit();
                 }
-                
+
                 //保存数据库
                 $sql = "INSERT INTO customer (id,name,email,password,password_temp,remember_token,weburl,serv_id,ftp,ftp_address,ftp_port,ftp_user,ftp_pwd,ftp_dir,pc_tpl_id,mobile_tpl_id,pc_domain,mobile_domain,ended_at,status,created_at,updated_at,pc_end_time,mobile_end_time,color_id,switch_cus_id,customization,del_time) "
-                        . "values('".$Customer['id']."','".$Customer['name']."','".$Customer['email']."','".$Customer['password']."','".$Customer['password_temp']."','".$Customer['remember_token']."','"
-                        .$Customer['weburl']."','".$Customer['serv_id']."','".$Customer['ftp']."','".$Customer['ftp_address']."','".$Customer['ftp_port']."','".$Customer['ftp_user']."','".$Customer['ftp_pwd']."','".$Customer['ftp_dir']."','"
-                        .$Customer['pc_tpl_id']."','".$Customer['mobile_tpl_id']."','".$Customer['pc_domain']."','".$Customer['mobile_domain']."','".$Customer['ended_at']."','".$Customer['status']."','".$Customer['created_at']."','".$Customer['updated_at']."','".$Customer['pc_end_time']."','".$Customer['mobile_end_time']."','".$Customer['color_id']."','".$Customer['switch_cus_id']."','".$Customer['customization']."','".time()."')";
+                        . "values('" . $Customer['id'] . "','" . $Customer['name'] . "','" . $Customer['email'] . "','" . $Customer['password'] . "','" . $Customer['password_temp'] . "','" . $Customer['remember_token'] . "','"
+                        . $Customer['weburl'] . "','" . $Customer['serv_id'] . "','" . $Customer['ftp'] . "','" . $Customer['ftp_address'] . "','" . $Customer['ftp_port'] . "','" . $Customer['ftp_user'] . "','" . $Customer['ftp_pwd'] . "','" . $Customer['ftp_dir'] . "','"
+                        . $Customer['pc_tpl_id'] . "','" . $Customer['mobile_tpl_id'] . "','" . $Customer['pc_domain'] . "','" . $Customer['mobile_domain'] . "','" . $Customer['ended_at'] . "','" . $Customer['status'] . "','" . $Customer['created_at'] . "','" . $Customer['updated_at'] . "','" . $Customer['pc_end_time'] . "','" . $Customer['mobile_end_time'] . "','" . $Customer['color_id'] . "','" . $Customer['switch_cus_id'] . "','" . $Customer['customization'] . "','" . time() . "')";
                 $ret = $db->exec($sql);
                 if ($WebsiteInfo->count()) {
                     $WebsiteInfo = $WebsiteInfo[0];
                     $sql = "INSERT INTO website_info (id,cus_id,pc_tpl_id,mobile_tpl_id,pc_color_id,mobile_color_id,pc_htpl_id,mobile_htpl_id,pc_hcolor_id,mobile_hcolor_id,pushed,del_time) values('"
-                            .$WebsiteInfo['id']."','".$WebsiteInfo['cus_id']."','".$WebsiteInfo['pc_tpl_id']."','".$WebsiteInfo['mobile_tpl_id']."','".$WebsiteInfo['pc_color_id']."','".$WebsiteInfo['mobile_color_id']
-                            ."','".$WebsiteInfo['pc_htpl_id']."','".$WebsiteInfo['mobile_htpl_id']."','".$WebsiteInfo['pc_hcolor_id']."','".$WebsiteInfo['mobile_hcolor_id']."','".$WebsiteInfo['pushed']."','".time()."')";
+                            . $WebsiteInfo['id'] . "','" . $WebsiteInfo['cus_id'] . "','" . $WebsiteInfo['pc_tpl_id'] . "','" . $WebsiteInfo['mobile_tpl_id'] . "','" . $WebsiteInfo['pc_color_id'] . "','" . $WebsiteInfo['mobile_color_id']
+                            . "','" . $WebsiteInfo['pc_htpl_id'] . "','" . $WebsiteInfo['mobile_htpl_id'] . "','" . $WebsiteInfo['pc_hcolor_id'] . "','" . $WebsiteInfo['mobile_hcolor_id'] . "','" . $WebsiteInfo['pushed'] . "','" . time() . "')";
                     $ret1 = $db->exec($sql);
-
                 }
                 if ($CustomerInfo->count()) {
                     $CustomerInfo = $CustomerInfo[0];
                     $sql = "INSERT INTO customer_info (id,cus_id,company,pc_domain,mobile_domain,favicon,logo,logo_small,title,keywords,description,pc_header_script,mobile_header_script,footer,mobile_footer,pc_footer_script,mobile_footer_script,pc_page_count,pc_page_links,mobile_page_count,mobile_page_links,telephone,mobile,address,fax,"
                             . "email,qq,contact_name,pushed_at,created_at,updated_at,pc_page_imgtxt_count,pc_page_img_count,pc_page_txt_count,pc_page_count_switch,enlarge,floatadv,pushed,lang,copyright,capacity_use,capacity,lastpushtime,init_capacity,is_openmember,background_music,talent_support,del_time) values('"
-                            .$CustomerInfo['id']."','".$CustomerInfo['cus_id']."','".$CustomerInfo['company']."','".$CustomerInfo['pc_domain']."','".$CustomerInfo['mobile_domain']."','".$CustomerInfo['favicon']
-                            ."','".$CustomerInfo['logo']."','".$CustomerInfo['logo_small']."','".$CustomerInfo['title']."','".$CustomerInfo['keywords']."','".$CustomerInfo['description']
-                            ."','".$CustomerInfo['pc_header_script']."','".$CustomerInfo['mobile_header_script']."','".$CustomerInfo['footer']."','".$CustomerInfo['mobile_footer']."','".$CustomerInfo['pc_footer_script']."','".$CustomerInfo['mobile_footer_script']."','".$CustomerInfo['pc_page_count']
-                            ."','".$CustomerInfo['pc_page_links']."','".$CustomerInfo['mobile_page_count']."','".$CustomerInfo['mobile_page_links']."','".$CustomerInfo['telephone']."','".$CustomerInfo['mobile']."','".$CustomerInfo['address']."','".$CustomerInfo['fax']
-                            ."','".$CustomerInfo['email']."','".$CustomerInfo['qq']."','".$CustomerInfo['contact_name']."','".$CustomerInfo['pushed_at']."','".$CustomerInfo['created_at']."','".$CustomerInfo['updated_at']."','".$CustomerInfo['pc_page_imgtxt_count']
-                            ."','".$CustomerInfo['pc_page_img_count']."','".$CustomerInfo['pc_page_txt_count']."','".$CustomerInfo['pc_page_count_switch']."','".$CustomerInfo['enlarge']."','".$CustomerInfo['floatadv']."','".$CustomerInfo['pushed']."','".$CustomerInfo['lang']
-                            ."','".$CustomerInfo['copyright']."','".$CustomerInfo['capacity_use']."','".$CustomerInfo['capacity']."','".$CustomerInfo['lastpushtime']."','".$CustomerInfo['init_capacity']."','".$CustomerInfo['is_openmember']."','".$CustomerInfo['background_music']."','".$CustomerInfo['talent_support']."','".time()."')";
+                            . $CustomerInfo['id'] . "','" . $CustomerInfo['cus_id'] . "','" . $CustomerInfo['company'] . "','" . $CustomerInfo['pc_domain'] . "','" . $CustomerInfo['mobile_domain'] . "','" . $CustomerInfo['favicon']
+                            . "','" . $CustomerInfo['logo'] . "','" . $CustomerInfo['logo_small'] . "','" . $CustomerInfo['title'] . "','" . $CustomerInfo['keywords'] . "','" . $CustomerInfo['description']
+                            . "','" . $CustomerInfo['pc_header_script'] . "','" . $CustomerInfo['mobile_header_script'] . "','" . $CustomerInfo['footer'] . "','" . $CustomerInfo['mobile_footer'] . "','" . $CustomerInfo['pc_footer_script'] . "','" . $CustomerInfo['mobile_footer_script'] . "','" . $CustomerInfo['pc_page_count']
+                            . "','" . $CustomerInfo['pc_page_links'] . "','" . $CustomerInfo['mobile_page_count'] . "','" . $CustomerInfo['mobile_page_links'] . "','" . $CustomerInfo['telephone'] . "','" . $CustomerInfo['mobile'] . "','" . $CustomerInfo['address'] . "','" . $CustomerInfo['fax']
+                            . "','" . $CustomerInfo['email'] . "','" . $CustomerInfo['qq'] . "','" . $CustomerInfo['contact_name'] . "','" . $CustomerInfo['pushed_at'] . "','" . $CustomerInfo['created_at'] . "','" . $CustomerInfo['updated_at'] . "','" . $CustomerInfo['pc_page_imgtxt_count']
+                            . "','" . $CustomerInfo['pc_page_img_count'] . "','" . $CustomerInfo['pc_page_txt_count'] . "','" . $CustomerInfo['pc_page_count_switch'] . "','" . $CustomerInfo['enlarge'] . "','" . $CustomerInfo['floatadv'] . "','" . $CustomerInfo['pushed'] . "','" . $CustomerInfo['lang']
+                            . "','" . $CustomerInfo['copyright'] . "','" . $CustomerInfo['capacity_use'] . "','" . $CustomerInfo['capacity'] . "','" . $CustomerInfo['lastpushtime'] . "','" . $CustomerInfo['init_capacity'] . "','" . $CustomerInfo['is_openmember'] . "','" . $CustomerInfo['background_music'] . "','" . $CustomerInfo['talent_support'] . "','" . time() . "')";
 
                     $ret2 = $db->exec($sql);
                 }
-                
+
                 if ($ret && $ret1 && $ret2) {
 //                    echo "数据库备份成功！<br/>";
                     $update['is_del'] = 0;
@@ -371,18 +374,18 @@ class ApiController extends BaseController {
                     WebsiteInfo::where('cus_id', $cus_id)->update($update);
                     CustomerInfo::where('cus_id', $cus_id)->update($update);
 //                    echo "开始备份文件<br/>";
-                    $zip=new ZipArchive();
-                    if($zip->open(public_path("customers_backups/".$name.'.zip'), ZipArchive::OVERWRITE)=== TRUE){
+                    $zip = new ZipArchive();
+                    if ($zip->open(public_path("customers_backups/" . $name . '.zip'), ZipArchive::OVERWRITE) === TRUE) {
                         //备份文件
-                        $this->addFileToZip(public_path("customers/".$name."/images"), $zip);
+                        $this->addFileToZip(public_path("customers/" . $name . "/images"), $zip);
                         $zip->addEmptyDir("mobile");
-                        $this->addFileToZip(public_path("customers/".$name."/mobile/images"), $zip,"mobile"); 
+                        $this->addFileToZip(public_path("customers/" . $name . "/mobile/images"), $zip, "mobile");
                         $zip->close();
-                        $dir = "./customers/".$name; // 文件夹的名称
-                        if($this->delUserFile($dir)){
+                        $dir = "./customers/" . $name; // 文件夹的名称
+                        if ($this->delUserFile($dir)) {
 //                            echo "文件备份完成！<br/>";
 //                            echo "开始删除文件<br/>";
-                            
+
                             @ftp_pasv($conn, 1); // 打开被动模拟
                             $this->userFtpDel($conn, './'.$name, $name);
                             @ftp_rename($conn,$name,"beifen_".$name);
@@ -390,14 +393,14 @@ class ApiController extends BaseController {
 //                            echo "删除完成！";
                             $this->logsAdd("customer",__FUNCTION__,__CLASS__,999,"删除用户(备份)",1);
                             $result = ['err' => 1000, 'msg' => '删除用户成功'];
-                        }else{
+                        } else {
                             return Response::json(['err' => 1002, 'msg' => '文件备份失败']);
                         }
-                    }else{
+                    } else {
 //                        echo "数据库备份失败";
                         return Response::json(['err' => 1004, 'msg' => '数据库备份失败']);
                     }
-                }else {
+                } else {
                     return Response::json(['err' => 1004, 'msg' => '数据库备份失败']);
                 }
             } else {
@@ -408,7 +411,7 @@ class ApiController extends BaseController {
         }
         return Response::json($result);
     }
-    
+
     /**
      * 压缩保存用户文件
      * @param string $path 文件路径
@@ -436,10 +439,27 @@ class ApiController extends BaseController {
                     } else { //将文件加入zip对象
                         $zip->addFile($path . "/" . $filename, $array . '/' . $filename);
                     }
+                } else { //将文件加入zip对象
+                    $zip->addFile($path . "/" . $filename, $array . '/' . $filename);
                 }
             }
             @closedir($path);
     }
+
+    /**
+     * 代理平台下载模板
+     * @param type name 用户名
+     * @return string
+     */
+    public function DownloadTemplate() {
+        if (Input::has("token") && Input::get("token") == md5("linshimingma")) {
+            $template = new TemplatesController();
+            return $template->downloadTemplate(Input::get("name"));
+        } else {
+            return json_encode(array("err" => 1, "msg" => "err！"));
+        }
+    }
+
     /**
      * 删除用户文件
      * @param string $path 文件路径
@@ -463,6 +483,7 @@ class ApiController extends BaseController {
                 return true;
             }
     }
+
     /**
      * 删除用户FTP文件和目录，保留images和mobile/images
      * @param ftp_connect $conn ftp对象
@@ -475,24 +496,25 @@ class ApiController extends BaseController {
                 $filelist = ftp_rawlist($conn,$dir);
                 foreach ($filelist as $file) {
                     $filename = preg_replace("/.+[:]*\\d+\\s/", "", $file);
-                    if($filename !== '.' && $filename !== '..' ){
-                        if(stripos($filename, '.')){
-                           @ftp_delete($conn,$dir.'/'.$filename);
-                        }else{
-                            if(@ftp_rmdir($conn,$dir.'/'.$filename)){
+                    if ($filename !== '.' && $filename !== '..') {
+                        if (stripos($filename, '.')) {
+                            @ftp_delete($conn, $dir . '/' . $filename);
+                        } else {
+                            if (@ftp_rmdir($conn, $dir . '/' . $filename)) {
                                 continue;
-                            }else{
-                                $this->userFtpDel($conn,$dir.'/'.$filename,$username);
-                                @ftp_rmdir($conn,$dir.'/'.$filename);
+                            } else {
+                                $this->userFtpDel($conn, $dir . '/' . $filename, $username);
+                                @ftp_rmdir($conn, $dir . '/' . $filename);
                             }
                         }
                     }
                 }
-            }else{
+            } else {
                 return true;
             }
     }
-     /**
+
+    /**
      * 还原用户
      * @param ftp_connect $conn ftp对象
      * @param string $dir 路径
@@ -503,22 +525,22 @@ class ApiController extends BaseController {
         if ($this->authData()) {
             $result = '';
             $name = Input::get('username');
-            
+
 //            $name = Input::get('name');
-            $Customer = Customer::where('name', $name)->where('is_del',0)->get(); 
-            
-            if(!isset($Customer[0])){
+            $Customer = Customer::where('name', $name)->where('is_del', 0)->get();
+
+            if (!isset($Customer[0])) {
                 return Response::json(['err' => 1004, 'msg' => '用户不存在或未删除']);
                 exit();
             }
-            
+
             //修改静态服务器文件名
             $conn = @ftp_connect($Customer[0]['ftp_address'], $Customer[0]['ftp_port']);
-            if(!$conn){
+            if (!$conn) {
                 return Response::json(['err' => 1004, 'msg' => 'FTP服务器连接失败']);
                 exit();
             }
-            if(!@ftp_login($conn, $Customer[0]['ftp_user'], $Customer[0]['ftp_pwd'])){
+            if (!@ftp_login($conn, $Customer[0]['ftp_user'], $Customer[0]['ftp_pwd'])) {
                 return Response::json(['err' => 1004, 'msg' => 'FTP服务器登陆失败']);
                 exit();
             }
@@ -528,36 +550,37 @@ class ApiController extends BaseController {
                 exit();
             }
             @ftp_close($conn);
-            
+
             //解压备份的图片文件
-            $zip=new ZipArchive();
-            if(!is_dir((public_path("customers/".$name)))){
-                mkdir("customers/".$name);
+            $zip = new ZipArchive();
+
+            if (!is_dir((public_path("customers/" . $name)))) {
+                mkdir("customers/" . $name);
             }
-            if($zip->open(public_path("customers_backups/".$name.'.zip'))=== TRUE){
-                $zip->extractTo(public_path("customers/".$name));
+            if ($zip->open(public_path("customers_backups/" . $name . '.zip')) === TRUE) {
+                $zip->extractTo(public_path("customers/" . $name));
                 $zip->close();
-            }else{
+            } else {
                 return Response::json(['err' => 1004, 'msg' => '解压失败']);
                 exit();
             }
-            if($zip->open(public_path("packages/customernull.zip"))=== TRUE){
-                $zip->extractTo(public_path("customers/".$name));
-            }else{
+            if ($zip->open(public_path("packages/customernull.zip")) === TRUE) {
+                $zip->extractTo(public_path("customers/" . $name));
+            } else {
                 return Response::json(['err' => 1004, 'msg' => '解压失败2']);
                 exit();
             }
             $zip->close();
-            
+
             //更新数据库
             $update['is_del'] = 1;
             $cus_id = $Customer[0]['id'];
-            $WebsiteInfo = WebsiteInfo::where('cus_id', $cus_id)->where('is_del',0)->get();
-            if($WebsiteInfo){
+            $WebsiteInfo = WebsiteInfo::where('cus_id', $cus_id)->where('is_del', 0)->get();
+            if ($WebsiteInfo) {
                 WebsiteInfo::where('cus_id', $cus_id)->update($update);
             }
-            $CustomerInfo = CustomerInfo::where('cus_id', $cus_id)->where('is_del',0)->get();
-            if($CustomerInfo){
+            $CustomerInfo = CustomerInfo::where('cus_id', $cus_id)->where('is_del', 0)->get();
+            if ($CustomerInfo) {
                 CustomerInfo::where('cus_id', $cus_id)->update($update);
             }
             Customer::where('id', $cus_id)->update($update);
@@ -565,12 +588,12 @@ class ApiController extends BaseController {
             unlink(public_path("customers_backups/".$name.".zip"));
             $this->logsAdd("customer",__FUNCTION__,__CLASS__,999,"还原用户",1);
             $result = ['err' => 1000, 'msg' => '还原用户成功'];
-            
         } else {
             $result = ['err' => 1002, 'msg' => '验证不通过'];
         }
         return Response::json($result);
     }
+
     /**
      * 模板文件制作者
      * @return json
@@ -583,13 +606,127 @@ class ApiController extends BaseController {
         $config_str = file_get_contents(public_path('/templates/' . $tplname) . '/config.ini');
         $search = "/Name=(.*)/i";
         $config_arr = array();
-        $r = preg_match_all($search, $config_str,$config_arr);
+        $r = preg_match_all($search, $config_str, $config_arr);
         if ($r) {
-            $config_arr[1][1] = str_replace(array("\r","\r\n","\n"), '', $config_arr[1][1]); 
+            $config_arr[1][1] = str_replace(array("\r", "\r\n", "\n"), '', $config_arr[1][1]);
             return json_encode(array("err" => 1000, "name" => $config_arr[1][1]));
         } else {
             return json_encode(array("err" => 1001));
         }
+    }
+
+    /**
+     * ===网站迁移(图片)===
+     * 1、打包用户资料
+     * 2、删除ftp原资料（所有不仅是图片）
+     * 3、ftp传输资料，解压
+     */
+    public function webRemove() {
+        if ($this->authData()) {
+            set_time_limit(0);
+            //获取用户名
+            $username = Input::get('username');
+            //获取新FTP数据
+            $ftpAddr = Input::get('ftp_address'); //182.61.7.87
+            $ftpPort = Input::get('ftp_port'); // '21';
+            $ftpUser = Input::get('ftp_user'); //'tongYi'; 
+            $ftpPwd = Input::get('ftp_pwd'); //'B164RLFh';
+            $ftpDir = Input::get('ftp_dir'); //"./";
+            $ftpFlag = Input::get('ftp_flag'); //1:women ,0:kehu//"1";
+            $ftpUrl = Input::get('ftp_url'); //"http://test6.n01.5067.org/"; 
+//            $ftpAddr = "182.61.7.87";
+//            $ftpPort = '21';
+//            $ftpUser = 'tongYi';
+//            $ftpPwd = 'B164RLFh';
+//            $ftpDir = "./";
+//            $ftpFlag = "1"; //1:women ,0:kehu//
+//            $ftpUrl = "http://test.n01.5067.org";
+            //压缩文件
+            $zip = new ZipArchive();
+            $zip->open(public_path("customers/" . $username . "/img.zip"), ZipArchive::OVERWRITE);
+            $this->addFileToZip(public_path("customers/" . $username . "/images"), $zip);
+            $zip->close();
+            $conn_new = @ftp_connect($ftpAddr, $ftpPort);
+            if (!$conn_new) {
+                return Response::json(['err' => 1004, 'msg' => 'FTP服务器连接失败']);
+            }
+            if (!@ftp_login($conn_new, $ftpUser, $ftpPwd)) {
+                return Response::json(['err' => 1004, 'msg' => 'FTP服务器登陆失败']);
+            }
+            ftp_pasv($conn_new, TRUE);
+            $ftpDir = preg_replace("/^(\.)?\//", "", $ftpDir);
+            if ($ftpFlag) {
+                $ftpDir = $ftpDir . "/" . $username;
+            }
+            //创建mobile文件夹
+            @ftp_mkdir($conn_new, $ftpDir);
+            @ftp_mkdir($conn_new, $ftpDir . "/mobile");
+            $ftp_put = ftp_put($conn_new, $ftpDir . "/img.zip", public_path("customers/" . $username . "/img.zip"), FTP_BINARY);
+            $ftp_put = $ftp_put && ftp_put($conn_new, $ftpDir . '/img_unzip.php', public_path("/packages/img_unzip.php"), FTP_ASCII);
+            if (!$ftp_put) {
+                return Response::json(array(['err' => 1003, 'msg' => '文件传输失败']));
+            }
+            //解压文件
+            file_get_contents($ftpUrl . "/img_unzip.php");
+            //删除压缩文件
+            @ftp_delete($conn_new, $ftpDir . "/img_unzip.php");
+            ftp_close($conn_new);
+            //删除原FTP的资料
+            $CustomerInfo = Customer::where('name', $username)->first();
+            if (empty($CustomerInfo)) {
+                return Response::json(['err' => 1001, 'msg' => '用户不存在']);
+            }
+            $cus_ftp['addr'] = $CustomerInfo->ftp_address;
+            $cus_ftp['port'] = $CustomerInfo->ftp_port;
+            $cus_ftp['user'] = $CustomerInfo->ftp_user;
+            $cus_ftp['pwd'] = $CustomerInfo->ftp_pwd;
+            $cus_ftp['dir'] = $CustomerInfo->ftp_dir;
+            $cus_ftp['ftp'] = $CustomerInfo->ftp; //1：我们，0：客户的
+            $conn_old = @ftp_connect($cus_ftp['addr'], $cus_ftp['port']);
+            if (!$conn_old) {
+                return Response::json(['err' => 1004, 'msg' => 'FTP服务器连接失败']);
+            }
+            if (!@ftp_login($conn_old, $cus_ftp['user'], $cus_ftp['pwd'])) {
+                return Response::json(['err' => 1004, 'msg' => 'FTP服务器登陆失败']);
+            }
+            ftp_pasv($conn_old, TRUE);
+            //删除文件夹
+            $cus_ftp['dir'] = preg_replace("/^(\.)?\//", "", $cus_ftp['dir']);
+            if ($cus_ftp['ftp']) {
+                $cus_ftp['dir'] = $cus_ftp['dir'] . "/" . $CustomerInfo->name;
+            }
+            if (ftp_nlist($conn_old, $cus_ftp['dir'] . "/mobile") !== false) {
+                $this->ftp_delete_file($conn_old, $cus_ftp['dir']);
+            }
+            ftp_close($conn_old);
+            return Response::json(array(['err' => 1000, 'msg' => '图片数据迁移成功']));
+        }
+    }
+
+    /**
+     * 删除FTP上的文件夹
+     * @param type $conn        ftp链接
+     * @param type $dir         路径
+     * @return boolean
+     */
+    public function ftp_delete_file($conn, $dir) {
+        $dir = preg_replace("/^(\.)?\//", "", $dir);
+        $filelist = ftp_rawlist($conn, $dir);
+        foreach ($filelist as $filename) {
+            $aa = explode(' ', $filename, 26);
+            $aa = array_reverse($aa);
+            $filename = $aa[0];
+            $filename = str_replace($dir . "/", '', $filename);
+            if ($filename !== '.' && $filename !== '..') {
+                if (stripos($filename, '.')) {//===确认是否是文件===
+                    @ftp_delete($conn, $dir . '/' . $filename);
+                } else {
+                    $this->ftp_delete_file($conn, $dir . '/' . $filename);
+                }
+            }
+        }
+        @ftp_rmdir($conn, $dir);
+        return true;
     }
 
 }

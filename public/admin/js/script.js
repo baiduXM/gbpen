@@ -2,7 +2,6 @@
 // create the module and name it mainApp
 // also include ngRoute for all our routing needs
 var mainApp = angular.module('mainApp', ['ngRoute']);
-
 // configure our routes
 mainApp.config(function ($routeProvider, $httpProvider) {
     var pageLoading, timerPageLoading = 0, initRouter = location.hash;

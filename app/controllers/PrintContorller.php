@@ -173,9 +173,8 @@ class PrintController extends BaseController {
         if ($website_confige_value) {//===数据库中有模板数据===
             $default = json_decode(trim($json), TRUE);
             $result = $this->array_merge_recursive_new($default, $website_confige_value);
-//            dd($result); //===step:bug===
             $this->replaceUrl($result);
-            $result = $this->dataDeal($result); //===step:4===
+            $result = $this->dataDeal($result);
             foreach ($result as &$v) {
                 if ($v['type'] == 'list') {
                     if (isset($v['config']['filter'])) {
@@ -199,7 +198,7 @@ class PrintController extends BaseController {
                 dd("$pagename.json文件错误");
             }
             $this->replaceUrl($result);
-            $result = $this->dataDeal($result); //===step:4===
+            $result = $this->dataDeal($result);
 
             $classify = new Classify;
             $templates = new TemplatesController;
@@ -885,7 +884,6 @@ class PrintController extends BaseController {
 
     /**
      * 公共数据
-     * 
      * @return string
      */
     public function publicdata() {
@@ -895,43 +893,67 @@ class PrintController extends BaseController {
         $tempname = $templatesC->getTemplatesName($this->type);
         $flagPlatform = substr($tempname, 0, 2);
         $flagLanguage = substr($tempname, 2, 1);
-        $tempscript = '';
+        $tempscript = "";
+        $language_css = "";
         $customerC = new CustomerController;
         $domain = $customerC->getSwitchCustomer(); //双站用户
         $current_url = '#';
         $language_url = '#';
-        $tempscript_star = '<script>$(function(){';
-        $tempscript_end = '});</script>';
-        if (!empty($domain)) {
-            if ($flagPlatform == 'GM') {//===手机
-                $language_url = $domain['switch_mobile_domain'];
-                $current_url = $domain['current_mobile_domain'];
-            } elseif ($flagPlatform == 'GP') {//===PC
-                $language_url = $domain['switch_pc_domain'];
-                $current_url = $domain['current_pc_domain'];
+        if (!empty($domain)) {//===中英文双站===
+            if ($customer_info->bilingual_v) {
+                if ($flagPlatform == 'GM') {//===手机
+                    $language_url = $domain['switch_mobile_domain'];
+                    $current_url = $domain['current_mobile_domain'];
+                } elseif ($flagPlatform == 'GP') {//===PC
+                    $language_url = $domain['switch_pc_domain'];
+                    $current_url = $domain['current_pc_domain'];
+                }
+                if ($flagLanguage == 9) {//===英文
+                    $language = '<li><a href="' . $language_url . '">中文版</a></li>';
+                    $language .= '<li><a href="' . $current_url . '">English</a></li>';
+                } elseif ($flagLanguage == 0) {//===中文
+                    $language = '<li><a href="' . $current_url . '">中文版</a></li>';
+                    $language .= '<li><a href="' . $language_url . '">English</a></li>';
+                }
+//                $styleself = '';
+//
+//                $styleself.="right:" . $customer_info->bilingual_position . "px; ";
+//                $styleself.="background-color:" . $customer_info->bilingual_background_color . "; ";
+//                $styleself.="opacity" . $customer_info->bilingual_background_opacity . "; ";
+//                $language_div = '<div class="language_div" style="' . $styleself . '">'
+//                $language_ul = '<div class="language_div" >'
+//                        . '<ul>'
+//                        . $language
+//                        . '</ul>'
+//                        . '</div>';
+                $language_ul = '<ul>'
+                        . $language
+                        . '</ul>';
+
+                $tempscript = '<script type="text/javascript">'
+                        . 'var _body=document.body;'
+                        . 'var _div=document.createElement("div");'
+                        . '_div.setAttribute("class", "language_div");'
+                        . '_div.innerHTML=\'' . $language_ul . '\';'
+                        . '_body.appendChild(_div);'
+                        . '</script>';
+//            $language_css = '<link rel="stylesheet" href="http://swap.5067.org/css/language.css">';
+                $language_css = '<style type="text/css">
+                    .language_div{z-index:1001; width:160px; height: 36px; position: absolute;top:0px; right:' . $customer_info->bilingual_position . 'px;background-color: ' . $customer_info->bilingual_background_color . '; opacity: ' . $customer_info->bilingual_background_opacity . ';}
+                    .language_div ul{ margin: 0 auto;}
+                    .language_div ul li{width: 80px;height: 36px;float: right;text-align: center; }
+                    .language_div ul li a{ line-height: 36px; display: inline-block; padding: 0 10px;color:' . $customer_info->bilingual_font_color . ';}
+                    .language_div ul li a:hover{color:' . $customer_info->bilingual_font_active_color . ';}
+                </style>';
             }
-            if ($flagLanguage == 9) {//===英文
-                $language = '<li><a href="' . $language_url . '">中文版</a></li>';
-                $language .= '<li><a href="' . $current_url . '">English</a></li>';
-            } elseif ($flagLanguage == 0) {//===中文
-                $language = '<li><a href="' . $current_url . '">中文版</a></li>';
-                $language .= '<li><a href="' . $language_url . '">English</a></li>';
-            }
-            $language_div = '<div class="language_div">'
-                    . '<ul>'
-                    . $language
-                    . '</ul>'
-                    . '</div>';
-//            $tempscript = '$("#header").prepend(\'' . $language_div . '\');'
-//                    . '$("#header").css("position","relative");';
         }
-        $language_css = '<link rel="stylesheet" href="http://swap.5067.org/css/language.css">'; //===
         //===显示版本切换链接-end===
         $formC = new FormController();
+        $formJS = $this->insetForm(); //===表单嵌入===
         if ($this->type == 'pc') {
             $stylecolor = websiteInfo::leftJoin('color', 'color.id', '=', 'website_info.pc_color_id')->where('cus_id', $this->cus_id)->pluck('color_en');
             $logo = $this->showtype == 'preview' ? '/customers/' . $this->customer . '/images/l/common/' . $customer_info->logo : $this->domain . '/images/l/common/' . $customer_info->logo; //'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $customer_info->logo) : $this->domain . '/images/l/common/' . $customer_info->logo;
-            $floatadv = json_decode($customer_info->floatadv); //===浮动类型
+            $floatadv = json_decode($customer_info->floatadv); //===浮动类型===
             if (!empty($floatadv)) {
                 foreach ((array) $floatadv as $key => $val) {
                     if (!isset($val->type) || $val->type == 'adv') {
@@ -965,28 +987,31 @@ class PrintController extends BaseController {
                 curl_close($ch);
             }
             $headscript = $customer_info->pc_header_script;
-//            $headscript .= $language_css;
             //===版权选择===
             switch ($customer_info->copyright) {
                 case 'en_xiamen':
                     $_href = 'http://www.12t.cn/';
-                    $_copyright = 'XIAMEN 12t NETWORK TECHNOLOGY CO., LTD.';
+                    $_copyright = 'Technology support：<a href="' . $_href . '">XIAMEN 12t NETWORK TECHNOLOGY CO., LTD.</a>';
                     break;
                 case 'en_huizhou':
                     $_href = 'http://www.ydbaidu.net/';
-                    $_copyright = 'HUIZHOU YIRUITONG NETWORK TECHNOLOGY CO., LTD.';
+                    $_copyright = 'Technology support：<a href="' . $_href . '">HUIZHOU YIRUITONG NETWORK TECHNOLOGY CO., LTD.</a>';
                     break;
                 case 'cn_xiamen':
                     $_href = 'http://www.12t.cn/';
-                    $_copyright = '厦门易尔通网络科技有限公司';
+                    $_copyright = '技术支持：<a href="' . $_href . '">厦门易尔通网络科技有限公司</a> ';
                     break;
                 case 'cn_huizhou':
                     $_href = 'http://www.ydbaidu.net/';
-                    $_copyright = '惠州易瑞通网络科技有限公司';
+                    $_copyright = '技术支持：<a href="' . $_href . '">惠州易瑞通网络科技有限公司</a> ';
+                    break;
+                case 'null':
+                    $_href = '';
+                    $_copyright = '';
                     break;
                 default :
-                    $_href = 'http://www.12t.cn/';
-                    $_copyright = '厦门易尔通网络科技有限公司';
+                    $_href = '<a href="http://www.12t.cn/">';
+                    $_copyright = '技术支持：' . $_href . '厦门易尔通网络科技有限公司</a>';
                     break;
             }
 
@@ -1008,38 +1033,40 @@ class PrintController extends BaseController {
                     break;
             }
             if ($customer_info->lang == 'en') {
-                $footprint = $customer_info->footer . '<p>Technology support：<a href="' . $_href . '">' . $_copyright . '</a> ' . $talent_support . '</p>';
+                $footprint = $customer_info->footer . '<p>' . $_copyright . $talent_support . '</p>';
             } else {
-                $footprint = $customer_info->footer . '<p>技术支持：<a href="' . $_href . '">' . $_copyright . '</a> ' . $talent_support . '</p>';
+                $footprint = $customer_info->footer . '<p>' . $_copyright . $talent_support . '</p>';
             }
             //===版权选择_end===
             $footscript = $customer_info->pc_footer_script;
+            $footscript .= $formJS;
             $footscript .= '<script type="text/javascript" src="/quickbar/js/quickbar.js?' . $this->cus_id . 'pc"></script>';
-            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/admin/statis.php?cus_id=' . $this->cus_id . '&platform=pc"></script>'; //===添加统计代码PC===
+//            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/admin/statis.php?cus_id=' . $this->cus_id . '&platform=pc"></script>'; //===添加统计代码PC===
             if ($customer_info->background_music) {
                 $bgm = str_replace('"', "", $customer_info->background_music);
                 $footscript .= '<script type="text/javascript">$("body").append("<div id=\"bg-music\">' . $bgm . '</div>")
                     $("#bg-music").css("display","none");
                 </script>';
             }
-
-//            $footscript .= $tempscript_star . $tempscript . $tempscript_end;
-//            $footscript .= $language_css;
+            $footscript .= $tempscript;
+            $footscript .= $language_css;
             $site_another_url = $this->showtype == 'preview' ? '' : $customer_info->mobile_domain;
         } else {
             $logo = $this->showtype == 'preview' ? ('/customers/' . $this->customer . '/images/l/common/' . $customer_info->logo_small) : $this->domain . '/images/l/common/' . $customer_info->logo_small; //'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $customer_info->logo_small) : $this->domain . '/images/l/common/' . $customer_info->logo_small;
             $stylecolor = websiteInfo::leftJoin('color', 'color.id', '=', 'website_info.mobile_color_id')->where('cus_id', $this->cus_id)->pluck('color_en');
             $headscript = $customer_info->mobile_header_script;
-//            $headscript .= $language_css;
             $footprint = $customer_info->mobile_footer;
             $footscript = $customer_info->mobile_footer_script;
+//            $footscript .= $formJS;
             $footscript .= '<script type="text/javascript" src="/quickbar/js/quickbar.js?' . $this->cus_id . 'mobile"></script>';
-            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/admin/statis.php?cus_id=' . $this->cus_id . '&platform=mobile"></script>'; //===添加统计代码MOBILE===
+//            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/admin/statis.php?cus_id=' . $this->cus_id . '&platform=mobile"></script>'; //===添加统计代码MOBILE===
 //            $footscript .= $tempscript;
+//            $footscript .= $language_css;
             $site_another_url = $this->showtype == 'preview' ? '' : $customer_info->pc_domain;
             $config_arr = parse_ini_file(public_path('/templates/' . $this->themename) . '/config.ini', true);
-            if (!is_array($config_arr))
+            if (!is_array($config_arr)) {
                 dd('【config.ini】文件不存在！文件格式说明详见：http://pme.eexx.me/doku.php?id=ued:template:config');
+            }
         }
         //获取global信息
         if ($this->type == 'pc') {
@@ -1185,6 +1212,35 @@ class PrintController extends BaseController {
     }
 
     /**
+     * ===嵌入表单===
+     * 获取表单信息保存到json
+     */
+    public function insetForm() {
+        $websiteFormInfo = websiteConfig::where('cus_id', $this->cus_id)->where('template_id', $this->tpl_id)->where('key', 'form')->pluck('value');
+        if (!empty($websiteFormInfo)) {
+            $websiteFormArray = unserialize($websiteFormInfo);
+            $ids = array();
+            $bind = array();
+            foreach ($websiteFormArray as $key => $value) {
+                $bind[substr($key, strlen($key) - 1)][substr($key, 0, -1)] = $value['value'];
+                if (array_key_exists('form_id', $value['value'])) {
+                    if (!in_array($value['value']['form_id'], $ids)) {
+                        $ids[] = $value['value']['form_id'];
+                    }
+                }
+            }
+            $FormC = new FormController();
+            $formInfo = $FormC->getFormInfoByIds($ids);
+            $data['forminfo'] = $formInfo;
+            $data['website'] = $bind;
+            file_put_contents(public_path("customers/" . $this->customer . '/formdata.json'), json_encode($data));
+            return '<script type="text/javascript" src="/quickbar/js/form.js?name=' . $this->customer . '"></script>';
+        } else {
+            return '';
+        }
+    }
+
+    /**
      * 公共导航
      * 
      * @param type $c_id
@@ -1199,7 +1255,6 @@ class PrintController extends BaseController {
             $navs = Classify::where('cus_id', $this->cus_id)->where('mobile_show', 1)->select('id', 'type', 'img', 'icon', 'name', 'url', 'p_id', 'en_name', 'view_name', 'meta_description as description', 'open_page')->OrderBy('sort', 'asc')->get()->toArray();
         }
         $navs = $this->toTree($navs, 0, TRUE);
-
         if ($c_id) {
             $current_arr = $this->currentCidArray($c_id);
             $navs = $this->addCurrent($navs, $current_arr);
@@ -1286,7 +1341,7 @@ class PrintController extends BaseController {
                                 $abc['data'][$key]['category']['view_name'] = $d_c_info->view_name;
                                 $abc['data'][$key]['category']['icon'] = '<i class="iconfont">' . $d_c_info->icon . '</i>';
                                 $abc['data'][$key]['description'] = $d->introduction;
-                                $abc['data'][$key]['pubdate'] = $d->created_at;
+                                $abc['data'][$key]['pubdate'] = (string) $d->created_at;
                                 $abc['data'][$key]['pubtimestamp'] = strtotime($d->created_at);
                                 unset($v['value']);
                             }
@@ -1355,7 +1410,7 @@ class PrintController extends BaseController {
                             $abc['data'][$key]['category']['view_name'] = $d_c_info->view_name;
                             $abc['data'][$key]['category']['icon'] = '<i class="iconfont">' . $d_c_info->icon . '</i>';
                             $abc['data'][$key]['description'] = $d->introduction;
-                            $abc['data'][$key]['pubdate'] = $d->created_at;
+                            $abc['data'][$key]['pubdate'] = (string) $d->created_at;
                             $abc['data'][$key]['pubtimestamp'] = strtotime($d->created_at);
                             unset($v['value']);
                         }
@@ -1364,7 +1419,7 @@ class PrintController extends BaseController {
                         $v['value'] = array('data' => null);
                     }
                 }
-                
+
                 $v['value']['name'] = ($c_info ? $c_info->name : '');
                 $v['value']['en_name'] = ($c_info ? $c_info->en_name : '');
                 $v['value']['icon'] = ($c_info ? '<i class="iconfont">' . $c_info->icon . '</i>' : '');
@@ -1434,7 +1489,7 @@ class PrintController extends BaseController {
                                     $abc[$key]['category']['en_name'] = $d_c_info->en_name;
                                     $abc[$key]['category']['icon'] = '<i class="iconfont">' . $d_c_info->icon . '</i>';
                                     $abc[$key]['description'] = $d->introduction;
-                                    $abc[$key]['pubdate'] = $d->created_at;
+                                    $abc[$key]['pubdate'] = (string) $d->created_at;
                                     $abc[$key]['pubtimestamp'] = strtotime($d->created_at);
                                 }
                                 $c_c_info['data'] = $abc;
@@ -1617,7 +1672,7 @@ class PrintController extends BaseController {
                         $article[$key]['link'] = $d->url;
                     }
                     $article[$key]['description'] = $d->introduction;
-                    $article[$key]['pubdate'] = $d->created_at;
+                    $article[$key]['pubdate'] = (string) $d->created_at;
                     $article[$key]['pubtimestamp'] = strtotime($d->created_at);
                 }
             } else {
@@ -1641,7 +1696,7 @@ class PrintController extends BaseController {
                         $article[$key]['link'] = $d->url;
                     }
                     $article[$key]['description'] = $d->introduction;
-                    $article[$key]['pubdate'] = $d->created_at;
+                    $article[$key]['pubdate'] = (string) $d->created_at;
                     $article[$key]['pubtimestamp'] = strtotime($d->created_at);
                 }
             }
@@ -1739,7 +1794,6 @@ class PrintController extends BaseController {
             $startpage = $pageCount - ($showPageNum - 1);
             $endpage = $pageCount;
         }
-
         for ($i = $startpage; $i <= $endpage; $i++) {
             if ($i == $page) {
                 $links[$i] = $i;
@@ -2031,7 +2085,7 @@ class PrintController extends BaseController {
                                         $art_arr[$i]['link'] = $article->url;
                                     }
                                     $art_arr[$i]['description'] = $article->introduction;
-                                    $art_arr[$i]['pubdate'] = $article->created_at;
+                                    $art_arr[$i]['pubdate'] = (string) $article->created_at;
                                     $art_arr[$i]['pubtimestamp'] = strtotime($article->created_at);
                                     $art_arr[$i]['category']['name'] = $nav->name;
                                     $art_arr[$i]['category']['en_name'] = $nav->name;
@@ -2088,7 +2142,7 @@ class PrintController extends BaseController {
                                         $art_arr[$i]['link'] = $article->url;
                                     }
                                     $art_arr[$i]['description'] = $article->introduction;
-                                    $art_arr[$i]['pubdate'] = $article->created_at;
+                                    $art_arr[$i]['pubdate'] = (string) $article->created_at;
                                     $art_arr[$i]['pubtimestamp'] = strtotime($article->created_at);
                                     $art_arr[$i]['category']['name'] = $nav->name;
                                     $art_arr[$i]['category']['en_name'] = $nav->name;
@@ -2182,7 +2236,7 @@ class PrintController extends BaseController {
                                     $art_arr[$i]['link'] = $article->url;
                                 }
                                 $art_arr[$i]['description'] = $article->introduction;
-                                $art_arr[$i]['pubdate'] = $article->created_at;
+                                $art_arr[$i]['pubdate'] = (string) $article->created_at;
                                 $art_arr[$i]['pubtimestamp'] = strtotime($article->created_at);
                                 $art_arr[$i]['category']['name'] = $nav->name;
                                 $art_arr[$i]['category']['en_name'] = $nav->name;
@@ -2239,7 +2293,7 @@ class PrintController extends BaseController {
                                     $art_arr[$i]['link'] = $article->url;
                                 }
                                 $art_arr[$i]['description'] = $article->introduction;
-                                $art_arr[$i]['pubdate'] = $article->created_at;
+                                $art_arr[$i]['pubdate'] = (string) $article->created_at;
                                 $art_arr[$i]['pubtimestamp'] = strtotime($article->created_at);
                                 $art_arr[$i]['category']['name'] = $nav->name;
                                 $art_arr[$i]['category']['en_name'] = $nav->name;
@@ -2297,7 +2351,7 @@ class PrintController extends BaseController {
         } else {
             $id = Classify::where('view_name', $param)->pluck('id');
         }
-        if ($_SERVER["HTTP_HOST"] != "preview.5067.org") {
+        if ($_SERVER["HTTP_HOST"] != "ht.5067.org") {
             $result = $this->pagePublic($id);
             $customerinfo = CustomerInfo::where("cus_id", $this->cus_id)->first();
             foreach ((array) $result['navs'] as $nav) {
@@ -2383,6 +2437,7 @@ class PrintController extends BaseController {
                         </label>
                         <label>
                         <span>&nbsp;</span>
+                        <input type="hidden" name="language" value="en" />
                         <input type="submit" class="button" name="submit" value="Submit" />
                         </label>
                         </form>';
@@ -2409,6 +2464,7 @@ class PrintController extends BaseController {
                         </label>
                         <label>
                         <span>&nbsp;</span>
+                        <input type="hidden" name="language" value="cn" />
                         <input type="submit" class="button" name="submit" value="提交" />
                         </label>
                         </form>';
@@ -2437,7 +2493,7 @@ class PrintController extends BaseController {
                     max-width: 500px;
                     /*background: #D2E9FF;*/
                     padding: 20px 20px 20px 20px;
-                    color: #666;
+                    /*color: #666;*/
                     }
                     .input[placeholder]{color:#5c5c5c;}
                     .elegant-aero h1 {
@@ -2455,7 +2511,7 @@ class PrintController extends BaseController {
                     .elegant-aero label>span {
                     float: left;
                     margin-top: 10px;
-                    color: #5E5E5E;
+                    /*color: #5E5E5E;*/
                     }
                     .elegant-aero label {
                     display: block;
@@ -2473,7 +2529,7 @@ class PrintController extends BaseController {
                         white-space: nowrap;
                     }
                     .elegant-aero input[type="text"], .elegant-aero input[type="tel"], .elegant-aero input[type="email"], .elegant-aero textarea, .elegant-aero select {
-                    color: #888;
+                    /*color: #888;*/
                     width: 65%;
                     padding: 0px 0px 0px 5px;
                     border: 1px solid #C5E2FF;
@@ -2504,7 +2560,7 @@ class PrintController extends BaseController {
                     padding: 10px 30px 10px 30px;
                     background: #ACB5B7;
                     border: none;
-                    color: #FFF;
+                    /*color: #FFF;*/
                     box-shadow: 1px 1px 1px #4C6E91;
                     -webkit-box-shadow: 1px 1px 1px #4C6E91;
                     -moz-box-shadow: 1px 1px 1px #4C6E91;
@@ -2521,6 +2577,8 @@ class PrintController extends BaseController {
                         var _name       =messageboard.name.value;
                         var _content    =messageboard.content.value;
                         var _telephone  =messageboard.telephone.value;
+                        var _language   =messageboard.language.value;
+                        if(_language=="cn"){
                                     if (_name=="")
                                     {
                                         alert("请填写您的姓名");
@@ -2546,6 +2604,33 @@ class PrintController extends BaseController {
                                                 return false;
                                         }
                                     }
+                        }else{
+                                    if (_name=="")
+                                    {
+                                        alert("Please fill in your name");
+                                        messageboard.name.focus();
+                                        return false;
+                                    }
+                                    if (_content=="")
+                                    {
+                                        alert("Please fill out the message content");
+                                        messageboard.content.focus();
+                                        return false;
+                                    }
+                                    if (_telephone!="")
+                                    {
+                                        if(isNaN(_telephone)){
+                                                alert("Please fill in the Numbers");
+                                                messageboard.telephone.focus();
+                                                return false;
+                                        }
+                                        if(!(/^1[3|4|5|7|8]\d{9}$/.test(_telephone))){
+                                                alert("Mobile phone number is wrong");
+                                                messageboard.telephone.focus();
+                                                return false;
+                                        }
+                                    }
+                        }
                     }
                     </SCRIPT>';
                 } elseif ($classify->type == 9) {
@@ -2662,6 +2747,7 @@ class PrintController extends BaseController {
                     </label>
                     <label>
                     <span>&nbsp;</span>
+                    <input type="hidden" name="language" value="en" />
                     <input type="submit" class="button" name="submit" value="Submit" />
                     </label>
                     </form>';
@@ -2688,6 +2774,7 @@ class PrintController extends BaseController {
                     </label>
                     <label>
                     <span>&nbsp;</span>
+                    <input type="hidden" name="language" value="cn" />
                     <input type="submit" class="button" name="submit" value="提交" />
                     </label>
                     </form>';
@@ -2713,7 +2800,7 @@ class PrintController extends BaseController {
                 /*background: #D2E9FF;*/
                 padding: 20px 20px 20px 20px;
                 font: 12px Arial, Helvetica, sans-serif;
-                color: #666;
+                /*color: #666;*/
                 }
                 .input[placeholder]{color:#5c5c5c;}
                 .elegant-aero h1 {
@@ -2731,7 +2818,7 @@ class PrintController extends BaseController {
                 .elegant-aero label>span {
                 float: left;
                 margin-top: 10px;
-                color: #5E5E5E;
+                /*color: #5E5E5E;*/
                 }
                 .elegant-aero label {
                 display: block;
@@ -2792,6 +2879,7 @@ class PrintController extends BaseController {
                 <SCRIPT language=javascript>
                 function CheckPost()
                 {
+                    if(messageboard.language.value=="cn"){
                         if (messageboard.name.value=="")
                         {
                                 alert("请填写您的姓名");
@@ -2817,6 +2905,33 @@ class PrintController extends BaseController {
                                         return false;
                                 }
                         }
+                    }else{
+                        if (messageboard.name.value=="")
+                        {
+                                alert("Please fill in your name");
+                                messageboard.name.focus();
+                                return false;
+                        }
+                        if (messageboard.content.value=="")
+                        {
+                                alert("Please fill out the message content");
+                                messageboard.content.focus();
+                                return false;
+                        }
+                        if (messageboard.telephone.value!="")
+                        {
+                                if(isNaN(messageboard.telephone.value)){
+                                    alert("Please fill in the Numbers");
+                                    messageboard.telephone.focus();
+                                    return false;
+                                }
+                                if(!(/^1[3|4|5|7|8]\d{9}$/.test(messageboard.telephone.value))){
+                                        alert("Mobile phone number is wrong");
+                                        messageboard.telephone.focus();
+                                        return false;
+                                }
+                        }
+                    }
                 }
                 </SCRIPT>';
             }
@@ -2833,11 +2948,11 @@ class PrintController extends BaseController {
                 $the_result['list']['total'] = $index_list['page_links']['total'];
             }
             //===页面名字.html===
-            if ($classify->view_name) {
-                $path = $this->type == 'pc' ? public_path('customers/' . $this->customer . '/category/v/' . $classify->view_name . '.html') : public_path('customers/' . $this->customer . '/mobile/category/v/' . $classify->view_name . '.html');
-            } else {
-                $path = $this->type == 'pc' ? public_path('customers/' . $this->customer . '/category/' . $id . '.html') : public_path('customers/' . $this->customer . '/mobile/category/' . $id . '.html');
-            }
+//            if ($classify->view_name) {
+//                $path = $this->type == 'pc' ? public_path('customers/' . $this->customer . '/category/v/' . $classify->view_name . '.html') : public_path('customers/' . $this->customer . '/mobile/category/v/' . $classify->view_name . '.html');
+//            } else {
+            $path = $this->type == 'pc' ? public_path('customers/' . $this->customer . '/category/' . $id . '.html') : public_path('customers/' . $this->customer . '/mobile/category/' . $id . '.html');
+//            }
             $content = $publicdata['repleace'][$viewname . '.html'];
             $content = preg_replace($publicdata['pattern'], $publicdata['repleace'], $content);
             $output = $this->pushdisplay($the_result, $content);
@@ -3110,7 +3225,7 @@ class PrintController extends BaseController {
                 $result['article']['content'] = preg_replace('/\/customers\/' . $this->customer . '/i', '', $article->content);
             }
             $result['article']['description'] = $article->introduction;
-            $result['article']['pubdate'] = $article->created_at;
+            $result['article']['pubdate'] = (string) $article->created_at;
             $result['article']['pubtimestamp'] = strtotime($article->created_at);
 
             $result['article']['category'] = $result['posnavs'][count($result['posnavs']) - 1];
@@ -3437,7 +3552,7 @@ class PrintController extends BaseController {
                             $data[$key]['category']['en_name'] = $classify->en_name;
                             $data[$key]['category']['icon'] = '<i class="iconfont">' . $classify->icon . '</i>';
                             $data[$key]['description'] = $d->introduction;
-                            $data[$key]['pubdate'] = $d->created_at;
+                            $data[$key]['pubdate'] = (string) $d->created_at;
                             $data[$key]['pubtimestamp'] = strtotime($d->created_at);
                             unset($v['value']);
                         }
@@ -3542,7 +3657,7 @@ class PrintController extends BaseController {
     public function searchPreview() {
         error_reporting(E_ALL ^ E_NOTICE);
         $result = $this->pagePublic();
-        $result['navs'] = $publicdata['navs'];
+//        $result['navs'] = $publicdata['navs'];
         $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
         $result['title'] = $customer_info->title;
         $result['keywords'] = $customer_info->keywords;
@@ -3563,8 +3678,8 @@ class PrintController extends BaseController {
             }
         }
         $result['pagenavs'] = $pagenavs;
-        $result['posnavs'] = array(0 => array('en_name' => 'Search', 'name' => '搜索', 'link' => 'javascript:;', 'icon' => ''));
-
+        $result['posnavs'] = $this->getPosNavs($c_id); //array(0 => array('en_name' => 'Search', 'name' => '搜索', 'link' => 'javascript:;', 'icon' => ''));
+//        $result['posnavs'] = array(0 => array('en_name' => 'Search', 'name' => '搜索', 'link' => 'javascript:;', 'icon' => ''));
         //搜索数据替换
         if (!is_file(app_path('views/templates/' . $this->themename . '/searchresult_do.html'))) {
             //搜索数据标记与替换
@@ -3686,8 +3801,8 @@ class PrintController extends BaseController {
             }
         }
         $result['pagenavs'] = $pagenavs;
-        $result['posnavs'] = array(0 => array('en_name' => 'Search', 'name' => '搜索', 'link' => 'javascript:;', 'icon' => ''));
-
+//        $result['posnavs'] = $this->getPosNavs($c_id); //array(0 => array('en_name' => 'Search', 'name' => '搜索', 'link' => 'javascript:;', 'icon' => ''));
+        $result['posnavs'] = $this->getPosNavs();
         //搜索数据替换
         if (!is_file(app_path('views/templates/' . $this->themename . '/searchresult_do.html'))) {
             //搜索数据标记与替换
@@ -3856,7 +3971,19 @@ class PrintController extends BaseController {
         return $id_str;
     }
 
-    private function getPosNavs($c_id, &$posnavs = array()) {
+    /**
+     * ===获取当前栏目===
+     * 若c_id空，获取默认栏目导航
+     * @param type $c_id        当前栏目id
+     * @param type $posnavs     当前栏目导航内容
+     * @return type
+     */
+    private function getPosNavs($c_id = 0, &$posnavs = array()) {
+        if ($c_id == 0) {
+            $webinfo = WebsiteConfig::where("cus_id", $this->cus_id)->where("key", "_pagenavs_sub3")->pluck("value");
+            $webinfo = unserialize($webinfo);
+            $c_id = $webinfo["pagenavs"]["value"]["id"];
+        }
         $classify = Classify::where('id', $c_id)->first();
         $arr['name'] = $classify->name;
         $arr['en_name'] = $classify->en_name;
@@ -3925,6 +4052,16 @@ class PrintController extends BaseController {
             closedir($handle);
         }
         return $fileArray;
+    }
+
+    /**
+     * ===更换样式===
+     */
+    public function changeCss() {
+        $colorArr = websiteInfo::where('cus_id', $this->cus_id)->select('pc_color_id', 'mobile_color_id')->first();
+        $color['pc'] = DB::table('color')->where('id', $colorArr->pc_color_id)->pluck('color_en');
+        $color['mobile'] = DB::table('color')->where('id', $colorArr->mobile_color_id)->pluck('color_en');
+        return $color;
     }
 
 }

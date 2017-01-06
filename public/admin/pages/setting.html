@@ -3,7 +3,7 @@
     <section id="setting" class="whole">
         <div class="setting-content">
             <form id="setting_info" style="height: auto;">
-                
+
                 <div class="set_title">
                     <div class="setting-name select " id="set_common">通用设置</div>
                     <div class="setting-name" id="set_pc">PC基本设置</div>
@@ -26,12 +26,13 @@
                         <div class="feild-item"><label class="vt" for="description">网站描述：</label><textarea name="description"  cols="30" rows="10"></textarea></div>
                         <!--SEO-->
                         <div class="feild-item"><label for="lang">版面语言类型：</label><select name="lang" id="lang" style="margin-left: 10px;"><option value="cn">中文</option><option value="en">英文</option></select></div>
-                        <div class="feild-item"><label for="copyright">公司版权：</label>
+                        <div class="feild-item"><label for="copyright">技术支持：</label>
                             <select name="copyright" id="copyright" style="margin-left: 10px;">
                                 <option value="cn_xiamen">厦门易尔通网络科技有限公司</option>
                                 <option value="cn_huizhou">惠州易瑞通网络科技有限公司</option>
                                 <option value="en_xiamen">XIAMEN 12t NETWORK TECHNOLOGY CO., LTD.</option>
                                 <option value="en_huizhou">HUIZHOU YIRUITONG NETWORK TECHNOLOGY CO., LTD.</option>
+                                <option value="null">无</option>
                             </select>
                         </div>
                         <div class="feild-item"><label for="talent_support">人才支持：</label>
@@ -62,7 +63,15 @@
                             <button class="addfloatform" style="margin-left: 10px;height: 30px;width: 80px;"><span >添加表单</span></button>
                             <ul class="adv"></ul>
                         </div>
-                        <div class="switchfunc" style="margin-left: 15px;margin-bottom: 10px;"><label for="enlarge">产品图放大：</label><input type="hidden" id="enlargev" name="enlargev" value="0"><input type="checkbox" id="enlarge" name="enlarge" class="none enl"><label for="enlarge" class="enlarge"></label> </div>
+                        <!--<div class="feild-item" style="display:none;">-->
+
+                        <div class="switchfunc" style="margin-left: 15px;margin-bottom: 10px;">
+                            <label for="enlarge">产品图放大：</label>
+                            <input type="hidden" id="enlargev" name="enlargev" value="0">
+                            <input type="checkbox" id="enlarge" name="enlarge" class="none enl">
+                            <label for="enlarge" class="enlarge"></label>
+                        </div>
+                        
                         <!-- <div class="feild-item"><label for="">PC模板编号：</label><label for="" name="pcnum"></label></div> -->
                         <!-- <div class="feild-item"><label for="">手机模板编号：</label><label for="" name="mobnum"></label></div> -->
                         <div class="feild-item"><label for="contactor">联系人：</label><input type="text" name="contactor" /></div>
@@ -86,6 +95,19 @@
                             <input type="checkbox" id="checkbox1" name="share" class="none chk">
                             <label for="checkbox1" class="valign"></label> 
                             <input type="hidden" name="pc_page_count_switch" />
+                            <div class="bilingual_box_encn" style="margin-left: 15px;margin-bottom: 10px;display:none;">
+                            <label>中英顶部显示：</label>
+                            <input type="hidden" id="bilingual_v" name="bilingual_v" value="0">
+                            <input type="checkbox" id="bilingual" name="bilingual" class="none benl">
+                            <label for="bilingual" class="bilingual"></label> 
+                            <div class="bilingual_box" style="display:none;">
+                                <label for="bilingual_position">水平位置</label><input type="text" name="bilingual_position" value="300" />px (越小越靠右)
+                                <label for="bilingual_font_color">字体颜色</label><input type="color" name="bilingual_font_color" value="#aaaaaa"/>
+                                <label for="bilingual_font_active_color">字体悬浮颜色</label><input type="color" name="bilingual_font_active_color" value="#00ffff"/>
+                                <label for="bilingual_background_color">背景颜色</label><input type="color" name="bilingual_background_color" value="#000000" />
+                                <label for="bilingual_background_opacity">背景透明度</label><input type="text" name="bilingual_background_opacity" value="0.5"/>(0~1)
+                            </div>
+                        </div>
                             <ul class="switch_list">
                                 <li class="switch_list_item">
                                     <input type="text" class="switch_num" disabled name="pc_imgtxt_per_page" />

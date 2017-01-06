@@ -17,152 +17,141 @@ class TemplatesController extends BaseController {
     /**
      * 首页详情
      * @param type $page index首页/_aside其他/global全局/form表单
-     * @return string
+     * @return string     
      */
     public function homepageInfo($page = 'index') {
-
         $pagedata = new PrintController;
-        $data = $pagedata->pagedata($page); //===step:3===
+        $data = $pagedata->pagedata($page);
         $data_final = $data;
         $classify = new Classify;
-//        dd($data_final);
         foreach ($data as $k => $v) {
-            switch ($v['type']) {
-                case 'list':
-                    $type_arr = array(1, 2, 3);
-                    $list = Classify::where('cus_id', '=', $pagedata->cus_id)->whereIn('type', array(1, 2, 3, 4, 5, 6, 9))->where('pc_show', '=', 1)->get()->toArray();
-                    $value = array();
-                    $selected = false;
-                    foreach ($list as $key => $l) {
-                        $value[$key]['id'] = $l['id'];
-                        $value[$key]['name'] = $l['name'];
-                        $value[$key]['p_id'] = $l['p_id'];
-                        $value[$key]['type'] = $l['type'];
-                        if (isset($v['config']['id']) && $l['id'] == $v['config']['id']) {
-                            $value[$key]['selected'] = 1;
-                            $selected = true;
-                        } else {
-                            $value[$key]['selected'] = 0;
-                        }
-                    }
-                    if (isset($v['config']['filter'])) {
-                        if ($v['config']['filter'] == 'page') {
-                            $value = $classify->toTree($value);
-                            $type_arr = array(4);
-                        } elseif ($v['config']['filter'] == 'list') {
-                            $value = $classify->toTree($value);
-                            $type_arr = array(1, 2, 3);
-                        } elseif ($v['config']['filter'] == 'feedback') {/* 20151021添加feeback filter */
-                            $value = $classify->toTree($value);
-                            $type_arr = array(5, 9);
-                        } elseif ($v['config']['filter'] == 'ALL') {
-                            $value = $classify->toTree($value);
-                            $type_arr = array(1, 2, 3, 4, 5, 6);
-                        } else {
-                            $value = $classify->toTree($value);
-                            $type_arr = array(1, 2, 3, 4, 9);
-                        }
-                    }
-                    $this->unsetFalseClassify($value, $type_arr);
-                    if (!$selected && count($value)) {
-                        foreach ($value as $key => $v) {
-                            $value[$key]['selected'] = 1;
-                            break;
-                        }
-                    }
-                    if (isset($v['config']['mustchild']) && $v['config']['mustchild'] == true) {
-                        $this->unsetLastClassify($value);
-                    }
-                    $data_final[$k]['config']['list'] = $value;
-                    if (isset($v['config']['star_only'])) {
-                        $data_final[$k]['config']['star_only'] = $v['config']['star_only'];
+            if ($v['type'] == 'list') {
+                $type_arr = array(1, 2, 3);
+                $list = Classify::where('cus_id', '=', $pagedata->cus_id)->whereIn('type', array(1, 2, 3, 4, 5, 6, 9))->where('pc_show', '=', 1)->get()->toArray();
+                $value = array();
+                $selected = false;
+                foreach ($list as $key => $l) {
+                    $value[$key]['id'] = $l['id'];
+                    $value[$key]['name'] = $l['name'];
+                    $value[$key]['p_id'] = $l['p_id'];
+                    $value[$key]['type'] = $l['type'];
+                    if (isset($v['config']['id']) && $l['id'] == $v['config']['id']) {
+                        $value[$key]['selected'] = 1;
+                        $selected = true;
                     } else {
-                        $data_final[$k]['config']['star_only'] = "0";
+                        $value[$key]['selected'] = 0;
                     }
-                    break;
-                case 'page':
-                    $list = Classify::where('cus_id', '=', $pagedata->cus_id)->where('type', 4)->where('pc_show', '=', 1)->get()->toArray();
-                    $value = array();
-                    $selected = false;
-                    foreach ($list as $key => $l) {
-                        $value[$key]['id'] = $l['id'];
-                        $value[$key]['name'] = $l['name'];
-                        $value[$key]['p_id'] = $l['p_id'];
-                        $value[$key]['type'] = $l['type'];
-                        if (isset($v['config']['id']) && $l['id'] == $v['config']['id']) {
-                            $value[$key]['selected'] = "1";
-                            $selected = true;
-                        } else {
-                            $value[$key]['selected'] = "0";
-                        }
-                    }
-                    if (!$selected) {
-                        $value[0]['selected'] = 1;
-                    }
-                    if (isset($v['config']['mustchild']) && $v['config']['mustchild'] == true) {
-                        $this->unsetLastClassify($value);
-                    }
-                    $data_final[$k]['config']['list'] = $value;
-                    if (isset($v['config']['star_only'])) {
-                        $data_final[$k]['config']['star_only'] = $v['config']['star_only'];
+                }
+                if (isset($v['config']['filter'])) {
+                    if ($v['config']['filter'] == 'page') {
+                        $value = $classify->toTree($value);
+                        $type_arr = array(4);
+                    } elseif ($v['config']['filter'] == 'list') {
+                        $value = $classify->toTree($value);
+                        $type_arr = array(1, 2, 3);
+                    } elseif ($v['config']['filter'] == 'feedback') {/* 20151021添加feeback filter */
+                        $value = $classify->toTree($value);
+                        $type_arr = array(5, 9);
+                    } elseif ($v['config']['filter'] == 'ALL') {
+                        $value = $classify->toTree($value);
+                        $type_arr = array(1, 2, 3, 4, 5, 6);
                     } else {
-                        $data_final[$k]['config']['star_only'] = "0";
+                        $value = $classify->toTree($value);
+                        $type_arr = array(1, 2, 3, 4, 9);
                     }
-                    break;
-                case 'navs':
-                    $type_arr = array(1, 2, 3, 4, 6, 9);
-                    $list = Classify::where('cus_id', '=', $pagedata->cus_id)->whereIn('type', array(1, 2, 3, 4, 6, 9))->where('pc_show', '=', 1)->get()->toArray();
-                    $value = array();
-                    $selected = false;
-                    foreach ($list as $key => $l) {
-                        $value[$key]['id'] = $l['id'];
-                        $value[$key]['name'] = $l['name'];
-                        $value[$key]['p_id'] = $l['p_id'];
-                        $value[$key]['type'] = $l['type'];
-                        if (isset($v['config']['id']) && $l['id'] == $v['config']['id']) {
-                            $value[$key]['selected'] = 1;
-                            $selected = true;
-                        } else {
-                            $value[$key]['selected'] = 0;
-                        }
+                }
+                $this->unsetFalseClassify($value, $type_arr);
+                if (!$selected && count($value)) {
+                    foreach ($value as $key => $v) {
+                        $value[$key]['selected'] = 1;
+                        break;
                     }
-                    if (isset($v['config']['filter'])) {
-                        if ($v['config']['filter'] == 'page') {
-                            $value = $classify->toTree($value);
-                            $type_arr = array(4);
-                        } elseif ($v['config']['filter'] == 'list') {
-                            $value = $classify->toTree($value);
-                            $type_arr = array(1, 2, 3);
-                        } elseif ($v['config']['filter'] == 'ALL') {
-                            $value = $classify->toTree($value);
-                            $type_arr = array(1, 2, 3, 4, 6);
-                        } else {
-                            $value = $classify->toTree($value);
-                            $type_arr = array(1, 2, 3, 4);
-                        }
-                    }
-                    $this->unsetFalseClassify($value, $type_arr);
-                    if (!$selected && count($value)) {
-                        foreach ($value as $key => $v) {
-                            $value[$key]['selected'] = 1;
-                            break;
-                        }
-                    }
-                    if (isset($v['config']['mustchild']) && $v['config']['mustchild'] == true) {
-                        $this->unsetLastClassify($value);
-                    }
-                    $data_final[$k]['config']['list'] = $value;
-                    if (isset($v['config']['star_only'])) {
-                        $data_final[$k]['config']['star_only'] = $v['config']['star_only'];
+                }
+                if (isset($v['config']['mustchild']) && $v['config']['mustchild'] == true) {
+                    $this->unsetLastClassify($value);
+                }
+                $data_final[$k]['config']['list'] = $value;
+                if (isset($v['config']['star_only'])) {
+                    $data_final[$k]['config']['star_only'] = $v['config']['star_only'];
+                } else {
+                    $data_final[$k]['config']['star_only'] = "0";
+                }
+            } elseif ($v['type'] == 'page') {
+                $list = Classify::where('cus_id', '=', $pagedata->cus_id)->where('type', 4)->where('pc_show', '=', 1)->get()->toArray();
+                $value = array();
+                $selected = false;
+                foreach ($list as $key => $l) {
+                    $value[$key]['id'] = $l['id'];
+                    $value[$key]['name'] = $l['name'];
+                    $value[$key]['p_id'] = $l['p_id'];
+                    $value[$key]['type'] = $l['type'];
+                    if (isset($v['config']['id']) && $l['id'] == $v['config']['id']) {
+                        $value[$key]['selected'] = "1";
+                        $selected = true;
                     } else {
-                        $data_final[$k]['config']['star_only'] = "0";
+                        $value[$key]['selected'] = "0";
                     }
-                    break;
-                case 'form':
-//                    $FormC = new FormController;
-                    break;
-                default:
-                    break;
+                }
+                if (!$selected) {
+                    $value[0]['selected'] = 1;
+                }
+                if (isset($v['config']['mustchild']) && $v['config']['mustchild'] == true) {
+                    $this->unsetLastClassify($value);
+                }
+                $data_final[$k]['config']['list'] = $value;
+                if (isset($v['config']['star_only'])) {
+                    $data_final[$k]['config']['star_only'] = $v['config']['star_only'];
+                } else {
+                    $data_final[$k]['config']['star_only'] = "0";
+                }
+            } elseif ($v['type'] == 'navs') {
+                $type_arr = array(1, 2, 3, 4, 6, 9);
+                $list = Classify::where('cus_id', '=', $pagedata->cus_id)->whereIn('type', array(1, 2, 3, 4, 6, 9))->where('pc_show', '=', 1)->get()->toArray();
+                $value = array();
+                $selected = false;
+                foreach ($list as $key => $l) {
+                    $value[$key]['id'] = $l['id'];
+                    $value[$key]['name'] = $l['name'];
+                    $value[$key]['p_id'] = $l['p_id'];
+                    $value[$key]['type'] = $l['type'];
+                    if (isset($v['config']['id']) && $l['id'] == $v['config']['id']) {
+                        $value[$key]['selected'] = 1;
+                        $selected = true;
+                    } else {
+                        $value[$key]['selected'] = 0;
+                    }
+                }
+                if (isset($v['config']['filter'])) {
+                    if ($v['config']['filter'] == 'page') {
+                        $value = $classify->toTree($value);
+                        $type_arr = array(4);
+                    } elseif ($v['config']['filter'] == 'list') {
+                        $value = $classify->toTree($value);
+                        $type_arr = array(1, 2, 3);
+                    } elseif ($v['config']['filter'] == 'ALL') {
+                        $value = $classify->toTree($value);
+                        $type_arr = array(1, 2, 3, 4, 6);
+                    } else {
+                        $value = $classify->toTree($value);
+                        $type_arr = array(1, 2, 3, 4);
+                    }
+                }
+                $this->unsetFalseClassify($value, $type_arr);
+                if (!$selected && count($value)) {
+                    foreach ($value as $key => $v) {
+                        $value[$key]['selected'] = 1;
+                        break;
+                    }
+                }
+                if (isset($v['config']['mustchild']) && $v['config']['mustchild'] == true) {
+                    $this->unsetLastClassify($value);
+                }
+                $data_final[$k]['config']['list'] = $value;
+                if (isset($v['config']['star_only'])) {
+                    $data_final[$k]['config']['star_only'] = $v['config']['star_only'];
+                } else {
+                    $data_final[$k]['config']['star_only'] = "0";
+                }
             }
         }
         return $data_final;
@@ -238,17 +227,12 @@ class TemplatesController extends BaseController {
      * @return type
      */
     public function homepageList() {
-        $page = Input::get('page') ? Input::get('page') : 'index'; //===index首页/_aside其他/global全局/form表单===
-        $templedata = $this->homepageInfo($page); //===step:2===
-//        dd($templedata);
+        $page = Input::get('page') ? Input::get('page') : 'index'; //===index首页/_aside其他/global全局===
+        $templedata = $this->homepageInfo($page);
         $data_final = ['err' => 0, 'msg' => '', 'data' => $templedata];
         return Response::json($data_final);
     }
 
-    /**
-     * ===页面编辑navs加载===
-     * @return string
-     */
     public function buttonList() {
         $result = [];
         $cus_id = Auth::id();
@@ -279,7 +263,7 @@ class TemplatesController extends BaseController {
             } else {
                 $title = "其他";
             }
-            $result[$k]['title'] = Config::get('file.' . $file_type[0], $title); //===form===
+            $result[$k]['title'] = Config::get('file.' . $file_type[0], $title);
             if ($file_type[0] == 'index') {
                 $result[$k]['url'] = asset('homepage-preview');
             } elseif ($file_type[0] == 'list-text') {
@@ -362,13 +346,22 @@ class TemplatesController extends BaseController {
         $website_config->cus_id = $cus_id;
         $page = Input::get('page');
         $website_config->key = $page;
-        //===判断是否已保存模板数据===
         $websiteconfig = $website_config->where('cus_id', $cus_id)->where('template_id', $template_id)->where('key', $page)->pluck('value');
         $websitearray = unserialize($websiteconfig);
         $org_imgs = $this->getimage($websitearray);
         $count = $website_config->where('cus_id', $cus_id)->where('template_id', $template_id)->where('key', $page)->count();
         $website_config->template_id = $template_id;
-        $data = Input::get();
+        $data = Input::get('data');
+        /*
+          if(isset($data['slidepics']) && count($data['slidepics'])){
+          foreach($data['slidepics'] as &$arr){
+          $arr['link']=$arr['href'];
+          $arr['image']=basename($arr['src']);
+          unset($arr['href']);
+          unset($arr['src']);
+          }
+          }
+         */
         foreach ($data as $key => $val) {
             if (is_array($data[$key]) && count($data[$key])) {
                 if (array_key_exists("href", $data[$key]) || array_key_exists("src", $data[$key])) {
@@ -639,10 +632,6 @@ class TemplatesController extends BaseController {
         return Response::json($return_msg);
     }
 
-    /**
-     * ===首页批量添加===
-     * @return type
-     */
     public function homepageBatchModify() {
         $ids = Input::get('id');
         $index_show = Input::get('show');
@@ -737,7 +726,7 @@ class TemplatesController extends BaseController {
     }
 
     private function sendTemplate() {
-        if ($_SERVER["HTTP_HOST"] == "preview.5067.org") {
+        if ($_SERVER["HTTP_HOST"] == "ht.5067.org") {
             $cus_id = Auth::id();
             $customer = Auth::user()->name;
             $webinfo = WebsiteInfo::where("cus_id", $cus_id)->first();
@@ -862,7 +851,7 @@ class TemplatesController extends BaseController {
      */
     public function homepagePreview() {
         $result = array();
-        if ($_SERVER["HTTP_HOST"] == "preview.5067.org") {
+        if ($_SERVER["HTTP_HOST"] == "ht.5067.org") {
             $this->sendTemplate();
             $json = file_get_contents("http://172.16.0.17/homepage-preview-no-auth?name=" . (Auth::user()->name) . "&remember_token=" . (Auth::user()->remember_token ? Auth::user()->remember_token : ""));
             $result = json_decode($json, true);
@@ -876,7 +865,7 @@ class TemplatesController extends BaseController {
      */
     public function categoryPreview($id, $page = 1) {
         $result = array();
-        if ($_SERVER["HTTP_HOST"] == "preview.5067.org") {
+        if ($_SERVER["HTTP_HOST"] == "ht.5067.org") {
             $this->sendTemplate();
             $json = file_get_contents("http://172.16.0.17/category-no-auth/" . $id . "_" . $page . "?name=" . (Auth::user()->name) . "&remember_token=" . (Auth::user()->remember_token ? Auth::user()->remember_token : ""));
             $result = json_decode($json, true);
@@ -890,7 +879,7 @@ class TemplatesController extends BaseController {
      */
     public function categoryPreviewV($view_name, $page = 1) {
         $result = array();
-        if ($_SERVER["HTTP_HOST"] == "preview.5067.org") {
+        if ($_SERVER["HTTP_HOST"] == "ht.5067.org") {
             $this->sendTemplate();
             $json = file_get_contents("http://172.16.0.17/category-no-auth/" . $view_name . "_" . $page . "?name=" . (Auth::user()->name) . "&remember_token=" . (Auth::user()->remember_token ? Auth::user()->remember_token : ""));
             $result = json_decode($json, true);
@@ -904,7 +893,7 @@ class TemplatesController extends BaseController {
      */
     public function articlePreview($id) {
         $result = array();
-        if ($_SERVER["HTTP_HOST"] == "preview.5067.org") {
+        if ($_SERVER["HTTP_HOST"] == "ht.5067.org") {
             $this->sendTemplate();
             $json = file_get_contents("http://172.16.0.17/detail-no-auth/" . $id . "?name=" . (Auth::user()->name) . "&remember_token=" . (Auth::user()->remember_token ? Auth::user()->remember_token : ""));
             $result = json_decode($json, true);
@@ -918,7 +907,7 @@ class TemplatesController extends BaseController {
      */
     public function mhomepagePreview() {
         $result = array();
-        if ($_SERVER["HTTP_HOST"] == "preview.5067.org") {
+        if ($_SERVER["HTTP_HOST"] == "ht.5067.org") {
             $this->sendTemplate();
             $json = file_get_contents("http://172.16.0.17/mobile/homepage-preview-no-auth?name=" . (Auth::user()->name) . "&remember_token=" . (Auth::user()->remember_token ? Auth::user()->remember_token : ""));
             $result = json_decode($json, true);
@@ -932,7 +921,7 @@ class TemplatesController extends BaseController {
      */
     public function mcategoryPreview($id, $page = 1) {
         $result = array();
-        if ($_SERVER["HTTP_HOST"] == "preview.5067.org") {
+        if ($_SERVER["HTTP_HOST"] == "ht.5067.org") {
             $this->sendTemplate();
             $json = file_get_contents("http://172.16.0.17/mobile/category-no-auth/{$id}_{$page}?name=" . (Auth::user()->name) . "&remember_token=" . (Auth::user()->remember_token ? Auth::user()->remember_token : ""));
             $result = json_decode($json, true);
@@ -946,7 +935,7 @@ class TemplatesController extends BaseController {
      */
     public function mcategoryPreviewV($view_name, $page = 1) {
         $result = array();
-        if ($_SERVER["HTTP_HOST"] == "preview.5067.org") {
+        if ($_SERVER["HTTP_HOST"] == "ht.5067.org") {
             $this->sendTemplate();
             $json = file_get_contents("http://172.16.0.17/mobile/category-no-auth/{$view_name}_{$page}?name=" . (Auth::user()->name) . "&remember_token=" . (Auth::user()->remember_token ? Auth::user()->remember_token : ""));
             $result = json_decode($json, true);
@@ -960,7 +949,7 @@ class TemplatesController extends BaseController {
      */
     public function marticlePreview($id) {
         $result = array();
-        if ($_SERVER["HTTP_HOST"] == "preview.5067.org") {
+        if ($_SERVER["HTTP_HOST"] == "ht.5067.org") {
             $this->sendTemplate();
             $json = file_get_contents("http://172.16.0.17/mobile/detail-no-auth/{$id}?name=" . (Auth::user()->name) . "&remember_token=" . (Auth::user()->remember_token ? Auth::user()->remember_token : ""));
             $result = json_decode($json, true);
@@ -969,9 +958,6 @@ class TemplatesController extends BaseController {
         return $template->articlePreview($id, $result);
     }
 
-    /**
-     * 预览登录
-     */
     private function preview_login() {
         if ($_SERVER["HTTP_HOST"] == "172.16.0.17" && Input::has("name")) {
             if (Input::has("remember_token") && Input::get("remember_token") == "" && Input::get("remember_token") == null) {
@@ -1085,48 +1071,87 @@ class TemplatesController extends BaseController {
     /**
      * 模板下载
      */
-    public function downloadTemplate() {
-        echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
-        if (Auth::user()->name != "test") {
-            return false;
-        }
-        $tplname = Input::get("name");
-        $tpl = Template::where('name', $tplname)->first();
-        if ($tpl == null) {
-            echo '没有该模板！';
-        }
-        if (!is_dir(public_path('temp_templates/tpl/'))) {
-            @mkdir(public_path('temp_templates/tpl/'));
-        } else {
-            $dh = opendir(public_path('temp_templates/tpl'));
-            while ($file = readdir($dh)) {
-                if ($file != "." && $file != "..") {
-                    $fullpath = public_path('temp_templates/tpl/' . $file);
-                    if (is_file($fullpath)) {
-                        unlink($fullpath);
+    public function downloadTemplate($tplname = "") {
+        if ($tplname != "") {
+            $tpl = Template::where('name', $tplname)->first();
+            if ($tpl == null) {
+                return json_encode(array("err" => 1, "msg" => "没有该模板！"));
+            }
+            if (!is_dir(public_path('temp_templates/tpl/'))) {
+                @mkdir(public_path('temp_templates/tpl/'));
+            } else {
+                $dh = opendir(public_path('temp_templates/tpl'));
+                while ($file = readdir($dh)) {
+                    if ($file != "." && $file != "..") {
+                        $fullpath = public_path('temp_templates/tpl/' . $file);
+                        if (is_file($fullpath)) {
+                            unlink($fullpath);
+                        }
                     }
                 }
+                closedir($dh);
             }
-            closedir($dh);
+            $path = public_path('temp_templates/tpl/' . $tplname . '.zip');
+            $view_dir = app_path('views/templates/');
+            $json_dir = public_path('templates/');
+            if (file_exists($path)) {
+                @unlink($path);
+            }
+            $zip = new ZipArchive;
+            if ($zip->open($path, ZipArchive::CREATE) === TRUE) {
+                $this->addFileToZip($json_dir . $tplname . "/css", $zip, "css/");
+                $this->addFileToZip($json_dir . $tplname . "/js", $zip, "js/");
+                $this->addFileToZip($json_dir . $tplname . "/images", $zip, "images/");
+                $this->addFileToZip($json_dir . $tplname . "/json", $zip, "");
+                $this->addFileToZip($view_dir . $tplname, $zip, "", "searchresult_do.html");
+                $zip->addFile($json_dir . $tplname . "/config.ini", "config.ini");
+                $zip->addFile($json_dir . $tplname . "/screenshot.jpg", "screenshot.jpg");
+                $zip->close();
+            }
+            return json_encode(array("err" => 0, "msg" => 'http://' . $_SERVER['HTTP_HOST'] . '/temp_templates/tpl/' . $tplname . '.zip'));
+        } else {
+            echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
+            if (Auth::user()->name != "test") {
+                return false;
+            }
+            $tplname = Input::get("name");
+            $tpl = Template::where('name', $tplname)->first();
+            if ($tpl == null) {
+                echo '没有该模板！';
+            }
+            if (!is_dir(public_path('temp_templates/tpl/'))) {
+                @mkdir(public_path('temp_templates/tpl/'));
+            } else {
+                $dh = opendir(public_path('temp_templates/tpl'));
+                while ($file = readdir($dh)) {
+                    if ($file != "." && $file != "..") {
+                        $fullpath = public_path('temp_templates/tpl/' . $file);
+                        if (is_file($fullpath)) {
+                            unlink($fullpath);
+                        }
+                    }
+                }
+                closedir($dh);
+            }
+            $path = public_path('temp_templates/tpl/' . $tplname . '.zip');
+            $view_dir = app_path('views/templates/');
+            $json_dir = public_path('templates/');
+            if (file_exists($path)) {
+                @unlink($path);
+            }
+            $zip = new ZipArchive;
+            if ($zip->open($path, ZipArchive::CREATE) === TRUE) {
+                $this->addFileToZip($json_dir . $tplname . "/css", $zip, "css/");
+                $this->addFileToZip($json_dir . $tplname . "/js", $zip, "js/");
+                $this->addFileToZip($json_dir . $tplname . "/images", $zip, "images/");
+                $this->addFileToZip($json_dir . $tplname . "/json", $zip, "");
+                $this->addFileToZip($view_dir . $tplname, $zip, "", "searchresult_do.html");
+                $zip->addFile($json_dir . $tplname . "/config.ini", "config.ini");
+                $zip->addFile($json_dir . $tplname . "/screenshot.jpg", "screenshot.jpg");
+                $zip->close();
+            }
+            echo '<a href="/temp_templates/tpl/' . $tplname . '.zip">下载' . $tplname . '模板</a>';
         }
-        $path = public_path('temp_templates/tpl/' . $tplname . '.zip');
-        $view_dir = app_path('views/templates/');
-        $json_dir = public_path('templates/');
-        if (file_exists($path)) {
-            @unlink($path);
-        }
-        $zip = new ZipArchive;
-        if ($zip->open($path, ZipArchive::CREATE) === TRUE) {
-            $this->addFileToZip($json_dir . $tplname . "/css", $zip, "css/");
-            $this->addFileToZip($json_dir . $tplname . "/js", $zip, "js/");
-            $this->addFileToZip($json_dir . $tplname . "/images", $zip, "images/");
-            $this->addFileToZip($json_dir . $tplname . "/json", $zip, "");
-            $this->addFileToZip($view_dir . $tplname, $zip, "","searchresult_do.html");
-            $zip->addFile($json_dir . $tplname ."/config.ini", "config.ini");
-            $zip->addFile($json_dir . $tplname ."/screenshot.jpg", "screenshot.jpg");
-            $zip->close();
-        }
-        echo '<a href="/temp_templates/tpl/' . $tplname . '.zip">下载' . $tplname . '模板</a>';
     }
 
     /**
@@ -1135,14 +1160,14 @@ class TemplatesController extends BaseController {
      * @param type $zip压缩变量
      * @param type $dir存储名称
      */
-    private function addFileToZip($path, $zip, $dir,$notcopyfile="") {//将整个文件夹压缩
+    private function addFileToZip($path, $zip, $dir, $notcopyfile = "") {//将整个文件夹压缩
         $handler = opendir($path);
         while (($filename = readdir($handler)) !== false) {
             if ($filename != "." && $filename != "..") {
                 if (is_dir($path . "/" . $filename)) {
-                    $this->addFileToZip($path . "/" . $filename, $zip, $dir  . $filename. "/");
+                    $this->addFileToZip($path . "/" . $filename, $zip, $dir . $filename . "/");
                 } else {
-                    if($notcopyfile==""||$filename!=$notcopyfile){
+                    if ($notcopyfile == "" || $filename != $notcopyfile) {
                         $zip->addFile($path . "/" . $filename, $dir . $filename);
                     }
                 }

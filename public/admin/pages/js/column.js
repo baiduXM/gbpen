@@ -544,6 +544,7 @@ function columnController($scope, $http) {
                     var savePostRequest = function (first) {
                         if (box_flag == 'batch') {
                             post_url = 'classify-batch';
+                            $('#box_flag').val('single');
                         } else {
                             post_url = 'classify-modify';
                         }

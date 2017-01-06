@@ -20,13 +20,11 @@ function settingController($scope, $http) {
         },
         _changeTab: function () {
             $(".setting-name").click(function (e) {
-//                console.log(_this);
                 $(this).siblings('div').removeClass("select");
                 $(this).addClass("select");
                 var _name = this.id;
                 $('[name="' + _name + '"]').siblings(".setting-feild").hide();
                 $('[name="' + _name + '"]').show();
-
             });
         },
         _settingGetInfo: function () {
@@ -34,12 +32,28 @@ function settingController($scope, $http) {
             // 数据读取
             $http.get('../customer-info').success(function (json) {
                 var set = json.data;
-                $('.setting-content input[name=company_name]').val(set.company_name);
+                if (set.bilingual) {
+                    $(".bilingual_box_encn").show();
+                    $('.setting-content input[name=bilingual_v]').val(set.bilingual_v);
+                    if (set.bilingual_v) {
+                        $("input.benl").attr("checked", true);
+                        $(".bilingual_box").show();
+                    } else {
+                        $("input.benl").attr("checked", false);
+                        $(".bilingual_box").hide();
+                    }
+                } else {
+                    $(".bilingual_box_encn").hide();
+                }
+                $('.setting-content input[name=bilingual_position]').val(set.bilingual_position);
+                $('.setting-content input[name=bilingual_font_color]').val(set.bilingual_font_color);
+                $('.setting-content input[name=bilingual_font_active_color]').val(set.bilingual_font_active_color);
+                $('.setting-content input[name=bilingual_background_color]').val(set.bilingual_background_color);
+                $('.setting-content input[name=bilingual_background_opacity]').val(set.bilingual_background_opacity);
                 $('.setting-content input[name=domain_pc]').val(set.domain_pc);
                 $('.setting-content input[name=domain_m]').val(set.domain_m);
                 $('.setting-content input[name=def_domain_pc]').val(set.def_domain_pc);
                 $('.setting-content input[name=def_domain_m]').val(set.def_domain_m);
-                $('.setting-content input[name=company_name]').val(set.company_name);
                 $('.setting-content input[name=company_name]').val(set.company_name);
                 $('.setting-content input[name=title]').val(set.title);
                 $('.setting-content textarea[name=keywords]').val(set.keywords);
@@ -69,29 +83,31 @@ function settingController($scope, $http) {
                 $('.setting-content input[name=pc_txt_per_page]').val(set.pc_txt_per_page);
                 $('.setting-content input[name=pc_img_per_page]').val(set.pc_img_per_page);
                 $('.setting-content input[name=pc_page_count_switch]').val(set.pc_page_count_switch);
-                
+
                 $('.setting-content textarea[name=background_music]').val(set.background_music);
 
                 $('#domain_pc').attr('href', 'http://' + set.domain_pc);
                 $('#def_domain_pc').attr('href', 'http://' + set.def_domain_pc);
                 $('#lang option[value=' + set.lang + ']').attr('selected', true);
-                var _option = '';
+                var _option = '', _option2 = '';
                 if (set.lang == 'cn') {
                     _option = '<option value="cn_xiamen">厦门易尔通网络科技有限公司</option>' +
-                            '<option value="cn_huizhou">惠州易瑞通网络科技有限公司</option>';
-                    _option2 = '<option value="cn_rencai">厦门人才网</option>'+
+                            '<option value="cn_huizhou">惠州易瑞通网络科技有限公司</option>' +
+                            '<option value="null">无</option>';
+                    _option2 = '<option value="cn_rencai">厦门人才网</option>' +
                             '<option value="cn_null">无</option>';
                 } else if (set.lang == 'en') {
                     _option = '<option value="en_xiamen">XIAMEN 12t NETWORK TECHNOLOGY CO., LTD.</option>' +
-                            '<option value="en_huizhou">HUIZHOU YIRUITONG NETWORK TECHNOLOGY CO., LTD.</option>';
-                    _option2 = '<option value="en_rencai">www.xgzrc.com</option>'+
+                            '<option value="en_huizhou">HUIZHOU YIRUITONG NETWORK TECHNOLOGY CO., LTD.</option>' +
+                            '<option value="null">无</option>';
+                    _option2 = '<option value="en_rencai">www.xgzrc.com</option>' +
                             '<option value="en_null">Null</option>';
                 }
                 $('#copyright').html(_option);
                 $('#copyright option[value=' + set.copyright + ']').attr('selected', true);
                 $('#talent_support').html(_option2);
                 $('#talent_support option[value=' + set.talent_support + ']').attr('selected', true);
-                
+
                 $('#def_domain_m').MoveBox({
                     Trigger: 'mouseenter',
                     context: '<img src="http://s.jiathis.com/qrcode.php?url=http://' + set.def_domain_m + '" />'
@@ -257,12 +273,12 @@ function settingController($scope, $http) {
                 if (_lang == 'cn') {
                     var _option = '<option value="cn_xiamen">厦门易尔通网络科技有限公司</option>' +
                             '<option value="cn_huizhou">惠州易瑞通网络科技有限公司</option>';
-                    var _option2 = '<option value="cn_rencai">厦门人才网</option>'+
+                    var _option2 = '<option value="cn_rencai">厦门人才网</option>' +
                             '<option value="cn_null">无</option>';
                 } else if (_lang == 'en') {
                     var _option = '<option value="en_xiamen">XIAMEN 12t NETWORK TECHNOLOGY CO., LTD.</option>' +
                             '<option value="en_huizhou">HUIZHOU YIRUITONG NETWORK TECHNOLOGY CO., LTD.</option>';
-                    var _option2 = '<option value="en_rencai">www.xgzrc.com</option>'+
+                    var _option2 = '<option value="en_rencai">www.xgzrc.com</option>' +
                             '<option value="en_null">Null</option>';
                 } else {
                     var _option = '';
@@ -367,11 +383,24 @@ function settingController($scope, $http) {
                 Trigger: 'mouseenter',
                 context: '开启产品介绍图片放大功能'
             });
+            $('.bilingual').MoveBox({
+                Trigger: 'mouseenter',
+                context: '开启顶部中英双站切换'
+            });
             $('.enlarge').click(function () {
                 if ($("#enlargev").val() == '1') {
                     $("#enlargev").val("0");
                 } else {
                     $("#enlargev").val("1");
+                }
+            });
+            $('.bilingual').click(function () {
+                if ($("#bilingual_v").val() == '1') {
+                    $("#bilingual_v").val("0");
+                    $(".bilingual_box").hide();
+                } else {
+                    $("#bilingual_v").val("1");
+                    $(".bilingual_box").show();
                 }
             });
             $('input.chk').click(function (event) {
