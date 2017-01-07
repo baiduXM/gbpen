@@ -710,7 +710,7 @@ class WebsiteController extends BaseController {
                 }
             }
             $result = ['err' => 1000, 'msg' => '上传模板成功'];
-            $this->logsAdd('null',__FUNCTION__,__CLASS__,999,"模板上传",0,$truth_name);
+            $this->logsAdd('n',__FUNCTION__,__CLASS__,999,"模板上传",0,$truth_name);
         }else{
             $result = ['err' => 1003, 'msg' => '解压文件失败'];
         }
@@ -892,7 +892,7 @@ class WebsiteController extends BaseController {
             $truth_name = date('ymd') . mt_rand(100, 999) . '.' . $type;
             if ($type == "zip") {
                 if (file_exists(public_path("temp_templates/$truth_name"))) {
-                    $this->logsAdd('null',__FUNCTION__,__CLASS__,999,"高级定制模板上传",0,$truth_name);
+                    $this->logsAdd('n',__FUNCTION__,__CLASS__,999,"高级定制模板上传",0,$truth_name);
                     $result = ['err' => 1000, 'msg' => '模板覆盖成功'];
                 } else {
                     $up_result = $file->move(public_path("temp_templates/"), $truth_name);
