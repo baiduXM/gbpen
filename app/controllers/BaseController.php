@@ -63,14 +63,14 @@ class BaseController extends Controller {
         }else{
             $logs->fk_id = $fk_id;
         }
-        if(Auth::user()->name){
+        if(Auth::check()){
             $logs->username = Auth::user()->name;
             $logs->cus_id = Auth::user()->id;
         }else{
             $logs->username = "未登录";
             $logs->cus_id = 0;
         }
-//        $logs->save();
+        $logs->save();
     }
 
 }
