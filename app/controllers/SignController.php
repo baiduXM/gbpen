@@ -86,8 +86,8 @@ class SignController extends BaseController {
 //            }
         }
         if (isset($result) && ($result)) {
+            $this->logsAdd("customer",__FUNCTION__,__CLASS__,3,"修改密码",0);
             Auth::logout();
-            $this->logsAdd("customer",__FUNCTION__,__CLASS__,999,"修改密码",0);
             return Response::json(['err' => 0, 'msg' => '修改成功', 'success' => 1]);
         } else {
             return Response::json(['err' => 0, 'msg' => $msg, 'success' => 0]);
