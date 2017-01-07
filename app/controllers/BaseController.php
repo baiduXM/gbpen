@@ -26,7 +26,6 @@ class BaseController extends Controller {
     public function logsAdd($table, $function, $class, $type, $describe,$pingtai,$fk_id = '') {
         
         $logs = new Logs();
-        $realip;
         if (isset($_SERVER)) {
             if (isset($_SERVER["HTTP_X_FORWARDED_FOR"])) {
                 $realip = $_SERVER["HTTP_X_FORWARDED_FOR"];
@@ -71,7 +70,7 @@ class BaseController extends Controller {
             $logs->username = "未登录";
             $logs->cus_id = 0;
         }
-        $logs->save();
+//        $logs->save();
     }
 
 }
