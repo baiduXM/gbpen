@@ -3678,8 +3678,8 @@ class PrintController extends BaseController {
             }
         }
         $result['pagenavs'] = $pagenavs;
-        $result['posnavs'] = $this->getPosNavs($c_id); //array(0 => array('en_name' => 'Search', 'name' => '搜索', 'link' => 'javascript:;', 'icon' => ''));
-//        $result['posnavs'] = array(0 => array('en_name' => 'Search', 'name' => '搜索', 'link' => 'javascript:;', 'icon' => ''));
+//        $result['posnavs'] = $this->getPosNavs($c_id); //array(0 => array('en_name' => 'Search', 'name' => '搜索', 'link' => 'javascript:;', 'icon' => ''));
+        $result['posnavs'] = array(0 => array('en_name' => 'Search+', 'name' => '搜索+', 'link' => 'javascript:;', 'icon' => ''));
         //搜索数据替换
         if (!is_file(app_path('views/templates/' . $this->themename . '/searchresult_do.html'))) {
             //搜索数据标记与替换
@@ -3801,8 +3801,8 @@ class PrintController extends BaseController {
             }
         }
         $result['pagenavs'] = $pagenavs;
-//        $result['posnavs'] = $this->getPosNavs($c_id); //array(0 => array('en_name' => 'Search', 'name' => '搜索', 'link' => 'javascript:;', 'icon' => ''));
-        $result['posnavs'] = $this->getPosNavs();
+//        $result['posnavs'] = $this->getPosNavs($c_id); // $this->getPosNavs();
+        $result['posnavs'] = array(0 => array('en_name' => '+Search', 'name' => '+搜索', 'link' => 'javascript:;', 'icon' => ''));
         //搜索数据替换
         if (!is_file(app_path('views/templates/' . $this->themename . '/searchresult_do.html'))) {
             //搜索数据标记与替换
@@ -3979,15 +3979,15 @@ class PrintController extends BaseController {
      * @return type
      */
 //    private function getPosNavs($c_id = 0, &$posnavs = array()) {
-    private function getPosNavs($c_id = 0, &$posnavs = array()) {
-        if (!$c_id) {
-            $webinfo = WebsiteConfig::where("cus_id", $this->cus_id)->where("key", "_pagenavs_sub3")->pluck("value");
-            if (!$webinfo) {
-                $webinfo = WebsiteConfig::where("cus_id", $this->cus_id)->where("key", "_aside")->pluck("value");
-            }
-            $webinfo = unserialize($webinfo);
-            $c_id = $webinfo["pagenavs"]["value"]["id"];
-        }
+    private function getPosNavs($c_id, &$posnavs = array()) {
+//        if (!$c_id) {
+//            $webinfo = WebsiteConfig::where("cus_id", $this->cus_id)->where("key", "_pagenavs_sub3")->pluck("value");
+//            if (!$webinfo) {
+//                $webinfo = WebsiteConfig::where("cus_id", $this->cus_id)->where("key", "_aside")->pluck("value");
+//            }
+//            $webinfo = unserialize($webinfo);
+//            $c_id = $webinfo["pagenavs"]["value"]["id"];
+//        }
         $classify = Classify::where('id', $c_id)->first();
         $arr['name'] = $classify->name;
         $arr['en_name'] = $classify->en_name;
