@@ -26,7 +26,6 @@ class BaseController extends Controller {
     public function logsAdd($table, $function, $class, $type, $describe,$pingtai,$fk_id = '') {
         
         $logs = new Logs();
-        static $realip;
         if (isset($_SERVER)) {
             if (isset($_SERVER["HTTP_X_FORWARDED_FOR"])) {
                 $realip = $_SERVER["HTTP_X_FORWARDED_FOR"];
@@ -64,7 +63,7 @@ class BaseController extends Controller {
         }else{
             $logs->fk_id = $fk_id;
         }
-        if(Auth::user()->name){
+        if(Auth::check()){
             $logs->username = Auth::user()->name;
             $logs->cus_id = Auth::user()->id;
         }else{
