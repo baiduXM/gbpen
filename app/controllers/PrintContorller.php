@@ -3678,8 +3678,8 @@ class PrintController extends BaseController {
             }
         }
         $result['pagenavs'] = $pagenavs;
-        $result['posnavs'] = $this->getPosNavs($c_id); // $this->getPosNavs();
-//        $result['posnavs'] = array(0 => array('en_name' => 'Search+', 'name' => '搜索+', 'link' => 'javascript:;', 'icon' => ''));
+//        $result['posnavs'] = $this->getPosNavs($c_id); // $this->getPosNavs();
+        $result['posnavs'] = array(0 => array('en_name' => 'Search+', 'name' => '搜索+', 'link' => 'javascript:;', 'icon' => ''));
         //搜索数据替换
         if (!is_file(app_path('views/templates/' . $this->themename . '/searchresult_do.html'))) {
             //搜索数据标记与替换
@@ -3801,8 +3801,8 @@ class PrintController extends BaseController {
             }
         }
         $result['pagenavs'] = $pagenavs;
-        $result['posnavs'] = $this->getPosNavs($c_id); // $this->getPosNavs();
-//        $result['posnavs'] = array(0 => array('en_name' => '+Search', 'name' => '+搜索', 'link' => 'javascript:;', 'icon' => ''));
+//        $result['posnavs'] = $this->getPosNavs($c_id); // $this->getPosNavs();
+        $result['posnavs'] = array(0 => array('en_name' => '+Search', 'name' => '+搜索', 'link' => 'javascript:;', 'icon' => ''));
         //搜索数据替换
         if (!is_file(app_path('views/templates/' . $this->themename . '/searchresult_do.html'))) {
             //搜索数据标记与替换
