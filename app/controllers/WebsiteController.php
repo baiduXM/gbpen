@@ -140,17 +140,25 @@ class WebsiteController extends BaseController {
 
     /**
      * ===模板更换===
+     * 1、选择颜色，查询模板
      * @return type
      */
     public function templateChage() {
         $cus_id = Auth::id();
-        $type = Input::get('type');
-        $id = Input::get('id');
-        $color = Input::get('color');
-        $color_id = Color::where('color_en', $color)->pluck('id');
-        $template = Template::find($id);
-        $websiteconfig = WebsiteConfig::where('cus_id', $cus_id)->where('type', 2)->where('template_id', '0')->where('key', 'quickbar')->pluck('value');
+        $type = Input::get('type'); //===模板类型：1-PC，2-手机
+        $id = Input::get('id'); //===所选模板id
+        $color = Input::get('color'); //===颜色名
+        if (!empty($color) || $color != "undefined") {
+            $color_id = Color::where('color_en', $color)->pluck('id'); //===获取颜色id
+        } else {
+            $color_id = 0;
+        }
+        $template = Template::find($id); //查询模板
+        $websiteconfig = WebsiteConfig::where('cus_id', $cus_id)->where('type', 2)->where('template_id', '0')->where('key', 'quickbar')->pluck('value'); //读取网站手机quickbar配置
         $websiteconfig = unserialize($websiteconfig);
+//        return Response::json(['err' => 1001, 'msg' => $websiteconfig]);
+//        var_dump($websiteconfig);
+//        exit;
         foreach ((array) $websiteconfig as $key => $val) {
             if ($val['type'] === 'colors') {//===？如果网站配置类型是颜色类型，则移除该配置项===
                 unset($websiteconfig[$key]);
@@ -173,15 +181,15 @@ class WebsiteController extends BaseController {
                 } else {
                     $pushed = 3;
                 }
-                $update = ['mobile_tpl_id' => $id,'mobile_color_id' => $color_id,'pushed'=>$pushed];
+                $update = ['mobile_tpl_id' => $id, 'mobile_color_id' => $color_id, 'pushed' => $pushed];
             }
-            $update_result = WebsiteInfo::where('cus_id',$cus_id)->update($update);
-            if($update_result){
-                WebsiteConfig::where('cus_id',$cus_id)->where('key','quickbar')->update(['value'=>$websiteconfig,'pushed'=>1]);
-                if($type==1){
-                    $this->logsAdd('websiteinfo',__FUNCTION__,__CLASS__,999,"切换PC模板，id：".$id."，颜色id：".$color_id."，cus_id",0,$cus_id);
-                }else{
-                    $this->logsAdd('websiteinfo',__FUNCTION__,__CLASS__,999,"切换手机模板，id：".$id."，颜色id：".$color_id."，cus_id",0,$cus_id);
+            $update_result = WebsiteInfo::where('cus_id', $cus_id)->update($update);
+            if ($update_result) {
+                WebsiteConfig::where('cus_id', $cus_id)->where('key', 'quickbar')->update(['value' => $websiteconfig, 'pushed' => 1]);
+                if ($type == 1) {
+                    $this->logsAdd('websiteinfo', __FUNCTION__, __CLASS__, 999, "切换PC模板，id：" . $id . "，颜色id：" . $color_id . "，cus_id", 0, $cus_id);
+                } else {
+                    $this->logsAdd('websiteinfo', __FUNCTION__, __CLASS__, 999, "切换手机模板，id：" . $id . "，颜色id：" . $color_id . "，cus_id", 0, $cus_id);
                 }
                 $result = ['err' => 0, 'msg' => ''];
             }
@@ -218,10 +226,10 @@ class WebsiteController extends BaseController {
             $update_result = WebsiteInfo::where('cus_id', $cus_id)->update($update);
             if ($update_result) {
                 Template::where("name", $tpl_dir)->update(array("updated_at" => date("Y-m-d H:i:s", time())));
-                if($type == 1){
-                    $this->logsAdd('websiteinfo',__FUNCTION__,__CLASS__,2,"删除PC模板，id：".$former_id."，颜色id：".$color_list[0],0,$id);
-                }else{
-                    $this->logsAdd('websiteinfo',__FUNCTION__,__CLASS__,2,"删除手机模板，id：".$former_id."，颜色id：".$color_list[0],0,$id);
+                if ($type == 1) {
+                    $this->logsAdd('websiteinfo', __FUNCTION__, __CLASS__, 2, "删除PC模板，id：" . $former_id . "，颜色id：" . $color_list[0], 0, $id);
+                } else {
+                    $this->logsAdd('websiteinfo', __FUNCTION__, __CLASS__, 2, "删除手机模板，id：" . $former_id . "，颜色id：" . $color_list[0], 0, $id);
                 }
                 $result = ['err' => 0, 'msg' => ''];
             } else {
@@ -710,8 +718,8 @@ class WebsiteController extends BaseController {
                 }
             }
             $result = ['err' => 1000, 'msg' => '上传模板成功'];
-            $this->logsAdd('n',__FUNCTION__,__CLASS__,999,"模板上传",0,$truth_name);
-        }else{
+            $this->logsAdd('n', __FUNCTION__, __CLASS__, 999, "模板上传", 0, $truth_name);
+        } else {
             $result = ['err' => 1003, 'msg' => '解压文件失败'];
         }
         return $result;
@@ -892,7 +900,7 @@ class WebsiteController extends BaseController {
             $truth_name = date('ymd') . mt_rand(100, 999) . '.' . $type;
             if ($type == "zip") {
                 if (file_exists(public_path("temp_templates/$truth_name"))) {
-                    $this->logsAdd('n',__FUNCTION__,__CLASS__,999,"高级定制模板上传",0,$truth_name);
+                    $this->logsAdd('n', __FUNCTION__, __CLASS__, 999, "高级定制模板上传", 0, $truth_name);
                     $result = ['err' => 1000, 'msg' => '模板覆盖成功'];
                 } else {
                     $up_result = $file->move(public_path("temp_templates/"), $truth_name);
