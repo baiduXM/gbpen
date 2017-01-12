@@ -19,9 +19,19 @@ class WebsiteController extends BaseController {
       |
      */
 
+    /**
+     * 模板列表
+     * @param type $type    模板类型,1-PC,2-mobile
+     * @param type $per_page    每页数据数
+     * @param type $form    当前页数
+     * @param type $search    ？搜索条件
+     * @param type $classify    ？栏目 
+     * @param type $color   颜色
+     * @return type
+     */
     public function templatesList($type = 1, $per_page = 8, $form = 0, $search = NULL, $classify = '', $color = NULL) {
         $cus_id = Auth::id();
-        $without_tid = Template::where('cus_id', $cus_id)->lists('former_id');
+        $without_tid = Template::where('cus_id', $cus_id)->lists('former_id'); //===定制模板===
         $where = " WHERE type=$type AND cus_id!=$cus_id";
         if (count($without_tid)) {
             $notin = implode(",", $without_tid);
@@ -87,6 +97,10 @@ class WebsiteController extends BaseController {
         //return Response::json(['err'=>0,'msg'=>'','data'=>$result]);
     }
 
+    /**
+     * 获取模板列表
+     * @return type
+     */
     public function templatesListGet() {
         $type = Input::get('type');
         $per_page = Input::get('per_page') ? Input::get('per_page') : 8;
@@ -98,6 +112,10 @@ class WebsiteController extends BaseController {
         return Response::json(['err' => 0, 'msg' => '', 'data' => $result]);
     }
 
+    /**
+     * 我的定制列表
+     * @return type
+     */
     public function myTemplateList() {
         $cus_id = Auth::id();
         $type = Input::has('type') ? Input::get('type') : 1;

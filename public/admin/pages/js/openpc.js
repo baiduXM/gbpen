@@ -448,7 +448,7 @@ function openpcController($scope, $http, $location) {
     //关闭搜索记录
     $(".Filter").on('click', '.Filter_close', function () {
         show_hide.show($(this));
-    })
+    });
 }
 
 			
