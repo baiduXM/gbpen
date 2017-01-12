@@ -201,6 +201,12 @@ class WebsiteController extends BaseController {
                 }
                 $update = ['mobile_tpl_id' => $id, 'mobile_color_id' => $color_id, 'pushed' => $pushed];
             }
+//            $update_result = WebsiteInfo::where('cus_id', $cus_id)->update($update);
+//            if ($update_result) {
+//                WebsiteConfig::where('cus_id', $cus_id)->where('key', 'quickbar')->update(['value' => $websiteconfig, 'pushed' => 1]);
+//                
+//                $result = ['err' => 0, 'msg' => ''];
+//            }
             $update_result = WebsiteInfo::where('cus_id', $cus_id)->update($update);
             if ($update_result) {
                 WebsiteConfig::where('cus_id', $cus_id)->where('key', 'quickbar')->update(['value' => $websiteconfig, 'pushed' => 1]);
@@ -209,11 +215,6 @@ class WebsiteController extends BaseController {
                 } else {
                     $this->logsAdd('websiteinfo', __FUNCTION__, __CLASS__, 999, "切换手机模板，id：" . $id . "，颜色id：" . $color_id . "，cus_id", 0, $cus_id);
                 }
-                $result = ['err' => 0, 'msg' => ''];
-            }
-            $update_result = WebsiteInfo::where('cus_id', $cus_id)->update($update);
-            if ($update_result) {
-                WebsiteConfig::where('cus_id', $cus_id)->where('key', 'quickbar')->update(['value' => $websiteconfig, 'pushed' => 1]);
                 $result = ['err' => 0, 'msg' => 'success'];
             } else {
                 $result = ['err' => 1001, 'msg' => '更换模版失败'];

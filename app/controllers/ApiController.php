@@ -398,13 +398,13 @@ class ApiController extends BaseController {
                         }
                     } else {
 //                        echo "数据库备份失败";
-                        return Response::json(['err' => 1004, 'msg' => '数据库备份失败']);
+                        return Response::json(['err' => 1004, 'msg' => '数据库备份失败1']);
                     }
                 } else {
-                    return Response::json(['err' => 1004, 'msg' => '数据库备份失败']);
+                    return Response::json(['err' => 1004, 'msg' => '数据库备份失败2']);
                 }
             } else {
-                return Response::json(['err' => 1004, 'msg' => '数据库备份失败']);
+                return Response::json(['err' => 1004, 'msg' => '数据库备份失败3']);
             }
         } else {
             $result = ['err' => 1002, 'msg' => '验证不通过'];
@@ -439,9 +439,10 @@ class ApiController extends BaseController {
                     } else { //将文件加入zip对象
                         $zip->addFile($path . "/" . $filename, $array . '/' . $filename);
                     }
-                } else { //将文件加入zip对象
-                    $zip->addFile($path . "/" . $filename, $array . '/' . $filename);
-                }
+                } 
+//                else { //将文件加入zip对象
+//                    $zip->addFile($path . "/" . $filename, $array . '/' . $filename);
+//                }
             }
             @closedir($path);
     }
