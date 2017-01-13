@@ -264,7 +264,19 @@ class UploadController extends BaseController {
                 return Response::json(['err' => 0, 'msg' => '保存成功', 'data' => $data]);
             }
         } else {
-            return Response::json(['err' => 1001, 'msg' => '保存失败']);
+            //===判断服务器是否正常===
+            $cus_id = Auth::id();
+            $weburl = Customer::where('id', $cus_id)->pluck('weburl');
+            if ($weburl) {
+                if ($this->MonitorCheck($weburl)) {
+                    $return = ['err' => 1001, 'msg' => '保存失败', 'data' => ''];
+                } else {
+                    $return = ['err' => 1001, 'msg' => '请检测服务器是否正常', 'data' => ''];
+                }
+            } else {
+                $return = ['err' => 1001, 'msg' => '保存失败', 'data' => ''];
+            }
+            return Response::json($return);
         }
     }
 
@@ -304,11 +316,23 @@ class UploadController extends BaseController {
                         else
                             $load['url'] = '../images/' . $truth_name;
                         $return = ['err' => 0, 'msg' => '图片上传成功', 'data' => $load];
-                    } else
-                        $return = ['err' => 1001, 'msg' => '图片上传失败', 'data' => ''];
+                    } else {
+                        //===判断服务器是否正常===
+                        $cus_id = Auth::id();
+                        $weburl = Customer::where('id', $cus_id)->pluck('weburl');
+                        if ($weburl) {
+                            if ($this->MonitorCheck($weburl)) {
+                                $return = ['err' => 1001, 'msg' => '图片上传失败', 'data' => ''];
+                            } else {
+                                $return = ['err' => 1001, 'msg' => '服务器链接失败', 'data' => ''];
+                            }
+                        } else {
+                            $return = ['err' => 1001, 'msg' => '图片上传失败', 'data' => ''];
+                        }
+                    }
                 }
                 return Response::json($return);
-            }else {
+            } else {
                 $data = array();
                 $i = 0;
                 foreach ($files as $file) {
