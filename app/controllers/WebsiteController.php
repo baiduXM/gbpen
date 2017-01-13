@@ -1,23 +1,23 @@
 <?php
 
+/**
+  |--------------------------------------------------------------------------
+  | 模版控制器
+  |--------------------------------------------------------------------------
+  |方法：
+  |templatesPC        PC模版查询、增加、设为默认、删除
+  |templatesQuery      查询模版
+  |templatesList      列出当前已选的模版
+  |copy               拷贝公共模版到用户目录用于定制
+  |fileList           列出当前定制模版的可编辑文件
+  |fileget            获取文件的内容
+  |fileeidt           编辑保存文件
+  |rcopy              拷贝一个目录
+  |saveTemplate       模板入库
+  |unpack             解包模板文件
+  |
+ */
 class WebsiteController extends BaseController {
-    /*
-      |--------------------------------------------------------------------------
-      | 模版控制器
-      |--------------------------------------------------------------------------
-      |方法：
-      |templatesPC        PC模版查询、增加、设为默认、删除
-      |templatesQuery      查询模版
-      |templatesList      列出当前已选的模版
-      |copy               拷贝公共模版到用户目录用于定制
-      |fileList           列出当前定制模版的可编辑文件
-      |fileget            获取文件的内容
-      |fileeidt           编辑保存文件
-      |rcopy              拷贝一个目录
-      |saveTemplate       模板入库
-      |unpack             解包模板文件
-      |
-     */
 
     /**
      * 模板列表
@@ -27,7 +27,7 @@ class WebsiteController extends BaseController {
      * @param type $search    ？搜索条件
      * @param type $classify    ？栏目 
      * @param type $color   颜色
-     * @return type
+     * @return type 
      */
     public function templatesList($type = 1, $per_page = 8, $form = 0, $search = NULL, $classify = '', $color = NULL) {
         $cus_id = Auth::id();
