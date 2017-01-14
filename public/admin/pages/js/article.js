@@ -27,8 +27,6 @@ function articleController($scope, $http, $location) {
      * @returns {undefined}
      */
     $scope.getArticleList = function (option) {
-//        console.log(option);
-//        console.log('===2===');
         var page = option.page || $scope.page, //===当前页码
                 cat_id = option.cat_id || $scope.cat_id, //===分类id
                 num_per_page = option.num_per_page || $scope.num_per_page, //===每页几条
@@ -110,7 +108,7 @@ function articleController($scope, $http, $location) {
 //                ser_active ? window.location.hash = '#/article?p=1' + urlparam : '';
                 if (cat_id != null) {
                     $('.article-tb .newarticle').addClass('navcolor');
-                    $('.article-tb .newarticle span').text(ser_name)//。。。
+                    $('.article-tb .newarticle span').text(ser_name)//
                     $('.article-tb .starback').fadeIn();
                 }
                 if (json.data != null && json.data.aticlelist != null) {
@@ -246,7 +244,7 @@ function articleController($scope, $http, $location) {
     // 首次获取
     $scope.getArticleList({
         first: true,
-        ser_name: ser_name,
+        ser_name: ser_name
     });
     //菜单
     (function ArticleMenu() {
@@ -342,7 +340,17 @@ function articleController($scope, $http, $location) {
             this._showPlatform();
             this._batchAdd();
             this._searchWords();//===模糊查找===
+            this._refresh();//===刷新===
             // this._batchEdit();
+        },
+        _refresh: function () {
+            $(".refresh_button").click(function () {
+                // 首次获取
+                $scope.getArticleList({
+                    first: true,
+                    ser_name: ser_name,
+                });
+            })
         },
         _checkstar: function () {
             // 查看推荐以及返回

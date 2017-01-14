@@ -319,7 +319,7 @@ function settingController($scope, $http) {
                                 $http.post('../imgupload?target=common', {files: img_upload});
                             }
                             var hint_box = new Hint_box();
-                            hint_box;
+                            hint_box(json.msg);
                         }
                     });
                 });
