@@ -166,5 +166,11 @@
         "templateUrl": "pages/contact.html",
         "scriptUrl": "pages/js/contact.js",
         "controller": "contactController"
+    },
+    {
+        "router": "/logs",
+        "templateUrl": "pages/logs.html",
+        "scriptUrl": "pages/js/logs.js",
+        "controller": "logsController"
     }
 ]
