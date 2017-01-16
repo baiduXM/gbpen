@@ -3,6 +3,20 @@
 class BaseController extends Controller {
 
     /**
+     * ===判断服务器是否正常===
+     * @return type
+     */
+    public function __construct() {
+        $cus_id = Auth::id();
+        $weburl = Customer::where('id', $cus_id)->pluck('weburl');
+        if ($weburl) {
+            if ($this->MonitorCheck($weburl) == false) {
+                return Response::json(['err' => 1001, 'msg' => '请检测服务器是否正常', 'data' => '']);
+            }
+        }
+    }
+
+    /**
      * Setup the layout used by the controller.
      *
      * @return void
@@ -80,7 +94,7 @@ class BaseController extends Controller {
      *      c.n02.5067.org  (182.61.29.25);
      *      c.hk01.5067.org (182.61.100.142);
      * @param type $find    找你的网站首页源代码中的一段字符串
-     * @return type
+     * @return boolen       true-连接成功，false-服务器连接失败
      */
     public function MonitorCheck($host, $find = '域名未绑定') {
         $hostarr = explode('.', $host);
@@ -101,7 +115,7 @@ class BaseController extends Controller {
                 break;
         }
         $fp = fsockopen($host, 80);
-        if (!$fp) {
+        if (!$fp) {//===连接不成功===
             return false;
         } else {
             $header = "GET / HTTP/1.1\r\n";
