@@ -176,6 +176,12 @@ class UploadController extends BaseController {
         $weburl = Customer::where('id', $cus_id)->pluck('weburl');
         $suf_url = str_replace('http://c', '', $weburl);
         if ($files) {
+            //===判断服务器是否正常===
+            if ($weburl) {
+                if ($this->MonitorCheck($weburl) == false) {
+                    return Response::json(['err' => 1001, 'msg' => '请检测服务器是否正常', 'data' => '']);
+                }
+            }
             $data = array();
             $i = 0;
             //同步到客户服务器
@@ -265,13 +271,11 @@ class UploadController extends BaseController {
             }
         } else {
             //===判断服务器是否正常===
-            $cus_id = Auth::id();
-            $weburl = Customer::where('id', $cus_id)->pluck('weburl');
             if ($weburl) {
                 if ($this->MonitorCheck($weburl)) {
                     $return = ['err' => 1001, 'msg' => '保存失败', 'data' => ''];
                 } else {
-                    $return = ['err' => 1001, 'msg' => '请检测服务器是否正常', 'data' => ''];
+                    return Response::json(['err' => 1001, 'msg' => '请检测服务器是否正常', 'data' => '']);
                 }
             } else {
                 $return = ['err' => 1001, 'msg' => '保存失败', 'data' => ''];
@@ -291,6 +295,7 @@ class UploadController extends BaseController {
         $files = Input::file();
         $dir = public_path('customers/' . $customer . '/cache_images/');
         $customerinfo = Customer::find($cus_id);
+        $weburl = Customer::where('id', $cus_id)->pluck('weburl');
         if (!is_dir($dir)) {
             $this->CreateAllDir();
             mkdir($dir, 0777, true);
@@ -318,13 +323,11 @@ class UploadController extends BaseController {
                         $return = ['err' => 0, 'msg' => '图片上传成功', 'data' => $load];
                     } else {
                         //===判断服务器是否正常===
-                        $cus_id = Auth::id();
-                        $weburl = Customer::where('id', $cus_id)->pluck('weburl');
                         if ($weburl) {
                             if ($this->MonitorCheck($weburl)) {
                                 $return = ['err' => 1001, 'msg' => '图片上传失败', 'data' => ''];
                             } else {
-                                $return = ['err' => 1001, 'msg' => '服务器链接失败', 'data' => ''];
+                                return Response::json(['err' => 1001, 'msg' => '服务器链接失败', 'data' => '']);
                             }
                         } else {
                             $return = ['err' => 1001, 'msg' => '图片上传失败', 'data' => ''];
@@ -350,6 +353,12 @@ class UploadController extends BaseController {
                 return Response::json(['err' => 0, 'msg' => '$target!=imgcache', 'data' => $data]);
             }
         } else {
+            //===判断服务器是否正常===
+            if ($weburl) {
+                if ($this->MonitorCheck($weburl) == false) {
+                    return Response::json(['err' => 101, 'msg' => '服务器链接失败', 'data' => []]);
+                }
+            }
             $file = Input::get('image');
             if (strpos($file, 'jpeg')) {
                 $type = 'jpg';
