@@ -116,7 +116,7 @@ class BaseController extends Controller {
         }
         $fp = @fsockopen($host, 80, $errno, $errstr, 15);
         if (!$fp) {//===连接不成功===
-            echo "$errstr ($errno)<br />n";
+//            echo "$errstr ($errno)<br />n";
             return false;
         } else {
             $header = "GET / HTTP/1.1\r\n";
