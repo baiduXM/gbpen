@@ -356,7 +356,7 @@ class UploadController extends BaseController {
             //===判断服务器是否正常===
             if ($weburl) {
                 if ($this->MonitorCheck($weburl) == false) {
-                    return Response::json(['err' => 101, 'msg' => '服务器链接失败', 'data' => []]);
+                    return Response::json(['err' => 1001, 'msg' => '服务器链接失败', 'data' => []]);
                 }
             }
             $file = Input::get('image');
