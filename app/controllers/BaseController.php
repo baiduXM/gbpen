@@ -114,7 +114,7 @@ class BaseController extends Controller {
             default:
                 break;
         }
-        $fp = fsockopen($host, 80);
+        $fp = @fsockopen($host, 80, $errno, $errstr, 30);
         if (!$fp) {//===连接不成功===
             return false;
         } else {
