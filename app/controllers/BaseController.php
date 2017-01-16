@@ -7,13 +7,13 @@ class BaseController extends Controller {
      * @return type
      */
     public function __construct() {
-        $cus_id = Auth::id();
-        $weburl = Customer::where('id', $cus_id)->pluck('weburl');
-        if ($weburl) {
-            if ($this->MonitorCheck($weburl) == false) {
-                return Response::json(['err' => 1001, 'msg' => '请检测服务器是否正常', 'data' => '']);
-            }
-        }
+//        $cus_id = Auth::id();
+//        $weburl = Customer::where('id', $cus_id)->pluck('weburl');
+//        if ($weburl) {
+//            if ($this->MonitorCheck($weburl) == false) {
+//                return Response::json(['err' => 1001, 'msg' => '请检测服务器是否正常', 'data' => '']);
+//            }
+//        }
     }
 
     /**
@@ -114,7 +114,7 @@ class BaseController extends Controller {
             default:
                 break;
         }
-        $fp = @fsockopen($host, 80, $errno, $errstr, 15);
+        $fp = fsockopen($host, 80, $errno, $errstr, 15);
         if (!$fp) {//===连接不成功===
             echo "$errstr ($errno)<br />n";
             return false;
