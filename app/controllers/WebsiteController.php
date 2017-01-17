@@ -94,7 +94,6 @@ class WebsiteController extends BaseController {
             $result['data'][$k] = $std;
         }
         return $result;
-        //return Response::json(['err'=>0,'msg'=>'','data'=>$result]);
     }
 
     /**
