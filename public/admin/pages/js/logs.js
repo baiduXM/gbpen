@@ -49,6 +49,9 @@ function logsController($scope, $http, $location) {
             urlparam += '&time1=' + option.time1;
             urlparam += '&time2=' + option.time2;
         }
+        if (option.username != null) {
+            urlparam += '&username=' + option.username;
+        }
         if (page != null) {
             urlparam += '&page=' + page;
         }
@@ -248,6 +251,7 @@ function logsController($scope, $http, $location) {
             $('.searchlogs').unbind('click').click(function () {
                 var time1 = $('#time1').val();
                 var time2 = $('#time2').val();
+                var username = $('#username').val();
                 var type = $('.selectBox_val').val();
                 var cha = (Date.parse(time2) - Date.parse(time1));
                 if(cha<1){
@@ -256,16 +260,33 @@ function logsController($scope, $http, $location) {
                     if(time1 != '' && time1 != undefined){
                         if(time2 == '' || time2 == undefined){
                             alert("结束日期必须设置");
+                        }else if(type != '0' && type != undefined && username != '' && username != undefined){
+//                            全有
+                            $scope.getLogsList({
+                                first: true,
+                                time1: time1,
+                                time2: time2,
+                                type: type,
+                                username: username
+                            });
                         }else if(type != '0' && type != undefined){
-    //                        有两个日期和类型
+//                            有两个日期和类型
                             $scope.getLogsList({
                                 first: true,
                                 time1: time1,
                                 time2: time2,
                                 type: type
                             });
+                        }else if(username != '' && username != undefined){
+//                            有两个日期和用户
+                            $scope.getLogsList({
+                                first: true,
+                                time1: time1,
+                                time2: time2,
+                                username: username
+                            });
                         }else{
-    //                        有两个日期
+//                            有两个日期
                             $scope.getLogsList({
                                 first: true,
                                 time1: time1,
@@ -273,11 +294,26 @@ function logsController($scope, $http, $location) {
                             });
                         }
                     }else if(type != '' && type != undefined && type != '0'){
-    //                    只有类型
-                        $scope.getLogsList({
-                            first: true,
-                            type: type
-                        });
+                        if(username != '' && username != undefined){
+//                            有类型和用户
+                            $scope.getLogsList({
+                                first: true,
+                                type: type,
+                                username: username
+                            });
+                        }else{
+//                            只有类型
+                            $scope.getLogsList({
+                                first: true,
+                                type: type
+                            });
+                        }
+                    }else if(username != '' && username != undefined){
+//                            只有用户
+                            $scope.getLogsList({
+                                first: true,
+                                username: username
+                            });
                     }else{
     //                    都没有
                         $scope.getLogsList({

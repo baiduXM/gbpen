@@ -18,8 +18,9 @@ class LogsController extends BaseController {
         $type = Input::has('type') ? Input::get('type') : '';
         $time1 = Input::has('time1') ? strtotime(Input::get('time1')) : '';
         $time2 = Input::has('time2') ? strtotime(Input::get('time2')) : '';
+        $username = Input::has('username') ? Input::get('username') : '';
         $per_page = Input::has('per_page') ? Input::get('per_page') : 15;
-        $data = $this->logsListData($per_page,$type,$time1,$time2);
+        $data = $this->logsListData($per_page,$type,$time1,$time2,$username);
         if ($data != NULL) {
             foreach($data['data'] as &$value){
                 $value['operation_time'] = date("Y-m-d H:i:s",$value['operation_time']);
@@ -90,14 +91,30 @@ class LogsController extends BaseController {
      * @param type $time2 
      * @return data
      */
-    protected function logsListData($per_page = 15,$type = '',$time1 = '',$time2 = '') {
-        if(!empty($type) && !empty($time1) && !empty($time2)){
+    protected function logsListData($per_page = 15,$type = '',$time1 = '',$time2 = '',$username = '') {
+        if(!empty($type) && !empty($time1) && !empty($time2) && !empty($username)){
+            //全有
+            $logs_list = Logs::where("operation_time",'>=',$time1)->where("operation_time",'<=',$time2)->where("operation_type",'=',$type)->where("username",'=',$username)->orderBy('operation_time', 'DESC')->paginate($per_page)->toArray();
+        }elseif(!empty($type) && !empty($time1) && !empty($time2)){
+            //只有类型和时间
             $logs_list = Logs::where("operation_time",'>=',$time1)->where("operation_time",'<=',$time2)->where("operation_type",'=',$type)->orderBy('operation_time', 'DESC')->paginate($per_page)->toArray();
+        }elseif(!empty($type) && !empty ($username)){
+            //只有类型和用户
+            $logs_list = Logs::where("operation_type",'=',$type)->where("username",'=',$username)->orderBy('operation_time', 'DESC')->paginate($per_page)->toArray();
+        }elseif(!empty($time1) && !empty($time2) && !empty ($username)){
+            //只有时间和用户
+            $logs_list = Logs::where("operation_time",'>=',$time1)->where("operation_time",'<=',$time2)->where("username",'=',$username)->orderBy('operation_time', 'DESC')->paginate($per_page)->toArray();
         }elseif(!empty($type)){
+            //只有类型
             $logs_list = Logs::where("operation_type",'=',$type)->orderBy('operation_time', 'DESC')->paginate($per_page)->toArray();
         }elseif(!empty($time1) && !empty($time2)){
+            //只有时间
             $logs_list = Logs::where("operation_time",'>=',$time1)->where("operation_time",'<=',$time2)->orderBy('operation_time', 'DESC')->paginate($per_page)->toArray();
+        }elseif(!empty($username)){
+            //只有用户
+            $logs_list = Logs::where("username",'=',$username)->orderBy('operation_time', 'DESC')->paginate($per_page)->toArray();
         }else{
+            //全没有
             $logs_list = Logs::orderBy('operation_time', 'DESC')->paginate($per_page)->toArray();
         }
         return $logs_list;
