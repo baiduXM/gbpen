@@ -77,7 +77,7 @@ class LogsController extends BaseController {
                 
                 $logs->where("operation_time",">=",$time_minday)->where("operation_time","<",$time_tomorrow)->delete();
             }
-            $this->WriteLogs($logs);
+//            $this->WriteLogs($logs);
         }else{
             echo "no";   
         }
