@@ -30,6 +30,29 @@ class LogsController extends BaseController {
             return Response::json(['err' => 3001, 'msg' => '不存在文章', 'data' => '']);
         }
     }
+    
+    public function logsAdda() {
+        $time_min = Logs::min('operation_time');
+        $time_minday = strtotime(date("Y-m-d",  $time_min));
+        $time_tomorrow = $time_minday + 86400;
+        $logs_data = Logs::where("operation_time",">=",$time_minday)->where("operation_time","<",$time_tomorrow)->get()->toArray();
+        if($logs_data){
+            foreach($logs_data as &$value){
+                $value['operation_time'] = date("Y-m-d H:i:s",$value['operation_time']);
+            }
+            $logs_data = str_replace("),","),\r\n\r\n",var_export($logs_data,TRUE));
+            $logs_data = str_replace("operation_time","操作时间",$logs_data);
+            $logs_data = str_replace("operation_table","操作表",$logs_data);
+            $logs_data = str_replace("operation_class","操作类",$logs_data);
+            $logs_data = str_replace("operation_function","操作方法",$logs_data);
+            $logs_data = str_replace("operation_type","操作类型",$logs_data);
+            $logs_data = str_replace("operation_describe","操作描述",$logs_data);
+            $logs_data = str_replace("username","操作用户",$logs_data);
+            $logs_data = str_replace("cus_id","操作用户id",$logs_data);
+            $logs_data = str_replace("fk_id","操作表id",$logs_data);
+            file_put_contents(public_path('logs/'.date("Y-m-d",  $time_min).'.txt'), $logs_data, FILE_APPEND); 
+        }
+    }
     /**
      * 日志读取
      * @param type $time1
