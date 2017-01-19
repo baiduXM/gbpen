@@ -115,10 +115,8 @@ class BaseController extends Controller {
                 $logs_data = str_replace("cus_id","操作用户id",$logs_data);
                 $logs_data = str_replace("fk_id","操作表id",$logs_data);
                 
-                echo file_put_contents(public_path('logs/'.date("Y-m-d",  $time_min).'.txt'), $logs_data, FILE_APPEND); 
-                echo "</br>";
-                echo public_path('logs/'.date("Y-m-d",  $time_min).'.txt');
-                echo "</br>";
+                file_put_contents(public_path('logs/'.date("Y-m-d",  $time_min).'.txt'), $logs_data, FILE_APPEND); 
+                
                 $logs->where("operation_time",">=",$time_minday)->where("operation_time","<",$time_tomorrow)->delete();
             }
             $this->WriteLogs($logs);
