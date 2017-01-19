@@ -31,14 +31,14 @@ class LogsController extends BaseController {
         }
     }
     /**
-     * 
+     * 日志读取
      * @param type $time1
      * @param type $type
      * @param type $time1
      * @param type $time2 
      * @return data
      */
-    public function logsListData($per_page = 15,$type = '',$time1 = '',$time2 = '') {
+    protected function logsListData($per_page = 15,$type = '',$time1 = '',$time2 = '') {
         if(!empty($type) && !empty($time1) && !empty($time2)){
             $logs_list = Logs::where("operation_time",'>=',$time1)->where("operation_time",'<=',$time2)->where("operation_type",'=',$type)->orderBy('operation_time', 'DESC')->paginate($per_page)->toArray();
         }elseif(!empty($type)){

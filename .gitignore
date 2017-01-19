@@ -20,3 +20,4 @@ app/storage/sessions/*
 app/controllers/FormController.php.rej
 public/sqlite.db
 public/sqlite_1.db
+public/logs/*
