@@ -939,12 +939,17 @@ class PrintController extends BaseController {
         //===显示版本切换链接-end===
         $formC = new FormController();
         $formJS = $this->insetForm(); //===表单嵌入===
+        $add_color_css = "";
         if ($this->type == 'pc') {
             $stylecolor = websiteInfo::leftJoin('color', 'color.id', '=', 'website_info.pc_color_id')->where('cus_id', $this->cus_id)->pluck('color_en'); //===!获取模板颜色===
             //===!加载该颜色的CSS文件===
             $css_file_name = public_path('templates/' . $this->themename) . '/css/style_' . $stylecolor . '.css';
+            dd($css_file_name);
+//            public/templates/GP0002/css/style_grey.css
             if (file_exists($css_file_name)) {//===
-                $add_color_css = "<script>$('<link>').attr({ rel: 'stylesheet',type: 'text/css',href: '" . $css_file_name . "'}).appendTo('head');</script>";
+//                $add_color_css = '<script>alert(1);$("<link>").attr({ rel: "stylesheet",type: "text/css",href: "' . $css_file_name . '"}).appendTo("head");</script>';
+                $add_color_css = '$("head").append(\'<link rel="stylesheet" href="' . $css_file_name . '" type="text/css">\')';
+//                dd($add_color_css);
             }
             $logo = $this->showtype == 'preview' ? '/customers/' . $this->customer . '/images/l/common/' . $customer_info->logo : $this->domain . '/images/l/common/' . $customer_info->logo; //'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $customer_info->logo) : $this->domain . '/images/l/common/' . $customer_info->logo;
             $floatadv = json_decode($customer_info->floatadv); //===浮动类型===
@@ -1035,6 +1040,7 @@ class PrintController extends BaseController {
             $footscript = $customer_info->pc_footer_script;
             $footscript .= $formJS;
             $footscript .= '<script type="text/javascript" src="/quickbar/js/quickbar.js?' . $this->cus_id . 'pc"></script>';
+            $footscript .= $add_color_css;
 //            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/admin/statis.php?cus_id=' . $this->cus_id . '&platform=pc"></script>'; //===添加统计代码PC===
             if ($customer_info->background_music) {
                 $bgm = str_replace('"', "", $customer_info->background_music);
