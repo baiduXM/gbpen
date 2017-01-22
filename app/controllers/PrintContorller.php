@@ -915,17 +915,6 @@ class PrintController extends BaseController {
                     $language = '<li><a href="' . $current_url . '">中文版</a></li>';
                     $language .= '<li><a href="' . $language_url . '">English</a></li>';
                 }
-//                $styleself = '';
-//
-//                $styleself.="right:" . $customer_info->bilingual_position . "px; ";
-//                $styleself.="background-color:" . $customer_info->bilingual_background_color . "; ";
-//                $styleself.="opacity" . $customer_info->bilingual_background_opacity . "; ";
-//                $language_div = '<div class="language_div" style="' . $styleself . '">'
-//                $language_ul = '<div class="language_div" >'
-//                        . '<ul>'
-//                        . $language
-//                        . '</ul>'
-//                        . '</div>';
                 $language_ul = '<ul>'
                         . $language
                         . '</ul>';
@@ -951,7 +940,12 @@ class PrintController extends BaseController {
         $formC = new FormController();
         $formJS = $this->insetForm(); //===表单嵌入===
         if ($this->type == 'pc') {
-            $stylecolor = websiteInfo::leftJoin('color', 'color.id', '=', 'website_info.pc_color_id')->where('cus_id', $this->cus_id)->pluck('color_en');
+            $stylecolor = websiteInfo::leftJoin('color', 'color.id', '=', 'website_info.pc_color_id')->where('cus_id', $this->cus_id)->pluck('color_en'); //===!获取模板颜色===
+            //===!加载该颜色的CSS文件===
+            $css_file_name = public_path('templates/' . $this->themename) . '/css/style_' . $stylecolor . '.css';
+            if (file_exists($css_file_name)) {//===
+                $add_color_css = "<script>$('<link>').attr({ rel: 'stylesheet',type: 'text/css',href: '" . $css_file_name . "'}).appendTo('head');</script>";
+            }
             $logo = $this->showtype == 'preview' ? '/customers/' . $this->customer . '/images/l/common/' . $customer_info->logo : $this->domain . '/images/l/common/' . $customer_info->logo; //'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $customer_info->logo) : $this->domain . '/images/l/common/' . $customer_info->logo;
             $floatadv = json_decode($customer_info->floatadv); //===浮动类型===
             if (!empty($floatadv)) {
@@ -2980,11 +2974,11 @@ class PrintController extends BaseController {
                     $the_result['list']['data'] = $index_list['data'];
                     $the_result['list']['total'] = $index_list['page_links']['total'];
                     //===页面名字.html===
-                    if ($classify->view_name) {
-                        $path = $this->type == 'pc' ? public_path('customers/' . $this->customer . '/category/' . $classify->view_name . '_' . $i . '.html') : public_path('customers/' . $this->customer . '/mobile/category/' . $classify->view_name . '_' . $i . '.html');
-                    } else {
-                        $path = $this->type == 'pc' ? public_path('customers/' . $this->customer . '/category/' . $id . '_' . $i . '.html') : public_path('customers/' . $this->customer . '/mobile/category/' . $id . '_' . $i . '.html');
-                    }
+//                    if ($classify->view_name) {
+//                        $path = $this->type == 'pc' ? public_path('customers/' . $this->customer . '/category/' . $classify->view_name . '_' . $i . '.html') : public_path('customers/' . $this->customer . '/mobile/category/' . $classify->view_name . '_' . $i . '.html');
+//                    } else {
+                    $path = $this->type == 'pc' ? public_path('customers/' . $this->customer . '/category/' . $id . '_' . $i . '.html') : public_path('customers/' . $this->customer . '/mobile/category/' . $id . '_' . $i . '.html');
+//                    }
                     //===end===
                     $output = $this->pushdisplay($the_result, $content);
                     if (!count($result['footer_navs'])) {
