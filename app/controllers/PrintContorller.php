@@ -944,12 +944,9 @@ class PrintController extends BaseController {
             $stylecolor = websiteInfo::leftJoin('color', 'color.id', '=', 'website_info.pc_color_id')->where('cus_id', $this->cus_id)->pluck('color_en'); //===!获取模板颜色===
             //===!加载该颜色的CSS文件===
             $css_file_name = public_path('templates/' . $this->themename) . '/css/style_' . $stylecolor . '.css';
-            dd($css_file_name);
-//            public/templates/GP0002/css/style_grey.css
-            if (file_exists($css_file_name)) {//===
-//                $add_color_css = '<script>alert(1);$("<link>").attr({ rel: "stylesheet",type: "text/css",href: "' . $css_file_name . '"}).appendTo("head");</script>';
+            if (file_exists($css_file_name)) {
+                $css_file_name = 'templates/' . $this->themename . '/css/style_' . $stylecolor . '.css';
                 $add_color_css = '$("head").append(\'<link rel="stylesheet" href="' . $css_file_name . '" type="text/css">\')';
-//                dd($add_color_css);
             }
             $logo = $this->showtype == 'preview' ? '/customers/' . $this->customer . '/images/l/common/' . $customer_info->logo : $this->domain . '/images/l/common/' . $customer_info->logo; //'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $customer_info->logo) : $this->domain . '/images/l/common/' . $customer_info->logo;
             $floatadv = json_decode($customer_info->floatadv); //===浮动类型===
@@ -1054,11 +1051,18 @@ class PrintController extends BaseController {
         } else {
             $logo = $this->showtype == 'preview' ? ('/customers/' . $this->customer . '/images/l/common/' . $customer_info->logo_small) : $this->domain . '/images/l/common/' . $customer_info->logo_small; //'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $customer_info->logo_small) : $this->domain . '/images/l/common/' . $customer_info->logo_small;
             $stylecolor = websiteInfo::leftJoin('color', 'color.id', '=', 'website_info.mobile_color_id')->where('cus_id', $this->cus_id)->pluck('color_en');
+            //===!加载该颜色的CSS文件===
+            $css_file_name = public_path('templates/' . $this->themename) . '/css/style_' . $stylecolor . '.css';
+            if (file_exists($css_file_name)) {
+                $css_file_name = 'templates/' . $this->themename . '/css/style_' . $stylecolor . '.css';
+                $add_color_css = '$("head").append(\'<link rel="stylesheet" href="' . $css_file_name . '" type="text/css">\')';
+            }
             $headscript = $customer_info->mobile_header_script;
             $footprint = $customer_info->mobile_footer;
             $footscript = $customer_info->mobile_footer_script;
 //            $footscript .= $formJS;
             $footscript .= '<script type="text/javascript" src="/quickbar/js/quickbar.js?' . $this->cus_id . 'mobile"></script>';
+            $footscript .= $add_color_css;
 //            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/admin/statis.php?cus_id=' . $this->cus_id . '&platform=mobile"></script>'; //===添加统计代码MOBILE===
 //            $footscript .= $tempscript;
 //            $footscript .= $language_css;
