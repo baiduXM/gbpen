@@ -946,7 +946,7 @@ class PrintController extends BaseController {
             $css_file_name = public_path('templates/' . $this->themename) . '/css/style_' . $stylecolor . '.css';
             if (file_exists($css_file_name)) {
                 $css_file_name = 'templates/' . $this->themename . '/css/style_' . $stylecolor . '.css';
-                $add_color_css = '$("head").append(\'<link rel="stylesheet" href="' . $css_file_name . '" type="text/css">\')';
+                $add_color_css = '<script type="text/javascript">$("head").append(\'<link rel="stylesheet" href="' . $css_file_name . '" type="text/css">\')</script>';
             }
             $logo = $this->showtype == 'preview' ? '/customers/' . $this->customer . '/images/l/common/' . $customer_info->logo : $this->domain . '/images/l/common/' . $customer_info->logo; //'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $customer_info->logo) : $this->domain . '/images/l/common/' . $customer_info->logo;
             $floatadv = json_decode($customer_info->floatadv); //===浮动类型===
@@ -1055,7 +1055,7 @@ class PrintController extends BaseController {
             $css_file_name = public_path('templates/' . $this->themename) . '/css/style_' . $stylecolor . '.css';
             if (file_exists($css_file_name)) {
                 $css_file_name = 'templates/' . $this->themename . '/css/style_' . $stylecolor . '.css';
-                $add_color_css = '$("head").append(\'<link rel="stylesheet" href="' . $css_file_name . '" type="text/css">\')';
+                $add_color_css = '<script type="text/javascript">$("head").append(\'<link rel="stylesheet" href="' . $css_file_name . '" type="text/css">\')</script>';
             }
             $headscript = $customer_info->mobile_header_script;
             $footprint = $customer_info->mobile_footer;
