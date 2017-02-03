@@ -2,18 +2,8 @@
 
 class BaseController extends Controller {
 
-    /**
-     * ===判断服务器是否正常===
-     * @return type
-     */
     public function __construct() {
-//        $cus_id = Auth::id();
-//        $weburl = Customer::where('id', $cus_id)->pluck('weburl');
-//        if ($weburl) {
-//            if ($this->MonitorCheck($weburl) == false) {
-//                return Response::json(['err' => 1001, 'msg' => '请检测服务器是否正常', 'data' => '']);
-//            }
-//        }
+        
     }
 
     /**
@@ -148,6 +138,8 @@ class BaseController extends Controller {
                 $find = $hostarr[1];
                 break;
             default:
+                $host = "182.61.7.87";
+                $find = "域名未绑定";
                 break;
         }
         $fp = @fsockopen($host, 80, $errno, $errstr, 15);

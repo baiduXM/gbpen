@@ -915,17 +915,6 @@ class PrintController extends BaseController {
                     $language = '<li><a href="' . $current_url . '">中文版</a></li>';
                     $language .= '<li><a href="' . $language_url . '">English</a></li>';
                 }
-//                $styleself = '';
-//
-//                $styleself.="right:" . $customer_info->bilingual_position . "px; ";
-//                $styleself.="background-color:" . $customer_info->bilingual_background_color . "; ";
-//                $styleself.="opacity" . $customer_info->bilingual_background_opacity . "; ";
-//                $language_div = '<div class="language_div" style="' . $styleself . '">'
-//                $language_ul = '<div class="language_div" >'
-//                        . '<ul>'
-//                        . $language
-//                        . '</ul>'
-//                        . '</div>';
                 $language_ul = '<ul>'
                         . $language
                         . '</ul>';
@@ -950,8 +939,15 @@ class PrintController extends BaseController {
         //===显示版本切换链接-end===
         $formC = new FormController();
         $formJS = $this->insetForm(); //===表单嵌入===
+        $add_color_css = "";
         if ($this->type == 'pc') {
-            $stylecolor = websiteInfo::leftJoin('color', 'color.id', '=', 'website_info.pc_color_id')->where('cus_id', $this->cus_id)->pluck('color_en');
+            $stylecolor = websiteInfo::leftJoin('color', 'color.id', '=', 'website_info.pc_color_id')->where('cus_id', $this->cus_id)->pluck('color_en'); //===!获取模板颜色===
+            //===!加载该颜色的CSS文件===
+            $css_file_name = public_path('templates/' . $this->themename) . '/css/style_' . $stylecolor . '.css';
+            if (file_exists($css_file_name)) {
+                $css_file_name = 'templates/' . $this->themename . '/css/style_' . $stylecolor . '.css';
+                $add_color_css = '<script type="text/javascript">$("head").append(\'<link rel="stylesheet" href="' . $css_file_name . '" type="text/css">\')</script>';
+            }
             $logo = $this->showtype == 'preview' ? '/customers/' . $this->customer . '/images/l/common/' . $customer_info->logo : $this->domain . '/images/l/common/' . $customer_info->logo; //'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $customer_info->logo) : $this->domain . '/images/l/common/' . $customer_info->logo;
             $floatadv = json_decode($customer_info->floatadv); //===浮动类型===
             if (!empty($floatadv)) {
@@ -1041,6 +1037,7 @@ class PrintController extends BaseController {
             $footscript = $customer_info->pc_footer_script;
             $footscript .= $formJS;
             $footscript .= '<script type="text/javascript" src="/quickbar/js/quickbar.js?' . $this->cus_id . 'pc"></script>';
+            $footscript .= $add_color_css;
 //            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/admin/statis.php?cus_id=' . $this->cus_id . '&platform=pc"></script>'; //===添加统计代码PC===
             if ($customer_info->background_music) {
                 $bgm = str_replace('"', "", $customer_info->background_music);
@@ -1054,11 +1051,18 @@ class PrintController extends BaseController {
         } else {
             $logo = $this->showtype == 'preview' ? ('/customers/' . $this->customer . '/images/l/common/' . $customer_info->logo_small) : $this->domain . '/images/l/common/' . $customer_info->logo_small; //'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $customer_info->logo_small) : $this->domain . '/images/l/common/' . $customer_info->logo_small;
             $stylecolor = websiteInfo::leftJoin('color', 'color.id', '=', 'website_info.mobile_color_id')->where('cus_id', $this->cus_id)->pluck('color_en');
+            //===!加载该颜色的CSS文件===
+            $css_file_name = public_path('templates/' . $this->themename) . '/css/style_' . $stylecolor . '.css';
+            if (file_exists($css_file_name)) {
+                $css_file_name = 'templates/' . $this->themename . '/css/style_' . $stylecolor . '.css';
+                $add_color_css = '<script type="text/javascript">$("head").append(\'<link rel="stylesheet" href="' . $css_file_name . '" type="text/css">\')</script>';
+            }
             $headscript = $customer_info->mobile_header_script;
             $footprint = $customer_info->mobile_footer;
             $footscript = $customer_info->mobile_footer_script;
 //            $footscript .= $formJS;
             $footscript .= '<script type="text/javascript" src="/quickbar/js/quickbar.js?' . $this->cus_id . 'mobile"></script>';
+            $footscript .= $add_color_css;
 //            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/admin/statis.php?cus_id=' . $this->cus_id . '&platform=mobile"></script>'; //===添加统计代码MOBILE===
 //            $footscript .= $tempscript;
 //            $footscript .= $language_css;
@@ -2980,11 +2984,11 @@ class PrintController extends BaseController {
                     $the_result['list']['data'] = $index_list['data'];
                     $the_result['list']['total'] = $index_list['page_links']['total'];
                     //===页面名字.html===
-                    if ($classify->view_name) {
-                        $path = $this->type == 'pc' ? public_path('customers/' . $this->customer . '/category/' . $classify->view_name . '_' . $i . '.html') : public_path('customers/' . $this->customer . '/mobile/category/' . $classify->view_name . '_' . $i . '.html');
-                    } else {
-                        $path = $this->type == 'pc' ? public_path('customers/' . $this->customer . '/category/' . $id . '_' . $i . '.html') : public_path('customers/' . $this->customer . '/mobile/category/' . $id . '_' . $i . '.html');
-                    }
+//                    if ($classify->view_name) {
+//                        $path = $this->type == 'pc' ? public_path('customers/' . $this->customer . '/category/' . $classify->view_name . '_' . $i . '.html') : public_path('customers/' . $this->customer . '/mobile/category/' . $classify->view_name . '_' . $i . '.html');
+//                    } else {
+                    $path = $this->type == 'pc' ? public_path('customers/' . $this->customer . '/category/' . $id . '_' . $i . '.html') : public_path('customers/' . $this->customer . '/mobile/category/' . $id . '_' . $i . '.html');
+//                    }
                     //===end===
                     $output = $this->pushdisplay($the_result, $content);
                     if (!count($result['footer_navs'])) {
