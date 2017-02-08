@@ -1274,7 +1274,7 @@ class PrintController extends BaseController {
      */
     private function detailList($data) {
         //===获取栏目浏览名称(view_name)===
-//        $cate = array();
+        $cate = array();
 //        $min_classify = Classify::where('cus_id', $this->cus_id)->select('id', 'view_name')->get();
 //        foreach ($min_classify as $key => $value) {
 //            $cate[$value['id']] = $value['view_name'];
@@ -1323,18 +1323,18 @@ class PrintController extends BaseController {
                                 $d_c_info = Classify::where('id', $d->c_id)->first();
                                 $abc['data'][$key]['image'] = $d->img ? ($this->source_dir . 'l/articles/' . $d->img) : '';
                                 if ($this->showtype == 'preview') {
-                                    if ($cate[$d->c_id]) {//===判断栏目是否有别名===
-                                        $abc['data'][$key]['category']['link'] = $this->domain . '/category/' . $cate[$d->c_id];
-                                    } else {
+//                                    if ($cate[$d->c_id]) {//===判断栏目是否有别名===
+//                                        $abc['data'][$key]['category']['link'] = $this->domain . '/category/' . $cate[$d->c_id];
+//                                    } else {
                                         $abc['data'][$key]['category']['link'] = $this->domain . '/category/' . $d->c_id;
-                                    }
+//                                    }
                                     $abc['data'][$key]['link'] = $this->domain . '/detail/' . $d->id;
                                 } else {
-                                    if ($cate[$d->c_id]) {//===判断栏目是否有别名===
-                                        $abc['data'][$key]['category']['link'] = $this->domain . '/category/' . $cate[$d->c_id] . '.html';
-                                    } else {
+//                                    if ($cate[$d->c_id]) {//===判断栏目是否有别名===
+//                                        $abc['data'][$key]['category']['link'] = $this->domain . '/category/' . $cate[$d->c_id] . '.html';
+//                                    } else {
                                         $abc['data'][$key]['category']['link'] = $this->domain . '/category/' . $d->c_id . '.html';
-                                    }
+//                                    }
                                     $abc['data'][$key]['link'] = $this->domain . '/detail/' . $d->id . '.html';
                                 }
                                 if ($d->use_url) {
