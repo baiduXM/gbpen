@@ -323,7 +323,7 @@ function columnController($scope, $http) {
                     var columnicon = new icon_choose();
                     columnicon.clicks();
                     $('.en_name').val(d.en_name);
-                    $('.view_name').val(d.view_name);
+                    // $('.view_name').val(d.view_name);
                     $('#out_url input').val(d.url);
 //                    console.log(d.open_page);
                     $('#out_url select').val(d.open_page);
@@ -506,7 +506,7 @@ function columnController($scope, $http) {
                     var vurl = $('#out_url input').val() ? $('#out_url input').val() : '';
                     var vname = $('.column_name').val();
                     var enname = $('.en_name').val();
-                    var view_name = $('.view_name').val();
+                    // var view_name = $('.view_name').val();
                     var vpid = $('.selectBox_val').val();
                     var vkeywords = $('.keyword').val();
                     var icons = $('.icon_input').val();
