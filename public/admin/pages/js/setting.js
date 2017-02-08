@@ -16,7 +16,7 @@ function settingController($scope, $http) {
             this._Addadv();
             this._Addform();
             this._changeLang();
-            this._changeTab();//选项卡切换
+            this._changeTab(); //选项卡切换
         },
         _changeTab: function () {
             $(".setting-name").click(function (e) {
@@ -83,9 +83,7 @@ function settingController($scope, $http) {
                 $('.setting-content input[name=pc_txt_per_page]').val(set.pc_txt_per_page);
                 $('.setting-content input[name=pc_img_per_page]').val(set.pc_img_per_page);
                 $('.setting-content input[name=pc_page_count_switch]').val(set.pc_page_count_switch);
-
                 $('.setting-content textarea[name=background_music]').val(set.background_music);
-
                 $('#domain_pc').attr('href', 'http://' + set.domain_pc);
                 $('#def_domain_pc').attr('href', 'http://' + set.def_domain_pc);
                 $('#lang option[value=' + set.lang + ']').attr('selected', true);
@@ -107,7 +105,6 @@ function settingController($scope, $http) {
                 $('#copyright option[value=' + set.copyright + ']').attr('selected', true);
                 $('#talent_support').html(_option2);
                 $('#talent_support option[value=' + set.talent_support + ']').attr('selected', true);
-
                 $('#def_domain_m').MoveBox({
                     Trigger: 'mouseenter',
                     context: '<img src="http://s.jiathis.com/qrcode.php?url=http://' + set.def_domain_m + '" />'
@@ -206,7 +203,10 @@ function settingController($scope, $http) {
                 warningbox._upImage({
                     ajaxurl: '../fileupload?target=common',
                     oncallback: function (json) {
-                        var html = '<li class="floatadv">\n\
+                        if (json.err != 0) {
+                            alert(json.msg);
+                        } else {
+                            var html = '<li class="floatadv">\n\
                                     <div class="template-download fade fl in">\n\
                                         <div>\n\
                                             <span class="preview">\n\
@@ -222,7 +222,8 @@ function settingController($scope, $http) {
                                     <label class="floatxy" style="position: relative;width:300px;height: 20px;">链接:<input type="text" class="settingpos" name="href[' + subscript + ']" style="width: 250px;height: 20px;" value=""></label>\n\
                                     <a><i class="fa iconfont icon-delete"></i></a>\n\
                                   </li>';
-                        $('ul.adv').append(html);
+                            $('ul.adv').append(html);
+                        }
                     }
                 });
             });
@@ -230,7 +231,6 @@ function settingController($scope, $http) {
                 $(this).parents('li').remove();
                 return false;
             });
-
         },
         //===添加浮动表单===
         _Addform: function () {
@@ -319,7 +319,7 @@ function settingController($scope, $http) {
                                 $http.post('../imgupload?target=common', {files: img_upload});
                             }
                             var hint_box = new Hint_box();
-                            hint_box;
+                            hint_box(json.msg);
                         }
                     });
                 });
@@ -344,16 +344,20 @@ function settingController($scope, $http) {
                     aspectRatio: role,
                     ajaxurl: '../fileupload?target=common',
                     oncallback: function (json) {
-                        _this.closest('.feild-item').find('div[data-role=' + _this.data('role') + ']').children().remove();
-                        $('.column_pic .template-download').remove();
-                        _newpic = '<div class="template-download fade fl in">\n\
+                        if (json.err != 0) {
+                            alert(json.msg);
+                        } else {
+                            _this.closest('.feild-item').find('div[data-role=' + _this.data('role') + ']').children().remove();
+                            $('.column_pic .template-download').remove();
+                            _newpic = '<div class="template-download fade fl in">\n\
                                     <div>\n\
                                         <span class="preview">\n\
                                         <div class="preview-close"><img src="images/preview-close.png" /></div>\n\
                                             <img src="' + json.data.url + '" class="img_upload" data-name="' + json.data.name + '" style="width:80px;height:64px;padding:5px;" data-preimg="preimg">\n\
                                         </span>\n\
                                     </div><input type="hidden" name="' + _this.data('role') + '" value="' + json.data.name + '"></div>';
-                        _this.closest('.feild-item').find('div[data-role=' + _this.data('role') + ']').append(_newpic);
+                            _this.closest('.feild-item').find('div[data-role=' + _this.data('role') + ']').append(_newpic);
+                        }
                     }
                 });
             });

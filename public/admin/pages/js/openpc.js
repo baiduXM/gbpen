@@ -19,6 +19,7 @@ function openpcController($scope, $http, $location) {
         // 第一页
         if (!page_num) {
             $http.get('../mytemplate-list?type=' + tpltype + '&per_page=' + per_page + '').success(function (json) {
+//                console.log(json);
                 checkJSON(json, function (json) {
                     if (tpltype == 1) {
                         // PC我的定制
@@ -104,7 +105,6 @@ function openpcController($scope, $http, $location) {
 	                            <span class="iconbtn"><i class="iconfont icon-sousuo" onClick="window.open(\'../homepage-preview\',\'_blank\')"></i></span>\n\
 	                        </dl>\n\
                                 <dl class="colorchoose hidden">';
-
             $.each(d_temp.data[i].colors, function (k, j) {
                 _div2 += '<a href="javascript:void(0)" data-imgid="' + j.id + '" style="background:' + j.value + '" ' + (d_temp.data[i].selected_style == j.description ? 'data-color="chose"' : '') + ' >\n\
                         <span class="chose_icon hidden"></span>\n\
@@ -136,6 +136,7 @@ function openpcController($scope, $http, $location) {
 	                            <span class="iconbtn"><i class="iconfont icon-sousuo" onClick="window.open(\'../mobile/homepage-preview\',\'preview\')"></i></span>\n\
 	                        </dl>\n\
 	                        <dl class="colorchoose hidden">';
+
             $.each(d_temp.data[i].colors, function (j) {
                 _div2 += '<a href="javascript:void(0)" data-imgid="' + d_temp.data[i].colors[j].id + '" style="background:' + d_temp.data[i].colors[j].value + '" ' + (d_temp.data[i].selected_style == d_temp.data[i].colors[j].description ? 'data-color="chose"' : '') + ' >\n\
 			                            	<span class="chose_icon hidden"></span>\n\

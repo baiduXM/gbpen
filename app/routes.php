@@ -270,13 +270,13 @@ Route::group(array('before' => 'auth'), function() {
         'uses' => 'TemplatesController@categoryPreview'
     ])->where(['id' => '[0-9]+', 'page' => '[0-9]+']);
 
-    Route::get('category/v/{view_name}', [//===栏目页预览（栏目别名）===
-        'uses' => 'TemplatesController@categoryPreviewV'
-    ])->where('view_name', '[a-z0-9]+');
-
-    Route::get('category/v/{view_name}_{page}', [//===栏目页分页预览(栏目别名)===
-        'uses' => 'TemplatesController@categoryPreviewV'
-    ])->where(['view_name' => '[a-z0-9]+', 'page' => '[0-9]+']);
+//    Route::get('category/v/{view_name}', [//===栏目页预览（栏目别名）===
+//        'uses' => 'TemplatesController@categoryPreviewV'
+//    ])->where('view_name', '[a-z0-9]+');
+//
+//    Route::get('category/v/{view_name}_{page}', [//===栏目页分页预览(栏目别名)===
+//        'uses' => 'TemplatesController@categoryPreviewV'
+//    ])->where(['view_name' => '[a-z0-9]+', 'page' => '[0-9]+']);
 
     Route::get('detail/{id}', [//详情页预览
         'uses' => 'TemplatesController@articlePreview'
@@ -340,13 +340,13 @@ Route::group(array('before' => 'auth'), function() {
         'uses' => 'TemplatesController@mcategoryPreview'
     ])->where(['id' => '[0-9]+', 'page' => '[0-9]+']);
 
-    Route::get('mobile/category/v/{view_name}', [//===栏目页预览（栏目别名）===
-        'uses' => 'TemplatesController@mcategoryPreviewV'
-    ])->where('view_name', '[a-z0-9]+');
-
-    Route::get('mobile/category/v/{view_name}_{page}', [//===栏目页分页预览(栏目别名)===
-        'uses' => 'TemplatesController@mcategoryPreviewV'
-    ])->where(['view_name' => '[a-z0-9]+', 'page' => '[0-9]+']);
+//    Route::get('mobile/category/v/{view_name}', [//===栏目页预览（栏目别名）===
+//        'uses' => 'TemplatesController@mcategoryPreviewV'
+//    ])->where('view_name', '[a-z0-9]+');
+//
+//    Route::get('mobile/category/v/{view_name}_{page}', [//===栏目页分页预览(栏目别名)===
+//        'uses' => 'TemplatesController@mcategoryPreviewV'
+//    ])->where(['view_name' => '[a-z0-9]+', 'page' => '[0-9]+']);
 
     Route::get('mobile/detail/{id}', [//详情页预览
         'uses' => 'TemplatesController@marticlePreview'
@@ -568,6 +568,13 @@ Route::post('upload_template', [//模板上传
     'as' => 'upload_template',
     'uses' => 'WebsiteController@uploadTemplate'
 ]);
+
+//-----------------------------------------------
+//--------------------日志内容--------------------
+    Route::get('logs-list', [//日志列表
+        'as' => 'logs-list',
+        'uses' => 'LogsController@logsList'
+    ]);
 
 //-----------------------------------------------
 //--------------------代理平台接口--------------------

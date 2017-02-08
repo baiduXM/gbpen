@@ -1,0 +1,45 @@
+   
+<div class="jumbotron text-center">
+    <div class="article-tb whole">
+        <div class="info-top clearfix">
+           
+            <div class="fl mov">
+                时间搜索：<input type="text" id="time1" class="laydate-icon creat_time" onClick="laydate({elem:'#time1',istime: true, format: 'YYYY-MM-DD hh:mm:ss'})" readonly="readonly" />---
+                <input type="text" id="time2" class="laydate-icon creat_time" onClick="laydate({elem:'#time2',istime: true, format: 'YYYY-MM-DD hh:mm:ss'})" readonly="readonly" />
+                <ul class="list_mov">
+                </ul>
+            </div>
+
+<span class="fl mr5">&nbsp;&nbsp;&nbsp;操作类型：</span>
+<div class="dropdown fl">
+    <div class="selectBox" type="text">无</div>
+    <span class="arrow" style="border-color: rgb(180, 180, 180) transparent transparent; top: 7px;"></span>                            
+    <input class="selectBox_val" name="column_name" value="0" type="hidden">                            
+    <ul style="display: none;">
+        <li><a class="parents" data-id="0">无</a></li>
+        <li><a class="parents" data-id="1">增加</a></li>
+        <li><a class="parents" data-id="2">删除</a></li>
+        <li><a class="parents" data-id="3">修改</a></li>
+        <li><a class="parents" data-id="4">批量增加</a></li>
+        <li><a class="parents" data-id="5">批量删除</a></li>
+        <li><a class="parents" data-id="6">批量修改</a></li>
+        <li><a class="parents" data-id="100">登录</a></li>
+        <li><a class="parents" data-id="101">退出</a></li>        
+        <li><a class="parents" data-id="999">其他</a></li>
+    </ul>
+</div>
+<a class="inline-block fr addarticle searchlogs all_button" ><i class="iconfont icon-sousuo mr5"></i><span>点击搜索</span></a>
+
+          
+        </div>
+        <table height="410px" class="a-table">
+            <!-- 文章内容 -->
+        </table>
+        <!-- 分页 -->
+        <div class="info-bottom"><dl class="fl checkclass">
+                </dl>　　
+            <div id="Pagination" class="clearfix"></div>
+        </div>  
+        
+    </div>
+</div>

@@ -204,7 +204,7 @@ class ClassifyController extends BaseController {
         if ($is_passed) {
             $classify->name = trim(Input::get('name'));
             $classify->en_name = trim(Input::get('en_name'));
-            $classify->view_name = trim(Input::get('view_name')); //===页面别名===
+//            $classify->view_name = trim(Input::get('view_name')); //===页面别名===
             $images = Input::get('img'); //===新图片
             $classify->img = $images;
             if (!empty($c_imgs) && $c_imgs != 'undefined') {
