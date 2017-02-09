@@ -3545,11 +3545,11 @@ class PrintController extends BaseController {
                         foreach ((array) $articles as $key => $d) {
                             $data[$key]['title'] = $d->title;
                             $classify = Classify::where('id', $d->c_id)->first();
-                            if (empty($classify->view_name)) {
-                                $data[$key]['category']['link'] = $this->showtype == 'preview' ? $this->domain . '/category/' . $d->c_id : $this->domain . '/category/' . $d->c_id . '.html';
-                            } else {
+//                            if (empty($classify->view_name)) {
+//                                $data[$key]['category']['link'] = $this->showtype == 'preview' ? $this->domain . '/category/' . $d->c_id : $this->domain . '/category/' . $d->c_id . '.html';
+//                            } else {
                                 $data[$key]['category']['link'] = $this->showtype == 'preview' ? $this->domain . '/category/v/' . $classify->view_name : $this->domain . '/category/v/' . $classify->view_name . '.html';
-                            }
+//                            }
                             $data[$key]['image'] = $d->img ? ($this->source_dir . 's/articles/' . $d->img) : '';
                             $data[$key]['link'] = $this->showtype == 'preview' ? $this->domain . '/detail/' . $d->id : $this->domain . '/detail/' . $d->id . '.html';
                             $data[$key]['category']['name'] = $classify->name;
