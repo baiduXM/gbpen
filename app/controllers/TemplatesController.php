@@ -734,7 +734,7 @@ class TemplatesController extends BaseController {
             $mobile_themename = Template::where("id", $webinfo->mobile_tpl_id)->pluck("name");
             $pc_tpl = Template::where("id", $webinfo->pc_tpl_id)->first();
             $m_tpl = Template::where("id", $webinfo->mobile_tpl_id)->first();
-            $conn = ftp_connect("182.61.23.43", "21");
+            $conn = ftp_connect("172.16.0.17", "21");
             $path = "gbpen/public/customers";
             if ($conn) {
                 ftp_login($conn, '12t', 'Db#907$LKF');
@@ -791,7 +791,7 @@ class TemplatesController extends BaseController {
     }
 
     private function unpackTemplate() {
-        if ($_SERVER["HTTP_HOST"] == "182.61.23.43") {
+        if ($_SERVER["HTTP_HOST"] == "172.16.0.17") {
             $cus_id = Auth::id();
             $customer = Auth::user()->name;
             $pc_path = public_path('customers/' . $customer . '/pc.zip');
@@ -853,7 +853,7 @@ class TemplatesController extends BaseController {
         $result = array();
         if ($_SERVER["HTTP_HOST"] == "ht.5067.org") {
             $this->sendTemplate();
-            $json = file_get_contents("http://182.61.23.43/homepage-preview-no-auth?name=" . (Auth::user()->name) . "&remember_token=" . (Auth::user()->remember_token ? Auth::user()->remember_token : ""));
+            $json = file_get_contents("http://172.16.0.17/homepage-preview-no-auth?name=" . (Auth::user()->name) . "&remember_token=" . (Auth::user()->remember_token ? Auth::user()->remember_token : ""));
             $result = json_decode($json, true);
         }
         $template = new PrintController();
@@ -867,7 +867,7 @@ class TemplatesController extends BaseController {
         $result = array();
         if ($_SERVER["HTTP_HOST"] == "ht.5067.org") {
             $this->sendTemplate();
-            $json = file_get_contents("http://182.61.23.43/category-no-auth/" . $id . "_" . $page . "?name=" . (Auth::user()->name) . "&remember_token=" . (Auth::user()->remember_token ? Auth::user()->remember_token : ""));
+            $json = file_get_contents("http://172.16.0.17/category-no-auth/" . $id . "_" . $page . "?name=" . (Auth::user()->name) . "&remember_token=" . (Auth::user()->remember_token ? Auth::user()->remember_token : ""));
             $result = json_decode($json, true);
         }
         $template = new PrintController;
@@ -881,7 +881,7 @@ class TemplatesController extends BaseController {
         $result = array();
         if ($_SERVER["HTTP_HOST"] == "ht.5067.org") {
             $this->sendTemplate();
-            $json = file_get_contents("http://182.61.23.43/category-no-auth/" . $view_name . "_" . $page . "?name=" . (Auth::user()->name) . "&remember_token=" . (Auth::user()->remember_token ? Auth::user()->remember_token : ""));
+            $json = file_get_contents("http://172.16.0.17/category-no-auth/" . $view_name . "_" . $page . "?name=" . (Auth::user()->name) . "&remember_token=" . (Auth::user()->remember_token ? Auth::user()->remember_token : ""));
             $result = json_decode($json, true);
         }
         $template = new PrintController;
@@ -895,7 +895,7 @@ class TemplatesController extends BaseController {
         $result = array();
         if ($_SERVER["HTTP_HOST"] == "ht.5067.org") {
             $this->sendTemplate();
-            $json = file_get_contents("http://182.61.23.43/detail-no-auth/" . $id . "?name=" . (Auth::user()->name) . "&remember_token=" . (Auth::user()->remember_token ? Auth::user()->remember_token : ""));
+            $json = file_get_contents("http://172.16.0.17/detail-no-auth/" . $id . "?name=" . (Auth::user()->name) . "&remember_token=" . (Auth::user()->remember_token ? Auth::user()->remember_token : ""));
             $result = json_decode($json, true);
         }
         $template = new PrintController;
@@ -909,7 +909,7 @@ class TemplatesController extends BaseController {
         $result = array();
         if ($_SERVER["HTTP_HOST"] == "ht.5067.org") {
             $this->sendTemplate();
-            $json = file_get_contents("http://182.61.23.43/mobile/homepage-preview-no-auth?name=" . (Auth::user()->name) . "&remember_token=" . (Auth::user()->remember_token ? Auth::user()->remember_token : ""));
+            $json = file_get_contents("http://172.16.0.17/mobile/homepage-preview-no-auth?name=" . (Auth::user()->name) . "&remember_token=" . (Auth::user()->remember_token ? Auth::user()->remember_token : ""));
             $result = json_decode($json, true);
         }
         $template = new PrintController('preview', 'mobile');
@@ -923,7 +923,7 @@ class TemplatesController extends BaseController {
         $result = array();
         if ($_SERVER["HTTP_HOST"] == "ht.5067.org") {
             $this->sendTemplate();
-            $json = file_get_contents("http://182.61.23.43/mobile/category-no-auth/{$id}_{$page}?name=" . (Auth::user()->name) . "&remember_token=" . (Auth::user()->remember_token ? Auth::user()->remember_token : ""));
+            $json = file_get_contents("http://172.16.0.17/mobile/category-no-auth/{$id}_{$page}?name=" . (Auth::user()->name) . "&remember_token=" . (Auth::user()->remember_token ? Auth::user()->remember_token : ""));
             $result = json_decode($json, true);
         }
         $template = new PrintController('preview', 'mobile');
@@ -937,7 +937,7 @@ class TemplatesController extends BaseController {
         $result = array();
         if ($_SERVER["HTTP_HOST"] == "ht.5067.org") {
             $this->sendTemplate();
-            $json = file_get_contents("http://182.61.23.43/mobile/category-no-auth/{$view_name}_{$page}?name=" . (Auth::user()->name) . "&remember_token=" . (Auth::user()->remember_token ? Auth::user()->remember_token : ""));
+            $json = file_get_contents("http://172.16.0.17/mobile/category-no-auth/{$view_name}_{$page}?name=" . (Auth::user()->name) . "&remember_token=" . (Auth::user()->remember_token ? Auth::user()->remember_token : ""));
             $result = json_decode($json, true);
         }
         $template = new PrintController('preview', 'mobile');
@@ -951,7 +951,7 @@ class TemplatesController extends BaseController {
         $result = array();
         if ($_SERVER["HTTP_HOST"] == "ht.5067.org") {
             $this->sendTemplate();
-            $json = file_get_contents("http://182.61.23.43/mobile/detail-no-auth/{$id}?name=" . (Auth::user()->name) . "&remember_token=" . (Auth::user()->remember_token ? Auth::user()->remember_token : ""));
+            $json = file_get_contents("http://172.16.0.17/mobile/detail-no-auth/{$id}?name=" . (Auth::user()->name) . "&remember_token=" . (Auth::user()->remember_token ? Auth::user()->remember_token : ""));
             $result = json_decode($json, true);
         }
         $template = new PrintController('preview', 'mobile');
@@ -959,7 +959,7 @@ class TemplatesController extends BaseController {
     }
 
     private function preview_login() {
-        if ($_SERVER["HTTP_HOST"] == "182.61.23.43" && Input::has("name")) {
+        if ($_SERVER["HTTP_HOST"] == "172.16.0.17" && Input::has("name")) {
             if (Input::has("remember_token") && Input::get("remember_token") == "" && Input::get("remember_token") == null) {
                 $user = Customer::where("name", Input::get("name"))->first();
             } else {
