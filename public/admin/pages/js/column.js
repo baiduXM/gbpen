@@ -553,7 +553,6 @@ function columnController($scope, $http) {
                                     p_id: vpid,
                                     name: vname,
                                     en_name: enname,
-                                    view_name: view_name,
                                     type: vlayout,
                                     url: vurl,
                                     open_page: open_page,
