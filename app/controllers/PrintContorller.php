@@ -1274,7 +1274,7 @@ class PrintController extends BaseController {
      */
     private function detailList($data) {
         //===获取栏目浏览名称(view_name)===
-        $cate = array();
+//        $cate = array();
 //        $min_classify = Classify::where('cus_id', $this->cus_id)->select('id', 'view_name')->get();
 //        foreach ($min_classify as $key => $value) {
 //            $cate[$value['id']] = $value['view_name'];
@@ -1392,18 +1392,18 @@ class PrintController extends BaseController {
                             $d_c_info = Classify::where('id', $d->c_id)->first();
                             $abc['data'][$key]['image'] = $d->img ? ($this->source_dir . 'l/articles/' . $d->img) : '';
                             if ($this->showtype == 'preview') {
-                                if ($cate[$d->c_id]) {//===判断栏目是否有别名===
-                                    $abc['data'][$key]['category']['link'] = $this->domain . '/category/' . $cate[$d->c_id];
-                                } else {
+//                                if ($cate[$d->c_id]) {//===判断栏目是否有别名===
+//                                    $abc['data'][$key]['category']['link'] = $this->domain . '/category/' . $cate[$d->c_id];
+//                                } else {
                                     $abc['data'][$key]['category']['link'] = $this->domain . '/category/' . $d->c_id;
-                                }
+//                                }
                                 $abc['data'][$key]['link'] = $this->domain . '/detail/' . $d->id;
                             } else {
-                                if ($cate[$d->c_id]) {//===判断栏目是否有别名===
-                                    $abc['data'][$key]['category']['link'] = $this->domain . '/category/' . $cate[$d->c_id] . '.html';
-                                } else {
+//                                if ($cate[$d->c_id]) {//===判断栏目是否有别名===
+//                                    $abc['data'][$key]['category']['link'] = $this->domain . '/category/' . $cate[$d->c_id] . '.html';
+//                                } else {
                                     $abc['data'][$key]['category']['link'] = $this->domain . '/category/' . $d->c_id . '.html';
-                                }
+//                                }
                                 $abc['data'][$key]['link'] = $this->domain . '/detail/' . $d->id . '.html';
                             }
                             if ($d->use_url) {
@@ -1472,18 +1472,18 @@ class PrintController extends BaseController {
                                     $d_c_info = Classify::where('id', $d->c_id)->first();
                                     $abc[$key]['image'] = $d->img ? ($this->source_dir . 'l/articles/' . $d->img) : '';
                                     if ($this->showtype == 'preview') {
-                                        if ($cate[$d->c_id]) {//===判断栏目是否有别名===
-                                            $abc[$key]['category']['link'] = $this->domain . '/category/' . $cate[$d->c_id];
-                                        } else {
+//                                        if ($cate[$d->c_id]) {//===判断栏目是否有别名===
+//                                            $abc[$key]['category']['link'] = $this->domain . '/category/' . $cate[$d->c_id];
+//                                        } else {
                                             $abc[$key]['category']['link'] = $this->domain . '/category/' . $d->c_id;
-                                        }
+//                                        }
                                         $abc[$key]['link'] = $this->domain . '/detail/' . $d->id;
                                     } else {
-                                        if ($cate[$d->c_id]) {//===判断栏目是否有别名===
-                                            $abc[$key]['category']['link'] = $this->domain . '/category/' . $cate[$d->c_id] . '.html';
-                                        } else {
+//                                        if ($cate[$d->c_id]) {//===判断栏目是否有别名===
+//                                            $abc[$key]['category']['link'] = $this->domain . '/category/' . $cate[$d->c_id] . '.html';
+//                                        } else {
                                             $abc[$key]['category']['link'] = $this->domain . '/category/' . $d->c_id . '.html';
-                                        }
+//                                        }
                                         $abc[$key]['link'] = $this->domain . '/detail/' . $d->id . '.html';
                                     }
                                     if ($d->use_url) {
@@ -1526,18 +1526,18 @@ class PrintController extends BaseController {
                     $v['value']['link'] = '';
                     if ($this->showtype == 'preview') {
                         $v['value']['image'] = $c_info->img ? ($this->source_dir . 'l/category/' . $c_info->img) : '';
-                        if ($cate[$c_info->c_id]) {//===判断栏目是否有别名===
-                            $v['value']['link'] = $this->domain . '/category/' . $cate[$c_info->c_id];
-                        } else {
+//                        if ($cate[$c_info->c_id]) {//===判断栏目是否有别名===
+//                            $v['value']['link'] = $this->domain . '/category/' . $cate[$c_info->c_id];
+//                        } else {
                             $v['value']['link'] = $this->domain . '/category/' . $c_info->id;
-                        }
+//                        }
                     } else {
                         $v['value']['image'] = $c_info->img ? ($this->domain . '/images/l/category/' . $c_info->img) : '';
-                        if ($cate[$c_info->c_id]) {//===判断栏目是否有别名===
-                            $v['value']['link'] = $this->domain . '/category/' . $cate[$c_info->c_id] . '.html';
-                        } else {
+//                        if ($cate[$c_info->c_id]) {//===判断栏目是否有别名===
+//                            $v['value']['link'] = $this->domain . '/category/' . $cate[$c_info->c_id] . '.html';
+//                        } else {
                             $v['value']['link'] = $this->domain . '/category/' . $c_info->id . '.html';
-                        }
+//                        }
                     }
                     $v['value']['description'] = $c_info->meta_description;
                     $v['value']['type'] = $c_info->type;
@@ -1588,7 +1588,7 @@ class PrintController extends BaseController {
                         if ($this->showtype == 'preview') {
                             if ($c_info) {//===判断栏目是否有别名===
                                 $v['value'][$i]['image'] = $this->source_dir . 'l/category/' . $c_info->img;
-                                $v['value'][$i]['link'] = ($cate[$c_info->id] ? $this->domain . '/category/' . $cate[$c_info->id] : $this->domain . '/category/' . $c_info->id);
+                                $v['value'][$i]['link'] = $this->domain . '/category/' . $c_info->id;
                             } else {
                                 $v['value'][$i]['image'] = '';
                                 $v['value'][$i]['link'] = '';
@@ -1596,7 +1596,7 @@ class PrintController extends BaseController {
                         } else {
                             if ($c_info) {//===判断栏目是否有别名===
                                 $v['value'][$i]['image'] = $this->domain . '/images/l/category/' . $c_info->img;
-                                $v['value'][$i]['link'] = ($cate[$c_info->id] ? $this->domain . '/category/' . $cate[$c_info->id] . '.html' : $this->domain . '/category/' . $c_info->id . '.html');
+                                $v['value'][$i]['link'] = $this->domain . '/category/' . $c_info->id . '.html';
                             } else {
                                 $v['value'][$i]['image'] = '';
                                 $v['value'][$i]['link'] = '';
