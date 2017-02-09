@@ -575,6 +575,10 @@ Route::post('upload_template', [//模板上传
         'as' => 'logs-list',
         'uses' => 'LogsController@logsList'
     ]);
+//    Route::get('logsadd', [//日志列表
+//        'as' => 'logsadd',
+//        'uses' => 'LogsController@logsAdda'
+//    ]);
 
 //-----------------------------------------------
 //--------------------代理平台接口--------------------
