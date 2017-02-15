@@ -1,27 +1,37 @@
 <?php
 
+/**
+  |--------------------------------------------------------------------------
+  | 模版控制器
+  |--------------------------------------------------------------------------
+  |方法：
+  |templatesPC        PC模版查询、增加、设为默认、删除
+  |templatesQuery      查询模版
+  |templatesList      列出当前已选的模版
+  |copy               拷贝公共模版到用户目录用于定制
+  |fileList           列出当前定制模版的可编辑文件
+  |fileget            获取文件的内容
+  |fileeidt           编辑保存文件
+  |rcopy              拷贝一个目录
+  |saveTemplate       模板入库
+  |unpack             解包模板文件
+  |
+ */
 class WebsiteController extends BaseController {
-    /*
-      |--------------------------------------------------------------------------
-      | 模版控制器
-      |--------------------------------------------------------------------------
-      |方法：
-      |templatesPC        PC模版查询、增加、设为默认、删除
-      |templatesQuery      查询模版
-      |templatesList      列出当前已选的模版
-      |copy               拷贝公共模版到用户目录用于定制
-      |fileList           列出当前定制模版的可编辑文件
-      |fileget            获取文件的内容
-      |fileeidt           编辑保存文件
-      |rcopy              拷贝一个目录
-      |saveTemplate       模板入库
-      |unpack             解包模板文件
-      |
-     */
 
-    public function templatesList($type = 1, $per_page = 8, $form = 0, $search = NULL, $classify = '', $color = NULL) {
+    /**
+     * 模板列表
+     * @param type $type        模板类型,1-PC,2-mobile
+     * @param type $per_page    每页数据数
+     * @param type $form        当前第几页
+     * @param type $search      ？搜索条件
+     * @param type $classify    ？栏目 
+     * @param type $color       颜色
+     * @return type 
+     */
+    public function templatesList($type = 1, $per_page = 8, $form = 1, $search = NULL, $classify = '', $color = NULL) {
         $cus_id = Auth::id();
-        $without_tid = Template::where('cus_id', $cus_id)->lists('former_id');
+        $without_tid = Template::where('cus_id', $cus_id)->lists('former_id'); //===定制模板===
         $where = " WHERE type=$type AND cus_id!=$cus_id";
         if (count($without_tid)) {
             $notin = implode(",", $without_tid);
@@ -84,9 +94,12 @@ class WebsiteController extends BaseController {
             $result['data'][$k] = $std;
         }
         return $result;
-        //return Response::json(['err'=>0,'msg'=>'','data'=>$result]);
     }
 
+    /**
+     * 获取模板列表
+     * @return type
+     */
     public function templatesListGet() {
         $type = Input::get('type');
         $per_page = Input::get('per_page') ? Input::get('per_page') : 8;
@@ -98,6 +111,10 @@ class WebsiteController extends BaseController {
         return Response::json(['err' => 0, 'msg' => '', 'data' => $result]);
     }
 
+    /**
+     * 我的定制列表
+     * @return type
+     */
     public function myTemplateList() {
         $cus_id = Auth::id();
         $type = Input::has('type') ? Input::get('type') : 1;
@@ -140,14 +157,15 @@ class WebsiteController extends BaseController {
 
     /**
      * ===模板更换===
+     * （4次查询，2次更新）
      * 1、选择颜色，查询模板
      * @return type
      */
     public function templateChage() {
         $cus_id = Auth::id();
-        $type = Input::get('type'); //===模板类型：1-PC，2-手机
-        $id = Input::get('id'); //===所选模板id
-        $color = Input::get('color'); //===颜色名
+        $type = Input::get('type'); //===模板类型：1-PC，2-手机===
+        $id = Input::get('id'); //===所选模板id===
+        $color = Input::get('color'); //===颜色名===
         if (!empty($color) || $color != "undefined") {
             $color_id = Color::where('color_en', $color)->pluck('id'); //===获取颜色id
         } else {
@@ -156,26 +174,23 @@ class WebsiteController extends BaseController {
         $template = Template::find($id); //查询模板
         $websiteconfig = WebsiteConfig::where('cus_id', $cus_id)->where('type', 2)->where('template_id', '0')->where('key', 'quickbar')->pluck('value'); //读取网站手机quickbar配置
         $websiteconfig = unserialize($websiteconfig);
-//        return Response::json(['err' => 1001, 'msg' => $websiteconfig]);
-//        var_dump($websiteconfig);
-//        exit;
         foreach ((array) $websiteconfig as $key => $val) {
-            if ($val['type'] === 'colors') {//===？如果网站配置类型是颜色类型，则移除该配置项===
+            if ($val['type'] === 'colors') {//===如果quickbar有设置颜色，则移除quick的颜色配置===
                 unset($websiteconfig[$key]);
                 break;
             }
         }
         $websiteconfig = serialize($websiteconfig);
         $pushed = websiteInfo::where('cus_id', $cus_id)->pluck('pushed'); //===获取是否推送===
-        if ($template->type == $type) {
-            if ($type == 1) {//===type:1 PC模板
+        if ($template->type == $type) {//===判断模板类型，1=PC，2=MOBILE===
+            if ($type == 1) {
                 if ($pushed == 1 || $pushed == '3') {//pushed：0-不需推送，1-pc+手机，2-pc，3-手机;
                     $pushed = 1;
                 } else {
                     $pushed = 2;
                 }
                 $update = ['pc_tpl_id' => $id, 'pc_color_id' => $color_id, 'pushed' => $pushed];
-            } else {//===type:2 MOBILE模板
+            } else {
                 if ($pushed == 1 || $pushed == '2') {
                     $pushed = 1;
                 } else {
@@ -191,11 +206,6 @@ class WebsiteController extends BaseController {
                 } else {
                     $this->logsAdd('websiteinfo', __FUNCTION__, __CLASS__, 999, "切换手机模板，id：" . $id . "，颜色id：" . $color_id . "，cus_id", 0, $cus_id);
                 }
-                $result = ['err' => 0, 'msg' => ''];
-            }
-            $update_result = WebsiteInfo::where('cus_id', $cus_id)->update($update);
-            if ($update_result) {
-                WebsiteConfig::where('cus_id', $cus_id)->where('key', 'quickbar')->update(['value' => $websiteconfig, 'pushed' => 1]);
                 $result = ['err' => 0, 'msg' => 'success'];
             } else {
                 $result = ['err' => 1001, 'msg' => '更换模版失败'];

@@ -885,7 +885,7 @@ class TemplatesController extends BaseController {
             $result = json_decode($json, true);
         }
         $template = new PrintController;
-        return $template->categoryPreview($view_name, $page, $result, 'view_name');
+        return $template->categoryPreview($view_name, $page, $result);
     }
 
     /**
@@ -941,7 +941,7 @@ class TemplatesController extends BaseController {
             $result = json_decode($json, true);
         }
         $template = new PrintController('preview', 'mobile');
-        return $template->categoryPreview($view_name, $page, $result, 'view_name');
+        return $template->categoryPreview($view_name, $page, $result);
     }
 
     /**

@@ -19,6 +19,7 @@ function openpcController($scope, $http, $location) {
         // 第一页
         if (!page_num) {
             $http.get('../mytemplate-list?type=' + tpltype + '&per_page=' + per_page + '').success(function (json) {
+//                console.log(json);
                 checkJSON(json, function (json) {
                     if (tpltype == 1) {
                         // PC我的定制
@@ -90,6 +91,7 @@ function openpcController($scope, $http, $location) {
     function PC_temp(json) {
         var _div2 = '';
         var d_temp = json.data.templelist;
+        console.log(d_temp);
         //模板选择 
         $.each(d_temp.data, function (i) {
             _div2 += '<li ' + (d_temp.data[i].is_selected == 0 ? '' : 'data-li="chose"') + ' name="' + d_temp.data[i].id + '">\n\
@@ -134,6 +136,7 @@ function openpcController($scope, $http, $location) {
 	                            <span class="iconbtn"><i class="iconfont icon-sousuo" onClick="window.open(\'../mobile/homepage-preview\',\'preview\')"></i></span>\n\
 	                        </dl>\n\
 	                        <dl class="colorchoose hidden">';
+
             $.each(d_temp.data[i].colors, function (j) {
                 _div2 += '<a href="javascript:void(0)" data-imgid="' + d_temp.data[i].colors[j].id + '" style="background:' + d_temp.data[i].colors[j].value + '" ' + (d_temp.data[i].selected_style == d_temp.data[i].colors[j].description ? 'data-color="chose"' : '') + ' >\n\
 			                            	<span class="chose_icon hidden"></span>\n\
@@ -195,7 +198,7 @@ function openpcController($scope, $http, $location) {
                                         <dl class="number">' + j.serial + '</dl>\n\
                                     </li>';
                             }
-                        });
+                        });//
                         _serv += '</ul>';
                         show_hide.hide(_serv);
                     } else if (tpltype == 2) {
@@ -448,7 +451,7 @@ function openpcController($scope, $http, $location) {
     //关闭搜索记录
     $(".Filter").on('click', '.Filter_close', function () {
         show_hide.show($(this));
-    })
+    });
 }
 
 			
