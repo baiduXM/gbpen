@@ -569,6 +569,12 @@ Route::post('upload_template', [//模板上传
     'uses' => 'WebsiteController@uploadTemplate'
 ]);
 
+Route::get('cdlogin', [
+    'uses' => 'ApiController@cdLogin'
+]);
+Route::post('cdshakehands', [
+    'uses' => 'ApiController@cdShakeHands'
+]);
 //-----------------------------------------------
 //--------------------代理平台接口--------------------
 

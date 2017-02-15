@@ -728,5 +728,31 @@ class ApiController extends BaseController {
         @ftp_rmdir($conn, $dir);
         return true;
     }
-
+    /**
+     * 跳转至微传单
+     */
+    public function cdLogin(){
+        if(Auth::check()){
+            $remember=Auth::user()->remember_token;
+            $url="http://cd.5067.org/index.php?c=user&a=autologin";
+            $data=array();
+            $data["remember"]=Auth::user()->remember_token;
+            $data["username"]=Auth::user()->email;
+            header('Location:'.$url.'&remember='.$data["remember"].'&username='.$data["username"]);
+            exit();
+        }
+    }
+    /**
+     * 跳转至微传单握手验证
+     */
+    public function cdShakeHands(){
+        $remember=Input::get("remember");
+        $username=Input::get("username");
+        $cust=Customer::where("email",$username)->first();
+        if(md5($cust["remember_token"].$cust["email"])==$remember){
+            return json_encode(array("err"=>0));
+        }else{
+            return json_encode(array("err"=>1));
+        }
+    }
 }
