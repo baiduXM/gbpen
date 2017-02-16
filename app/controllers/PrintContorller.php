@@ -1237,6 +1237,9 @@ class PrintController extends BaseController {
             $formInfo = $FormC->getFormInfoByIds($ids);
             $data['forminfo'] = $formInfo;
             $data['website'] = $bind;
+//            echo '<pre>';
+//            var_dump($data);
+//            exit;
             file_put_contents(public_path("customers/" . $this->customer . '/formdata.json'), json_encode($data));
             return '<script type="text/javascript" src="/quickbar/js/form.js?name=' . $this->customer . '"></script>';
         } else {
