@@ -27,6 +27,7 @@ class CustomerController extends BaseController {
         $data['domain_m'] = str_replace('http://', '', $domain_m);
         $data['def_domain_pc'] = $customer . $suf_url;
         $data['def_domain_m'] = "m." . $customer . $suf_url;
+        $data['customer'] = $customer;
         if ($customer_info->favicon != '') {
             $data['favicon'] = asset('customers/' . $customer . '/images/l/common/' . $customer_info->favicon);
         }
