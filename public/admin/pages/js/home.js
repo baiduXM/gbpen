@@ -5,8 +5,8 @@ function homeController($scope, $http) {
 
     var homeRequest = function () {
         var templePage = 'index',
-                templeType = 1,
-                url_index;
+            templeType = 1,
+            url_index;
         $('body').addClass('closephone');
         $http.get('../homepage-manage?page=' + templePage).success(function (json) {
             checkJSON(json, function (json) {
@@ -56,7 +56,7 @@ function homeController($scope, $http) {
         $('.home-box .reflash').on('click', function () {
             var _currentNav = $('.home-page-preview .pages-nav li.current a'), $iframe = $('.home-page-preview .iframs iframe');
             if ($iframe.attr('src') == _currentNav.attr('href')) {
-                // Todo 还有bug
+                // TODO:还有bug
                 $iframe.attr('src', '');
                 $iframe.attr('src', _currentNav.attr('href'));
             } else {
@@ -64,6 +64,7 @@ function homeController($scope, $http) {
             }
         });
     }
+
     function getTempledata(templeType, templePage) {
         $('.home-edite').html('loading...');
         $http.get('../homepage-list?type=' + templeType + '&page=' + templePage + '').success(function (json) {
@@ -162,7 +163,7 @@ function homeController($scope, $http) {
 	                            <ul>' + list1 + '</ul></div>';
                         if (v.config.filter != 'page' && !v.config.mustchild) {
                             _rel += '<dl class="fl checkclass"><input type="hidden" value="' + v.config.star_only + '" name="data[' + k + '][star_only]" style="display:none;">' +
-                                    '<label class="label ' + (v.config.star_only == 1 ? 'nchecked' : '') + '"></label></dl><label for="' + k + '-star_only" class="vm">仅显示星标文章</label>';
+                                '<label class="label ' + (v.config.star_only == 1 ? 'nchecked' : '') + '"></label></dl><label for="' + k + '-star_only" class="vm">仅显示星标文章</label>';
                         }
                         break;
                     case 'textarea':
@@ -207,10 +208,10 @@ function homeController($scope, $http) {
 	                            <ul>' + list1 + '</ul><span class="move_icon"><i class="iconfont icon-liebiao"></i><i class="iconfont icon-guanbi"></i></span></div>' + (idx == (v.config.ids.length - 1) ? '<div class="crl_icon"><i class="iconfont icon-add" data-limit="' + v.config.limit + '"></i></div>' : '') + '';
                             });
                         } else {
-                            list1 += '<li><a >暂无内容！</a></li>'
+                            list1 += '<li><a >暂无内容！</a></li>';
                         }
                         break;
-                    case 'form':
+                    case 'form'://===表单嵌入===
                         var temp = v.config;
                         var vdata = v.value;
                         var _r = '';
@@ -224,19 +225,6 @@ function homeController($scope, $http) {
                                         _r += '<option value="' + v + '" selected>' + v + '</option>';
                                     } else {
                                         _r += '<option value="' + v + '" >' + v + '</option>';
-                                    }
-                                });
-                                _r += '</select>';
-                                break;
-                            case 'css':
-                                var array = v.config.name.split(",");
-                                _r += '<select name="data[' + k + '][css]">';
-                                _r += '<option value="0" selected>请选择</option>';
-                                $.each(array, function (k, v) {
-                                    if (vdata[temp.kind] == v) {
-                                        _r += '<option value="' + v + '" selected>' + v + '</option>';
-                                    } else {
-                                        _r += '<option value="' + v + '">' + v + '</option>';
                                     }
                                 });
                                 _r += '</select>';
@@ -282,8 +270,8 @@ function homeController($scope, $http) {
                         break;
                 }// switch结束
                 _rt += '<li><dl class="homeed-left">' + v.description + '：' + (typeof v.prompt == 'undefined' ? '' : v.prompt) +
-                        (typeof v.config == 'undefined' ? '' : v.type == 'images' || v.type == 'image' ? '<div class="ratio">' + (v.config.width == undefined ? '自适应' : v.config.width) +
-                                '*' + (v.config.height == 'undefined' ? '自适应' : v.config.height) + '</div>' + (v.type == 'image' ? '' : '<div>限制数量：<span class="pic_limit">' +
+                    (typeof v.config == 'undefined' ? '' : v.type == 'images' || v.type == 'image' ? '<div class="ratio">' + (v.config.width == undefined ? '自适应' : v.config.width) +
+                            '*' + (v.config.height == 'undefined' ? '自适应' : v.config.height) + '</div>' + (v.type == 'image' ? '' : '<div>限制数量：<span class="pic_limit">' +
                                 (v.config.limit == undefined ? '0' : v.config.limit) + '</span></div>') : '') + '</dl><dl class="homeed-right">' + (v.type == 'navs' ? '<div id="move_navs">' +
                         _rel + '</div>' : '' + _rel + '') + '</dl></li>';
             }); // each结束
@@ -310,7 +298,7 @@ function homeController($scope, $http) {
                     alert('超出数量！')
                 } else {
                     var lastNum = parseInt($('#move_navs .dropdown').last().find('.selectBox_val').attr('name').match(/\[(\d*)\]/)[1]) + 1,
-                            clone_cell = $('#move_navs .dropdown').last().clone(true);
+                        clone_cell = $('#move_navs .dropdown').last().clone(true);
                     $('#move_navs .add_icon').before(clone_cell);
                     clone_cell.find('.selectBox').text('空').end().find('.selectBox_val').val('');
                     var word = clone_cell.find('.selectBox_val').attr('name').replace(/data\[(.*)\]\[(.*)\]\[(\d*)\]/, 'data[$1][$2][' + lastNum + ']');
@@ -364,10 +352,10 @@ function homeController($scope, $http) {
                 $('.template-download').remove();
                 $('#bomb-box').fadeIn();
                 var href = $(this).parent().attr('href'),
-                        src = $(this).children('img').attr('src'),
-                        description = $(this).parent().siblings('input[name*="description"]').val(),
-                        sort = $(this).parent().siblings('input[name*="sort"]').val(),
-                        title = $(this).parent().siblings('input[name*="title"]').val();
+                    src = $(this).children('img').attr('src'),
+                    description = $(this).parent().siblings('input[name*="description"]').val(),
+                    sort = $(this).parent().siblings('input[name*="sort"]').val(),
+                    title = $(this).parent().siblings('input[name*="title"]').val();
                 $('.box-down .column_name').val(href);
                 $('.box-down .keyword').val(title);
                 $('.box-down .sort').val(sort);
@@ -480,9 +468,9 @@ function homeController($scope, $http) {
                         $('.tpl_mask').show();
                         $('.text_tishi').show();
                         $http.post('../imgupload?target=page_index',
-                                {
-                                    files: img_upload
-                                }).success(function () {
+                            {
+                                files: img_upload
+                            }).success(function () {
                             $('.tpl_mask').hide();
                             $('.text_tishi').hide();
                             $('.home-content').append('<div class="hint_box">保存成功！</div>');
@@ -503,6 +491,7 @@ function homeController($scope, $http) {
             return false;
         });
     }
+
     // 为最后一级，类型为单页的删除或者子级都为page，父级以及子级全删除
     function homeListFix() {
         $('.dropdown ul li a').each(function (index, el) {

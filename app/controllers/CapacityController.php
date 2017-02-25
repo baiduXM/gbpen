@@ -9,7 +9,7 @@
  *      统计物理存在的图片大小，去除cache_images、images/s、mobile文件下的图片
  *      （cache_images：图片缓存，网站推送后删除该文件下的图片）
  *      （images/s、mobile：每上传一张图片，都将保存为4张图片images/l、images/s、mobile/images/l、mobile/images/s，所以只统计images/l原图大小）
- *      TODO：可写个函数统一对图片删除时物理删除4个文件夹下的图片
+ *      TODO:可写个函数统一对图片删除时物理删除4个文件夹下的图片
  * 2、对用户操作进行容量增减
  *      普通直接上传图片、ueditor上传文件（图片、附件）
  *      只对用户空间容量数值上的增减
