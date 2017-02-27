@@ -11,14 +11,16 @@
  * form_data_n (n=0,...,9) 表单数据 原理同上，存储在交互服务器上
  */
 
-class FormController extends BaseController {
+class FormController extends BaseController
+{
 
     /**
      * 表单列表
      * @param type $param 参数可能是数组
      * @return type
      */
-    public function getFormList($type = null) {
+    public function getFormList($type = null)
+    {
         $where = Input::all();
         $where['cus_id'] = Auth::id();
         $data = DB::table('form')->where($where)->get();
@@ -34,7 +36,8 @@ class FormController extends BaseController {
     /**
      * 创建表单
      */
-    public function createForm() {
+    public function createForm()
+    {
         $name = Input::get('name');
         $platform = Input::get('platform');
         $showmodel = Input::get('showmodel');
@@ -52,7 +55,7 @@ class FormController extends BaseController {
         $id = DB::table('form')->insertGetId($data);
         //===返回数据===
         if ($id != NULL) {
-            $this->logsAdd("form",__FUNCTION__,__CLASS__,1,"创建万用表单",0,$id);
+            $this->logsAdd("form", __FUNCTION__, __CLASS__, 1, "创建万用表单", 0, $id);
             $res = Response::json(['err' => 0, 'msg' => '创建表单成功', 'data' => $id]);
         } else {
             $res = Response::json(['err' => 1, 'msg' => '创建表单失败', 'data' => null]);
@@ -63,7 +66,8 @@ class FormController extends BaseController {
     /**
      * 删除表单
      */
-    public function deleteForm() {
+    public function deleteForm()
+    {
         $form_id = Input::get('form_id');
         //判断是否有栏目关联表单
         $classify = DB::table('classify')->where('form_id', $form_id)->get();
@@ -82,7 +86,7 @@ class FormController extends BaseController {
         $res3 = DB::table('form')->where('id', $form_id)->delete();
         //返回数据
         if ($res3) {
-            $this->logsAdd('form',__FUNCTION__,__CLASS__,2,"删除万用表单及其所属组件",0,$form_id);
+            $this->logsAdd('form', __FUNCTION__, __CLASS__, 2, "删除万用表单及其所属组件", 0, $form_id);
             $json = Response::json(['err' => 0, 'msg' => '删除成功', 'data' => $res3]);
         } else {
             $json = Response::json(['err' => 1, 'msg' => '删除失败', 'data' => '']);
@@ -93,7 +97,8 @@ class FormController extends BaseController {
     /**
      * 保存表单信息
      */
-    public function editForm() {
+    public function editForm()
+    {
         $form_id = Input::get('form_id');
         $form_data = Input::get('box_info');
         $time = date('Y-m-d H:i:s');
@@ -129,7 +134,7 @@ class FormController extends BaseController {
         $res = DB::table('form')->where('id', $form_id)->update($data);
         //===返回数据===
         if ($res != NULL) {
-            $this->logsAdd('form',__FUNCTION__,__CLASS__,3,"修改万用表单信息",0,$form_id);
+            $this->logsAdd('form', __FUNCTION__, __CLASS__, 3, "修改万用表单信息", 0, $form_id);
             $json = Response::json(['err' => 0, 'msg' => '更新表单信息成功', 'data' => $res]);
         } else {
             $json = Response::json(['err' => 1, 'msg' => '更新表单信息失败', 'data' => null]);
@@ -141,7 +146,8 @@ class FormController extends BaseController {
      * 获取表单信息
      * @return type
      */
-    public function getFormData() {
+    public function getFormData()
+    {
         $cus_id = Auth::id();
         $form_id = Input::get('form_id');
         $res = DB::table('form')->where('id', $form_id)->where('cus_id', $cus_id)->first();
@@ -157,7 +163,8 @@ class FormController extends BaseController {
      * 根据表单ids查找表单信息
      * @param array $ids
      */
-    public function getFormInfoByIds($ids) {
+    public function getFormInfoByIds($ids)
+    {
         $formArray = array();
         $formInfo = DB::table('form')->whereIn('id', $ids)->where('status', 1)->get();
         foreach ($formInfo as $value) {
@@ -173,7 +180,8 @@ class FormController extends BaseController {
     /**
      * 浏览表单信息（不需要是自己的表单）
      */
-    public function getFormView() {
+    public function getFormView()
+    {
         $form_id = Input::get('form_id');
         $res = DB::table('form')->where('id', $form_id)->first();
         if ($res != NULL) {
@@ -187,7 +195,8 @@ class FormController extends BaseController {
     /**
      * 获取组件元素
      */
-    public function getFormElementList() {
+    public function getFormElementList()
+    {
         $data = DB::table('form_element')->where('status', 1)->get();
         if ($data != NULL) {
             $res = Response::json(['err' => 0, 'msg' => '组件元素列表获取成功', 'data' => $data]);
@@ -200,7 +209,8 @@ class FormController extends BaseController {
     /**
      * 获取表单详细信息
      */
-    public function getFormColumnList() {
+    public function getFormColumnList()
+    {
         $form_id = Input::get('form_id');
         $res = DB::table('form_column_' . $form_id % 10)->where('form_id', $form_id)->orderBy('order', 'asc')->get();
         foreach ($res as &$v) {
@@ -218,7 +228,8 @@ class FormController extends BaseController {
     /**
      * 编辑组件元素（获取信息）
      */
-    public function getFormColumn() {
+    public function getFormColumn()
+    {
         //===获取参数===
         $form_id = Input::get('form_id');
         $column_id = Input::get('column_id');
@@ -238,7 +249,8 @@ class FormController extends BaseController {
     /**
      * 添加组件元素
      */
-    public function addFormColumn() {
+    public function addFormColumn()
+    {
 
         //===获取参数===
         $form_id = Input::get('form_id');
@@ -264,7 +276,7 @@ class FormController extends BaseController {
         $column_data['column_id'] = $column_id;
         //===返回数据===
         if ($column_id != NULL) {
-            $this->logsAdd('form_column_' . $form_id % 10,__FUNCTION__,__CLASS__,1,"添加万用表单组件,所属表单id：".$form_id.",组件类型：".$element_data->type,0,$column_id);
+            $this->logsAdd('form_column_' . $form_id % 10, __FUNCTION__, __CLASS__, 1, "添加万用表单组件,所属表单id：" . $form_id . ",组件类型：" . $element_data->type, 0, $column_id);
             $json = Response::json(['err' => 0, 'msg' => '添加组件成功', 'data' => $column_data]);
         } else {
             $json = Response::json(['err' => 1, 'msg' => '添加组件失败', 'data' => null]);
@@ -275,7 +287,8 @@ class FormController extends BaseController {
     /**
      * 保存组件信息
      */
-    public function editFormColumn() {
+    public function editFormColumn()
+    {
         //===获取参数===
         $form_id = Input::get('form_id');
         $data = Input::get('data');
@@ -318,7 +331,7 @@ class FormController extends BaseController {
         $column_data['config'] = $config;
 
         if ($res != NULL) {
-            $this->logsAdd('form_column_' . $form_id % 10,__FUNCTION__,__CLASS__,3,"修改万用表单组件信息,所属表单id：".$form_id.",组件类型：".$type,0,$column_id);
+            $this->logsAdd('form_column_' . $form_id % 10, __FUNCTION__, __CLASS__, 3, "修改万用表单组件信息,所属表单id：" . $form_id . ",组件类型：" . $type, 0, $column_id);
             $json = Response::json(['err' => 0, 'msg' => '保存组件信息成功', 'data' => $column_data]);
         } else {
             $json = Response::json(['err' => 1, 'msg' => '保存组件信息失败', 'data' => null]);
@@ -328,18 +341,20 @@ class FormController extends BaseController {
 
     /**
      * text_type 文本类型 text-文本 password-密码
-     * text_rules_regex 正则规则 
+     * text_rules_regex 正则规则
      * text_rules_hint 正则提示
      */
-    public function edit_text($data) {
+    public function edit_text($data)
+    {
         $config = array();
         return $config;
     }
 
     /**
-     * 
+     *
      */
-    function edit_textarea($data) {
+    function edit_textarea($data)
+    {
         $config = array();
         return $config;
     }
@@ -347,9 +362,10 @@ class FormController extends BaseController {
     /**
      * option_layout 选项排版分布 1-单列 2-两列 3-三列 4-四列
      * option_type 选项类型 1-文字 2-图片
-     * option_img_$i 选项图片 
+     * option_img_$i 选项图片
      */
-    function edit_radio($data) {
+    function edit_radio($data)
+    {
         $config = array();
         return $config;
     }
@@ -359,7 +375,8 @@ class FormController extends BaseController {
      * option_type 选项限制 >=至少 <=最多 =恰好
      * option_num 选项限制数
      */
-    function edit_checkbox($data) {
+    function edit_checkbox($data)
+    {
         $config = array();
         return $config;
     }
@@ -367,17 +384,19 @@ class FormController extends BaseController {
     /**
      * option_default 选项默认值 0 or 0,1...
      * option_$i 选项值 i项
-     * option_count 选项个数	
+     * option_count 选项个数
      */
-    function edit_select($data) {
+    function edit_select($data)
+    {
         $config = array();
         return $config;
     }
 
     /**
-     * 
+     *
      */
-    function edit_date($data) {
+    function edit_date($data)
+    {
         $config = array();
         return $config;
     }
@@ -389,23 +408,26 @@ class FormController extends BaseController {
      * img_href 图片点击跳转链接 http地址
      * img_align 图片显示方式 1-拉伸 2-居中
      */
-    function edit_image($data) {
+    function edit_image($data)
+    {
         $config = array();
         return $config;
     }
 
     /**
-     * 
+     *
      */
-    function edit_file($data) {
+    function edit_file($data)
+    {
         $config = array();
         return $config;
     }
 
     /**
-     * 
+     *
      */
-    function edit_address($data) {
+    function edit_address($data)
+    {
         $config = array();
         return $config;
     }
@@ -413,13 +435,14 @@ class FormController extends BaseController {
     /**
      * 删除组件信息
      */
-    public function deleteFormColumn() {
+    public function deleteFormColumn()
+    {
         $form_id = Input::get('form_id');
         $column_id = Input::get('column_id');
         Classify::where('form_id', $form_id)->update(['pushed' => 1]);
         $res = DB::table('form_column_' . $form_id % 10)->where('id', $column_id)->delete();
         if ($res != NULL) {
-            $this->logsAdd('form_column_' . $form_id % 10,__FUNCTION__,__CLASS__,2,"删除万用表单组件,所属表单id：".$form_id,0,$column_id);
+            $this->logsAdd('form_column_' . $form_id % 10, __FUNCTION__, __CLASS__, 2, "删除万用表单组件,所属表单id：" . $form_id, 0, $column_id);
             $json = Response::json(['err' => 0, 'msg' => '删除成功', 'data' => $res]);
         } else {
             $json = Response::json(['err' => 1, 'msg' => '删除组件失败', 'data' => '']);
@@ -431,7 +454,8 @@ class FormController extends BaseController {
      * 获取用户数据列表
      * 从交互服务器180.76.148.39中获取数据
      */
-    public function getFormUserdataList() {
+    public function getFormUserdataList()
+    {
         $form_id = Input::get('form_id');
         $param['form_id'] = $form_id;
         $param['host'] = $_SERVER['HTTP_HOST'];
@@ -453,7 +477,8 @@ class FormController extends BaseController {
      * 获取用户数据
      * 从交互服务器180.76.148.39中获取数据
      */
-    public function getFormUserdata() {
+    public function getFormUserdata()
+    {
         $form_id = Input::get('form_id');
         $id = Input::get('id');
         $param['form_id'] = $form_id;
@@ -474,7 +499,8 @@ class FormController extends BaseController {
     /**
      * 删除用户数据
      */
-    public function deleteFormUserdata() {
+    public function deleteFormUserdata()
+    {
         $form_id = Input::get('form_id');
         $id = Input::get('id');
         $param['form_id'] = $form_id;
@@ -486,7 +512,7 @@ class FormController extends BaseController {
         $postFun = new CommonController;
         $res = $postFun->postsend("http://swap.5067.org/admin/form_userdata_delete.php", $param);
         if ($res == 1) {
-            $this->logsAdd('null',__FUNCTION__,__CLASS__,2,"删除用户表单数据,所属表单id：".$form_id,0,$column_id);
+            $this->logsAdd('null', __FUNCTION__, __CLASS__, 2, "删除用户表单数据,所属表单id：" . $form_id, 0, $column_id);
             $json = Response::json(['err' => 0, 'msg' => '删除成功', 'data' => $res]);
         } else {
             $json = Response::json(['err' => 1, 'msg' => '删除失败', 'data' => '']);
@@ -497,7 +523,8 @@ class FormController extends BaseController {
     /**
      * 获取表单信息 for PrintContorller
      */
-    public function getFormdataForPrint($form_id = 0) {
+    public function getFormdataForPrint($form_id = 0)
+    {
         $form_data = DB::table('form')->where('id', $form_id)->where('status', 1)->first();
         if (empty($form_data)) {
             $data = array();
@@ -518,7 +545,8 @@ class FormController extends BaseController {
      * @param type $site
      * @return string
      */
-    public function showFormHtmlForPrint($data = null, $site = 'page') {
+    public function showFormHtmlForPrint($data = null, $site = 'page')
+    {
         $_form = '';
         if (empty($data)) {
             $_form .= "<div class='fv-add-show'>
@@ -538,9 +566,9 @@ class FormController extends BaseController {
             $column_data = $data['column'];
             $_div = '';
             if (empty($site) || $site == 'page') {//===普通表单===
-                $_form.="<div class='fv-add-show add-show' >";
+                $_form .= "<div class='fv-add-show add-show' >";
             } elseif ($site == 'float') {//===悬浮表单===
-                $_form.="<div class='adv-add-show add-show' >";
+                $_form .= "<div class='adv-add-show add-show' >";
             }
             $_form .= "<div class='fv-as-title'>
                             $form_data->title
@@ -553,24 +581,24 @@ class FormController extends BaseController {
                 $_div .= "<li class='list-item' data-type=$item->type data-id=$item->id >";
                 $func = 'show_html_' . $item->type;
                 $_div .= $this->$func($item);
-                $_div.="</li>";
+                $_div .= "</li>";
             }
             $_div .= "</ul><div style='text-align:center;'>"
-                    . "<input type='submit' value='提交' class='button form-btn' name='submit' />"
+                . "<input type='submit' value='提交' class='button form-btn' name='submit' />"
 //                    . "<button id='sbok'>提交</button>"
-                    . "<input type='reset' value='重置' class='button form-btn' /></div>"
-                    . "<input type='hidden' name='form_id' value='$form_id' />"
-                    . "<input type='hidden' name='action_type' value='$form_data->action_type' />"
-                    . "<input type='hidden' name='action_text' value=" . $tempform['action_text'] . " />";
+                . "<input type='reset' value='重置' class='button form-btn' /></div>"
+                . "<input type='hidden' name='form_id' value='$form_id' />"
+                . "<input type='hidden' name='action_type' value='$form_data->action_type' />"
+                . "<input type='hidden' name='action_text' value=" . $tempform['action_text'] . " />";
 
             if (empty($site) || $site == 'page') {//===普通表单===
-                $_form.="<form class='fv-unit-preview unit-preview' id='box_show' action='http://swap.5067.org/userdata/' method='post' >"
-                        . "<ul class='fv-element-show'>";
+                $_form .= "<form class='fv-unit-preview unit-preview' id='box_show' action='http://swap.5067.org/userdata/$form_id' method='post' >"
+                    . "<ul class='fv-element-show'>";
             } elseif ($site == 'float') {//===悬浮表单===
-                $_form.="<form class='adv-unit-preview unit-preview' id='box_show' action='http://swap.5067.org/userdata/' method='post' style='width:100%;'>"
-                        . "<ul class='fv-element-show'>";
+                $_form .= "<form class='adv-unit-preview unit-preview' id='box_show' action='http://swap.5067.org/userdata/$form_id' method='post' style='width:100%;'>"
+                    . "<ul class='fv-element-show'>";
             }
-            $_form.=$_div . "</form></div>";
+            $_form .= $_div . "</form></div>";
 //            $_form.=$js;
         }
         return $_form;
@@ -581,7 +609,8 @@ class FormController extends BaseController {
      * @param type $item
      * @return type
      */
-    function validata($item) {
+    function validata($item)
+    {
         $config = $item->config;
         $_vali = '';
         if ($item->required) {
@@ -596,7 +625,8 @@ class FormController extends BaseController {
     /**
      * 赋值表单前端css/js
      */
-    public function assignFormCSSandJSForPrint() {
+    public function assignFormCSSandJSForPrint()
+    {
         $css = '<link rel="stylesheet" href="http://swap.5067.org/css/universal-form.css">';
 //        $css .= '<link rel="stylesheet" href="http://swap.5067.org/js/laydate/need/laydate.css">';
         $js = '<script src="http://swap.5067.org/js/universal-form.js"></script>';
@@ -604,7 +634,8 @@ class FormController extends BaseController {
         return $css . $js;
     }
 
-    function show_html_text($data) {
+    function show_html_text($data)
+    {
         $item = $data;
         $config = $data->config;
         $_div = '';
@@ -619,7 +650,8 @@ class FormController extends BaseController {
         return $_div;
     }
 
-    function show_html_textarea($data) {
+    function show_html_textarea($data)
+    {
         $item = $data;
         $config = $data->config;
         $_div = '';
@@ -634,7 +666,8 @@ class FormController extends BaseController {
         return $_div;
     }
 
-    function show_html_radio($data) {
+    function show_html_radio($data)
+    {
         $item = $data;
         $config = $data->config;
         $_div = '';
@@ -645,7 +678,7 @@ class FormController extends BaseController {
         if ($item->description != '' && $item->description != null) {
             $_div .= '<i class="content-d">' . $item->description . '</i>';
         }
-        $_div .="</p>";
+        $_div .= "</p>";
         $option_key = explode(',', $config['option_key']);
         foreach ($option_key as $key => $value) {
             $to = "option_$value";
@@ -658,7 +691,8 @@ class FormController extends BaseController {
         return $_div;
     }
 
-    function show_html_checkbox($data) {
+    function show_html_checkbox($data)
+    {
         $item = $data;
         $config = $data->config;
         $_div = '';
@@ -669,7 +703,7 @@ class FormController extends BaseController {
         if ($item->description != '' && $item->description != null) {
             $_div .= '<i class="content-d">' . $item->description . '</i>';
         }
-        $_div .="</p>";
+        $_div .= "</p>";
         $option_key = explode(',', $config['option_key']);
         $_div .= "<input type='hidden' name = '$item->title' value = '' data-value='' />";
         foreach ($option_key as $key => $value) {
@@ -682,7 +716,8 @@ class FormController extends BaseController {
         return $_div;
     }
 
-    function show_html_select($data) {
+    function show_html_select($data)
+    {
         $item = $data;
         $config = $data->config;
         $_div = '';
@@ -693,10 +728,10 @@ class FormController extends BaseController {
         if ($item->description != '' && $item->description != null) {
             $_div .= '<i class="content-d">' . $item->description . '</i>';
         }
-        $_div .="</p>";
+        $_div .= "</p>";
         $_div .= "<select name='$item->title'";
         $_div .= $item->required == 1 ? "required='required'" : '';
-        $_div .=" >";
+        $_div .= " >";
         $_div .= "<option value='' selected >===请选择===</option>";
         $option_key = explode(',', $config['option_key']);
         foreach ($option_key as $key => $value) {
@@ -707,7 +742,8 @@ class FormController extends BaseController {
         return $_div;
     }
 
-    function show_html_date($data) {
+    function show_html_date($data)
+    {
         $item = $data;
         $config = $data->config;
         $_div = '';
@@ -718,48 +754,49 @@ class FormController extends BaseController {
         if ($item->description != '' && $item->description != null) {
             $_div .= '<i class="content-d">' . $item->description . '</i>';
         }
-        $_div .="</p>";
+        $_div .= "</p>";
         $_div .= '<input type="text" name="' . $item->title . '" onclick="laydate({istime: true, format: \'YYYY-MM-DD hh:mm:ss\'})" ';
         $_div .= $item->required == 1 ? "required='required'" : '';
         $_div .= ' />';
         return $_div;
     }
 
-    function test() {
+    function test()
+    {
         $data = json_decode($_POST['data']);
         $css = '<link rel="stylesheet" type="text/css" href="http://swap.5067.org/css/floatadv.css">';
         $div = '';
         $js = '';
-        foreach ((array) $data as $k => $v) {
+        foreach ((array)$data as $k => $v) {
             $div .= '<div class="popContent float floatAdv' . $k . '" style="';
             if ($v->position == '4') {
-                $div.='right';
+                $div .= 'right';
             } else {
-                $div.='left';
+                $div .= 'left';
             }
-            $div.=':' . $v->posx . 'px;width:' . $v->posw . 'px;';
+            $div .= ':' . $v->posx . 'px;width:' . $v->posw . 'px;';
             if ($v->position == '3') {
-                $div.='bottom';
+                $div .= 'bottom';
             } else {
-                $div.='top';
+                $div .= 'top';
             }
-            $div.=':' . $v->posy . 'px;">';
-            $div.='<a class="popClose" title="关闭" >关闭</a>';
+            $div .= ':' . $v->posy . 'px;">';
+            $div .= '<a class="popClose" title="关闭" >关闭</a>';
             if ($v->type == "form") {
                 $div .= $v->content;
                 $js .= $v->cssjs;
             }
             if ($v->type == "adv") {
-                $div.='<a href="' . $v->href . '" target="_blank"><img class="float_adv" src="' . $v->url . '"></a>';
+                $div .= '<a href="' . $v->href . '" target="_blank"><img class="float_adv" src="' . $v->url . '"></a>';
             }
-            $div.='</div>';
+            $div .= '</div>';
         }
         $js .= '<script>';
-        $js.='$(".popClose").click(function(){
+        $js .= '$(".popClose").click(function(){
                 $(this).parent(".float").stop();
                 $(this).parent(".float").slideUp();
             });';
-        $js.='</script>';
+        $js .= '</script>';
         echo $css . $div . $js;
     }
 

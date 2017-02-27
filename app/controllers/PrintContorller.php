@@ -532,7 +532,7 @@ class PrintController extends BaseController
     /**
      * 递归替换数组中的相对位置url添加加域名
      *
-     * @param array $result   要补全路径的数组
+     * @param array $result 要补全路径的数组
      * @return mixed
      */
     public function replaceUrl(&$result)
@@ -1244,11 +1244,7 @@ class PrintController extends BaseController
             $formInfo = $FormC->getFormInfoByIds($ids);
             $data['forminfo'] = $formInfo;
             $data['website'] = $bind;
-//            echo '<pre>';
-//            var_dump($data);
-//            exit;
-            file_put_contents(public_path("customers/" . $this->customer . '/formdata.json'), json_encode($data));//将表单数据写入.json中
-
+            file_put_contents(public_path("customers/" . $this->customer . '/formdata.json'), json_encode($data));//===将表单数据写入.json中
             return '<script type="text/javascript" src="/quickbar/js/form.js?name=' . $this->customer . '"></script>';
         } else {
             return '';
