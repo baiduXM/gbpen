@@ -1968,7 +1968,7 @@ class PrintController extends BaseController {
      * PC显示首页
      */
     public function homepagePreview($result = array()) {
-        if ($_SERVER["HTTP_HOST"] != "ht.5067.org") {
+        if ($_SERVER["HTTP_HOST"] != TONGYI_DOMAIN) {
             $result = $this->pagePublic();
             $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
             $result['title'] = $customer_info->title;
@@ -1986,7 +1986,7 @@ class PrintController extends BaseController {
                 }
             }
         }
-        if ($_SERVER["HTTP_HOST"] == "172.16.0.17") {
+        if ($_SERVER["HTTP_HOST"] == TONGYI_TUISONG_JUYU_IP) {
             return json_encode($result);
         }
         $smarty = new Smarty;
@@ -2044,7 +2044,7 @@ class PrintController extends BaseController {
      * 手机首页
      */
     public function mhomepagePreview($result = array()) {
-        if ($_SERVER["HTTP_HOST"] != "ht.5067.org") {
+        if ($_SERVER["HTTP_HOST"] != TONGYI_DOMAIN) {
             $result = $this->pagePublic();
             $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
             $result['title'] = $customer_info->title;
@@ -2178,7 +2178,7 @@ class PrintController extends BaseController {
             }
             $result['mIndexCats'] = $mIndexCats;
         }
-        if ($_SERVER["HTTP_HOST"] == "172.16.0.17") {
+        if ($_SERVER["HTTP_HOST"] == TONGYI_TUISONG_JUYU_IP) {
             return json_encode($result);
         }
         $smarty = new Smarty;
@@ -2358,7 +2358,7 @@ class PrintController extends BaseController {
 //        } else {
 //            $id = Classify::where('view_name', $param)->pluck('id');
         }
-        if ($_SERVER["HTTP_HOST"] != "ht.5067.org") {
+        if ($_SERVER["HTTP_HOST"] != TONGYI_DOMAIN) {
             $result = $this->pagePublic($id);
             $customerinfo = CustomerInfo::where("cus_id", $this->cus_id)->first();
             foreach ((array) $result['navs'] as $nav) {
@@ -2649,7 +2649,7 @@ class PrintController extends BaseController {
             }
             $result["viewname"] = $viewname;
         }
-        if ($_SERVER["HTTP_HOST"] == "172.16.0.17") {
+        if ($_SERVER["HTTP_HOST"] == TONGYI_TUISONG_JUYU_IP) {
             return json_encode($result);
         }
         $smarty = new Smarty;
@@ -3056,7 +3056,7 @@ class PrintController extends BaseController {
      * @param int $id 文章id
      */
     public function articlePreview($id, $result = array()) {
-        if ($_SERVER["HTTP_HOST"] != "ht.5067.org") {
+        if ($_SERVER["HTTP_HOST"] != TONGYI_DOMAIN) {
             $article = Articles::find($id);
             $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
             if ($customer_info->lang == 'en') {
@@ -3245,7 +3245,7 @@ class PrintController extends BaseController {
             }
             $result["viewname"] = $viewname;
         }
-        if ($_SERVER["HTTP_HOST"] == "172.16.0.17") {
+        if ($_SERVER["HTTP_HOST"] == TONGYI_TUISONG_JUYU_IP) {
             return json_encode($result);
         }
 //        var_dump($result['pubdate']);

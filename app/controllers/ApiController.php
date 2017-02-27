@@ -12,7 +12,7 @@ class ApiController extends BaseController {
         $timemap = Input::get('timemap');
         $data = md5(md5($timemap));
         $url = Config::get('url.DL_domain');
-        $token = file_get_contents('http://dl2.5067.org/?module=ApiModel&action=GetHandShake&num=' . $data);
+        $token = file_get_contents('http://'.DAILI_DOMAIN.'/?module=ApiModel&action=GetHandShake&num=' . $data);
         $taget = Input::get('taget');
         $string = $token . $data;
         if (md5($string) == $taget) {
@@ -735,7 +735,7 @@ class ApiController extends BaseController {
     public function cdLogin(){
         if(Auth::check()){
             $remember=Auth::user()->remember_token;
-            $url="http://cd.5067.org/index.php?c=user&a=autologin";
+            $url="http://".GSHOW_DOMAIN."/index.php?c=user&a=autologin";
             $data=array();
             $data["remember"]=Auth::user()->remember_token;
             $data["username"]=Auth::user()->email;

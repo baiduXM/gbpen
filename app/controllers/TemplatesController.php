@@ -726,7 +726,7 @@ class TemplatesController extends BaseController {
     }
 
     private function sendTemplate() {
-        if ($_SERVER["HTTP_HOST"] == "ht.5067.org") {
+        if ($_SERVER["HTTP_HOST"] == TONGYI_DOMAIN) {
             $cus_id = Auth::id();
             $customer = Auth::user()->name;
             $webinfo = WebsiteInfo::where("cus_id", $cus_id)->first();
@@ -734,10 +734,10 @@ class TemplatesController extends BaseController {
             $mobile_themename = Template::where("id", $webinfo->mobile_tpl_id)->pluck("name");
             $pc_tpl = Template::where("id", $webinfo->pc_tpl_id)->first();
             $m_tpl = Template::where("id", $webinfo->mobile_tpl_id)->first();
-            $conn = ftp_connect("172.16.0.17", "21");
-            $path = "gbpen/public/customers";
+            $conn = ftp_connect(TONGYI_TUISONG_JUYU_IP, TONGYI_TUISONG_FTP_PORT);
+            $path = TONGYI_TUISONG_DIR;
             if ($conn) {
-                ftp_login($conn, '12t', 'Db#907$LKF');
+                ftp_login($conn, TONGYI_TUISONG_FTP_USER, TONGYI_TUISONG_FTP_PASSWORD);
                 ftp_pasv($conn, true);
                 if (ftp_nlist($conn, $path . "/" . $customer) === FALSE) {
                     ftp_mkdir($conn, $path . "/" . $customer);
@@ -791,7 +791,7 @@ class TemplatesController extends BaseController {
     }
 
     private function unpackTemplate() {
-        if ($_SERVER["HTTP_HOST"] == "172.16.0.17") {
+        if ($_SERVER["HTTP_HOST"] == TONGYI_TUISONG_JUYU_IP) {
             $cus_id = Auth::id();
             $customer = Auth::user()->name;
             $pc_path = public_path('customers/' . $customer . '/pc.zip');
@@ -851,9 +851,9 @@ class TemplatesController extends BaseController {
      */
     public function homepagePreview() {
         $result = array();
-        if ($_SERVER["HTTP_HOST"] == "ht.5067.org") {
+        if ($_SERVER["HTTP_HOST"] == TONGYI_DOMAIN) {
             $this->sendTemplate();
-            $json = file_get_contents("http://172.16.0.17/homepage-preview-no-auth?name=" . (Auth::user()->name) . "&remember_token=" . (Auth::user()->remember_token ? Auth::user()->remember_token : ""));
+            $json = file_get_contents("http://".TONGYI_TUISONG_JUYU_IP."/homepage-preview-no-auth?name=" . (Auth::user()->name) . "&remember_token=" . (Auth::user()->remember_token ? Auth::user()->remember_token : ""));
             $result = json_decode($json, true);
         }
         $template = new PrintController();
@@ -865,9 +865,9 @@ class TemplatesController extends BaseController {
      */
     public function categoryPreview($id, $page = 1) {
         $result = array();
-        if ($_SERVER["HTTP_HOST"] == "ht.5067.org") {
+        if ($_SERVER["HTTP_HOST"] == TONGYI_DOMAIN) {
             $this->sendTemplate();
-            $json = file_get_contents("http://172.16.0.17/category-no-auth/" . $id . "_" . $page . "?name=" . (Auth::user()->name) . "&remember_token=" . (Auth::user()->remember_token ? Auth::user()->remember_token : ""));
+            $json = file_get_contents("http://".TONGYI_TUISONG_JUYU_IP."/category-no-auth/" . $id . "_" . $page . "?name=" . (Auth::user()->name) . "&remember_token=" . (Auth::user()->remember_token ? Auth::user()->remember_token : ""));
             $result = json_decode($json, true);
         }
         $template = new PrintController;
@@ -879,9 +879,9 @@ class TemplatesController extends BaseController {
      */
     public function categoryPreviewV($view_name, $page = 1) {
         $result = array();
-        if ($_SERVER["HTTP_HOST"] == "ht.5067.org") {
+        if ($_SERVER["HTTP_HOST"] == TONGYI_DOMAIN) {
             $this->sendTemplate();
-            $json = file_get_contents("http://172.16.0.17/category-no-auth/" . $view_name . "_" . $page . "?name=" . (Auth::user()->name) . "&remember_token=" . (Auth::user()->remember_token ? Auth::user()->remember_token : ""));
+            $json = file_get_contents("http://".TONGYI_TUISONG_JUYU_IP."/category-no-auth/" . $view_name . "_" . $page . "?name=" . (Auth::user()->name) . "&remember_token=" . (Auth::user()->remember_token ? Auth::user()->remember_token : ""));
             $result = json_decode($json, true);
         }
         $template = new PrintController;
@@ -893,9 +893,9 @@ class TemplatesController extends BaseController {
      */
     public function articlePreview($id) {
         $result = array();
-        if ($_SERVER["HTTP_HOST"] == "ht.5067.org") {
+        if ($_SERVER["HTTP_HOST"] == TONGYI_DOMAIN) {
             $this->sendTemplate();
-            $json = file_get_contents("http://172.16.0.17/detail-no-auth/" . $id . "?name=" . (Auth::user()->name) . "&remember_token=" . (Auth::user()->remember_token ? Auth::user()->remember_token : ""));
+            $json = file_get_contents("http://".TONGYI_TUISONG_JUYU_IP."/detail-no-auth/" . $id . "?name=" . (Auth::user()->name) . "&remember_token=" . (Auth::user()->remember_token ? Auth::user()->remember_token : ""));
             $result = json_decode($json, true);
         }
         $template = new PrintController;
@@ -907,9 +907,9 @@ class TemplatesController extends BaseController {
      */
     public function mhomepagePreview() {
         $result = array();
-        if ($_SERVER["HTTP_HOST"] == "ht.5067.org") {
+        if ($_SERVER["HTTP_HOST"] == TONGYI_DOMAIN) {
             $this->sendTemplate();
-            $json = file_get_contents("http://172.16.0.17/mobile/homepage-preview-no-auth?name=" . (Auth::user()->name) . "&remember_token=" . (Auth::user()->remember_token ? Auth::user()->remember_token : ""));
+            $json = file_get_contents("http://".TONGYI_TUISONG_JUYU_IP."/mobile/homepage-preview-no-auth?name=" . (Auth::user()->name) . "&remember_token=" . (Auth::user()->remember_token ? Auth::user()->remember_token : ""));
             $result = json_decode($json, true);
         }
         $template = new PrintController('preview', 'mobile');
@@ -921,9 +921,9 @@ class TemplatesController extends BaseController {
      */
     public function mcategoryPreview($id, $page = 1) {
         $result = array();
-        if ($_SERVER["HTTP_HOST"] == "ht.5067.org") {
+        if ($_SERVER["HTTP_HOST"] == TONGYI_DOMAIN) {
             $this->sendTemplate();
-            $json = file_get_contents("http://172.16.0.17/mobile/category-no-auth/{$id}_{$page}?name=" . (Auth::user()->name) . "&remember_token=" . (Auth::user()->remember_token ? Auth::user()->remember_token : ""));
+            $json = file_get_contents("http://".TONGYI_TUISONG_JUYU_IP."/mobile/category-no-auth/{$id}_{$page}?name=" . (Auth::user()->name) . "&remember_token=" . (Auth::user()->remember_token ? Auth::user()->remember_token : ""));
             $result = json_decode($json, true);
         }
         $template = new PrintController('preview', 'mobile');
@@ -935,9 +935,9 @@ class TemplatesController extends BaseController {
      */
     public function mcategoryPreviewV($view_name, $page = 1) {
         $result = array();
-        if ($_SERVER["HTTP_HOST"] == "ht.5067.org") {
+        if ($_SERVER["HTTP_HOST"] == TONGYI_DOMAIN) {
             $this->sendTemplate();
-            $json = file_get_contents("http://172.16.0.17/mobile/category-no-auth/{$view_name}_{$page}?name=" . (Auth::user()->name) . "&remember_token=" . (Auth::user()->remember_token ? Auth::user()->remember_token : ""));
+            $json = file_get_contents("http://".TONGYI_TUISONG_JUYU_IP."/mobile/category-no-auth/{$view_name}_{$page}?name=" . (Auth::user()->name) . "&remember_token=" . (Auth::user()->remember_token ? Auth::user()->remember_token : ""));
             $result = json_decode($json, true);
         }
         $template = new PrintController('preview', 'mobile');
@@ -949,9 +949,9 @@ class TemplatesController extends BaseController {
      */
     public function marticlePreview($id) {
         $result = array();
-        if ($_SERVER["HTTP_HOST"] == "ht.5067.org") {
+        if ($_SERVER["HTTP_HOST"] == TONGYI_DOMAIN) {
             $this->sendTemplate();
-            $json = file_get_contents("http://172.16.0.17/mobile/detail-no-auth/{$id}?name=" . (Auth::user()->name) . "&remember_token=" . (Auth::user()->remember_token ? Auth::user()->remember_token : ""));
+            $json = file_get_contents("http://".TONGYI_TUISONG_JUYU_IP."/mobile/detail-no-auth/{$id}?name=" . (Auth::user()->name) . "&remember_token=" . (Auth::user()->remember_token ? Auth::user()->remember_token : ""));
             $result = json_decode($json, true);
         }
         $template = new PrintController('preview', 'mobile');
@@ -959,7 +959,7 @@ class TemplatesController extends BaseController {
     }
 
     private function preview_login() {
-        if ($_SERVER["HTTP_HOST"] == "172.16.0.17" && Input::has("name")) {
+        if ($_SERVER["HTTP_HOST"] == TONGYI_TUISONG_JUYU_IP && Input::has("name")) {
             if (Input::has("remember_token") && Input::get("remember_token") == "" && Input::get("remember_token") == null) {
                 $user = Customer::where("name", Input::get("name"))->first();
             } else {
