@@ -1,22 +1,22 @@
 <!DOCTYPE html>
-<html  id="ng-app" ng-app="mainApp">
-    <head>
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <title>统一平台后台</title>
-        <link type="text/css" rel="stylesheet" href="css/global.css" />
-        <link rel="stylesheet" href="css/style.css" type="text/css" />
-        <link rel="stylesheet" href="css/nestable.css" type="text/css" />
-        <link rel="stylesheet" href="css/content.css" type="text/css" />
-        <link rel="stylesheet" href="css/iconfont.css" type="text/css" />
-        <link rel="stylesheet" type="text/css" href="css/cropper.min.css">
-        <link rel="stylesheet" type="text/css" href="css/uploadify.css">
-        <script type="text/javascript" src="js/jquery.min.js"></script>
-        <!--[if lt IE 9]>
-        <script type="text/javascript" src="js/html5.js"></script>
-        <![endif]-->
-    </head>
-    <body class="closephone" ng-class="{
+<html id="ng-app" ng-app="mainApp">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>统一平台后台</title>
+    <link type="text/css" rel="stylesheet" href="css/global.css"/>
+    <link rel="stylesheet" href="css/style.css" type="text/css"/>
+    <link rel="stylesheet" href="css/nestable.css" type="text/css"/>
+    <link rel="stylesheet" href="css/content.css" type="text/css"/>
+    <link rel="stylesheet" href="css/iconfont.css" type="text/css"/>
+    <link rel="stylesheet" type="text/css" href="css/cropper.min.css">
+    <link rel="stylesheet" type="text/css" href="css/uploadify.css">
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="js/html5.js"></script>
+    <![endif]-->
+</head>
+<body class="closephone" ng-class="{
 			'showbox-main':showbox=='main',
 			'showbox-index':showbox=='home',
 			'showbox-page':showbox=='page',
@@ -24,34 +24,34 @@
 			'showmenu': menu.length>0,
 			'hidepreviews': hidepreviews
 		}" ng-controller="mainController">
-        <!-- 头部 -->
-        <header>
-            <div class="logo fl"><img src="images/logo.png" /></div>
-            <div class="fr">
-                <!-- 登陆信息 -->
-                <div class="member_info clearfix" ng-controller="memberController">
-                    <div class="member_buttons fr clearfix">
-                        <a href="javascript:;"><img src="images/u_logo3.png" title=""/></a>
-                        <a href="#/setting"><img src="images/setting.png" title="设置"/></a>
-                        <a href="../log-out"><img src="images/loginout.png" title="退出"/></a>
-                        <a href="javascript:;" id="switch_bind"></a>
-                    </div>
-                    <a href="#/user"><p class="fr clearfix" ng-bind-template="欢迎，{{ companyname}}" ></p></a>
+<!-- 头部 -->
+<header>
+    <div class="logo fl"><img src="images/logo.png"/></div>
+    <div class="fr">
+        <!-- 登陆信息 -->
+        <div class="member_info clearfix" ng-controller="memberController">
+            <div class="member_buttons fr clearfix">
+                <a href="javascript:;"><img src="images/u_logo3.png" title=""/></a>
+                <a href="#/setting"><img src="images/setting.png" title="设置"/></a>
+                <a href="../log-out"><img src="images/loginout.png" title="退出"/></a>
+                <a href="javascript:;" id="switch_bind"></a>
+            </div>
+            <a href="#/user"><p class="fr clearfix" ng-bind-template="欢迎，{{ companyname}}"></p></a>
 
-                </div>
-                <!--容量条-->
-                <div class="fr clearfix" id="capacity_div" style="font-size: 12px;color:#7c6154;margin-right: 22px;" >
-                    <!--剩余容量/总容量：<span id="capacity_free"></span>/<span id="capacity"></span>-->
-                </div>
-                <script>
-                            $(function(){
-                            init_capacity(); //初始化容量条
-                            init_bind(); //初始化双站用户
-                            $('#switch_bind').click(function(){
-                            get_bind_account();
-                            });
-                            });
-                </script>
+        </div>
+        <!--容量条-->
+        <div class="fr clearfix" id="capacity_div" style="font-size: 12px;color:#7c6154;margin-right: 22px;">
+            <!--剩余容量/总容量：<span id="capacity_free"></span>/<span id="capacity"></span>-->
+        </div>
+        <script>
+            $(function () {
+                init_capacity(); //初始化容量条
+                init_bind(); //初始化双站用户
+                $('#switch_bind').click(function () {
+                    get_bind_account();
+                });
+            });
+        </script>
 
                 <!-- 顶部主导航 -->
                 <nav class="pr clearfix daohang">
@@ -72,196 +72,245 @@
             </div>
         </header>
 
-        <!-- 主体 -->
-        <article class="container pr">
-            <!-- 后台首页面 -->
-            <section id="home">
-                <div class="cxb_home">
-                    <div class="cxb_Label">
-                        <!--<dl class="cxb_Label_list cxb_list_n1"><dd class="cxb_list_m">12322</dd><dt class="cxb_list_title">今日访问次数</dt></dl>-->
-                        <dl class="cxb_Label_list cxb_list_n2"><dd class="cxb_list_m">0</dd><dt class="cxb_list_title">今日访问数量</dt></dl>
-                        <dl class="cxb_Label_list cxb_list_n3"><dd class="cxb_list_m">0</dd><dt class="cxb_list_title">总访客数量</dt></dl>
-                        <dl class="cxb_Label_list cxb_list_n4"><dd class="cxb_list_m">0</dd><dt class="cxb_list_title">移动端访问量</dt></dl>
-                        <!--<dl class="cxb_Label_list cxb_list_n6"><dd class="cxb_list_m">12322</dd><dt class="cxb_list_title">总访问次数</dt></dl>-->
-                        <!--<dl class="cxb_Label_list cxb_list_n7"><dd class="cxb_list_m">12322</dd><dt class="cxb_list_title">微信请求数</dt></dl>-->
-                        <dl class="cxb_gangbi"><img src="images/gangbi.png"></dl>
-                    </div>
-                </div>
-                <div class="cxb_quick"><a href="#"><img src="images/Quickbtn.png"></a></div>
-                <div class="cxb_menulist">
-                    <dl><a href="#"><dd class="cxbicon"><i class="iconfont icon-shouye"></i></dd><dt class="cxbtitle">首页</dt></a></dl>
-                    <dl><a href="#/home"><dd class="cxbicon"><i class="iconfont icon-diypage"></i></dd><dt class="cxbtitle">页面管理</dt></a></dl>
-                    <!-- <dl><a href="#/diytpl?type=1"><dd class="cxbicon"><i class="iconfont icon-bianji"></i></dd><dt class="cxbtitle">高级定制</dt></a></dl> -->
-                    <dl><a href="#/column"><dd class="cxbicon"><i class="iconfont icon-liebiao"></i></dd><dt class="cxbtitle">栏目管理</dt></a></dl>
-                    <dl><a href="#/article"><dd class="cxbicon"><i class="iconfont icon-wenjian"></i></dd><dt class="cxbtitle">文章管理</dt></a></dl>
-                    <!-- <dl><a href="#/openpc"><dd class="cxbicon"><i class="iconfont icon-moban"></i></dd><dt class="cxbtitle">模板管理</dt></a></dl> -->
-                    <!--<dl><a href="#"><dd class="cxbicon"><i class="icon-iconfont-wenzhang"></i></dd><dt class="cxbtitle">微信管理</dt></a></dl>-->
-                    <!--<dl><a href="#"><dd class="cxbicon"><i class="icon-iconfont-dianpu"></i></dd><dt class="cxbtitle">数据统计</dt></a></dl>-->
-                    <!--<dl><a href="#"><dd class="cxbicon"><i class="icon-iconfont-biaoqian"></i></dd><dt class="cxbtitle">会员管理</dt></a></dl>-->
-                    <dl class="addlist"><a href="#"><dd class="cxbicon"><i class="iconfont icon-jia"></i></dd></a></dl>
-                </div>
-            </section>
-            <!-- 左侧菜单栏 -->
-            <section id="menu" class="inline-block vt" data-restwidth="0">
-                <a id="menu-close" href="javascript:;"></a>
-                <nav>
-                    <ul>
-                        <li ng-class="{true: 'checked', false: ''}[$index]" ng-repeat="m in menu track by $index"><a href="{{m.url}}">{{m.title}}</a></li>
-                    </ul>
-                </nav>
-            </section><!--管理页
-            --><section id="main" class="inline-block vt"> 
-                <div class="main-content">
-                    <!-- 子页面 -->
-                    <div ng-view></div>
-                </div>
-                <div class="page-loading pa">
-                    <div class="loading-middle"></div>
-                    <div class="loading-content"><img src="images/page_loading.gif" alt="" /></div>
-                </div>
-                <!--[if lte IE 8]><div class="main_left"></div><![endif]-->
-            </section><!--
+<!-- 主体 -->
+<article class="container pr">
+    <!-- 后台首页面 -->
+    <section id="home">
+        <div class="cxb_home">
+            <div class="cxb_Label">
+                <!--<dl class="cxb_Label_list cxb_list_n1"><dd class="cxb_list_m">12322</dd><dt class="cxb_list_title">今日访问次数</dt></dl>-->
+                <dl class="cxb_Label_list cxb_list_n2">
+                    <dd class="cxb_list_m">0</dd>
+                    <dt class="cxb_list_title">今日访问数量</dt>
+                </dl>
+                <dl class="cxb_Label_list cxb_list_n3">
+                    <dd class="cxb_list_m">0</dd>
+                    <dt class="cxb_list_title">总访客数量</dt>
+                </dl>
+                <dl class="cxb_Label_list cxb_list_n4">
+                    <dd class="cxb_list_m">0</dd>
+                    <dt class="cxb_list_title">移动端访问量</dt>
+                </dl>
+                <!--<dl class="cxb_Label_list cxb_list_n6"><dd class="cxb_list_m">12322</dd><dt class="cxb_list_title">总访问次数</dt></dl>-->
+                <!--<dl class="cxb_Label_list cxb_list_n7"><dd class="cxb_list_m">12322</dd><dt class="cxb_list_title">微信请求数</dt></dl>-->
+                <dl class="cxb_gangbi"><img src="images/gangbi.png"></dl>
+            </div>
+        </div>
+        <div class="cxb_quick"><a href="#"><img src="images/Quickbtn.png"></a></div>
+        <div class="cxb_menulist">
+            <dl><a href="#">
+                <dd class="cxbicon"><i class="iconfont icon-shouye"></i></dd>
+                <dt class="cxbtitle">首页</dt>
+            </a></dl>
+            <dl><a href="#/home">
+                <dd class="cxbicon"><i class="iconfont icon-diypage"></i></dd>
+                <dt class="cxbtitle">页面管理</dt>
+            </a></dl>
+            <!-- <dl><a href="#/diytpl?type=1"><dd class="cxbicon"><i class="iconfont icon-bianji"></i></dd><dt class="cxbtitle">高级定制</dt></a></dl> -->
+            <dl><a href="#/column">
+                <dd class="cxbicon"><i class="iconfont icon-liebiao"></i></dd>
+                <dt class="cxbtitle">栏目管理</dt>
+            </a></dl>
+            <dl><a href="#/article">
+                <dd class="cxbicon"><i class="iconfont icon-wenjian"></i></dd>
+                <dt class="cxbtitle">文章管理</dt>
+            </a></dl>
+            <!-- <dl><a href="#/openpc"><dd class="cxbicon"><i class="iconfont icon-moban"></i></dd><dt class="cxbtitle">模板管理</dt></a></dl> -->
+            <!--<dl><a href="#"><dd class="cxbicon"><i class="icon-iconfont-wenzhang"></i></dd><dt class="cxbtitle">微信管理</dt></a></dl>-->
+            <!--<dl><a href="#"><dd class="cxbicon"><i class="icon-iconfont-dianpu"></i></dd><dt class="cxbtitle">数据统计</dt></a></dl>-->
+            <!--<dl><a href="#"><dd class="cxbicon"><i class="icon-iconfont-biaoqian"></i></dd><dt class="cxbtitle">会员管理</dt></a></dl>-->
+            <dl class="addlist"><a href="#">
+                <dd class="cxbicon"><i class="iconfont icon-jia"></i></dd>
+            </a></dl>
+        </div>
+    </section>
+    <!-- 左侧菜单栏 -->
+    <section id="menu" class="inline-block vt" data-restwidth="0">
+        <a id="menu-close" href="javascript:;"></a>
+        <nav>
+            <ul>
+                <li ng-class="{true: 'checked', false: ''}[$index]" ng-repeat="m in menu track by $index"><a
+                        href="{{m.url}}">{{m.title}}</a></li>
+            </ul>
+        </nav>
+    </section><!--管理页
+            -->
+    <section id="main" class="inline-block vt">
+        <div class="main-content">
+            <!-- 子页面 -->
+            <div ng-view></div>
+        </div>
+        <div class="page-loading pa">
+            <div class="loading-middle"></div>
+            <div class="loading-content"><img src="images/page_loading.gif" alt=""/></div>
+        </div>
+        <!--[if lte IE 8]>
+        <div class="main_left"></div><![endif]-->
+    </section><!--
             --><div id="pagedata" class="home-box"><!--页面内容
                 --><section id="home-edit" class="inline-block vt">
-                    <div class="main-content">
-                        <!-- 子页面 -->
-                        <div class="home-content whole" style="max-width:340px;">
-                            <div class="home-info">
-                                <div class="btn-top clearfix">
-                                    <a class="inline-block fl delcolumn all_button" href="#/phone_index">切换手机首页</a>
-                                    <a class="inline-block fr save" href="">保存</a>
-                                </div>
-                                <ul class="home-edite">
-                                    <!-- 首页定制内容区 -->
-                                </ul>
-                                <div class="picedit"></div>
-                                <!-- 弹窗 -->
-                                <section id="bomb-box" class="fade" style="display: none;">
-                                    <div class="mask"></div>
-                                    <div class="box_info pos">
-                                        <div class="boxs">
-                                            <div class="box-up">编辑图片</div>
-                                            <nav class="box-down">
-                                                <ul>
-                                                    <li>图片链接：<input type="text" name="column_name" class="column_name w150" style="margin-left: 21px;" /></li>
-                                                    <li>图片标题：<input name="keyword" class="keyword w150" style="margin-left: 22px;" /></li>
-                                                    <li>文本内容：<input name="description" class="description w500" style="margin-left: 22px;" /></li>
-                                                    <li>图片排序：<input name="sort" class="sort w500" style="margin-left: 22px;" /></li>    
-                                                    <li class="homebox_pic clearfix">
-                                                        <label class="fl" style="position:relative;">图片地址：&nbsp;&nbsp;&nbsp;&nbsp;</label>
-                                                    </li>
-                                                </ul>
-                                            </nav>
-                                            <div class="button">
-                                                <input type="reset" class="cancel" value="取消" />
-                                                <input type="submit" class="save" value="保存" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </section>
-                            </div>
+            <div class="main-content">
+                <!-- 子页面 -->
+                <div class="home-content whole" style="max-width:340px;">
+                    <div class="home-info">
+                        <div class="btn-top clearfix">
+                            <a class="inline-block fl delcolumn all_button" href="#/phone_index">切换手机首页</a>
+                            <a class="inline-block fr save" href="">保存</a>
                         </div>
+                        <ul class="home-edite">
+                            <!-- 首页定制内容区 -->
+                        </ul>
+                        <div class="picedit"></div>
+                        <!-- 弹窗 -->
+                        <section id="bomb-box" class="fade" style="display: none;">
+                            <div class="mask"></div>
+                            <div class="box_info pos">
+                                <div class="boxs">
+                                    <div class="box-up">编辑图片</div>
+                                    <nav class="box-down">
+                                        <ul>
+                                            <li>图片链接：<input type="text" name="column_name" class="column_name w150"
+                                                            style="margin-left: 21px;"/></li>
+                                            <li>图片标题：<input name="keyword" class="keyword w150"
+                                                            style="margin-left: 22px;"/></li>
+                                            <li>文本内容：<input name="description" class="description w500"
+                                                            style="margin-left: 22px;"/></li>
+                                            <li>图片排序：<input name="sort" class="sort w500" style="margin-left: 22px;"/>
+                                            </li>
+                                            <li class="homebox_pic clearfix">
+                                                <label class="fl" style="position:relative;">图片地址：&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                                            </li>
+                                        </ul>
+                                    </nav>
+                                    <div class="button">
+                                        <input type="reset" class="cancel" value="取消"/>
+                                        <input type="submit" class="save" value="保存"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
                     </div>
-                    <div class="page-loading pa">
-                        <div class="loading-middle"></div>
-                        <div class="loading-content"><img src="images/page_loading.gif" alt="" /></div>
-                    </div>
-                    <!--[if lte IE 8]><div class="main_left"></div><![endif]-->
+                </div>
+            </div>
+            <div class="page-loading pa">
+                <div class="loading-middle"></div>
+                <div class="loading-content"><img src="images/page_loading.gif" alt=""/></div>
+            </div>
+            <!--[if lte IE 8]>
+            <div class="main_left"></div><![endif]-->
                 </section><div class="reflash"><img src="images/reflash_01.png" /><div>点我</div></div><!--
                 --><div class="home-page-preview" >
-                    <div class="hd">
-                        <div class="bule_button"><a href="">高级定制</a></div>
-                        <ul class="pages-nav clearfix">
-                            <!-- 自动载入数据 -->
-                        </ul>
-                    </div>
-                    <div class="iframs" name="ifram-pages">
-                        <div class="full_screen"><i class="iconfont icon-quanping pos"></i>全屏</div>
-                        <iframe src="" scrolling="yes" frameborder="0" name="ifram"></iframe>
-                    </div>
-                    <div class="full_screen_box">
-                        <div class="mask"></div>
-                        <iframe src="" scrolling="yes" frameborder="0" ></iframe>
-                    </div>
-                </div><!--
+            <div class="hd">
+                <div class="bule_button"><a href="">高级定制</a></div>
+                <ul class="pages-nav clearfix">
+                    <!-- 自动载入数据 -->
+                </ul>
+            </div>
+            <div class="iframs" name="ifram-pages">
+                <div class="full_screen"><i class="iconfont icon-quanping pos"></i>全屏</div>
+                <iframe src="" scrolling="yes" frameborder="0" name="ifram"></iframe>
+            </div>
+            <div class="full_screen_box">
+                <div class="mask"></div>
+                <iframe src="" scrolling="yes" frameborder="0"></iframe>
+            </div>
+        </div><!--
                 --></div><div id="diy" class="home-box"><!--高级定制
                 --><section id="home-diy" class="inline-block vt">
-                    <div class="main-content main-content1">
-                        <!-- 子页面 -->
-                        <div class="home-content whole">
-                            <ul class="made_style">
-                                <!-- 文件列表 -->
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="page-loading pa">
-                        <div class="loading-middle"></div>
-                        <div class="loading-content"><img src="images/page_loading.gif" alt="" /></div>
-                    </div>
-                    <!--[if lte IE 8]><div class="main_left"></div><![endif]-->
-                </section><!--
-                --><div class="home-page-preview clearfix">
-                    <div class="made_style_edite">
-                        <h1 class="made_style_edite_top"><a href="javascript:void(0);" class="made_btn resh_btn invalid_button fr">保存文件</a><a href="../homepage-preview" target="_blank" class="made_btn Preview_btn fr">预览首页</a><a href="javascript:void(0);" class="made_btn Upload_btn fr"><input type="file" class="Uploadzip" name="file" accept="application/x-zip-compressed"><div class="up_pic_btn">上传模板</div></a><strong>请在左侧选择需要编辑的文件！</strong><a onclick="javascript:history.go( - 1);" class="made_btn resh_btn fr">返回</a></h1>
-                        <textarea class="made_edite">厦门易尔通厦门易</textarea>
-                    </div>
-                </div><!--
-                --></div><!--
-            --><section id="phone" class="inline-block vt" ng-show="phonepreview && homepreview" >
-                <div class="phone-content">
-                    <div class="notice">
-                        <span>拖动下拉扫描二维码</span>
-                        <div class="arrow"></div>
-                        <img src="images/ercode.png" alt="" class="ercode">
-                    </div>
-                    <!-- 手机无线站预览 -->
-                    <iframe id="phone_preview" name="preview" src="../mobile/homepage-preview" width="" height=""></iframe>
+            <div class="main-content main-content1">
+                <!-- 子页面 -->
+                <div class="home-content whole">
+                    <ul class="made_style">
+                        <!-- 文件列表 -->
+                    </ul>
                 </div>
-                <a id="phone-home" href="javascript:void(0);"></a>
-            </section>
-        </article>
-
-        <!-- 预览按钮 -->
-        <div class="previews" ng-show="homepreview">
-            <a id="preview-phone" class="preview" ng-show="phonepreview" href="javascript:;"></a>
-            <a id="preview-pc" class="preview" href="../homepage-preview" target="_blank"></a>
-            <a id="preview-refresh" class="preview" href="#/refresh" style="display:none"><i class="fa iconfont icon-shuaxin1 fa_refresh"></i><div class="red_dot"></div></a>
+            </div>
+            <div class="page-loading pa">
+                <div class="loading-middle"></div>
+                <div class="loading-content"><img src="images/page_loading.gif" alt=""/></div>
+            </div>
+            <!--[if lte IE 8]>
+            <div class="main_left"></div><![endif]-->
+        </section><!--
+                -->
+        <div class="home-page-preview clearfix">
+            <div class="made_style_edite">
+                <h1 class="made_style_edite_top"><a href="javascript:void(0);"
+                                                    class="made_btn resh_btn invalid_button fr">保存文件</a><a
+                        href="../homepage-preview" target="_blank" class="made_btn Preview_btn fr">预览首页</a><a
+                        href="javascript:void(0);" class="made_btn Upload_btn fr"><input type="file" class="Uploadzip"
+                                                                                         name="file"
+                                                                                         accept="application/x-zip-compressed">
+                    <div class="up_pic_btn">上传模板</div>
+                </a><strong>请在左侧选择需要编辑的文件！</strong><a onclick="javascript:history.go( - 1);"
+                                                      class="made_btn resh_btn fr">返回</a></h1>
+                <textarea class="made_edite">厦门易尔通厦门易</textarea>
+            </div>
+        </div><!--
+                --></div><!--
+            -->
+    <section id="phone" class="inline-block vt" ng-show="phonepreview && homepreview">
+        <div class="phone-content">
+            <div class="notice">
+                <span>拖动下拉扫描二维码</span>
+                <div class="arrow"></div>
+                <img src="images/ercode.png" alt="" class="ercode">
+            </div>
+            <!-- 手机无线站预览 -->
+            <iframe id="phone_preview" name="preview" src="../mobile/homepage-preview" width="" height=""></iframe>
         </div>
-        <!-- 底部 -->
-        <footer class="cb">
-            <div style="display: none;"><script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://"); document.write(unescape("%3Cspan id='cnzz_stat_icon_1259033526'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1259033526%26online%3D1%26show%3Dline' type='text/javascript'%3E%3C/script%3E"));</script></div>
-            copyright 厦门易尔通网络科技有限公司 版权所有</footer>
-        <div class="background"><img src="images/bg_light.png" /><img class="bg_thumb" src="images/bg_thumb.jpg" /></div>
+        <a id="phone-home" href="javascript:void(0);"></a>
+    </section>
+</article>
 
-    </body>
-    <!--[if lt IE 8]>
-            <script src="js/json3.min.js"></script>
-    <![endif]-->
+<!-- 预览按钮 -->
+<div class="previews" ng-show="homepreview">
+    <a id="preview-phone" class="preview" ng-show="phonepreview" href="javascript:;"></a>
+    <a id="preview-pc" class="preview" href="../homepage-preview" target="_blank"></a>
+    <a id="preview-refresh" class="preview" href="#/refresh" style="display:none"><i
+            class="fa iconfont icon-shuaxin1 fa_refresh"></i>
+        <div class="red_dot"></div>
+    </a>
+</div>
+<!-- 底部 -->
+<footer class="cb">
+    <div style="display: none;">
+        <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+        document.write(unescape("%3Cspan id='cnzz_stat_icon_1259033526'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1259033526%26online%3D1%26show%3Dline' type='text/javascript'%3E%3C/script%3E"));</script>
+    </div>
+    copyright 厦门易尔通网络科技有限公司 版权所有
+</footer>
+<div class="background"><img src="images/bg_light.png"/><img class="bg_thumb" src="images/bg_thumb.jpg"/></div>
 
-    <script type="text/javascript" src="js/angular/angular.min.js"></script>
-    <script type="text/javascript" src="js/angular/angular-route.min.js"></script>
-    <script type="text/javascript" src="js/jquery.easing.js"></script>
-    <script type="text/javascript" src="js/jquery.spasticNav.js"></script>			<!-- 灯光效果 --> 	 
-    <script type="text/javascript" src="js/jquery.pagination.js"></script>			<!-- 分页插件 -->
-    <script type="text/javascript" src="js/cropper.min.js"></script>				<!-- 图片上传插件 -->
-    <script type="text/javascript" src="js/cropper-main.js"></script>				<!-- 图片上传插件 -->
-    <script type="text/javascript" src="js/commenfun.js"></script>       			<!-- 公共函数方法 -->          
-    <script type="text/javascript" src="js/jquery.SuperSlide.2.1.js"></script>		<!-- 滚轮图 -->
-    <script type="text/javascript" src="js/jquery.commen.js"></script>           	<!-- 公共插件文件 -->
-    <script type="text/javascript" src="ueditor/ueditor.config.js"></script>        <!-- 编辑器配置文件 -->    
-    <script type="text/javascript" src="ueditor/ueditor.all.min.js"></script>       <!-- 编辑器源码文件 -->
-    <script type="text/javascript" src="js/laydate.js"></script>           			 <!-- 时间选择控件 -->
-    <script type="text/javascript" src="js/jquery.uploadify.min.js"></script>       <!-- 图片上传控件 -->
-    <script type="text/javascript" src="js/script.js"></script>						<!-- 公共脚本文件 --> 
+</body>
+<!--[if lt IE 8]>
+<script src="js/json3.min.js"></script>
+<![endif]-->
 
-    <!--[if lte IE 7]>
-    <script type="text/javascript">
-            mainApp.config(function($sceProvider) {
-              // Completely disable SCE to support IE7.
-              $sceProvider.enabled(false);
-            });
-            if (!location.hash) location.href='#/';
-    </script>
-    <![endif]-->
+<script type="text/javascript" src="js/angular/angular.min.js"></script>
+<script type="text/javascript" src="js/angular/angular-route.min.js"></script>
+<script type="text/javascript" src="js/jquery.easing.js"></script>
+<script type="text/javascript" src="js/jquery.spasticNav.js"></script>            <!-- 灯光效果 -->
+<script type="text/javascript" src="js/jquery.pagination.js"></script>            <!-- 分页插件 -->
+<script type="text/javascript" src="js/cropper.min.js"></script>                <!-- 图片上传插件 -->
+<script type="text/javascript" src="js/cropper-main.js"></script>                <!-- 图片上传插件 -->
+<script type="text/javascript" src="js/commenfun.js"></script>                <!-- 公共函数方法 -->
+<script type="text/javascript" src="js/jquery.SuperSlide.2.1.js"></script>        <!-- 滚轮图 -->
+<script type="text/javascript" src="js/jquery.commen.js"></script>            <!-- 公共插件文件 -->
+<script type="text/javascript" src="ueditor/ueditor.config.js"></script>        <!-- 编辑器配置文件 -->
+<script type="text/javascript" src="ueditor/ueditor.all.min.js"></script>       <!-- 编辑器源码文件 -->
+<script type="text/javascript" src="js/laydate.js"></script>                     <!-- 时间选择控件 -->
+<script type="text/javascript" src="js/jquery.uploadify.min.js"></script>       <!-- 图片上传控件 -->
+<script type="text/javascript" src="js/script.js"></script>                        <!-- 公共脚本文件 -->
+
+<!--[if lte IE 7]>
+<script type="text/javascript">
+    mainApp.config(function ($sceProvider) {
+        // Completely disable SCE to support IE7.
+        $sceProvider.enabled(false);
+    });
+    if (!location.hash) location.href = '#/';
+</script>
+<![endif]-->
 
 </html>

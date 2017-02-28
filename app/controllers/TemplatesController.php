@@ -1,30 +1,34 @@
 <?php
 
 /**
-  |--------------------------------------------------------------------------
-  | 模版首页控制器
-  |--------------------------------------------------------------------------
-  |方法：
-  |homepageInfo       首页详情
-  |homepageModify     首页修改
-  |homepagePreview    首页预览
-  |categoryPreview    列表页预览
-  |articlePreview     内容页预览
-  |homepageRewrite    首页配置重写
+ * |--------------------------------------------------------------------------
+ * | 模版首页控制器
+ * |--------------------------------------------------------------------------
+ * |方法：
+ * |homepageInfo       首页详情
+ * |homepageModify     首页修改
+ * |homepagePreview    首页预览
+ * |categoryPreview    列表页预览
+ * |articlePreview     内容页预览
+ * |homepageRewrite    首页配置重写
  */
-class TemplatesController extends BaseController {
+class TemplatesController extends BaseController
+{
 
     /**
      * 首页详情
-     * @param type $page index首页/_aside其他/global全局/form表单
-     * @return string     
+     *
+     * @param string $page index首页/_aside其他/global全局/form表单
+     * @return array
      */
-    public function homepageInfo($page = 'index') {
+    public function homepageInfo($page = 'index')
+    {
         $pagedata = new PrintController;
         $data = $pagedata->pagedata($page);
         $data_final = $data;
         $classify = new Classify;
         foreach ($data as $k => $v) {
+            // ===不对form表单做操作===
             if ($v['type'] == 'list') {
                 $type_arr = array(1, 2, 3);
                 $list = Classify::where('cus_id', '=', $pagedata->cus_id)->whereIn('type', array(1, 2, 3, 4, 5, 6, 9))->where('pc_show', '=', 1)->get()->toArray();
@@ -162,7 +166,8 @@ class TemplatesController extends BaseController {
      *  
      */
 
-    public function unsetLastClassify(&$arr) {
+    public function unsetLastClassify(&$arr)
+    {
         if (!is_array($arr)) {
             return $arr;
         } else {
@@ -182,7 +187,8 @@ class TemplatesController extends BaseController {
      *  
      */
 
-    public function unsetFalseClassify(&$arr, $type) {
+    public function unsetFalseClassify(&$arr, $type)
+    {
         if (!is_array($arr)) {
             return $arr;
         } else {
@@ -203,7 +209,8 @@ class TemplatesController extends BaseController {
         return $arr;
     }
 
-    public function homepageManage() {
+    public function homepageManage()
+    {
         $page = Input::get('page') ? Input::get('page') : 'index';
         $pagelist = $this->buttonList();
         $templedata = $this->homepageInfo($page);
@@ -226,14 +233,16 @@ class TemplatesController extends BaseController {
      * ===首页列表===
      * @return type
      */
-    public function homepageList() {
+    public function homepageList()
+    {
         $page = Input::get('page') ? Input::get('page') : 'index'; //===index首页/_aside其他/global全局===
         $templedata = $this->homepageInfo($page);
         $data_final = ['err' => 0, 'msg' => '', 'data' => $templedata];
         return Response::json($data_final);
     }
 
-    public function buttonList() {
+    public function buttonList()
+    {
         $result = [];
         $cus_id = Auth::id();
         $themename = DB::table('template')->leftJoin('website_info', 'website_info.pc_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $cus_id)->pluck('template.name');
@@ -282,21 +291,23 @@ class TemplatesController extends BaseController {
         return $result;
     }
 
-    public function getimage($arr, $type = 'image') {
+    public function getimage($arr, $type = 'image')
+    {
         $org_img = array();
-        foreach ((array) $arr as $k => $v) {
+        foreach ((array)$arr as $k => $v) {
             if ($k === $type) {
                 $org_img[] = $v;
             }
             if (is_array($v)) {
                 $child_imgs = $this->getimage($v);
-                $org_img = array_merge((array) $org_img, (array) $child_imgs);
+                $org_img = array_merge((array)$org_img, (array)$child_imgs);
             }
         }
         return $org_img;
     }
 
-    public function homepageRewrite() {
+    public function homepageRewrite()
+    {
         $cus_id = Auth::id();
         $website_config = new WebsiteConfig();
         websiteInfo::where('cus_id', $cus_id)->update(['pushed' => 3]);
@@ -306,7 +317,7 @@ class TemplatesController extends BaseController {
         $websiteconfigs = $website_config->where('cus_id', $cus_id)->where('template_id', $pc_tpl_id)->get()->toArray();
         foreach ($websiteconfigs as $val) {
             $org_imgs = $this->getimage(unserialize($val['value']));
-            foreach ((array) $org_imgs as $v) {
+            foreach ((array)$org_imgs as $v) {
                 $imgdel = new ImgDel();
                 $imgdel->mysave($v, 'page_index');
             }
@@ -314,7 +325,7 @@ class TemplatesController extends BaseController {
         $websiteconfigs = $website_config->where('cus_id', $cus_id)->where('template_id', $mobile_tpl_id)->get()->toArray();
         foreach ($websiteconfigs as $val) {
             $org_imgs = $this->getimage(unserialize($val['value']));
-            foreach ((array) $org_imgs as $v) {
+            foreach ((array)$org_imgs as $v) {
                 $imgdel = new ImgDel();
                 $imgdel->mysave($v, 'page_index');
             }
@@ -327,10 +338,12 @@ class TemplatesController extends BaseController {
     }
 
     /**
-     * 首页修改
-     * @return type
+     * 页面编辑修改数据
+     *
+     * @return mixed
      */
-    public function homepageModify() {
+    public function homepageModify()
+    {
         $org_imgs = array();
         $mod_imgs = array();
         $cus_id = Auth::id();
@@ -342,26 +355,11 @@ class TemplatesController extends BaseController {
             $pushed = 2;
         }
         websiteInfo::where('cus_id', $cus_id)->update(['pushed' => $pushed]);
-        $website_config = new WebsiteConfig();
-        $website_config->cus_id = $cus_id;
-        $page = Input::get('page');
-        $website_config->key = $page;
-        $websiteconfig = $website_config->where('cus_id', $cus_id)->where('template_id', $template_id)->where('key', $page)->pluck('value');
-        $websitearray = unserialize($websiteconfig);
-        $org_imgs = $this->getimage($websitearray);
-        $count = $website_config->where('cus_id', $cus_id)->where('template_id', $template_id)->where('key', $page)->count();
-        $website_config->template_id = $template_id;
+        $page = Input::get('page'); //===页面所属===index/form/...
         $data = Input::get('data');
-        /*
-          if(isset($data['slidepics']) && count($data['slidepics'])){
-          foreach($data['slidepics'] as &$arr){
-          $arr['link']=$arr['href'];
-          $arr['image']=basename($arr['src']);
-          unset($arr['href']);
-          unset($arr['src']);
-          }
-          }
-         */
+
+
+        // ===处理数据===
         foreach ($data as $key => $val) {
             if (is_array($data[$key]) && count($data[$key])) {
                 if (array_key_exists("href", $data[$key]) || array_key_exists("src", $data[$key])) {
@@ -388,27 +386,37 @@ class TemplatesController extends BaseController {
             unset($data[$key]);
             $data[$key]['value'] = $temp_arr;
         }
+        $website_config = new WebsiteConfig();
         $website_config->value = serialize($data);
+        $website_config->cus_id = $cus_id;
+        $website_config->template_id = $template_id;
+        $website_config->key = $page;
+        $count = $website_config->where('cus_id', $cus_id)->where('template_id', $template_id)->where('key', $page)->first();//===判断是否存在数据===
         if ($count) {
+            $websiteconfig = $count->value;
+//            $websiteconfig = $website_config->where('cus_id', $cus_id)->where('template_id', $template_id)->where('key', $page)->pluck('value');
+            $websitearray = unserialize($websiteconfig);
+            $org_imgs = $this->getimage($websitearray);
             $result = $website_config->where('cus_id', $cus_id)->where('template_id', $template_id)->where('key', $page)->update(['value' => $website_config->value]);
         } else {
             $result = $website_config->save();
         }
         if ($result) {
-            foreach ((array) $org_imgs as $v) {
-                if (!in_array($v, (array) $mod_imgs)) {
+            foreach ((array)$org_imgs as $v) {
+                if (!in_array($v, (array)$mod_imgs)) {
                     $imgdel = new ImgDel();
                     $imgdel->mysave($v, 'page_index');
                 }
             }
 
-            return Response::json(['err' => 0, 'msg' => '', 'data' => null]);
+            return Response::json(['err' => 0, 'msg' => 'success', 'data' => null]);
         } else {
             return Response::json(['err' => 1001, 'msg' => '数据保存失败', 'data' => null]);
         }
     }
 
-    public function getMobilePageData() {
+    public function getMobilePageData()
+    {
         $cus_id = Auth::id();
         $mobile = new PrintController('preview', 'mobile');
         $mobile_tpl_id = WebsiteInfo::where('cus_id', $cus_id)->pluck('mobile_tpl_id');
@@ -493,7 +501,7 @@ class TemplatesController extends BaseController {
                 $pagelist[] = array('page' => $key, 'title' => $config_arr[$key]['description'], 'type' => $config_arr[$key]['type']);
                 $data[$key] = $config_arr[$key];
                 if ($data[$key]['type'] == 'image') {
-                    if (!$data[$key]['value']['title'] and ! $data[$key]['value']['image'] and ! $data[$key]['value']['link'])
+                    if (!$data[$key]['value']['title'] and !$data[$key]['value']['image'] and !$data[$key]['value']['link'])
                         $data[$key]['value'] = array();
                 }
             }
@@ -507,7 +515,8 @@ class TemplatesController extends BaseController {
         return Response::json($return_msg);
     }
 
-    public function mhomepageModify() {
+    public function mhomepageModify()
+    {
         $cus_id = Auth::id();
         $org_imgs = array();
         $mod_imgs = array();
@@ -588,8 +597,8 @@ class TemplatesController extends BaseController {
             $result = DB::table('website_config')->insert(array('cus_id' => $cus_id, 'type' => 2, 'template_id' => $template_id, 'key' => 'global', 'value' => $new_config_str));
         }
         if ($result) {
-            foreach ((array) $org_imgs as $v) {
-                if (!in_array($v, (array) $mod_imgs)) {
+            foreach ((array)$org_imgs as $v) {
+                if (!in_array($v, (array)$mod_imgs)) {
                     $imgdel = new ImgDel();
                     $imgdel->mysave($v, 'page_index');
                 }
@@ -601,7 +610,8 @@ class TemplatesController extends BaseController {
         return Response::json($return_msg);
     }
 
-    public function homepageSortModify() {
+    public function homepageSortModify()
+    {
         $indexlist = Input::get('indexlist');
         $data = array();
         $err = false;
@@ -632,7 +642,8 @@ class TemplatesController extends BaseController {
         return Response::json($return_msg);
     }
 
-    public function homepageBatchModify() {
+    public function homepageBatchModify()
+    {
         $ids = Input::get('id');
         $index_show = Input::get('show');
         $show_num = Input::get('total');
@@ -704,7 +715,8 @@ class TemplatesController extends BaseController {
         return Response::json($return_msg);
     }
 
-    private function toTree($arr, $pid = 0) {
+    private function toTree($arr, $pid = 0)
+    {
         $tree = array();
         foreach ($arr as $k => $v) {
             if ($v['p_id'] == $pid) {
@@ -849,7 +861,8 @@ class TemplatesController extends BaseController {
     /**
      * PC首页预览
      */
-    public function homepagePreview() {
+    public function homepagePreview()
+    {
         $result = array();
         if ($_SERVER["HTTP_HOST"] == TONGYI_DOMAIN) {
             $this->sendTemplate();
@@ -863,7 +876,8 @@ class TemplatesController extends BaseController {
     /**
      * PC栏目页预览
      */
-    public function categoryPreview($id, $page = 1) {
+    public function categoryPreview($id, $page = 1)
+    {
         $result = array();
         if ($_SERVER["HTTP_HOST"] == TONGYI_DOMAIN) {
             $this->sendTemplate();
@@ -877,7 +891,8 @@ class TemplatesController extends BaseController {
     /**
      * ===PC栏目页预览(栏目别名)===
      */
-    public function categoryPreviewV($view_name, $page = 1) {
+    public function categoryPreviewV($view_name, $page = 1)
+    {
         $result = array();
         if ($_SERVER["HTTP_HOST"] == TONGYI_DOMAIN) {
             $this->sendTemplate();
@@ -891,7 +906,8 @@ class TemplatesController extends BaseController {
     /**
      * PC内容页预览
      */
-    public function articlePreview($id) {
+    public function articlePreview($id)
+    {
         $result = array();
         if ($_SERVER["HTTP_HOST"] == TONGYI_DOMAIN) {
             $this->sendTemplate();
@@ -905,7 +921,8 @@ class TemplatesController extends BaseController {
     /**
      * 手机首页预览
      */
-    public function mhomepagePreview() {
+    public function mhomepagePreview()
+    {
         $result = array();
         if ($_SERVER["HTTP_HOST"] == TONGYI_DOMAIN) {
             $this->sendTemplate();
@@ -919,7 +936,8 @@ class TemplatesController extends BaseController {
     /**
      * 手机栏目预览
      */
-    public function mcategoryPreview($id, $page = 1) {
+    public function mcategoryPreview($id, $page = 1)
+    {
         $result = array();
         if ($_SERVER["HTTP_HOST"] == TONGYI_DOMAIN) {
             $this->sendTemplate();
@@ -933,7 +951,8 @@ class TemplatesController extends BaseController {
     /**
      * ===手机栏目预览(栏目别名)===
      */
-    public function mcategoryPreviewV($view_name, $page = 1) {
+    public function mcategoryPreviewV($view_name, $page = 1)
+    {
         $result = array();
         if ($_SERVER["HTTP_HOST"] == TONGYI_DOMAIN) {
             $this->sendTemplate();
@@ -947,7 +966,8 @@ class TemplatesController extends BaseController {
     /**
      * 手机内容页预览
      */
-    public function marticlePreview($id) {
+    public function marticlePreview($id)
+    {
         $result = array();
         if ($_SERVER["HTTP_HOST"] == TONGYI_DOMAIN) {
             $this->sendTemplate();
@@ -974,7 +994,8 @@ class TemplatesController extends BaseController {
     /**
      * PC首页预览
      */
-    public function homepagePreview_no_auth() {
+    public function homepagePreview_no_auth()
+    {
         $this->preview_login();
         $template = new PrintController();
         return $template->homepagePreview();
@@ -983,7 +1004,8 @@ class TemplatesController extends BaseController {
     /**
      * PC栏目页预览
      */
-    public function categoryPreview_no_auth($id, $page = 1) {
+    public function categoryPreview_no_auth($id, $page = 1)
+    {
         $this->preview_login();
         $template = new PrintController;
         return $template->categoryPreview($id, $page);
@@ -992,7 +1014,8 @@ class TemplatesController extends BaseController {
     /**
      * PC内容页预览
      */
-    public function articlePreview_no_auth($id) {
+    public function articlePreview_no_auth($id)
+    {
         $this->preview_login();
         $template = new PrintController;
         return $template->articlePreview($id);
@@ -1001,7 +1024,8 @@ class TemplatesController extends BaseController {
     /**
      * 手机首页预览
      */
-    public function mhomepagePreview_no_auth() {
+    public function mhomepagePreview_no_auth()
+    {
         $this->preview_login();
         $template = new PrintController('preview', 'mobile');
         return $template->mhomepagePreview();
@@ -1010,7 +1034,8 @@ class TemplatesController extends BaseController {
     /**
      * 手机栏目预览
      */
-    public function mcategoryPreview_no_auth($id, $page = 1) {
+    public function mcategoryPreview_no_auth($id, $page = 1)
+    {
         $this->preview_login();
         $template = new PrintController('preview', 'mobile');
         return $template->categoryPreview($id, $page);
@@ -1019,7 +1044,8 @@ class TemplatesController extends BaseController {
     /**
      * 手机内容页预览
      */
-    public function marticlePreview_no_auth($id) {
+    public function marticlePreview_no_auth($id)
+    {
         $this->preview_login();
         $template = new PrintController('preview', 'mobile');
         return $template->articlePreview($id);
@@ -1028,7 +1054,8 @@ class TemplatesController extends BaseController {
     /**
      * 手机底部功能条
      */
-    public function quickBarJson() {
+    public function quickBarJson()
+    {
         if (array_key_exists('HTTP_REFERER', $_SERVER) && (strpos(strtolower($_SERVER['HTTP_REFERER']), 'mobile') || strpos(strtolower($_SERVER['HTTP_REFERER']), 'templates/gm'))) {
             $template = new PrintController('preview', 'mobile');
         } else {
@@ -1040,7 +1067,8 @@ class TemplatesController extends BaseController {
     /**
      * 搜索页面预览
      */
-    public function searchPreview($type = 'pc') {
+    public function searchPreview($type = 'pc')
+    {
         header("Content-type:text/html;charset=utf-8");
         echo '预览页面不支持搜索功能，请在网站中使用--- , 当前页面将在3s后自动跳转';
         ob_flush();
@@ -1056,7 +1084,8 @@ class TemplatesController extends BaseController {
     /**
      * 获取模板名
      */
-    public function getTemplatesName($type = 'pc') {
+    public function getTemplatesName($type = 'pc')
+    {
         $cus_id = Auth::id();
         if ($type == 'pc') {
             $tpl_name = 'pc_tpl_id';
@@ -1071,7 +1100,8 @@ class TemplatesController extends BaseController {
     /**
      * 模板下载
      */
-    public function downloadTemplate($tplname = "") {
+    public function downloadTemplate($tplname = "")
+    {
         if ($tplname != "") {
             $tpl = Template::where('name', $tplname)->first();
             if ($tpl == null) {
@@ -1160,7 +1190,8 @@ class TemplatesController extends BaseController {
      * @param type $zip压缩变量
      * @param type $dir存储名称
      */
-    private function addFileToZip($path, $zip, $dir, $notcopyfile = "") {//将整个文件夹压缩
+    private function addFileToZip($path, $zip, $dir, $notcopyfile = "")
+    {//将整个文件夹压缩
         $handler = opendir($path);
         while (($filename = readdir($handler)) !== false) {
             if ($filename != "." && $filename != "..") {
@@ -1180,13 +1211,14 @@ class TemplatesController extends BaseController {
      * @param type $source_dir 资源文件夹
      * @param type $dest_dir 目标文件夹
      */
-    private function copydir($source_dir, $dest_dir) {
+    private function copydir($source_dir, $dest_dir)
+    {
         $dir = opendir($source_dir);
         if (!is_dir($dest_dir)) {
             @mkdir($dest_dir);
         }
-        while (false !== ( $file = readdir($dir))) {
-            if (( $file != '.' ) && ( $file != '..' )) {
+        while (false !== ($file = readdir($dir))) {
+            if (($file != '.') && ($file != '..')) {
                 if (is_dir($source_dir . '/' . $file)) {
                     $this->copydir($source_dir . '/' . $file, $dest_dir . '/' . $file);
                 } else {
