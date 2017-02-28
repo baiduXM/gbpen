@@ -25,7 +25,7 @@ $(function () {
             var form_id = v.bind_form.form_id;
             var formdata = forminfo[form_id];
             var n = $('#' + div + '>form>[data-type="inset"]').length;
-            $('#' + div + ' form').attr('action', 'http://swap.5067.org/formdata/' + form_id);
+            $('#' + div + ' form').attr('action', 'http://swap.5067.org/userdata/' + form_id);
             $('#' + div + ' [data-type="title"]').html(formdata.title);
             $('#' + div + ' [data-type="description"]').html(formdata.description);
             $('#' + div + '>form').append('<input type="hidden" name="form_id" value="' + formdata.id + '">');
