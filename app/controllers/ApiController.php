@@ -12,7 +12,8 @@ class ApiController extends BaseController {
         $timemap = Input::get('timemap');
         $data = md5(md5($timemap));
         $url = Config::get('url.DL_domain');
-        $token = file_get_contents('http://dl2.5067.org/?module=ApiModel&action=GetHandShake&num=' . $data);
+        // $token = file_get_contents('http://dl2.5067.org/?module=ApiModel&action=GetHandShake&num=' . $data);
+        $token = file_get_contents('http://daili.example.com/?module=ApiModel&action=GetHandShake&num=' . $data);
         $taget = Input::get('taget');
         $string = $token . $data;
         if (md5($string) == $taget) {

@@ -1,6 +1,4 @@
 .idea/*
-.env.*.php
-.env.php
 .env
 .DS_Store
 Thumbs.db
@@ -22,4 +20,3 @@ app/controllers/FormController.php.rej
 public/sqlite.db
 public/sqlite_1.db
 public/logs/*
-
