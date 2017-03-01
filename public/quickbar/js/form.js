@@ -32,9 +32,9 @@ $(function () {
             $('#' + div + '>form').append('<input type="hidden" name="action_type" value="' + formdata.action_type + '">');
             $('#' + div + '>form').append('<input type="hidden" name="action_text" value="' + formdata.action_text + '">');
             for (var i = 0; i < n; i++) {
-                $('#' + div + '>form>[data-type="inset"]:eq(' + i + ')').attr('name', formdata.data[i].title);
-                $('#' + div + '>form>[data-type="inset"]:eq(' + i + ')').attr('data-id', formdata.data[i].id);
-                $('#' + div + '>form>[data-type="inset"]:eq(' + i + ')').attr('placeholder', formdata.data[i].description);
+                $('#' + div + '>form [data-type="inset"]:eq(' + i + ')').attr('name', formdata.data[i].title);
+                $('#' + div + '>form [data-type="inset"]:eq(' + i + ')').attr('data-id', formdata.data[i].id);
+                $('#' + div + '>form [data-type="inset"]:eq(' + i + ')').attr('placeholder', formdata.data[i].description);
             }
         });
     });
