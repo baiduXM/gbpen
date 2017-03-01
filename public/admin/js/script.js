@@ -175,7 +175,13 @@ mainApp.controller('mainController', function ($scope) {
 // 登陆信息
 mainApp.controller('memberController', function ($scope, $http) {
     $http.get('../customer-info').success(function (json) {
-        checkJSON(json, function (json) {
+        checkJSON(json, function (json) { 
+            //获取是否有微传单
+            $http.get('http://dl2.5067.org/?module=Api&action=getGshowByname&name='+json.data.customer).success(function (d) {
+                if(d==1){
+                    $(".daohang ul").append('<li class="nav"><a href="/cdlogin" target="_blank">微传单</a><em></em></li>');
+                }
+            });
             $scope.companyname = json.data.company_name;
             $scope.$parent.domain_pc = json.data.domain_pc;
             if (json.data.domain_m == '' || json.data.domain_m == null) {

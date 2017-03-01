@@ -12,8 +12,7 @@ class ApiController extends BaseController {
         $timemap = Input::get('timemap');
         $data = md5(md5($timemap));
         $url = Config::get('url.DL_domain');
-        // $token = file_get_contents('http://dl2.5067.org/?module=ApiModel&action=GetHandShake&num=' . $data);
-        $token = file_get_contents('http://daili.example.com/?module=ApiModel&action=GetHandShake&num=' . $data);
+        $token = file_get_contents('http://'.DAILI_DOMAIN.'/?module=ApiModel&action=GetHandShake&num=' . $data);
         $taget = Input::get('taget');
         $string = $token . $data;
         if (md5($string) == $taget) {
@@ -730,5 +729,31 @@ class ApiController extends BaseController {
         @ftp_rmdir($conn, $dir);
         return true;
     }
-
+    /**
+     * 跳转至微传单
+     */
+    public function cdLogin(){
+        if(Auth::check()){
+            $remember=Auth::user()->remember_token;
+            $url="http://".GSHOW_DOMAIN."/index.php?c=user&a=autologin";
+            $data=array();
+            $data["remember"]=Auth::user()->remember_token;
+            $data["username"]=Auth::user()->email;
+            header('Location:'.$url.'&remember='.$data["remember"].'&username='.$data["username"]);
+            exit();
+        }
+    }
+    /**
+     * 跳转至微传单握手验证
+     */
+    public function cdShakeHands(){
+        $remember=Input::get("remember");
+        $username=Input::get("username");
+        $cust=Customer::where("email",$username)->first();
+        if(md5($cust["remember_token"].$cust["email"])==$remember){
+            return json_encode(array("err"=>0));
+        }else{
+            return json_encode(array("err"=>1));
+        }
+    }
 }
