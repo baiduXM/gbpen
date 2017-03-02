@@ -14,29 +14,91 @@ $(function () {
         }
     }
 
+    var flag = true;
     /**
      * 读取表单数据
      */
-    $.getJSON(('/customers/' + CustomerName + '/formdata.json'), function (json) {
-        var bindweb = json.website;
-        var forminfo = json.forminfo;
-        $.each(bindweb, function (k, v) { //===遍历定位
-            var div = v.bind_div.div;
-            var form_id = v.bind_form.form_id;
-            var formdata = forminfo[form_id];
-            var n = $('#' + div + ' form [data-type="inset"]').length;
-            $('#' + div + ' form').attr('action', 'http://swap.5067.org/userdata/' + form_id);
-            $('#' + div + ' [data-type="title"]').html(formdata.title);
-            $('#' + div + ' [data-type="description"]').html(formdata.description);
-            $('#' + div + ' form').append('<input type="hidden" name="form_id" value="' + formdata.id + '">');
-            $('#' + div + ' form').append('<input type="hidden" name="action_type" value="' + formdata.action_type + '">');
-            $('#' + div + ' form').append('<input type="hidden" name="action_text" value="' + formdata.action_text + '">');
-            for (var i = 0; i < n; i++) {
-                $('#' + div + ' form [data-type="inset"]:eq(' + i + ')').attr('name', formdata.data[i].title);
-                $('#' + div + ' form [data-type="inset"]:eq(' + i + ')').attr('data-id', formdata.data[i].id);
-                $('#' + div + ' form [data-type="inset"]:eq(' + i + ')').attr('placeholder', formdata.data[i].description);
-            }
+    if(flag){
+        $.ajax({
+            url: '/formdata.json',
+            dataType: json,
+            async: true,
+            success: function(json){
+                flag = false;
+                var bindweb = json.website;
+                var forminfo = json.forminfo;
+                $.each(bindweb, function (k, v) { //===遍历定位
+                    var div = v.bind_div.div;
+                    var form_id = v.bind_form.form_id;
+                    var formdata = forminfo[form_id];
+                    var n = $('#' + div + ' form [data-type="inset"]').length;
+                    $('#' + div + ' form').attr('action', 'http://swap.5067.org/userdata/' + form_id);
+                    $('#' + div + ' [data-type="title"]').html(formdata.title);
+                    $('#' + div + ' [data-type="description"]').html(formdata.description);
+                    $('#' + div + ' form').append('<input type="hidden" name="form_id" value="' + formdata.id + '">');
+                    $('#' + div + ' form').append('<input type="hidden" name="action_type" value="' + formdata.action_type + '">');
+                    $('#' + div + ' form').append('<input type="hidden" name="action_text" value="' + formdata.action_text + '">');
+                    for (var i = 0; i < n; i++) {
+                        $('#' + div + ' form [data-type="inset"]:eq(' + i + ')').attr('name', formdata.data[i].title);
+                        $('#' + div + ' form [data-type="inset"]:eq(' + i + ')').attr('data-id', formdata.data[i].id);
+                        $('#' + div + ' form [data-type="inset"]:eq(' + i + ')').attr('placeholder', formdata.data[i].description);
+                    }
+                });
+            },
         });
-    });
+    }
+    if(flag){
+        $.ajax({
+            url: '/customers/' + CustomerName + '/formdata.json',
+            dataType: json,
+            async: true,
+            success: function(json){
+                flag = false;
+                var bindweb = json.website;
+                var forminfo = json.forminfo;
+                $.each(bindweb, function (k, v) { //===遍历定位
+                    var div = v.bind_div.div;
+                    var form_id = v.bind_form.form_id;
+                    var formdata = forminfo[form_id];
+                    var n = $('#' + div + ' form [data-type="inset"]').length;
+                    $('#' + div + ' form').attr('action', 'http://swap.5067.org/userdata/' + form_id);
+                    $('#' + div + ' [data-type="title"]').html(formdata.title);
+                    $('#' + div + ' [data-type="description"]').html(formdata.description);
+                    $('#' + div + ' form').append('<input type="hidden" name="form_id" value="' + formdata.id + '">');
+                    $('#' + div + ' form').append('<input type="hidden" name="action_type" value="' + formdata.action_type + '">');
+                    $('#' + div + ' form').append('<input type="hidden" name="action_text" value="' + formdata.action_text + '">');
+                    for (var i = 0; i < n; i++) {
+                        $('#' + div + ' form [data-type="inset"]:eq(' + i + ')').attr('name', formdata.data[i].title);
+                        $('#' + div + ' form [data-type="inset"]:eq(' + i + ')').attr('data-id', formdata.data[i].id);
+                        $('#' + div + ' form [data-type="inset"]:eq(' + i + ')').attr('placeholder', formdata.data[i].description);
+                    }
+                });
+            },
+        });
+    }
+
+    // $.getJSON(('/formdata.json'), function (json) {
+    //     flag = false;
+    //     var bindweb = json.website;
+    //     var forminfo = json.forminfo;
+    //     $.each(bindweb, function (k, v) { //===遍历定位
+    //         var div = v.bind_div.div;
+    //         var form_id = v.bind_form.form_id;
+    //         var formdata = forminfo[form_id];
+    //         var n = $('#' + div + ' form [data-type="inset"]').length;
+    //         $('#' + div + ' form').attr('action', 'http://swap.5067.org/userdata/' + form_id);
+    //         $('#' + div + ' [data-type="title"]').html(formdata.title);
+    //         $('#' + div + ' [data-type="description"]').html(formdata.description);
+    //         $('#' + div + ' form').append('<input type="hidden" name="form_id" value="' + formdata.id + '">');
+    //         $('#' + div + ' form').append('<input type="hidden" name="action_type" value="' + formdata.action_type + '">');
+    //         $('#' + div + ' form').append('<input type="hidden" name="action_text" value="' + formdata.action_text + '">');
+    //         for (var i = 0; i < n; i++) {
+    //             $('#' + div + ' form [data-type="inset"]:eq(' + i + ')').attr('name', formdata.data[i].title);
+    //             $('#' + div + ' form [data-type="inset"]:eq(' + i + ')').attr('data-id', formdata.data[i].id);
+    //             $('#' + div + ' form [data-type="inset"]:eq(' + i + ')').attr('placeholder', formdata.data[i].description);
+    //         }
+    //     });
+    // });
+
 });
 

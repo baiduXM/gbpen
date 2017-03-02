@@ -520,7 +520,7 @@ class PrintController extends BaseController
                     }
                     break;
                 case 'form':
-                    $slimming[$k] = $v;
+//                    $slimming[$k] = $v;
                     break;
             }
         }
@@ -1229,31 +1229,7 @@ class PrintController extends BaseController
      */
     public function insetForm()
     {
-        $websiteFormInfo = websiteConfig::where('cus_id', $this->cus_id)->where('template_id', $this->tpl_id)->where('key', 'form')->pluck('value');
-        if (!empty($websiteFormInfo)) {
-            $websiteFormArray = unserialize($websiteFormInfo);
-            $ids = array();
-            $bind = array();
-            foreach ($websiteFormArray as $key => $value) {
-                $bind[substr($key, strlen($key) - 1)][substr($key, 0, -1)] = $value['value'];
-                if (array_key_exists('form_id', $value['value'])) {
-                    if (!in_array($value['value']['form_id'], $ids)) {
-                        $ids[] = $value['value']['form_id'];
-                    }
-                }
-            }
-            $FormC = new FormController();
-            $formInfo = $FormC->getFormInfoByIds($ids);
-            $data['forminfo'] = $formInfo;
-            $data['website'] = $bind;
-//            echo '<pre>';
-//            var_dump($data);
-//            exit;
-            file_put_contents(public_path("customers/" . $this->customer . '/formdata.json'), json_encode($data));//将表单数据写入.json中
         return '<script type="text/javascript" src="/quickbar/js/form.js?name=' . $this->customer . '"></script>';
-        } else {
-            return '';
-        }
     }
 
     /**
