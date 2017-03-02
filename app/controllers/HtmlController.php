@@ -1075,11 +1075,11 @@ class HtmlController extends BaseController
                     }
                 }
                 //===added:嵌入表单.json数据传送到服务器===
-                $json_path = public_path("customers/" . $this->customer . '/formdata.json');//将表单数据写入.json中
-                if (file_exists($json_path)) {
-                    @unlink($json_path);
-                }
-                ftp_put($conn, $path . "/" . $this->customer . "/formdata.json", $json_path, FTP_BINARY);
+//                $json_path = public_path("customers/" . $this->customer . '/formdata.json');//将表单数据写入.json中
+//                if (file_exists($json_path)) {
+//                    @unlink($json_path);
+//                }
+//                ftp_put($conn, $path . "/" . $this->customer . "/formdata.json", $json_path, FTP_BINARY);
                 //===added:end====
 
                 ftp_close($conn);
