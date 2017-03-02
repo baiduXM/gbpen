@@ -132,7 +132,7 @@ class PrintController extends BaseController
      *
      * @param string $themename 模版名称
      * @param string $pagename 页面名称
-     * @param array $jsondata 文件配置数据
+     * @param string $jsondata 文件配置数据
      * @return array 合并后的数组
      */
     public function pagedata($pagename, $jsondata = array())
@@ -370,8 +370,9 @@ class PrintController extends BaseController
     /**
      * 数据处理
      *
-     * @param $data
-     * @return array
+     * @param array $result 要补全路径的数组
+     *
+     *
      */
     public function dataDeal($data)
     {
@@ -533,7 +534,8 @@ class PrintController extends BaseController
      * 递归替换数组中的相对位置url添加加域名
      *
      * @param array $result 要补全路径的数组
-     * @return mixed
+     *
+     *
      */
     public function replaceUrl(&$result)
     {
@@ -1144,7 +1146,7 @@ class PrintController extends BaseController
                                         $quickbar[$key]['link'] = $url_arr[0];
                                     }
                                 }
-                                //删除enable_pc/enable_mobile键值
+                                //TODO:删除enable_pc/enable_mobile键值
                                 unset($quickbar[$key]['enable_pc']);
                                 unset($quickbar[$key]['enable_mobile']);
                             }
@@ -1244,8 +1246,11 @@ class PrintController extends BaseController
             $formInfo = $FormC->getFormInfoByIds($ids);
             $data['forminfo'] = $formInfo;
             $data['website'] = $bind;
-            file_put_contents(public_path("customers/" . $this->customer . '/formdata.json'), json_encode($data));//===将表单数据写入.json中
-            return '<script type="text/javascript" src="/quickbar/js/form.js?name=' . $this->customer . '"></script>';
+//            echo '<pre>';
+//            var_dump($data);
+//            exit;
+            file_put_contents(public_path("customers/" . $this->customer . '/formdata.json'), json_encode($data));//将表单数据写入.json中
+        return '<script type="text/javascript" src="/quickbar/js/form.js?name=' . $this->customer . '"></script>';
         } else {
             return '';
         }
@@ -1979,7 +1984,7 @@ class PrintController extends BaseController
      */
     public function homepagePreview($result = array())
     {
-        if ($_SERVER["HTTP_HOST"] != "ht.5067.org") {
+        if ($_SERVER["HTTP_HOST"] != TONGYI_DOMAIN) {
             $result = $this->pagePublic();
             $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
             $result['title'] = $customer_info->title;
@@ -1997,7 +2002,7 @@ class PrintController extends BaseController
                 }
             }
         }
-        if ($_SERVER["HTTP_HOST"] == "172.16.0.17") {
+        if ($_SERVER["HTTP_HOST"] == TONGYI_TUISONG_JUYU_IP) {
             return json_encode($result);
         }
         $smarty = new Smarty;
@@ -2057,7 +2062,7 @@ class PrintController extends BaseController
      */
     public function mhomepagePreview($result = array())
     {
-        if ($_SERVER["HTTP_HOST"] != "ht.5067.org") {
+        if ($_SERVER["HTTP_HOST"] != TONGYI_DOMAIN) {
             $result = $this->pagePublic();
             $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
             $result['title'] = $customer_info->title;
@@ -2191,7 +2196,7 @@ class PrintController extends BaseController
             }
             $result['mIndexCats'] = $mIndexCats;
         }
-        if ($_SERVER["HTTP_HOST"] == "172.16.0.17") {
+        if ($_SERVER["HTTP_HOST"] == TONGYI_TUISONG_JUYU_IP) {
             return json_encode($result);
         }
         $smarty = new Smarty;
@@ -2373,7 +2378,7 @@ class PrintController extends BaseController
 //        } else {
 //            $id = Classify::where('view_name', $param)->pluck('id');
         }
-        if ($_SERVER["HTTP_HOST"] != "ht.5067.org") {
+        if ($_SERVER["HTTP_HOST"] != TONGYI_DOMAIN) {
             $result = $this->pagePublic($id);
             $customerinfo = CustomerInfo::where("cus_id", $this->cus_id)->first();
             foreach ((array)$result['navs'] as $nav) {
@@ -2664,7 +2669,7 @@ class PrintController extends BaseController
             }
             $result["viewname"] = $viewname;
         }
-        if ($_SERVER["HTTP_HOST"] == "172.16.0.17") {
+        if ($_SERVER["HTTP_HOST"] == TONGYI_TUISONG_JUYU_IP) {
             return json_encode($result);
         }
         $smarty = new Smarty;
@@ -3075,7 +3080,7 @@ class PrintController extends BaseController
      */
     public function articlePreview($id, $result = array())
     {
-        if ($_SERVER["HTTP_HOST"] != "ht.5067.org") {
+        if ($_SERVER["HTTP_HOST"] != TONGYI_DOMAIN) {
             $article = Articles::find($id);
             $customer_info = CustomerInfo::where('cus_id', $this->cus_id)->first();
             if ($customer_info->lang == 'en') {
@@ -3263,7 +3268,7 @@ class PrintController extends BaseController
             }
             $result["viewname"] = $viewname;
         }
-        if ($_SERVER["HTTP_HOST"] == "172.16.0.17") {
+        if ($_SERVER["HTTP_HOST"] == TONGYI_TUISONG_JUYU_IP) {
             return json_encode($result);
         }
 //        var_dump($result['pubdate']);

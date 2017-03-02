@@ -771,6 +771,9 @@ class HtmlController extends BaseController {
         }
     }
 
+    /**
+     * 推送栈处理
+     */
     private function clearpushqueue() {
         PushQueue::where('pushtime', '<', time() - 60)->delete();
         PushQueue::where('cus_id', $this->cus_id)->update(['pushtime' => time()]);
@@ -799,7 +802,7 @@ class HtmlController extends BaseController {
      * 带登录推送
      */
     public function pushLogin() {//带登录推送
-        if($_SERVER["SERVER_ADDR"]=="182.61.23.43"||$_SERVER["SERVER_ADDR"]=="172.16.0.17"){
+        if($_SERVER["SERVER_ADDR"]==TONGYI_TUISONG_IP||$_SERVER["SERVER_ADDR"]==TONGYI_TUISONG_JUYU_IP){
             if (Input::has("name")) {
                 $this->allow_push_count=8;
                 $cus_id = Customer::where("name", Input::get("name"))->pluck("id");
@@ -833,7 +836,7 @@ class HtmlController extends BaseController {
                         }
                         $zip->close();
                     }
-                    if($pc_tpl->push_get_date==null||$pc_tpl->push_get_date==""||$pc_tpl->push_get_date<$pc_tpl->updated_at){
+                    if($pc_tpl->push_get_date==null||$pc_tpl->push_get_date==""||$pc_tpl->push_get_date<$pc_tpl->updated_at){//push_get_date推送服务器模板更新时间 updated_at总服务器模板更新时间
                         if(file_exists($pc_path)){
                             $zip = new ZipArchive;
                             if ($zip->open($pc_path) === TRUE)
@@ -878,18 +881,6 @@ class HtmlController extends BaseController {
                     if(Input::has("pushgrad")==1){
                         $classify=new ClassifyController();
                         $data=$classify->classifyids();
-//                        $count=  count($data);
-//                        $num=1;
-//                        foreach((array)$data as $val){
-//                            if($num<$count){
-//                                $this->end=0;
-//                            }else{
-//                                $this->end=1;
-//                            }
-//                            $this->pushcid=$val;
-//                            $this->pushPrecent();
-//                            $num++;
-//                        }
                         if(count($data)>0){
                             echo '<iframe id="grad_push" src="../grad_push?pushgrad=1&end=0&push_c_id='.$data[0].'&name='.Input::get("name").'&remember_token='.Input::get("remember_token").'" frameborder="0" style="display:none;"></iframe>';
                             ob_flush();
@@ -925,18 +916,6 @@ class HtmlController extends BaseController {
                     if(Input::has("pushgrad")==1){
                         $classify=new ClassifyController();
                         $data=$classify->classifyids();
-//                        $count=  count($data);
-//                        $num=1;
-//                        foreach((array)$data as $val){
-//                            if($num<$count){
-//                                $this->end=0;
-//                            }else{
-//                                $this->end=1;
-//                            }
-//                            $this->pushcid=$val;
-//                            $this->pushPrecent();
-//                            $num++;
-//                        }
                         if(count($data)>0){
                             echo '<iframe id="grad_push" src="../grad_push?pushgrad=1&end=0&push_c_id='.$data[0].'" frameborder="0" style="display:none;"></iframe>';
                             ob_flush();
@@ -954,7 +933,7 @@ class HtmlController extends BaseController {
      * 推送是获取所有栏目id
      */
     public function push_classify_ids() {//推送是获取所有栏目id
-        if($_SERVER["SERVER_ADDR"]=="182.61.23.43"||$_SERVER["SERVER_ADDR"]=="172.16.0.17"){
+        if($_SERVER["SERVER_ADDR"]== TONGYI_TUISONG_IP ||$_SERVER["SERVER_ADDR"]==TONGYI_TUISONG_JUYU_IP){
             if (Input::has("name")) {
                 $cus_id = Customer::where("name", Input::get("name"))->pluck("id");
                 if ($cus_id > 0 && Input::has("remember_token")) {
@@ -1017,16 +996,16 @@ class HtmlController extends BaseController {
      * @return type
      */
     public function getRemeber_token() {//发送数据包到推送服务器，并获取登录凭证
-        if($_SERVER["SERVER_ADDR"]=="182.61.23.52"||$_SERVER["SERVER_ADDR"]=="172.16.0.16"){
+        if($_SERVER["SERVER_ADDR"]==TONGYI_IP||$_SERVER["SERVER_ADDR"]==TONGYI_JUYU_IP){
             $webinfo=WebsiteInfo::where("cus_id",$this->cus_id)->first();
             $pc_themename = Template::where("id",$webinfo->pc_tpl_id)->pluck("name");
             $mobile_themename = Template::where("id",$webinfo->mobile_tpl_id)->pluck("name");
             $pc_tpl=Template::where("id",$webinfo->pc_tpl_id)->first();
             $m_tpl=Template::where("id",$webinfo->mobile_tpl_id)->first();
-            $conn = ftp_connect("172.16.0.17", "21");
-            $path="gbpen/public/customers";
+            $conn = ftp_connect(TONGYI_TUISONG_JUYU_IP, TONGYI_TUISONG_FTP_PORT);
+            $path=TONGYI_TUISONG_DIR;
             if ($conn) {
-                ftp_login($conn, '12t', 'Db#907$LKF');
+                ftp_login($conn, TONGYI_TUISONG_FTP_USER, TONGYI_TUISONG_FTP_PASSWORD);
                 ftp_pasv($conn, true);
                 if (ftp_nlist($conn, $path. "/" . $this->customer) === FALSE) {
                     ftp_mkdir($conn, $path."/" . $this->customer);
@@ -1086,6 +1065,9 @@ class HtmlController extends BaseController {
             return Response::json(array("name" => Auth::user()->name, "remember_token" => $remember_token));
         }
     }
+    /**
+     * 分级推送
+     */
     public function grad_push(){
         if (Input::has("name")) {
             $this->allow_push_count=8;
@@ -1117,16 +1099,6 @@ class HtmlController extends BaseController {
             if (Input::has("end")) {
                 $end = Input::get("end");
             }
-//            $pushcid = $this->pushcid;
-//            $end = $this->end;
-//            $this->percent=0;
-//            $this->lastpercent=0;
-//            $this->html_precent=0;
-//            $this->last_html_precent=0;
-//            $this->pcpush=0;
-//            $this->mobilepush=0;
-//            $this->quickbarpush=0;
-//            $this->mobilehomepagepush=0;
         }else{
             if(!Input::has("name")){
                 echo '<script type="text/javascript">function refresh(str){parent.refresh(str);};</script>';

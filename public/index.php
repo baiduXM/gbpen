@@ -19,7 +19,7 @@
 */
 
 require __DIR__.'/../bootstrap/autoload.php';
-
+require __DIR__.'/../app/config/config.php';
 /*
 |--------------------------------------------------------------------------
 | Turn On The Lights
