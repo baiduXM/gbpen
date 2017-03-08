@@ -88,7 +88,7 @@ class BaseController extends Controller {
         $time_min = $logs->min('operation_time');
         if(date("Y-m-d",  $time_min) !== date("Y-m-d",  time())){
             $time_minday = strtotime(date("Y-m-d",  $time_min));
-            $time_tomorrow = $time_minday + 8640000; // 100day
+            $time_tomorrow = $time_minday + 86400; // 改回去1day
             $logs_data = $logs->where("operation_time",">=",$time_minday)->where("operation_time","<",$time_tomorrow)->get()->toArray();
             if($logs_data){
                 foreach($logs_data as &$value){
