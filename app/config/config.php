@@ -3,7 +3,7 @@
  * 配置文件
  */
 define('TONGYI_DOMAIN','ht.5067.org');//统一平台域名
-//define('DAILI_DOMAIN','dl2.5067.org');//代理平台域名
+define('DAILI_DOMAIN','dl2.5067.org');//代理平台域名
 define('GSHOW_DOMAIN','cd.5067.org');//微海报域名
 define('TONGYI_IP','182.61.47.52');//统一平台服务器ip
 define('TONGYI_JUYU_IP','172.16.0.16');//统一平台服务器ip局域网
