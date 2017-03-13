@@ -76,9 +76,11 @@ class ArticleController extends BaseController {
         $article->pushed = 1;
         //===ueditor文件统计容量===
         $Capacity = new CapacityController();
-        file_put_contents("test.txt", $article->file_array);
+        file_put_contents("test.txt", "这是".$article->file_array);
         $Capacity->compare_filename($article->content, $article->file_array);
         $article->file_array = $Capacity->reg_ueditor_content($article->content);
+        file_put_contents("test1.txt", $article->file_array);
+
         //===end===
         $result = $article->save();
         if ($result) {
