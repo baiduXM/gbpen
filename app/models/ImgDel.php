@@ -14,7 +14,7 @@ class ImgDel extends Eloquent {
             $ueditpath = public_path('customers/' . $customer . '/images/ueditor/' . $img);
             if (is_file($filepath)) {
                 $size = filesize($filepath); //===images/l不一定有，要推送后才有图片
-            } elseif(is_file($uepath)){
+            } elseif(is_file($ueditpath)){
                 $size = filesize($ueditpath);
             }
             else {
