@@ -15,7 +15,10 @@ class ImgDel extends Eloquent {
             file_put_contents("test.txt",$uepath);
             if (is_file($filepath)) {
                 $size = filesize($filepath); //===images/l不一定有，要推送后才有图片
-            } else {
+            } elseif(is_file($uepath)){
+                $size = filesize($uepath);
+            }
+            else {
                 $size = 0;
             }
             $Capacity = new CapacityController;

@@ -80,7 +80,6 @@ class ArticleController extends BaseController {
         $Capacity->compare_filename($article->content, $article->file_array);
         $article->file_array = $Capacity->reg_ueditor_content($article->content);
         $ue_img=explode(",", $article->file_array);
-        Log::info("数组",["array"=>$ue_img]);
         //===end===
         $result = $article->save();
         if ($result) {
