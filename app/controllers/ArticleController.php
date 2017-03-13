@@ -90,7 +90,7 @@ class ArticleController extends BaseController {
             if ($id) {
                 MoreImg::where('a_id', $id)->delete();
                 foreach ((array) $del_imgs as $v) {
-                    file_put_contents("xiugai.txt", "这里")
+                    file_put_contents("xiugai.txt", "这里");
                     $imgdel = new ImgDel();
                     $imgdel->mysave($v, 'articles');
                 }
