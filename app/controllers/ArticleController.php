@@ -50,11 +50,11 @@ class ArticleController extends BaseController {
             return Response::json(array('err' => 3001, 'msg' => '标题不能为空'));
         }
         $img_arr = explode(',', Input::get('src'));
-        // foreach ((array) $org_imgs as $v) {
-        //     if (!in_array($v, (array) $img_arr)) {
-        //         $del_imgs[] = $v;
-        //     }
-        // }
+        foreach ((array) $org_imgs as $v) {
+            if (!in_array($v, (array) $img_arr)) {
+                $del_imgs[] = $v;
+            }
+        }
         if (count($img_arr)) {
             $article->img = $img_arr[0];
             unset($img_arr[0]);
@@ -80,18 +80,13 @@ class ArticleController extends BaseController {
         $article->file_array = $Capacity->reg_ueditor_content($article->content);
         $ue_img=explode(",", $article->file_array);
         //===end===
-        foreach ((array) $org_imgs as $v) {
-            if (!in_array($v, (array) $ue_img)) {
-                $del_imgs[] = $v;
-            }
-        }
         $result = $article->save();
         if ($result) {
             if ($id) {
                 MoreImg::where('a_id', $id)->delete();
                 foreach ((array) $del_imgs as $v) {
-                    file_put_contents("xiugai.txt", "这里");
                     $imgdel = new ImgDel();
+                    file_put_contents("test.txt", "第一".$v,FILE_APPEND);
                     $imgdel->mysave($v, 'articles');
                 }
             }
