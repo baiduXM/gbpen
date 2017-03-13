@@ -76,8 +76,9 @@ class ArticleController extends BaseController {
         $article->pushed = 1;
         //===ueditor文件统计容量===
         $Capacity = new CapacityController();
-        $Capacity->compare_filename($article->content, $article->file_array);
         $article->file_array = $Capacity->reg_ueditor_content($article->content);
+        $Capacity->compare_filename($article->content, $article->file_array);
+        
         $ue_img=explode(",", $article->file_array);
         //===end===
         $result = $article->save();
