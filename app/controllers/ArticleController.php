@@ -102,14 +102,16 @@ class ArticleController extends BaseController {
             }
             if(count($ue_img)){
                foreach ($ue_img as $uimg) {
-                    $moreuimg = new Moreimg();
-                    $moreuimg->title = '';
-                    $moreuimg->img = $uimg;
-                    $moreuimg->url = '';
-                    $moreuimg->sort = '';
-                    $moreuimg->a_id = $article->id;
-                    $moreuimg->from = 'ueditor';
-                    $moreuimg->save();
+                    if($uimg!==""){
+                        $moreuimg = new Moreimg();
+                        $moreuimg->title = '';
+                        $moreuimg->img = $uimg;
+                        $moreuimg->url = '';
+                        $moreuimg->sort = '';
+                        $moreuimg->a_id = $article->id;
+                        $moreuimg->from = 'ueditor';
+                        $moreuimg->save();
+                    }                    
                 } 
             }
 
