@@ -100,18 +100,18 @@ class ArticleController extends BaseController {
                     $moreimg->save();
                 }
             }
-            if(count($ue_img)){
-               foreach ($ue_img as $uimg) {
-                    $moreimg = new Moreimg();
-                    $moreimg->title = '';
-                    $moreimg->img = $uimg;
-                    $moreimg->url = '';
-                    $moreimg->sort = '';
-                    $moreimg->a_id = $article->id;
-                    $moreimg->from = 'ueditor';
-                    $moreimg->save();
-                } 
-            }
+            // if(count($ue_img)){
+            //    foreach ($ue_img as $uimg) {
+            //         $moreimg = new Moreimg();
+            //         $moreimg->title = '';
+            //         $moreimg->img = $uimg;
+            //         $moreimg->url = '';
+            //         $moreimg->sort = '';
+            //         $moreimg->a_id = $article->id;
+            //         $moreimg->from = 'ueditor';
+            //         $moreimg->save();
+            //     } 
+            // }
 
             $this->logsAdd("article",__FUNCTION__,__CLASS__,1,"添加文章",0,$article->id);
             $return_msg = array('err' => 0, 'msg' => '', 'data' => array($article->id));
