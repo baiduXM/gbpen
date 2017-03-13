@@ -76,7 +76,7 @@ class ArticleController extends BaseController {
         $article->pushed = 1;
         //===ueditor文件统计容量===
         $Capacity = new CapacityController();
-        $Capacity->compare_filename($article->content, $article->file_array);
+        // $Capacity->compare_filename($article->content, $article->file_array);
         $article->file_array = $Capacity->reg_ueditor_content($article->content);
         $ue_img=explode(",", $article->file_array);
         //===end===
@@ -86,7 +86,6 @@ class ArticleController extends BaseController {
                 MoreImg::where('a_id', $id)->delete();
                 foreach ((array) $del_imgs as $v) {
                     $imgdel = new ImgDel();
-                    file_put_contents("test.txt", "第一".$v,FILE_APPEND);
                     $imgdel->mysave($v, 'articles');
                 }
             }
