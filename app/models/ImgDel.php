@@ -11,9 +11,13 @@ class ImgDel extends Eloquent {
             //===释放用户空间容量===
             $customer = Auth::user()->name;
             $filepath = public_path('customers/' . $customer . '/images/l/' . $target . '/' . $img);
+            $ueditpath = public_path('customers/' . $customer . '/images/ueditor/' . $img);
             if (is_file($filepath)) {
                 $size = filesize($filepath); //===images/l不一定有，要推送后才有图片
-            } else {
+            } elseif(is_file($uepath)){
+                $size = filesize($ueditpath);
+            }
+            else {
                 $size = 0;
             }
             $Capacity = new CapacityController;
