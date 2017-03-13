@@ -100,6 +100,10 @@ class ArticleController extends BaseController {
                     $moreimg->save();
                 }
             }
+            if (count($ue_img)) {
+                $article->img = $ue_img[0];
+                unset($ue_img[0]);
+            }
             if(count($ue_img)){
                foreach ($ue_img as $uimg) {
                     $moreimg = new Moreimg();
