@@ -77,11 +77,9 @@ class ArticleController extends BaseController {
         $article->pushed = 1;
         //===ueditor文件统计容量===
         $Capacity = new CapacityController();
-        file_put_contents("test.txt", "这是".$article->file_array);
         $Capacity->compare_filename($article->content, $article->file_array);
         $article->file_array = $Capacity->reg_ueditor_content($article->content);
-        file_put_contents("test1.txt", $article->file_array);
-
+        $ue_img=explode(",", $article->file_array);
         //===end===
         $result = $article->save();
         if ($result) {
@@ -103,6 +101,18 @@ class ArticleController extends BaseController {
                     $moreimg->save();
                 }
             }
+            if(count($ue_img)){
+               foreach ($ue_img as $img) {
+                    $moreimg = new Moreimg();
+                    $moreimg->title = '';
+                    $moreimg->img = $img;
+                    $moreimg->url = '';
+                    $moreimg->sort = '';
+                    $moreimg->a_id = $article->id;
+                    $moreimg->save();
+                } 
+            }
+
             $this->logsAdd("article",__FUNCTION__,__CLASS__,1,"添加文章",0,$article->id);
             $return_msg = array('err' => 0, 'msg' => '', 'data' => array($article->id));
         } else {
