@@ -108,6 +108,7 @@ class ArticleController extends BaseController {
                     $moreimg->url = '';
                     $moreimg->sort = '';
                     $moreimg->a_id = $article->id;
+                    $moreimg->from = 'ueditor';
                     $moreimg->save();
                 } 
             }
@@ -301,7 +302,7 @@ class ArticleController extends BaseController {
             if ($article->img != '') {
                 $img = array();
                 $img[] = asset("customers/$customer/images/l/articles") . '/' . $article->img;
-                $moreimg = Moreimg::where('a_id', $id)->lists('img');
+                $moreimg = Moreimg::where('a_id', $id)->where('from','!=',"ueditor")->lists('img');
                 if (count($moreimg)) {
                     foreach ($moreimg as $v) {
                         $img[] = asset("customers/$customer/images/l/articles") . '/' . $v;
