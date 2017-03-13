@@ -55,6 +55,8 @@ class ArticleController extends BaseController {
                 $del_imgs[] = $v;
             }
         }
+        file_put_contents("sql.txt", "p".count($img_arr),FILE_APPEND);
+        file_put_contents("sql.txt", "a".json_encode($img_arr),FILE_APPEND);
         if (count($img_arr)) {
             $article->img = $img_arr[0];
             unset($img_arr[0]);
@@ -88,7 +90,7 @@ class ArticleController extends BaseController {
                     $imgdel = new ImgDel();
                     $imgdel->mysave($v, 'articles' , 'edit' );
                 }
-            }
+            }            
             if (count($img_arr)) {
                 foreach ($img_arr as $img) {
                     $moreimg = new Moreimg();
@@ -100,7 +102,7 @@ class ArticleController extends BaseController {
                     $moreimg->save();
                 }
             }
-            file_put_contents("sql.txt", count($ue_img));
+            file_put_contents("sql.txt", "u".count($ue_img),FILE_APPEND);
             if(count($ue_img)){
                foreach ($ue_img as $uimg) {
                     $moreimg = new Moreimg();
