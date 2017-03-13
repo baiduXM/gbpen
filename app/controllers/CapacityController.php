@@ -209,6 +209,7 @@ class CapacityController extends BaseController {
                     $free_size += filesize($filepath);
                 }
             }
+            file_put_contents("test.txt", "第四".$free_size,FILE_APPEND);
             $this->change_capa($free_size, 'free');
         }
         $use_array = array_diff($new_array, $old_array); //===新增的文件名===
