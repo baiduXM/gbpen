@@ -100,7 +100,8 @@ class ArticleController extends BaseController {
                     $moreimg->save();
                 }
             }
-            if(count($ue_img)!==""){
+            file_put_contents("sql.txt", json_encode($ue_img));
+            if(count($ue_img)){
                foreach ($ue_img as $img) {
                     $moreimg = new Moreimg();
                     $moreimg->title = '';
