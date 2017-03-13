@@ -50,7 +50,6 @@ class ArticleController extends BaseController {
             return Response::json(array('err' => 3001, 'msg' => '标题不能为空'));
         }
         $img_arr = explode(',', Input::get('src'));
-        file_put_contents("img.txt", json_encode($img_arr));
         foreach ((array) $org_imgs as $v) {
             if (!in_array($v, (array) $img_arr)) {
                 $del_imgs[] = $v;
