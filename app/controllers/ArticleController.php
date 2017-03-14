@@ -135,6 +135,7 @@ class ArticleController extends BaseController {
                 $article = Articles::find($id);
                 Classify::where('cus_id', $cus_id)->where('id', $article->c_id)->update(['pushed' => 1]);
                 $data = MoreImg::where('a_id', $id)->get()->toArray();
+                $udata = MoreuImg::where('a_id', $id)->get()->toArray();
                 $result = Articles::where('id', '=', $id)->delete();
                 if (!$result) {
                     $failed++;
