@@ -103,13 +103,14 @@ class ArticleController extends BaseController {
             if(count($ue_img)){
                foreach ($ue_img as $uimg) {
                     if($uimg!==""){
-                        $moreuimg = new Moreimg();
+                        // $moreuimg = new Moreimg();
+                        $moreuimg = new Moreuimg();
                         $moreuimg->title = '';
                         $moreuimg->img = $uimg;
                         $moreuimg->url = '';
                         $moreuimg->sort = '';
                         $moreuimg->a_id = $article->id;
-                        $moreuimg->from = 'ueditor';
+                        // $moreuimg->from = 'ueditor';
                         $moreuimg->save();
                     }                    
                 } 
@@ -160,8 +161,10 @@ class ArticleController extends BaseController {
             $article = Articles::find($ids[0]);
             Classify::where('cus_id', $cus_id)->where('id', $article->c_id)->update(['pushed' => 1]);
             $data = MoreImg::where('a_id', $ids[0])->get()->toArray();
+            $udata = MoreuImg::where('a_id', $ids[0])->get()->toArray();
             $result = Articles::where('id', '=', $ids[0])->delete();
             if ($result) {
+                //处理缩略图
                 foreach ((array) $data as $v) {
                     $del_imgs[] = $v["img"];
                 }
@@ -169,6 +172,15 @@ class ArticleController extends BaseController {
                 foreach ((array) $del_imgs as $v) {                   
                     $imgdel = new ImgDel();
                     $imgdel->mysave($v, 'articles');
+                }
+                //处理ueditor的图
+                foreach ((array) $udata as $v) {
+                    $del_u_imgs[] = $v["img"];
+                }
+                $del_u_imgs[] = $article->img;
+                foreach ((array) $del_u_imgs as $v) {                   
+                    $uimgdel = new ImgDel();
+                    $uimgdel->myusave($v);
                 }
                 $this->logsAdd("article",__FUNCTION__,__CLASS__,2,"删除文章",0,$ids[0]);
                 $return_msg = array('err' => 0, 'msg' => '');
