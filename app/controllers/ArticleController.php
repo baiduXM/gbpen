@@ -78,6 +78,7 @@ class ArticleController extends BaseController {
         $Capacity = new CapacityController();
         $Capacity->compare_filename($article->content, $article->file_array);
         $article->file_array = $Capacity->reg_ueditor_content($article->content);
+        $ue_img=explode(",", $article->file_array);
         //===end===
         $result = $article->save();
         if ($result) {
@@ -85,9 +86,9 @@ class ArticleController extends BaseController {
                 MoreImg::where('a_id', $id)->delete();
                 foreach ((array) $del_imgs as $v) {
                     $imgdel = new ImgDel();
-                    $imgdel->mysave($v, 'articles');
+                    $imgdel->mysave($v, 'articles' , 'edit' );
                 }
-            }
+            }            
             if (count($img_arr)) {
                 foreach ($img_arr as $img) {
                     $moreimg = new Moreimg();
@@ -99,6 +100,21 @@ class ArticleController extends BaseController {
                     $moreimg->save();
                 }
             }
+            if(count($ue_img)){
+               foreach ($ue_img as $uimg) {
+                    if($uimg!==""){
+                        $moreuimg = new Moreimg();
+                        $moreuimg->title = '';
+                        $moreuimg->img = $uimg;
+                        $moreuimg->url = '';
+                        $moreuimg->sort = '';
+                        $moreuimg->a_id = $article->id;
+                        $moreuimg->from = 'ueditor';
+                        $moreuimg->save();
+                    }                    
+                } 
+            }
+
             $this->logsAdd("article",__FUNCTION__,__CLASS__,1,"添加文章",0,$article->id);
             $return_msg = array('err' => 0, 'msg' => '', 'data' => array($article->id));
         } else {
@@ -150,7 +166,7 @@ class ArticleController extends BaseController {
                     $del_imgs[] = $v["img"];
                 }
                 $del_imgs[] = $article->img;
-                foreach ((array) $del_imgs as $v) {
+                foreach ((array) $del_imgs as $v) {                   
                     $imgdel = new ImgDel();
                     $imgdel->mysave($v, 'articles');
                 }
@@ -288,7 +304,7 @@ class ArticleController extends BaseController {
             if ($article->img != '') {
                 $img = array();
                 $img[] = asset("customers/$customer/images/l/articles") . '/' . $article->img;
-                $moreimg = Moreimg::where('a_id', $id)->lists('img');
+                $moreimg = Moreimg::where('a_id', $id)->where('from','=',null)->lists('img');
                 if (count($moreimg)) {
                     foreach ($moreimg as $v) {
                         $img[] = asset("customers/$customer/images/l/articles") . '/' . $v;
