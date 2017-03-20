@@ -3319,7 +3319,7 @@ class PrintController extends BaseController
         foreach ((array)$articles as $key => $article) {
             $the_result = array();
             $the_result = $result;
-            $a_moreimg = Moreimg::where('a_id', $article['id'])->get()->toArray();
+            $a_moreimg = Moreimg::where('a_id', $article['id'])->where('from','=',null)->get()->toArray();
             array_unshift($a_moreimg, array('title' => $article['title'], 'img' => $article['img']));
             $images = array();
             if (count($a_moreimg)) {
