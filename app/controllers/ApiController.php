@@ -584,7 +584,7 @@ class ApiController extends BaseController {
             if ($CustomerInfo) {
                 CustomerInfo::where('cus_id', $cus_id)->update($update);
             }
-            Customer::where('id', $cus_id)->update($update);
+            Customer::where('id', $cus_id)->update(array('is_del'=>1,'status'=>1));
             
             unlink(public_path("customers_backups/".$name.".zip"));
             $this->logsAdd("customer",__FUNCTION__,__CLASS__,999,"还原用户",1);
