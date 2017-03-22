@@ -5,6 +5,12 @@ class ImgDel extends Eloquent {
     protected $table = 'img_del';
     public $timestamps = false;
 
+
+    /**
+     * @param $img
+     * @param string $target
+     * @return string|void
+     */
     public function mysave($img, $target = "articles") {
         if ($img != '') {
             DB::table($this->table)->insert(array('img' => $img, 'cus_id' => Auth::id(), 'target' => $target));
@@ -17,7 +23,9 @@ class ImgDel extends Eloquent {
                 $size = 0;
             }
             $Capacity = new CapacityController;
-            $Capacity->change_capa($size, 'free');
+            if(!$Capacity->change_capa($size, 'free')){
+                return 1;
+            }
             //===end===
             return $Capacity->format_bytes($size);
 //            return DB::table($this->table)->insert(array('img' => $img, 'cus_id' => Auth::id(), 'target' => $target));
