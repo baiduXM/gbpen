@@ -51,7 +51,7 @@ return array(
     'Page' => $baseDir . '/app/models/page.php',
     'ImgDel' => $baseDir . '/app/models/ImgDel.php',
     'PushQueue' => $baseDir . '/app/models/PushQueue.php',
-    'PrintController' => $baseDir . '/app/controllers/PrintContorller.php',
+    'PrintController' => $baseDir . '/app/controllers/PrintController.php',
     'RemindersController' => $baseDir . '/app/controllers/RemindersController.php',
     'SessionHandlerInterface' => $vendorDir . '/symfony/http-foundation/Symfony/Component/HttpFoundation/Resources/stubs/SessionHandlerInterface.php',
     'SignController' => $baseDir . '/app/controllers/SignController.php',
