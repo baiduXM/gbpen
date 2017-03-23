@@ -3066,7 +3066,7 @@ class PrintController extends BaseController
                 $lang['the_last'] = '已经是最后一篇';
                 $lang['the_first'] = '已经是第一篇';
             }
-            $a_moreimg = Moreimg::where('a_id', $id)->get()->toArray();
+            $a_moreimg = Moreimg::where('a_id', $id)->where('from', '=', null)->get()->toArray();
             array_unshift($a_moreimg, array('title' => $article->title, 'img' => $article->img));
             $images = array();
             if (count($a_moreimg)) {
@@ -3186,6 +3186,7 @@ class PrintController extends BaseController
                 $related[$k]['title'] = $articles[$k]['title'];
                 $related[$k]['description'] = $articles[$k]['introduction'];
                 $related[$k]['image'] = $articles[$k]['img'] ? ($this->source_dir . 'l/articles/' . $articles[$k]['img']) : '';
+//                $related[$k]['image'] = $articles[$k]['img'] ? ($this->source_dir . 'ueditor/' . $articles[$k]['img']) : ''; //debug
                 $related[$k]['pubdate'] = $articles[$k]['created_at'];
                 $related[$k]['pubtimestamp'] = strtotime($articles[$k]['created_at']);
                 $a_c_info = Classify::where('id', $articles[$k]['c_id'])->first();
@@ -3247,8 +3248,8 @@ class PrintController extends BaseController
         if ($_SERVER["HTTP_HOST"] == TONGYI_TUISONG_JUYU_IP) {
             return json_encode($result);
         }
-//        var_dump($result['pubdate']);
-//        exit();
+        var_dump($result['article']);
+        exit();
         $smarty = new Smarty;
         $smarty->setTemplateDir(app_path('views/templates/' . $this->themename));
         $smarty->setCompileDir(app_path('storage/views/compile'));
@@ -3319,7 +3320,7 @@ class PrintController extends BaseController
         foreach ((array)$articles as $key => $article) {
             $the_result = array();
             $the_result = $result;
-            $a_moreimg = Moreimg::where('a_id', $article['id'])->get()->toArray();
+            $a_moreimg = Moreimg::where('a_id', $article['id'])->where('from', '=', null)->get()->toArray();
             array_unshift($a_moreimg, array('title' => $article['title'], 'img' => $article['img']));
             $images = array();
             if (count($a_moreimg)) {

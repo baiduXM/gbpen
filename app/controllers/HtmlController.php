@@ -1410,8 +1410,8 @@ class HtmlController extends BaseController
                 $weburl = Customer::where('id', $this->cus_id)->pluck('weburl');
                 $suf_url = str_replace('http://c', '', $weburl);
                 $cus_name = strtolower(Customer::where('id', $this->cus_id)->pluck('name'));
-                if (trim($ftp) == '1') {
-                    $ftp_pcdomain = "http://" . $cus_name . $suf_url;
+                if (trim($ftp) == '1') { // 判断客户FTP地址
+                    $ftp_pcdomain = "http://" . $customerinfo->ftp_address . '/' . $cus_name;
                 } else {
                     $ftp_pcdomain = $customerinfo->pc_domain;
                 }
