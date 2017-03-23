@@ -3248,8 +3248,6 @@ class PrintController extends BaseController
         if ($_SERVER["HTTP_HOST"] == TONGYI_TUISONG_JUYU_IP) {
             return json_encode($result);
         }
-        var_dump($result['article']);
-        exit();
         $smarty = new Smarty;
         $smarty->setTemplateDir(app_path('views/templates/' . $this->themename));
         $smarty->setCompileDir(app_path('storage/views/compile'));
