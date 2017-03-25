@@ -463,24 +463,24 @@ class UploadController extends BaseController
         }
 
         //判断有ftp_b就上传
-        if($customerinfo->ftp_address_b){
-            $ftp_array_b = explode(':', $customerinfo->ftp_address_b);
-            $ftp_array_b[1] = isset($ftp_array_b[1]) ? $ftp_array_b[1] : $port;
-            $conn_b = ftp_connect($ftp_array_b[0], $ftp_array_b[1]);
-            if($conn_b){
-                ftp_login($conn_b, $customerinfo->ftp_user_b, $customerinfo->ftp_pwd_b);
-                ftp_pasv($conn_b, 1);
-                if(trim($ftp) == '1'){
-                    if (ftp_nlist($conn_b, $customer) === FALSE) {
-                        ftp_mkdir($conn_b, $customer);
-                    }
-                    ftp_put($conn_b, $customer . "/unzip.php", public_path("packages/unzip.php"), FTP_ASCII);
-                    ftp_put($conn_b, $customer . "/site.zip", public_path('packages/customernull.zip'), FTP_BINARY);
-                    @file_get_contents('http://' . $ftp_array_b[0] . '/' . $customer "/unzip.php");
-                }
-                ftp_close($conn_b);
-            }            
-        }
+        // if($customerinfo->ftp_address_b){
+        //     $ftp_array_b = explode(':', $customerinfo->ftp_address_b);
+        //     $ftp_array_b[1] = isset($ftp_array_b[1]) ? $ftp_array_b[1] : $port;
+        //     $conn_b = ftp_connect($ftp_array_b[0], $ftp_array_b[1]);
+        //     if($conn_b){
+        //         ftp_login($conn_b, $customerinfo->ftp_user_b, $customerinfo->ftp_pwd_b);
+        //         ftp_pasv($conn_b, 1);
+        //         if(trim($ftp) == '1'){
+        //             if (ftp_nlist($conn_b, $customer) === FALSE) {
+        //                 ftp_mkdir($conn_b, $customer);
+        //             }
+        //             ftp_put($conn_b, $customer . "/unzip.php", public_path("packages/unzip.php"), FTP_ASCII);
+        //             ftp_put($conn_b, $customer . "/site.zip", public_path('packages/customernull.zip'), FTP_BINARY);
+        //             @file_get_contents('http://' . $ftp_array_b[0] . '/' . $customer "/unzip.php");
+        //         }
+        //         ftp_close($conn_b);
+        //     }            
+        // }
     }
 
     private function check_dir($dirName, $customer)
