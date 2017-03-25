@@ -86,6 +86,19 @@ if ($up_result['state'] == 'SUCCESS') {
         ftp_put($conn, $cus_name . '/' . 'mobile/images/ueditor/' . $up_result['title'], public_path('customers/' . $cus_name . '/images/ueditor/' . $up_result['title']), FTP_BINARY);
         ftp_close($conn);
     }
+    //如果有ftp_b，则再上传一份
+    if($customerinfo->ftp_address_b){
+        $ftp_array_b = explode(':', $customerinfo->ftp_address_b);
+        $ftp_array_b[1] = isset($ftp_array_b[1]) ? $ftp_array_b[1] : '21';
+        $conn_b = ftp_connect($ftp_array_b[0], $ftp_array_b[1]);
+        if ($conn_b) {
+            ftp_login($conn_b, $customerinfo->ftp_user_b, $customerinfo->ftp_pwd_b);
+            ftp_pasv($conn_b, 1);
+            ftp_put($conn_b, $cus_name . '/' . 'images/ueditor/' . $up_result['title'], public_path('customers/' . $cus_name . '/images/ueditor/' . $up_result['title']), FTP_BINARY);
+            ftp_put($conn_b, $cus_name . '/' . 'mobile/images/ueditor/' . $up_result['title'], public_path('customers/' . $cus_name . '/images/ueditor/' . $up_result['title']), FTP_BINARY);
+            ftp_close($conn_b);
+        }
+    }
 }
 /**
  * 得到上传文件所对应的各个参数,数组结构
