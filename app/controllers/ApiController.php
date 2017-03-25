@@ -92,6 +92,12 @@ class ApiController extends BaseController {
             $update['ended_at'] = trim(Input::get('ended_at'));
             $update['status'] = Input::get('status');
             $update['customization'] = Input::get('customization');
+
+            //获取ftp_b信息
+            $update['ftp_address_b'] = trim(Input::get('ftp_address_b'));
+            $update['ftp_user_b'] = trim(Input::get('ftp_user_b'));
+            $update['ftp_pwd_b'] = trim(Input::get('ftp_pwd_b'));
+
             //===绑定账户===
             $switch_cus_name = Input::get('switch_cus_name');
             if (!empty($switch_cus_name)) {
@@ -259,6 +265,50 @@ class ApiController extends BaseController {
                     } else {
                         $result = ['err' => 1001, 'msg' => '创建用户失败,创建文件失败'];
                     }
+
+                    //判断是否有ftp_b，有则在该ftp上再建目录
+                    if($update['ftp_address_b']){
+                        $ftp_array_b = explode(':', $update['ftp_address_b']);
+                        $ftp_array_b[1] = isset($ftp_array_b[1]) ? $ftp_array_b[1] : $port;
+                        $conn_b = ftp_connect($ftp_array_b[0], $ftp_array_b[1]);
+                        if($conn_b){
+                            if (trim(Input::get('ftp')) == '1'){
+                                ftp_login($conn_b, $update['ftp_user_b'], $update['ftp_pwd_b']);
+                                ftp_mkdir($conn_b, $update['name']);
+                                ftp_mkdir($conn_b, $update['name'] . '/images');
+                                ftp_mkdir($conn_b, $update['name'] . '/detail');
+                                ftp_mkdir($conn_b, $update['name'] . '/category');
+                                ftp_mkdir($conn_b, $update['name'] . '/images/ueditor');
+                                ftp_mkdir($conn_b, $update['name'] . '/images/l');
+                                ftp_mkdir($conn_b, $update['name'] . '/images/l/category');
+                                ftp_mkdir($conn_b, $update['name'] . '/images/l/articles');
+                                ftp_mkdir($conn_b, $update['name'] . '/images/l/common');
+                                ftp_mkdir($conn_b, $update['name'] . '/images/l/page_index');
+                                ftp_mkdir($conn_b, $update['name'] . '/images/s');
+                                ftp_mkdir($conn_b, $update['name'] . '/images/s/category');
+                                ftp_mkdir($conn_b, $update['name'] . '/images/s/articles');
+                                ftp_mkdir($conn_b, $update['name'] . '/images/s/common');
+                                ftp_mkdir($conn_b, $update['name'] . '/images/s/page_index');
+                                ftp_mkdir($conn_b, $update['name'] . '/mobile');
+                                ftp_mkdir($conn_b, $update['name'] . '/mobile/images');
+                                ftp_mkdir($conn_b, $update['name'] . '/mobile/detail');
+                                ftp_mkdir($conn_b, $update['name'] . '/mobile/category');
+                                ftp_mkdir($conn_b, $update['name'] . '/mobile/images/ueditor');
+                                ftp_mkdir($conn_b, $update['name'] . '/mobile/images/l');
+                                ftp_mkdir($conn_b, $update['name'] . '/mobile/images/l/category');
+                                ftp_mkdir($conn_b, $update['name'] . '/mobile/images/l/articles');
+                                ftp_mkdir($conn_b, $update['name'] . '/mobile/images/l/common');
+                                ftp_mkdir($conn_b, $update['name'] . '/mobile/images/l/page_index');
+                                ftp_mkdir($conn_b, $update['name'] . '/mobile/images/s');
+                                ftp_mkdir($conn_b, $update['name'] . '/mobile/images/s/category');
+                                ftp_mkdir($conn_b, $update['name'] . '/mobile/images/s/articles');
+                                ftp_mkdir($conn_b, $update['name'] . '/mobile/images/s/common');
+                                ftp_mkdir($conn_b, $update['name'] . '/mobile/images/s/page_index');
+
+                                ftp_close($conn_b);
+                            }
+                        }
+                    }
                 } else {
                     $result = ['err' => 1001, 'msg' => '创建用户失败'];
                 }
@@ -339,6 +389,20 @@ class ApiController extends BaseController {
                     exit();
                 }
 
+                //判断是否有ftp_b，如果有则同样进行连接
+                if($Customer['ftp_address_b']){
+                    $conn_b = @ftp_connect($Customer['ftp_address_b'], $Customer['ftp_port']);
+                    if (!$conn_b) {
+                        return Response::json(['err' => 1004, 'msg' => 'FTP_B服务器连接失败']);
+                        exit();
+                    }
+                    if (!@ftp_login($conn_b, $Customer['ftp_user_b'], $Customer['ftp_pwd_b'])) {
+                        return Response::json(['err' => 1004, 'msg' => 'FTP_B服务器登陆失败']);
+                        exit();
+                    } 
+                }
+                
+
                 //保存数据库
                 $sql = "INSERT INTO customer (id,name,email,password,password_temp,remember_token,weburl,serv_id,ftp,ftp_address,ftp_port,ftp_user,ftp_pwd,ftp_dir,pc_tpl_id,mobile_tpl_id,pc_domain,mobile_domain,ended_at,status,created_at,updated_at,pc_end_time,mobile_end_time,color_id,switch_cus_id,customization,del_time) "
                         . "values('" . $Customer['id'] . "','" . $Customer['name'] . "','" . $Customer['email'] . "','" . $Customer['password'] . "','" . $Customer['password_temp'] . "','" . $Customer['remember_token'] . "','"
@@ -390,6 +454,15 @@ class ApiController extends BaseController {
                             $this->userFtpDel($conn, './'.$name, $name);
                             @ftp_rename($conn,$name,"beifen_".$name);
                             @ftp_close($conn);
+
+                            //ftp_b是不是连接，是就同时删除ftp_b的文件
+                            if($conn_b){
+                                @ftp_pasv($conn_b, 1); 
+                                $this->userFtpDel($conn_b, './'.$name, $name);
+                                @ftp_rename($conn_b,$name,"beifen_".$name);
+                                @ftp_close($conn_b); 
+                            }
+                            
 //                            echo "删除完成！";
                             $this->logsAdd("customer",__FUNCTION__,__CLASS__,999,"删除用户(备份)",1);
                             $result = ['err' => 1000, 'msg' => '删除用户成功'];
@@ -552,6 +625,26 @@ class ApiController extends BaseController {
             }
             @ftp_close($conn);
 
+            //判断有无ftp_b，有就修改ftp_b文件名
+            if($Customer[0]['ftp_address_b']){
+                $conn_b = @ftp_connect($Customer[0]['ftp_address_b'], $Customer[0]['ftp_port']);
+                if (!$conn_b) {
+                    return Response::json(['err' => 1004, 'msg' => 'FTP_B服务器连接失败']);
+                    exit();
+                }
+                if (!@ftp_login($conn_b, $Customer[0]['ftp_user_b'], $Customer[0]['ftp_pwd_b'])) {
+                    return Response::json(['err' => 1004, 'msg' => 'FTP_B服务器登陆失败']);
+                    exit();
+                }
+                @ftp_pasv($conn_b, 1); // 打开被动模拟
+                if(!@ftp_rename($conn_b,"beifen_".$name,$name)){
+                    return Response::json(['err' => 1004, 'msg' => 'FTP_B服务器静态没有备份']);
+                    exit();
+                }
+                @ftp_close($conn_b);
+            }
+
+
             //解压备份的图片文件
             $zip = new ZipArchive();
 
@@ -635,6 +728,13 @@ class ApiController extends BaseController {
             $ftpDir = Input::get('ftp_dir'); //"./";
             $ftpFlag = Input::get('ftp_flag'); //1:women ,0:kehu//"1";
             $ftpUrl = Input::get('ftp_url'); //"http://test6.n01.5067.org/"; 
+
+            //获取新ftp_b的信息
+            $ftpAddr_B = Input::get('ftp_address_b');
+            $ftpUser_B = Input::get('ftp_user_b'); 
+            $ftpPwd_B = Input::get('ftp_pwd_b');
+            $ftpUrl_B = Input::get('ftp_url_b'); 
+
 //            $ftpAddr = "182.61.7.87";
 //            $ftpPort = '21';
 //            $ftpUser = 'tongYi';
@@ -672,6 +772,33 @@ class ApiController extends BaseController {
             //删除压缩文件
             @ftp_delete($conn_new, $ftpDir . "/img_unzip.php");
             ftp_close($conn_new);
+
+            //判断有无ftp_b，有则将文件也传一份过去
+            if($ftpAddr_B){
+                $conn_new_b = @ftp_connect($ftpAddr_B, $ftpPort);
+                if (!$conn_new_b) {
+                    return Response::json(['err' => 1004, 'msg' => 'FTP_B服务器连接失败']);
+                }
+                if (!@ftp_login($conn_new_b, $ftpUser_B, $ftpPwd_B)) {
+                    return Response::json(['err' => 1004, 'msg' => 'FTP_B服务器登陆失败']);
+                }
+                ftp_pasv($conn_new_b, TRUE);
+                //创建mobile文件夹
+                @ftp_mkdir($conn_new_b, $ftpDir);
+                @ftp_mkdir($conn_new_b, $ftpDir . "/mobile");
+                $ftp_put_b = ftp_put($conn_new_b, $ftpDir . "/img.zip", public_path("customers/" . $username . "/img.zip"), FTP_BINARY);
+                $ftp_put_b = $ftp_put && ftp_put($conn_new_b, $ftpDir . '/img_unzip.php', public_path("/packages/img_unzip.php"), FTP_ASCII);
+                if (!$ftp_put_b) {
+                    return Response::json(array(['err' => 1003, 'msg' => 'FTP_B文件传输失败']));
+                }
+                //解压文件
+                file_get_contents($ftpUrl_B . "/img_unzip.php");
+                //删除压缩文件
+                @ftp_delete($conn_new_b, $ftpDir . "/img_unzip.php");
+                ftp_close($conn_new_b);
+            }
+            
+
             //删除原FTP的资料
             $CustomerInfo = Customer::where('name', $username)->first();
             if (empty($CustomerInfo)) {
@@ -700,6 +827,28 @@ class ApiController extends BaseController {
                 $this->ftp_delete_file($conn_old, $cus_ftp['dir']);
             }
             ftp_close($conn_old);
+
+            //如果原站也有ftp_b，则同样进行删除原文件
+            if($CustomerInfo->ftp_address_b){
+                $cus_ftp['addr_b'] = $CustomerInfo->ftp_address_b;
+                $cus_ftp['user_b'] = $CustomerInfo->ftp_user_b;
+                $cus_ftp['pwd_b'] = $CustomerInfo->ftp_pwd_b;
+                $conn_old_b = @ftp_connect($cus_ftp['addr_b'], $cus_ftp['port']);
+                if (!$conn_old_b) {
+                    return Response::json(['err' => 1004, 'msg' => 'FTP服务器连接失败']);
+                }
+                if (!@ftp_login($conn_old_b, $cus_ftp['user_b'], $cus_ftp['pwd_b'])) {
+                    return Response::json(['err' => 1004, 'msg' => 'FTP服务器登陆失败']);
+                }
+                ftp_pasv($conn_old_b, TRUE);
+                //删除文件夹
+                $cus_ftp['dir'] = preg_replace("/^(\.)?\//", "", $cus_ftp['dir']);
+                if (ftp_nlist($conn_old_b, $cus_ftp['dir'] . "/mobile") !== false) {
+                    $this->ftp_delete_file($conn_old_b, $cus_ftp['dir']);
+                }
+                ftp_close($conn_old_b);
+
+            }
             return Response::json(array(['err' => 1000, 'msg' => '图片数据迁移成功']));
         }
     }
