@@ -276,25 +276,25 @@ class UploadController extends BaseController
                     }
 
                     //判断有ftp_b则再上传一份
-                    if($customerinfo->ftp_address_b){
-                        $ftp_array_b = explode(':', $customerinfo->ftp_address_b);
-                        $ftp_array_b[1] = isset($ftp_array_b[1]) ? $ftp_array_b[1] : $port;
-                        $conn_b = ftp_connect($ftp_array_b[0], $ftp_array_b[1]);
-                        if($conn_b){
-                            ftp_login($conn_b, $customerinfo->ftp_user, $customerinfo->ftp_pwd);
-                            ftp_pasv($conn_b, 1);
-                            if (trim($ftp) == '1') {
-                                $cus_name = strtolower(Customer::where('id', $cus_id)->pluck('name'));
-                                if (trim($ftp) == '1') {
-                                    $ftp_pcdomain = "http://" . $ftp_array_b[0] . '/' . $customer;
-                                }
-                                ftp_put($conn_b, $customer . '/img.zip', public_path('customers/' . $customer . '/img.zip'), FTP_BINARY);
-                                ftp_put($conn_b, $customer . '/img_unzip.php', public_path('packages/img_unzip.php'), FTP_ASCII);
-                                @file_get_contents("$ftp_pcdomain/img_unzip.php");
-                                @unlink(public_path('customers/' . $customer . '/img.zip'));
-                            }
-                        }
-                    }
+                    // if($customerinfo->ftp_address_b){
+                    //     $ftp_array_b = explode(':', $customerinfo->ftp_address_b);
+                    //     $ftp_array_b[1] = isset($ftp_array_b[1]) ? $ftp_array_b[1] : $port;
+                    //     $conn_b = ftp_connect($ftp_array_b[0], $ftp_array_b[1]);
+                    //     if($conn_b){
+                    //         ftp_login($conn_b, $customerinfo->ftp_user, $customerinfo->ftp_pwd);
+                    //         ftp_pasv($conn_b, 1);
+                    //         if (trim($ftp) == '1') {
+                    //             $cus_name = strtolower(Customer::where('id', $cus_id)->pluck('name'));
+                    //             if (trim($ftp) == '1') {
+                    //                 $ftp_pcdomain = "http://" . $ftp_array_b[0] . '/' . $customer;
+                    //             }
+                    //             ftp_put($conn_b, $customer . '/img.zip', public_path('customers/' . $customer . '/img.zip'), FTP_BINARY);
+                    //             ftp_put($conn_b, $customer . '/img_unzip.php', public_path('packages/img_unzip.php'), FTP_ASCII);
+                    //             @file_get_contents("$ftp_pcdomain/img_unzip.php");
+                    //             @unlink(public_path('customers/' . $customer . '/img.zip'));
+                    //         }
+                    //     }
+                    // }
                 }
                 //===扣除空间容量===
                 $Capacity = new CapacityController;
