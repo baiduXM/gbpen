@@ -649,7 +649,7 @@ class HtmlController extends BaseController
             }
 
             //判断有ftp_b就推送
-            if($conn_b){
+            if($customerinfo->ftp_address_b){
                 $ftp_array_b = explode(':', $customerinfo->ftp_address_b);
                 $ftp_array_b[1] = isset($ftp_array_b[1]) ? $ftp_array_b[1] : $port;
                 $conn_b = ftp_connect($ftp_array_b[0], $ftp_array_b[1]); 
