@@ -227,6 +227,8 @@ class ApiController extends BaseController
                             ftp_mkdir($conn, $update['name'] . '/mobile/images/s/page_index');
 
                             ftp_close($conn);
+
+
                         } else {
                             ftp_login($conn, $update['ftp_user'], $update['ftp_pwd']);
                             ftp_mkdir($conn, $update['ftp_dir'] . '/images');
@@ -261,7 +263,7 @@ class ApiController extends BaseController
                             ftp_close($conn);
                         }
                         $common = new CommonController();
-                        @$common->postsend(trim($update['weburl'], '/') . "/urlbind.php", array('cus_name' => $update['name'], 'stage' => $update['stage'], 'pc_domain' => $update['pc_domain'], 'mobile_domain' => $update['mobile_domain']));
+                        @$common->postsend(trim($ftp_array[0], '/') . "/urlbind.php", array('cus_name' => $update['name'], 'stage' => $update['stage'], 'pc_domain' => $update['pc_domain'], 'mobile_domain' => $update['mobile_domain']));
                         $this->logsAdd("customer", __FUNCTION__, __CLASS__, 1, "创建用户", 1);
                         $result = ['err' => 1000, 'msg' => '创建用户成功'];
                     } else {
@@ -309,6 +311,9 @@ class ApiController extends BaseController
 
                                 ftp_close($conn_b);
                             }
+                            @$common->postsend(trim($ftp_array_b[0], '/') . "/urlbind.php", array('cus_name' => $update['name'], 'stage' => $update['stage'], 'pc_domain' => $update['pc_domain'], 'mobile_domain' => $update['mobile_domain']));
+                            $this->logsAdd("customer", __FUNCTION__, __CLASS__, 1, "备用ftp上创建用户", 1);
+                            $result = ['err' => 1000, 'msg' => '备用ftp上创建用户成功'];
                         }
                     }
                 } else {
