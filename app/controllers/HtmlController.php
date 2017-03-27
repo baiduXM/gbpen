@@ -605,7 +605,7 @@ class HtmlController extends BaseController
                 $ftp_mdomain = "http://" . $ftp_array[0] . '/' . $cus_name;
                 if($customerinfo->ftp_address_b){
                     $ftp_mdomain_b = "http://" . $ftp_array_b[0] . '/' . $cus_name;
-                    @file_get_contents("$ftp_mdomain_b/m_unzip.php");                    
+                    @file_get_contents("$ftp_mdomain_b/mobile/m_unzip.php");                    
                 }
             } else {
                 $ftp_mdomain = $customerinfo->mobile_domain;
