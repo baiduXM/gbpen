@@ -391,19 +391,6 @@ class ApiController extends BaseController
                     return Response::json(['err' => 1004, 'msg' => 'FTP服务器登陆失败']);
                     exit();
                 }
-
-                //判断是否有ftp_b，如果有则同样进行连接
-                if($Customer['ftp_address_b']){
-                    $conn_b = @ftp_connect($Customer['ftp_address_b'], $Customer['ftp_port']);
-                    if (!$conn_b) {
-                        return Response::json(['err' => 1004, 'msg' => 'FTP_B服务器连接失败']);
-                        exit();
-                    }
-                    if (!@ftp_login($conn_b, $Customer['ftp_user_b'], $Customer['ftp_pwd_b'])) {
-                        return Response::json(['err' => 1004, 'msg' => 'FTP_B服务器登陆失败']);
-                        exit();
-                    } 
-                }
                 
 
                 //保存数据库
@@ -459,12 +446,24 @@ class ApiController extends BaseController
                             @ftp_close($conn);
 
                             //ftp_b是不是连接，是就同时删除ftp_b的文件
-                            if($conn_b){
-                                @ftp_pasv($conn_b, 1); 
-                                $this->userFtpDel($conn_b, './'.$name, $name);
-                                @ftp_rename($conn_b,$name,"beifen_".$name);
-                                @ftp_close($conn_b); 
+                            if($Customer['ftp_address_b']){
+                                $conn_b = @ftp_connect($Customer['ftp_address_b'], $Customer['ftp_port']);
+                                if (!$conn_b) {
+                                    return Response::json(['err' => 1004, 'msg' => 'FTP_B服务器连接失败']);
+                                    exit();
+                                }
+                                if (!@ftp_login($conn_b, $Customer['ftp_user_b'], $Customer['ftp_pwd_b'])) {
+                                    return Response::json(['err' => 1004, 'msg' => 'FTP_B服务器登陆失败']);
+                                    exit();
+                                }
+                                if($conn_b){
+                                    @ftp_pasv($conn_b, 1); 
+                                    $this->userFtpDel($conn_b, './'.$name, $name);
+                                    @ftp_rename($conn_b,$name,"beifen_".$name);
+                                    @ftp_close($conn_b); 
+                                }
                             }
+                            
                             
 //                            echo "删除完成！";
                             $this->logsAdd("customer", __FUNCTION__, __CLASS__, 999, "删除用户(备份)", 1);
@@ -634,23 +633,23 @@ class ApiController extends BaseController
             @ftp_close($conn);
 
             //判断有无ftp_b，有就修改ftp_b文件名
-            // if($Customer[0]['ftp_address_b']){
-            //     $conn_b = @ftp_connect($Customer[0]['ftp_address_b'], $Customer[0]['ftp_port']);
-            //     if (!$conn_b) {
-            //         return Response::json(['err' => 1004, 'msg' => 'FTP_B服务器连接失败']);
-            //         exit();
-            //     }
-            //     if (!@ftp_login($conn_b, $Customer[0]['ftp_user_b'], $Customer[0]['ftp_pwd_b'])) {
-            //         return Response::json(['err' => 1004, 'msg' => 'FTP_B服务器登陆失败']);
-            //         exit();
-            //     }
-            //     @ftp_pasv($conn_b, 1); // 打开被动模拟
-            //     if(!@ftp_rename($conn_b,"beifen_".$name,$name)){
-            //         return Response::json(['err' => 1004, 'msg' => 'FTP_B服务器静态没有备份']);
-            //         exit();
-            //     }
-            //     @ftp_close($conn_b);
-            // }
+            if($Customer[0]['ftp_address_b']){
+                $conn_b = @ftp_connect($Customer[0]['ftp_address_b'], $Customer[0]['ftp_port']);
+                if (!$conn_b) {
+                    return Response::json(['err' => 1004, 'msg' => 'FTP_B服务器连接失败']);
+                    exit();
+                }
+                if (!@ftp_login($conn_b, $Customer[0]['ftp_user_b'], $Customer[0]['ftp_pwd_b'])) {
+                    return Response::json(['err' => 1004, 'msg' => 'FTP_B服务器登陆失败']);
+                    exit();
+                }
+                @ftp_pasv($conn_b, 1); // 打开被动模拟
+                if(!@ftp_rename($conn_b,"beifen_".$name,$name)){
+                    return Response::json(['err' => 1004, 'msg' => 'FTP_B服务器静态没有备份']);
+                    exit();
+                }
+                @ftp_close($conn_b);
+            }
 
 
             //解压备份的图片文件
