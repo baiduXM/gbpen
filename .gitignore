@@ -6,6 +6,7 @@ nbproject/
 bootstrap/compiled.php
 bootstrap/start.php
 app/config/database.php
+app/config/config.php
 app/config/local/*
 app/views/templates/*
 public/temp_templates/*

@@ -179,7 +179,7 @@ mainApp.controller('memberController', function ($scope, $http) {
             //获取是否有微传单
             $http.get('http://dl2.5067.org/?module=Api&action=getGshowByname&name='+json.data.customer).success(function (d) {
                 if(d==1){
-                    $(".daohang ul").append('<li class="nav"><a href="/cdlogin" target="_blank">微传单</a><em></em></li>');
+                    $(".daohang ul").append('<li class="nav"><a href="/cdlogin" target="_blank">E推</a><em></em></li>');
                 }
             });
             $scope.companyname = json.data.company_name;

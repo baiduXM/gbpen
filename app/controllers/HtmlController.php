@@ -3,60 +3,61 @@
 /**
  * @author 小余、財財
  * @package HtmlController
- * @copyright 厦门易尔通 
+ * @copyright 厦门易尔通
  */
 
 /**
  * 静态页面控制器
  *
  */
-class HtmlController extends BaseController {
+class HtmlController extends BaseController
+{
 
     /**
      * html生成进度
-     * 
+     *
      * @var int
      */
     private $html_precent;
 
     /**
      * html生成进度
-     * 
+     *
      * @var int
      */
     private $last_html_precent;
 
     /**
      * 推送进度
-     * 
+     *
      * @var int
      */
     private $percent;
 
     /**
      * 上一次推送进度
-     * 
+     *
      * @var int
      */
     private $lastpercent = 0;
 
     /**
      * 用户id
-     * 
+     *
      * @var int
      */
     private $cus_id;
 
     /**
      * 用户名
-     * 
+     *
      * @var string
      */
     private $customer;
 
     /**
      * 推送数据存储$pushpc $pushmobile
-     * 
+     *
      * @var array
      */
     private $pushpc;
@@ -64,7 +65,7 @@ class HtmlController extends BaseController {
 
     /**
      * $allpush:全站推送 $pcpush:pc推送 $mobilepush:手机推送 $quickbarpush:quickbar推送 $mobilehomepagepush:手机首页推送
-     * 
+     *
      * @var int
      */
     private $allpush;
@@ -72,7 +73,7 @@ class HtmlController extends BaseController {
     private $mobilepush;
     private $quickbarpush;
     private $mobilehomepagepush;
-    
+
     /**
      *$pushcid推送栏目id
      * $end是否推送quickbar等特殊内容和结束推送
@@ -83,10 +84,11 @@ class HtmlController extends BaseController {
      *
      * 允许推送个数
      */
-    private $allow_push_count=2;
-            
-    function __construct() {
-        if(Auth::check()){
+    private $allow_push_count = 2;
+
+    function __construct()
+    {
+        if (Auth::check()) {
             $this->cus_id = Auth::id();
             $this->customer = Auth::user()->name;
         }
@@ -94,10 +96,11 @@ class HtmlController extends BaseController {
 
     /**
      * 首页生成静态文件并返回生成文件名
-     * 
+     *
      * @return string
      */
-    private function homgepagehtml($type = 'pc') {
+    private function homgepagehtml($type = 'pc')
+    {
         $this->getPrecent();
         ob_start();
         if ($type == 'pc') {
@@ -112,6 +115,7 @@ class HtmlController extends BaseController {
         } else {
             echo $template->mhomepagePush($publicdata);
         }
+
         file_put_contents($path, $ouput = ob_get_contents());
         ob_end_clean();
         // $quickbar_json=$template->quickBarJson();
@@ -120,11 +124,12 @@ class HtmlController extends BaseController {
 
     /**
      * 栏目页静态文件生成并返回生成文件名的数组
-     * 
+     *
      * @param array $ids
      * @return multitype:string
      */
-    private function categoryhtml($ids = [], $type = 'pc') {
+    private function categoryhtml($ids = [], $type = 'pc')
+    {
         $result = array();
         $template = new PrintController('online', $type);
         $per_page = CustomerInfo::where('cus_id', $this->cus_id)->pluck($type . "_page_count");
@@ -133,7 +138,7 @@ class HtmlController extends BaseController {
         } else {
             $publicdata = $this->pushmobile;
         }
-        foreach ((array) $ids as $id) {
+        foreach ((array)$ids as $id) {
             $c_ids = explode(',', $template->getChirldenCid($id, 1));
             $a_c_type = Classify::where('id', $id)->pluck('type'); //取得栏目的type
             $pc_page_count_switch = CustomerInfo::where('cus_id', $this->cus_id)->pluck('pc_page_count_switch'); //页面图文列表图文显示个数是否分开控制开关
@@ -158,19 +163,20 @@ class HtmlController extends BaseController {
                 $page_count = ceil($total / $per_page);
             }
             $paths = $template->categoryPush($id, $page_count, $publicdata, $this->last_html_precent, $this->html_precent);
-            $this->last_html_precent +=($this->html_precent * count($paths));
-            $result = array_merge((array) $result, (array) $paths);
+            $this->last_html_precent += ($this->html_precent * count($paths));
+            $result = array_merge((array)$result, (array)$paths);
         }
         return $result;
     }
 
     /**
      * 文章页静态文件生成并返回生成文件名的数组
-     * 
+     *
      * @param array $ids
      * @return string
      */
-    private function articlehtml($ids = [], $type = 'pc') {
+    private function articlehtml($ids = [], $type = 'pc')
+    {
         $template = new PrintController('online', $type);
         $result = array();
         if ($type == 'pc') {
@@ -178,7 +184,7 @@ class HtmlController extends BaseController {
         } else {
             $publicdata = $this->pushmobile;
         }
-        foreach ((array) $ids as $id) {
+        foreach ((array)$ids as $id) {
             if (isset($articles)) {
                 unset($articles);
             }
@@ -186,14 +192,15 @@ class HtmlController extends BaseController {
             $paths = array();
             if (count($articles)) {
                 $paths = @$template->articlepush($id, $publicdata, $this->last_html_precent, $this->html_precent);
-                $this->last_html_precent +=($this->html_precent * count($paths));
-                $result = array_merge((array) $result, (array) $paths);
+                $this->last_html_precent += ($this->html_precent * count($paths));
+                $result = array_merge((array)$result, (array)$paths);
             }
         }
         return $result;
     }
 
-    private function addDir($path, $zip, $dst = "") {
+    private function addDir($path, $zip, $dst = "")
+    {
         $handle = opendir($path);
         while (($filename = readdir($handle)) !== FALSE) {
             if ($filename == '.' || $filename == '..') {
@@ -213,18 +220,19 @@ class HtmlController extends BaseController {
 
     /**
      * 计算生成html文件的数量
-     * 
-     * @param array $pc_classify_ids  pc栏目id
+     *
+     * @param array $pc_classify_ids pc栏目id
      * @param array $mobile_classify_ids 手机栏目id
-     * @param array $pc_article_ids  pc文章id
+     * @param array $pc_article_ids pc文章id
      * @param array $mobile_article_ids 手机文章id
      * @return int
      */
-    private function htmlPagecount($pc_classify_ids = [], $mobile_classify_ids = [], $pc_article_ids = [], $mobile_article_ids = []) {
+    private function htmlPagecount($pc_classify_ids = [], $mobile_classify_ids = [], $pc_article_ids = [], $mobile_article_ids = [])
+    {
         $template = new PrintController();
         $page_count = 2;
         $pc_per_page = CustomerInfo::where('cus_id', $this->cus_id)->pluck('pc_page_count');
-        foreach ((array) $pc_classify_ids as $id) {
+        foreach ((array)$pc_classify_ids as $id) {
             $c_ids = explode(',', ltrim($template->getChirldenCid($id, 1)));
             $a_c_type = Classify::where('id', $id)->pluck('type'); //取得栏目的type
             $pc_page_count_switch = CustomerInfo::where('cus_id', $this->cus_id)->pluck('pc_page_count_switch'); //页面图文列表图文显示个数是否分开控制开关
@@ -235,7 +243,7 @@ class HtmlController extends BaseController {
                     if ($total) {
                         $page_count += ceil($total / $page_number) + 1;
                     } else {
-                        $page_count+=2;
+                        $page_count += 2;
                     }
                 }
                 if ($a_c_type == 3) {
@@ -244,7 +252,7 @@ class HtmlController extends BaseController {
                     if ($total) {
                         $page_count += ceil($total / $page_number) + 1;
                     } else {
-                        $page_count+=2;
+                        $page_count += 2;
                     }
                 }
                 if ($a_c_type == 2) {
@@ -253,7 +261,7 @@ class HtmlController extends BaseController {
                     if ($total) {
                         $page_count += ceil($total / $page_number) + 1;
                     } else {
-                        $page_count+=2;
+                        $page_count += 2;
                     }
                 }
             } else {
@@ -261,13 +269,13 @@ class HtmlController extends BaseController {
                 if ($total) {
                     $page_count += ceil($total / $pc_per_page) + 1;
                 } else {
-                    $page_count+=2;
+                    $page_count += 2;
                 }
             }
         }
         $mobileper_page = CustomerInfo::where('cus_id', $this->cus_id)->pluck('mobile_page_count');
         if (!empty($mobile_classify_ids)) {
-            foreach ((array) $mobile_classify_ids as $id) {
+            foreach ((array)$mobile_classify_ids as $id) {
                 $c_ids = explode(',', $template->getChirldenCid($id, 1));
                 $total = Articles::whereIn('c_id', $c_ids)->where('cus_id', $this->cus_id)->where('mobile_show', '1')->count();
                 if ($total) {
@@ -277,31 +285,33 @@ class HtmlController extends BaseController {
                 }
             }
         }
-        $page_count +=count($pc_article_ids);
-        $page_count +=count($mobile_article_ids);
+        $page_count += count($pc_article_ids);
+        $page_count += count($mobile_article_ids);
         return $page_count;
     }
 
     /**
      * 推送进度算法
      */
-    private function getPrecent() {
+    private function getPrecent()
+    {
         $nowpercent = $this->last_html_precent + $this->html_precent;
         if (floor($nowpercent) !== floor($this->last_html_precent)) {
-            echo '<div class="prompt">'.floor($nowpercent) . '%</div><script type="text/javascript">refresh(' . floor($nowpercent) . ');</script>';
+            echo '<div class="prompt">' . floor($nowpercent) . '%</div><script type="text/javascript">refresh(' . floor($nowpercent) . ');</script>';
             ob_flush();
             flush();
             $this->clearpushqueue();
         }
-        $this->last_html_precent +=$this->html_precent;
+        $this->last_html_precent += $this->html_precent;
     }
 
     /**
      * 图片删除
-     * 
-     * 
+     *
+     *
      */
-    private function delimg($v) {
+    private function delimg($v)
+    {
         $pc_Path = public_path('customers/' . $this->customer . '/images/');
 
         $mobile_Path = public_path('customers/' . $this->customer . '/mobile/images/');
@@ -325,10 +335,11 @@ class HtmlController extends BaseController {
 
     /**
      * cache_images文件夹清空
-     * 
-     * 
+     *
+     *
      */
-    private function folderClear() {
+    private function folderClear()
+    {
         //删除目录下的文件：
         $dir = public_path('customers/' . $this->customer . '/cache_images/');
         if (is_dir($dir)) {
@@ -346,10 +357,11 @@ class HtmlController extends BaseController {
 
     /**
      * 手机首页推送
-     * 
-     * 
+     *
+     *
      */
-    private function mobilehomepage_push() {
+    private function mobilehomepage_push()
+    {
         $mindexhtml = $this->homgepagehtml('mobile');
         $customerinfo = Customer::find($this->cus_id);
         $ftp_array = explode(':', $customerinfo->ftp_address);
@@ -368,6 +380,22 @@ class HtmlController extends BaseController {
                 ftp_put($conn, "/" . $this->customer . "/mobile/index.html", public_path('customers/' . $this->customer . '/mobile/index.html'), FTP_ASCII);
                 ftp_close($conn);
             }
+
+            //判断有无ftp_b，有就连接，并推送手机首页
+            if($customerinfo->ftp_address_b){
+                $ftp_array_b = explode(':', $customerinfo->ftp_address_b);
+                $ftp_array_b[1] = isset($ftp_array_b[1]) ? $ftp_array_b[1] : $port;
+                $conn_b = ftp_connect($ftp_array_b[0], $ftp_array_b[1]); 
+                if($conn_b){
+                    ftp_login($conn_b, $customerinfo->ftp_user, $customerinfo->ftp_pwd);
+                    ftp_pasv($conn_b, 1);
+                    if (@ftp_chdir($conn_b, $this->customer) == FALSE) {
+                        ftp_mkdir($conn_b, $this->customer);
+                    }
+                    ftp_put($conn_b, "/" . $this->customer . "/mobile/index.html", public_path('customers/' . $this->customer . '/mobile/index.html'), FTP_ASCII);
+                    ftp_close($conn_b);
+                } 
+            }
         } else {
             if ($conn) {
                 ftp_login($conn, $customerinfo->ftp_user, $customerinfo->ftp_pwd);
@@ -379,15 +407,16 @@ class HtmlController extends BaseController {
 
     /**
      * 手机推送
-     * 
-     * 
+     *
+     *
      */
-    private function mobile_push() {
+    private function mobile_push()
+    {
         set_time_limit(0);
-        if(Input::has("pushgrad")==1){
+        if (Input::has("pushgrad") == 1) {
             $pushcid = $this->pushcid;
             $end = $this->end;
-        }else{
+        } else {
             if (Input::has("push_c_id")) {
                 $pushcid = Input::get("push_c_id");
             }
@@ -435,7 +464,7 @@ class HtmlController extends BaseController {
             $zip->addFile(public_path('customers/' . $this->customer . '/mobile/article_data.json'), 'mobile/article_data.json');
             $nowpercent = $this->percent + $this->lastpercent;
             if (floor($nowpercent) != floor($this->lastpercent)) {
-                echo '<div class="prompt">'.floor($nowpercent) . '%</div><script type="text/javascript">refresh(' . floor($nowpercent) . ');</script>';
+                echo '<div class="prompt">' . floor($nowpercent) . '%</div><script type="text/javascript">refresh(' . floor($nowpercent) . ');</script>';
                 ob_flush();
                 flush();
             }
@@ -447,7 +476,7 @@ class HtmlController extends BaseController {
         $this->compareZip($mcategoryhtml, 'mobile/category', $path);
         $this->compareZip($marticlehtml, 'mobile/detail', $path);
         if (90 > floor($this->lastpercent)) {
-            echo '<div class="prompt">'.'90%</div><script type="text/javascript">refresh(90);</script>';
+            echo '<div class="prompt">' . '90%</div><script type="text/javascript">refresh(90);</script>';
             ob_flush();
             flush();
             $this->clearpushqueue();
@@ -481,7 +510,7 @@ class HtmlController extends BaseController {
                     if (@ftp_chdir($conn, $this->customer) == FALSE) {
                         ftp_mkdir($conn, $this->customer);
                     }
-                    foreach ((array) $del_imgs as $v) {
+                    foreach ((array)$del_imgs as $v) {
                         $this->delimg($v);
                         @ftp_delete($conn, "/" . $this->customer . '/images/l/' . $v['target'] . '/' . $v['img']);
                         @ftp_delete($conn, "/" . $this->customer . '/images/s/' . $v['target'] . '/' . $v['img']);
@@ -490,7 +519,7 @@ class HtmlController extends BaseController {
                     }
                     ImgDel::where('cus_id', $this->cus_id)->delete();
                     ftp_put($conn, "/" . $this->customer . "/mobile/m_unzip.php", public_path("packages/m_unzip.php"), FTP_ASCII);
-                    if(file_exists($path)){
+                    if (file_exists($path)) {
                         ftp_put($conn, "/" . $this->customer . "/mobile/site.zip", $path, FTP_BINARY);
                     }
                     ftp_put($conn, "/" . $this->customer . "/mobile/search.php", public_path("packages/search.php"), FTP_ASCII);
@@ -500,11 +529,42 @@ class HtmlController extends BaseController {
                     //ftp_put($conn,"/".$this->customer."/mobile/quickbar.json",public_path('customers/'.$this->customer.'/mobile/quickbar.json'),FTP_ASCII);
                     ftp_close($conn);
                 }
+
+                //判断有ftp_b，就连接，并推送
+                if($customerinfo->ftp_address_b){
+                    $ftp_array_b = explode(':', $customerinfo->ftp_address_b);
+                    $ftp_array_b[1] = isset($ftp_array_b[1]) ? $ftp_array_b[1] : $port;
+                    $conn_b = ftp_connect($ftp_array_b[0], $ftp_array_b[1]);
+                    if($conn_b){
+                        ftp_login($conn_b, $customerinfo->ftp_user, $customerinfo->ftp_pwd);
+                        ftp_pasv($conn_b, 1);
+                        if (@ftp_chdir($conn_b, $this->customer) == FALSE) {
+                            ftp_mkdir($conn_b, $this->customer);
+                        }
+                        foreach ((array)$del_imgs as $v) {
+                            $this->delimg($v);
+                            @ftp_delete($conn_b, "/" . $this->customer . '/images/l/' . $v['target'] . '/' . $v['img']);
+                            @ftp_delete($conn_b, "/" . $this->customer . '/images/s/' . $v['target'] . '/' . $v['img']);
+                            @ftp_delete($conn_b, "/" . $this->customer . '/mobile/images/l/' . $v['target'] . '/' . $v['img']);
+                            @ftp_delete($conn_b, "/" . $this->customer . '/mobile/images/s/' . $v['target'] . '/' . $v['img']);
+                        }
+                        ImgDel::where('cus_id', $this->cus_id)->delete();
+                        ftp_put($conn_b, "/" . $this->customer . "/mobile/m_unzip.php", public_path("packages/m_unzip.php"), FTP_ASCII);
+                        if (file_exists($path)) {
+                            ftp_put($conn_b, "/" . $this->customer . "/mobile/site.zip", $path, FTP_BINARY);
+                        }
+                        ftp_put($conn_b, "/" . $this->customer . "/mobile/search.php", public_path("packages/search.php"), FTP_ASCII);
+                        if (@ftp_chdir($conn_b, "/" . $this->customer . "/mobile") == FALSE) {
+                            ftp_mkdir($conn_b, "/" . $this->customer . "/mobile");
+                        }
+                        ftp_close($conn_b);
+                    }  
+                }
             } else {
                 if ($conn) {
                     ftp_login($conn, $customerinfo->ftp_user, $customerinfo->ftp_pwd);
                     ftp_pasv($conn, 1);
-                    foreach ((array) $del_imgs as $v) {
+                    foreach ((array)$del_imgs as $v) {
                         $this->delimg($v);
                         @ftp_delete($conn, $ftpdir . '/images/l/' . $v['target'] . '/' . $v['img']);
                         @ftp_delete($conn, $ftpdir . '/images/s/' . $v['target'] . '/' . $v['img']);
@@ -513,7 +573,7 @@ class HtmlController extends BaseController {
                     }
                     ImgDel::where('cus_id', $this->cus_id)->delete();
                     ftp_put($conn, $ftpdir . "/mobile/m_unzip.php", public_path("packages/m_unzip.php"), FTP_ASCII);
-                    if(file_exists($path)){
+                    if (file_exists($path)) {
                         ftp_put($conn, $ftpdir . "/mobile/site.zip", $path, FTP_BINARY);
                     }
                     ftp_put($conn, $ftpdir . "/mobile/search.php", public_path("packages/search.php"), FTP_ASCII);
@@ -523,8 +583,8 @@ class HtmlController extends BaseController {
             }
 
             $this->folderClear();
-            echo '<div class="prompt">'.'100%</div><script type="text/javascript">refresh(100);</script>';
-            $this->logsAdd('null',__FUNCTION__,__CLASS__,999,"手机推送成功",0,Auth::id());
+            echo '<div class="prompt">' . '100%</div><script type="text/javascript">refresh(100);</script>';
+            $this->logsAdd('null', __FUNCTION__, __CLASS__, 999, "手机推送成功", 0, Auth::id());
             if (!isset($end) || $end == 1) {
                 Classify::where('cus_id', $this->cus_id)->where('pushed', '>', 0)->update(['pushed' => 0]);
                 Articles::where('cus_id', $this->cus_id)->where('pushed', '>', 0)->update(['pushed' => 0]);
@@ -541,11 +601,16 @@ class HtmlController extends BaseController {
             $suf_url = str_replace('http://c', '', $weburl);
             $cus_name = strtolower(Customer::where('id', $this->cus_id)->pluck('name'));
             if (trim($ftp) == '1') {
-                $ftp_mdomain = "http://m." . $cus_name . $suf_url;
+                // $ftp_mdomain = "http://m." . $cus_name . $suf_url;
+                $ftp_mdomain = "http://" . $ftp_array[0] . '/' . $cus_name;
+                if($customerinfo->ftp_address_b){
+                    $ftp_mdomain_b = "http://" . $ftp_array_b[0] . '/' . $cus_name;
+                    @file_get_contents("$ftp_mdomain_b/mobile/m_unzip.php");                    
+                }
             } else {
                 $ftp_mdomain = $customerinfo->mobile_domain;
             }
-            @file_get_contents("$ftp_mdomain/m_unzip.php");
+            @file_get_contents("$ftp_mdomain/mobile/m_unzip.php");
         } else {
             echo '打包失败';
         }
@@ -554,10 +619,11 @@ class HtmlController extends BaseController {
 
     /**
      * quickbar推送
-     * 
-     * 
+     *
+     *
      */
-    public function pushQuickbar() {
+    public function pushQuickbar()
+    {
         $customerinfo = Customer::find($this->cus_id);
         $ftp_array = explode(':', $customerinfo->ftp_address);
         $port = $customerinfo->ftp_port;
@@ -573,13 +639,31 @@ class HtmlController extends BaseController {
             if ($conn) {
                 ftp_login($conn, $customerinfo->ftp_user, $customerinfo->ftp_pwd);
                 ftp_pasv($conn, 1);
-                if (@ftp_nlist($conn,$this->customer) === FALSE) {
-                    ftp_mkdir($conn,$this->customer);
+                if (@ftp_nlist($conn, $this->customer) === FALSE) {
+                    ftp_mkdir($conn, $this->customer);
                 }
                 ftp_put($conn, "/" . $this->customer . "/quickbar.json", public_path('customers/' . $this->customer . '/quickbar.json'), FTP_ASCII);
                 ftp_put($conn, "/" . $this->customer . "/mobile/quickbar.json", public_path('customers/' . $this->customer . '/mobile/quickbar.json'), FTP_ASCII);
                 ftp_close($conn);
-                $this->logsAdd('null',__FUNCTION__,__CLASS__,999,"快捷导航推送",0,'');
+                $this->logsAdd('null', __FUNCTION__, __CLASS__, 999, "快捷导航推送", 0, '');
+            }
+
+            //判断有ftp_b就推送
+            if($customerinfo->ftp_address_b){
+                $ftp_array_b = explode(':', $customerinfo->ftp_address_b);
+                $ftp_array_b[1] = isset($ftp_array_b[1]) ? $ftp_array_b[1] : $port;
+                $conn_b = ftp_connect($ftp_array_b[0], $ftp_array_b[1]); 
+                if($conn_b){
+                    ftp_login($conn_b, $customerinfo->ftp_user, $customerinfo->ftp_pwd);
+                    ftp_pasv($conn_b, 1);
+                    if (@ftp_nlist($conn_b, $this->customer) === FALSE) {
+                        ftp_mkdir($conn_b, $this->customer);
+                    }
+                    ftp_put($conn_b, "/" . $this->customer . "/quickbar.json", public_path('customers/' . $this->customer . '/quickbar.json'), FTP_ASCII);
+                    ftp_put($conn_b, "/" . $this->customer . "/mobile/quickbar.json", public_path('customers/' . $this->customer . '/mobile/quickbar.json'), FTP_ASCII);
+                    ftp_close($conn_b);
+                    $this->logsAdd('null', __FUNCTION__, __CLASS__, 999, "快捷导航推送", 0, '');
+                }
             }
         } else {
             if ($conn) {
@@ -588,17 +672,18 @@ class HtmlController extends BaseController {
                 ftp_put($conn, $ftpdir . "/quickbar.json", public_path('customers/' . $this->customer . '/quickbar.json'), FTP_ASCII);
                 ftp_put($conn, $ftpdir . "/mobile/quickbar.json", public_path('customers/' . $this->customer . '/mobile/quickbar.json'), FTP_ASCII);
                 ftp_close($conn);
-                $this->logsAdd('null',__FUNCTION__,__CLASS__,999,"快捷导航推送",0,'');
+                $this->logsAdd('null', __FUNCTION__, __CLASS__, 999, "快捷导航推送", 0, '');
             }
         }
     }
 
     /**
      * 修改内容-- $this->allpush:全站推送 $this->pcpush:pc推送 $this->mobilepush:手机推送 $this->quickbarpush:quickbar推送 $this->mobilehomepagepush:手机首页推送
-     * 
-     * 
+     *
+     *
      */
-    private function needpush() {
+    private function needpush()
+    {
         $this->allpush = 0;
         $this->pcpush = 0;
         $this->mobilepush = 0;
@@ -664,10 +749,11 @@ class HtmlController extends BaseController {
 
     /**
      * 推送初始化
-     * 
-     * 
+     *
+     *
      */
-    private function pushinit() {
+    private function pushinit()
+    {
         echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
         PushQueue::where('cus_id', $this->cus_id)->delete();
         PushQueue::where('pushtime', '<', time() - 60)->delete();
@@ -774,37 +860,42 @@ class HtmlController extends BaseController {
     /**
      * 推送栈处理
      */
-    private function clearpushqueue() {
+    private function clearpushqueue()
+    {
         PushQueue::where('pushtime', '<', time() - 60)->delete();
         PushQueue::where('cus_id', $this->cus_id)->update(['pushtime' => time()]);
     }
+
     /**
      * 文件夹复制
      * @param type $source_dir 资源文件夹
      * @param type $dest_dir 目标文件夹
      */
-    private function copydir($source_dir,$dest_dir){
+    private function copydir($source_dir, $dest_dir)
+    {
         $dir = opendir($source_dir);
-        if(!is_dir($dest_dir)){
+        if (!is_dir($dest_dir)) {
             @mkdir($dest_dir);
         }
-        while(false !== ( $file = readdir($dir)) ) {
-                 if (( $file != '.' ) && ( $file != '..' )) {
-                        if ( is_dir($source_dir . '/' . $file) ) {
-                                $this->copydir($source_dir . '/' . $file,$dest_dir . '/' . $file);
-                        }  else  {
-                                copy($source_dir . '/' . $file,$dest_dir.'/'.$file);
-                        }
+        while (false !== ($file = readdir($dir))) {
+            if (($file != '.') && ($file != '..')) {
+                if (is_dir($source_dir . '/' . $file)) {
+                    $this->copydir($source_dir . '/' . $file, $dest_dir . '/' . $file);
+                } else {
+                    copy($source_dir . '/' . $file, $dest_dir . '/' . $file);
                 }
+            }
         }
     }
+
     /**
      * 带登录推送
      */
-    public function pushLogin() {//带登录推送
-        if($_SERVER["SERVER_ADDR"]==TONGYI_TUISONG_IP||$_SERVER["SERVER_ADDR"]==TONGYI_TUISONG_JUYU_IP){
+    public function pushLogin()
+    {//带登录推送
+        if ($_SERVER["SERVER_ADDR"] == TONGYI_TUISONG_IP || $_SERVER["SERVER_ADDR"] == TONGYI_TUISONG_JUYU_IP) {
             if (Input::has("name")) {
-                $this->allow_push_count=8;
+                $this->allow_push_count = 8;
                 $cus_id = Customer::where("name", Input::get("name"))->pluck("id");
                 if ($cus_id > 0) {
                     $user = Customer::where("remember_token", Input::get("remember_token"))->find($cus_id);
@@ -813,93 +904,90 @@ class HtmlController extends BaseController {
                     $this->customer = Auth::user()->name;
                     $this->push_html();
                     $pc_domain = CustomerInfo::where('cus_id', $this->cus_id)->pluck('pc_domain');
-                    $domain_str=str_replace('http://', '', $pc_domain);
-                    if($domain_str!=""){
-                        echo '<div class="pc_domain" style="width:100%;text-align:center;display:none;"><a class=" refresh_a" target="_blank" href="'.$pc_domain.'">查看网站首页</a></div>';
+                    $domain_str = str_replace('http://', '', $pc_domain);
+                    if ($domain_str != "") {
+                        echo '<div class="pc_domain" style="width:100%;text-align:center;display:none;"><a class=" refresh_a" target="_blank" href="' . $pc_domain . '">查看网站首页</a></div>';
                     }
                     $pc_path = public_path('customers/' . $this->customer . '/pc.zip');
                     $mobile_path = public_path('customers/' . $this->customer . '/mobile.zip');
                     $view_dir = app_path('views/templates/');
                     $json_dir = public_path('templates/');
-                    $customer_pack_path=public_path('packages/customernull.zip');
-                    $customer_dir=public_path('customers/' . $this->customer);;
-                    $webinfo=WebsiteInfo::where("cus_id",$this->cus_id)->first();
-                    $pc_themename = Template::where("id",$webinfo->pc_tpl_id)->pluck("name");
-                    $mobile_themename = Template::where("id",$webinfo->mobile_tpl_id)->pluck("name");
-                    $pc_tpl=Template::where("id",$webinfo->pc_tpl_id)->first();
-                    $m_tpl=Template::where("id",$webinfo->mobile_tpl_id)->first();
-                    if(file_exists($customer_pack_path)){
+                    $customer_pack_path = public_path('packages/customernull.zip');
+                    $customer_dir = public_path('customers/' . $this->customer);;
+                    $webinfo = WebsiteInfo::where("cus_id", $this->cus_id)->first();
+                    $pc_themename = Template::where("id", $webinfo->pc_tpl_id)->pluck("name");
+                    $mobile_themename = Template::where("id", $webinfo->mobile_tpl_id)->pluck("name");
+                    $pc_tpl = Template::where("id", $webinfo->pc_tpl_id)->first();
+                    $m_tpl = Template::where("id", $webinfo->mobile_tpl_id)->first();
+                    if (file_exists($customer_pack_path)) {
                         $zip = new ZipArchive;
-                        if ($zip->open($customer_pack_path) === TRUE)
-                        {
+                        if ($zip->open($customer_pack_path) === TRUE) {
                             $zip->extractTo($customer_dir);
                         }
                         $zip->close();
                     }
-                    if($pc_tpl->push_get_date==null||$pc_tpl->push_get_date==""||$pc_tpl->push_get_date<$pc_tpl->updated_at){//push_get_date推送服务器模板更新时间 updated_at总服务器模板更新时间
-                        if(file_exists($pc_path)){
+                    if ($pc_tpl->push_get_date == null || $pc_tpl->push_get_date == "" || $pc_tpl->push_get_date < $pc_tpl->updated_at) {//push_get_date推送服务器模板更新时间 updated_at总服务器模板更新时间
+                        if (file_exists($pc_path)) {
                             $zip = new ZipArchive;
-                            if ($zip->open($pc_path) === TRUE)
-                            {
-                                $zip->extractTo(public_path('customers/' . $this->customer."/temp"));
+                            if ($zip->open($pc_path) === TRUE) {
+                                $zip->extractTo(public_path('customers/' . $this->customer . "/temp"));
                                 $zip->close();
-                                $pc_config=  json_decode(file_get_contents(public_path('customers/' . $this->customer."/temp/".$pc_themename."/config.json")));
-                                if($pc_tpl->push_get_date==null||$pc_tpl->push_get_date==""||$pc_tpl->push_get_date<$pc_config->push_get_date){
-                                    $this->copydir(public_path('customers/' . $this->customer."/temp/".$pc_themename."/html"), $view_dir."/".$pc_themename);
-                                    if(file_exists($view_dir."/".$pc_themename."/searchresult_do.html")){
-                                        @unlink($view_dir."/".$pc_themename."/searchresult_do.html");
+                                $pc_config = json_decode(file_get_contents(public_path('customers/' . $this->customer . "/temp/" . $pc_themename . "/config.json")));
+                                if ($pc_tpl->push_get_date == null || $pc_tpl->push_get_date == "" || $pc_tpl->push_get_date < $pc_config->push_get_date) {
+                                    $this->copydir(public_path('customers/' . $this->customer . "/temp/" . $pc_themename . "/html"), $view_dir . "/" . $pc_themename);
+                                    if (file_exists($view_dir . "/" . $pc_themename . "/searchresult_do.html")) {
+                                        @unlink($view_dir . "/" . $pc_themename . "/searchresult_do.html");
                                     }
-                                    $this->copydir(public_path('customers/' . $this->customer."/temp/".$pc_themename."/json"), $json_dir."/".$pc_themename);
-                                    if($pc_config->push_get_date>$pc_tpl->updated_at){
-                                        Template::where("id",$webinfo->pc_tpl_id)->update(array("push_get_date"=>date("Y-m-d H:i:s", time())));
+                                    $this->copydir(public_path('customers/' . $this->customer . "/temp/" . $pc_themename . "/json"), $json_dir . "/" . $pc_themename);
+                                    if ($pc_config->push_get_date > $pc_tpl->updated_at) {
+                                        Template::where("id", $webinfo->pc_tpl_id)->update(array("push_get_date" => date("Y-m-d H:i:s", time())));
                                     }
                                 }
                             }
                         }
                     }
-                    if($m_tpl->push_get_date==null||$m_tpl->push_get_date==""||$m_tpl->push_get_date<$m_tpl->updated_at){
-                        if(file_exists($mobile_path)){
+                    if ($m_tpl->push_get_date == null || $m_tpl->push_get_date == "" || $m_tpl->push_get_date < $m_tpl->updated_at) {
+                        if (file_exists($mobile_path)) {
                             $zip = new ZipArchive;
-                            if ($zip->open($mobile_path) === TRUE)
-                            {
-                                $zip->extractTo(public_path('customers/' . $this->customer."/temp"));
+                            if ($zip->open($mobile_path) === TRUE) {
+                                $zip->extractTo(public_path('customers/' . $this->customer . "/temp"));
                                 $zip->close();
-                                $m_config=  json_decode(file_get_contents(public_path('customers/' . $this->customer."/temp/".$mobile_themename."/config.json")));
-                                if($m_tpl->push_get_date==null||$m_tpl->push_get_date==""||$m_tpl->push_get_date<$m_config->push_get_date){
-                                    $this->copydir(public_path('customers/' . $this->customer."/temp/".$mobile_themename."/html"), $view_dir."/".$mobile_themename);
-                                    if(file_exists($view_dir."/".$mobile_themename."/searchresult_do.html")){
-                                        @unlink($view_dir."/".$mobile_themename."/searchresult_do.html");
+                                $m_config = json_decode(file_get_contents(public_path('customers/' . $this->customer . "/temp/" . $mobile_themename . "/config.json")));
+                                if ($m_tpl->push_get_date == null || $m_tpl->push_get_date == "" || $m_tpl->push_get_date < $m_config->push_get_date) {
+                                    $this->copydir(public_path('customers/' . $this->customer . "/temp/" . $mobile_themename . "/html"), $view_dir . "/" . $mobile_themename);
+                                    if (file_exists($view_dir . "/" . $mobile_themename . "/searchresult_do.html")) {
+                                        @unlink($view_dir . "/" . $mobile_themename . "/searchresult_do.html");
                                     }
-                                    $this->copydir(public_path('customers/' . $this->customer."/temp/".$mobile_themename."/json"), $json_dir."/".$mobile_themename);
-                                    if($m_config->push_get_date>$m_tpl->updated_at){
-                                        Template::where("id",$webinfo->mobile_tpl_id)->update(array("push_get_date"=>date("Y-m-d H:i:s", time())));
+                                    $this->copydir(public_path('customers/' . $this->customer . "/temp/" . $mobile_themename . "/json"), $json_dir . "/" . $mobile_themename);
+                                    if ($m_config->push_get_date > $m_tpl->updated_at) {
+                                        Template::where("id", $webinfo->mobile_tpl_id)->update(array("push_get_date" => date("Y-m-d H:i:s", time())));
                                     }
                                 }
                             }
                         }
                     }
-                    if(Input::has("pushgrad")==1){
-                        $classify=new ClassifyController();
-                        $data=$classify->classifyids();
-                        if(count($data)>0){
-                            echo '<iframe id="grad_push" src="../grad_push?pushgrad=1&end=0&push_c_id='.$data[0].'&name='.Input::get("name").'&remember_token='.Input::get("remember_token").'" frameborder="0" style="display:none;"></iframe>';
+                    if (Input::has("pushgrad") == 1) {
+                        $classify = new ClassifyController();
+                        $data = $classify->classifyids();
+                        if (count($data) > 0) {
+                            echo '<iframe id="grad_push" src="../grad_push?pushgrad=1&end=0&push_c_id=' . $data[0] . '&name=' . Input::get("name") . '&remember_token=' . Input::get("remember_token") . '" frameborder="0" style="display:none;"></iframe>';
                             ob_flush();
                             flush();
-                        }else{
+                        } else {
                             echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
                             echo '<div class="prompt">没有文章不可推送</div><script type="text/javascript">alert("没有文章不可推送");refresh("没有文章不可推送");</script>';
                             ob_flush();
                             flush();
                             exit();
                         }
-                    }else{
+                    } else {
                         $this->pushPrecent();
                         $this->deldir(public_path('customers/' . $this->customer));
                     }
 //                    Auth::logout();
                 }
             }
-        }else{
+        } else {
             if (Input::has("name")) {
                 $cus_id = Customer::where("name", Input::get("name"))->pluck("id");
                 if ($cus_id > 0) {
@@ -909,31 +997,33 @@ class HtmlController extends BaseController {
                     $this->customer = Auth::user()->name;
                     $this->push_html();
                     $pc_domain = CustomerInfo::where('cus_id', $this->cus_id)->pluck('pc_domain');
-                    $domain_str=str_replace('http://', '', $pc_domain);
-                    if($domain_str!=""){
-                        echo '<div class="pc_domain" style="width:100%;text-align:center;display:none;"><a class=" refresh_a" target="_blank" href="'.$pc_domain.'">查看网站首页</a></div>';
+                    $domain_str = str_replace('http://', '', $pc_domain);
+                    if ($domain_str != "") {
+                        echo '<div class="pc_domain" style="width:100%;text-align:center;display:none;"><a class=" refresh_a" target="_blank" href="' . $pc_domain . '">查看网站首页</a></div>';
                     }
-                    if(Input::has("pushgrad")==1){
-                        $classify=new ClassifyController();
-                        $data=$classify->classifyids();
-                        if(count($data)>0){
-                            echo '<iframe id="grad_push" src="../grad_push?pushgrad=1&end=0&push_c_id='.$data[0].'" frameborder="0" style="display:none;"></iframe>';
+                    if (Input::has("pushgrad") == 1) {
+                        $classify = new ClassifyController();
+                        $data = $classify->classifyids();
+                        if (count($data) > 0) {
+                            echo '<iframe id="grad_push" src="../grad_push?pushgrad=1&end=0&push_c_id=' . $data[0] . '" frameborder="0" style="display:none;"></iframe>';
                             ob_flush();
                             flush();
                         }
-                    }else{
+                    } else {
                         $this->pushPrecent();
                     }
                 }
             }
         }
     }
+
     /**
-     * 
+     *
      * 推送是获取所有栏目id
      */
-    public function push_classify_ids() {//推送是获取所有栏目id
-        if($_SERVER["SERVER_ADDR"]== TONGYI_TUISONG_IP ||$_SERVER["SERVER_ADDR"]==TONGYI_TUISONG_JUYU_IP){
+    public function push_classify_ids()
+    {//推送是获取所有栏目id
+        if ($_SERVER["SERVER_ADDR"] == TONGYI_TUISONG_IP || $_SERVER["SERVER_ADDR"] == TONGYI_TUISONG_JUYU_IP) {
             if (Input::has("name")) {
                 $cus_id = Customer::where("name", Input::get("name"))->pluck("id");
                 if ($cus_id > 0 && Input::has("remember_token")) {
@@ -941,19 +1031,21 @@ class HtmlController extends BaseController {
                     Auth::login($user);
                     $this->cus_id = Auth::id();
                     $this->customer = Auth::user()->name;
-                    $classify=new ClassifyController();
-                    $data=$classify->classifyids();
+                    $classify = new ClassifyController();
+                    $data = $classify->classifyids();
                     return Response::json($data);
                 }
             }
         }
     }
+
     /**
      * 推送界面显示
      */
-    private function push_html(){//推送界面显示
+    private function push_html()
+    {//推送界面显示
         echo '<link type="text/css" rel="stylesheet" href="/admin/css/bootstrap.css">';
-	echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
+        echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
         echo '<style type="text/css">
                 .prompt{
                     display:none;
@@ -973,104 +1065,118 @@ class HtmlController extends BaseController {
         ob_flush();
         flush();
     }
+
     /**
      * 将整个文件夹压缩
      * @param type $path文件夹路径
      * @param type $zip压缩变量
      * @param type $dir存储名称
      */
-    private function addFileToZip($path,$zip,$dir){//将整个文件夹压缩
-        $handler=opendir($path);
-        while(($filename=readdir($handler))!==false){
-            if($filename != "." && $filename != ".."){
-                if(is_dir($path."/".$filename)){
-                    $this->addFileToZip($path."/".$filename, $zip,$dir."/".$filename);
-                }else{
-                    $zip->addFile($path."/".$filename,$dir."/".$filename);
+    private function addFileToZip($path, $zip, $dir)
+    {//将整个文件夹压缩
+        $handler = opendir($path);
+        while (($filename = readdir($handler)) !== false) {
+            if ($filename != "." && $filename != "..") {
+                if (is_dir($path . "/" . $filename)) {
+                    $this->addFileToZip($path . "/" . $filename, $zip, $dir . "/" . $filename);
+                } else {
+                    $zip->addFile($path . "/" . $filename, $dir . "/" . $filename);
                 }
             }
         }
     }
+
     /**
      * 发送数据包到推送服务器，并获取登录凭证
      * @return type
      */
-    public function getRemeber_token() {//发送数据包到推送服务器，并获取登录凭证
-        if($_SERVER["SERVER_ADDR"]==TONGYI_IP||$_SERVER["SERVER_ADDR"]==TONGYI_JUYU_IP){
-            $webinfo=WebsiteInfo::where("cus_id",$this->cus_id)->first();
-            $pc_themename = Template::where("id",$webinfo->pc_tpl_id)->pluck("name");
-            $mobile_themename = Template::where("id",$webinfo->mobile_tpl_id)->pluck("name");
-            $pc_tpl=Template::where("id",$webinfo->pc_tpl_id)->first();
-            $m_tpl=Template::where("id",$webinfo->mobile_tpl_id)->first();
+    public function getRemeber_token()
+    {//发送数据包到推送服务器，并获取登录凭证
+        if ($_SERVER["SERVER_ADDR"] == TONGYI_IP || $_SERVER["SERVER_ADDR"] == TONGYI_JUYU_IP) {
+            $webinfo = WebsiteInfo::where("cus_id", $this->cus_id)->first();
+            $pc_themename = Template::where("id", $webinfo->pc_tpl_id)->pluck("name");
+            $mobile_themename = Template::where("id", $webinfo->mobile_tpl_id)->pluck("name");
+            $pc_tpl = Template::where("id", $webinfo->pc_tpl_id)->first();
+            $m_tpl = Template::where("id", $webinfo->mobile_tpl_id)->first();
             $conn = ftp_connect(TONGYI_TUISONG_JUYU_IP, TONGYI_TUISONG_FTP_PORT);
-            $path=TONGYI_TUISONG_DIR;
+            $path = TONGYI_TUISONG_DIR;
             if ($conn) {
                 ftp_login($conn, TONGYI_TUISONG_FTP_USER, TONGYI_TUISONG_FTP_PASSWORD);
                 ftp_pasv($conn, true);
-                if (ftp_nlist($conn, $path. "/" . $this->customer) === FALSE) {
-                    ftp_mkdir($conn, $path."/" . $this->customer);
+                if (ftp_nlist($conn, $path . "/" . $this->customer) === FALSE) {
+                    ftp_mkdir($conn, $path . "/" . $this->customer);
                 }
                 $view_dir = app_path('views/templates/');
                 $json_dir = public_path('templates/');
-                if($pc_tpl->push_get_date==null||$pc_tpl->push_get_date==""||$pc_tpl->push_get_date<$pc_tpl->updated_at){
-                    $pc_json=array();
-                    $pc_json["themename"]=$pc_themename;
-                    $pc_json["push_get_date"]=date("Y-m-d H:i:s", time());
+                if ($pc_tpl->push_get_date == null || $pc_tpl->push_get_date == "" || $pc_tpl->push_get_date < $pc_tpl->updated_at) {
+                    $pc_json = array();
+                    $pc_json["themename"] = $pc_themename;
+                    $pc_json["push_get_date"] = date("Y-m-d H:i:s", time());
                     file_put_contents(public_path('customers/' . $this->customer . '/pc_config.json'), json_encode($pc_json));
                     $pc_path = public_path('customers/' . $this->customer . '/pc.zip');
                     if (file_exists($pc_path)) {
                         @unlink($pc_path);
                     }
                     $pc_zip = new ZipArchive;
-                    if($pc_zip->open($pc_path, ZipArchive::CREATE)=== TRUE){
-                        $this->addFileToZip($view_dir.$pc_themename,$pc_zip,$pc_themename."/html");
-                        $this->addFileToZip($json_dir.$pc_themename,$pc_zip,$pc_themename."/json");
-                        $pc_zip->addFile(public_path('customers/' . $this->customer . '/pc_config.json'),$pc_themename."/config.json");
+                    if ($pc_zip->open($pc_path, ZipArchive::CREATE) === TRUE) {
+                        $this->addFileToZip($view_dir . $pc_themename, $pc_zip, $pc_themename . "/html");
+                        $this->addFileToZip($json_dir . $pc_themename, $pc_zip, $pc_themename . "/json");
+                        $pc_zip->addFile(public_path('customers/' . $this->customer . '/pc_config.json'), $pc_themename . "/config.json");
                         $pc_zip->close();
-                        ftp_put($conn, $path."/" . $this->customer."/pc.zip", $pc_path, FTP_BINARY);
+                        ftp_put($conn, $path . "/" . $this->customer . "/pc.zip", $pc_path, FTP_BINARY);
                     }
                 }
-                if($m_tpl->push_get_date==null||$m_tpl->push_get_date==""||$m_tpl->push_get_date<$m_tpl->updated_at){
-                    $m_json=array();
-                    $m_json["themename"]=$pc_themename;
-                    $m_json["push_get_date"]=date("Y-m-d H:i:s", time());
+                if ($m_tpl->push_get_date == null || $m_tpl->push_get_date == "" || $m_tpl->push_get_date < $m_tpl->updated_at) {
+                    $m_json = array();
+                    $m_json["themename"] = $pc_themename;
+                    $m_json["push_get_date"] = date("Y-m-d H:i:s", time());
                     file_put_contents(public_path('customers/' . $this->customer . '/m_config.json'), json_encode($m_json));
                     $m_path = public_path('customers/' . $this->customer . '/mobile.zip');
                     if (file_exists($m_path)) {
                         @unlink($m_path);
                     }
                     $m_zip = new ZipArchive;
-                    if($m_zip->open($m_path, ZipArchive::CREATE)=== TRUE){
-                        $this->addFileToZip($view_dir.$mobile_themename,$m_zip,$mobile_themename."/html");
-                        $this->addFileToZip($json_dir.$mobile_themename,$m_zip,$mobile_themename."/json");
-                        $m_zip->addFile(public_path('customers/' . $this->customer . '/m_config.json'),$mobile_themename."/config.json");
+                    if ($m_zip->open($m_path, ZipArchive::CREATE) === TRUE) {
+                        $this->addFileToZip($view_dir . $mobile_themename, $m_zip, $mobile_themename . "/html");
+                        $this->addFileToZip($json_dir . $mobile_themename, $m_zip, $mobile_themename . "/json");
+                        $m_zip->addFile(public_path('customers/' . $this->customer . '/m_config.json'), $mobile_themename . "/config.json");
                         $m_zip->close();
-                        ftp_put($conn, $path."/" . $this->customer."/mobile.zip", $m_path, FTP_BINARY);
+                        ftp_put($conn, $path . "/" . $this->customer . "/mobile.zip", $m_path, FTP_BINARY);
                     }
                 }
+                //===added:嵌入表单.json数据传送到服务器===
+//                $json_path = public_path("customers/" . $this->customer . '/formdata.json');//将表单数据写入.json中
+//                if (file_exists($json_path)) {
+//                    @unlink($json_path);
+//                }
+//                ftp_put($conn, $path . "/" . $this->customer . "/formdata.json", $json_path, FTP_BINARY);
+                //===added:end====
+
                 ftp_close($conn);
             }
-            $remember_token=Auth::user()->remember_token;
-            if($remember_token==""||$remember_token==null){
-                $remember_token=time() . str_random(4);
-                Customer::where("id",Auth::id())->update(array("remember_token"=>$remember_token));
+            $remember_token = Auth::user()->remember_token;
+            if ($remember_token == "" || $remember_token == null) {
+                $remember_token = time() . str_random(4);
+                Customer::where("id", Auth::id())->update(array("remember_token" => $remember_token));
             }
             return Response::json(array("name" => Auth::user()->name, "remember_token" => $remember_token));
-        }else{
-            $remember_token=Auth::user()->remember_token;
-            if($remember_token==""||$remember_token==null){
-                $remember_token=time() . str_random(4);
-                Customer::where("id",Auth::id())->update(array("remember_token"=>$remember_token));
+        } else {
+            $remember_token = Auth::user()->remember_token;
+            if ($remember_token == "" || $remember_token == null) {
+                $remember_token = time() . str_random(4);
+                Customer::where("id", Auth::id())->update(array("remember_token" => $remember_token));
             }
             return Response::json(array("name" => Auth::user()->name, "remember_token" => $remember_token));
         }
     }
+
     /**
      * 分级推送
      */
-    public function grad_push(){
+    public function grad_push()
+    {
         if (Input::has("name")) {
-            $this->allow_push_count=8;
+            $this->allow_push_count = 8;
             $cus_id = Customer::where("name", Input::get("name"))->pluck("id");
             if ($cus_id > 0 && Input::has("remember_token")) {
                 $user = Customer::where("remember_token", Input::get("remember_token"))->find($cus_id);
@@ -1078,20 +1184,22 @@ class HtmlController extends BaseController {
                 $this->cus_id = Auth::id();
                 $this->customer = Auth::user()->name;
                 $this->pushPrecent();
-                if(Input::has("end")&&Input::get("end")==1){
+                if (Input::has("end") && Input::get("end") == 1) {
                     $this->deldir(public_path('customers/' . $this->customer));
                 }
             }
         }
     }
+
     /**
      * 推送
-     * 
-     * 
+     *
+     *
      */
-    public function pushPrecent() {
+    public function pushPrecent()
+    {
         set_time_limit(0);
-        if(Input::has("pushgrad")==1){
+        if (Input::has("pushgrad") == 1) {
             echo '<script type="text/javascript">function refresh(str){parent.refresh(str);};</script>';
             if (Input::has("push_c_id")) {
                 $pushcid = Input::get("push_c_id");
@@ -1099,8 +1207,8 @@ class HtmlController extends BaseController {
             if (Input::has("end")) {
                 $end = Input::get("end");
             }
-        }else{
-            if(!Input::has("name")){
+        } else {
+            if (!Input::has("name")) {
                 echo '<script type="text/javascript">function refresh(str){parent.refresh(str);};</script>';
             }
             if (Input::has("push_c_id")) {
@@ -1229,7 +1337,7 @@ class HtmlController extends BaseController {
                     $zip->addFile(public_path('customers/' . $this->customer . '/article_data.json'), 'article_data.json');
                     $nowpercent = $this->percent + $this->lastpercent;
                     if (floor($nowpercent) != $this->lastpercent) {
-                        echo '<div class="prompt">'.floor($nowpercent) . '%</div><script type="text/javascript">refresh(' . floor($nowpercent) . ');</script>';
+                        echo '<div class="prompt">' . floor($nowpercent) . '%</div><script type="text/javascript">refresh(' . floor($nowpercent) . ');</script>';
                         ob_flush();
                         flush();
                         $this->clearpushqueue();
@@ -1243,7 +1351,7 @@ class HtmlController extends BaseController {
                     $zip->addFile(public_path('customers/' . $this->customer . '/mobile/article_data.json'), 'mobile/article_data.json');
                     $nowpercent = $this->percent + $this->lastpercent;
                     if (floor($nowpercent) != floor($this->lastpercent)) {
-                        echo '<div class="prompt">'.floor($nowpercent) . '%</div><script type="text/javascript">refresh(' . floor($nowpercent) . ');</script>';
+                        echo '<div class="prompt">' . floor($nowpercent) . '%</div><script type="text/javascript">refresh(' . floor($nowpercent) . ');</script>';
                         ob_flush();
                         flush();
                         $this->clearpushqueue();
@@ -1265,7 +1373,7 @@ class HtmlController extends BaseController {
 
 
             if (90 > floor($this->lastpercent)) {
-                echo '<div class="prompt">'.'90%</div><script type="text/javascript">refresh(90);</script>';
+                echo '<div class="prompt">' . '90%</div><script type="text/javascript">refresh(90);</script>';
                 ob_flush();
                 flush();
                 $this->clearpushqueue();
@@ -1302,7 +1410,7 @@ class HtmlController extends BaseController {
                         if (@ftp_chdir($conn, $this->customer) == FALSE) {
                             ftp_mkdir($conn, $this->customer);
                         }
-                        foreach ((array) $del_imgs as $v) {
+                        foreach ((array)$del_imgs as $v) {
                             $this->delimg($v);
                             @ftp_delete($conn, "/" . $this->customer . '/images/l/' . $v['target'] . '/' . $v['img']);
                             @ftp_delete($conn, "/" . $this->customer . '/images/s/' . $v['target'] . '/' . $v['img']);
@@ -1327,11 +1435,47 @@ class HtmlController extends BaseController {
                         }
                         ftp_close($conn);
                     }
+
+                    //判断有无ftp_b，有则推送
+                    if($customerinfo->ftp_address_b){
+                        $ftp_array_b = explode(':', $customerinfo->ftp_address_b);
+                        $ftp_array_b[1] = isset($ftp_array_b[1]) ? $ftp_array_b[1] : $port;
+                        $conn_b = ftp_connect($ftp_array_b[0], $ftp_array_b[1]);  
+                        if($conn_b){
+                            ftp_login($conn_b, $customerinfo->ftp_user_b, $customerinfo->ftp_pwd_b);
+                            ftp_pasv($conn_b, 1);
+                            if (@ftp_chdir($conn_b, $this->customer) == FALSE) {
+                                ftp_mkdir($conn_b, $this->customer);
+                            }
+                            foreach ((array)$del_imgs as $v) {
+                                $this->delimg($v);
+                                @ftp_delete($conn_b, "/" . $this->customer . '/images/l/' . $v['target'] . '/' . $v['img']);
+                                @ftp_delete($conn_b, "/" . $this->customer . '/images/s/' . $v['target'] . '/' . $v['img']);
+                                @ftp_delete($conn_b, "/" . $this->customer . '/mobile/images/l/' . $v['target'] . '/' . $v['img']);
+                                @ftp_delete($conn_b, "/" . $this->customer . '/mobile/images/s/' . $v['target'] . '/' . $v['img']);
+                            }
+                            ImgDel::where('cus_id', $this->cus_id)->delete();
+                            if ($this->pcpush) {
+                                @ftp_put($conn_b, "/" . $this->customer . "/search.php", public_path("packages/search.php"), FTP_ASCII);
+                            }
+                            if (file_exists($path)) {
+                                ftp_put($conn_b, "/" . $this->customer . "/site.zip", $path, FTP_BINARY);
+                            }
+                            ftp_put($conn_b, "/" . $this->customer . "/unzip.php", public_path("packages/unzip.php"), FTP_ASCII);
+                            if ($this->mobilepush) {
+                                ftp_put($conn_b, "/" . $this->customer . "/mobile/search.php", public_path("packages/search.php"), FTP_ASCII);
+                                if (@ftp_chdir($conn_b, "/" . $this->customer . "/mobile") == FALSE) {
+                                    ftp_mkdir($conn_b, "/" . $this->customer . "/mobile");
+                                }
+                            }
+                            ftp_close($conn_b);
+                        }
+                    }
                 } else {
                     if ($conn) {
                         ftp_login($conn, $customerinfo->ftp_user, $customerinfo->ftp_pwd);
                         ftp_pasv($conn, 1);
-                        foreach ((array) $del_imgs as $v) {
+                        foreach ((array)$del_imgs as $v) {
                             $this->delimg($v);
                             @ftp_delete($conn, $ftpdir . '/images/l/' . $v['target'] . '/' . $v['img']);
                             @ftp_delete($conn, $ftpdir . '/images/s/' . $v['target'] . '/' . $v['img']);
@@ -1356,8 +1500,8 @@ class HtmlController extends BaseController {
                 }
 
                 $this->folderClear();
-                echo '<div class="prompt">'.'100%</div><script type="text/javascript">refresh(100);</script>';
-                $this->logsAdd('null',__FUNCTION__,__CLASS__,999,"推送成功",0,Auth::id());
+                echo '<div class="prompt">' . '100%</div><script type="text/javascript">refresh(100);</script>';
+                $this->logsAdd('null', __FUNCTION__, __CLASS__, 999, "推送成功", 0, Auth::id());
                 if (!isset($end) || $end == 1) {
                     Classify::where('cus_id', $this->cus_id)->where('pushed', '>', 0)->update(['pushed' => 0]);
                     Articles::where('cus_id', $this->cus_id)->where('pushed', '>', 0)->update(['pushed' => 0]);
@@ -1372,8 +1516,13 @@ class HtmlController extends BaseController {
                 $weburl = Customer::where('id', $this->cus_id)->pluck('weburl');
                 $suf_url = str_replace('http://c', '', $weburl);
                 $cus_name = strtolower(Customer::where('id', $this->cus_id)->pluck('name'));
-                if (trim($ftp) == '1') {
-                    $ftp_pcdomain = "http://" . $cus_name . $suf_url;
+                if (trim($ftp) == '1') { // 判断客户FTP地址
+                    // $ftp_pcdomain = "http://" . $customerinfo->ftp_address . '/' . $cus_name;
+                    $ftp_pcdomain = "http://" . $ftp_array[0] . '/' . $cus_name;
+                    if($customerinfo->ftp_address_b){
+                        $ftp_pcdomain_b = "http://" . $ftp_array_b[0] . '/' . $cus_name;
+                        @file_get_contents("$ftp_pcdomain_b/unzip.php");
+                    }
                 } else {
                     $ftp_pcdomain = $customerinfo->pc_domain;
                 }
@@ -1383,8 +1532,8 @@ class HtmlController extends BaseController {
             }
             ob_end_flush();
         } else {
-            echo '<div class="prompt">'.'100%</div><script type="text/javascript">refresh(100);</script>';
-            $this->logsAdd('null',__FUNCTION__,__CLASS__,999,"推送成功",0,Auth::id());
+            echo '<div class="prompt">' . '100%</div><script type="text/javascript">refresh(100);</script>';
+            $this->logsAdd('null', __FUNCTION__, __CLASS__, 999, "推送成功", 0, Auth::id());
             if (!isset($end) || $end == 1) {
                 Classify::where('cus_id', $this->cus_id)->where('pushed', '>', 0)->update(['pushed' => 0]);
                 Articles::where('cus_id', $this->cus_id)->where('pushed', '>', 0)->update(['pushed' => 0]);
@@ -1399,7 +1548,7 @@ class HtmlController extends BaseController {
 
     /**
      * 遍历数组并和上次生成的文件md5比较，讲md5不同的或上次生成的文件不存在的加入压缩中
-     * 
+     *
      * @param array $filearray 文件数组
      * @param array $data 上次生成的文件md5数组
      * @param array $prefix 加于filearray数组文件的前缀，以使它和data的key对应匹配
@@ -1407,16 +1556,17 @@ class HtmlController extends BaseController {
      * @param string $path 加入压缩的路径
      * @return array
      */
-    private function compareZip($filearray = [], $fpath = '', $path = '') {
+    private function compareZip($filearray = [], $fpath = '', $path = '')
+    {
         $zip = new ZipArchive;
         if ($zip->open($path, ZipArchive::CREATE) === TRUE) {
-            foreach ((array) $filearray as $file) {
+            foreach ((array)$filearray as $file) {
                 $cat_arr = explode('/', $file);
                 $filename = array_pop($cat_arr);
                 $zip->addFile($file, $fpath . '/' . $filename);
                 $nowpercent = $this->percent + $this->lastpercent;
                 if (floor($nowpercent) !== floor($this->lastpercent)) {
-                    echo '<div class="prompt">'.floor($nowpercent) . '%</div><script type="text/javascript">refresh(' . floor($nowpercent) . ');</script>';
+                    echo '<div class="prompt">' . floor($nowpercent) . '%</div><script type="text/javascript">refresh(' . floor($nowpercent) . ');</script>';
                     ob_flush();
                     flush();
                 }
@@ -1430,13 +1580,14 @@ class HtmlController extends BaseController {
     /**
      * 判断一个用户是否需要推送并返回修改的次数
      */
-    public function isNeedPush() {
+    public function isNeedPush()
+    {
         $count = Classify::where('cus_id', $this->cus_id)->where('pushed', '>', 0)->count();
         $count += Articles::where('cus_id', $this->cus_id)->where('pushed', '>', 0)->count();
-        $count +=WebsiteConfig::where('cus_id', $this->cus_id)->where('pushed', '>', 0)->count();
-        $count +=WebsiteInfo::where('cus_id', $this->cus_id)->where('pushed', '>', 0)->count();
-        $count +=MobileHomepage::where('cus_id', $this->cus_id)->where('pushed', '>', 0)->count();
-        $count +=CustomerInfo::where('cus_id', $this->cus_id)->where('pushed', '>', 0)->count();
+        $count += WebsiteConfig::where('cus_id', $this->cus_id)->where('pushed', '>', 0)->count();
+        $count += WebsiteInfo::where('cus_id', $this->cus_id)->where('pushed', '>', 0)->count();
+        $count += MobileHomepage::where('cus_id', $this->cus_id)->where('pushed', '>', 0)->count();
+        $count += CustomerInfo::where('cus_id', $this->cus_id)->where('pushed', '>', 0)->count();
         $data_final = ['err' => 0, 'msg' => '', 'data' => ['cache_num' => $count]];
         return Response::json($data_final);
     }
@@ -1444,7 +1595,8 @@ class HtmlController extends BaseController {
     /**
      * 生成搜索页面
      */
-    public function sendData($type = 'pc') {
+    public function sendData($type = 'pc')
+    {
         $template = new PrintController('online', $type);
         if ($type == 'pc') {
             $publicdata = $this->pushpc;
@@ -1458,17 +1610,19 @@ class HtmlController extends BaseController {
         ob_end_clean();
         return $path;
     }
+
     /**
      * 删除整个文件夹
      * @param type $dir 文件夹路径
      * @return boolean
      */
-    private function deldir($dir) {
-        $dh=opendir($dir);
-        while ($file=readdir($dh)) {
-            if($file!="." && $file!="..") {
-                $fullpath=$dir."/".$file;
-                if(!is_dir($fullpath)) {
+    private function deldir($dir)
+    {
+        $dh = opendir($dir);
+        while ($file = readdir($dh)) {
+            if ($file != "." && $file != "..") {
+                $fullpath = $dir . "/" . $file;
+                if (!is_dir($fullpath)) {
                     unlink($fullpath);
                 } else {
                     $this->deldir($fullpath);
@@ -1476,7 +1630,7 @@ class HtmlController extends BaseController {
             }
         }
         closedir($dh);
-        if(rmdir($dir)) {
+        if (rmdir($dir)) {
             return true;
         } else {
             return false;
