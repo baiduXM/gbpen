@@ -520,7 +520,7 @@ class PrintController extends BaseController
                     }
                     break;
                 case 'form':
-                    $slimming[$k] = $v;
+//                    $slimming[$k] = $v;
                     break;
             }
         }
@@ -1229,31 +1229,7 @@ class PrintController extends BaseController
      */
     public function insetForm()
     {
-        $websiteFormInfo = websiteConfig::where('cus_id', $this->cus_id)->where('template_id', $this->tpl_id)->where('key', 'form')->pluck('value');
-        if (!empty($websiteFormInfo)) {
-            $websiteFormArray = unserialize($websiteFormInfo);
-            $ids = array();
-            $bind = array();
-            foreach ($websiteFormArray as $key => $value) {
-                $bind[substr($key, strlen($key) - 1)][substr($key, 0, -1)] = $value['value'];
-                if (array_key_exists('form_id', $value['value'])) {
-                    if (!in_array($value['value']['form_id'], $ids)) {
-                        $ids[] = $value['value']['form_id'];
-                    }
-                }
-            }
-            $FormC = new FormController();
-            $formInfo = $FormC->getFormInfoByIds($ids);
-            $data['forminfo'] = $formInfo;
-            $data['website'] = $bind;
-//            echo '<pre>';
-//            var_dump($data);
-//            exit;
-            file_put_contents(public_path("customers/" . $this->customer . '/formdata.json'), json_encode($data));//将表单数据写入.json中
         return '<script type="text/javascript" src="/quickbar/js/form.js?name=' . $this->customer . '"></script>';
-        } else {
-            return '';
-        }
     }
 
     /**
@@ -3090,7 +3066,7 @@ class PrintController extends BaseController
                 $lang['the_last'] = '已经是最后一篇';
                 $lang['the_first'] = '已经是第一篇';
             }
-            $a_moreimg = Moreimg::where('a_id', $id)->get()->toArray();
+            $a_moreimg = Moreimg::where('a_id', $id)->where('from', '=', null)->get()->toArray();
             array_unshift($a_moreimg, array('title' => $article->title, 'img' => $article->img));
             $images = array();
             if (count($a_moreimg)) {
@@ -3210,6 +3186,7 @@ class PrintController extends BaseController
                 $related[$k]['title'] = $articles[$k]['title'];
                 $related[$k]['description'] = $articles[$k]['introduction'];
                 $related[$k]['image'] = $articles[$k]['img'] ? ($this->source_dir . 'l/articles/' . $articles[$k]['img']) : '';
+//                $related[$k]['image'] = $articles[$k]['img'] ? ($this->source_dir . 'ueditor/' . $articles[$k]['img']) : ''; //debug
                 $related[$k]['pubdate'] = $articles[$k]['created_at'];
                 $related[$k]['pubtimestamp'] = strtotime($articles[$k]['created_at']);
                 $a_c_info = Classify::where('id', $articles[$k]['c_id'])->first();
@@ -3271,8 +3248,6 @@ class PrintController extends BaseController
         if ($_SERVER["HTTP_HOST"] == TONGYI_TUISONG_JUYU_IP) {
             return json_encode($result);
         }
-//        var_dump($result['pubdate']);
-//        exit();
         $smarty = new Smarty;
         $smarty->setTemplateDir(app_path('views/templates/' . $this->themename));
         $smarty->setCompileDir(app_path('storage/views/compile'));
@@ -3343,7 +3318,7 @@ class PrintController extends BaseController
         foreach ((array)$articles as $key => $article) {
             $the_result = array();
             $the_result = $result;
-            $a_moreimg = Moreimg::where('a_id', $article['id'])->get()->toArray();
+            $a_moreimg = Moreimg::where('a_id', $article['id'])->where('from', '=', null)->get()->toArray();
             array_unshift($a_moreimg, array('title' => $article['title'], 'img' => $article['img']));
             $images = array();
             if (count($a_moreimg)) {
