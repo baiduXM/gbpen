@@ -196,6 +196,7 @@ class UploadController extends BaseController {
             if (file_exists(public_path('customers/' . $customer . '/img.zip'))) {
                 @unlink(public_path('customers/' . $customer . '/img.zip'));
             }
+			file_put_contents('upresult.txt','here');
             if ($conn) {
                 ftp_login($conn, $customerinfo->ftp_user, $customerinfo->ftp_pwd);
                 ftp_pasv($conn, 1);
