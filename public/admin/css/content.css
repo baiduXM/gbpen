@@ -512,6 +512,20 @@ ul.made_style li.list_a .list_box a.cu{ background:none; color:#d91f1f}
 .chk  + label:active {box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px 1px 3px rgba(0,0,0,0.1);}
 .chk:checked + label:before {content: '';position: absolute;left: 26px;border-radius: 100px;}
 .chk:checked + label:after {content: ' ';font-size: 1.5em;position: absolute;background: #4cda60;box-shadow: 0 0 1px #4cda60;}
+/*重定向按钮样式*/
+.redi + label {background-color: #fafbfa;padding: 9px;border-radius: 50px;display: inline-block;position: relative;margin-right: 30px;
+              -webkit-transition: all 0.1s ease-in;transition: all 0.1s ease-in;width: 40px;height: 15px;}
+.redi + label:after {content: ' ';position: absolute;top: 0;-webkit-transition: box-shadow 0.1s ease-in;transition: box-shadow 0.1s ease-in;
+                    left: 0;width: 100%;height: 100%;border-radius: 100px;box-shadow: inset 0 0 0 0 #eee, 0 0 1px rgba(0,0,0,0.4);}
+.redi  + label:before {content: ' ';position: absolute;background: white;cursor: pointer;top: 1px;left: 1px;z-index: 99;width: 31px;
+                      -webkit-transition: all 0.1s ease-in;transition: all 0.1s ease-in;height: 31px;border-radius: 100px;box-shadow: 0 3px 1px rgba(98, 95, 95, 0.6), 0 0px 1px rgba(255, 255, 255, 0.3);}
+.redi:active + label:after {box-shadow: inset 0 0 0 20px #eee, 0 0 1px #eee;}
+.redi:active + label:before {width: 37px;}
+.redi:checked:active + label:before {width: 37px;left: 20px;}
+.redi  + label:active {box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px 1px 3px rgba(0,0,0,0.1);}
+.redi:checked + label:before {content: '';position: absolute;left: 26px;border-radius: 100px;}
+.redi:checked + label:after {content: ' ';font-size: 1.5em;position: absolute;background: #4cda60;box-shadow: 0 0 1px #4cda60;}
+
 .switchfunc span{width: 100px;text-align: right;display: inline-block;}
 .setting-feild .switch_list{margin-left: 100px;background-color: #AFD7BF;display: none;}
 .switch_list_item{padding: 2px 0;}
