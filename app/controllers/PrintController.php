@@ -1058,7 +1058,7 @@ class PrintController extends BaseController
                                .'return relUrl;}'
                                .'url=GetUrlRelativePath();'
                                .'if(host=="'.$customer_info->ed_url.'"){'
-                               .'window.location.href = "http://'.$customer_info->redirection_url.'"+url;}'
+                               .'window.location.href = "http://'.$customer_info->redirect_url.'"+url;}'
                                .'});'
                                .'</script>';
             }
