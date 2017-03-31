@@ -1043,6 +1043,25 @@ class PrintController extends BaseController
             }
             //===版权选择_end===
             $footscript = $customer_info->pc_footer_script;
+            //判断是否有重定向，有则插入重定向js
+            if($customer_info->is_redirect){
+                $footscript .= '<script>'
+                               .'$(document).ready(function() { '
+                               .'var host = window.location.host;'
+                               .'function GetUrlRelativePath(){'
+                               .'var url = document.location.toString();'
+                               .'var arrUrl = url.split("//");'
+                               .'var start = arrUrl[1].indexOf("/");'
+                               .'var relUrl = arrUrl[1].substring(start);'
+                               .'if(relUrl.indexOf("?") != -1){'
+                               .'relUrl = relUrl.split("?")[0];}'
+                               .'return relUrl;}'
+                               .'url=GetUrlRelativePath();'
+                               .'if(host=="'.$customer_info->ed_url.'"){'
+                               .'window.location.href = "http://'.$customer_info->redirection_url.'"+url;}'
+                               .'});'
+                               .'</script>';
+            }
             $footscript .= $formJS;
             $footscript .= '<script type="text/javascript" src="/quickbar/js/quickbar.js?' . $this->cus_id . 'pc"></script>';
             $footscript .= $add_color_css;
