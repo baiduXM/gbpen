@@ -164,6 +164,10 @@ class CustomerController extends BaseController {
         $data['lang'] = Input::get('lang');
         $data['copyright'] = Input::get('copyright');
         $data['pushed'] = 1;
+        //重定向
+        $data['is_redirect'] = Input::get('is_redirect');
+        $data['ed_url'] = Input::get('ed_url');
+        $data['redirect_url'] = Input::get('redirect_url');
 
         $float_adv = Input::get('float_adv') ? Input::get('float_adv') : array();
         $float_type = Input::get('float_type') ? Input::get('float_type') : array();
