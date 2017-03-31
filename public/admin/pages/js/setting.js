@@ -52,7 +52,8 @@ function settingController($scope, $http) {
                     $('.setting-content input[name=ed_url]').val(set.ed_url);
                     $('.setting-content input[name=redirect_url]').val(set.redirect_url);                    
                 } else {
-                    $("#redirect").val("1");
+                    $("#redirect").val("0");
+                    $("input.redi").attr("checked", false);
                     $(".redirect_box").hide();
                     $('.setting-content input[name=ed_url]').val(set.ed_url);
                     $('.setting-content input[name=redirect_url]').val(set.redirect_url);
