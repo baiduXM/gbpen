@@ -78,6 +78,12 @@ class CustomerController extends BaseController {
 
         $data['lastpushtime'] = strtotime($customer_info->lastpushtime);
         $data['floatadv'] = json_decode($customer_info->floatadv);
+
+        //重定向
+        $data['is_redirect'] = $customer_info->is_redirect;
+        $data['ed_url'] = $customer_info->ed_url;
+        $data['redirect_url'] = $customer_info->redirect_url;
+
         foreach ((array) $data['floatadv'] as $key => $val) {
             if (!isset($val->type) || $val->type == 'adv') {
                 $data['floatadv'][$key]->url = asset('customers/' . $customer . '/images/l/common/' . $val->adv);
@@ -165,7 +171,7 @@ class CustomerController extends BaseController {
         $data['copyright'] = Input::get('copyright');
         $data['pushed'] = 1;
         //重定向
-        $data['is_redirect'] = Input::get('is_redirect');
+        $data['is_redirect'] = Input::get('redirect');
         $data['ed_url'] = Input::get('ed_url');
         $data['redirect_url'] = Input::get('redirect_url');
 
