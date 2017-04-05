@@ -387,7 +387,7 @@ class HtmlController extends BaseController
                 $ftp_array_b[1] = isset($ftp_array_b[1]) ? $ftp_array_b[1] : $port;
                 $conn_b = ftp_connect($ftp_array_b[0], $ftp_array_b[1]); 
                 if($conn_b){
-                    ftp_login($conn_b, $customerinfo->ftp_user, $customerinfo->ftp_pwd);
+                    ftp_login($conn_b, $customerinfo->ftp_user_b, $customerinfo->ftp_pwd_b);
                     ftp_pasv($conn_b, 1);
                     if (@ftp_chdir($conn_b, $this->customer) == FALSE) {
                         ftp_mkdir($conn_b, $this->customer);
@@ -536,7 +536,7 @@ class HtmlController extends BaseController
                     $ftp_array_b[1] = isset($ftp_array_b[1]) ? $ftp_array_b[1] : $port;
                     $conn_b = ftp_connect($ftp_array_b[0], $ftp_array_b[1]);
                     if($conn_b){
-                        ftp_login($conn_b, $customerinfo->ftp_user, $customerinfo->ftp_pwd);
+                        ftp_login($conn_b, $customerinfo->ftp_user_b, $customerinfo->ftp_pwd_b);
                         ftp_pasv($conn_b, 1);
                         if (@ftp_chdir($conn_b, $this->customer) == FALSE) {
                             ftp_mkdir($conn_b, $this->customer);
@@ -654,7 +654,7 @@ class HtmlController extends BaseController
                 $ftp_array_b[1] = isset($ftp_array_b[1]) ? $ftp_array_b[1] : $port;
                 $conn_b = ftp_connect($ftp_array_b[0], $ftp_array_b[1]); 
                 if($conn_b){
-                    ftp_login($conn_b, $customerinfo->ftp_user, $customerinfo->ftp_pwd);
+                    ftp_login($conn_b, $customerinfo->ftp_user_b, $customerinfo->ftp_pwd_b);
                     ftp_pasv($conn_b, 1);
                     if (@ftp_nlist($conn_b, $this->customer) === FALSE) {
                         ftp_mkdir($conn_b, $this->customer);
