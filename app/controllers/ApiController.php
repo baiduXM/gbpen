@@ -133,17 +133,24 @@ class ApiController extends BaseController
                 //===更新CustomerInfo时，更新capacity字段===
                 CustomerInfo::where('cus_id', $cus_id)->update(['pc_domain' => $update['pc_domain'], 'mobile_domain' => $update['mobile_domain'], 'capacity' => $capacity]);
                 if ($update['stage'] != $coustomer_old['stage'] or $update['pc_domain'] != $coustomer_old['pc_domain'] or $update['mobile_domain'] != $coustomer_old['mobile_domain']) {
+                    //获取绑定ip地址
+                    $ftp_array = explode(':', $update['ftp_address']);
                     $common = new CommonController();
-                    @$common->postsend(trim($update['weburl'], '/') . "/urlbind.php", array('cus_name' => $update['name'], 'stage' => $update['stage'], 'pc_domain' => $update['pc_domain'], 'mobile_domain' => $update['mobile_domain'], 'stage_old' => $coustomer_old['stage'], 'pc_domain_old' => $coustomer_old['pc_domain'], 'mobile_domain_old' => $coustomer_old['mobile_domain']));
-                }
-                //如果有ftp_b
-                if($update['ftp_address_b']){
+                    @$common->postsend(trim($ftp_array[0], '/') . "/urlbind.php", array('cus_name' => $update['name'], 'stage' => $update['stage'], 'pc_domain' => $update['pc_domain'], 'mobile_domain' => $update['mobile_domain'], 'stage_old' => $coustomer_old['stage'], 'pc_domain_old' => $coustomer_old['pc_domain'], 'mobile_domain_old' => $coustomer_old['mobile_domain']));
+                    //如果有ftp_b
+                    if($update['ftp_address_b']){
                         $ftp_array_b = explode(':', $update['ftp_address_b']);
-                        if ($update['stage'] != $coustomer_old['stage'] or $update['pc_domain'] != $coustomer_old['pc_domain'] or $update['mobile_domain'] != $coustomer_old['mobile_domain']) {
-                        $common = new CommonController();
                         @$common->postsend(trim($ftp_array_b[0], '/') . "/urlbind.php", array('cus_name' => $update['name'], 'stage' => $update['stage'], 'pc_domain' => $update['pc_domain'], 'mobile_domain' => $update['mobile_domain'], 'stage_old' => $coustomer_old['stage'], 'pc_domain_old' => $coustomer_old['pc_domain'], 'mobile_domain_old' => $coustomer_old['mobile_domain']));
                     }
                 }
+                //如果有ftp_b
+                // if($update['ftp_address_b']){
+                //         $ftp_array_b = explode(':', $update['ftp_address_b']);
+                //         if ($update['stage'] != $coustomer_old['stage'] or $update['pc_domain'] != $coustomer_old['pc_domain'] or $update['mobile_domain'] != $coustomer_old['mobile_domain']) {
+                //         $common = new CommonController();
+                //         @$common->postsend(trim($ftp_array_b[0], '/') . "/urlbind.php", array('cus_name' => $update['name'], 'stage' => $update['stage'], 'pc_domain' => $update['pc_domain'], 'mobile_domain' => $update['mobile_domain'], 'stage_old' => $coustomer_old['stage'], 'pc_domain_old' => $coustomer_old['pc_domain'], 'mobile_domain_old' => $coustomer_old['mobile_domain']));
+                //     }
+                // }
                 if ($save) {
                     $result = ['err' => 1000, 'msg' => '更新用户成功'];
                 } else {
