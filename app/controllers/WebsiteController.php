@@ -659,6 +659,18 @@ class WebsiteController extends BaseController {
                     if ($up_result) {
                         $tpl = explode('.', $file->getClientOriginalName());
                         $tpl_name = $tpl[0];
+
+                        //判断命名方式
+                        if(preg_match('/G\d{4}(P|M)(CN|EN|TW|JP)\d{2}/', $tpl_name)){
+                            //查询对应的旧命名
+                            $old_tpl_name = Template::where('name', $tpl_name);
+                            if($old_tpl_name){
+                                //删除旧命名的目录
+                                $this->_remove_Dir(public_path("templates/$old_tpl_name"));
+                                $this->_remove_Dir(app_path("views/templates/$old_tpl_name")); 
+                            }                            
+                        }
+
                         if (!empty($tpl_name)) {
                             $this->_remove_Dir(public_path("templates/$tpl_name"));
                             $this->_remove_Dir(app_path("views/templates/$tpl_name"));
@@ -777,16 +789,75 @@ class WebsiteController extends BaseController {
                 $tpl_dir = $tpl_name;
                 $new_num = '';
             } else {
-                if (substr_count(strtolower($type), 'pc')) {
-                    $type = 1;
-                    $tpl_dir = "GP";
-                } else {
-                    $type = 2;
-                    $tpl_dir = "GM";
-                }
+                //新命名规则,模板语言处有问题
+                $tpl_dir = 'G';
                 $last_num = Template::where('type', $type)->max('tpl_num');
                 $new_num = $last_num + 1;
                 $tpl_dir = $tpl_dir . str_repeat('0', 4 - strlen($new_num)) . $new_num;
+                if (substr_count(strtolower($type), 'pc')) {
+                    $type = 1;
+                    $tpl_dir .= "P";
+                } else {
+                    $type = 2;
+                    $tpl_dir .= "M";
+                }
+                $tpl_dir .= "CN";
+                $StyleColors = $config_arr['Config']['StyleColors'] ? str_replace(' ', '', $config_arr['Config']['StyleColors']) : '';
+                if ($StyleColors) {
+                    preg_match_all('/\b\w[a-z]*\b/', $StyleColors, $have);
+                    $mainColor = $have[0][0];
+                } else {
+                    $mainColor = '';
+                }
+                switch ($mainColor) {
+                    case 'red':
+                        $colorNum .= '1';
+                        break;
+                    case 'yellow':
+                        $colorNum .= '2';
+                        break;
+                    case 'orange':
+                        $colorNum .= '3';
+                        break;
+                    case 'blue':
+                        $colorNum .= '4';
+                        break;
+                    case 'green':
+                        $colorNum .= '5';
+                        break;
+                    case 'purple':
+                        $colorNum .= '6';
+                        break;
+                    case 'black':
+                        $colorNum .= '7';
+                        break;
+                    case 'white':
+                        $colorNum .= '8';
+                        break;
+                    case 'colorful':
+                        $colorNum .= '9';
+                        break;                                
+                    default:
+                        $colorNum .= '0';
+                        break;
+                }
+                $tpl_dir .= $colorNum;
+                $endArr = Template::where('name','like', $tpl_dir.'%');
+                $endNum = max($endArr);
+                $endNum = $endNum+1;
+                $tpl_dir .= $endNum;
+
+                //原有命名规则
+                // if (substr_count(strtolower($type), 'pc')) {
+                //     $type = 1;
+                //     $tpl_dir = "GP";
+                // } else {
+                //     $type = 2;
+                //     $tpl_dir = "GM";
+                // }
+                // $last_num = Template::where('type', $type)->max('tpl_num');
+                // $new_num = $last_num + 1;
+                // $tpl_dir = $tpl_dir . str_repeat('0', 4 - strlen($new_num)) . $new_num;
             }
 
             //正则匹配tpl_num
