@@ -521,7 +521,7 @@ class FormController extends BaseController
     }
 
     /**
-     * 获取表单信息 for PrintContorller
+     * 获取表单信息 for PrintController
      */
     public function getFormdataForPrint($form_id = 0)
     {

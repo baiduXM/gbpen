@@ -1,8 +1,10 @@
 <?php
 
-class UploadController extends BaseController {
+class UploadController extends BaseController
+{
 
-    public function fileRead() {
+    public function fileRead()
+    {
         $customer = Auth::user()->name;
         $cus_id = Auth::id();
         $target = Input::get('target');
@@ -39,7 +41,7 @@ class UploadController extends BaseController {
                         $return = ['err' => 1001, 'msg' => '图片上传失败', 'data' => ''];
                 }
                 return Response::json($return);
-            }else {
+            } else {
                 $data = array();
                 $i = 0;
                 foreach ($files as $file) {
@@ -51,11 +53,14 @@ class UploadController extends BaseController {
                             $s_path = $destinationPath . '/s/' . $target . '/' . $fileName;
                             $img_info = getimagesize($destinationPath . '/l/' . $target . '/' . $fileName);
                             switch ($img_info[2]) {
-                                case 1:$type = 'gif';
+                                case 1:
+                                    $type = 'gif';
                                     break;
-                                case 2:$type = 'jpg';
+                                case 2:
+                                    $type = 'jpg';
                                     break;
-                                case 3:$type = 'png';
+                                case 3:
+                                    $type = 'png';
                                     break;
                             }
                             $this->resizeImage($destinationPath . '/l/' . $target . '/' . $fileName, $type, $s_path, $img_size, $img_size);
@@ -114,11 +119,14 @@ class UploadController extends BaseController {
                 $s_path = $destinationPath . '/s/' . $target . '/' . $fileName;
                 $img_info = getimagesize($destinationPath . '/l/' . $target . '/' . $fileName);
                 switch ($img_info[2]) {
-                    case 1:$type = 'gif';
+                    case 1:
+                        $type = 'gif';
                         break;
-                    case 2:$type = 'jpg';
+                    case 2:
+                        $type = 'jpg';
                         break;
-                    case 3:$type = 'png';
+                    case 3:
+                        $type = 'png';
                         break;
                 }
                 $this->resizeImage($destinationPath . '/l/' . $target . '/' . $fileName, $type, $s_path, $img_size, $img_size);
@@ -164,7 +172,8 @@ class UploadController extends BaseController {
      * ===点击保存按钮后动作===
      * @return type
      */
-    public function img_upload() {
+    public function img_upload()
+    {
         $customer = Auth::user()->name;
         $cus_id = Auth::id();
         $target = Input::get('target');
@@ -196,13 +205,14 @@ class UploadController extends BaseController {
             if (file_exists(public_path('customers/' . $customer . '/img.zip'))) {
                 @unlink(public_path('customers/' . $customer . '/img.zip'));
             }
+			file_put_contents('upresult.txt','here');
             if ($conn) {
                 ftp_login($conn, $customerinfo->ftp_user, $customerinfo->ftp_pwd);
                 ftp_pasv($conn, 1);
 
                 $zip = new ZipArchive;
                 if ($zip->open(public_path('customers/' . $customer . '/img.zip'), ZipArchive::CREATE) === TRUE) {
-                    foreach ((array) $files as $fileName) {
+                    foreach ((array)$files as $fileName) {
                         $filepath = public_path('customers/' . $customer . '/cache_images/' . $fileName);
                         if (file_exists($filepath)) {
                             $filesize += filesize($filepath); //===累加大小
@@ -213,11 +223,14 @@ class UploadController extends BaseController {
                                 $s_path = $destinationPath . '/s/' . $target . '/' . $fileName;
                                 $img_info = getimagesize($destinationPath . '/l/' . $target . '/' . $fileName);
                                 switch ($img_info[2]) {
-                                    case 1:$type = 'gif';
+                                    case 1:
+                                        $type = 'gif';
                                         break;
-                                    case 2:$type = 'jpg';
+                                    case 2:
+                                        $type = 'jpg';
                                         break;
-                                    case 3:$type = 'png';
+                                    case 3:
+                                        $type = 'png';
                                         break;
                                 }
                                 $this->resizeImage($destinationPath . '/l/' . $target . '/' . $fileName, $type, $s_path, $img_size, $img_size);
@@ -253,18 +266,40 @@ class UploadController extends BaseController {
                             $suf_url = str_replace('http://c', '', $weburl);
                             $cus_name = strtolower(Customer::where('id', $cus_id)->pluck('name'));
                             if (trim($ftp) == '1') {
-                                $ftp_pcdomain = "http://" . $cus_name . $suf_url;
+                                $ftp_pcdomain = "http://" . $ftp_array[0] . '/' . $customer;
                             }
                             ftp_put($conn, $customer . '/img.zip', public_path('customers/' . $customer . '/img.zip'), FTP_BINARY);
                             ftp_put($conn, $customer . '/img_unzip.php', public_path('packages/img_unzip.php'), FTP_ASCII);
                             @file_get_contents("$ftp_pcdomain/img_unzip.php");
-                            @unlink(public_path('customers/' . $customer . '/img.zip'));
+                            // @unlink(public_path('customers/' . $customer . '/img.zip'));
                         }
                     }
+					if($customerinfo->ftp_address_b){						
+						$ftp_array_b = explode(':', $customerinfo->ftp_address_b);
+						$ftp_array_b[1] = isset($ftp_array_b[1]) ? $ftp_array_b[1] : $port;
+						$conn_b = ftp_connect($ftp_array_b[0], $ftp_array_b[1]);
+						if($conn_b){
+							ftp_login($conn_b, $customerinfo->ftp_user_b, $customerinfo->ftp_pwd_b);
+							ftp_pasv($conn_b, 1);
+							if (trim($ftp) == '1') {
+								$cus_name = strtolower(Customer::where('id', $cus_id)->pluck('name'));
+								if (trim($ftp) == '1') {
+									$ftp_pcdomain_b = "http://" . $ftp_array_b[0] . '/' . $customer;
+								}
+								ftp_put($conn_b, $customer . '/img.zip', public_path('customers/' . $customer . '/img.zip'), FTP_BINARY);
+								ftp_put($conn_b, $customer . '/img_unzip.php', public_path('packages/img_unzip.php'), FTP_ASCII);
+								@file_get_contents("$ftp_pcdomain_b/img_unzip.php");
+								//@unlink(public_path('customers/' . $customer . '/img.zip'));
+							}
+						}
+					}
+					@unlink(public_path('customers/' . $customer . '/img.zip'));
                 }
                 //===扣除空间容量===
                 $Capacity = new CapacityController;
-                $Capacity->change_capa($filesize, 'use');
+                if (!$Capacity->change_capa($filesize, 'use')) {
+                    return Response::json(['err' => 0, 'msg' => '空间容量不足', 'data' => '']);
+                }
                 //===end===
                 @ftp_close($conn);
                 return Response::json(['err' => 0, 'msg' => '保存成功', 'data' => $data]);
@@ -288,7 +323,8 @@ class UploadController extends BaseController {
      * 文件上传
      * ===点击选择图片后上传===
      */
-    public function fileupload() {
+    public function fileupload()
+    {
         $customer = Auth::user()->name;
         $cus_id = Auth::id();
         $target = Input::get('target');
@@ -379,7 +415,8 @@ class UploadController extends BaseController {
         }
     }
 
-    private function CreateAllDir() {
+    private function CreateAllDir()
+    {
         $customer = Auth::user()->name;
         $cus_id = Auth::id();
         $weburl = Customer::where('id', $cus_id)->pluck('weburl');
@@ -422,9 +459,28 @@ class UploadController extends BaseController {
             }
             ftp_close($conn);
         }
+		if($customerinfo->ftp_address_b){
+			$ftp_array_b = explode(':', $customerinfo->ftp_address_b);
+			$ftp_array_b[1] = isset($ftp_array_b[1]) ? $ftp_array_b[1] : $port;
+			$conn_b = ftp_connect($ftp_array_b[0], $ftp_array_b[1]);
+			if($conn_b){
+				ftp_login($conn_b, $customerinfo->ftp_user_b, $customerinfo->ftp_pwd_b);
+				ftp_pasv($conn_b, 1);
+				if(trim($ftp) == '1'){
+					if (ftp_nlist($conn_b, $customer) === FALSE) {
+						ftp_mkdir($conn_b, $customer);
+					}
+					ftp_put($conn_b, $customer . "/unzip.php", public_path("packages/unzip.php"), FTP_ASCII);
+					ftp_put($conn_b, $customer . "/site.zip", public_path('packages/customernull.zip'), FTP_BINARY);
+					@file_get_contents('http://' . $ftp_array_b[0] . '/' . $customer . "/unzip.php");
+				}
+			}
+			ftp_close($conn_b);
+		}
     }
 
-    private function check_dir($dirName, $customer) {
+    private function check_dir($dirName, $customer)
+    {
         $path_arr = array(
             public_path("customers/$customer/images/l/$dirName"),
             public_path("customers/$customer/images/s/$dirName"),
@@ -438,20 +494,26 @@ class UploadController extends BaseController {
         }
     }
 
-    private function openImage($fileName, $type) {
+    private function openImage($fileName, $type)
+    {
         switch ($type) {
-            case 'jpg':$img = @imagecreatefromjpeg($fileName);
+            case 'jpg':
+                $img = @imagecreatefromjpeg($fileName);
                 break;
-            case 'gif':$img = @imagecreatefromgif($fileName);
+            case 'gif':
+                $img = @imagecreatefromgif($fileName);
                 break;
-            case 'png':$img = @imagecreatefrompng($fileName);
+            case 'png':
+                $img = @imagecreatefrompng($fileName);
                 break;
-            default:$img = false;
+            default:
+                $img = false;
         }
         return $img;
     }
 
-    public function resizeImage($src, $type, $path, $newWidth, $newHeight) {
+    public function resizeImage($src, $type, $path, $newWidth, $newHeight)
+    {
         $image = $this->openImage($src, $type);
         $width = imagesx($image);
         $height = imagesy($image);
@@ -465,15 +527,20 @@ class UploadController extends BaseController {
         $this->saveImage($type, $canvas, $path);
     }
 
-    public function saveImage($type, $canvas, $path) {
+    public function saveImage($type, $canvas, $path)
+    {
         switch ($type) {
-            case 'jpg':imagejpeg($canvas, $path, 100);
+            case 'jpg':
+                imagejpeg($canvas, $path, 100);
                 break;
-            case 'gif':imagegif($canvas, $path);
+            case 'gif':
+                imagegif($canvas, $path);
                 break;
-            case 'png':imagepng($canvas, $path, 0);
+            case 'png':
+                imagepng($canvas, $path, 0);
                 break;
-            default:break;
+            default:
+                break;
         }
         imagedestroy($canvas);
     }

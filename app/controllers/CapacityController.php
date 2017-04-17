@@ -19,7 +19,7 @@
  *      ？添加图片：添加新图片即扣除容量。可能造成容量不足。
  *      更换图片：更换图片原理删除原图，添加新图，结算空间时间同“添加图片”操作。
  *  ·ueditor上传图片
- *      文章ueditor：对比当前内容和数据库存储内容，进行适用释放空间
+ *      文章ueditor：对比当前内容和数据库存储内容，进行使用释放空间
  * 
  * 数据库：
  *      表up_customer_info、添加init_capacity字段：是否初始化:0-未初始化，1-已初始化
@@ -53,9 +53,9 @@ class CapacityController extends BaseController {
     private function tree($directory) {
         $mydir = dir($directory);
         while ($file = $mydir->read()) {
-            if ((is_dir("$directory/$file")) && ( $file != ".") && ( $file != "..") && ( $file != "cache_images") && ( $file != "s") && ( $file != "mobile")) {
+            if ((is_dir("$directory/$file")) && ( $file != ".") && ( $file != "..") && ( $file != "cache_images") && ( $file != "s") && ( $file != "mobile") && ( $file != "detail") && ( $file != "category")) {
                 $this->tree("$directory/$file");
-            } else if (( $file != ".") && ( $file != "..") && ( $file != "cache_images") && ( $file != "s") && ( $file != "mobile")) {
+            } else if (( $file != ".") && ( $file != "..") && ( $file != "cache_images") && ( $file != "s") && ( $file != "mobile") && ( !strpos( $file , ".zip" ))) {
                 $_size = filesize($directory . '/' . $file);
                 $this->size += $_size;
             }

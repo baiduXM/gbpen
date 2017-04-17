@@ -380,6 +380,22 @@ class HtmlController extends BaseController
                 ftp_put($conn, "/" . $this->customer . "/mobile/index.html", public_path('customers/' . $this->customer . '/mobile/index.html'), FTP_ASCII);
                 ftp_close($conn);
             }
+
+            //判断有无ftp_b，有就连接，并推送手机首页
+            if($customerinfo->ftp_address_b){
+                $ftp_array_b = explode(':', $customerinfo->ftp_address_b);
+                $ftp_array_b[1] = isset($ftp_array_b[1]) ? $ftp_array_b[1] : $port;
+                $conn_b = ftp_connect($ftp_array_b[0], $ftp_array_b[1]); 
+                if($conn_b){
+                    ftp_login($conn_b, $customerinfo->ftp_user_b, $customerinfo->ftp_pwd_b);
+                    ftp_pasv($conn_b, 1);
+                    if (@ftp_chdir($conn_b, $this->customer) == FALSE) {
+                        ftp_mkdir($conn_b, $this->customer);
+                    }
+                    ftp_put($conn_b, "/" . $this->customer . "/mobile/index.html", public_path('customers/' . $this->customer . '/mobile/index.html'), FTP_ASCII);
+                    ftp_close($conn_b);
+                } 
+            }
         } else {
             if ($conn) {
                 ftp_login($conn, $customerinfo->ftp_user, $customerinfo->ftp_pwd);
@@ -513,6 +529,37 @@ class HtmlController extends BaseController
                     //ftp_put($conn,"/".$this->customer."/mobile/quickbar.json",public_path('customers/'.$this->customer.'/mobile/quickbar.json'),FTP_ASCII);
                     ftp_close($conn);
                 }
+
+                //判断有ftp_b，就连接，并推送
+                if($customerinfo->ftp_address_b){
+                    $ftp_array_b = explode(':', $customerinfo->ftp_address_b);
+                    $ftp_array_b[1] = isset($ftp_array_b[1]) ? $ftp_array_b[1] : $port;
+                    $conn_b = ftp_connect($ftp_array_b[0], $ftp_array_b[1]);
+                    if($conn_b){
+                        ftp_login($conn_b, $customerinfo->ftp_user_b, $customerinfo->ftp_pwd_b);
+                        ftp_pasv($conn_b, 1);
+                        if (@ftp_chdir($conn_b, $this->customer) == FALSE) {
+                            ftp_mkdir($conn_b, $this->customer);
+                        }
+                        foreach ((array)$del_imgs as $v) {
+                            $this->delimg($v);
+                            @ftp_delete($conn_b, "/" . $this->customer . '/images/l/' . $v['target'] . '/' . $v['img']);
+                            @ftp_delete($conn_b, "/" . $this->customer . '/images/s/' . $v['target'] . '/' . $v['img']);
+                            @ftp_delete($conn_b, "/" . $this->customer . '/mobile/images/l/' . $v['target'] . '/' . $v['img']);
+                            @ftp_delete($conn_b, "/" . $this->customer . '/mobile/images/s/' . $v['target'] . '/' . $v['img']);
+                        }
+                        ImgDel::where('cus_id', $this->cus_id)->delete();
+                        ftp_put($conn_b, "/" . $this->customer . "/mobile/m_unzip.php", public_path("packages/m_unzip.php"), FTP_ASCII);
+                        if (file_exists($path)) {
+                            ftp_put($conn_b, "/" . $this->customer . "/mobile/site.zip", $path, FTP_BINARY);
+                        }
+                        ftp_put($conn_b, "/" . $this->customer . "/mobile/search.php", public_path("packages/search.php"), FTP_ASCII);
+                        if (@ftp_chdir($conn_b, "/" . $this->customer . "/mobile") == FALSE) {
+                            ftp_mkdir($conn_b, "/" . $this->customer . "/mobile");
+                        }
+                        ftp_close($conn_b);
+                    }  
+                }
             } else {
                 if ($conn) {
                     ftp_login($conn, $customerinfo->ftp_user, $customerinfo->ftp_pwd);
@@ -554,11 +601,16 @@ class HtmlController extends BaseController
             $suf_url = str_replace('http://c', '', $weburl);
             $cus_name = strtolower(Customer::where('id', $this->cus_id)->pluck('name'));
             if (trim($ftp) == '1') {
-                $ftp_mdomain = "http://m." . $cus_name . $suf_url;
+                // $ftp_mdomain = "http://m." . $cus_name . $suf_url;
+                $ftp_mdomain = "http://" . $ftp_array[0] . '/' . $cus_name;
+                if($customerinfo->ftp_address_b){
+                    $ftp_mdomain_b = "http://" . $ftp_array_b[0] . '/' . $cus_name;
+                    @file_get_contents("$ftp_mdomain_b/mobile/m_unzip.php");                    
+                }
             } else {
                 $ftp_mdomain = $customerinfo->mobile_domain;
             }
-            @file_get_contents("$ftp_mdomain/m_unzip.php");
+            @file_get_contents("$ftp_mdomain/mobile/m_unzip.php");
         } else {
             echo '打包失败';
         }
@@ -594,6 +646,24 @@ class HtmlController extends BaseController
                 ftp_put($conn, "/" . $this->customer . "/mobile/quickbar.json", public_path('customers/' . $this->customer . '/mobile/quickbar.json'), FTP_ASCII);
                 ftp_close($conn);
                 $this->logsAdd('null', __FUNCTION__, __CLASS__, 999, "快捷导航推送", 0, '');
+            }
+
+            //判断有ftp_b就推送
+            if($customerinfo->ftp_address_b){
+                $ftp_array_b = explode(':', $customerinfo->ftp_address_b);
+                $ftp_array_b[1] = isset($ftp_array_b[1]) ? $ftp_array_b[1] : $port;
+                $conn_b = ftp_connect($ftp_array_b[0], $ftp_array_b[1]); 
+                if($conn_b){
+                    ftp_login($conn_b, $customerinfo->ftp_user_b, $customerinfo->ftp_pwd_b);
+                    ftp_pasv($conn_b, 1);
+                    if (@ftp_nlist($conn_b, $this->customer) === FALSE) {
+                        ftp_mkdir($conn_b, $this->customer);
+                    }
+                    ftp_put($conn_b, "/" . $this->customer . "/quickbar.json", public_path('customers/' . $this->customer . '/quickbar.json'), FTP_ASCII);
+                    ftp_put($conn_b, "/" . $this->customer . "/mobile/quickbar.json", public_path('customers/' . $this->customer . '/mobile/quickbar.json'), FTP_ASCII);
+                    ftp_close($conn_b);
+                    $this->logsAdd('null', __FUNCTION__, __CLASS__, 999, "快捷导航推送", 0, '');
+                }
             }
         } else {
             if ($conn) {
@@ -1365,6 +1435,42 @@ class HtmlController extends BaseController
                         }
                         ftp_close($conn);
                     }
+
+                    //判断有无ftp_b，有则推送
+                    if($customerinfo->ftp_address_b){
+                        $ftp_array_b = explode(':', $customerinfo->ftp_address_b);
+                        $ftp_array_b[1] = isset($ftp_array_b[1]) ? $ftp_array_b[1] : $port;
+                        $conn_b = ftp_connect($ftp_array_b[0], $ftp_array_b[1]);  
+                        if($conn_b){
+                            ftp_login($conn_b, $customerinfo->ftp_user_b, $customerinfo->ftp_pwd_b);
+                            ftp_pasv($conn_b, 1);
+                            if (@ftp_chdir($conn_b, $this->customer) == FALSE) {
+                                ftp_mkdir($conn_b, $this->customer);
+                            }
+                            foreach ((array)$del_imgs as $v) {
+                                $this->delimg($v);
+                                @ftp_delete($conn_b, "/" . $this->customer . '/images/l/' . $v['target'] . '/' . $v['img']);
+                                @ftp_delete($conn_b, "/" . $this->customer . '/images/s/' . $v['target'] . '/' . $v['img']);
+                                @ftp_delete($conn_b, "/" . $this->customer . '/mobile/images/l/' . $v['target'] . '/' . $v['img']);
+                                @ftp_delete($conn_b, "/" . $this->customer . '/mobile/images/s/' . $v['target'] . '/' . $v['img']);
+                            }
+                            ImgDel::where('cus_id', $this->cus_id)->delete();
+                            if ($this->pcpush) {
+                                @ftp_put($conn_b, "/" . $this->customer . "/search.php", public_path("packages/search.php"), FTP_ASCII);
+                            }
+                            if (file_exists($path)) {
+                                ftp_put($conn_b, "/" . $this->customer . "/site.zip", $path, FTP_BINARY);
+                            }
+                            ftp_put($conn_b, "/" . $this->customer . "/unzip.php", public_path("packages/unzip.php"), FTP_ASCII);
+                            if ($this->mobilepush) {
+                                ftp_put($conn_b, "/" . $this->customer . "/mobile/search.php", public_path("packages/search.php"), FTP_ASCII);
+                                if (@ftp_chdir($conn_b, "/" . $this->customer . "/mobile") == FALSE) {
+                                    ftp_mkdir($conn_b, "/" . $this->customer . "/mobile");
+                                }
+                            }
+                            ftp_close($conn_b);
+                        }
+                    }
                 } else {
                     if ($conn) {
                         ftp_login($conn, $customerinfo->ftp_user, $customerinfo->ftp_pwd);
@@ -1410,8 +1516,13 @@ class HtmlController extends BaseController
                 $weburl = Customer::where('id', $this->cus_id)->pluck('weburl');
                 $suf_url = str_replace('http://c', '', $weburl);
                 $cus_name = strtolower(Customer::where('id', $this->cus_id)->pluck('name'));
-                if (trim($ftp) == '1') {
-                    $ftp_pcdomain = "http://" . $cus_name . $suf_url;
+                if (trim($ftp) == '1') { // 判断客户FTP地址
+                    // $ftp_pcdomain = "http://" . $customerinfo->ftp_address . '/' . $cus_name;
+                    $ftp_pcdomain = "http://" . $ftp_array[0] . '/' . $cus_name;
+                    if($customerinfo->ftp_address_b){
+                        $ftp_pcdomain_b = "http://" . $ftp_array_b[0] . '/' . $cus_name;
+                        @file_get_contents("$ftp_pcdomain_b/unzip.php");
+                    }
                 } else {
                     $ftp_pcdomain = $customerinfo->pc_domain;
                 }
