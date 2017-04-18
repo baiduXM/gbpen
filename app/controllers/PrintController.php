@@ -3231,6 +3231,8 @@ class PrintController extends BaseController
                 $result['article']['image'] = $article->img ? ($this->source_dir . 'l/articles/' . $article->img) : '';
                 $result['article']['images'] = $images;
                 $result['article']['content'] = $article->content;
+                //解决编辑器英文引号与分享图标的问题
+                $result['article']['content'] = htmlentities($result['article']['content'],ENT_COMPAT);
             } else {
                 if ($article_next === NULL) {
                     $result['article']['next']['title'] = $lang['the_last'];
@@ -3249,6 +3251,8 @@ class PrintController extends BaseController
                 $result['article']['image'] = $article->img ? ($this->source_dir . 'l/articles/' . $article->img) : '';
                 $result['article']['images'] = $images;
                 $result['article']['content'] = preg_replace('/\/customers\/' . $this->customer . '/i', '', $article->content);
+                //解决编辑器英文引号与分享图标的问题
+                $result['article']['content'] = htmlentities($result['article']['content'],ENT_COMPAT);
             }
             $result['article']['description'] = $article->introduction;
             $result['article']['pubdate'] = (string)$article->created_at;
@@ -3374,6 +3378,9 @@ class PrintController extends BaseController
             $the_result['article']['image'] = $article['img'] ? ($this->source_dir . 'l/articles/' . $article['img']) : '';
             $the_result['article']['images'] = $images;
             $the_result['article']['content'] = preg_replace('/\/customers\/' . $this->customer . '/i', '', $article['content']);
+            //解决编辑器英文引号与分享图标的问题
+            $result['article']['content'] = htmlentities($result['article']['content'],ENT_COMPAT);
+            
             $the_result['article']['description'] = $article['introduction'];
             $the_result['article']['pubdate'] = $article['created_at'];
             $the_result['article']['pubtimestamp'] = strtotime($article['created_at']);
