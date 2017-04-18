@@ -3379,7 +3379,7 @@ class PrintController extends BaseController
             $the_result['article']['images'] = $images;
             $the_result['article']['content'] = preg_replace('/\/customers\/' . $this->customer . '/i', '', $article['content']);
             //解决编辑器英文引号与分享图标的问题
-            $the_result['article']['content'] = htmlentities($result['article']['content'],ENT_COMPAT);
+            $the_result['article']['content'] = htmlentities($the_result['article']['content'],ENT_COMPAT);
             
             $the_result['article']['description'] = $article['introduction'];
             $the_result['article']['pubdate'] = $article['created_at'];
