@@ -660,7 +660,7 @@ class WebsiteController extends BaseController {
                         $tpl = explode('.', $file->getClientOriginalName());
                         $tpl_name = $tpl[0];
 
-                        //判断命名方式
+                        //===判断命名方式===
                         if(preg_match('/G\d{4}(P|M)(CN|EN|TW|JP)\d{2}/', $tpl_name)){
                             //查询对应的旧命名
                             $old_tpl_name = Template::where('name', $tpl_name);
@@ -670,6 +670,7 @@ class WebsiteController extends BaseController {
                                 $this->_remove_Dir(app_path("views/templates/$old_tpl_name")); 
                             }                            
                         }
+                        //===end===
 
                         if (!empty($tpl_name)) {
                             $this->_remove_Dir(public_path("templates/$tpl_name"));
@@ -862,7 +863,9 @@ class WebsiteController extends BaseController {
 
             //正则匹配tpl_num
             if (!isset($_SERVER['HTTP_REFERER'])) {
-                preg_match('/[A-Z]{2}[0]*(\d*)/', $tpl_name, $have);
+                // preg_match('/[A-Z]{2}[0]*(\d*)/', $tpl_name, $have);//原有的命名方式
+                preg_match('/G[0]*(\d*)/', $tpl_name, $have);//新的命名方式
+
                 $new_num = $have[1];
             }
 
