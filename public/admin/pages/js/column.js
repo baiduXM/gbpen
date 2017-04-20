@@ -105,6 +105,10 @@ function columnController($scope, $http) {
                             case 9:
                                 layout = '<i class="fa iconfont icon-liuyanban"></i>';
                                 break;
+                            //海报
+                            case 10:
+                                layout = '<i class="fa iconfont icon-wenjian"></i>';
+                                break;
                         }
                     };
             /*<span><i class="fa iconfont icon-weixin btn btn-show btn-wechat '+(ele.wechat_show?'blue':'grey')+'"></i></span>微信图标代码段*/
@@ -115,9 +119,20 @@ function columnController($scope, $http) {
                     <td style="text-align: left; height:20px;overflow:hidden;"><dl class="fl checkclass"><input type="checkbox" name="vehicle" value="Bike1" style=" display:none;"><label class="label"></label></dl>' + label + '<input type="text" style="display:none;" data-id="' + ele.id + '" class="name_modify" value="' + ele.name + '" /><div class="tit_info class_name">' + ele.name + '</div></td>';
                     column_icon(ele.type);
                     _div += '<td><div class="tit_info">' + column_type(ele.type) + '</div>' + layout + '</td>';
-                    _div += '<td style="text-align:center;"><span><i class="fa icon-pc iconfont btn btn-show btn-desktop ' + (ele.pc_show ? 'blue' : 'grey') + '"></i></span><div class="pr size1"><i class="fa iconfont icon-snimicshouji btn btn-show btn-mobile ' + (ele.mobile_show ? 'blue' : 'grey') + '"></i><i class="fa iconfont btn icon-phonehome none ' + (ele.show == 1 ? 'blue' : 'grey') + (ele.showtypetotal == 0 ? ' not-allowed' : '') + '"></i></div></td>\n\
-                    <td><i class="fa iconfont icon-xiayi btn sort"></i><i class="fa iconfont icon-shangyi btn sort"></i><a style="margin:0 10px;" class="column-edit-box"><i class="fa iconfont icon-bianji column-edit"></i><div class="warning"><i class="iconfont' + (ele.img_err ? ' icon-gantanhao' : '') + '"></i></div></a><a class="delv" name="' + ele.id + '"><i class="fa iconfont icon-delete"></i></a></td>\n\
-                    </tr>';
+                    if(column_type(ele.type)!=='海报单页'){
+                        _div += '<td style="text-align:center;"><span><i class="fa icon-pc iconfont btn btn-show btn-desktop ' + (ele.pc_show ? 'blue' : 'grey') + '"></i></span><div class="pr size1"><i class="fa iconfont icon-snimicshouji btn btn-show btn-mobile ' + (ele.mobile_show ? 'blue' : 'grey') + '"></i><i class="fa iconfont btn icon-phonehome none ' + (ele.show == 1 ? 'blue' : 'grey') + (ele.showtypetotal == 0 ? ' not-allowed' : '') + '"></i></div></td>\n\
+                        <td><i class="fa iconfont icon-xiayi btn sort"></i><i class="fa iconfont icon-shangyi btn sort"></i><a style="margin:0 10px;" class="column-edit-box"><i class="fa iconfont icon-bianji column-edit"></i><div class="warning"><i class="iconfont' + (ele.img_err ? ' icon-gantanhao' : '') + '"></i></div></a><a class="delv" name="' + ele.id + '"><i class="fa iconfont icon-delete"></i></a></td>\n\
+                        </tr>';
+                    }else{
+                        _div += '<td style="text-align:center;"><span><i class="fa icon-pc iconfont btn btn-show btn-desktop ' + (ele.pc_show ? 'blue' : 'grey') + '"></i></span><div class="pr size1"><i class="fa iconfont icon-snimicshouji btn btn-show btn-mobile ' + (ele.mobile_show ? 'blue' : 'grey') + '"></i><i class="fa iconfont btn icon-phonehome none ' + (ele.show == 1 ? 'blue' : 'grey') + (ele.showtypetotal == 0 ? ' not-allowed' : '') + '"></i></div></td>\n\
+                        <td><i class="fa iconfont icon-xiayi btn sort"></i><i class="fa iconfont icon-shangyi btn sort"></i><a style="margin:0 10px;" class="column-edit-box"><i class="fa iconfont icon-bianji column-edit"></i><div class="warning"><i class="iconfont' + (ele.img_err ? ' icon-gantanhao' : '') + '"></i></div></a><a class="delv" name="' + ele.id + '"><i class="fa iconfont icon-delete"></i></a><a href="/category/'+ele.id+'" target="_blank">预览</a></td>\n\
+                        </tr>';
+                    }
+                    //原
+                    // _div += '<td style="text-align:center;"><span><i class="fa icon-pc iconfont btn btn-show btn-desktop ' + (ele.pc_show ? 'blue' : 'grey') + '"></i></span><div class="pr size1"><i class="fa iconfont icon-snimicshouji btn btn-show btn-mobile ' + (ele.mobile_show ? 'blue' : 'grey') + '"></i><i class="fa iconfont btn icon-phonehome none ' + (ele.show == 1 ? 'blue' : 'grey') + (ele.showtypetotal == 0 ? ' not-allowed' : '') + '"></i></div></td>\n\
+                    // <td><i class="fa iconfont icon-xiayi btn sort"></i><i class="fa iconfont icon-shangyi btn sort"></i><a style="margin:0 10px;" class="column-edit-box"><i class="fa iconfont icon-bianji column-edit"></i><div class="warning"><i class="iconfont' + (ele.img_err ? ' icon-gantanhao' : '') + '"></i></div></a><a class="delv" name="' + ele.id + '"><i class="fa iconfont icon-delete"></i></a></td>\n\
+                    // </tr>';
+                    
                     var NextChild = ele,
                             num = 2;
                     var LoopChlid = function (NextChild, num) {
@@ -127,8 +142,17 @@ function columnController($scope, $http) {
                                     <td style="text-align: left;"><div class="fl style">├</div><dl class="fl checkclass"><input type="checkbox" name="vehicle" value="Bike1" style=" display:none;"><label class="label"></label></dl><input type="text" style="display:none;" data-id="' + v.id + '" class="name_modify" value="' + v.name + '" /><div class="tit_info class_name">' + v.name + '</div></td>';
                                 column_icon(v.type);
                                 _div += '<td><div class="tit_info">' + column_type(v.type) + '</div>' + layout + '</td>';
-                                _div += '<td style="text-align:center;"><span><i class="fa iconfont icon-pc btn btn-show btn-desktop ' + (v.pc_show ? 'blue' : 'grey') + '"></i></span><div class="pr size1"><i class="iconfont icon-snimicshouji fa btn btn-show btn-mobile ' + (v.mobile_show ? 'blue' : 'grey') + '"></i><i class="fa iconfont btn icon-phonehome none ' + (v.show ? 'blue' : 'grey') + (v.showtypetotal == 0 ? ' not-allowed' : '') + '"></i></div></td>\n\
+                                if(column_type(v.type)!=='海报单页'){
+                                    _div += '<td style="text-align:center;"><span><i class="fa iconfont icon-pc btn btn-show btn-desktop ' + (v.pc_show ? 'blue' : 'grey') + '"></i></span><div class="pr size1"><i class="iconfont icon-snimicshouji fa btn btn-show btn-mobile ' + (v.mobile_show ? 'blue' : 'grey') + '"></i><i class="fa iconfont btn icon-phonehome none ' + (v.show ? 'blue' : 'grey') + (v.showtypetotal == 0 ? ' not-allowed' : '') + '"></i></div></td>\n\
                                     <td><i class="fa iconfont icon-xiayi btn sort grey "></i><i class="fa iconfont icon-shangyi btn sort grey "></i><a style="margin:0 10px;" class="column-edit-box"><i class="fa iconfont icon-bianji grey column-edit"></i><div class="warning"><i class="iconfont' + (v.img_err ? ' icon-gantanhao' : '') + '"></i></div></a><a class="delv" name="' + v.id + '"><i class="fa iconfont icon-delete grey "></i></a></td></tr>';
+                                }else{
+                                    _div += '<td style="text-align:center;"><span><i class="fa iconfont icon-pc btn btn-show btn-desktop ' + (v.pc_show ? 'blue' : 'grey') + '"></i></span><div class="pr size1"><i class="iconfont icon-snimicshouji fa btn btn-show btn-mobile ' + (v.mobile_show ? 'blue' : 'grey') + '"></i><i class="fa iconfont btn icon-phonehome none ' + (v.show ? 'blue' : 'grey') + (v.showtypetotal == 0 ? ' not-allowed' : '') + '"></i></div></td>\n\
+                                    <td><i class="fa iconfont icon-xiayi btn sort grey "></i><i class="fa iconfont icon-shangyi btn sort grey "></i><a style="margin:0 10px;" class="column-edit-box"><i class="fa iconfont icon-bianji grey column-edit"></i><div class="warning"><i class="iconfont' + (v.img_err ? ' icon-gantanhao' : '') + '"></i></div></a><a class="delv" name="' + v.id + '"><i class="fa iconfont icon-delete grey "></i></a><a href="/category/'+v.id+'" target="_blank">预览</a></td></tr>';
+                                }
+
+                                //原
+                                // _div += '<td style="text-align:center;"><span><i class="fa iconfont icon-pc btn btn-show btn-desktop ' + (v.pc_show ? 'blue' : 'grey') + '"></i></span><div class="pr size1"><i class="iconfont icon-snimicshouji fa btn btn-show btn-mobile ' + (v.mobile_show ? 'blue' : 'grey') + '"></i><i class="fa iconfont btn icon-phonehome none ' + (v.show ? 'blue' : 'grey') + (v.showtypetotal == 0 ? ' not-allowed' : '') + '"></i></div></td>\n\
+                                //     <td><i class="fa iconfont icon-xiayi btn sort grey "></i><i class="fa iconfont icon-shangyi btn sort grey "></i><a style="margin:0 10px;" class="column-edit-box"><i class="fa iconfont icon-bianji grey column-edit"></i><div class="warning"><i class="iconfont' + (v.img_err ? ' icon-gantanhao' : '') + '"></i></div></a><a class="delv" name="' + v.id + '"><i class="fa iconfont icon-delete grey "></i></a></td></tr>';
                                 if (v.childmenu != null) {
                                     NextChild = v;
                                     num++;
@@ -280,6 +304,13 @@ function columnController($scope, $http) {
                     $('#form_relate').show();
                     $('#form_select').val(data.form_id);
                     break;
+                //海报
+                case 10:
+                    $('#lottery').val(type);
+                    $('.box-down #page_editor').show();
+                    $("#form_relate").hide();
+                    break;
+
                 default:
                     break;
             }
@@ -458,6 +489,20 @@ function columnController($scope, $http) {
                         $('#lottery1,#lottery2,#lottery_mg').hide();
                         break;
                     }
+
+                    case '海报':
+                    {
+                        $('#page_editor').show();
+                        $('#out_url').hide();
+                        $('#models').hide();
+                        $("#form_relate").hide();
+                        $('#inside_model').addClass('none');
+                        $('#lottery1,#lottery2,#lottery_mg').hide();
+                        vlayout = $(this).val();
+                        _this._heightauto();
+                        break;
+                    }
+
                     default:
                         $('#out_url').hide();
                         $('#models').hide();

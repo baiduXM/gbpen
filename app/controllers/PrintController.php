@@ -2661,19 +2661,53 @@ class PrintController extends BaseController
                 }
 
                 //return View::make('templates.'.$this->themename.'.'.$viewname,$result);
-            }
+            }elseif ($classify->type == 10) {//新增海报
+                if ($this->showtype == 'preview') {
+                    $result['list']['content'] = Page::where('id', $classify->page_id)->pluck('content');
+                } else {
+                    $result['list']['content'] = preg_replace('/\/customers\/' . $this->customer . '/i', '', Page::where('id', $classify->page_id)->pluck('content'));
+                }
+            } 
+
             $result["viewname"] = $viewname;
         }
         if ($_SERVER["HTTP_HOST"] == TONGYI_TUISONG_JUYU_IP) {
             return json_encode($result);
         }
-        $smarty = new Smarty;
-        $smarty->setTemplateDir(app_path('views/templates/' . $this->themename));
-        $smarty->setCompileDir(app_path('storage/views/compile'));
-        $smarty->registerPlugin('function', 'mapExt', array('PrintController', 'createMap'));
-        $smarty->registerPlugin('function', 'shareExt', array('PrintController', 'createShare'));
-        $smarty->assign($result);
-        @$smarty->display($result["viewname"] . '.html');
+        if($classify->type == 10){
+            $html = '<!DOCTYPE">
+                    <html>
+                    <head>
+                    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+                    <title>Insert title here</title>
+                    </head>
+                    <body>
+                        {content}
+                    </body>
+                    </html>';
+            $content = str_replace ("{content}",$result['list']['content'],$html);
+            echo $content;
+            // $result['content'] = $result['list']['content'];
+            // $smarty = new Smarty;
+            // $smarty->assign($result);
+            // @$smarty->display('string:'.$html);
+        }else{
+            $smarty = new Smarty;
+            $smarty->setTemplateDir(app_path('views/templates/' . $this->themename));
+            $smarty->setCompileDir(app_path('storage/views/compile'));
+            $smarty->registerPlugin('function', 'mapExt', array('PrintController', 'createMap'));
+            $smarty->registerPlugin('function', 'shareExt', array('PrintController', 'createShare'));
+            $smarty->assign($result);
+            @$smarty->display($result["viewname"] . '.html');
+        }
+
+        // $smarty = new Smarty;
+        // $smarty->setTemplateDir(app_path('views/templates/' . $this->themename));
+        // $smarty->setCompileDir(app_path('storage/views/compile'));
+        // $smarty->registerPlugin('function', 'mapExt', array('PrintController', 'createMap'));
+        // $smarty->registerPlugin('function', 'shareExt', array('PrintController', 'createShare'));
+        // $smarty->assign($result);
+        // @$smarty->display($result["viewname"] . '.html');
     }
 
     /**
