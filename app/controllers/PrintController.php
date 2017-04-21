@@ -2766,7 +2766,8 @@ class PrintController extends BaseController
             $formCdata = $formC->getFormdataForPrint($form_id);
         } else {//跳转404
         }
-        if (in_array($classify->type, array(1, 2, 3, 4, 5, 9))) {
+        // if (in_array($classify->type, array(1, 2, 3, 4, 5, 9))) {
+        if (in_array($classify->type, array(1, 2, 3, 4, 5, 9, 10))) {//加入海报
             $sub = str_replace('-', '_', $viewname);
             $data = $this->pagedata($viewname, $publicdata['pagedata']);
             $index = $this->detailList($data);
@@ -2839,7 +2840,13 @@ class PrintController extends BaseController
             } elseif ($classify->type == 9) {
                 //===显示前端===
                 $result['list']['content'] = $formC->showFormHtmlForPrint($formCdata);
-            }
+            } elseif ($classify->type == 10) {//海报
+                if ($this->showtype == 'preview') {
+                    $result['list']['content'] = Page::where('id', $classify->page_id)->pluck('content');
+                } else {
+                    $result['list']['content'] = preg_replace('/\/customers\/' . $this->customer . '/i', '', Page::where('id', $classify->page_id)->pluck('content'));
+                }
+            } 
             $json_keys = $this->getJsonKey($viewname . '.html');
             if (count($json_keys)) {
                 foreach ($json_keys as $key) {
@@ -3000,7 +3007,8 @@ class PrintController extends BaseController
             $index_list = $this->pageList($id, 1);
             $the_result['page_links'] = $index_list['page_links'];
             //===显示类型不是'list-page'===
-            if ($classify->type != 5 && $classify->type != 4 && $classify->type != 9) {
+            // if ($classify->type != 5 && $classify->type != 4 && $classify->type != 9) {
+            if ($classify->type != 5 && $classify->type != 4 && $classify->type != 9 && $classify->type != 10) {//加入海报
                 $the_result['list']['data'] = $index_list['data'];
                 $the_result['list']['total'] = $index_list['page_links']['total'];
             }
@@ -3010,9 +3018,19 @@ class PrintController extends BaseController
 //            } else {
             $path = $this->type == 'pc' ? public_path('customers/' . $this->customer . '/category/' . $id . '.html') : public_path('customers/' . $this->customer . '/mobile/category/' . $id . '.html');
 //            }
-            $content = $publicdata['repleace'][$viewname . '.html'];
-            $content = preg_replace($publicdata['pattern'], $publicdata['repleace'], $content);
-            $output = $this->pushdisplay($the_result, $content);
+            //===判断是不是海报===
+            if($classify->type = 10){//不是海报的执行语句
+                $output = $this->pushPoster($the_result['list']['content']);
+            }else{
+                $content = $publicdata['repleace'][$viewname . '.html'];
+                $content = preg_replace($publicdata['pattern'], $publicdata['repleace'], $content);
+                $output = $this->pushdisplay($the_result, $content);
+            }
+            //===判断结束===
+            //原
+            // $content = $publicdata['repleace'][$viewname . '.html'];
+            // $content = preg_replace($publicdata['pattern'], $publicdata['repleace'], $content);
+            // $output = $this->pushdisplay($the_result, $content);
             if (!count($result['footer_navs'])) {
                 $output = preg_replace('/<a href="' . str_replace("/", "\/", $result['site_url']) . '"( target="_blank")?( )?>首页<\/a>( )?\|([\s]+)?(<br \/>)?(<br>)?/is', "", $output);
                 $output = preg_replace('/<a href="' . str_replace("/", "\/", $result['site_url']) . '"( target="_blank")?( )?>Home<\/a>( )?\|([\s]+)?(<br \/>)?(<br>)?/is', "", $output);
@@ -3029,7 +3047,8 @@ class PrintController extends BaseController
             }
             $last_html_precent += $html_precent;
             //===显示类型不是'list-page'===
-            if ($classify->type != 5 && $classify->type != 4 && $classify->type != 9) {
+            // if ($classify->type != 5 && $classify->type != 4 && $classify->type != 9) {
+            if ($classify->type != 5 && $classify->type != 4 && $classify->type != 9 && $classify->type != 10) {//加入海报
                 for ($i = 1; $i <= $page; $i++) {
                     $the_result = $result;
                     $index_list = $this->pageList($id, $i);
@@ -3074,6 +3093,29 @@ class PrintController extends BaseController
         $smarty->setCompileDir(app_path('storage/views/compile'));
         $smarty->registerPlugin('function', 'mapExt', array('PrintController', 'createMap'));
         $smarty->registerPlugin('function', 'shareExt', array('PrintController', 'createShare'));
+        $smarty->assign($result);
+        $smarty->display('string:' . $content);
+        $output = ob_get_contents();
+        ob_end_clean();
+        return $output;
+    }
+
+    //海报的生成
+    private function pushPoster($result)
+    {
+        ob_start();
+        $content = '<!DOCTYPE">
+                    <html>
+                    <head>
+                    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+                    <title></title>
+                    </head>
+                    <body>
+                        {$result}
+                    </body>
+                    </html>';
+        $smarty = new Smarty;
+        $smarty->setCompileDir(app_path('storage/views/compile'));
         $smarty->assign($result);
         $smarty->display('string:' . $content);
         $output = ob_get_contents();
