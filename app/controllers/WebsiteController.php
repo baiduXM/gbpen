@@ -663,7 +663,7 @@ class WebsiteController extends BaseController {
                         //===判断命名方式===
                         if(preg_match('/G\d{4}(P|M)(CN|EN|TW|JP)\d{2}/', $tpl_name)){
                             //查询对应的旧命名
-                            $old_tpl_name = Template::where('name', $tpl_name);
+                            $old_tpl_name = Template::where('name', $tpl_name)->pluck('name_bak');
                             if($old_tpl_name){
                                 //删除旧命名的目录
                                 $this->_remove_Dir(public_path("templates/$old_tpl_name"));
@@ -676,7 +676,6 @@ class WebsiteController extends BaseController {
                             $this->_remove_Dir(public_path("templates/$tpl_name"));
                             $this->_remove_Dir(app_path("views/templates/$tpl_name"));
                         }
-
                         $result = $this->saveTemplate($truth_name, $tpl_name);
                     } else {
                         $result = ['err' => 1001, 'msg' => '模板上传失败'];
