@@ -791,63 +791,63 @@ class WebsiteController extends BaseController {
                 $new_num = '';
             } else {
                 //新命名规则,模板语言处有问题
-                $tpl_dir = 'G';
-                $last_num = Template::where('type', $type)->max('tpl_num');
-                $new_num = $last_num + 1;
-                $tpl_dir = $tpl_dir . str_repeat('0', 4 - strlen($new_num)) . $new_num;
-                if (substr_count(strtolower($type), 'pc')) {
-                    $type = 1;
-                    $tpl_dir .= "P";
-                } else {
-                    $type = 2;
-                    $tpl_dir .= "M";
-                }
-                $tpl_dir .= "CN";
-                $StyleColors = $config_arr['Config']['StyleColors'] ? str_replace(' ', '', $config_arr['Config']['StyleColors']) : '';
-                if ($StyleColors) {
-                    preg_match_all('/\b\w[a-z]*\b/', $StyleColors, $have);
-                    $mainColor = $have[0][0];
-                } else {
-                    $mainColor = '';
-                }
-                switch ($mainColor) {
-                    case 'red':
-                        $colorNum .= '1';
-                        break;
-                    case 'yellow':
-                        $colorNum .= '2';
-                        break;
-                    case 'orange':
-                        $colorNum .= '3';
-                        break;
-                    case 'blue':
-                        $colorNum .= '4';
-                        break;
-                    case 'green':
-                        $colorNum .= '5';
-                        break;
-                    case 'purple':
-                        $colorNum .= '6';
-                        break;
-                    case 'black':
-                        $colorNum .= '7';
-                        break;
-                    case 'white':
-                        $colorNum .= '8';
-                        break;
-                    case 'colorful':
-                        $colorNum .= '9';
-                        break;                                
-                    default:
-                        $colorNum .= '0';
-                        break;
-                }
-                $tpl_dir .= $colorNum;
-                $endArr = Template::where('name','like', $tpl_dir.'%');
-                $endNum = max($endArr);
-                $endNum = $endNum+1;
-                $tpl_dir .= $endNum;
-
+                // $tpl_dir = 'G';
+                // $last_num = Template::where('type', $type)->max('tpl_num');
+                // $new_num = $last_num + 1;
+                // $tpl_dir = $tpl_dir . str_repeat('0', 4 - strlen($new_num)) . $new_num;
+                // if (substr_count(strtolower($type), 'pc')) {
+                //     $type = 1;
+                //     $tpl_dir .= "P";
+                // } else {
+                //     $type = 2;
+                //     $tpl_dir .= "M";
+                // }
+                // $tpl_dir .= "CN";
+                // $StyleColors = $config_arr['Config']['StyleColors'] ? str_replace(' ', '', $config_arr['Config']['StyleColors']) : '';
+                // if ($StyleColors) {
+                //     preg_match_all('/\b\w[a-z]*\b/', $StyleColors, $have);
+                //     $mainColor = $have[0][0];
+                // } else {
+                //     $mainColor = '';
+                // }
+                // switch ($mainColor) {
+                //     case 'red':
+                //         $colorNum .= '1';
+                //         break;
+                //     case 'yellow':
+                //         $colorNum .= '2';
+                //         break;
+                //     case 'orange':
+                //         $colorNum .= '3';
+                //         break;
+                //     case 'blue':
+                //         $colorNum .= '4';
+                //         break;
+                //     case 'green':
+                //         $colorNum .= '5';
+                //         break;
+                //     case 'purple':
+                //         $colorNum .= '6';
+                //         break;
+                //     case 'black':
+                //         $colorNum .= '7';
+                //         break;
+                //     case 'white':
+                //         $colorNum .= '8';
+                //         break;
+                //     case 'colorful':
+                //         $colorNum .= '9';
+                //         break;                                
+                //     default:
+                //         $colorNum .= '0';
+                //         break;
+                // }
+                // $tpl_dir .= $colorNum;
+                // $endArr = Template::where('name','like', $tpl_dir.'%');
+                // $endNum = max($endArr);
+                // $endNum = $endNum+1;
+                // $tpl_dir .= $endNum;
+                return false;
                 //原有命名规则
                 // if (substr_count(strtolower($type), 'pc')) {
                 //     $type = 1;
