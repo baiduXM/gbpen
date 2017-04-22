@@ -7,10 +7,10 @@ class ColorSeeder extends Seeder {
 
         $time = date('Y-m-d H:i:s');
         DB::table('color')->insert([
-            [
-                'color' => '灰色',
-                'color_en' => 'grey'
-            ],
+            // [
+            //     'color' => '灰色',
+            //     'color_en' => 'grey'
+            // ],
             [
                 'color' => '黑色',
                 'color_en' => 'black'
@@ -31,10 +31,10 @@ class ColorSeeder extends Seeder {
                 'color' => '橘色',
                 'color_en' => 'orange'
             ],
-            [
-                'color' => '粉色',
-                'color_en' => 'pink'
-            ],
+            // [
+            //     'color' => '粉色',
+            //     'color_en' => 'pink'
+            // ],
             [
                 'color' => '红色',
                 'color_en' => 'red'
@@ -43,10 +43,10 @@ class ColorSeeder extends Seeder {
                 'color' => '紫色',
                 'color_en' => 'purple'
             ],
-            [
-                'color' => '咖啡',
-                'color_en' => 'coffee'
-            ],
+            // [
+            //     'color' => '咖啡',
+            //     'color_en' => 'coffee'
+            // ],
 			[
                 'color' => '多色',
                 'color_en' => 'colorful'
