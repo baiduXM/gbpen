@@ -233,9 +233,17 @@ Route::group(array('before' => 'auth'), function() {
         'uses' => 'TemplatesController@homepagePreview'
     ])->where('num', '[0-9_]+');
 
+    Route::get('templates/G{num}P{lang}{color}', [//新命名规则下的PC预览 首页跳转
+        'uses' => 'TemplatesController@homepagePreview'
+    ])->where(['num'=>'[0-9]{4}','lang'=>'[A-Z]{2}','color'=>'[0-9_]{2,3}']);
+
     Route::get('templates/GM{num}', [//手机预览 首页跳转
         'uses' => 'TemplatesController@mhomepagePreview'
     ])->where('num', '[0-9_]+');
+
+    Route::get('templates/G{num}M{lang}{color}', [//新命名规则下的手机预览 首页跳转
+        'uses' => 'TemplatesController@mhomepagePreview'
+    ])->where(['num'=>'[0-9]{4}','lang'=>'[A-Z]{2}','color'=>'[0-9_]{2,3}']);
 
     //--------------------PC部分----------------------
     Route::get('homepage-preview', [//首页预览
