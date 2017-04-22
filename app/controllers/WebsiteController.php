@@ -736,7 +736,7 @@ class WebsiteController extends BaseController {
                         $tpl_color[$i]['color_id'] = Color::where('color_en', $color)->pluck('id');
                         $i++;
                     }
-                    TemplateToColor::insert($tpl_color);
+//                    TemplateToColor::insert($tpl_color); // bug插入数据库错误
                 }
             }
             $result = ['err' => 1000, 'msg' => '上传模板成功'];
