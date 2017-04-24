@@ -99,9 +99,6 @@ class ApiController extends BaseController
             $update['ftp_address_b'] = trim(Input::get('ftp_address_b'));
             $update['ftp_user_b'] = trim(Input::get('ftp_user_b'));
             $update['ftp_pwd_b'] = trim(Input::get('ftp_pwd_b'));
-            //获取外域域名的信息
-            $update['pc_out_domain'] = trim(Input::get('pc_out_domain'));
-            $update['mobile_out_domain'] = trim(Input::get('mobile_out_domain'));
 
             //===绑定账户===
             $switch_cus_name = Input::get('switch_cus_name');
