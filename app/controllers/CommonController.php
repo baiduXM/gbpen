@@ -200,11 +200,6 @@ class CommonController extends BaseController {
         $template = WebsiteInfo::where('cus_id', $id)->first();
         //===获取PC端颜色===
         $pc_name = Template::where('id', $template->pc_tpl_id)->pluck('name');
-        //===获取旧命名===
-        if(!is_dir(public_path('/templates/' . $pc_name . '/')) && !is_dir(app_path('views/templates/' . $pc_name . '/'))){
-            $pc_name = Template::where('id', $template->pc_tpl_id)->pluck('name_bak');
-        }
-        //===获取旧命名===
         $config_str = file_get_contents(public_path('/templates/' . $pc_name) . '/config.ini');
         $result = preg_match($search, $config_str, $config_arr);
         if (!$result) {
@@ -215,11 +210,6 @@ class CommonController extends BaseController {
         $colors['pc'] = explode(',', ltrim($color_str, ','));
         //===获取手机端颜色===
         $mobile_name = Template::where('id', $template->mobile_tpl_id)->pluck('name');
-        //===获取旧命名===
-        if(!is_dir(public_path('/templates/' . $mobile_name . '/')) && !is_dir(app_path('views/templates/' . $mobile_name . '/'))){
-            $mobile_name = Template::where('id', $template->mobile_tpl_id)->pluck('name_bak');
-        }
-        //===获取旧命名===
         $config_str = file_get_contents(public_path('/templates/' . $mobile_name) . '/config.ini');
         $result = preg_match($search, $config_str, $config_arr);
         if ($result) {

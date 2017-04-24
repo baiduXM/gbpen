@@ -1386,21 +1386,11 @@ class HtmlController extends BaseController
             if ($zip->open($path, ZipArchive::CREATE) === TRUE) {
                 if ((!isset($end) || $end == 1) && $this->pcpush) {
                     $pc_dir = Template::where('website_info.cus_id', $this->cus_id)->Leftjoin('website_info', 'website_info.pc_tpl_id', '=', 'template.id')->pluck('name');
-                    //===获取旧命名===
-                    if(!is_dir(public_path('/templates/' . $pc_dir . '/'))){
-                        $pc_dir = Template::where('website_info.cus_id', $this->cus_id)->Leftjoin('website_info', 'website_info.pc_tpl_id', '=', 'template.id')->pluck('name_bak');
-                    }
-                    //===获取旧命名===
                     $aim_dir = public_path("templates/$pc_dir/");
                     $this->addDir($aim_dir, $zip);
                 }
                 if ((!isset($end) || $end == 1) && $this->mobilepush) {
                     $mobile_dir = Template::where('website_info.cus_id', $this->cus_id)->Leftjoin('website_info', 'template.id', '=', 'website_info.mobile_tpl_id')->pluck('name');
-                    //===获取旧命名===
-                    if(!is_dir(public_path('/templates/' . $mobile_dir . '/'))){
-                        $mobile_dir = Template::where('website_info.cus_id', $this->cus_id)->Leftjoin('website_info', 'template.id', '=', 'website_info.mobile_tpl_id')->pluck('name_bak');
-                    }
-                    //===获取旧命名===
                     $maim_dir = public_path("templates/$mobile_dir/");
                     $this->addDir($maim_dir, $zip, 'mobile/');
                 }
