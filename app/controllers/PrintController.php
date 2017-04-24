@@ -96,80 +96,20 @@ class PrintController extends BaseController
             if ($this->type == 'mobile') {
                 $this->domain = '/mobile'; //url() . '/mobile';
                 $this->tpl_id = WebsiteInfo::where('cus_id', $this->cus_id)->pluck('mobile_tpl_id');
-                // $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.mobile_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
-
-                //===预览获取手机模板名=====
-                //获取两种命名
-                $tplInfo['name'] = DB::table('template')->leftJoin('website_info', 'website_info.mobile_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
-                $tplInfo['name_bak'] = DB::table('template')->leftJoin('website_info', 'website_info.mobile_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name_bak');
-                if($tplInfo['name_bak']){
-                    //数据库有旧命名，则判断是否还有该命名的目录。有就将旧命名赋给模板名属性。没有就判断是否有新命名，有再判断是否有新命名目录，有就将新命名赋给模板名属性
-                    if(is_dir(public_path('/templates/' . $tplInfo['name_bak'] . '/')) && is_dir(app_path('views/templates/' . $tplInfo['name_bak'] . '/'))){
-                        $this->themename = $tplInfo['name_bak'];
-                    }elseif($tplInfo['name']){
-                        if(is_dir(public_path('/templates/' . $tplInfo['name'] . '/')) && is_dir(app_path('views/templates/' . $tplInfo['name_bak'] . '/'))){
-                            $this->themename = $tplInfo['name'];
-                        }
-                    }
-                }elseif($tplInfo['name']){
-                    //如果旧命名字段为空，则只有新命名，将新命名赋给模板名属性
-                    $this->themename = $tplInfo['name'];
-                }
-                //===预览获取手机模板名end===
-
+                $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.mobile_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
                 $this->source_dir = '/customers/' . $this->customer . '/mobile/images/'; //asset('customers/' . $this->customer . '/mobile/images/') . '/';
                 self::$cus_domain = ''; //CustomerInfo::where('cus_id', $this->cus_id)->pluck('mobile_domain');
             } else {
                 $this->domain = ''; //url();
                 $this->tpl_id = WebsiteInfo::where('cus_id', $this->cus_id)->pluck('pc_tpl_id');
-                // $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.pc_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
-
-                //===预览获取PC模板名=====
-                //获取两种命名
-                $tplInfo['name'] = DB::table('template')->leftJoin('website_info', 'website_info.pc_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
-                $tplInfo['name_bak'] = DB::table('template')->leftJoin('website_info', 'website_info.pc_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name_bak');
-                if($tplInfo['name_bak']){
-                    //数据库有旧命名，则判断是否还有该命名的目录。有就将旧命名赋给模板名属性。没有就判断是否有新命名，有再判断是否有新命名目录，有就将新命名赋给模板名属性
-                    if(is_dir(public_path('/templates/' . $tplInfo['name_bak'] . '/')) && is_dir(app_path('views/templates/' . $tplInfo['name_bak'] . '/'))){
-                        $this->themename = $tplInfo['name_bak'];
-                    }elseif($tplInfo['name']){
-                        if(is_dir(public_path('/templates/' . $tplInfo['name'] . '/')) && is_dir(app_path('views/templates/' . $tplInfo['name'] . '/'))){
-                            $this->themename = $tplInfo['name'];
-                        }
-                    }
-                }elseif($tplInfo['name']){
-                    //如果旧命名字段为空，则只有新命名，将新命名赋给模板名属性
-                    $this->themename = $tplInfo['name'];
-                }
-                //===预览获取PC模板名end=====
-
+                $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.pc_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
                 self::$cus_domain = ''; //CustomerInfo::where('cus_id', $this->cus_id)->pluck('pc_domain');
             }
             $this->site_url = '/templates/' . $this->themename . '/';
         } else {
             if ($this->type == 'mobile') {
                 $this->tpl_id = WebsiteInfo::where('cus_id', $this->cus_id)->pluck('mobile_tpl_id');
-                // $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.mobile_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
-
-                //===推送获取手机模板名=====
-                //获取两种命名
-                $tplInfo['name'] = DB::table('template')->leftJoin('website_info', 'website_info.mobile_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
-                $tplInfo['name_bak'] = DB::table('template')->leftJoin('website_info', 'website_info.mobile_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name_bak');
-                if($tplInfo['name_bak']){
-                    //数据库有旧命名，则判断是否还有该命名的目录。有就将旧命名赋给模板名属性。没有就判断是否有新命名，有再判断是否有新命名目录，有就将新命名赋给模板名属性
-                    if(is_dir(public_path('/templates/' . $tplInfo['name_bak'] . '/')) && is_dir(app_path('views/templates/' . $tplInfo['name_bak'] . '/'))){
-                        $this->themename = $tplInfo['name_bak'];
-                    }elseif($tplInfo['name']){
-                        if(is_dir(public_path('/templates/' . $tplInfo['name'] . '/')) && is_dir(app_path('views/templates/' . $tplInfo['name_bak'] . '/'))){
-                            $this->themename = $tplInfo['name'];
-                        }
-                    }
-                }elseif($tplInfo['name']){
-                    //如果旧命名字段为空，则只有新命名，将新命名赋给模板名属性
-                    $this->themename = $tplInfo['name'];
-                }
-                //===推送获取手机模板名end=====
-
+                $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.mobile_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
                 $mobile_domain = CustomerInfo::where('cus_id', $this->cus_id)->pluck('mobile_domain');
                 $mobile_domain = str_replace('http://', '', $mobile_domain);
                 if (strpos($mobile_domain, '/mobile')) {
@@ -178,27 +118,7 @@ class PrintController extends BaseController
                 //$this->domain = '';//CustomerInfo::where('cus_id', $this->cus_id)->pluck('mobile_domain');
             } else {
                 $this->tpl_id = WebsiteInfo::where('cus_id', $this->cus_id)->pluck('pc_tpl_id');
-                // $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.pc_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
-
-                //===推送获取PC模板名=====
-                //获取两种命名
-                $tplInfo['name'] = DB::table('template')->leftJoin('website_info', 'website_info.pc_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
-                $tplInfo['name_bak'] = DB::table('template')->leftJoin('website_info', 'website_info.pc_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name_bak');
-                if($tplInfo['name_bak']){
-                    //数据库有旧命名，则判断是否还有该命名的目录。有就将旧命名赋给模板名属性。没有就判断是否有新命名，有再判断是否有新命名目录，有就将新命名赋给模板名属性
-                    if(is_dir(public_path('/templates/' . $tplInfo['name_bak'] . '/')) && is_dir(app_path('views/templates/' . $tplInfo['name_bak'] . '/'))){
-                        $this->themename = $tplInfo['name_bak'];
-                    }elseif($tplInfo['name']){
-                        if(is_dir(public_path('/templates/' . $tplInfo['name'] . '/')) && is_dir(app_path('views/templates/' . $tplInfo['name'] . '/'))){
-                            $this->themename = $tplInfo['name'];
-                        }
-                    }
-                }elseif($tplInfo['name']){
-                    //如果旧命名字段为空，则只有新命名，将新命名赋给模板名属性
-                    $this->themename = $tplInfo['name'];
-                }
-                //===推送获取PC模板名end=====
-
+                $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.pc_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
                 $this->domain = ''; //CustomerInfo::where('cus_id', $this->cus_id)->pluck('pc_domain');
             }
             self::$cus_domain = ''; // $this->domain;
@@ -674,50 +594,21 @@ class PrintController extends BaseController
         $lang = CustomerInfo::where('cus_id', $this->cus_id)->pluck('lang');
         $templatesC = new TemplatesController;
         $tempname = $templatesC->getTemplatesName($this->type);
-        //原有的P、M和语言的获取
-        // $flagPlatform = substr($tempname, 0, 2);
-        // $flagLanguage = substr($tempname, 2, 1);
-
-        //===新命名的P、M和语言的获取===
-        if(preg_match('/G\d{4}(P|M)(CN|EN|TW|JP)\d{2}/', $tempname)){
-            $flagPlatform = substr($tempname, 5, 1);
-            $flagLanguage = substr($tempname, 6, 2);  
-        } elseif (preg_match('/GM\d{4}/', $tempname)){
-            $flagPlatform = substr($tempname, 0, 2);
-            $flagLanguage = substr($tempname, 2, 1);
-        }
-        //===类型的获取end===
-
+        $flagPlatform = substr($tempname, 0, 2);
+        $flagLanguage = substr($tempname, 2, 1);
         $customerC = new CustomerController;
         $domain = $customerC->getSwitchCustomer(); //双站用户
         if (!empty($domain)) {
-            //新命名的判断方式
-            if ($flagPlatform == 'M' or $flagPlatform == 'GM') {//===手机
+            if ($flagPlatform == 'GM') {//===手机===
                 $language_url = $domain['switch_mobile_domain'];
-                $current_url = $domain['current_mobile_domain'];
-            } elseif ($flagPlatform == 'P' or $flagPlatform == 'GP') {//===PC
+            } elseif ($flagPlatform == 'GP') {//===PC===
                 $language_url = $domain['switch_pc_domain'];
-                $current_url = $domain['current_pc_domain'];
             }
-            if ($flagLanguage == 'EN' or $flagLanguage == 9) {//===英文
-                $language = '<li><a href="' . $language_url . '">中文版</a></li>';
-                $language .= '<li><a href="' . $current_url . '">English</a></li>';
-            } elseif ($flagLanguage == 'CN' or $flagLanguage == 0) {//===中文
-                $language = '<li><a href="' . $current_url . '">中文版</a></li>';
-                $language .= '<li><a href="' . $language_url . '">English</a></li>';
+            if ($flagLanguage == 9) {//===英文===
+                $language = '中文版';
+            } elseif ($flagLanguage == 0) {//===中文===
+                $language = 'English';
             }
-
-            //原有的P、M和语言的获取
-            // if ($flagPlatform == 'GM') {//===手机===
-            //     $language_url = $domain['switch_mobile_domain'];
-            // } elseif ($flagPlatform == 'GP') {//===PC===
-            //     $language_url = $domain['switch_pc_domain'];
-            // }
-            // if ($flagLanguage == 9) {//===英文===
-            //     $language = '中文版';
-            // } elseif ($flagLanguage == 0) {//===中文===
-            //     $language = 'English';
-            // }
         }
         if ($result != 0) {//===?===
             if (trim($config_arr[1]) != "custom") {//===非自定义===
@@ -1008,19 +899,8 @@ class PrintController extends BaseController
         //===显示版本切换链接===
         $templatesC = new TemplatesController;
         $tempname = $templatesC->getTemplatesName($this->type);
-        //原有命名的P、M和语言的获取
-        // $flagPlatform = substr($tempname, 0, 2);
-        // $flagLanguage = substr($tempname, 2, 1);
-        //===新命名的P、M和语言的获取===
-        if(preg_match('/G\d{4}(P|M)(CN|EN|TW|JP)\d{2}/', $tempname)){
-            $flagPlatform = substr($tempname, 5, 1);
-            $flagLanguage = substr($tempname, 6, 2);  
-        } elseif (preg_match('/GM\d{4}/', $tempname)){
-            $flagPlatform = substr($tempname, 0, 2);
-            $flagLanguage = substr($tempname, 2, 1);
-        }
-        //===类型的获取end===
-
+        $flagPlatform = substr($tempname, 0, 2);
+        $flagLanguage = substr($tempname, 2, 1);
         $tempscript = "";
         $language_css = "";
         $customerC = new CustomerController;
@@ -1029,37 +909,20 @@ class PrintController extends BaseController
         $language_url = '#';
         if (!empty($domain)) {//===中英文双站===
             if ($customer_info->bilingual_v) {
-                //新命名的判断方式
-                if ($flagPlatform == 'M' or $flagPlatform == 'GM') {//===手机
+                if ($flagPlatform == 'GM') {//===手机
                     $language_url = $domain['switch_mobile_domain'];
                     $current_url = $domain['current_mobile_domain'];
-                } elseif ($flagPlatform == 'P' or $flagPlatform == 'GP') {//===PC
+                } elseif ($flagPlatform == 'GP') {//===PC
                     $language_url = $domain['switch_pc_domain'];
                     $current_url = $domain['current_pc_domain'];
                 }
-                if ($flagLanguage == 'EN' or $flagLanguage == 9) {//===英文
+                if ($flagLanguage == 9) {//===英文
                     $language = '<li><a href="' . $language_url . '">中文版</a></li>';
                     $language .= '<li><a href="' . $current_url . '">English</a></li>';
-                } elseif ($flagLanguage == 'CN' or $flagLanguage == 0) {//===中文
+                } elseif ($flagLanguage == 0) {//===中文
                     $language = '<li><a href="' . $current_url . '">中文版</a></li>';
                     $language .= '<li><a href="' . $language_url . '">English</a></li>';
                 }
-
-                //原有的判断方式
-                // if ($flagPlatform == 'GM') {//===手机
-                //     $language_url = $domain['switch_mobile_domain'];
-                //     $current_url = $domain['current_mobile_domain'];
-                // } elseif ($flagPlatform == 'GP') {//===PC
-                //     $language_url = $domain['switch_pc_domain'];
-                //     $current_url = $domain['current_pc_domain'];
-                // }
-                // if ($flagLanguage == 9) {//===英文
-                //     $language = '<li><a href="' . $language_url . '">中文版</a></li>';
-                //     $language .= '<li><a href="' . $current_url . '">English</a></li>';
-                // } elseif ($flagLanguage == 0) {//===中文
-                //     $language = '<li><a href="' . $current_url . '">中文版</a></li>';
-                //     $language .= '<li><a href="' . $language_url . '">English</a></li>';
-                // }
                 $language_ul = '<ul>'
                     . $language
                     . '</ul>';
@@ -3368,7 +3231,6 @@ class PrintController extends BaseController
                 $result['article']['image'] = $article->img ? ($this->source_dir . 'l/articles/' . $article->img) : '';
                 $result['article']['images'] = $images;
                 $result['article']['content'] = $article->content;
-                $result['article']['content'] = htmlentities($result['article']['content'],ENT_COMPAT);
             } else {
                 if ($article_next === NULL) {
                     $result['article']['next']['title'] = $lang['the_last'];
