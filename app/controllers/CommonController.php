@@ -218,6 +218,14 @@ class CommonController extends BaseController {
                 $colors['mobile'] = explode(',', ltrim($color_str, ','));
             }
         }
+        //===获取网站类型===
+        $stage = Customer::where('id',$id)->pluck('stage');
+        if($stage==1){
+            unset($colors['mobile']);
+        }elseif($stage==2){
+            unset($colors['pc']);
+        }
+        //===将不符合类型的颜色设置释放===
         return $colors;
     }
 
