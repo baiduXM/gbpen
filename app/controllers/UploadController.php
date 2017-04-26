@@ -205,7 +205,6 @@ class UploadController extends BaseController
             if (file_exists(public_path('customers/' . $customer . '/img.zip'))) {
                 @unlink(public_path('customers/' . $customer . '/img.zip'));
             }
-			file_put_contents('upresult.txt','here');
             if ($conn) {
                 ftp_login($conn, $customerinfo->ftp_user, $customerinfo->ftp_pwd);
                 ftp_pasv($conn, 1);
@@ -267,7 +266,6 @@ class UploadController extends BaseController
                             $cus_name = strtolower(Customer::where('id', $cus_id)->pluck('name'));
                             if (trim($ftp) == '1') {
                                 $ftp_pcdomain = "http://" . $ftp_array[0] . '/' . $customer;
-								file_put_contents('test123.txt',$ftp_array[0],FILE_APPEND);
                             }
                             ftp_put($conn, $customer . '/img.zip', public_path('customers/' . $customer . '/img.zip'), FTP_BINARY);
                             ftp_put($conn, $customer . '/img_unzip.php', public_path('packages/img_unzip.php'), FTP_ASCII);
