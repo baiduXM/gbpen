@@ -107,14 +107,6 @@ class CommonController extends BaseController {
                 $data['colors']['type'] = 'colors';
                 $data['colors']['data'] = $colors;
             }
-            //===获取网站类型===
-            $stage = Customer::where('id',$cus_id)->pluck('stage');
-            if($stage==1){
-                unset($data['colors']['data']['mobile']);
-            }elseif($stage==2){
-                unset($data['colors']['data']['pc']);
-            }
-            //===将不符合类型的颜色设置释放===
             $QuickBar = ['err' => 0, 'msg' => '获取成功！', 'data' => $data];
         }
         return json_encode($QuickBar);
