@@ -216,6 +216,11 @@ class CommonController extends BaseController {
             if (trim($config_arr[1]) != 'custom') {
                 $color_str = preg_replace("/\|(.*)/i", '', $config_arr[1]);
                 $colors['mobile'] = explode(',', ltrim($color_str, ','));
+            }else{
+                $config_arr = array();
+                $config_arr[1] = '#AAA,#BBB,#FFF|totop';
+                $color_str = preg_replace("/\|(.*)/i", '', $config_arr[1]);
+                $colors['mobile'] = explode(',', ltrim($color_str, ','));
             }
         }
         //===获取网站类型===
