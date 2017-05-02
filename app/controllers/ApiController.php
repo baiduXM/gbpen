@@ -73,17 +73,17 @@ class ApiController extends BaseController
             $update['weburl'] = trim(Input::get('weburl'));
             $update['pc_domain'] = trim(Input::get('pc_domain'));
             $update['mobile_domain'] = trim(Input::get('mobile_domain'));
-            if (trim(Input::get('pc_tpl_id')) == '0') {
-                $update['pc_tpl_num'] = 1;
-            } else {
+            // if (trim(Input::get('pc_tpl_id')) == '0') {
+                // $update['pc_tpl_num'] = 1;
+            // } else {
 
                 $update['pc_tpl_num'] = trim(Input::get('pc_tpl_id'));
-            }
-            if (trim(Input::get('mobile_tpl_id')) == '0') {
-                $update['mobile_tpl_num'] = 1;
-            } else {
+            // }
+            // if (trim(Input::get('mobile_tpl_id')) == '0') {
+                // $update['mobile_tpl_num'] = 1;
+            // } else {
                 $update['mobile_tpl_num'] = trim(Input::get('mobile_tpl_id'));
-            }
+            // }
             $update['stage'] = trim(Input::get('stage'));
             $update['ftp'] = trim(Input::get('ftp'));
             $update['ftp_port'] = trim(Input::get('ftp_port'));
@@ -119,8 +119,17 @@ class ApiController extends BaseController
                 //修改操作
                 $coustomer_old = Customer::where('id', $cus_id)->first();
                 $save = Customer::where('id', $cus_id)->update($update);
-                $pc_id = Template::where('tpl_num', $update['pc_tpl_num'])->where('type', 1)->pluck('id');
-                $mobile_id = Template::where('tpl_num', $update['mobile_tpl_num'])->where('type', 2)->pluck('id');
+                //===新旧===
+                if(preg_match('/G\d{4}(P|M)(CN|EN|TW|JP)\d{4}/',$update['pc_tpl_num']){
+                    $pc_id = Template::where('name_bak', $update['pc_tpl_num'])->where('type', 1)->pluck('id');
+                    $mobile_id = Template::where('name_bak', $update['mobile_tpl_num'])->where('type', 2)->pluck('id');
+                }elseif(preg_match('/G(P|M)\d{4}/',$update['pc_tpl_num']){
+                    $pc_id = Template::where('name', $update['pc_tpl_num'])->where('type', 1)->pluck('id');
+                    $mobile_id = Template::where('name', $update['mobile_tpl_num'])->where('type', 2)->pluck('id');
+                }
+                //===新旧===
+                // $pc_id = Template::where('tpl_num', $update['pc_tpl_num'])->where('type', 1)->pluck('id');
+                // $mobile_id = Template::where('tpl_num', $update['mobile_tpl_num'])->where('type', 2)->pluck('id');
                 $pc_templateid = Template::where('cus_id', $cus_id)->where('type', 1)->pluck('id');
                 $mobile_templateid = Template::where('cus_id', $cus_id)->where('type', 2)->pluck('id');
                 if ($pc_templateid != NULL) {
@@ -170,8 +179,17 @@ class ApiController extends BaseController
                 }
                 $insert_id = Customer::insertGetId($update);
                 if ($insert_id) {
-                    $pc_id = Template::where('tpl_num', $update['pc_tpl_num'])->where('type', 1)->pluck('id');
-                    $mobile_id = Template::where('tpl_num', $update['mobile_tpl_num'])->where('type', 2)->pluck('id');
+                    //===新旧===
+                    if(preg_match('/G\d{4}(P|M)(CN|EN|TW|JP)\d{4}/',$update['pc_tpl_num']){
+                        $pc_id = Template::where('name_bak', $update['pc_tpl_num'])->where('type', 1)->pluck('id');
+                        $mobile_id = Template::where('name_bak', $update['mobile_tpl_num'])->where('type', 2)->pluck('id');
+                    }elseif(preg_match('/G(P|M)\d{4}/',$update['pc_tpl_num']){
+                        $pc_id = Template::where('name', $update['pc_tpl_num'])->where('type', 1)->pluck('id');
+                        $mobile_id = Template::where('name', $update['mobile_tpl_num'])->where('type', 2)->pluck('id');
+                    }
+                    //===新旧===
+                    // $pc_id = Template::where('tpl_num', $update['pc_tpl_num'])->where('type', 1)->pluck('id');
+                    // $mobile_id = Template::where('tpl_num', $update['mobile_tpl_num'])->where('type', 2)->pluck('id');
                     WebsiteInfo::insert(['cus_id' => $insert_id, 'pc_tpl_id' => $pc_id, 'mobile_tpl_id' => $mobile_id]);
                     CustomerInfo::insert(['cus_id' => $insert_id, 'pc_domain' => $update['pc_domain'], 'mobile_domain' => $update['mobile_domain'], 'capacity' => $capacity, 'capacity_use' => 0]);
 
