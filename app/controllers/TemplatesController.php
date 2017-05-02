@@ -1148,6 +1148,13 @@ class TemplatesController extends BaseController
             if (file_exists($path)) {
                 @unlink($path);
             }
+            //===判断view_dir和json_dir是否存在，不存在，用旧命名去查===
+            if(!is_dir($view_dir) && !is_dir($json_dir)){
+                if(!is_dir($view_dir) && !is_dir($json_dir)){
+                    $tplname = $tpl['name_bak'];
+                }
+            }
+            //===查找end===
             $zip = new ZipArchive;
             if ($zip->open($path, ZipArchive::CREATE) === TRUE) {
                 $this->addFileToZip($json_dir . $tplname . "/css", $zip, "css/");
@@ -1190,6 +1197,13 @@ class TemplatesController extends BaseController
             if (file_exists($path)) {
                 @unlink($path);
             }
+            //===判断view_dir和json_dir是否存在，不存在，用旧命名去查===
+            if(!is_dir($view_dir) && !is_dir($json_dir)){
+                if(!is_dir($view_dir) && !is_dir($json_dir)){
+                    $tplname = $tpl['name_bak'];
+                }
+            }
+            //===查找end===
             $zip = new ZipArchive;
             if ($zip->open($path, ZipArchive::CREATE) === TRUE) {
                 $this->addFileToZip($json_dir . $tplname . "/css", $zip, "css/");
