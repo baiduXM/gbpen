@@ -73,17 +73,19 @@ class ApiController extends BaseController
             $update['weburl'] = trim(Input::get('weburl'));
             $update['pc_domain'] = trim(Input::get('pc_domain'));
             $update['mobile_domain'] = trim(Input::get('mobile_domain'));
-            // if (trim(Input::get('pc_tpl_id')) == '0') {
+            if (trim(Input::get('pc_tpl_id')) == '0') {
                 // $update['pc_tpl_num'] = 1;
-            // } else {
+                $update['pc_tpl_num'] = 'G0004PCN50';
+            } else {
 
                 $update['pc_tpl_num'] = trim(Input::get('pc_tpl_id'));
-            // }
-            // if (trim(Input::get('mobile_tpl_id')) == '0') {
+            }
+            if (trim(Input::get('mobile_tpl_id')) == '0') {
                 // $update['mobile_tpl_num'] = 1;
-            // } else {
+                $update['mobile_tpl_num'] = 'G0001MCN20';
+            } else {
                 $update['mobile_tpl_num'] = trim(Input::get('mobile_tpl_id'));
-            // }
+            }
             $update['stage'] = trim(Input::get('stage'));
             $update['ftp'] = trim(Input::get('ftp'));
             $update['ftp_port'] = trim(Input::get('ftp_port'));
@@ -120,11 +122,14 @@ class ApiController extends BaseController
                 $coustomer_old = Customer::where('id', $cus_id)->first();
                 $save = Customer::where('id', $cus_id)->update($update);
                 //===新旧===
-                if(preg_match('/G\d{4}(P|M)(CN|EN|TW|JP)\d{4}/',$update['pc_tpl_num']){
+                if(preg_match('/G\d{4}P(CN|EN|TW|JP)\d{4}/',$update['pc_tpl_num'])){
                     $pc_id = Template::where('name_bak', $update['pc_tpl_num'])->where('type', 1)->pluck('id');
-                    $mobile_id = Template::where('name_bak', $update['mobile_tpl_num'])->where('type', 2)->pluck('id');
-                }elseif(preg_match('/G(P|M)\d{4}/',$update['pc_tpl_num']){
+                }elseif(preg_match('/GP\d{4}/',$update['pc_tpl_num'])){
                     $pc_id = Template::where('name', $update['pc_tpl_num'])->where('type', 1)->pluck('id');
+                }
+                if(preg_match('/G\d{4}M(CN|EN|TW|JP)\d{4}/',$update['mobile_tpl_num'])){
+                    $mobile_id = Template::where('name_bak', $update['mobile_tpl_num'])->where('type', 2)->pluck('id');
+                }elseif(preg_match('/GM\d{4}/',$update['mobile_tpl_num'])){
                     $mobile_id = Template::where('name', $update['mobile_tpl_num'])->where('type', 2)->pluck('id');
                 }
                 //===新旧===
@@ -180,10 +185,10 @@ class ApiController extends BaseController
                 $insert_id = Customer::insertGetId($update);
                 if ($insert_id) {
                     //===新旧===
-                    if(preg_match('/G\d{4}(P|M)(CN|EN|TW|JP)\d{4}/',$update['pc_tpl_num']){
+                    if(preg_match('/G\d{4}(P|M)(CN|EN|TW|JP)\d{4}/',$update['pc_tpl_num'])){
                         $pc_id = Template::where('name_bak', $update['pc_tpl_num'])->where('type', 1)->pluck('id');
                         $mobile_id = Template::where('name_bak', $update['mobile_tpl_num'])->where('type', 2)->pluck('id');
-                    }elseif(preg_match('/G(P|M)\d{4}/',$update['pc_tpl_num']){
+                    }elseif(preg_match('/G(P|M)\d{4}/',$update['pc_tpl_num'])){
                         $pc_id = Template::where('name', $update['pc_tpl_num'])->where('type', 1)->pluck('id');
                         $mobile_id = Template::where('name', $update['mobile_tpl_num'])->where('type', 2)->pluck('id');
                     }
