@@ -709,6 +709,7 @@ class WebsiteController extends BaseController {
             } else {
                 $template = new Template;
                 $template->name = $unpack_resuslt['tpl_dir'];
+                $template->name_bak = $unpack_resuslt['tpl_dir'];
                 $template->tpl_num = $unpack_resuslt['tpl_num'];
             }
             $template->tpl_name = $tpl_info['template']['tpl_name'];
