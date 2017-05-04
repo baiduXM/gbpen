@@ -255,6 +255,10 @@ class TemplatesController extends BaseController
         $cus_id = Auth::id();
         $themename = DB::table('template')->leftJoin('website_info', 'website_info.pc_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $cus_id)->pluck('template.name');
         $directory = public_path('templates/' . $themename . '/json');
+        if(!is_dir($directory)){
+            $themename = DB::table('template')->leftJoin('website_info', 'website_info.pc_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $cus_id)->pluck('template.name_bak');
+            $directory = public_path('templates/' . $themename . '/json');
+        }
         $files = scandir($directory);
         if (array_search('!database.json', $files) !== false) {
             unset($files[array_search('!database.json', $files)]);
