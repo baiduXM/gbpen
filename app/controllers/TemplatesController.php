@@ -220,6 +220,14 @@ class TemplatesController extends BaseController
         $my_tpl_name = Template::where('former_id', $pc_tpl_id)->where('cus_id', $cus_id)->pluck('name');
         $is_my_tpl = Template::where('id', $pc_tpl_id)->where('cus_id', $cus_id)->pluck('name');
         $my_tpl_num = count(Template::where('cus_id', $cus_id)->lists('id'));
+        //===模板调用===
+        if(empty($my_tpl_name)){
+            $my_tpl_name = Template::where('former_id', $pc_tpl_id)->where('cus_id', $cus_id)->pluck('name_bak');
+        }
+        if(empty($is_my_tpl)){
+            $is_my_tpl = Template::where('id', $pc_tpl_id)->where('cus_id', $cus_id)->pluck('name_bak');
+        }
+        //===模板调用===
         if ($my_tpl_name || $is_my_tpl || $my_tpl_num >= 3) {
             $coded = 1;
         } else {
@@ -441,6 +449,14 @@ class TemplatesController extends BaseController
         $my_tpl_name = Template::where('former_id', $mobile_tpl_id)->where('cus_id', $cus_id)->pluck('name');
         $is_my_tpl = Template::where('id', $mobile_tpl_id)->where('cus_id', $cus_id)->pluck('name');
         $my_tpl_num = count(Template::where('cus_id', $cus_id)->lists('id'));
+        //===模板调用===
+        if(empty($my_tpl_name)){
+            $my_tpl_name = Template::where('former_id', $mobile_tpl_id)->where('cus_id', $cus_id)->pluck('name_bak');
+        }
+        if(empty($is_my_tpl)){
+            $is_my_tpl = Template::where('id', $mobile_tpl_id)->where('cus_id', $cus_id)->pluck('name_bak');
+        }
+        //===模板调用===
         if ($my_tpl_name || $is_my_tpl || $my_tpl_num >= 3) {
             $coded = 1;
         } else {
