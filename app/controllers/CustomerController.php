@@ -91,11 +91,6 @@ class CustomerController extends BaseController {
         }
         $websiteinfo = WebsiteInfo::where('cus_id', $cus_id)->select('pc_tpl_id', 'mobile_tpl_id')->first();
         $pc_tpl_name = Template::where('id', $websiteinfo->pc_tpl_id)->pluck('name');
-        //===PC模板调用===
-        if(empty($pc_tpl_name) or !is_dir(public_path('/templates/'.$pc_tpl_name))){
-            $pc_tpl_name = Template::where('id', $websiteinfo->pc_tpl_id)->pluck('name_bak');
-        }
-        //===PC模板调用===
         if ($pc_tpl_name != null) {
             $pc_ini = parse_ini_file(public_path('/templates/' . $pc_tpl_name . '/config.ini'), true);
         } else {
@@ -103,11 +98,6 @@ class CustomerController extends BaseController {
         }
         $data['pc_logo_size'] = isset($pc_ini['Config']['LogoSize']) ? strtr($pc_ini['Config']['LogoSize'], '*', '/') : 0;
         $mobile_tpl_name = Template::where('id', $websiteinfo->mobile_tpl_id)->pluck('name');
-        //===手机模板调用===
-        if(empty($mobile_tpl_name) or !is_dir(public_path('/templates/'.$mobile_tpl_name))){
-            $mobile_tpl_name = Template::where('id', $websiteinfo->mobile_tpl_id)->pluck('name_bak');
-        }
-        //===手机模板调用===
         if ($mobile_tpl_name != null) {
             $mobile_ini = parse_ini_file(public_path('/templates/' . $mobile_tpl_name . '/config.ini'), true);
         } else {
