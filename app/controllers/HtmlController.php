@@ -985,7 +985,14 @@ class HtmlController extends BaseController
                         $classify = new ClassifyController();
                         $data = $classify->classifyids();
                         if (count($data) > 0) {
-                            echo '<iframe id="grad_push" src="../grad_push?pushgrad=1&end=0&push_c_id=' . $data[0] . '&name=' . Input::get("name") . '&remember_token=' . Input::get("remember_token") . '" frameborder="0" style="display:none;"></iframe>';
+                            //===分栏推送只有一栏也可以推送===
+                            if(count($data) == 1){
+                                echo '<iframe id="grad_push" src="../grad_push?pushgrad=1&end=1&push_c_id=' . $data[0] . '&name=' . Input::get("name") . '&remember_token=' . Input::get("remember_token") . '" frameborder="0" style="display:none;"></iframe>';
+                            }else{
+                                echo '<iframe id="grad_push" src="../grad_push?pushgrad=1&end=0&push_c_id=' . $data[0] . '&name=' . Input::get("name") . '&remember_token=' . Input::get("remember_token") . '" frameborder="0" style="display:none;"></iframe>';
+                            }
+                            //===分栏推送===
+                            // echo '<iframe id="grad_push" src="../grad_push?pushgrad=1&end=0&push_c_id=' . $data[0] . '&name=' . Input::get("name") . '&remember_token=' . Input::get("remember_token") . '" frameborder="0" style="display:none;"></iframe>';
                             ob_flush();
                             flush();
                         } else {
@@ -1020,7 +1027,12 @@ class HtmlController extends BaseController
                         $classify = new ClassifyController();
                         $data = $classify->classifyids();
                         if (count($data) > 0) {
-                            echo '<iframe id="grad_push" src="../grad_push?pushgrad=1&end=0&push_c_id=' . $data[0] . '" frameborder="0" style="display:none;"></iframe>';
+                            if(count($data) == 1){
+                                echo '<iframe id="grad_push" src="../grad_push?pushgrad=1&end=1&push_c_id=' . $data[0] . '" frameborder="0" style="display:none;"></iframe>';
+                            }else{
+                                echo '<iframe id="grad_push" src="../grad_push?pushgrad=1&end=0&push_c_id=' . $data[0] . '" frameborder="0" style="display:none;"></iframe>';
+                            }
+                            // echo '<iframe id="grad_push" src="../grad_push?pushgrad=1&end=0&push_c_id=' . $data[0] . '" frameborder="0" style="display:none;"></iframe>';
                             ob_flush();
                             flush();
                         }
