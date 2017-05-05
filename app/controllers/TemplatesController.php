@@ -866,12 +866,12 @@ class TemplatesController extends BaseController
             $pc_tpl = Template::where("id", $webinfo->pc_tpl_id)->first();
             $m_tpl = Template::where("id", $webinfo->mobile_tpl_id)->first();
             //===手机模板调用===
-            if(empty($pc_themename) or !is_dir(public_path('customers/' . $customer . "/temp/" . $pc_themename)) or !is_dir($view_dir . "/" . $pc_themename)){
+            if(empty($pc_themename) or !is_dir(public_path('customers/' . $customer . "/temp/" . $pc_themename))){
                 $pc_themename = Template::where("id", $webinfo->pc_tpl_id)->pluck("name_bak");
             }
             //===手机模板调用===
             //===PC模板调用===
-            if(empty($mobile_themename) or !is_dir(public_path('customers/' . $customer . "/temp/" . $mobile_themename)) or !is_dir($view_dir . "/" . $mobile_themename)){
+            if(empty($mobile_themename) or !is_dir(public_path('customers/' . $customer . "/temp/" . $mobile_themename))){
                 $mobile_themename = Template::where("id", $webinfo->mobile_tpl_id)->pluck("name_bak");
             }
             //===PC模板调用===
