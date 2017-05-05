@@ -57,7 +57,7 @@ class WebsiteController extends BaseController {
         $website_info = WebsiteInfo::where('cus_id', $cus_id)->first();
         $total = DB::select('SELECT count(*) FROM ' . $prefix . 'template t' . $join . $where . ' GROUP BY name');
         $result['total'] = count($total);
-        $data = DB::select('SELECT t.id as tid,name,tpl_name,classify,created_at,updated_at  FROM ' . $prefix . 'template t' . $join . $where . ' GROUP BY name ORDER BY tid limit ' . $form . ',' . $per_page);
+        $data = DB::select('SELECT t.id as tid,name,name_bak,tpl_name,classify,created_at,updated_at  FROM ' . $prefix . 'template t' . $join . $where . ' GROUP BY name ORDER BY tid limit ' . $form . ',' . $per_page);
         $result['per_page'] = count($data);
         $result['current_page'] = $form + 1;
         $result['last_page'] = ceil($result['total'] / $per_page);
@@ -69,7 +69,12 @@ class WebsiteController extends BaseController {
             $std['serial'] = $v->name;
             $std['name'] = $v->tpl_name;
             $std['classify'] = $v->classify;
-            $std['img'] = asset('templates/' . $v->name . '/screenshot.jpg');
+            if(!is_dir(public_path('templates/' . $v->name))){
+                $std['img'] = asset('templates/' . $v->name_bak . '/screenshot.jpg');
+            }else{
+                $std['img'] = asset('templates/' . $v->name . '/screenshot.jpg');
+            }
+            // $std['img'] = asset('templates/' . $v->name . '/screenshot.jpg');
             $std['colors'] = $TemplateToColor->getColorByTemplateId($v->tid);
             if ($type == 1) {
                 if ($v->tid == $website_info->pc_tpl_id) {
