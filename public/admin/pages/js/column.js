@@ -125,7 +125,7 @@ function columnController($scope, $http) {
                         </tr>';
                     }else{
                         _div += '<td style="text-align:center;"><span><i class="fa icon-pc iconfont btn btn-show btn-desktop ' + (ele.pc_show ? 'blue' : 'grey') + '"></i></span><div class="pr size1"><i class="fa iconfont icon-snimicshouji btn btn-show btn-mobile ' + (ele.mobile_show ? 'blue' : 'grey') + '"></i><i class="fa iconfont btn icon-phonehome none ' + (ele.show == 1 ? 'blue' : 'grey') + (ele.showtypetotal == 0 ? ' not-allowed' : '') + '"></i></div></td>\n\
-                        <td><i class="fa iconfont icon-xiayi btn sort"></i><i class="fa iconfont icon-shangyi btn sort"></i><a style="margin:0 10px;" class="column-edit-box"><i class="fa iconfont icon-bianji column-edit"></i><div class="warning"><i class="iconfont' + (ele.img_err ? ' icon-gantanhao' : '') + '"></i></div></a><a class="delv" name="' + ele.id + '"><i class="fa iconfont icon-delete"></i></a><a href="/category/'+ele.id+'" target="_blank">预览</a></td>\n\
+                        <td><i class="fa iconfont icon-xiayi btn sort"></i><i class="fa iconfont icon-shangyi btn sort"></i><a style="margin:0 10px;" class="column-edit-box"><i class="fa iconfont icon-bianji column-edit"></i><div class="warning"><i class="iconfont' + (ele.img_err ? ' icon-gantanhao' : '') + '"></i></div></a><a class="delv" name="' + ele.id + '"><i class="fa iconfont icon-delete"></i></a><a type="button" href="/category/'+ele.id+'" target="_blank">预览</a><input style="display:none" class="copy_url" readonly="readonly" id="url_' + ele.id + '" value="" /><input type="button" id="copy_' + ele.id + '" name="' + ele.id + '" class="check_url" value="查看链接" /></td>\n\
                         </tr>';
                     }
                     //原
@@ -147,7 +147,7 @@ function columnController($scope, $http) {
                                     <td><i class="fa iconfont icon-xiayi btn sort grey "></i><i class="fa iconfont icon-shangyi btn sort grey "></i><a style="margin:0 10px;" class="column-edit-box"><i class="fa iconfont icon-bianji grey column-edit"></i><div class="warning"><i class="iconfont' + (v.img_err ? ' icon-gantanhao' : '') + '"></i></div></a><a class="delv" name="' + v.id + '"><i class="fa iconfont icon-delete grey "></i></a></td></tr>';
                                 }else{
                                     _div += '<td style="text-align:center;"><span><i class="fa iconfont icon-pc btn btn-show btn-desktop ' + (v.pc_show ? 'blue' : 'grey') + '"></i></span><div class="pr size1"><i class="iconfont icon-snimicshouji fa btn btn-show btn-mobile ' + (v.mobile_show ? 'blue' : 'grey') + '"></i><i class="fa iconfont btn icon-phonehome none ' + (v.show ? 'blue' : 'grey') + (v.showtypetotal == 0 ? ' not-allowed' : '') + '"></i></div></td>\n\
-                                    <td><i class="fa iconfont icon-xiayi btn sort grey "></i><i class="fa iconfont icon-shangyi btn sort grey "></i><a style="margin:0 10px;" class="column-edit-box"><i class="fa iconfont icon-bianji grey column-edit"></i><div class="warning"><i class="iconfont' + (v.img_err ? ' icon-gantanhao' : '') + '"></i></div></a><a class="delv" name="' + v.id + '"><i class="fa iconfont icon-delete grey "></i></a><a href="/category/'+v.id+'" target="_blank">预览</a></td></tr>';
+                                    <td><i class="fa iconfont icon-xiayi btn sort grey "></i><i class="fa iconfont icon-shangyi btn sort grey "></i><a style="margin:0 10px;" class="column-edit-box"><i class="fa iconfont icon-bianji grey column-edit"></i><div class="warning"><i class="iconfont' + (v.img_err ? ' icon-gantanhao' : '') + '"></i></div></a><a class="delv" name="' + v.id + '"><i class="fa iconfont icon-delete grey "></i></a><a href="/category/'+v.id+'" target="_blank">预览</a><input style="display:none" class="copy_url" readonly="readonly" id="url_' + v.id + '" value="" /><input type="button" id="copy_' + v.id + '" name="' + v.id + '" class="check_url" value="查看链接" /></td></tr>';
                                 }
 
                                 //原
@@ -227,10 +227,28 @@ function columnController($scope, $http) {
             this.Column_Move();
             //列表展开
             this.classnamemodify();
+            this.urled();
             //分类标题修改
             $(".iconbtn").unbind('click').on('click', function () {
                 $(this).parents('tr').nextUntil('.Level1').slideToggle();
                 $(this).children().toggleClass("disnone");
+            });
+        },
+        urled:function(){
+            $(".check_url").click(function (){
+                $(this).hide();
+                var id = $(this).attr('name');
+                $http.get('../customer-info').success(function (json){
+                    var set = json.data;
+                    var url = "http://"+set.domain_pc+"/category/"+id+".html";
+                    $("#url_"+id).val(url);
+                });
+                $(this).parent('td').find(".copy_url").show();
+                $(this).parent('td').find(".copy_url").focus();                           
+            });
+            $(".copy_url").blur(function(){
+                $(this).hide();
+                $(this).parent('td').find(".check_url").show();
             });
         },
         classnamemodify: function () {
