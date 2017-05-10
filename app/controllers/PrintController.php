@@ -2679,13 +2679,14 @@ class PrintController extends BaseController
                     <html>
                     <head>
                     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-                    <title>Insert title here</title>
+                    <title>{title}</title>
                     </head>
                     <body>
                         {content}
                     </body>
                     </html>';
-            $content = str_replace ("{content}",$result['list']['content'],$html);
+            $content_title = str_replace ("{title}",$result['title'],$html);
+            $content = str_replace ("{content}",$result['list']['content'],$content_title);
             echo $content;
             // $result['content'] = $result['list']['content'];
             // $smarty = new Smarty;
@@ -3020,7 +3021,7 @@ class PrintController extends BaseController
 //            }
             //===判断是不是海报===
             if($classify->type = 10){//不是海报的执行语句
-                $output = $this->pushPoster($the_result['list']['content']);
+                $output = $this->pushPoster($the_result['title'],$the_result['list']['content']);
             }else{
                 $content = $publicdata['repleace'][$viewname . '.html'];
                 $content = preg_replace($publicdata['pattern'], $publicdata['repleace'], $content);
@@ -3101,14 +3102,14 @@ class PrintController extends BaseController
     }
 
     //海报的生成
-    private function pushPoster($result)
+    private function pushPoster($title,$result)
     {
         ob_start();
         $content = '<!DOCTYPE">
                     <html>
                     <head>
                     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-                    <title></title>
+                    <title>{$title}</title>
                     </head>
                     <body>
                         {$result}
