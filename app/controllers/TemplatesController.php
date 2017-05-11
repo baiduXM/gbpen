@@ -1186,20 +1186,18 @@ class TemplatesController extends BaseController
                     }
                 }
                 closedir($dh);
-            }
-            $path = public_path('temp_templates/tpl/' . $tplname . '.zip');
+            }            
             $view_dir = app_path('views/templates/');
             $json_dir = public_path('templates/');
-            if (file_exists($path)) {
-                @unlink($path);
-            }
             //===判断view_dir和json_dir是否存在，不存在，用旧命名去查===
-            if(!is_dir($view_dir) && !is_dir($json_dir)){
-                if(!is_dir($view_dir) && !is_dir($json_dir)){
+            if(!is_dir($view_dir.$tplname) && !is_dir($json_dir.$tplname)){
                     $tplname = $tpl['name_bak'];
-                }
             }
             //===查找end===
+            $path = public_path('temp_templates/tpl/' . $tplname . '.zip');
+            if (file_exists($path)) {
+                @unlink($path);
+            }            
             $zip = new ZipArchive;
             if ($zip->open($path, ZipArchive::CREATE) === TRUE) {
                 $this->addFileToZip($json_dir . $tplname . "/css", $zip, "css/");
@@ -1235,20 +1233,18 @@ class TemplatesController extends BaseController
                     }
                 }
                 closedir($dh);
-            }
-            $path = public_path('temp_templates/tpl/' . $tplname . '.zip');
+            }            
             $view_dir = app_path('views/templates/');
             $json_dir = public_path('templates/');
-            if (file_exists($path)) {
-                @unlink($path);
-            }
             //===判断view_dir和json_dir是否存在，不存在，用旧命名去查===
-            if(!is_dir($view_dir) && !is_dir($json_dir)){
-                if(!is_dir($view_dir) && !is_dir($json_dir)){
+            if(!is_dir($view_dir.$tplname) && !is_dir($json_dir.$tplname)){
                     $tplname = $tpl['name_bak'];
-                }
             }
             //===查找end===
+            $path = public_path('temp_templates/tpl/' . $tplname . '.zip');
+            if (file_exists($path)) {
+                @unlink($path);
+            }            
             $zip = new ZipArchive;
             if ($zip->open($path, ZipArchive::CREATE) === TRUE) {
                 $this->addFileToZip($json_dir . $tplname . "/css", $zip, "css/");
