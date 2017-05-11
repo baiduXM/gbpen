@@ -3021,7 +3021,7 @@ class PrintController extends BaseController
 //            }
             //===判断是不是海报===
             if($classify->type = 10){//不是海报的执行语句
-                $output = $this->pushPoster($the_result['title'],$the_result['list']['content']);
+                $output = $this->pushPoster($the_result);
             }else{
                 $content = $publicdata['repleace'][$viewname . '.html'];
                 $content = preg_replace($publicdata['pattern'], $publicdata['repleace'], $content);
@@ -3102,7 +3102,7 @@ class PrintController extends BaseController
     }
 
     //海报的生成
-    private function pushPoster($title,$result)
+    private function pushPoster($result)
     {
         ob_start();
         $content = '<!DOCTYPE">
@@ -3112,7 +3112,7 @@ class PrintController extends BaseController
                     <title>{$title}</title>
                     </head>
                     <body>
-                        {$result}
+                        {$list.content}
                     </body>
                     </html>';
         $smarty = new Smarty;
