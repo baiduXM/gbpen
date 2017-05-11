@@ -1326,9 +1326,7 @@ class HtmlController extends BaseController
                 } else {
                     $mindexhtml = $this->homgepagehtml('mobile');
                     $msearchhtml = $this->sendData('mobile');
-                    // $mobile_classify_ids = Classify::where('cus_id', $this->cus_id)->where('mobile_show', 1)->lists('id');
-                    //使海报能够推送
-                    $mobile_classify_ids = Classify::where('cus_id', $this->cus_id)->where('mobile_show', 1)->orWhere('type',10)->lists('id');
+                    $mobile_classify_ids = Classify::where('cus_id', $this->cus_id)->where('mobile_show', 1)->lists('id');
                     $mobile_article_ids = Articles::where('cus_id', $this->cus_id)->where('mobile_show', 1)->lists('id');
                 }
             }
@@ -1348,9 +1346,7 @@ class HtmlController extends BaseController
                 } else {
                     $indexhtml = $this->homgepagehtml('pc');
                     $searchhtml = $this->sendData('pc');
-                    // $pc_classify_ids = Classify::where('cus_id', $this->cus_id)->where('pc_show', 1)->lists('id');
-                    //使海报能够推送
-                    $pc_classify_ids = Classify::where('cus_id', $this->cus_id)->where('pc_show', 1)->orWhere('type',10)->lists('id');
+                    $pc_classify_ids = Classify::where('cus_id', $this->cus_id)->where('pc_show', 1)->lists('id');
                     $pc_article_ids = Articles::where('cus_id', $this->cus_id)->where('pc_show', 1)->lists('id');
                 }
             }
