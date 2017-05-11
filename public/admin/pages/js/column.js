@@ -105,6 +105,10 @@ function columnController($scope, $http) {
                             case 9:
                                 layout = '<i class="fa iconfont icon-liuyanban"></i>';
                                 break;
+                            //海报
+                            case 10:
+                                layout = '<i class="fa iconfont icon-wenjian"></i>';
+                                break;
                         }
                     };
             /*<span><i class="fa iconfont icon-weixin btn btn-show btn-wechat '+(ele.wechat_show?'blue':'grey')+'"></i></span>微信图标代码段*/
@@ -115,9 +119,20 @@ function columnController($scope, $http) {
                     <td style="text-align: left; height:20px;overflow:hidden;"><dl class="fl checkclass"><input type="checkbox" name="vehicle" value="Bike1" style=" display:none;"><label class="label"></label></dl>' + label + '<input type="text" style="display:none;" data-id="' + ele.id + '" class="name_modify" value="' + ele.name + '" /><div class="tit_info class_name">' + ele.name + '</div></td>';
                     column_icon(ele.type);
                     _div += '<td><div class="tit_info">' + column_type(ele.type) + '</div>' + layout + '</td>';
-                    _div += '<td style="text-align:center;"><span><i class="fa icon-pc iconfont btn btn-show btn-desktop ' + (ele.pc_show ? 'blue' : 'grey') + '"></i></span><div class="pr size1"><i class="fa iconfont icon-snimicshouji btn btn-show btn-mobile ' + (ele.mobile_show ? 'blue' : 'grey') + '"></i><i class="fa iconfont btn icon-phonehome none ' + (ele.show == 1 ? 'blue' : 'grey') + (ele.showtypetotal == 0 ? ' not-allowed' : '') + '"></i></div></td>\n\
-                    <td><i class="fa iconfont icon-xiayi btn sort"></i><i class="fa iconfont icon-shangyi btn sort"></i><a style="margin:0 10px;" class="column-edit-box"><i class="fa iconfont icon-bianji column-edit"></i><div class="warning"><i class="iconfont' + (ele.img_err ? ' icon-gantanhao' : '') + '"></i></div></a><a class="delv" name="' + ele.id + '"><i class="fa iconfont icon-delete"></i></a></td>\n\
-                    </tr>';
+                    if(column_type(ele.type)!=='海报单页'){
+                        _div += '<td style="text-align:center;"><span><i class="fa icon-pc iconfont btn btn-show btn-desktop ' + (ele.pc_show ? 'blue' : 'grey') + '"></i></span><div class="pr size1"><i class="fa iconfont icon-snimicshouji btn btn-show btn-mobile ' + (ele.mobile_show ? 'blue' : 'grey') + '"></i><i class="fa iconfont btn icon-phonehome none ' + (ele.show == 1 ? 'blue' : 'grey') + (ele.showtypetotal == 0 ? ' not-allowed' : '') + '"></i></div></td>\n\
+                        <td><i class="fa iconfont icon-xiayi btn sort"></i><i class="fa iconfont icon-shangyi btn sort"></i><a style="margin:0 10px;" class="column-edit-box"><i class="fa iconfont icon-bianji column-edit"></i><div class="warning"><i class="iconfont' + (ele.img_err ? ' icon-gantanhao' : '') + '"></i></div></a><a class="delv" name="' + ele.id + '"><i class="fa iconfont icon-delete"></i></a></td>\n\
+                        </tr>';
+                    }else{
+                        _div += '<td style="text-align:center;"><span><i class="fa icon-pc iconfont btn btn-show btn-desktop ' + (ele.pc_show ? 'blue' : 'grey') + '"></i></span><div class="pr size1"><i class="fa iconfont icon-snimicshouji btn btn-show btn-mobile ' + (ele.mobile_show ? 'blue' : 'grey') + '"></i><i class="fa iconfont btn icon-phonehome none ' + (ele.show == 1 ? 'blue' : 'grey') + (ele.showtypetotal == 0 ? ' not-allowed' : '') + '"></i></div></td>\n\
+                        <td><i class="fa iconfont icon-xiayi btn sort"></i><i class="fa iconfont icon-shangyi btn sort"></i><a style="margin:0 10px;" class="column-edit-box"><i class="fa iconfont icon-bianji column-edit"></i><div class="warning"><i class="iconfont' + (ele.img_err ? ' icon-gantanhao' : '') + '"></i></div></a><a class="delv" name="' + ele.id + '"><i class="fa iconfont icon-delete"></i></a><a type="button" href="/category/'+ele.id+'" target="_blank">预览</a><input style="display:none" class="copy_url" readonly="readonly" id="url_' + ele.id + '" value="" /><input type="button" id="copy_' + ele.id + '" name="' + ele.id + '" class="check_url" value="查看链接" /></td>\n\
+                        </tr>';
+                    }
+                    //原
+                    // _div += '<td style="text-align:center;"><span><i class="fa icon-pc iconfont btn btn-show btn-desktop ' + (ele.pc_show ? 'blue' : 'grey') + '"></i></span><div class="pr size1"><i class="fa iconfont icon-snimicshouji btn btn-show btn-mobile ' + (ele.mobile_show ? 'blue' : 'grey') + '"></i><i class="fa iconfont btn icon-phonehome none ' + (ele.show == 1 ? 'blue' : 'grey') + (ele.showtypetotal == 0 ? ' not-allowed' : '') + '"></i></div></td>\n\
+                    // <td><i class="fa iconfont icon-xiayi btn sort"></i><i class="fa iconfont icon-shangyi btn sort"></i><a style="margin:0 10px;" class="column-edit-box"><i class="fa iconfont icon-bianji column-edit"></i><div class="warning"><i class="iconfont' + (ele.img_err ? ' icon-gantanhao' : '') + '"></i></div></a><a class="delv" name="' + ele.id + '"><i class="fa iconfont icon-delete"></i></a></td>\n\
+                    // </tr>';
+                    
                     var NextChild = ele,
                             num = 2;
                     var LoopChlid = function (NextChild, num) {
@@ -127,8 +142,17 @@ function columnController($scope, $http) {
                                     <td style="text-align: left;"><div class="fl style">├</div><dl class="fl checkclass"><input type="checkbox" name="vehicle" value="Bike1" style=" display:none;"><label class="label"></label></dl><input type="text" style="display:none;" data-id="' + v.id + '" class="name_modify" value="' + v.name + '" /><div class="tit_info class_name">' + v.name + '</div></td>';
                                 column_icon(v.type);
                                 _div += '<td><div class="tit_info">' + column_type(v.type) + '</div>' + layout + '</td>';
-                                _div += '<td style="text-align:center;"><span><i class="fa iconfont icon-pc btn btn-show btn-desktop ' + (v.pc_show ? 'blue' : 'grey') + '"></i></span><div class="pr size1"><i class="iconfont icon-snimicshouji fa btn btn-show btn-mobile ' + (v.mobile_show ? 'blue' : 'grey') + '"></i><i class="fa iconfont btn icon-phonehome none ' + (v.show ? 'blue' : 'grey') + (v.showtypetotal == 0 ? ' not-allowed' : '') + '"></i></div></td>\n\
+                                if(column_type(v.type)!=='海报单页'){
+                                    _div += '<td style="text-align:center;"><span><i class="fa iconfont icon-pc btn btn-show btn-desktop ' + (v.pc_show ? 'blue' : 'grey') + '"></i></span><div class="pr size1"><i class="iconfont icon-snimicshouji fa btn btn-show btn-mobile ' + (v.mobile_show ? 'blue' : 'grey') + '"></i><i class="fa iconfont btn icon-phonehome none ' + (v.show ? 'blue' : 'grey') + (v.showtypetotal == 0 ? ' not-allowed' : '') + '"></i></div></td>\n\
                                     <td><i class="fa iconfont icon-xiayi btn sort grey "></i><i class="fa iconfont icon-shangyi btn sort grey "></i><a style="margin:0 10px;" class="column-edit-box"><i class="fa iconfont icon-bianji grey column-edit"></i><div class="warning"><i class="iconfont' + (v.img_err ? ' icon-gantanhao' : '') + '"></i></div></a><a class="delv" name="' + v.id + '"><i class="fa iconfont icon-delete grey "></i></a></td></tr>';
+                                }else{
+                                    _div += '<td style="text-align:center;"><span><i class="fa iconfont icon-pc btn btn-show btn-desktop ' + (v.pc_show ? 'blue' : 'grey') + '"></i></span><div class="pr size1"><i class="iconfont icon-snimicshouji fa btn btn-show btn-mobile ' + (v.mobile_show ? 'blue' : 'grey') + '"></i><i class="fa iconfont btn icon-phonehome none ' + (v.show ? 'blue' : 'grey') + (v.showtypetotal == 0 ? ' not-allowed' : '') + '"></i></div></td>\n\
+                                    <td><i class="fa iconfont icon-xiayi btn sort grey "></i><i class="fa iconfont icon-shangyi btn sort grey "></i><a style="margin:0 10px;" class="column-edit-box"><i class="fa iconfont icon-bianji grey column-edit"></i><div class="warning"><i class="iconfont' + (v.img_err ? ' icon-gantanhao' : '') + '"></i></div></a><a class="delv" name="' + v.id + '"><i class="fa iconfont icon-delete grey "></i></a><a href="/category/'+v.id+'" target="_blank">预览</a><input style="display:none" class="copy_url" readonly="readonly" id="url_' + v.id + '" value="" /><input type="button" id="copy_' + v.id + '" name="' + v.id + '" class="check_url" value="查看链接" /></td></tr>';
+                                }
+
+                                //原
+                                // _div += '<td style="text-align:center;"><span><i class="fa iconfont icon-pc btn btn-show btn-desktop ' + (v.pc_show ? 'blue' : 'grey') + '"></i></span><div class="pr size1"><i class="iconfont icon-snimicshouji fa btn btn-show btn-mobile ' + (v.mobile_show ? 'blue' : 'grey') + '"></i><i class="fa iconfont btn icon-phonehome none ' + (v.show ? 'blue' : 'grey') + (v.showtypetotal == 0 ? ' not-allowed' : '') + '"></i></div></td>\n\
+                                //     <td><i class="fa iconfont icon-xiayi btn sort grey "></i><i class="fa iconfont icon-shangyi btn sort grey "></i><a style="margin:0 10px;" class="column-edit-box"><i class="fa iconfont icon-bianji grey column-edit"></i><div class="warning"><i class="iconfont' + (v.img_err ? ' icon-gantanhao' : '') + '"></i></div></a><a class="delv" name="' + v.id + '"><i class="fa iconfont icon-delete grey "></i></a></td></tr>';
                                 if (v.childmenu != null) {
                                     NextChild = v;
                                     num++;
@@ -203,10 +227,28 @@ function columnController($scope, $http) {
             this.Column_Move();
             //列表展开
             this.classnamemodify();
+            this.urled();
             //分类标题修改
             $(".iconbtn").unbind('click').on('click', function () {
                 $(this).parents('tr').nextUntil('.Level1').slideToggle();
                 $(this).children().toggleClass("disnone");
+            });
+        },
+        urled:function(){
+            $(".check_url").click(function (){
+                $(this).hide();
+                var id = $(this).attr('name');
+                $http.get('../customer-info').success(function (json){
+                    var set = json.data;
+                    var url = "http://"+set.domain_pc+"/category/"+id+".html";
+                    $("#url_"+id).val(url);
+                });
+                $(this).parent('td').find(".copy_url").show();
+                $(this).parent('td').find(".copy_url").focus();                           
+            });
+            $(".copy_url").blur(function(){
+                $(this).hide();
+                $(this).parent('td').find(".check_url").show();
             });
         },
         classnamemodify: function () {
@@ -280,6 +322,13 @@ function columnController($scope, $http) {
                     $('#form_relate').show();
                     $('#form_select').val(data.form_id);
                     break;
+                //海报
+                case 10:
+                    $('#lottery').val(type);
+                    $('.box-down #page_editor').show();
+                    $("#form_relate").hide();
+                    break;
+
                 default:
                     break;
             }
@@ -458,6 +507,20 @@ function columnController($scope, $http) {
                         $('#lottery1,#lottery2,#lottery_mg').hide();
                         break;
                     }
+
+                    case '海报':
+                    {
+                        $('#page_editor').show();
+                        $('#out_url').hide();
+                        $('#models').hide();
+                        $("#form_relate").hide();
+                        $('#inside_model').addClass('none');
+                        $('#lottery1,#lottery2,#lottery_mg').hide();
+                        vlayout = $(this).val();
+                        _this._heightauto();
+                        break;
+                    }
+
                     default:
                         $('#out_url').hide();
                         $('#models').hide();
