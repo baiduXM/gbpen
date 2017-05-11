@@ -97,12 +97,22 @@ class PrintController extends BaseController
                 $this->domain = '/mobile'; //url() . '/mobile';
                 $this->tpl_id = WebsiteInfo::where('cus_id', $this->cus_id)->pluck('mobile_tpl_id');
                 $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.mobile_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
+                //===预览手机模板调用===
+                if(empty($this->themename) or !is_dir(public_path('/templates/'.$this->themename)) or !is_dir(app_path('/views/templates/'.$this->themename))){
+                    $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.mobile_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name_bak');
+                }
+                //===预览手机模板调用===
                 $this->source_dir = '/customers/' . $this->customer . '/mobile/images/'; //asset('customers/' . $this->customer . '/mobile/images/') . '/';
                 self::$cus_domain = ''; //CustomerInfo::where('cus_id', $this->cus_id)->pluck('mobile_domain');
             } else {
                 $this->domain = ''; //url();
                 $this->tpl_id = WebsiteInfo::where('cus_id', $this->cus_id)->pluck('pc_tpl_id');
                 $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.pc_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
+                //===预览PC模板调用===
+                if(empty($this->themename) or !is_dir(public_path('/templates/'.$this->themename)) or !is_dir(app_path('/views/templates/'.$this->themename))){
+                    $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.pc_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name_bak');
+                }
+                //===预览PC模板调用===
                 self::$cus_domain = ''; //CustomerInfo::where('cus_id', $this->cus_id)->pluck('pc_domain');
             }
             $this->site_url = '/templates/' . $this->themename . '/';
@@ -110,6 +120,11 @@ class PrintController extends BaseController
             if ($this->type == 'mobile') {
                 $this->tpl_id = WebsiteInfo::where('cus_id', $this->cus_id)->pluck('mobile_tpl_id');
                 $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.mobile_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
+                //===推送手机模板调用===
+                if(empty($this->themename) or !is_dir(public_path('/templates/'.$this->themename)) or !is_dir(app_path('/views/templates/'.$this->themename))){
+                    $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.mobile_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name_bak');
+                }
+                //===推送手机模板调用===
                 $mobile_domain = CustomerInfo::where('cus_id', $this->cus_id)->pluck('mobile_domain');
                 $mobile_domain = str_replace('http://', '', $mobile_domain);
                 if (strpos($mobile_domain, '/mobile')) {
@@ -119,6 +134,11 @@ class PrintController extends BaseController
             } else {
                 $this->tpl_id = WebsiteInfo::where('cus_id', $this->cus_id)->pluck('pc_tpl_id');
                 $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.pc_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
+                //===推送PC模板调用===
+                if(empty($this->themename) or !is_dir(public_path('/templates/'.$this->themename)) or !is_dir(app_path('/views/templates/'.$this->themename))){
+                    $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.pc_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name_bak');
+                }
+                //===推送PC模板调用===
                 $this->domain = ''; //CustomerInfo::where('cus_id', $this->cus_id)->pluck('pc_domain');
             }
             self::$cus_domain = ''; // $this->domain;
@@ -594,21 +614,46 @@ class PrintController extends BaseController
         $lang = CustomerInfo::where('cus_id', $this->cus_id)->pluck('lang');
         $templatesC = new TemplatesController;
         $tempname = $templatesC->getTemplatesName($this->type);
-        $flagPlatform = substr($tempname, 0, 2);
-        $flagLanguage = substr($tempname, 2, 1);
+        // $flagPlatform = substr($tempname, 0, 2);
+        // $flagLanguage = substr($tempname, 2, 1);
+        //===新命名的P、M和语言的获取===
+        if(preg_match('/G\d{4}(P|M)(CN|EN|TW|JP)\d{2}/', $tempname)){
+            $flagPlatform = substr($tempname, 5, 1);
+            $flagLanguage = substr($tempname, 6, 2);  
+        } elseif (preg_match('/GM\d{4}/', $tempname)){
+            $flagPlatform = substr($tempname, 0, 2);
+            $flagLanguage = substr($tempname, 2, 1);
+        }
+        //===类型的获取end===
         $customerC = new CustomerController;
         $domain = $customerC->getSwitchCustomer(); //双站用户
         if (!empty($domain)) {
-            if ($flagPlatform == 'GM') {//===手机===
+            // if ($flagPlatform == 'GM') {//===手机===
+            //     $language_url = $domain['switch_mobile_domain'];
+            // } elseif ($flagPlatform == 'GP') {//===PC===
+            //     $language_url = $domain['switch_pc_domain'];
+            // }
+            // if ($flagLanguage == 9) {//===英文===
+            //     $language = '中文版';
+            // } elseif ($flagLanguage == 0) {//===中文===
+            //     $language = 'English';
+            // }
+            //新命名的判断方式
+            if ($flagPlatform == 'M' or $flagPlatform == 'GM') {//===手机
                 $language_url = $domain['switch_mobile_domain'];
-            } elseif ($flagPlatform == 'GP') {//===PC===
+                $current_url = $domain['current_mobile_domain'];
+            } elseif ($flagPlatform == 'P' or $flagPlatform == 'GP') {//===PC
                 $language_url = $domain['switch_pc_domain'];
+                $current_url = $domain['current_pc_domain'];
             }
-            if ($flagLanguage == 9) {//===英文===
-                $language = '中文版';
-            } elseif ($flagLanguage == 0) {//===中文===
-                $language = 'English';
+            if ($flagLanguage == 'EN' or $flagLanguage == 9) {//===英文
+                $language = '<li><a href="' . $language_url . '">中文版</a></li>';
+                $language .= '<li><a href="' . $current_url . '">English</a></li>';
+            } elseif ($flagLanguage == 'CN' or $flagLanguage == 0) {//===中文
+                $language = '<li><a href="' . $current_url . '">中文版</a></li>';
+                $language .= '<li><a href="' . $language_url . '">English</a></li>';
             }
+
         }
         if ($result != 0) {//===?===
             if (trim($config_arr[1]) != "custom") {//===非自定义===
@@ -899,8 +944,17 @@ class PrintController extends BaseController
         //===显示版本切换链接===
         $templatesC = new TemplatesController;
         $tempname = $templatesC->getTemplatesName($this->type);
-        $flagPlatform = substr($tempname, 0, 2);
-        $flagLanguage = substr($tempname, 2, 1);
+        // $flagPlatform = substr($tempname, 0, 2);
+        // $flagLanguage = substr($tempname, 2, 1);
+        //===新命名的P、M和语言的获取===
+        if(preg_match('/G\d{4}(P|M)(CN|EN|TW|JP)\d{2}/', $tempname)){
+            $flagPlatform = substr($tempname, 5, 1);
+            $flagLanguage = substr($tempname, 6, 2);  
+        } elseif (preg_match('/GM\d{4}/', $tempname)){
+            $flagPlatform = substr($tempname, 0, 2);
+            $flagLanguage = substr($tempname, 2, 1);
+        }
+        //===类型的获取end===
         $tempscript = "";
         $language_css = "";
         $customerC = new CustomerController;
@@ -909,20 +963,36 @@ class PrintController extends BaseController
         $language_url = '#';
         if (!empty($domain)) {//===中英文双站===
             if ($customer_info->bilingual_v) {
-                if ($flagPlatform == 'GM') {//===手机
+                // if ($flagPlatform == 'GM') {//===手机
+                //     $language_url = $domain['switch_mobile_domain'];
+                //     $current_url = $domain['current_mobile_domain'];
+                // } elseif ($flagPlatform == 'GP') {//===PC
+                //     $language_url = $domain['switch_pc_domain'];
+                //     $current_url = $domain['current_pc_domain'];
+                // }
+                // if ($flagLanguage == 9) {//===英文
+                //     $language = '<li><a href="' . $language_url . '">中文版</a></li>';
+                //     $language .= '<li><a href="' . $current_url . '">English</a></li>';
+                // } elseif ($flagLanguage == 0) {//===中文
+                //     $language = '<li><a href="' . $current_url . '">中文版</a></li>';
+                //     $language .= '<li><a href="' . $language_url . '">English</a></li>';
+                // }
+                //===新命名的判断方式===
+                if ($flagPlatform == 'M' or $flagPlatform == 'GM') {//===手机
                     $language_url = $domain['switch_mobile_domain'];
                     $current_url = $domain['current_mobile_domain'];
-                } elseif ($flagPlatform == 'GP') {//===PC
+                } elseif ($flagPlatform == 'P' or $flagPlatform == 'GP') {//===PC
                     $language_url = $domain['switch_pc_domain'];
                     $current_url = $domain['current_pc_domain'];
                 }
-                if ($flagLanguage == 9) {//===英文
+                if ($flagLanguage == 'EN' or $flagLanguage == 9) {//===英文
                     $language = '<li><a href="' . $language_url . '">中文版</a></li>';
                     $language .= '<li><a href="' . $current_url . '">English</a></li>';
-                } elseif ($flagLanguage == 0) {//===中文
+                } elseif ($flagLanguage == 'CN' or $flagLanguage == 0) {//===中文
                     $language = '<li><a href="' . $current_url . '">中文版</a></li>';
                     $language .= '<li><a href="' . $language_url . '">English</a></li>';
                 }
+                //===新命名===
                 $language_ul = '<ul>'
                     . $language
                     . '</ul>';
@@ -3308,6 +3378,8 @@ class PrintController extends BaseController
                 $result['article']['image'] = $article->img ? ($this->source_dir . 'l/articles/' . $article->img) : '';
                 $result['article']['images'] = $images;
                 $result['article']['content'] = $article->content;
+                //解决编辑器英文引号与分享图标的问题
+                // $result['article']['content'] = htmlentities($result['article']['content'],ENT_COMPAT);
             } else {
                 if ($article_next === NULL) {
                     $result['article']['next']['title'] = $lang['the_last'];
@@ -3326,6 +3398,8 @@ class PrintController extends BaseController
                 $result['article']['image'] = $article->img ? ($this->source_dir . 'l/articles/' . $article->img) : '';
                 $result['article']['images'] = $images;
                 $result['article']['content'] = preg_replace('/\/customers\/' . $this->customer . '/i', '', $article->content);
+                //解决编辑器英文引号与分享图标的问题
+                // $result['article']['content'] = htmlentities($result['article']['content'],ENT_COMPAT);
             }
             $result['article']['description'] = $article->introduction;
             $result['article']['pubdate'] = (string)$article->created_at;
@@ -3451,6 +3525,9 @@ class PrintController extends BaseController
             $the_result['article']['image'] = $article['img'] ? ($this->source_dir . 'l/articles/' . $article['img']) : '';
             $the_result['article']['images'] = $images;
             $the_result['article']['content'] = preg_replace('/\/customers\/' . $this->customer . '/i', '', $article['content']);
+            //解决编辑器英文引号与分享图标的问题
+            // $the_result['article']['content'] = htmlentities($the_result['article']['content'],ENT_COMPAT);
+            
             $the_result['article']['description'] = $article['introduction'];
             $the_result['article']['pubdate'] = $article['created_at'];
             $the_result['article']['pubtimestamp'] = strtotime($article['created_at']);

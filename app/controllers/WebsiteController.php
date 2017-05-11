@@ -57,7 +57,7 @@ class WebsiteController extends BaseController {
         $website_info = WebsiteInfo::where('cus_id', $cus_id)->first();
         $total = DB::select('SELECT count(*) FROM ' . $prefix . 'template t' . $join . $where . ' GROUP BY name');
         $result['total'] = count($total);
-        $data = DB::select('SELECT t.id as tid,name,tpl_name,classify,created_at,updated_at  FROM ' . $prefix . 'template t' . $join . $where . ' GROUP BY name ORDER BY tid limit ' . $form . ',' . $per_page);
+        $data = DB::select('SELECT t.id as tid,name,name_bak,tpl_name,classify,created_at,updated_at  FROM ' . $prefix . 'template t' . $join . $where . ' GROUP BY name ORDER BY tid limit ' . $form . ',' . $per_page);
         $result['per_page'] = count($data);
         $result['current_page'] = $form + 1;
         $result['last_page'] = ceil($result['total'] / $per_page);
@@ -69,7 +69,12 @@ class WebsiteController extends BaseController {
             $std['serial'] = $v->name;
             $std['name'] = $v->tpl_name;
             $std['classify'] = $v->classify;
-            $std['img'] = asset('templates/' . $v->name . '/screenshot.jpg');
+            if(!is_dir(public_path('templates/' . $v->name))){
+                $std['img'] = asset('templates/' . $v->name_bak . '/screenshot.jpg');
+            }else{
+                $std['img'] = asset('templates/' . $v->name . '/screenshot.jpg');
+            }
+            // $std['img'] = asset('templates/' . $v->name . '/screenshot.jpg');
             $std['colors'] = $TemplateToColor->getColorByTemplateId($v->tid);
             if ($type == 1) {
                 if ($v->tid == $website_info->pc_tpl_id) {
@@ -659,6 +664,17 @@ class WebsiteController extends BaseController {
                     if ($up_result) {
                         $tpl = explode('.', $file->getClientOriginalName());
                         $tpl_name = $tpl[0];
+                        //===判断命名方式===
+                        // if(preg_match('/G\d{4}(P|M)(CN|EN|TW|JP)\d{2}/', $tpl_name)){
+                        //     //查询对应的旧命名
+                        //     $old_tpl_name = Template::where('name', $tpl_name)->pluck('name_bak');
+                        //     if($old_tpl_name){
+                        //         //删除旧命名的目录
+                        //         $this->_remove_Dir(public_path("templates/$old_tpl_name"));
+                        //         $this->_remove_Dir(app_path("views/templates/$old_tpl_name")); 
+                        //     }                            
+                        // }
+                        //===end===
                         if (!empty($tpl_name)) {
                             $this->_remove_Dir(public_path("templates/$tpl_name"));
                             $this->_remove_Dir(app_path("views/templates/$tpl_name"));
@@ -698,6 +714,7 @@ class WebsiteController extends BaseController {
             } else {
                 $template = new Template;
                 $template->name = $unpack_resuslt['tpl_dir'];
+                $template->name_bak = $unpack_resuslt['tpl_dir'];
                 $template->tpl_num = $unpack_resuslt['tpl_num'];
             }
             $template->tpl_name = $tpl_info['template']['tpl_name'];
@@ -724,7 +741,7 @@ class WebsiteController extends BaseController {
                         $tpl_color[$i]['color_id'] = Color::where('color_en', $color)->pluck('id');
                         $i++;
                     }
-                    TemplateToColor::insert($tpl_color);
+//                    TemplateToColor::insert($tpl_color); // bug插入数据库错误
                 }
             }
             $result = ['err' => 1000, 'msg' => '上传模板成功'];
@@ -777,21 +794,23 @@ class WebsiteController extends BaseController {
                 $tpl_dir = $tpl_name;
                 $new_num = '';
             } else {
-                if (substr_count(strtolower($type), 'pc')) {
-                    $type = 1;
-                    $tpl_dir = "GP";
-                } else {
-                    $type = 2;
-                    $tpl_dir = "GM";
-                }
-                $last_num = Template::where('type', $type)->max('tpl_num');
-                $new_num = $last_num + 1;
-                $tpl_dir = $tpl_dir . str_repeat('0', 4 - strlen($new_num)) . $new_num;
+                // if (substr_count(strtolower($type), 'pc')) {
+                //     $type = 1;
+                //     $tpl_dir = "GP";
+                // } else {
+                //     $type = 2;
+                //     $tpl_dir = "GM";
+                // }
+                // $last_num = Template::where('type', $type)->max('tpl_num');
+                // $new_num = $last_num + 1;
+                // $tpl_dir = $tpl_dir . str_repeat('0', 4 - strlen($new_num)) . $new_num;
+                return false;
             }
 
             //正则匹配tpl_num
             if (!isset($_SERVER['HTTP_REFERER'])) {
-                preg_match('/[A-Z]{2}[0]*(\d*)/', $tpl_name, $have);
+                // preg_match('/[A-Z]{2}[0]*(\d*)/', $tpl_name, $have);
+                preg_match('/G[0]*(\d*)/', $tpl_name, $have);
                 $new_num = $have[1];
             }
 

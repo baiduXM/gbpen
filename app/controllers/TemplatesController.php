@@ -220,6 +220,14 @@ class TemplatesController extends BaseController
         $my_tpl_name = Template::where('former_id', $pc_tpl_id)->where('cus_id', $cus_id)->pluck('name');
         $is_my_tpl = Template::where('id', $pc_tpl_id)->where('cus_id', $cus_id)->pluck('name');
         $my_tpl_num = count(Template::where('cus_id', $cus_id)->lists('id'));
+        //===模板调用===
+        if(empty($my_tpl_name)){
+            $my_tpl_name = Template::where('former_id', $pc_tpl_id)->where('cus_id', $cus_id)->pluck('name_bak');
+        }
+        if(empty($is_my_tpl)){
+            $is_my_tpl = Template::where('id', $pc_tpl_id)->where('cus_id', $cus_id)->pluck('name_bak');
+        }
+        //===模板调用===
         if ($my_tpl_name || $is_my_tpl || $my_tpl_num >= 3) {
             $coded = 1;
         } else {
@@ -247,6 +255,10 @@ class TemplatesController extends BaseController
         $cus_id = Auth::id();
         $themename = DB::table('template')->leftJoin('website_info', 'website_info.pc_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $cus_id)->pluck('template.name');
         $directory = public_path('templates/' . $themename . '/json');
+        if(!is_dir($directory)){
+            $themename = DB::table('template')->leftJoin('website_info', 'website_info.pc_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $cus_id)->pluck('template.name_bak');
+            $directory = public_path('templates/' . $themename . '/json');
+        }
         $files = scandir($directory);
         if (array_search('!database.json', $files) !== false) {
             unset($files[array_search('!database.json', $files)]);
@@ -441,6 +453,14 @@ class TemplatesController extends BaseController
         $my_tpl_name = Template::where('former_id', $mobile_tpl_id)->where('cus_id', $cus_id)->pluck('name');
         $is_my_tpl = Template::where('id', $mobile_tpl_id)->where('cus_id', $cus_id)->pluck('name');
         $my_tpl_num = count(Template::where('cus_id', $cus_id)->lists('id'));
+        //===模板调用===
+        if(empty($my_tpl_name)){
+            $my_tpl_name = Template::where('former_id', $mobile_tpl_id)->where('cus_id', $cus_id)->pluck('name_bak');
+        }
+        if(empty($is_my_tpl)){
+            $is_my_tpl = Template::where('id', $mobile_tpl_id)->where('cus_id', $cus_id)->pluck('name_bak');
+        }
+        //===模板调用===
         if ($my_tpl_name || $is_my_tpl || $my_tpl_num >= 3) {
             $coded = 1;
         } else {
@@ -775,6 +795,16 @@ class TemplatesController extends BaseController
                 }
                 $view_dir = app_path('views/templates/');
                 $json_dir = public_path('templates/');
+                //===PC调用模板===
+                if(empty($pc_themename) or !is_dir($view_dir . $pc_themename) or !is_dir($json_dir . $pc_themename)){
+                    $pc_themename = Template::where("id", $webinfo->pc_tpl_id)->pluck("name_bak");
+                }
+                //===PC调用模板===
+                //===手机调用模板===
+                if(empty($mobile_themename) or !is_dir($view_dir . $mobile_themename) or !is_dir($json_dir . $mobile_themename)){
+                    $mobile_themename = Template::where("id", $webinfo->mobile_tpl_id)->pluck("name_bak");
+                }
+                //===手机调用模板===
                 if ($pc_tpl->push_get_date == null || $pc_tpl->push_get_date == "" || $pc_tpl->push_get_date < $pc_tpl->updated_at) {
                     $pc_json = array();
                     $pc_json["themename"] = $pc_themename;
@@ -835,6 +865,16 @@ class TemplatesController extends BaseController
             $mobile_themename = Template::where("id", $webinfo->mobile_tpl_id)->pluck("name");
             $pc_tpl = Template::where("id", $webinfo->pc_tpl_id)->first();
             $m_tpl = Template::where("id", $webinfo->mobile_tpl_id)->first();
+            //===手机模板调用===
+            if(empty($pc_themename) or !is_dir(public_path('customers/' . $customer . "/temp/" . $pc_themename))){
+                $pc_themename = Template::where("id", $webinfo->pc_tpl_id)->pluck("name_bak");
+            }
+            //===手机模板调用===
+            //===PC模板调用===
+            if(empty($mobile_themename) or !is_dir(public_path('customers/' . $customer . "/temp/" . $mobile_themename))){
+                $mobile_themename = Template::where("id", $webinfo->mobile_tpl_id)->pluck("name_bak");
+            }
+            //===PC模板调用===
             if ($pc_tpl->push_get_date == null || $pc_tpl->push_get_date == "" || $pc_tpl->push_get_date < $pc_tpl->updated_at) {
                 if (file_exists($pc_path)) {
                     $zip = new ZipArchive;
@@ -1115,6 +1155,11 @@ class TemplatesController extends BaseController
         }
         $tpl_id = WebsiteInfo::where('cus_id', $cus_id)->pluck($tpl_name);
         $my_tpl_name = Template::where('id', $tpl_id)->pluck('name');
+        //===模板调用===
+        if(empty($my_tpl_name) or !is_dir(public_path('/templates/'.$my_tpl_name)) or !is_dir(app_path('/views/templates/'.$my_tpl_name))){
+            $my_tpl_name = Template::where('id', $tpl_id)->pluck('name_bak');
+        }
+        //===模板调用===
         return $my_tpl_name;
     }
 
@@ -1141,13 +1186,18 @@ class TemplatesController extends BaseController
                     }
                 }
                 closedir($dh);
-            }
-            $path = public_path('temp_templates/tpl/' . $tplname . '.zip');
+            }            
             $view_dir = app_path('views/templates/');
             $json_dir = public_path('templates/');
+            //===判断view_dir和json_dir是否存在，不存在，用旧命名去查===
+            if(!is_dir($view_dir.$tplname) && !is_dir($json_dir.$tplname)){
+                    $tplname = $tpl['name_bak'];
+            }
+            //===查找end===
+            $path = public_path('temp_templates/tpl/' . $tplname . '.zip');
             if (file_exists($path)) {
                 @unlink($path);
-            }
+            }            
             $zip = new ZipArchive;
             if ($zip->open($path, ZipArchive::CREATE) === TRUE) {
                 $this->addFileToZip($json_dir . $tplname . "/css", $zip, "css/");
@@ -1183,13 +1233,18 @@ class TemplatesController extends BaseController
                     }
                 }
                 closedir($dh);
-            }
-            $path = public_path('temp_templates/tpl/' . $tplname . '.zip');
+            }            
             $view_dir = app_path('views/templates/');
             $json_dir = public_path('templates/');
+            //===判断view_dir和json_dir是否存在，不存在，用旧命名去查===
+            if(!is_dir($view_dir.$tplname) && !is_dir($json_dir.$tplname)){
+                    $tplname = $tpl['name_bak'];
+            }
+            //===查找end===
+            $path = public_path('temp_templates/tpl/' . $tplname . '.zip');
             if (file_exists($path)) {
                 @unlink($path);
-            }
+            }            
             $zip = new ZipArchive;
             if ($zip->open($path, ZipArchive::CREATE) === TRUE) {
                 $this->addFileToZip($json_dir . $tplname . "/css", $zip, "css/");
