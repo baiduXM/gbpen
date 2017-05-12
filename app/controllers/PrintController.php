@@ -2749,19 +2749,20 @@ class PrintController extends BaseController
                     <html>
                     <head>
                     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-                    <title>{title}</title>
+                    <title></title>
                     </head>
                     <body>
-                        {content}
+                        {$list.content}
                     </body>
                     </html>';
-            $content_title = str_replace ("{title}",$result['title'],$html);
-            $content = str_replace ("{content}",$result['list']['content'],$content_title);
-            echo $content;
+            // $content_title = str_replace ("{title}",$result['title'],$html);
+            // $content = str_replace ("{content}",$result['list']['content'],$content_title);
+            // echo $content;
             // $result['content'] = $result['list']['content'];
-            // $smarty = new Smarty;
-            // $smarty->assign($result);
-            // @$smarty->display('string:'.$html);
+            $smarty = new Smarty;
+            $smarty->setCompileDir(app_path('storage/views/compile'));
+            $smarty->assign($result);
+            @$smarty->display('string:'.$html);
         }else{
             $smarty = new Smarty;
             $smarty->setTemplateDir(app_path('views/templates/' . $this->themename));
@@ -3090,7 +3091,7 @@ class PrintController extends BaseController
             $path = $this->type == 'pc' ? public_path('customers/' . $this->customer . '/category/' . $id . '.html') : public_path('customers/' . $this->customer . '/mobile/category/' . $id . '.html');
 //            }
             //===判断是不是海报===
-            if($classify->type = 10){//不是海报的执行语句
+            if($classify->type == 10){//是海报的执行语句
                 $output = $this->pushPoster($the_result);
             }else{
                 $content = $publicdata['repleace'][$viewname . '.html'];

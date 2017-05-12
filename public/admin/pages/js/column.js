@@ -235,16 +235,21 @@ function columnController($scope, $http) {
             });
         },
         urled:function(){
-            $(".check_url").click(function (){
-                $(this).hide();
+            $(".check_url").click(function (){                
                 var id = $(this).attr('name');
+                $(this).hide();
                 $http.get('../customer-info').success(function (json){
                     var set = json.data;
                     var url = "http://"+set.domain_pc+"/category/"+id+".html";
                     $("#url_"+id).val(url);
+                    $("#url_"+id).show();
+                    $("#url_"+id).focus();
+                    $("#url_"+id).select();
                 });
-                $(this).parent('td').find(".copy_url").show();
-                $(this).parent('td').find(".copy_url").focus();                           
+                // $(this).hide();
+                // $(this).parent('td').find(".copy_url").show();
+                // $(this).parent('td').find(".copy_url").focus();                           
+                // $(this).parent('td').find(".copy_url").select();                           
             });
             $(".copy_url").blur(function(){
                 $(this).hide();
