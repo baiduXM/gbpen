@@ -229,9 +229,14 @@ class WebsiteController extends BaseController {
         $former_id = Template::where('cus_id', $cus_id)->where('id', $id)->where('type', $type)->pluck('former_id');
         $tpl_dir = Template::where('cus_id', $cus_id)->where('id', $id)->where('type', $type)->pluck('name');
         $del_result = Template::where('cus_id', $cus_id)->where('id', $id)->where('type', $type)->delete();
+        if(empty($tpl_dir)){//找不到新编号找旧编号
+            $tpl_dir = Template::where('cus_id', $cus_id)->where('id', $id)->where('type', $type)->pluck('name_bak');
+        }
         if ($del_result) {
-            @$this->_remove_Dir(public_path("templates/$tpl_dir"));
-            @$this->_remove_Dir(app_path("views/templates/$tpl_dir"));
+            if(!empty($tpl_dir)){//模板不为空才执行
+                @$this->_remove_Dir(public_path("templates/$tpl_dir"));
+                @$this->_remove_Dir(app_path("views/templates/$tpl_dir"));
+            }            
             $color_list = TemplateToColor::where('template_id', $former_id)->lists('color_id');
             if ($type == 1) {
                 $update = ['pc_tpl_id' => $former_id, 'pc_color_id' => $color_list[0]];
