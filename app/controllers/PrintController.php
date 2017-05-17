@@ -2758,10 +2758,10 @@ class PrintController extends BaseController
                     <html>
                     <head>
                     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-                    <title>{title}</title>
+                    <title>{$title}</title>
                     </head>
                     <body>
-                        {list.content}
+                        {$list.content}
                     </body>
                     </html>';
             $smarty = new Smarty;
@@ -2915,13 +2915,15 @@ class PrintController extends BaseController
                 } else {
                     $result['list']['content'] = preg_replace('/\/customers\/' . $this->customer . '/i', '', Page::where('id', $classify->page_id)->pluck('content'));
                 }
-            } 
-            $json_keys = $this->getJsonKey($viewname . '.html');
-            if (count($json_keys)) {
-                foreach ($json_keys as $key) {
-                    $result[$key] = $this->detailList($this->pagedata($key));
-                }
             }
+            if($classify->type != 10){
+               $json_keys = $this->getJsonKey($viewname . '.html');
+                if (count($json_keys)) {
+                    foreach ($json_keys as $key) {
+                        $result[$key] = $this->detailList($this->pagedata($key));
+                    }
+                } 
+            }             
             if ($classify->type == 5) {
                 $result['footscript'] .= '<STYLE TYPE="text/css"> 
                 <!-- 
