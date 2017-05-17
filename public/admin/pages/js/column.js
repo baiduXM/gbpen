@@ -236,15 +236,16 @@ function columnController($scope, $http) {
         },
         urled:function(){
             $(".check_url").click(function (){
-                $(this).hide();
                 var id = $(this).attr('name');
+                $(this).hide();
                 $http.get('../customer-info').success(function (json){
                     var set = json.data;
                     var url = "http://"+set.domain_pc+"/category/"+id+".html";
                     $("#url_"+id).val(url);
-                });
-                $(this).parent('td').find(".copy_url").show();
-                $(this).parent('td').find(".copy_url").focus();                           
+                    $("#url_"+id).show();
+                    $("#url_"+id).focus();
+                    $("#url_"+id).select();
+                });                         
             });
             $(".copy_url").blur(function(){
                 $(this).hide();
