@@ -1332,7 +1332,7 @@ class PrintController extends BaseController
         error_reporting(E_ALL ^ E_NOTICE);
         //===whereIN(type:9) 万用表单===
         if ($this->type == 'pc') {
-            $navs = Classify::where('cus_id', $this->cus_id)->where('pc_show', 1)->whereIN('type', [1, 2, 3, 4, 5, 6, 9])->select('id', 'type', 'img', 'icon', 'name', 'url', 'p_id', 'en_name', 'view_name', 'meta_description as description', 'open_page')->OrderBy('sort', 'asc')->get()->toArray();
+            $navs = Classify::where('cus_id', $this->cus_id)->where('pc_show', 1)->whereIN('type', [1, 2, 3, 4, 5, 6, 9,10])->select('id', 'type', 'img', 'icon', 'name', 'url', 'p_id', 'en_name', 'view_name', 'meta_description as description', 'open_page')->OrderBy('sort', 'asc')->get()->toArray();
         } else {
             $navs = Classify::where('cus_id', $this->cus_id)->where('mobile_show', 1)->select('id', 'type', 'img', 'icon', 'name', 'url', 'p_id', 'en_name', 'view_name', 'meta_description as description', 'open_page')->OrderBy('sort', 'asc')->get()->toArray();
         }
