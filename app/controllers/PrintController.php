@@ -1332,7 +1332,7 @@ class PrintController extends BaseController
         error_reporting(E_ALL ^ E_NOTICE);
         //===whereIN(type:9) 万用表单===
         if ($this->type == 'pc') {
-            $navs = Classify::where('cus_id', $this->cus_id)->where('pc_show', 1)->whereIN('type', [1, 2, 3, 4, 5, 6, 9])->select('id', 'type', 'img', 'icon', 'name', 'url', 'p_id', 'en_name', 'view_name', 'meta_description as description', 'open_page')->OrderBy('sort', 'asc')->get()->toArray();
+            $navs = Classify::where('cus_id', $this->cus_id)->where('pc_show', 1)->whereIN('type', [1, 2, 3, 4, 5, 6, 9,10])->select('id', 'type', 'img', 'icon', 'name', 'url', 'p_id', 'en_name', 'view_name', 'meta_description as description', 'open_page')->OrderBy('sort', 'asc')->get()->toArray();
         } else {
             $navs = Classify::where('cus_id', $this->cus_id)->where('mobile_show', 1)->select('id', 'type', 'img', 'icon', 'name', 'url', 'p_id', 'en_name', 'view_name', 'meta_description as description', 'open_page')->OrderBy('sort', 'asc')->get()->toArray();
         }
@@ -2443,6 +2443,7 @@ class PrintController extends BaseController
 //        } else {
 //            $id = Classify::where('view_name', $param)->pluck('id');
         }
+        $classify = Classify::find($id);
         if ($_SERVER["HTTP_HOST"] != TONGYI_DOMAIN) {
             $result = $this->pagePublic($id);
             $customerinfo = CustomerInfo::where("cus_id", $this->cus_id)->first();
@@ -2454,7 +2455,7 @@ class PrintController extends BaseController
                     $pagenavs = [];
                 }
             }
-            $classify = Classify::find($id);
+            // $classify = Classify::find($id);
             $result['title'] = ($customerinfo->title != "") ? $customerinfo->title . '-' . $classify->name : $classify->name;
             $result['keywords'] = ($classify->meta_keywords != "") ? $classify->meta_keywords : $customerinfo->keywords;
             $result['description'] = ($classify->meta_description != "") ? $classify->meta_description : $customerinfo->description;
@@ -2744,25 +2745,7 @@ class PrintController extends BaseController
         if ($_SERVER["HTTP_HOST"] == TONGYI_TUISONG_JUYU_IP) {
             return json_encode($result);
         }
-        if($classify->type == 10){
-            $html = '<!DOCTYPE">
-                    <html>
-                    <head>
-                    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-                    <title>{title}</title>
-                    </head>
-                    <body>
-                        {content}
-                    </body>
-                    </html>';
-            $content_title = str_replace ("{title}",$result['title'],$html);
-            $content = str_replace ("{content}",$result['list']['content'],$content_title);
-            echo $content;
-            // $result['content'] = $result['list']['content'];
-            // $smarty = new Smarty;
-            // $smarty->assign($result);
-            // @$smarty->display('string:'.$html);
-        }else{
+        if($classify->type != 10){
             $smarty = new Smarty;
             $smarty->setTemplateDir(app_path('views/templates/' . $this->themename));
             $smarty->setCompileDir(app_path('storage/views/compile'));
@@ -2770,6 +2753,21 @@ class PrintController extends BaseController
             $smarty->registerPlugin('function', 'shareExt', array('PrintController', 'createShare'));
             $smarty->assign($result);
             @$smarty->display($result["viewname"] . '.html');
+        }else{
+            $html = '<!DOCTYPE">
+                    <html>
+                    <head>
+                    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+                    <title>{title}</title>
+                    </head>
+                    <body>
+                        {list.content}
+                    </body>
+                    </html>';
+            $smarty = new Smarty;
+            $smarty->setCompileDir(app_path('storage/views/compile'));
+            $smarty->assign($result);
+            @$smarty->display('string:'.$html);
         }
 
         // $smarty = new Smarty;
@@ -3090,12 +3088,12 @@ class PrintController extends BaseController
             $path = $this->type == 'pc' ? public_path('customers/' . $this->customer . '/category/' . $id . '.html') : public_path('customers/' . $this->customer . '/mobile/category/' . $id . '.html');
 //            }
             //===判断是不是海报===
-            if($classify->type = 10){//不是海报的执行语句
-                $output = $this->pushPoster($the_result);
-            }else{
+            if($classify->type != 10){//不是海报的执行语句
                 $content = $publicdata['repleace'][$viewname . '.html'];
                 $content = preg_replace($publicdata['pattern'], $publicdata['repleace'], $content);
-                $output = $this->pushdisplay($the_result, $content);
+                $output = $this->pushdisplay($the_result, $content);                
+            }else{
+                $output = $this->pushPoster($the_result);
             }
             //===判断结束===
             //原
