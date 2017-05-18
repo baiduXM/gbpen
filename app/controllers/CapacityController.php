@@ -53,9 +53,9 @@ class CapacityController extends BaseController {
     private function tree($directory) {
         $mydir = dir($directory);
         while ($file = $mydir->read()) {
-            if ((is_dir("$directory/$file")) && ( $file != ".") && ( $file != "..") && ( $file != "cache_images") && ( $file != "s") && ( $file != "mobile")) {
+            if ((is_dir("$directory/$file")) && ( $file != ".") && ( $file != "..") && ( $file != "cache_images") && ( $file != "s") && ( $file != "mobile") && ( $file != "detail") && ( $file != "category")) {
                 $this->tree("$directory/$file");
-            } else if (( $file != ".") && ( $file != "..") && ( $file != "cache_images") && ( $file != "s") && ( $file != "mobile")) {
+            } else if (( $file != ".") && ( $file != "..") && ( $file != "cache_images") && ( $file != "s") && ( $file != "mobile") && ( !strpos( $file , ".zip" ))) {
                 $_size = filesize($directory . '/' . $file);
                 $this->size += $_size;
             }

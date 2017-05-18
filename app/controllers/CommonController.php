@@ -200,6 +200,11 @@ class CommonController extends BaseController {
         $template = WebsiteInfo::where('cus_id', $id)->first();
         //===获取PC端颜色===
         $pc_name = Template::where('id', $template->pc_tpl_id)->pluck('name');
+        //===PC模板调用===
+        if(empty($pc_name) or !is_dir(public_path('/templates/'.$pc_name))){
+            $pc_name = Template::where('id', $template->pc_tpl_id)->pluck('name_bak');
+        }
+        //===PC模板调用===
         $config_str = file_get_contents(public_path('/templates/' . $pc_name) . '/config.ini');
         $result = preg_match($search, $config_str, $config_arr);
         if (!$result) {
@@ -210,14 +215,32 @@ class CommonController extends BaseController {
         $colors['pc'] = explode(',', ltrim($color_str, ','));
         //===获取手机端颜色===
         $mobile_name = Template::where('id', $template->mobile_tpl_id)->pluck('name');
+        //===手机模板调用===
+        if(empty($mobile_name) or !is_dir(public_path('/templates/'.$mobile_name))){
+            $mobile_name = Template::where('id', $template->mobile_tpl_id)->pluck('name_bak'); 
+        }
+        //===手机模板调用===
         $config_str = file_get_contents(public_path('/templates/' . $mobile_name) . '/config.ini');
         $result = preg_match($search, $config_str, $config_arr);
         if ($result) {
             if (trim($config_arr[1]) != 'custom') {
                 $color_str = preg_replace("/\|(.*)/i", '', $config_arr[1]);
                 $colors['mobile'] = explode(',', ltrim($color_str, ','));
+            }else{
+                $config_arr = array();
+                $config_arr[1] = '#AAA,#BBB,#FFF|totop';
+                $color_str = preg_replace("/\|(.*)/i", '', $config_arr[1]);
+                $colors['mobile'] = explode(',', ltrim($color_str, ','));
             }
         }
+        //===获取网站类型===
+        $stage = Customer::where('id',$id)->pluck('stage');
+        if($stage==1){
+            unset($colors['mobile']);
+        }elseif($stage==2){
+            unset($colors['pc']);
+        }
+        //===将不符合类型的颜色设置释放===
         return $colors;
     }
 

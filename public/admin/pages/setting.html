@@ -65,6 +65,18 @@
                         </div>
                         <!--<div class="feild-item" style="display:none;">-->
 
+                        <div class="switchfunc" style="margin-left: 43px;margin-bottom: 15px;">
+                            <label for="redirect">重定向：</label>
+                            <input type="hidden" id="redirectv" name="redirectv" value="0">
+                            <input type="checkbox" id="redirect" name="redirect" class="none redi">
+                            <label for="redirect" class="redirect"></label>
+
+                            <div class="redirect_box" style="display:none;">
+                                <label for="ed_url">从</label><input type="text" name="ed_url" style="width:220px;" placeholder="无需填写http://"  />
+                                <label for="redirect_url"></label>重定向到<input type="text" name="redirect_url" style="width:220px;" placeholder="无需填写http://" />
+                            </div>
+                        </div>
+
                         <div class="switchfunc" style="margin-left: 15px;margin-bottom: 10px;">
                             <label for="enlarge">产品图放大：</label>
                             <input type="hidden" id="enlargev" name="enlargev" value="0">
@@ -131,7 +143,7 @@
                         <div class="feild-item"><label for="pc_header_script" style="vertical-align:top;">PC头部脚本：</label><textarea placeholder="只在首页面有效" name="pc_header_script" cols="30" rows="10"></textarea></div>
                         <div class="feild-item"><label class="vt" for="pc_footer_script">PC底部脚本：</label><textarea name="pc_footer_script"  cols="30" rows="10"></textarea></div>
                         <div class="feild-item"><label class="vt" for="footer">PC底部版权：</label><textarea name="footer" cols="30" rows="10"></textarea></div>
-                        <div class="feild-item"><label class="vt" for="background_music">PC背景音乐：</label><textarea name="background_music" cols="30" rows="10"></textarea></div>
+                        <div class="feild-item"><label class="vt" for="background_music">PC背景音乐：</label><textarea name="background_music" cols="30" rows="10" placeholder="请使用网易云音乐：生成外链播放器->复制html代码->粘贴到本文本框内"></textarea></div>
 
                     </div>
                 </div>

@@ -45,6 +45,19 @@ function settingController($scope, $http) {
                 } else {
                     $(".bilingual_box_encn").hide();
                 }
+                if (set.is_redirect) {
+                    $("#redirect").val("1");
+                    $("input.redi").attr("checked", true);
+                    $(".redirect_box").show();
+                    $('.setting-content input[name=ed_url]').val(set.ed_url);
+                    $('.setting-content input[name=redirect_url]').val(set.redirect_url);                    
+                } else {
+                    $("#redirect").val("0");
+                    $("input.redi").attr("checked", false);
+                    $(".redirect_box").hide();
+                    $('.setting-content input[name=ed_url]').val(set.ed_url);
+                    $('.setting-content input[name=redirect_url]').val(set.redirect_url);
+                }
                 $('.setting-content input[name=bilingual_position]').val(set.bilingual_position);
                 $('.setting-content input[name=bilingual_font_color]').val(set.bilingual_font_color);
                 $('.setting-content input[name=bilingual_font_active_color]').val(set.bilingual_font_active_color);
@@ -383,6 +396,10 @@ function settingController($scope, $http) {
                 Trigger: 'mouseenter',
                 context: '开启设置各个列表展示条数'
             });
+            $('.redirect').MoveBox({
+                Trigger: 'mouseenter',
+                context: '开启重定向功能'
+            });
             $('.enlarge').MoveBox({
                 Trigger: 'mouseenter',
                 context: '开启产品介绍图片放大功能'
@@ -390,6 +407,15 @@ function settingController($scope, $http) {
             $('.bilingual').MoveBox({
                 Trigger: 'mouseenter',
                 context: '开启顶部中英双站切换'
+            });
+            $('.redirect').click(function () {
+                if ($("#redirect").val() == '1') {
+                    $("#redirect").val("0");
+                    $(".redirect_box").hide();
+                } else {
+                    $("#redirect").val("1");
+                    $(".redirect_box").show();
+                }
             });
             $('.enlarge').click(function () {
                 if ($("#enlargev").val() == '1') {

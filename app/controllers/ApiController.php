@@ -74,13 +74,15 @@ class ApiController extends BaseController
             $update['pc_domain'] = trim(Input::get('pc_domain'));
             $update['mobile_domain'] = trim(Input::get('mobile_domain'));
             if (trim(Input::get('pc_tpl_id')) == '0') {
-                $update['pc_tpl_num'] = 1;
+                // $update['pc_tpl_num'] = 1;
+                $update['pc_tpl_num'] = 'GP0001';
             } else {
 
                 $update['pc_tpl_num'] = trim(Input::get('pc_tpl_id'));
             }
             if (trim(Input::get('mobile_tpl_id')) == '0') {
-                $update['mobile_tpl_num'] = 1;
+                // $update['mobile_tpl_num'] = 1;
+                $update['mobile_tpl_num'] = 'GM0001';
             } else {
                 $update['mobile_tpl_num'] = trim(Input::get('mobile_tpl_id'));
             }
@@ -100,6 +102,10 @@ class ApiController extends BaseController
             $update['ftp_user_b'] = trim(Input::get('ftp_user_b'));
             $update['ftp_pwd_b'] = trim(Input::get('ftp_pwd_b'));
 
+            //获取外域PC，手机域名
+            $update['pc_out_domain'] = trim(Input::get('pc_out_domain'));
+            $update['mobile_out_domain'] = trim(Input::get('mobile_out_domain'));
+
             //===绑定账户===
             $switch_cus_name = Input::get('switch_cus_name');
             if (!empty($switch_cus_name)) {
@@ -115,8 +121,20 @@ class ApiController extends BaseController
                 //修改操作
                 $coustomer_old = Customer::where('id', $cus_id)->first();
                 $save = Customer::where('id', $cus_id)->update($update);
-                $pc_id = Template::where('tpl_num', $update['pc_tpl_num'])->where('type', 1)->pluck('id');
-                $mobile_id = Template::where('tpl_num', $update['mobile_tpl_num'])->where('type', 2)->pluck('id');
+                //===新旧===
+                if(preg_match('/G\d{4}P(CN|EN|TW|JP)\d{2}/',$update['pc_tpl_num'])){
+                    $pc_id = Template::where('name', $update['pc_tpl_num'])->where('type', 1)->pluck('id');
+                }elseif(preg_match('/GP\d{4}/',$update['pc_tpl_num'])){
+                    $pc_id = Template::where('name_bak', $update['pc_tpl_num'])->where('type', 1)->pluck('id');
+                }
+                if(preg_match('/G\d{4}M(CN|EN|TW|JP)\d{2}/',$update['mobile_tpl_num'])){
+                    $mobile_id = Template::where('name', $update['mobile_tpl_num'])->where('type', 2)->pluck('id');
+                }elseif(preg_match('/GM\d{4}/',$update['mobile_tpl_num'])){
+                    $mobile_id = Template::where('name_bak', $update['mobile_tpl_num'])->where('type', 2)->pluck('id');
+                }
+                //===新旧===
+                // $pc_id = Template::where('tpl_num', $update['pc_tpl_num'])->where('type', 1)->pluck('id');
+                // $mobile_id = Template::where('tpl_num', $update['mobile_tpl_num'])->where('type', 2)->pluck('id');
                 $pc_templateid = Template::where('cus_id', $cus_id)->where('type', 1)->pluck('id');
                 $mobile_templateid = Template::where('cus_id', $cus_id)->where('type', 2)->pluck('id');
                 if ($pc_templateid != NULL) {
@@ -133,9 +151,24 @@ class ApiController extends BaseController
                 //===更新CustomerInfo时，更新capacity字段===
                 CustomerInfo::where('cus_id', $cus_id)->update(['pc_domain' => $update['pc_domain'], 'mobile_domain' => $update['mobile_domain'], 'capacity' => $capacity]);
                 if ($update['stage'] != $coustomer_old['stage'] or $update['pc_domain'] != $coustomer_old['pc_domain'] or $update['mobile_domain'] != $coustomer_old['mobile_domain']) {
+                    //获取绑定ip地址
+                    $ftp_array = explode(':', $update['ftp_address']);
                     $common = new CommonController();
-                    @$common->postsend(trim($update['weburl'], '/') . "/urlbind.php", array('cus_name' => $update['name'], 'stage' => $update['stage'], 'pc_domain' => $update['pc_domain'], 'mobile_domain' => $update['mobile_domain'], 'stage_old' => $coustomer_old['stage'], 'pc_domain_old' => $coustomer_old['pc_domain'], 'mobile_domain_old' => $coustomer_old['mobile_domain']));
+                    @$common->postsend(trim($ftp_array[0], '/') . "/urlbind.php", array('cus_name' => $update['name'], 'stage' => $update['stage'], 'pc_domain' => $update['pc_domain'], 'mobile_domain' => $update['mobile_domain'], 'stage_old' => $coustomer_old['stage'], 'pc_domain_old' => $coustomer_old['pc_domain'], 'mobile_domain_old' => $coustomer_old['mobile_domain']));
+                    //如果有ftp_b
+                    if($update['ftp_address_b']){
+                        $ftp_array_b = explode(':', $update['ftp_address_b']);
+                        @$common->postsend(trim($ftp_array_b[0], '/') . "/urlbind.php", array('cus_name' => $update['name'], 'stage' => $update['stage'], 'pc_domain' => $update['pc_domain'], 'mobile_domain' => $update['mobile_domain'], 'stage_old' => $coustomer_old['stage'], 'pc_domain_old' => $coustomer_old['pc_domain'], 'mobile_domain_old' => $coustomer_old['mobile_domain']));
+                    }
                 }
+                //如果有ftp_b
+                // if($update['ftp_address_b']){
+                //         $ftp_array_b = explode(':', $update['ftp_address_b']);
+                //         if ($update['stage'] != $coustomer_old['stage'] or $update['pc_domain'] != $coustomer_old['pc_domain'] or $update['mobile_domain'] != $coustomer_old['mobile_domain']) {
+                //         $common = new CommonController();
+                //         @$common->postsend(trim($ftp_array_b[0], '/') . "/urlbind.php", array('cus_name' => $update['name'], 'stage' => $update['stage'], 'pc_domain' => $update['pc_domain'], 'mobile_domain' => $update['mobile_domain'], 'stage_old' => $coustomer_old['stage'], 'pc_domain_old' => $coustomer_old['pc_domain'], 'mobile_domain_old' => $coustomer_old['mobile_domain']));
+                //     }
+                // }
                 if ($save) {
                     $result = ['err' => 1000, 'msg' => '更新用户成功'];
                 } else {
@@ -151,8 +184,20 @@ class ApiController extends BaseController
                 }
                 $insert_id = Customer::insertGetId($update);
                 if ($insert_id) {
-                    $pc_id = Template::where('tpl_num', $update['pc_tpl_num'])->where('type', 1)->pluck('id');
-                    $mobile_id = Template::where('tpl_num', $update['mobile_tpl_num'])->where('type', 2)->pluck('id');
+                    //===新旧===
+                    if(preg_match('/G\d{4}P(CN|EN|TW|JP)\d{2}/',$update['pc_tpl_num'])){
+                        $pc_id = Template::where('name', $update['pc_tpl_num'])->where('type', 1)->pluck('id');
+                    }elseif(preg_match('/GP\d{4}/',$update['pc_tpl_num'])){
+                        $pc_id = Template::where('name_bak', $update['pc_tpl_num'])->where('type', 1)->pluck('id');
+                    }
+                    if(preg_match('/G\d{4}M(CN|EN|TW|JP)\d{2}/',$update['mobile_tpl_num'])){
+                        $mobile_id = Template::where('name', $update['mobile_tpl_num'])->where('type', 2)->pluck('id');
+                    }elseif(preg_match('/GM\d{4}/',$update['mobile_tpl_num'])){
+                        $mobile_id = Template::where('name_bak', $update['mobile_tpl_num'])->where('type', 2)->pluck('id');
+                    }
+                    //===新旧===
+                    // $pc_id = Template::where('tpl_num', $update['pc_tpl_num'])->where('type', 1)->pluck('id');
+                    // $mobile_id = Template::where('tpl_num', $update['mobile_tpl_num'])->where('type', 2)->pluck('id');
                     WebsiteInfo::insert(['cus_id' => $insert_id, 'pc_tpl_id' => $pc_id, 'mobile_tpl_id' => $mobile_id]);
                     CustomerInfo::insert(['cus_id' => $insert_id, 'pc_domain' => $update['pc_domain'], 'mobile_domain' => $update['mobile_domain'], 'capacity' => $capacity, 'capacity_use' => 0]);
 
@@ -227,6 +272,8 @@ class ApiController extends BaseController
                             ftp_mkdir($conn, $update['name'] . '/mobile/images/s/page_index');
 
                             ftp_close($conn);
+
+
                         } else {
                             ftp_login($conn, $update['ftp_user'], $update['ftp_pwd']);
                             ftp_mkdir($conn, $update['ftp_dir'] . '/images');
@@ -261,7 +308,7 @@ class ApiController extends BaseController
                             ftp_close($conn);
                         }
                         $common = new CommonController();
-                        @$common->postsend(trim($update['weburl'], '/') . "/urlbind.php", array('cus_name' => $update['name'], 'stage' => $update['stage'], 'pc_domain' => $update['pc_domain'], 'mobile_domain' => $update['mobile_domain']));
+                        @$common->postsend(trim($ftp_array[0], '/') . "/urlbind.php", array('cus_name' => $update['name'], 'stage' => $update['stage'], 'pc_domain' => $update['pc_domain'], 'mobile_domain' => $update['mobile_domain']));
                         $this->logsAdd("customer", __FUNCTION__, __CLASS__, 1, "创建用户", 1);
                         $result = ['err' => 1000, 'msg' => '创建用户成功'];
                     } else {
@@ -309,6 +356,10 @@ class ApiController extends BaseController
 
                                 ftp_close($conn_b);
                             }
+                            $common = new CommonController();
+                            @$common->postsend(trim($ftp_array_b[0], '/') . "/urlbind.php", array('cus_name' => $update['name'], 'stage' => $update['stage'], 'pc_domain' => $update['pc_domain'], 'mobile_domain' => $update['mobile_domain']));
+                            $this->logsAdd("customer", __FUNCTION__, __CLASS__, 1, "备用ftp上创建用户", 1);
+                            $result = ['err' => 1000, 'msg' => '备用ftp上创建用户成功'];
                         }
                     }
                 } else {
@@ -391,19 +442,6 @@ class ApiController extends BaseController
                     return Response::json(['err' => 1004, 'msg' => 'FTP服务器登陆失败']);
                     exit();
                 }
-
-                //判断是否有ftp_b，如果有则同样进行连接
-                if($Customer['ftp_address_b']){
-                    $conn_b = @ftp_connect($Customer['ftp_address_b'], $Customer['ftp_port']);
-                    if (!$conn_b) {
-                        return Response::json(['err' => 1004, 'msg' => 'FTP_B服务器连接失败']);
-                        exit();
-                    }
-                    if (!@ftp_login($conn_b, $Customer['ftp_user_b'], $Customer['ftp_pwd_b'])) {
-                        return Response::json(['err' => 1004, 'msg' => 'FTP_B服务器登陆失败']);
-                        exit();
-                    } 
-                }
                 
 
                 //保存数据库
@@ -459,12 +497,24 @@ class ApiController extends BaseController
                             @ftp_close($conn);
 
                             //ftp_b是不是连接，是就同时删除ftp_b的文件
-                            if($conn_b){
-                                @ftp_pasv($conn_b, 1); 
-                                $this->userFtpDel($conn_b, './'.$name, $name);
-                                @ftp_rename($conn_b,$name,"beifen_".$name);
-                                @ftp_close($conn_b); 
+                            if($Customer['ftp_address_b']){
+                                $conn_b = @ftp_connect($Customer['ftp_address_b'], $Customer['ftp_port']);
+                                if (!$conn_b) {
+                                    return Response::json(['err' => 1004, 'msg' => 'FTP_B服务器连接失败']);
+                                    exit();
+                                }
+                                if (!@ftp_login($conn_b, $Customer['ftp_user_b'], $Customer['ftp_pwd_b'])) {
+                                    return Response::json(['err' => 1004, 'msg' => 'FTP_B服务器登陆失败']);
+                                    exit();
+                                }
+                                if($conn_b){
+                                    @ftp_pasv($conn_b, 1); 
+                                    $this->userFtpDel($conn_b, './'.$name, $name);
+                                    @ftp_rename($conn_b,$name,"beifen_".$name);
+                                    @ftp_close($conn_b); 
+                                }
                             }
+                            
                             
 //                            echo "删除完成！";
                             $this->logsAdd("customer", __FUNCTION__, __CLASS__, 999, "删除用户(备份)", 1);

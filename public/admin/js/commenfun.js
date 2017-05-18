@@ -615,6 +615,9 @@ function column_type(type) {
         case 9:
             col_type = '万用表单';
             break;
+        case 10:
+            col_type = '海报单页';
+            break;
     }
     return col_type;
 }

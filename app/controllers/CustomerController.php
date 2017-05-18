@@ -78,6 +78,12 @@ class CustomerController extends BaseController {
 
         $data['lastpushtime'] = strtotime($customer_info->lastpushtime);
         $data['floatadv'] = json_decode($customer_info->floatadv);
+
+        //重定向
+        $data['is_redirect'] = $customer_info->is_redirect;
+        $data['ed_url'] = $customer_info->ed_url;
+        $data['redirect_url'] = $customer_info->redirect_url;
+
         foreach ((array) $data['floatadv'] as $key => $val) {
             if (!isset($val->type) || $val->type == 'adv') {
                 $data['floatadv'][$key]->url = asset('customers/' . $customer . '/images/l/common/' . $val->adv);
@@ -85,6 +91,11 @@ class CustomerController extends BaseController {
         }
         $websiteinfo = WebsiteInfo::where('cus_id', $cus_id)->select('pc_tpl_id', 'mobile_tpl_id')->first();
         $pc_tpl_name = Template::where('id', $websiteinfo->pc_tpl_id)->pluck('name');
+        //===PC模板调用===
+        if(empty($pc_tpl_name) or !is_dir(public_path('/templates/'.$pc_tpl_name))){
+            $pc_tpl_name = Template::where('id', $websiteinfo->pc_tpl_id)->pluck('name_bak');
+        }
+        //===PC模板调用===
         if ($pc_tpl_name != null) {
             $pc_ini = parse_ini_file(public_path('/templates/' . $pc_tpl_name . '/config.ini'), true);
         } else {
@@ -92,6 +103,11 @@ class CustomerController extends BaseController {
         }
         $data['pc_logo_size'] = isset($pc_ini['Config']['LogoSize']) ? strtr($pc_ini['Config']['LogoSize'], '*', '/') : 0;
         $mobile_tpl_name = Template::where('id', $websiteinfo->mobile_tpl_id)->pluck('name');
+        //===手机模板调用===
+        if(empty($mobile_tpl_name) or !is_dir(public_path('/templates/'.$mobile_tpl_name))){
+            $mobile_tpl_name = Template::where('id', $websiteinfo->mobile_tpl_id)->pluck('name_bak');
+        }
+        //===手机模板调用===
         if ($mobile_tpl_name != null) {
             $mobile_ini = parse_ini_file(public_path('/templates/' . $mobile_tpl_name . '/config.ini'), true);
         } else {
@@ -164,6 +180,10 @@ class CustomerController extends BaseController {
         $data['lang'] = Input::get('lang');
         $data['copyright'] = Input::get('copyright');
         $data['pushed'] = 1;
+        //重定向
+        $data['is_redirect'] = Input::get('redirect');
+        $data['ed_url'] = Input::get('ed_url');
+        $data['redirect_url'] = Input::get('redirect_url');
 
         $float_adv = Input::get('float_adv') ? Input::get('float_adv') : array();
         $float_type = Input::get('float_type') ? Input::get('float_type') : array();

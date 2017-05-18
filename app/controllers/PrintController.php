@@ -97,12 +97,22 @@ class PrintController extends BaseController
                 $this->domain = '/mobile'; //url() . '/mobile';
                 $this->tpl_id = WebsiteInfo::where('cus_id', $this->cus_id)->pluck('mobile_tpl_id');
                 $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.mobile_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
+                //===预览手机模板调用===
+                if(empty($this->themename) or !is_dir(public_path('/templates/'.$this->themename)) or !is_dir(app_path('/views/templates/'.$this->themename))){
+                    $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.mobile_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name_bak');
+                }
+                //===预览手机模板调用===
                 $this->source_dir = '/customers/' . $this->customer . '/mobile/images/'; //asset('customers/' . $this->customer . '/mobile/images/') . '/';
                 self::$cus_domain = ''; //CustomerInfo::where('cus_id', $this->cus_id)->pluck('mobile_domain');
             } else {
                 $this->domain = ''; //url();
                 $this->tpl_id = WebsiteInfo::where('cus_id', $this->cus_id)->pluck('pc_tpl_id');
                 $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.pc_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
+                //===预览PC模板调用===
+                if(empty($this->themename) or !is_dir(public_path('/templates/'.$this->themename)) or !is_dir(app_path('/views/templates/'.$this->themename))){
+                    $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.pc_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name_bak');
+                }
+                //===预览PC模板调用===
                 self::$cus_domain = ''; //CustomerInfo::where('cus_id', $this->cus_id)->pluck('pc_domain');
             }
             $this->site_url = '/templates/' . $this->themename . '/';
@@ -110,6 +120,11 @@ class PrintController extends BaseController
             if ($this->type == 'mobile') {
                 $this->tpl_id = WebsiteInfo::where('cus_id', $this->cus_id)->pluck('mobile_tpl_id');
                 $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.mobile_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
+                //===推送手机模板调用===
+                if(empty($this->themename) or !is_dir(public_path('/templates/'.$this->themename)) or !is_dir(app_path('/views/templates/'.$this->themename))){
+                    $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.mobile_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name_bak');
+                }
+                //===推送手机模板调用===
                 $mobile_domain = CustomerInfo::where('cus_id', $this->cus_id)->pluck('mobile_domain');
                 $mobile_domain = str_replace('http://', '', $mobile_domain);
                 if (strpos($mobile_domain, '/mobile')) {
@@ -119,6 +134,11 @@ class PrintController extends BaseController
             } else {
                 $this->tpl_id = WebsiteInfo::where('cus_id', $this->cus_id)->pluck('pc_tpl_id');
                 $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.pc_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
+                //===推送PC模板调用===
+                if(empty($this->themename) or !is_dir(public_path('/templates/'.$this->themename)) or !is_dir(app_path('/views/templates/'.$this->themename))){
+                    $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.pc_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name_bak');
+                }
+                //===推送PC模板调用===
                 $this->domain = ''; //CustomerInfo::where('cus_id', $this->cus_id)->pluck('pc_domain');
             }
             self::$cus_domain = ''; // $this->domain;
@@ -594,21 +614,46 @@ class PrintController extends BaseController
         $lang = CustomerInfo::where('cus_id', $this->cus_id)->pluck('lang');
         $templatesC = new TemplatesController;
         $tempname = $templatesC->getTemplatesName($this->type);
-        $flagPlatform = substr($tempname, 0, 2);
-        $flagLanguage = substr($tempname, 2, 1);
+        // $flagPlatform = substr($tempname, 0, 2);
+        // $flagLanguage = substr($tempname, 2, 1);
+        //===新命名的P、M和语言的获取===
+        if(preg_match('/G\d{4}(P|M)(CN|EN|TW|JP)\d{2}/', $tempname)){
+            $flagPlatform = substr($tempname, 5, 1);
+            $flagLanguage = substr($tempname, 6, 2);  
+        } elseif (preg_match('/GM\d{4}/', $tempname)){
+            $flagPlatform = substr($tempname, 0, 2);
+            $flagLanguage = substr($tempname, 2, 1);
+        }
+        //===类型的获取end===
         $customerC = new CustomerController;
         $domain = $customerC->getSwitchCustomer(); //双站用户
         if (!empty($domain)) {
-            if ($flagPlatform == 'GM') {//===手机===
+            // if ($flagPlatform == 'GM') {//===手机===
+            //     $language_url = $domain['switch_mobile_domain'];
+            // } elseif ($flagPlatform == 'GP') {//===PC===
+            //     $language_url = $domain['switch_pc_domain'];
+            // }
+            // if ($flagLanguage == 9) {//===英文===
+            //     $language = '中文版';
+            // } elseif ($flagLanguage == 0) {//===中文===
+            //     $language = 'English';
+            // }
+            //新命名的判断方式
+            if ($flagPlatform == 'M' or $flagPlatform == 'GM') {//===手机
                 $language_url = $domain['switch_mobile_domain'];
-            } elseif ($flagPlatform == 'GP') {//===PC===
+                $current_url = $domain['current_mobile_domain'];
+            } elseif ($flagPlatform == 'P' or $flagPlatform == 'GP') {//===PC
                 $language_url = $domain['switch_pc_domain'];
+                $current_url = $domain['current_pc_domain'];
             }
-            if ($flagLanguage == 9) {//===英文===
-                $language = '中文版';
-            } elseif ($flagLanguage == 0) {//===中文===
-                $language = 'English';
+            if ($flagLanguage == 'EN' or $flagLanguage == 9) {//===英文
+                $language = '<li><a href="' . $language_url . '">中文版</a></li>';
+                $language .= '<li><a href="' . $current_url . '">English</a></li>';
+            } elseif ($flagLanguage == 'CN' or $flagLanguage == 0) {//===中文
+                $language = '<li><a href="' . $current_url . '">中文版</a></li>';
+                $language .= '<li><a href="' . $language_url . '">English</a></li>';
             }
+
         }
         if ($result != 0) {//===?===
             if (trim($config_arr[1]) != "custom") {//===非自定义===
@@ -899,8 +944,17 @@ class PrintController extends BaseController
         //===显示版本切换链接===
         $templatesC = new TemplatesController;
         $tempname = $templatesC->getTemplatesName($this->type);
-        $flagPlatform = substr($tempname, 0, 2);
-        $flagLanguage = substr($tempname, 2, 1);
+        // $flagPlatform = substr($tempname, 0, 2);
+        // $flagLanguage = substr($tempname, 2, 1);
+        //===新命名的P、M和语言的获取===
+        if(preg_match('/G\d{4}(P|M)(CN|EN|TW|JP)\d{2}/', $tempname)){
+            $flagPlatform = substr($tempname, 5, 1);
+            $flagLanguage = substr($tempname, 6, 2);  
+        } elseif (preg_match('/GM\d{4}/', $tempname)){
+            $flagPlatform = substr($tempname, 0, 2);
+            $flagLanguage = substr($tempname, 2, 1);
+        }
+        //===类型的获取end===
         $tempscript = "";
         $language_css = "";
         $customerC = new CustomerController;
@@ -909,20 +963,36 @@ class PrintController extends BaseController
         $language_url = '#';
         if (!empty($domain)) {//===中英文双站===
             if ($customer_info->bilingual_v) {
-                if ($flagPlatform == 'GM') {//===手机
+                // if ($flagPlatform == 'GM') {//===手机
+                //     $language_url = $domain['switch_mobile_domain'];
+                //     $current_url = $domain['current_mobile_domain'];
+                // } elseif ($flagPlatform == 'GP') {//===PC
+                //     $language_url = $domain['switch_pc_domain'];
+                //     $current_url = $domain['current_pc_domain'];
+                // }
+                // if ($flagLanguage == 9) {//===英文
+                //     $language = '<li><a href="' . $language_url . '">中文版</a></li>';
+                //     $language .= '<li><a href="' . $current_url . '">English</a></li>';
+                // } elseif ($flagLanguage == 0) {//===中文
+                //     $language = '<li><a href="' . $current_url . '">中文版</a></li>';
+                //     $language .= '<li><a href="' . $language_url . '">English</a></li>';
+                // }
+                //===新命名的判断方式===
+                if ($flagPlatform == 'M' or $flagPlatform == 'GM') {//===手机
                     $language_url = $domain['switch_mobile_domain'];
                     $current_url = $domain['current_mobile_domain'];
-                } elseif ($flagPlatform == 'GP') {//===PC
+                } elseif ($flagPlatform == 'P' or $flagPlatform == 'GP') {//===PC
                     $language_url = $domain['switch_pc_domain'];
                     $current_url = $domain['current_pc_domain'];
                 }
-                if ($flagLanguage == 9) {//===英文
+                if ($flagLanguage == 'EN' or $flagLanguage == 9) {//===英文
                     $language = '<li><a href="' . $language_url . '">中文版</a></li>';
                     $language .= '<li><a href="' . $current_url . '">English</a></li>';
-                } elseif ($flagLanguage == 0) {//===中文
+                } elseif ($flagLanguage == 'CN' or $flagLanguage == 0) {//===中文
                     $language = '<li><a href="' . $current_url . '">中文版</a></li>';
                     $language .= '<li><a href="' . $language_url . '">English</a></li>';
                 }
+                //===新命名===
                 $language_ul = '<ul>'
                     . $language
                     . '</ul>';
@@ -1043,6 +1113,25 @@ class PrintController extends BaseController
             }
             //===版权选择_end===
             $footscript = $customer_info->pc_footer_script;
+            //判断是否有重定向，有则插入重定向js
+            if($customer_info->is_redirect){
+                $footscript .= '<script>'
+                               .'$(document).ready(function() { '
+                               .'var host = window.location.host;'
+                               .'function GetUrlRelativePath(){'
+                               .'var url = document.location.toString();'
+                               .'var arrUrl = url.split("//");'
+                               .'var start = arrUrl[1].indexOf("/");'
+                               .'var relUrl = arrUrl[1].substring(start);'
+                               .'if(relUrl.indexOf("?") != -1){'
+                               .'relUrl = relUrl.split("?")[0];}'
+                               .'return relUrl;}'
+                               .'url=GetUrlRelativePath();'
+                               .'if(host=="'.$customer_info->ed_url.'"){'
+                               .'window.location.href = "http://'.$customer_info->redirect_url.'"+url;}'
+                               .'});'
+                               .'</script>';
+            }
             $footscript .= $formJS;
             $footscript .= '<script type="text/javascript" src="/quickbar/js/quickbar.js?' . $this->cus_id . 'pc"></script>';
             $footscript .= $add_color_css;
@@ -1243,7 +1332,7 @@ class PrintController extends BaseController
         error_reporting(E_ALL ^ E_NOTICE);
         //===whereIN(type:9) 万用表单===
         if ($this->type == 'pc') {
-            $navs = Classify::where('cus_id', $this->cus_id)->where('pc_show', 1)->whereIN('type', [1, 2, 3, 4, 5, 6, 9])->select('id', 'type', 'img', 'icon', 'name', 'url', 'p_id', 'en_name', 'view_name', 'meta_description as description', 'open_page')->OrderBy('sort', 'asc')->get()->toArray();
+            $navs = Classify::where('cus_id', $this->cus_id)->where('pc_show', 1)->whereIN('type', [1, 2, 3, 4, 5, 6, 9,10])->select('id', 'type', 'img', 'icon', 'name', 'url', 'p_id', 'en_name', 'view_name', 'meta_description as description', 'open_page')->OrderBy('sort', 'asc')->get()->toArray();
         } else {
             $navs = Classify::where('cus_id', $this->cus_id)->where('mobile_show', 1)->select('id', 'type', 'img', 'icon', 'name', 'url', 'p_id', 'en_name', 'view_name', 'meta_description as description', 'open_page')->OrderBy('sort', 'asc')->get()->toArray();
         }
@@ -2354,6 +2443,7 @@ class PrintController extends BaseController
 //        } else {
 //            $id = Classify::where('view_name', $param)->pluck('id');
         }
+        $classify = Classify::find($id);
         if ($_SERVER["HTTP_HOST"] != TONGYI_DOMAIN) {
             $result = $this->pagePublic($id);
             $customerinfo = CustomerInfo::where("cus_id", $this->cus_id)->first();
@@ -2365,7 +2455,7 @@ class PrintController extends BaseController
                     $pagenavs = [];
                 }
             }
-            $classify = Classify::find($id);
+            // $classify = Classify::find($id);
             $result['title'] = ($customerinfo->title != "") ? $customerinfo->title . '-' . $classify->name : $classify->name;
             $result['keywords'] = ($classify->meta_keywords != "") ? $classify->meta_keywords : $customerinfo->keywords;
             $result['description'] = ($classify->meta_description != "") ? $classify->meta_description : $customerinfo->description;
@@ -2642,19 +2732,51 @@ class PrintController extends BaseController
                 }
 
                 //return View::make('templates.'.$this->themename.'.'.$viewname,$result);
-            }
+            }elseif ($classify->type == 10) {//新增海报
+                if ($this->showtype == 'preview') {
+                    $result['list']['content'] = Page::where('id', $classify->page_id)->pluck('content');
+                } else {
+                    $result['list']['content'] = preg_replace('/\/customers\/' . $this->customer . '/i', '', Page::where('id', $classify->page_id)->pluck('content'));
+                }
+            } 
+
             $result["viewname"] = $viewname;
         }
         if ($_SERVER["HTTP_HOST"] == TONGYI_TUISONG_JUYU_IP) {
             return json_encode($result);
         }
-        $smarty = new Smarty;
-        $smarty->setTemplateDir(app_path('views/templates/' . $this->themename));
-        $smarty->setCompileDir(app_path('storage/views/compile'));
-        $smarty->registerPlugin('function', 'mapExt', array('PrintController', 'createMap'));
-        $smarty->registerPlugin('function', 'shareExt', array('PrintController', 'createShare'));
-        $smarty->assign($result);
-        @$smarty->display($result["viewname"] . '.html');
+        if($classify->type != 10){
+            $smarty = new Smarty;
+            $smarty->setTemplateDir(app_path('views/templates/' . $this->themename));
+            $smarty->setCompileDir(app_path('storage/views/compile'));
+            $smarty->registerPlugin('function', 'mapExt', array('PrintController', 'createMap'));
+            $smarty->registerPlugin('function', 'shareExt', array('PrintController', 'createShare'));
+            $smarty->assign($result);
+            @$smarty->display($result["viewname"] . '.html');
+        }else{
+            $html = '<!DOCTYPE">
+                    <html>
+                    <head>
+                    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+                    <title>{$title}</title>
+                    </head>
+                    <body>
+                        {$list.content}
+                    </body>
+                    </html>';
+            $smarty = new Smarty;
+            $smarty->setCompileDir(app_path('storage/views/compile'));
+            $smarty->assign($result);
+            @$smarty->display('string:'.$html);
+        }
+
+        // $smarty = new Smarty;
+        // $smarty->setTemplateDir(app_path('views/templates/' . $this->themename));
+        // $smarty->setCompileDir(app_path('storage/views/compile'));
+        // $smarty->registerPlugin('function', 'mapExt', array('PrintController', 'createMap'));
+        // $smarty->registerPlugin('function', 'shareExt', array('PrintController', 'createShare'));
+        // $smarty->assign($result);
+        // @$smarty->display($result["viewname"] . '.html');
     }
 
     /**
@@ -2713,7 +2835,8 @@ class PrintController extends BaseController
             $formCdata = $formC->getFormdataForPrint($form_id);
         } else {//跳转404
         }
-        if (in_array($classify->type, array(1, 2, 3, 4, 5, 9))) {
+        // if (in_array($classify->type, array(1, 2, 3, 4, 5, 9))) {
+        if (in_array($classify->type, array(1, 2, 3, 4, 5, 9, 10))) {//加入海报
             $sub = str_replace('-', '_', $viewname);
             $data = $this->pagedata($viewname, $publicdata['pagedata']);
             $index = $this->detailList($data);
@@ -2786,13 +2909,21 @@ class PrintController extends BaseController
             } elseif ($classify->type == 9) {
                 //===显示前端===
                 $result['list']['content'] = $formC->showFormHtmlForPrint($formCdata);
-            }
-            $json_keys = $this->getJsonKey($viewname . '.html');
-            if (count($json_keys)) {
-                foreach ($json_keys as $key) {
-                    $result[$key] = $this->detailList($this->pagedata($key));
+            } elseif ($classify->type == 10) {//海报
+                if ($this->showtype == 'preview') {
+                    $result['list']['content'] = Page::where('id', $classify->page_id)->pluck('content');
+                } else {
+                    $result['list']['content'] = preg_replace('/\/customers\/' . $this->customer . '/i', '', Page::where('id', $classify->page_id)->pluck('content'));
                 }
             }
+            if($classify->type != 10){
+               $json_keys = $this->getJsonKey($viewname . '.html');
+                if (count($json_keys)) {
+                    foreach ($json_keys as $key) {
+                        $result[$key] = $this->detailList($this->pagedata($key));
+                    }
+                } 
+            }             
             if ($classify->type == 5) {
                 $result['footscript'] .= '<STYLE TYPE="text/css"> 
                 <!-- 
@@ -2947,7 +3078,8 @@ class PrintController extends BaseController
             $index_list = $this->pageList($id, 1);
             $the_result['page_links'] = $index_list['page_links'];
             //===显示类型不是'list-page'===
-            if ($classify->type != 5 && $classify->type != 4 && $classify->type != 9) {
+            // if ($classify->type != 5 && $classify->type != 4 && $classify->type != 9) {
+            if ($classify->type != 5 && $classify->type != 4 && $classify->type != 9 && $classify->type != 10) {//加入海报
                 $the_result['list']['data'] = $index_list['data'];
                 $the_result['list']['total'] = $index_list['page_links']['total'];
             }
@@ -2957,9 +3089,19 @@ class PrintController extends BaseController
 //            } else {
             $path = $this->type == 'pc' ? public_path('customers/' . $this->customer . '/category/' . $id . '.html') : public_path('customers/' . $this->customer . '/mobile/category/' . $id . '.html');
 //            }
-            $content = $publicdata['repleace'][$viewname . '.html'];
-            $content = preg_replace($publicdata['pattern'], $publicdata['repleace'], $content);
-            $output = $this->pushdisplay($the_result, $content);
+            //===判断是不是海报===
+            if($classify->type != 10){//不是海报的执行语句
+                $content = $publicdata['repleace'][$viewname . '.html'];
+                $content = preg_replace($publicdata['pattern'], $publicdata['repleace'], $content);
+                $output = $this->pushdisplay($the_result, $content);                
+            }else{
+                $output = $this->pushPoster($the_result);
+            }
+            //===判断结束===
+            //原
+            // $content = $publicdata['repleace'][$viewname . '.html'];
+            // $content = preg_replace($publicdata['pattern'], $publicdata['repleace'], $content);
+            // $output = $this->pushdisplay($the_result, $content);
             if (!count($result['footer_navs'])) {
                 $output = preg_replace('/<a href="' . str_replace("/", "\/", $result['site_url']) . '"( target="_blank")?( )?>首页<\/a>( )?\|([\s]+)?(<br \/>)?(<br>)?/is', "", $output);
                 $output = preg_replace('/<a href="' . str_replace("/", "\/", $result['site_url']) . '"( target="_blank")?( )?>Home<\/a>( )?\|([\s]+)?(<br \/>)?(<br>)?/is', "", $output);
@@ -2976,7 +3118,8 @@ class PrintController extends BaseController
             }
             $last_html_precent += $html_precent;
             //===显示类型不是'list-page'===
-            if ($classify->type != 5 && $classify->type != 4 && $classify->type != 9) {
+            // if ($classify->type != 5 && $classify->type != 4 && $classify->type != 9) {
+            if ($classify->type != 5 && $classify->type != 4 && $classify->type != 9 && $classify->type != 10) {//加入海报
                 for ($i = 1; $i <= $page; $i++) {
                     $the_result = $result;
                     $index_list = $this->pageList($id, $i);
@@ -3021,6 +3164,29 @@ class PrintController extends BaseController
         $smarty->setCompileDir(app_path('storage/views/compile'));
         $smarty->registerPlugin('function', 'mapExt', array('PrintController', 'createMap'));
         $smarty->registerPlugin('function', 'shareExt', array('PrintController', 'createShare'));
+        $smarty->assign($result);
+        $smarty->display('string:' . $content);
+        $output = ob_get_contents();
+        ob_end_clean();
+        return $output;
+    }
+
+    //海报的生成
+    private function pushPoster($result)
+    {
+        ob_start();
+        $content = '<!DOCTYPE">
+                    <html>
+                    <head>
+                    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+                    <title>{$title}</title>
+                    </head>
+                    <body>
+                        {$list.content}
+                    </body>
+                    </html>';
+        $smarty = new Smarty;
+        $smarty->setCompileDir(app_path('storage/views/compile'));
         $smarty->assign($result);
         $smarty->display('string:' . $content);
         $output = ob_get_contents();
@@ -3212,6 +3378,8 @@ class PrintController extends BaseController
                 $result['article']['image'] = $article->img ? ($this->source_dir . 'l/articles/' . $article->img) : '';
                 $result['article']['images'] = $images;
                 $result['article']['content'] = $article->content;
+                //解决编辑器英文引号与分享图标的问题
+                // $result['article']['content'] = htmlentities($result['article']['content'],ENT_COMPAT);
             } else {
                 if ($article_next === NULL) {
                     $result['article']['next']['title'] = $lang['the_last'];
@@ -3230,6 +3398,8 @@ class PrintController extends BaseController
                 $result['article']['image'] = $article->img ? ($this->source_dir . 'l/articles/' . $article->img) : '';
                 $result['article']['images'] = $images;
                 $result['article']['content'] = preg_replace('/\/customers\/' . $this->customer . '/i', '', $article->content);
+                //解决编辑器英文引号与分享图标的问题
+                // $result['article']['content'] = htmlentities($result['article']['content'],ENT_COMPAT);
             }
             $result['article']['description'] = $article->introduction;
             $result['article']['pubdate'] = (string)$article->created_at;
@@ -3355,6 +3525,9 @@ class PrintController extends BaseController
             $the_result['article']['image'] = $article['img'] ? ($this->source_dir . 'l/articles/' . $article['img']) : '';
             $the_result['article']['images'] = $images;
             $the_result['article']['content'] = preg_replace('/\/customers\/' . $this->customer . '/i', '', $article['content']);
+            //解决编辑器英文引号与分享图标的问题
+            // $the_result['article']['content'] = htmlentities($the_result['article']['content'],ENT_COMPAT);
+            
             $the_result['article']['description'] = $article['introduction'];
             $the_result['article']['pubdate'] = $article['created_at'];
             $the_result['article']['pubtimestamp'] = strtotime($article['created_at']);
