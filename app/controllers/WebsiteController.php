@@ -290,6 +290,9 @@ class WebsiteController extends BaseController {
             } else {
                 $tpl_info = Template::where('type', $type)->where('id', $id)->where('cus_id', 0)->first();
                 $name = $tpl_info->name;
+                if(!is_dir(app_path('/views/templates/'.$name)) or !is_dir(public_path('/templates/'.$name))){
+                    $name = $tpl_info->name_bak;
+                }
                 $new_name = $name . '_' . $cus_id;
                 $template = new Template;
                 $template->name = $new_name;
