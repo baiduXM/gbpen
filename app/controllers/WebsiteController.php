@@ -237,7 +237,10 @@ class WebsiteController extends BaseController {
                 @$this->_remove_Dir(public_path("templates/$tpl_dir"));
                 @$this->_remove_Dir(app_path("views/templates/$tpl_dir"));
             }            
-            $color_list = TemplateToColor::where('template_id', $former_id)->lists('color_id');
+            @$color_list = TemplateToColor::where('template_id', $former_id)->lists('color_id');
+            if(empty($color_list)){
+                $color_list[0] = 0;
+            }
             if ($type == 1) {
                 $update = ['pc_tpl_id' => $former_id, 'pc_color_id' => $color_list[0]];
             } else {
