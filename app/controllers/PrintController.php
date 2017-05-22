@@ -620,7 +620,7 @@ class PrintController extends BaseController
         if(preg_match('/G\d{4}(P|M)(CN|EN|TW|JP)\d{2}/', $tempname)){
             $flagPlatform = substr($tempname, 5, 1);
             $flagLanguage = substr($tempname, 6, 2);  
-        } elseif (preg_match('/GM\d{4}/', $tempname)){
+        } elseif (preg_match('/G(P|M)\d{4}/', $tempname)){
             $flagPlatform = substr($tempname, 0, 2);
             $flagLanguage = substr($tempname, 2, 1);
         }
@@ -950,7 +950,7 @@ class PrintController extends BaseController
         if(preg_match('/G\d{4}(P|M)(CN|EN|TW|JP)\d{2}/', $tempname)){
             $flagPlatform = substr($tempname, 5, 1);
             $flagLanguage = substr($tempname, 6, 2);  
-        } elseif (preg_match('/GM\d{4}/', $tempname)){
+        } elseif (preg_match('/G(P|M)\d{4}/', $tempname)){
             $flagPlatform = substr($tempname, 0, 2);
             $flagLanguage = substr($tempname, 2, 1);
         }
