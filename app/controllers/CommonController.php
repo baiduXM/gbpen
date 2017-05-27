@@ -63,9 +63,9 @@ class CommonController extends BaseController {
             $MobileQuickBar = unserialize($QuickBar);
         }
         $DefaultQuickBar = [
-            ['pc' => 0, 'mobile' => 0, 'name' => '电话', 'en_name' => 'Tel', 'icon' => '&#xe602;', 'image' => 'icon/2.png', 'data' => '18459276266', 'link' => 'tel://', 'type' => 'tel', 'enable_pc' => 1, 'enable_mobile' => 1],
-            ['pc' => 0, 'mobile' => 0, 'name' => '短信', 'en_name' => 'SMS', 'icon' => '&#xe604;', 'image' => 'icon/3.png', 'data' => '18459276267', 'link' => 'sms://', 'type' => 'sms', 'enable_pc' => 1, 'enable_mobile' => 1],
-            ['pc' => 0, 'mobile' => 0, 'name' => '咨询', 'en_name' => 'IM', 'icon' => '&#xe606;', 'image' => 'icon/5.png', 'data' => '小E:156568451@QQ|客服-XX:10000@QQ|客服-YY:10000@53kf', 'type' => 'im', 'enable_pc' => 1, 'enable_mobile' => 1],
+            ['pc' => 0, 'mobile' => 0, 'name' => '电话', 'en_name' => 'Tel', 'icon' => '&#xe602;', 'image' => 'icon/2.png', 'data' => '', 'link' => 'tel://', 'type' => 'tel', 'enable_pc' => 1, 'enable_mobile' => 1],
+            ['pc' => 0, 'mobile' => 0, 'name' => '短信', 'en_name' => 'SMS', 'icon' => '&#xe604;', 'image' => 'icon/3.png', 'data' => '', 'link' => 'sms://', 'type' => 'sms', 'enable_pc' => 1, 'enable_mobile' => 1],
+            ['pc' => 0, 'mobile' => 0, 'name' => '咨询', 'en_name' => 'IM', 'icon' => '&#xe606;', 'image' => 'icon/5.png', 'data' => '小E:10000@QQ|客服-XX:10000@QQ|客服-YY:10000@53kf', 'type' => 'im', 'enable_pc' => 1, 'enable_mobile' => 1],
             ['pc' => 0, 'mobile' => 0, 'name' => '地图', 'en_name' => 'Map', 'icon' => '&#xe605;', 'image' => 'icon/4.png', 'data' => '', 'type' => 'map', 'enable_pc' => 1, 'enable_mobile' => 1],
             ['pc' => 0, 'mobile' => 0, 'name' => '分享', 'en_name' => 'Share', 'icon' => '&#xe600;', 'image' => 'icon/8.png', 'data' => 'qzone,tqq,tsina,ibaidu', 'type' => 'share', 'enable_pc' => 1, 'enable_mobile' => 1],
             ['pc' => 0, 'mobile' => 0, 'name' => '外链', 'en_name' => 'Link', 'icon' => '&#xe632;', 'image' => 'icon/8.png', 'data' => 'http://www.gbpen.com/', 'type' => 'link', 'enable_pc' => 1, 'enable_mobile' => 1],
