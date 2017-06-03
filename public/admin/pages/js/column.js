@@ -235,7 +235,7 @@ function columnController($scope, $http) {
             });
         },
         urled:function(){
-            $(".check_url").click(function (){                
+            $(".check_url").click(function (){
                 var id = $(this).attr('name');
                 $(this).hide();
                 $http.get('../customer-info').success(function (json){
@@ -245,11 +245,7 @@ function columnController($scope, $http) {
                     $("#url_"+id).show();
                     $("#url_"+id).focus();
                     $("#url_"+id).select();
-                });
-                // $(this).hide();
-                // $(this).parent('td').find(".copy_url").show();
-                // $(this).parent('td').find(".copy_url").focus();                           
-                // $(this).parent('td').find(".copy_url").select();                           
+                });                         
             });
             $(".copy_url").blur(function(){
                 $(this).hide();
