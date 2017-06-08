@@ -1006,7 +1006,7 @@ class PrintController extends BaseController
                     . '</script>';
 //            $language_css = '<link rel="stylesheet" href="http://swap.5067.org/css/language.css">';
                 $language_css = '<style type="text/css">
-                    .language_div{z-index:1001; width:160px; height: 36px; position: absolute;top:0px; right:' . $customer_info->bilingual_position . 'px;background-color: ' . $customer_info->bilingual_background_color . '; opacity: ' . $customer_info->bilingual_background_opacity . ';}
+                    .language_div{z-index:10002; width:160px; height: 36px; position: absolute;top:0px; right:' . $customer_info->bilingual_position . 'px;background-color: ' . $customer_info->bilingual_background_color . '; opacity: ' . $customer_info->bilingual_background_opacity . ';}
                     .language_div ul{ margin: 0 auto;}
                     .language_div ul li{width: 80px;height: 36px;float: right;text-align: center; }
                     .language_div ul li a{ line-height: 36px; display: inline-block; padding: 0 10px;color:' . $customer_info->bilingual_font_color . ';}
