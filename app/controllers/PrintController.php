@@ -1061,6 +1061,7 @@ class PrintController extends BaseController
                 curl_close($ch);
             }
             $headscript = $customer_info->pc_header_script;
+            $headscript .= '<script type="text/javascript" src="../visits.php"></script>';
             //===版权选择===
             switch ($customer_info->copyright) {
                 case 'en_xiamen':
@@ -1155,6 +1156,7 @@ class PrintController extends BaseController
                 $add_color_css = '<script type="text/javascript">$("head").append(\'<link rel="stylesheet" href="' . $css_file_name . '" type="text/css">\')</script>';
             }
             $headscript = $customer_info->mobile_header_script;
+            $headscript .= '<script type="text/javascript" src="../../visits.php"></script>';
             $footprint = $customer_info->mobile_footer;
             $footscript = $customer_info->mobile_footer_script;
 //            $footscript .= $formJS;
