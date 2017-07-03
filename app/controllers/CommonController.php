@@ -63,9 +63,9 @@ class CommonController extends BaseController {
             $MobileQuickBar = unserialize($QuickBar);
         }
         $DefaultQuickBar = [
-            ['pc' => 0, 'mobile' => 0, 'name' => '电话', 'en_name' => 'Tel', 'icon' => '&#xe602;', 'image' => 'icon/2.png', 'data' => '18459276266', 'link' => 'tel://', 'type' => 'tel', 'enable_pc' => 1, 'enable_mobile' => 1],
-            ['pc' => 0, 'mobile' => 0, 'name' => '短信', 'en_name' => 'SMS', 'icon' => '&#xe604;', 'image' => 'icon/3.png', 'data' => '18459276267', 'link' => 'sms://', 'type' => 'sms', 'enable_pc' => 1, 'enable_mobile' => 1],
-            ['pc' => 0, 'mobile' => 0, 'name' => '咨询', 'en_name' => 'IM', 'icon' => '&#xe606;', 'image' => 'icon/5.png', 'data' => '小E:156568451@QQ|客服-XX:10000@QQ|客服-YY:10000@53kf', 'type' => 'im', 'enable_pc' => 1, 'enable_mobile' => 1],
+            ['pc' => 0, 'mobile' => 0, 'name' => '电话', 'en_name' => 'Tel', 'icon' => '&#xe602;', 'image' => 'icon/2.png', 'data' => '', 'link' => 'tel://', 'type' => 'tel', 'enable_pc' => 1, 'enable_mobile' => 1],
+            ['pc' => 0, 'mobile' => 0, 'name' => '短信', 'en_name' => 'SMS', 'icon' => '&#xe604;', 'image' => 'icon/3.png', 'data' => '', 'link' => 'sms://', 'type' => 'sms', 'enable_pc' => 1, 'enable_mobile' => 1],
+            ['pc' => 0, 'mobile' => 0, 'name' => '咨询', 'en_name' => 'IM', 'icon' => '&#xe606;', 'image' => 'icon/5.png', 'data' => '小E:10000@QQ|客服-XX:10000@QQ|客服-YY:10000@53kf', 'type' => 'im', 'enable_pc' => 1, 'enable_mobile' => 1],
             ['pc' => 0, 'mobile' => 0, 'name' => '地图', 'en_name' => 'Map', 'icon' => '&#xe605;', 'image' => 'icon/4.png', 'data' => '', 'type' => 'map', 'enable_pc' => 1, 'enable_mobile' => 1],
             ['pc' => 0, 'mobile' => 0, 'name' => '分享', 'en_name' => 'Share', 'icon' => '&#xe600;', 'image' => 'icon/8.png', 'data' => 'qzone,tqq,tsina,ibaidu', 'type' => 'share', 'enable_pc' => 1, 'enable_mobile' => 1],
             ['pc' => 0, 'mobile' => 0, 'name' => '外链', 'en_name' => 'Link', 'icon' => '&#xe632;', 'image' => 'icon/8.png', 'data' => 'http://www.gbpen.com/', 'type' => 'link', 'enable_pc' => 1, 'enable_mobile' => 1],
@@ -200,6 +200,11 @@ class CommonController extends BaseController {
         $template = WebsiteInfo::where('cus_id', $id)->first();
         //===获取PC端颜色===
         $pc_name = Template::where('id', $template->pc_tpl_id)->pluck('name');
+        //===PC模板调用===
+        if(empty($pc_name) or !is_dir(public_path('/templates/'.$pc_name))){
+            $pc_name = Template::where('id', $template->pc_tpl_id)->pluck('name_bak');
+        }
+        //===PC模板调用===
         $config_str = file_get_contents(public_path('/templates/' . $pc_name) . '/config.ini');
         $result = preg_match($search, $config_str, $config_arr);
         if (!$result) {
@@ -210,14 +215,32 @@ class CommonController extends BaseController {
         $colors['pc'] = explode(',', ltrim($color_str, ','));
         //===获取手机端颜色===
         $mobile_name = Template::where('id', $template->mobile_tpl_id)->pluck('name');
+        //===手机模板调用===
+        if(empty($mobile_name) or !is_dir(public_path('/templates/'.$mobile_name))){
+            $mobile_name = Template::where('id', $template->mobile_tpl_id)->pluck('name_bak'); 
+        }
+        //===手机模板调用===
         $config_str = file_get_contents(public_path('/templates/' . $mobile_name) . '/config.ini');
         $result = preg_match($search, $config_str, $config_arr);
         if ($result) {
             if (trim($config_arr[1]) != 'custom') {
                 $color_str = preg_replace("/\|(.*)/i", '', $config_arr[1]);
                 $colors['mobile'] = explode(',', ltrim($color_str, ','));
+            }else{
+                $config_arr = array();
+                $config_arr[1] = '#AAA,#BBB,#FFF|totop';
+                $color_str = preg_replace("/\|(.*)/i", '', $config_arr[1]);
+                $colors['mobile'] = explode(',', ltrim($color_str, ','));
             }
         }
+        //===获取网站类型===
+        $stage = Customer::where('id',$id)->pluck('stage');
+        if($stage==1){
+            unset($colors['mobile']);
+        }elseif($stage==2){
+            unset($colors['pc']);
+        }
+        //===将不符合类型的颜色设置释放===
         return $colors;
     }
 

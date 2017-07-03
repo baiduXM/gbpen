@@ -583,13 +583,23 @@ class FormController extends BaseController
                 $_div .= $this->$func($item);
                 $_div .= "</li>";
             }
-            $_div .= "</ul><div style='text-align:center;'>"
+            if($form_data->lang == 1){
+                $_div .= "</ul><div style='text-align:center;'>"
                 . "<input type='submit' value='提交' class='button form-btn' name='submit' />"
 //                    . "<button id='sbok'>提交</button>"
                 . "<input type='reset' value='重置' class='button form-btn' /></div>"
                 . "<input type='hidden' name='form_id' value='$form_id' />"
                 . "<input type='hidden' name='action_type' value='$form_data->action_type' />"
                 . "<input type='hidden' name='action_text' value=" . $tempform['action_text'] . " />";
+            }else{
+                $_div .= "</ul><div style='text-align:center;'>"
+                . "<input type='submit' value='submit' class='button form-btn' name='submit' />"
+                . "<input type='reset' value='reset' class='button form-btn' /></div>"
+                . "<input type='hidden' name='form_id' value='$form_id' />"
+                . "<input type='hidden' name='action_type' value='$form_data->action_type' />"
+                . "<input type='hidden' name='action_text' value=" . $tempform['action_text'] . " />";
+            }
+            
 
             if (empty($site) || $site == 'page') {//===普通表单===
                 $_form .= "<form class='fv-unit-preview unit-preview' id='box_show' action='http://swap.5067.org/userdata/$form_id' method='post' >"

@@ -26,7 +26,7 @@
             {{Form::close()}}
             <div class="connect">
                 <div class="connect">
-                    <p>{{HTML::link('get-remind','忘记密码?')}}</p>
+{{--                    <p>{{HTML::link('get-remind','忘记密码?')}}</p>--}}
                     <p>
                         <a class="facebook" href=""></a>
                         <a class="twitter" href=""></a>

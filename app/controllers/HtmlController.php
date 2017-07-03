@@ -387,7 +387,7 @@ class HtmlController extends BaseController
                 $ftp_array_b[1] = isset($ftp_array_b[1]) ? $ftp_array_b[1] : $port;
                 $conn_b = ftp_connect($ftp_array_b[0], $ftp_array_b[1]); 
                 if($conn_b){
-                    ftp_login($conn_b, $customerinfo->ftp_user, $customerinfo->ftp_pwd);
+                    ftp_login($conn_b, $customerinfo->ftp_user_b, $customerinfo->ftp_pwd_b);
                     ftp_pasv($conn_b, 1);
                     if (@ftp_chdir($conn_b, $this->customer) == FALSE) {
                         ftp_mkdir($conn_b, $this->customer);
@@ -489,6 +489,11 @@ class HtmlController extends BaseController
         if ($zip->open($path, ZipArchive::CREATE) === TRUE) {
             if (!isset($end) || $end == 1) {
                 $mobile_dir = Template::where('website_info.cus_id', $this->cus_id)->Leftjoin('website_info', 'template.id', '=', 'website_info.mobile_tpl_id')->pluck('name');
+                //===手机模板调用===
+                if(empty($mobile_dir) or !is_dir(public_path("templates/$mobile_dir/"))){
+                    $mobile_dir = Template::where('website_info.cus_id', $this->cus_id)->Leftjoin('website_info', 'template.id', '=', 'website_info.mobile_tpl_id')->pluck('name_bak');
+                }
+                //===手机模板调用===
                 $maim_dir = public_path("templates/$mobile_dir/");
                 $this->addDir($maim_dir, $zip, 'mobile/');
             }
@@ -536,7 +541,7 @@ class HtmlController extends BaseController
                     $ftp_array_b[1] = isset($ftp_array_b[1]) ? $ftp_array_b[1] : $port;
                     $conn_b = ftp_connect($ftp_array_b[0], $ftp_array_b[1]);
                     if($conn_b){
-                        ftp_login($conn_b, $customerinfo->ftp_user, $customerinfo->ftp_pwd);
+                        ftp_login($conn_b, $customerinfo->ftp_user_b, $customerinfo->ftp_pwd_b);
                         ftp_pasv($conn_b, 1);
                         if (@ftp_chdir($conn_b, $this->customer) == FALSE) {
                             ftp_mkdir($conn_b, $this->customer);
@@ -654,7 +659,7 @@ class HtmlController extends BaseController
                 $ftp_array_b[1] = isset($ftp_array_b[1]) ? $ftp_array_b[1] : $port;
                 $conn_b = ftp_connect($ftp_array_b[0], $ftp_array_b[1]); 
                 if($conn_b){
-                    ftp_login($conn_b, $customerinfo->ftp_user, $customerinfo->ftp_pwd);
+                    ftp_login($conn_b, $customerinfo->ftp_user_b, $customerinfo->ftp_pwd_b);
                     ftp_pasv($conn_b, 1);
                     if (@ftp_nlist($conn_b, $this->customer) === FALSE) {
                         ftp_mkdir($conn_b, $this->customer);
@@ -917,6 +922,16 @@ class HtmlController extends BaseController
                     $webinfo = WebsiteInfo::where("cus_id", $this->cus_id)->first();
                     $pc_themename = Template::where("id", $webinfo->pc_tpl_id)->pluck("name");
                     $mobile_themename = Template::where("id", $webinfo->mobile_tpl_id)->pluck("name");
+                    //===PC模板调用===
+                    if(empty($pc_themename) or !is_dir(public_path('customers/' . $this->customer . "/temp/" . $pc_themename))){
+                        $pc_themename = Template::where("id", $webinfo->pc_tpl_id)->pluck("name_bak");
+                    }
+                    //===PC模板调用===
+                    //===手机模板调用===
+                    if(empty($mobile_themename) or !is_dir(public_path('customers/' . $this->customer . "/temp/" . $mobile_themename))){
+                        $mobile_themename = Template::where("id", $webinfo->mobile_tpl_id)->pluck("name_bak");
+                    }
+                    //===手机模板调用===
                     $pc_tpl = Template::where("id", $webinfo->pc_tpl_id)->first();
                     $m_tpl = Template::where("id", $webinfo->mobile_tpl_id)->first();
                     if (file_exists($customer_pack_path)) {
@@ -970,7 +985,14 @@ class HtmlController extends BaseController
                         $classify = new ClassifyController();
                         $data = $classify->classifyids();
                         if (count($data) > 0) {
-                            echo '<iframe id="grad_push" src="../grad_push?pushgrad=1&end=0&push_c_id=' . $data[0] . '&name=' . Input::get("name") . '&remember_token=' . Input::get("remember_token") . '" frameborder="0" style="display:none;"></iframe>';
+                            //===分栏推送只有一栏也可以推送===
+                            if(count($data) == 1){
+                                echo '<iframe id="grad_push" src="../grad_push?pushgrad=1&end=1&push_c_id=' . $data[0] . '&name=' . Input::get("name") . '&remember_token=' . Input::get("remember_token") . '" frameborder="0" style="display:none;"></iframe>';
+                            }else{
+                                echo '<iframe id="grad_push" src="../grad_push?pushgrad=1&end=0&push_c_id=' . $data[0] . '&name=' . Input::get("name") . '&remember_token=' . Input::get("remember_token") . '" frameborder="0" style="display:none;"></iframe>';
+                            }
+                            //===分栏推送===
+                            // echo '<iframe id="grad_push" src="../grad_push?pushgrad=1&end=0&push_c_id=' . $data[0] . '&name=' . Input::get("name") . '&remember_token=' . Input::get("remember_token") . '" frameborder="0" style="display:none;"></iframe>';
                             ob_flush();
                             flush();
                         } else {
@@ -1005,7 +1027,12 @@ class HtmlController extends BaseController
                         $classify = new ClassifyController();
                         $data = $classify->classifyids();
                         if (count($data) > 0) {
-                            echo '<iframe id="grad_push" src="../grad_push?pushgrad=1&end=0&push_c_id=' . $data[0] . '" frameborder="0" style="display:none;"></iframe>';
+                            if(count($data) == 1){
+                                echo '<iframe id="grad_push" src="../grad_push?pushgrad=1&end=1&push_c_id=' . $data[0] . '" frameborder="0" style="display:none;"></iframe>';
+                            }else{
+                                echo '<iframe id="grad_push" src="../grad_push?pushgrad=1&end=0&push_c_id=' . $data[0] . '" frameborder="0" style="display:none;"></iframe>';
+                            }
+                            // echo '<iframe id="grad_push" src="../grad_push?pushgrad=1&end=0&push_c_id=' . $data[0] . '" frameborder="0" style="display:none;"></iframe>';
                             ob_flush();
                             flush();
                         }
@@ -1095,7 +1122,7 @@ class HtmlController extends BaseController
         if ($_SERVER["SERVER_ADDR"] == TONGYI_IP || $_SERVER["SERVER_ADDR"] == TONGYI_JUYU_IP) {
             $webinfo = WebsiteInfo::where("cus_id", $this->cus_id)->first();
             $pc_themename = Template::where("id", $webinfo->pc_tpl_id)->pluck("name");
-            $mobile_themename = Template::where("id", $webinfo->mobile_tpl_id)->pluck("name");
+            $mobile_themename = Template::where("id", $webinfo->mobile_tpl_id)->pluck("name");            
             $pc_tpl = Template::where("id", $webinfo->pc_tpl_id)->first();
             $m_tpl = Template::where("id", $webinfo->mobile_tpl_id)->first();
             $conn = ftp_connect(TONGYI_TUISONG_JUYU_IP, TONGYI_TUISONG_FTP_PORT);
@@ -1108,6 +1135,16 @@ class HtmlController extends BaseController
                 }
                 $view_dir = app_path('views/templates/');
                 $json_dir = public_path('templates/');
+                //===PC模板调用===
+                if(empty($pc_themename) or !is_dir($view_dir . $pc_themename) or !is_dir($json_dir . $pc_themename)){
+                    $pc_themename = Template::where("id", $webinfo->pc_tpl_id)->pluck("name_bak");
+                }
+                //===PC模板调用===
+                //===手机模板调用===
+                if(empty($mobile_themename) or !is_dir($view_dir . $mobile_themename) or !is_dir($view_dir . $mobile_themename)){
+                    $mobile_themename = Template::where("id", $webinfo->mobile_tpl_id)->pluck("name_bak"); 
+                }
+                //===手机模板调用===
                 if ($pc_tpl->push_get_date == null || $pc_tpl->push_get_date == "" || $pc_tpl->push_get_date < $pc_tpl->updated_at) {
                     $pc_json = array();
                     $pc_json["themename"] = $pc_themename;
@@ -1289,7 +1326,9 @@ class HtmlController extends BaseController
                 } else {
                     $mindexhtml = $this->homgepagehtml('mobile');
                     $msearchhtml = $this->sendData('mobile');
-                    $mobile_classify_ids = Classify::where('cus_id', $this->cus_id)->where('mobile_show', 1)->lists('id');
+                    // $mobile_classify_ids = Classify::where('cus_id', $this->cus_id)->where('mobile_show', 1)->lists('id');
+                    //使海报能够推送
+                    $mobile_classify_ids = Classify::where('cus_id', $this->cus_id)->where('mobile_show', 1)->orWhere('type',10)->lists('id');
                     $mobile_article_ids = Articles::where('cus_id', $this->cus_id)->where('mobile_show', 1)->lists('id');
                 }
             }
@@ -1309,7 +1348,9 @@ class HtmlController extends BaseController
                 } else {
                     $indexhtml = $this->homgepagehtml('pc');
                     $searchhtml = $this->sendData('pc');
-                    $pc_classify_ids = Classify::where('cus_id', $this->cus_id)->where('pc_show', 1)->lists('id');
+                    // $pc_classify_ids = Classify::where('cus_id', $this->cus_id)->where('pc_show', 1)->lists('id');
+                    //使海报能够推送
+                    $pc_classify_ids = Classify::where('cus_id', $this->cus_id)->where('pc_show', 1)->orWhere('type',10)->lists('id');
                     $pc_article_ids = Articles::where('cus_id', $this->cus_id)->where('pc_show', 1)->lists('id');
                 }
             }
@@ -1386,11 +1427,21 @@ class HtmlController extends BaseController
             if ($zip->open($path, ZipArchive::CREATE) === TRUE) {
                 if ((!isset($end) || $end == 1) && $this->pcpush) {
                     $pc_dir = Template::where('website_info.cus_id', $this->cus_id)->Leftjoin('website_info', 'website_info.pc_tpl_id', '=', 'template.id')->pluck('name');
+                    //===PC模板调用===
+                    if(empty($pc_dir) or !is_dir(public_path("templates/$pc_dir/"))){
+                        $pc_dir = Template::where('website_info.cus_id', $this->cus_id)->Leftjoin('website_info', 'website_info.pc_tpl_id', '=', 'template.id')->pluck('name_bak');
+                    }
+                    //===PC模板调用===
                     $aim_dir = public_path("templates/$pc_dir/");
                     $this->addDir($aim_dir, $zip);
                 }
                 if ((!isset($end) || $end == 1) && $this->mobilepush) {
                     $mobile_dir = Template::where('website_info.cus_id', $this->cus_id)->Leftjoin('website_info', 'template.id', '=', 'website_info.mobile_tpl_id')->pluck('name');
+                    //===手机模板调用===
+                    if(empty($mobile_dir) or !is_dir(public_path("templates/$mobile_dir/"))){
+                        $mobile_dir = Template::where('website_info.cus_id', $this->cus_id)->Leftjoin('website_info', 'template.id', '=', 'website_info.mobile_tpl_id')->pluck('name_bak');
+                    }
+                    //===手机模板调用===
                     $maim_dir = public_path("templates/$mobile_dir/");
                     $this->addDir($maim_dir, $zip, 'mobile/');
                 }
