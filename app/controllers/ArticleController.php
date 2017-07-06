@@ -254,15 +254,15 @@ class ArticleController extends BaseController {
                 $cus_data = new PrintController();
                 $c_ids = explode(',', $cus_data->getChirldenCid($c_id));
                 if ($is_star) {
-                    $article_list = Articles::whereIn('c_id', $c_ids)->where('title', 'like', '%' . $search_word . '%')->where('is_star', '=', $is_star)->orderBy('is_top', 'DESC')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->paginate($per_page);
+                    $article_list = Articles::whereIn('c_id', $c_ids)->where('title', 'like', '%' . $search_word . '%')->where('is_star', '=', $is_star)->orderBy('is_top', 'DESC')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->orderBy('id','DESC')->paginate($per_page);
                 } else {
-                    $article_list = Articles::whereIn('c_id', $c_ids)->where('title', 'like', '%' . $search_word . '%')->orderBy('is_top', 'DESC')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->paginate($per_page);
+                    $article_list = Articles::whereIn('c_id', $c_ids)->where('title', 'like', '%' . $search_word . '%')->orderBy('is_top', 'DESC')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->orderBy('id','DESC')->paginate($per_page);
                 }
             } else {
                 if ($is_star) {
-                    $article_list = Articles::where('cus_id', '=', $cus_id)->where('title', 'like', '%' . $search_word . '%')->where('is_star', '=', $is_star)->orderBy('is_top', 'DESC')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->paginate($per_page);
+                    $article_list = Articles::where('cus_id', '=', $cus_id)->where('title', 'like', '%' . $search_word . '%')->where('is_star', '=', $is_star)->orderBy('is_top', 'DESC')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->orderBy('id','DESC')->paginate($per_page);
                 } else {
-                    $article_list = Articles::where('cus_id', '=', $cus_id)->where('title', 'like', '%' . $search_word . '%')->orderBy('is_top', 'DESC')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->paginate($per_page);
+                    $article_list = Articles::where('cus_id', '=', $cus_id)->where('title', 'like', '%' . $search_word . '%')->orderBy('is_top', 'DESC')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->orderBy('id','DESC')->paginate($per_page);
                 }
             }
         } else {
@@ -270,15 +270,15 @@ class ArticleController extends BaseController {
                 $cus_data = new PrintController();
                 $c_ids = explode(',', $cus_data->getChirldenCid($c_id));
                 if ($is_star) {
-                    $article_list = Articles::whereIn('c_id', $c_ids)->where('is_star', '=', $is_star)->orderBy('is_top', 'DESC')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->paginate($per_page);
+                    $article_list = Articles::whereIn('c_id', $c_ids)->where('is_star', '=', $is_star)->orderBy('is_top', 'DESC')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->orderBy('id','DESC')->paginate($per_page);
                 } else {
-                    $article_list = Articles::whereIn('c_id', $c_ids)->orderBy('is_top', 'DESC')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->paginate($per_page);
+                    $article_list = Articles::whereIn('c_id', $c_ids)->orderBy('is_top', 'DESC')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->orderBy('id','DESC')->paginate($per_page);
                 }
             } else {
                 if ($is_star) {
-                    $article_list = Articles::where('cus_id', '=', $cus_id)->where('is_star', '=', $is_star)->orderBy('is_top', 'DESC')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->paginate($per_page);
+                    $article_list = Articles::where('cus_id', '=', $cus_id)->where('is_star', '=', $is_star)->orderBy('is_top', 'DESC')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->orderBy('id','DESC')->paginate($per_page);
                 } else {
-                    $article_list = Articles::where('cus_id', '=', $cus_id)->orderBy('is_top', 'DESC')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->paginate($per_page);
+                    $article_list = Articles::where('cus_id', '=', $cus_id)->orderBy('is_top', 'DESC')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->orderBy('id','DESC')->paginate($per_page);
                 }
             }
         }
