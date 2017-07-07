@@ -7,6 +7,7 @@ function addarticleController($scope, $http, $location) {
     G_id ? G_id : '';
     G_c_id ? G_c_id : '';
     var back_page = getUrlParam('p') ? getUrlParam('p') : 1;
+    var search_word = getUrlParam('sw') ? getUrlParam('sw') : '';
     // 图片上传
     function AddarticleUpload(proportion) {
         $('.up_pic').on('click', function (event) {
@@ -323,14 +324,23 @@ function addarticleController($scope, $http, $location) {
                     }
                     alert('修改成功！');
 //                    location.href = history.go(-1);
-                    location.href = '#/article?p=' + back_page;
+                    var url = '#/article?p=' + back_page;
+                    if(search_word){
+                        url+='&search_word='+search_word;
+                    }
+                    location.href = url;
                 });
             });
         });
     }
     function AddarticleCancle() {
         $('.addcancle').click(function () {
-            location.href = '#/article?p=' + back_page;
+            // location.href = '#/article?p=' + back_page;
+            var url = '#/article?p=' + back_page;
+            if(search_word){
+                url+='&search_word='+search_word;
+            }
+            location.href = url;
         });
     }
 
