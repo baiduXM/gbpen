@@ -641,17 +641,13 @@ class PrintController extends BaseController
             //新命名的判断方式
             if ($flagPlatform == 'M' or $flagPlatform == 'GM') {//===手机
                 $language_url = $domain['switch_mobile_domain'];
-                $current_url = $domain['current_mobile_domain'];
-            } elseif ($flagPlatform == 'P' or $flagPlatform == 'GP') {//===PC
+            } elseif ($flagPlatform == 'GP') {//===PC===
                 $language_url = $domain['switch_pc_domain'];
-                $current_url = $domain['current_pc_domain'];
             }
-            if ($flagLanguage == 'EN' or $flagLanguage == 9) {//===英文
-                $language = '<li><a href="' . $language_url . '">中文版</a></li>';
-                $language .= '<li><a href="' . $current_url . '">English</a></li>';
-            } elseif ($flagLanguage == 'CN' or $flagLanguage == 0) {//===中文
-                $language = '<li><a href="' . $current_url . '">中文版</a></li>';
-                $language .= '<li><a href="' . $language_url . '">English</a></li>';
+            if ($flagLanguage == 9) {//===英文===
+                $language = '中文版';
+            } elseif ($flagLanguage == 0) {//===中文===
+                $language = 'English';
             }
 
         }

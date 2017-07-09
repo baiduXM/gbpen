@@ -675,6 +675,7 @@ class WebsiteController extends BaseController {
                     if ($up_result) {
                         $tpl = explode('.', $file->getClientOriginalName());
                         $tpl_name = $tpl[0];
+
                         //===判断命名方式===
                         // if(preg_match('/G\d{4}(P|M)(CN|EN|TW|JP)\d{2}/', $tpl_name)){
                         //     //查询对应的旧命名

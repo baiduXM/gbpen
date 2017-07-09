@@ -45,6 +45,7 @@ function articleController($scope, $http, $location) {
         }
         if (search_word != null) {
             urlparam += '&search_word=' + search_word;
+            $("[name='search_word']").val(search_word);
         }
         if (page != null) {
             urlparam += '&page=' + page;
@@ -125,6 +126,7 @@ function articleController($scope, $http, $location) {
                     </tr>\n\
                     <tr class="sapces"></tr>';
                     var now_page = getUrlParam('p') ? getUrlParam('p') : 1;
+                    var search_word = getUrlParam('search_word') ? getUrlParam('search_word') : '';
                     $.each(article_d, function (k, v) {
                         _div += '<tr class="article-check">\n\
                                         <td style="text-align: left">\n\
@@ -141,7 +143,7 @@ function articleController($scope, $http, $location) {
                                         </td>\n\
                                         <td>' + v.created_at + '</td>\n\\n\
                                         <td><input class="sort" type="text" data-id="' + v.id + '"  value="' + ((v.sort == 1000000) ? '' : v.sort) + '" /></td>\n\
-                                        <td><a style="margin:0 10px;" class="column-edit pr" href="#/addarticle?id=' + v.id + '&c_id=' + v.c_id + '&p=' + now_page + '"><i class="fa iconfont icon-bianji"></i><div class="warning"><i class="iconfont' + (v.img_err ? ' icon-gantanhao' : '') + '"></i></div></a><a class="delv" name="' + v.id + '"><i class="fa iconfont icon-delete mr5"></i></a></td>\n\
+                                        <td><a style="margin:0 10px;" class="column-edit pr" href="#/addarticle?id=' + v.id + '&c_id=' + v.c_id + '&p=' + now_page + '&sw='+search_word+'"><i class="fa iconfont icon-bianji"></i><div class="warning"><i class="iconfont' + (v.img_err ? ' icon-gantanhao' : '') + '"></i></div></a><a class="delv" name="' + v.id + '"><i class="fa iconfont icon-delete mr5"></i></a></td>\n\
                                     </tr>';
                     });
                     $('.a-table').html(_div);
@@ -170,17 +172,25 @@ function articleController($scope, $http, $location) {
 //                            if (page_index != null) {
 //                                urlparam += '&p=' + (page_index + 1);
 //                            }
-                            $scope.getArticleList({
-                                first: false,
-                                page: page_index + 1,
-                                cat_id: cat_id,
-                                is_star: is_star,
-                                ser_name: ser_name,
-                                search_word: search_word,
-                                ser_active: ser_active,
-                            });
+                            page_index = page_index + 1;
+                            // $scope.getArticleList({
+                            //     first: false,
+                            //     // page: page_index + 1,
+                            //     page: page_index,
+                            //     cat_id: cat_id,
+                            //     is_star: is_star,
+                            //     ser_name: ser_name,
+                            //     search_word: search_word,
+                            //     ser_active: ser_active,
+                            // });
 
-//                            window.location.hash = '#/article?1' + urlparam;
+                            var url = '#/article?p=' + page_index;
+                            var search_word = getUrlParam('search_word');
+                            if(search_word){
+                                url+= '&search_word=' + search_word;
+                            }
+
+                            window.location.hash = url;
                         }
                     });
                 } else {
@@ -639,12 +649,18 @@ function articleController($scope, $http, $location) {
         _searchWords: function () {
             $('.searcharticle').unbind('click').click(function () {
                 var search_word = $("[name='search_word']").val();
-                $scope.getArticleList({
-                    first: false,
-                    ser_active: true,
-                    ser_name: ser_name,
-                    search_word: search_word
-                });
+                // $scope.getArticleList({
+                //     first: false,
+                //     ser_active: true,
+                //     ser_name: ser_name,
+                //     page: 1,
+                //     search_word: search_word
+                // });
+                var url = '#/article?p=1';
+                if(search_word){
+                    url+= '&search_word=' + search_word;
+                }
+                window.location.hash = url;
             });
         }
     };
