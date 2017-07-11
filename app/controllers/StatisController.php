@@ -45,8 +45,10 @@ class StatisController extends BaseController {
             $end['count_mobile'] = $data[0]['count_mobile'] + $data_b[0]['count_mobile'];
             $end['count_today'] = $data[0]['count_today'] + $data_b[0]['count_today'];
             $res = Response::json(['err' => 0, 'msg' => '获取统计数据成功', 'data' => $end]);
-        }elseif ($data != NULL) {
+        } elseif ($data != NULL) {
             $res = Response::json(['err' => 0, 'msg' => '获取统计数据成功', 'data' => $data[0]]);
+        } elseif($data_b != NULL){
+            $res = Response::json(['err' => 0, 'msg' => '获取统计数据成功', 'data' => $data_b[0]]);
         } else {
             $res = Response::json(['err' => 1, 'msg' => '获取统计数据失败', 'data' => null]);
         }
