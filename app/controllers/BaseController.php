@@ -137,6 +137,10 @@ class BaseController extends Controller {
                 $host = "182.61.100.142";
                 $find = $hostarr[1];
                 break;
+            case "n03":
+                $host = "182.61.58.24";
+                $find = $hostarr[1];
+                break;
             default:
                 $host = "182.61.7.87";
                 $find = "域名未绑定";
