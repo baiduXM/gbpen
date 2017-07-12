@@ -351,6 +351,7 @@ function articleController($scope, $http, $location) {
             this._batchAdd();
             this._searchWords();//===模糊查找===
             this._refresh();//===刷新===
+            this._cpage();//===跳转页数===
             // this._batchEdit();
         },
         _refresh: function () {
@@ -643,6 +644,18 @@ function articleController($scope, $http, $location) {
                 } else {
 //                    window.location.hash = '#/batcharticle?ids=' + id_all + '';
                 }
+            });
+        },
+        //===跳转页数===
+        _cpage:function() {
+            $("#cpage").click(function(){
+                var tpage = $("#tpage").val();
+                var url = '#/article?p=' + tpage;
+                var search_word = getUrlParam('search_word');
+                if(search_word){
+                    url+= '&search_word=' + search_word;
+                }
+                window.location.hash = url;
             });
         },
         //===搜索关键词===
