@@ -1472,6 +1472,8 @@ class HtmlController extends BaseController
                         if ($this->pcpush) {
                             @ftp_put($conn, "/" . $this->customer . "/search.php", public_path("packages/search.php"), FTP_ASCII);
                             //@ftp_put($conn,"/".$this->customer."/quickbar.json",public_path('customers/'.$this->customer.'/quickbar.json'),FTP_ASCII);
+                            @ftp_put($conn, "/" . $this->customer . "/index.php", public_path("packages/count0711/index.php"), FTP_ASCII);
+                            @ftp_put($conn, "/" . $this->customer . "/read.php", public_path("packages/count0711/read.php"), FTP_ASCII);
                         }
                         if (file_exists($path)) {
                             ftp_put($conn, "/" . $this->customer . "/site.zip", $path, FTP_BINARY);
@@ -1483,6 +1485,7 @@ class HtmlController extends BaseController
                                 ftp_mkdir($conn, "/" . $this->customer . "/mobile");
                             }
                             //ftp_put($conn,"/".$this->customer."/mobile/quickbar.json",public_path('customers/'.$this->customer.'/mobile/quickbar.json'),FTP_ASCII);
+                            @ftp_put($conn, "/" . $this->customer . "/mobile/index.php", public_path("packages/count0711/mobile/index.php"), FTP_ASCII);
                         }
                         ftp_close($conn);
                     }
@@ -1508,6 +1511,8 @@ class HtmlController extends BaseController
                             ImgDel::where('cus_id', $this->cus_id)->delete();
                             if ($this->pcpush) {
                                 @ftp_put($conn_b, "/" . $this->customer . "/search.php", public_path("packages/search.php"), FTP_ASCII);
+                                @ftp_put($conn_b, "/" . $this->customer . "/index.php", public_path("packages/count0711/index.php"), FTP_ASCII);
+                                @ftp_put($conn_b, "/" . $this->customer . "/read.php", public_path("packages/count0711/read.php"), FTP_ASCII);
                             }
                             if (file_exists($path)) {
                                 ftp_put($conn_b, "/" . $this->customer . "/site.zip", $path, FTP_BINARY);
@@ -1515,6 +1520,7 @@ class HtmlController extends BaseController
                             ftp_put($conn_b, "/" . $this->customer . "/unzip.php", public_path("packages/unzip.php"), FTP_ASCII);
                             if ($this->mobilepush) {
                                 ftp_put($conn_b, "/" . $this->customer . "/mobile/search.php", public_path("packages/search.php"), FTP_ASCII);
+                                @ftp_put($conn_b, "/" . $this->customer . "/mobile/index.php", public_path("packages/count0711/mobile/index.php"), FTP_ASCII);
                                 if (@ftp_chdir($conn_b, "/" . $this->customer . "/mobile") == FALSE) {
                                     ftp_mkdir($conn_b, "/" . $this->customer . "/mobile");
                                 }
