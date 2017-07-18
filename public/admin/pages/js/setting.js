@@ -185,7 +185,7 @@ function settingController($scope, $http) {
                 var openstatus = $('input.chk').is(':checked');
                 if (openstatus) {
                     $('input.chk').nextAll('.switch_list').find('input,button').attr('disabled', (openstatus ? false : true));
-                    $('input.chk').prevAll('input,button').attr('disabled', (openstatus ? true : false));
+                    $('input.chk').prevAll('input,button').attr('readonly', (openstatus ? true : false));
                     $('input.chk').nextAll('.switch_list').slideToggle();
                 }
                 if (set.enlarge == '1') {
@@ -437,7 +437,7 @@ function settingController($scope, $http) {
                 var _this = $(this),
                         openstatus = _this.is(':checked');
                 _this.nextAll('.switch_list').find('input,button').prop('disabled', (_this.nextAll('.switch_list').is(":visible") ? true : false));
-                _this.prevAll('input,button').prop('disabled', (_this.prop("checked") ? true : false));
+                _this.prevAll('input,button').prop('readonly', (_this.prop("checked") ? true : false));
                 _this.nextAll('.switch_list').slideToggle();
                 $('.setting-content input[name=pc_page_count_switch]').val(openstatus ? '1' : '0');
             });
