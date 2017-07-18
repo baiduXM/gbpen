@@ -301,6 +301,11 @@ class UploadController extends BaseController
                 }
                 //===end===
                 @ftp_close($conn);
+                if(isset($conn_b)){
+                    if($conn_b){
+                       @ftp_close($conn_b); 
+                   }                    
+                }
                 return Response::json(['err' => 0, 'msg' => '保存成功', 'data' => $data]);
             }
         } else {
