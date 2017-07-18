@@ -1542,6 +1542,8 @@ class HtmlController extends BaseController
                         ImgDel::where('cus_id', $this->cus_id)->delete();
                         if ($this->pcpush) {
                             ftp_put($conn, $ftpdir . "/search.php", public_path("packages/search.php"), FTP_ASCII);
+                            @ftp_put($conn, $ftpdir . "/index.php", public_path("packages/count0711/index.php"), FTP_ASCII);
+                            @ftp_put($conn, $ftpdir . "/read.php", public_path("packages/count0711/read.php"), FTP_ASCII);
                             //ftp_put($conn,$ftpdir."/quickbar.json",public_path('customers/'.$this->customer.'/quickbar.json'),FTP_ASCII);
                         }
                         ftp_put($conn, $ftpdir . "/unzip.php", public_path("packages/unzip.php"), FTP_ASCII);
@@ -1550,6 +1552,7 @@ class HtmlController extends BaseController
                         }
                         if ($this->mobilepush) {
                             ftp_put($conn, $ftpdir . "/mobile/search.php", public_path("packages/search.php"), FTP_ASCII);
+                            @ftp_put($conn, $ftpdir . "/mobile/index.php", public_path("packages/count0711/mobile/index.php"), FTP_ASCII);
                             //ftp_put($conn,$ftpdir."/mobile/quickbar.json",public_path('customers/'.$this->customer.'/mobile/quickbar.json'),FTP_ASCII);
                         }
                         ftp_close($conn);
