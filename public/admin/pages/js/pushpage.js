@@ -1,4 +1,4 @@
-function pushpageController($scope) {
+function pushpageController($scope, $http, $location) {
     $scope.$parent.showbox = "main";
     $scope.$parent.homepreview = false;
     $scope.$parent.menu = [];
@@ -10,18 +10,21 @@ function pushpageController($scope) {
     }else if(msg==1002){
     	$('.refresh-name').html('B服务器推送失败');
     	$('.push_refresh').html('B服务器图片重推');
+    }else if(msg==1003){
+        $('.refresh-name').html('服务器推送失败');
+        $('.push_refresh').html('服务器图片重推');
     }
 
     $('.push_refresh').click(function(){
     	if(msg){
     		$http.get('../push-again',{msg:msg}).success(function(json){
-    			('.refresh-name').css('display','none');
+    			('.push_refresh').css('display','none');
     			var _div = '<h1 style="text-align:center;font-size:30px;">'+json.msg+'</h1><br/>';
     			$('.grad_refresh').before(_div);	    		
 	    	});
     	}else{
     		$http.get('../push-images').success(function(json){
-    			('.refresh-name').css('display','none');
+    			('.push_refresh').css('display','none');
     			var _div = '<h1 style="text-align:center;font-size:30px;">'+json.msg+'</h1><br/>';
     			$('.grad_refresh').before(_div);	    		
 	    	});

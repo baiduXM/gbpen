@@ -679,11 +679,16 @@ class UploadController extends BaseController
         if($customerinfo->ftp_address_b){
             $res2 = $this->pushimgb($customer,$customerinfo);
         }else{
-            $res2 = 1001;
+            $res2 = 1000;
         }
 
-        if($res1&&$res2){
-            return Response::json(['err' => 0, 'msg' => '服务器重传成功', 'data' => '']);
+        if($res1==1000&&$res2==1000){
+            @unlink(public_path('customers/' . $customer . '/img.zip'));
+            return Response::json(['err' => 0, 'msg' => '服务器重传成功', 'data' => '']);            
+        }elseif($res1!=1000&&$res2==100){
+            return Response::json(['err' => 1001, 'msg' => 'A服务器重传失败', 'data' => '']);
+        }elseif($res1==1000&&$res2!=100){
+            return Response::json(['err' => 1002, 'msg' => 'B服务器重传失败', 'data' => '']);
         }else{
             return Response::json(['err' => 1003, 'msg' => '服务器重传失败', 'data' => '']);
         }
@@ -705,9 +710,7 @@ class UploadController extends BaseController
                         $this->addImagesToZip($images . "/" . $filename, $zip);
                     }
                 } else { //将文件加入zip对象
-                    $zip->addFile($images . "/" . $filename, $array . '/' . $filename);
-                    echo $array . '/' . $filename;
-                    echo "<br/>";
+                    $zip->addFile($images . "/" . $filename, 'images/' . $array . '/' . $filename);
                 }
             }
         }
