@@ -572,6 +572,16 @@ Route::post('batchAdd', [//批量上传
     'uses' => 'UploadController@batchAdd'
 ]);
 
+Route::get('push-again', [//图片压缩包再推送
+    'as' => 'push-again',
+    'uses' => 'UploadController@pushagain'
+]);
+
+Route::get('push-images', [//图片压缩包再推送
+    'as' => 'push-images',
+    'uses' => 'UploadController@pushimg'
+]);
+
 Route::post('upload_template', [//模板上传
     'as' => 'upload_template',
     'uses' => 'WebsiteController@uploadTemplate'
