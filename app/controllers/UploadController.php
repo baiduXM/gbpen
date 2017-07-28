@@ -698,7 +698,11 @@ class UploadController extends BaseController
     //压缩用户图片目录
     protected function addImagesToZip($images, $zip){
         $lastDir = explode('images/', $images);
-        $lastDir = end($lastDir);
+        if(count($lastDir)<=1){
+            $lastDir = 'images';
+        }else{
+            $lastDir = 'images/' . end($lastDir);
+        }
         $array = $lastDir;
         $handler = opendir($images);
         while (($filename = readdir($handler)) !== false) {
@@ -710,7 +714,7 @@ class UploadController extends BaseController
                         $this->addImagesToZip($images . "/" . $filename, $zip);
                     }
                 } else { //将文件加入zip对象
-                    $zip->addFile($images . "/" . $filename, 'images/' . $array . '/' . $filename);
+                    $zip->addFile($images . "/" . $filename, $array . '/' . $filename);
                 }
             }
         }
