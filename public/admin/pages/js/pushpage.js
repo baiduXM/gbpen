@@ -3,7 +3,7 @@ function pushpageController($scope, $http, $location) {
     $scope.$parent.homepreview = false;
     $scope.$parent.menu = [];
 
-    var msg = getUrlParam('msg');
+    var msg = getUrlParam('msg')?getUrlParam('msg'):'';
     if(msg==1001){
     	$('.refresh-name').html('A服务器推送失败');
     	$('.push_refresh').html('A服务器图片重推');
@@ -17,8 +17,8 @@ function pushpageController($scope, $http, $location) {
 
     $('.push_refresh').click(function(){
     	if(msg){
-    		$http.get('../push-again',{msg:msg}).success(function(json){
-    			('.push_refresh').css('display','none');
+    		$http.get('../push-again?msg='+msg).success(function(json){
+    			$('.push_refresh').css('display','none');
     			var _div = '<h1 style="text-align:center;font-size:30px;">'+json.msg+'</h1><br/>';
     			$('.grad_refresh').before(_div);	    		
 	    	});

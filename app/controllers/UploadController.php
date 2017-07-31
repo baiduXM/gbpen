@@ -599,8 +599,7 @@ class UploadController extends BaseController
                     return Response::json(['err' => 0, 'msg' => '服务器重传成功', 'data' => '']);
                 }elseif($pusha == 1000 && $pushb!= 1000){
                     return Response::json(['err' => 1001, 'msg' => 'A服务器重传失败，请联系技术人员', 'data' => '']);
-                }
-                elseif($pushb == 1000 && $pusha != 1000){
+                }elseif($pushb == 1000 && $pusha != 1000){
                     return Response::json(['err' => 1002, 'msg' => 'B服务器重传失败，请联系技术人员', 'data' => '']);
                 }else{
                     return Response::json(['err' => 1003, 'msg' => '服务器重传失败，请联系技术人员', 'data' => '']);
