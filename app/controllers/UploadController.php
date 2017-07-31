@@ -683,13 +683,13 @@ class UploadController extends BaseController
 
         if($res1==1000&&$res2==1000){
             @unlink(public_path('customers/' . $customer . '/img.zip'));
-            return Response::json(['err' => 0, 'msg' => '服务器重传成功', 'data' => '']);            
+            return Response::json(['err' => 0, 'msg' => '整站图片推送成功', 'data' => '']);            
         }elseif($res1!=1000&&$res2==1000){
-            return Response::json(['err' => 1001, 'msg' => 'A服务器重传失败', 'data' => '']);
+            return Response::json(['err' => 1001, 'msg' => 'A服务器推送失败', 'data' => '']);
         }elseif($res1==1000&&$res2!=1000){
-            return Response::json(['err' => 1002, 'msg' => 'B服务器重传失败', 'data' => '']);
+            return Response::json(['err' => 1002, 'msg' => 'B服务器推送失败', 'data' => '']);
         }else{
-            return Response::json(['err' => 1003, 'msg' => '服务器重传失败', 'data' => '']);
+            return Response::json(['err' => 1003, 'msg' => '整站图片推送失败', 'data' => '']);
         }
 
     }

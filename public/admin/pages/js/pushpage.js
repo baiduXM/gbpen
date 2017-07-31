@@ -16,15 +16,17 @@ function pushpageController($scope, $http, $location) {
     }
 
     $('.push_refresh').click(function(){
+        $('.push_refresh').css('display','none');
+        $('.push_refresh_ing').css('display', 'block');
     	if(msg){
     		$http.get('../push-again?msg='+msg).success(function(json){
-    			$('.push_refresh').css('display','none');
+    			$('.push_refresh_ing').css('display', 'none');
     			var _div = '<h1 style="text-align:center;font-size:30px;">'+json.msg+'</h1><br/>';
     			$('.grad_refresh').before(_div);	    		
 	    	});
     	}else{
     		$http.get('../push-images').success(function(json){
-    			('.push_refresh').css('display','none');
+    			$('.push_refresh_ing').css('display', 'none');
     			var _div = '<h1 style="text-align:center;font-size:30px;">'+json.msg+'</h1><br/>';
     			$('.grad_refresh').before(_div);	    		
 	    	});
