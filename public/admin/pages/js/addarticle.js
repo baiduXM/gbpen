@@ -344,9 +344,9 @@ function addarticleController($scope, $http, $location) {
             if(search_word){
                 url+='&search_word='+search_word;
             }
-            // if(cat_id){
-            //     url+='&id='+cat_id;
-            // }
+            if(cat_id){
+                url+='&id='+cat_id;
+            }
             location.href = url;
         });
     }

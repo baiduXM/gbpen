@@ -20,7 +20,12 @@ function articleController($scope, $http, $location) {
     $scope.is_star = $_GET['is_star'] == undefined ? null : parseInt($_GET['is_star']);
     $scope.ser_name = $_GET['ser_name'] == undefined ? null : $_GET['ser_name'];
     $scope.search_word = $_GET['search_word'] == undefined ? null : $_GET['search_word'];
-    var ser_name = '分类查找';
+    if($scope.ser_name!=null){
+        var ser_name = $scope.ser_name;
+    }else{
+       var ser_name = '分类查找'; 
+    }
+    
     /**
      * 文章列表Model
      * @param {type} option
@@ -129,6 +134,9 @@ function articleController($scope, $http, $location) {
                     // var now_page = getUrlParam('p') ? getUrlParam('p') : 1;
                     var search_word = getUrlParam('search_word') ? getUrlParam('search_word') : '';
                     search_word = escape(escape(search_word));
+                    if(cat_id==null){
+                        cat_id = '';
+                    }
                     $.each(article_d, function (k, v) {
                         _div += '<tr class="article-check">\n\
                                         <td style="text-align: left">\n\
@@ -145,7 +153,7 @@ function articleController($scope, $http, $location) {
                                         </td>\n\
                                         <td>' + v.created_at + '</td>\n\\n\
                                         <td><input class="sort" type="text" data-id="' + v.id + '"  value="' + ((v.sort == 1000000) ? '' : v.sort) + '" /></td>\n\
-                                        <td><a style="margin:0 10px;" class="column-edit pr" href="#/addarticle?id=' + v.id + '&c_id=' + v.c_id + '&p=' + page + '&sw='+search_word+'"><i class="fa iconfont icon-bianji"></i><div class="warning"><i class="iconfont' + (v.img_err ? ' icon-gantanhao' : '') + '"></i></div></a><a class="delv" name="' + v.id + '"><i class="fa iconfont icon-delete mr5"></i></a></td>\n\
+                                        <td><a style="margin:0 10px;" class="column-edit pr" href="#/addarticle?id=' + v.id + '&c_id=' + cat_id + '&p=' + page + '&sw='+search_word+'"><i class="fa iconfont icon-bianji"></i><div class="warning"><i class="iconfont' + (v.img_err ? ' icon-gantanhao' : '') + '"></i></div></a><a class="delv" name="' + v.id + '"><i class="fa iconfont icon-delete mr5"></i></a></td>\n\
                                     </tr>';
                     });
                     $('.a-table').html(_div);
@@ -671,12 +679,22 @@ function articleController($scope, $http, $location) {
         //===跳转页数===
         _cpage:function() {
             $("#cpage").click(function(){
+                var cat_id = $scope.cat_id;
+                var ser_name = $('.newarticle').find('span').text();
                 var tpage = $("#tpage").val();
                 var url = '#/article?p=' + tpage;
-                var search_word = getUrlParam('search_word');
+                var search_word = getUrlParam('search_word')?getUrlParam('search_word'):'';
+                search_word = escape(search_word);
                 if(search_word){
                     url+= '&search_word=' + search_word;
                 }
+                if(cat_id){
+                    url+= '&id=' + cat_id;
+                }
+                if(ser_name!=null&&ser_name!='分类查找'){
+                    url+= '&ser_name=' + ser_name;
+                }
+
                 window.location.hash = url;
             });
         },
@@ -691,9 +709,17 @@ function articleController($scope, $http, $location) {
                 //     page: 1,
                 //     search_word: search_word
                 // });
+                var cat_id = $scope.cat_id;
+                var ser_name = $('.newarticle').find('span').text();
                 var url = '#/article?p=1';
                 if(search_word){
                     url+= '&search_word=' + search_word;
+                }
+                if(cat_id){
+                    url+= '&id=' + cat_id;
+                }
+                if(ser_name!=null&&ser_name!='分类查找'){
+                    url+= '&ser_name=' + ser_name;
                 }
                 window.location.hash = url;
             });
