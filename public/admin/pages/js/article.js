@@ -641,9 +641,12 @@ function articleController($scope, $http, $location) {
                                 $http.post('../article-batch-add', {ArticleBatch: articleArray, pc_show: pc_show, mobile_show: mobile_show, c_id: c_id}).success(function (json) {
                                     checkJSON(json, function (json) {
                                         if (img_upload.length) {
-                                            $http.post('../imgupload?target=articles', {files: img_upload}).success(function () {
+                                            $http.post('../imgupload?target=articles', {files: img_upload}).success(function (push) {
                                                 $('.my_mask').hide();
                                                 $('.my_tishi').hide();
+                                                if(push.data == 1001 || push.data == 1002 || push.data == 1003){
+                                                    location.href = '#/pushpage?msg='+push.data;
+                                                }
                                             });
                                         }
                                         $('.warning_box ').hide().prev().hide();
