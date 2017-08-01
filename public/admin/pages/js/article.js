@@ -44,8 +44,9 @@ function articleController($scope, $http, $location) {
             urlparam += '&is_star=' + is_star;
         }
         if (search_word != null) {
+            search_word = unescape(search_word);
             urlparam += '&search_word=' + search_word;
-            $("[name='search_word']").val(search_word);
+            $("[name='search_word']").val(decodeURI(search_word));
         }
         if (page != null) {
             urlparam += '&page=' + page;
@@ -125,8 +126,9 @@ function articleController($scope, $http, $location) {
                         <th>操作</th>\n\
                     </tr>\n\
                     <tr class="sapces"></tr>';
-                    var now_page = getUrlParam('p') ? getUrlParam('p') : 1;
+                    // var now_page = getUrlParam('p') ? getUrlParam('p') : 1;
                     var search_word = getUrlParam('search_word') ? getUrlParam('search_word') : '';
+                    search_word = escape(escape(search_word));
                     $.each(article_d, function (k, v) {
                         _div += '<tr class="article-check">\n\
                                         <td style="text-align: left">\n\
@@ -143,7 +145,7 @@ function articleController($scope, $http, $location) {
                                         </td>\n\
                                         <td>' + v.created_at + '</td>\n\\n\
                                         <td><input class="sort" type="text" data-id="' + v.id + '"  value="' + ((v.sort == 1000000) ? '' : v.sort) + '" /></td>\n\
-                                        <td><a style="margin:0 10px;" class="column-edit pr" href="#/addarticle?id=' + v.id + '&c_id=' + v.c_id + '&p=' + now_page + '&sw='+search_word+'"><i class="fa iconfont icon-bianji"></i><div class="warning"><i class="iconfont' + (v.img_err ? ' icon-gantanhao' : '') + '"></i></div></a><a class="delv" name="' + v.id + '"><i class="fa iconfont icon-delete mr5"></i></a></td>\n\
+                                        <td><a style="margin:0 10px;" class="column-edit pr" href="#/addarticle?id=' + v.id + '&c_id=' + v.c_id + '&p=' + page + '&sw='+search_word+'"><i class="fa iconfont icon-bianji"></i><div class="warning"><i class="iconfont' + (v.img_err ? ' icon-gantanhao' : '') + '"></i></div></a><a class="delv" name="' + v.id + '"><i class="fa iconfont icon-delete mr5"></i></a></td>\n\
                                     </tr>';
                     });
                     $('.a-table').html(_div);
@@ -173,24 +175,27 @@ function articleController($scope, $http, $location) {
 //                                urlparam += '&p=' + (page_index + 1);
 //                            }
                             page_index = page_index + 1;
-                            // $scope.getArticleList({
-                            //     first: false,
-                            //     // page: page_index + 1,
-                            //     page: page_index,
-                            //     cat_id: cat_id,
-                            //     is_star: is_star,
-                            //     ser_name: ser_name,
-                            //     search_word: search_word,
-                            //     ser_active: ser_active,
-                            // });
+                            $scope.getArticleList({
+                                first: false,
+                                // page: page_index + 1,
+                                page: page_index,
+                                cat_id: cat_id,
+                                is_star: is_star,
+                                ser_name: ser_name,
+                                search_word: search_word,
+                                ser_active: ser_active,
+                            });
 
-                            var url = '#/article?p=' + page_index;
-                            var search_word = getUrlParam('search_word');
-                            if(search_word){
-                                url+= '&search_word=' + search_word;
-                            }
+                            // var url = '#/article?p=' + page_index;
+                            // var search_word = getUrlParam('search_word');
+                            // if(search_word){
+                            //     url+= '&search_word=' + search_word;
+                            // }
+                            // if(cat_id){
+                            //     url+= '&id=' + cat_id;
+                            // }
 
-                            window.location.hash = url;
+                            // window.location.hash = url;
                         }
                     });
                 } else {
@@ -248,6 +253,23 @@ function articleController($scope, $http, $location) {
                     $(this).parent("div").find(".sap_tit").show();
                     $(this).hide();
                 });
+                //页码跳转
+                // $("#cpage").click(function(){
+                //     var tpage = $("#tpage").val();
+                //     if(tpage==null){
+                //         tpage = 1;
+                //     }
+                //     $scope.getArticleList({
+                //         first: false,
+                //         page: tpage,
+                //         cat_id: cat_id,
+                //         is_star: is_star,
+                //         ser_name: ser_name,
+                //         search_word: search_word,
+                //         ser_active: ser_active,
+                //     });
+                // });
+
             }); // checkJSON结束
         });
     };
@@ -351,6 +373,7 @@ function articleController($scope, $http, $location) {
             this._batchAdd();
             this._searchWords();//===模糊查找===
             this._refresh();//===刷新===
+            this._cpage();//===跳转页数===
             // this._batchEdit();
         },
         _refresh: function () {
@@ -643,6 +666,18 @@ function articleController($scope, $http, $location) {
                 } else {
 //                    window.location.hash = '#/batcharticle?ids=' + id_all + '';
                 }
+            });
+        },
+        //===跳转页数===
+        _cpage:function() {
+            $("#cpage").click(function(){
+                var tpage = $("#tpage").val();
+                var url = '#/article?p=' + tpage;
+                var search_word = getUrlParam('search_word');
+                if(search_word){
+                    url+= '&search_word=' + search_word;
+                }
+                window.location.hash = url;
             });
         },
         //===搜索关键词===

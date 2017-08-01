@@ -8,6 +8,7 @@ function addarticleController($scope, $http, $location) {
     G_c_id ? G_c_id : '';
     var back_page = getUrlParam('p') ? getUrlParam('p') : 1;
     var search_word = getUrlParam('sw') ? getUrlParam('sw') : '';
+    var cat_id = getUrlParam('c_id') ? getUrlParam('c_id') : '';
     // 图片上传
     function AddarticleUpload(proportion) {
         $('.up_pic').on('click', function (event) {
@@ -328,6 +329,9 @@ function addarticleController($scope, $http, $location) {
                     if(search_word){
                         url+='&search_word='+search_word;
                     }
+                    // if(cat_id){
+                    //     url+='&id='+cat_id;
+                    // }
                     location.href = url;
                 });
             });
@@ -340,6 +344,9 @@ function addarticleController($scope, $http, $location) {
             if(search_word){
                 url+='&search_word='+search_word;
             }
+            // if(cat_id){
+            //     url+='&id='+cat_id;
+            // }
             location.href = url;
         });
     }

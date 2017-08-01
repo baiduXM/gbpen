@@ -172,5 +172,11 @@
         "templateUrl": "pages/logs.html",
         "scriptUrl": "pages/js/logs.js",
         "controller": "logsController"
+    },
+    {
+        "router": "/pushpage",
+        "templateUrl": "pages/pushpage.html",
+        "scriptUrl": "pages/js/pushpage.js",
+        "controller": "pushpageController"
     }
 ]

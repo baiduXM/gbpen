@@ -67,7 +67,7 @@ function jqueryfunc(){
 				+'.quickbar-sharebox .thumbs-cotnainer {width: 640px;}'
 				+'.quickbar-sharebox .thumbs-cotnainer .share-icon {float: left;width: 80px; text-align:center}'
 				+'.quickbar-sharebox .thumbs-cotnainer .share-icon .title {color: #AAA; white-space: nowrap;text-overflow: ellipsis;overflow: hidden;}'
-				+'.quickbar-sharebox .share-cance{ height:35px; line-height:35px; overflow:hidden; background:rgba(0,0,0,0.05); text-align:center; margin-top:10px;}'
+				+'.quickbar-sharebox .share-cance{ height:35px; line-height:35px; overflow:hidden; background:rgba(0,0,0,0.5); text-align:center; margin-top:10px;}'
 				+'.quickbar-sharebox .share-con{ width:100%; height:85px; overflow:hidden;}'
 				+'.quickbar-opacity2{ width:100%; height:100%; position:fixed; top:0px; left:0px; background:rgba(0,0,0,0.2); z-index:2222; display:none;}'
 				+'.quickbar_search{position:fixed;bottom:58px;margin:auto;right:0;height:35px;padding:3px 0;z-index:9999;-webkit-transition:all .3s ease-out;-moz-transition:all .3s ease-out;-o-transition:all .3s ease-out;transition:all .3s ease-out;overflow:hidden;width:0;opacity:0}.quickbar_search:before{position:absolute;top:0;left:0;right:0;bottom:0;content:"";background:'
