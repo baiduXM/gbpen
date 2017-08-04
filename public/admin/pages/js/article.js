@@ -413,6 +413,7 @@ function articleController($scope, $http, $location) {
                 } else {
                     // 查看
                     $scope.page = 1;
+                    $scope.is_star = 1;
                     $scope.getArticleList({
                         first: false,
                         ser_name: ser_name,
@@ -680,22 +681,30 @@ function articleController($scope, $http, $location) {
         _cpage:function() {
             $("#cpage").click(function(){
                 var cat_id = $scope.cat_id;
+                var is_star = $scope.is_star;
                 var ser_name = $('.newarticle').find('span').text();
-                var tpage = $("#tpage").val();
-                var url = '#/article?p=' + tpage;
+                var tpage = $("#tpage").val();                
                 var search_word = getUrlParam('search_word')?getUrlParam('search_word'):'';
                 search_word = escape(search_word);
-                if(search_word){
-                    url+= '&search_word=' + search_word;
-                }
-                if(cat_id){
-                    url+= '&id=' + cat_id;
-                }
-                if(ser_name!=null&&ser_name!='分类查找'){
-                    url+= '&ser_name=' + ser_name;
-                }
+                // var url = '#/article?p=' + tpage;
+                // if(search_word){
+                //     url+= '&search_word=' + search_word;
+                // }
+                // if(cat_id){
+                //     url+= '&id=' + cat_id;
+                // }
+                // if(ser_name!=null&&ser_name!='分类查找'){
+                //     url+= '&ser_name=' + ser_name;
+                // }
 
-                window.location.hash = url;
+                // window.location.hash = url;
+                $scope.getArticleList({
+                    ser_name: ser_name,
+                    page: tpage,
+                    cat_id: cat_id,
+                    is_star: is_star,
+                    search_word: search_word
+                });
             });
         },
         //===搜索关键词===
@@ -711,12 +720,16 @@ function articleController($scope, $http, $location) {
                 // });
                 var cat_id = $scope.cat_id;
                 var ser_name = $('.newarticle').find('span').text();
+                var is_star = $scope.is_star;
                 var url = '#/article?p=1';
                 if(search_word){
                     url+= '&search_word=' + search_word;
                 }
                 if(cat_id){
                     url+= '&id=' + cat_id;
+                }
+                if(is_star){
+                    url+= '&is_star=' + is_star;
                 }
                 if(ser_name!=null&&ser_name!='分类查找'){
                     url+= '&ser_name=' + ser_name;
