@@ -323,7 +323,7 @@ function addarticleController($scope, $http, $location) {
                                     files: img_upload
                                 }).success(function(push){
                                     if(push.data == 1001 || push.data == 1002 || push.data == 1003){
-                                        location.href = '#/pushpage?msg='+push.data;
+                                        location.href = '#/pushpage?msg='+push.data+'&img='+push.img;
                                     }                                    
                                 });
                     }

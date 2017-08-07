@@ -645,7 +645,7 @@ function articleController($scope, $http, $location) {
                                                 $('.my_mask').hide();
                                                 $('.my_tishi').hide();
                                                 if(push.data == 1001 || push.data == 1002 || push.data == 1003){
-                                                    location.href = '#/pushpage?msg='+push.data;
+                                                    location.href = '#/pushpage?msg='+push.data+'&img='+push.img;
                                                 }
                                             });
                                         }
