@@ -314,9 +314,9 @@ class UploadController extends BaseController
                     if($res1!=1000 && $res2!=1000){
                         return Response::json(['err' => 0, 'msg' => '图片推送失败', 'data' => 1003, 'img' => $imgzip]);
                     }elseif($res1!=1000 && $res2=1000){
-                        return Response::json(['err' => 0, 'msg' => 'A服图片推送失败', 'data' => 1003, 'img' => $imgzip]);
+                        return Response::json(['err' => 0, 'msg' => 'A服图片推送失败', 'data' => 1001, 'img' => $imgzip]);
                     }elseif($res1=1000 && $res2!=1000){
-                        return Response::json(['err' => 0, 'msg' => 'B服图片推送失败', 'data' => 1003, 'img' => $imgzip]);
+                        return Response::json(['err' => 0, 'msg' => 'B服图片推送失败', 'data' => 1002, 'img' => $imgzip]);
                     }
                 }elseif(isset($res1)&&!isset($res2)){
                     if($res1!=1000){                            
