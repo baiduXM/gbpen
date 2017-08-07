@@ -5,13 +5,13 @@ function pushpageController($scope, $http, $location) {
 
     var msg = getUrlParam('msg')?getUrlParam('msg'):'';
     if(msg==1001){
-    	$('.refresh-name').html('A服务器推送失败');
+    	$('.refresh-name').html('A服务器图片推送失败');
     	$('.push_refresh').html('A服务器图片重推');
     }else if(msg==1002){
-    	$('.refresh-name').html('B服务器推送失败');
+    	$('.refresh-name').html('B服务器图片推送失败');
     	$('.push_refresh').html('B服务器图片重推');
     }else if(msg==1003){
-        $('.refresh-name').html('服务器推送失败');
+        $('.refresh-name').html('服务器图片推送失败');
         $('.push_refresh').html('服务器图片重推');
     }
 

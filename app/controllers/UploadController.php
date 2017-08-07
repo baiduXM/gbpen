@@ -310,8 +310,12 @@ class UploadController extends BaseController
                 }
 
                 if(isset($res1)&&isset($res2)){
-                    if($res1!=1000 or $res2!=1000){
+                    if($res1!=1000 && $res2!=1000){
                         return Response::json(['err' => 0, 'msg' => '图片推送失败', 'data' => 1003]);
+                    }elseif($res1!=1000 && $res2=1000){
+                        return Response::json(['err' => 0, 'msg' => 'A服图片推送失败', 'data' => 1003]);
+                    }elseif($res1=1000 && $res2!=1000){
+                        return Response::json(['err' => 0, 'msg' => 'B服图片推送失败', 'data' => 1003]);
                     }
                 }elseif(isset($res1)&&!isset($res2)){
                     if($res1!=1000){                            
