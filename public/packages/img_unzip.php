@@ -1,6 +1,6 @@
 <?php
 
-$imgzip = $_GET['img'];
+$imgzip = $_GET['img']?$_GET['img']:'img.zip';
 if (file_exists($imgzip)) {
     copy($imgzip, 'mobile/'.$imgzip);
     $zip = new ZipArchive; //新建一个ZipArchive的对象
