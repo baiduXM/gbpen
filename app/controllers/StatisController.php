@@ -55,6 +55,15 @@ class StatisController extends BaseController {
         return $res;
     }
 
+    public function customersNum(){
+        $n01 = Customer::where('ftp_address','172.16.0.4')->where('name','not like','GP%')->where('name','not like','GM%')->where('name','not like','GT%')->where('name','not like','GG%')->where('name','not like','%PCN%')->where('name','not like','%MCN%')->where('name','not like','%PEN%')->where('name','not like','%MEN%')->count();
+        $n02 = Customer::where('ftp_address','172.16.0.18')->where('name','not like','GP%')->where('name','not like','GM%')->where('name','not like','GT%')->where('name','not like','GG%')->where('name','not like','%PCN%')->where('name','not like','%MCN%')->where('name','not like','%PEN%')->where('name','not like','%MEN%')->count();
+        $n03 = Customer::where('ftp_address','172.16.0.24')->where('name','not like','GP%')->where('name','not like','GM%')->where('name','not like','GT%')->where('name','not like','GG%')->where('name','not like','%PCN%')->where('name','not like','%MCN%')->where('name','not like','%PEN%')->where('name','not like','%MEN%')->count();
+        $hk01 = Customer::where('ftp_address','182.61.100.142')->where('name','not like','GP%')->where('name','not like','GM%')->where('name','not like','GT%')->where('name','not like','GG%')->where('name','not like','%PCN%')->where('name','not like','%MCN%')->where('name','not like','%PEN%')->where('name','not like','%MEN%')->count();
+        $count = 'n01:'.$n01.'<br/>n02:'.$n02.'<br/>n03:'.$n03.'<br/>hk01:'.$hk01;
+        return $count;
+    }
+
 }
 
 ?>

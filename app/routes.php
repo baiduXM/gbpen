@@ -4,6 +4,11 @@ Route::get('/', function() {//登录
     return View::make('login');
 })->before('guest');
 
+Route::get('customers-num', [//客户接入数量
+    'as' => 'customers-num',
+    'uses' => 'StatisController@customersNum'
+]);
+
 Route::get('get-remind', [//忘记密码
     'as' => 'get-remind',
     'uses' => 'RemindersController@getRemind'
