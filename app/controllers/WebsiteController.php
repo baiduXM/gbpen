@@ -850,6 +850,7 @@ class WebsiteController extends BaseController {
                 mkdir(app_path("views/templates/$tpl_dir"));
             }
             $this->rcopy($dir_site, public_path("templates/$tpl_dir"));
+            @$this->imgUrl($tpl_name);
             @$this->_remove_Dir(public_path('temp_templates/' . $file_info['filename']));
             $file_list = $this->getFile(public_path("templates/$tpl_dir"));
             if (!file_exists(public_path("templates/$tpl_dir/json"))) {
@@ -977,6 +978,31 @@ class WebsiteController extends BaseController {
             $result = ['err' => 1002, 'msg' => '模板覆盖失败，请上传正确的文件类型'];
         }
         return Response::json($result);
+    }
+
+    //模板官网图片上传
+    public function imgUrl($tpl_name){
+        $template = public_path("templates/".$tpl_name);
+        $destinationPath = 'gbpen/img_url/' . $tpl_name . '_screenshot.jpg';
+        if(is_dir($template)){
+            $img = $template.'/screenshot.jpg';
+            if(file_exists($img)){
+                $conn = ftp_connect('172.16.0.4', 21);
+                if($conn){
+                    ftp_login($conn, 'tongYi', 'B164RLFh');
+                    ftp_pasv($conn, 1);
+                    ftp_put($conn, $destinationPath , $img, FTP_BINARY);
+                    ftp_close($conn);
+                }
+                $conn_b = ftp_connect('172.16.0.20', 21);
+                if($conn_b){
+                    ftp_login($conn_b, 'tongyi', 'B164RLFh');
+                    ftp_pasv($conn_b, 1);
+                    ftp_put($conn_b, $destinationPath , $img, FTP_BINARY);
+                    ftp_close($conn_b);
+                }
+            }
+        }
     }
 
 }
