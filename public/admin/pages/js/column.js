@@ -633,7 +633,11 @@ function columnController($scope, $http) {
                                 }).success(function (json) {
                             checkJSON(json, function (json) {
                                 if (img_upload.length) {
-                                    $http.post('../imgupload?target=category', {files: img_upload});
+                                    $http.post('../imgupload?target=category', {files: img_upload}).success(function(push){
+                                        if(push.data == 1001 || push.data == 1002 || push.data == 1003){
+                                            location.href = '#/pushpage?msg='+push.data+'&img='+push.img;
+                                        }
+                                    });
                                 }
                                 _this.getJson();//重新获取列表
                                 var hint_box = new Hint_box();
