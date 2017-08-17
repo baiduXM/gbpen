@@ -60,13 +60,7 @@ class StatisController extends BaseController {
         $n02 = Customer::where('ftp_address','172.16.0.18')->where('name','not like','GP%')->where('name','not like','GM%')->where('name','not like','GT%')->where('name','not like','GG%')->where('name','not like','%PCN%')->where('name','not like','%MCN%')->where('name','not like','%PEN%')->where('name','not like','%MEN%')->count();
         $n03 = Customer::where('ftp_address','172.16.0.24')->where('name','not like','GP%')->where('name','not like','GM%')->where('name','not like','GT%')->where('name','not like','GG%')->where('name','not like','%PCN%')->where('name','not like','%MCN%')->where('name','not like','%PEN%')->where('name','not like','%MEN%')->count();
         $hk01 = Customer::where('ftp_address','182.61.100.142')->where('name','not like','GP%')->where('name','not like','GM%')->where('name','not like','GT%')->where('name','not like','GG%')->where('name','not like','%PCN%')->where('name','not like','%MCN%')->where('name','not like','%PEN%')->where('name','not like','%MEN%')->count();
-
-        $n1 = Customer::where('ftp_address','172.16.0.4')->where('name','not like','GP%')->where('name','not like','GM%')->where('name','not like','GT%')->where('name','not like','GG%')->where('name','not like','%PCN%')->where('name','not like','%MCN%')->where('name','not like','%PEN%')->where('name','not like','%MEN%')->where('is_del',1)->count();
-        $n2 = Customer::where('ftp_address','172.16.0.18')->where('name','not like','GP%')->where('name','not like','GM%')->where('name','not like','GT%')->where('name','not like','GG%')->where('name','not like','%PCN%')->where('name','not like','%MCN%')->where('name','not like','%PEN%')->where('name','not like','%MEN%')->where('is_del',1)->count();
-        $n3 = Customer::where('ftp_address','172.16.0.24')->where('name','not like','GP%')->where('name','not like','GM%')->where('name','not like','GT%')->where('name','not like','GG%')->where('name','not like','%PCN%')->where('name','not like','%MCN%')->where('name','not like','%PEN%')->where('name','not like','%MEN%')->where('is_del',1)->count();
-        $hk1 = Customer::where('ftp_address','182.61.100.142')->where('name','not like','GP%')->where('name','not like','GM%')->where('name','not like','GT%')->where('name','not like','GG%')->where('name','not like','%PCN%')->where('name','not like','%MCN%')->where('name','not like','%PEN%')->where('name','not like','%MEN%')->where('is_del',1)->count();
-
-        $count = '用户数量(包括已删除)：<br/>n01:'.$n01.'<br/>n02:'.$n02.'<br/>n03:'.$n03.'<br/>hk01:'.$hk01.'<hr/>过滤已删除用户后：<br>n01:'.$n1.'<br/>n02:'.$n2.'<br/>n03:'.$n3.'<br/>hk01:'.$hk1;
+        $count = 'n01:'.$n01.'<br/>n02:'.$n02.'<br/>n03:'.$n03.'<br/>hk01:'.$hk01;
         return $count;
     }
 
