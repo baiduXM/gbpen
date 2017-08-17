@@ -266,11 +266,23 @@ class UploadController extends BaseController
                             $suf_url = str_replace('http://c', '', $weburl);
                             $cus_name = strtolower(Customer::where('id', $cus_id)->pluck('name'));
                             if (trim($ftp) == '1') {
-                                $ftp_pcdomain = "http://" . $ftp_array[0] . ':8081/' . $customer;
+                                $ftp_pcdomain = "http://" . $ftp_array[0] . '/' . $customer;
                             }
                             ftp_put($conn, $customer . '/' . $imgzip, public_path('customers/' . $customer . '/' . $imgzip), FTP_BINARY);
                             ftp_put($conn, $customer . '/img_unzip.php', public_path('packages/img_unzip.php'), FTP_ASCII);
                             @$res1 = file_get_contents("$ftp_pcdomain/img_unzip.php?img=" . $imgzip);
+                            $i = 1;
+                            while($i<=3 && $res1!=1000){
+                                $j = 1;
+                                while($j<=3 && $res1!=1000){
+                                   $ftp_pcdomain = "http://" . $ftp_array[0] . ':808' . $j . '/' . $customer;
+                                   //@file_put_contents('while.txt','a:'.$ftp_pcdomain.PHP_EOL,FILE_APPEND);
+                                   @$res1 = file_get_contents("$ftp_pcdomain/img_unzip.php?img=" . $imgzip);
+                                   //@file_put_contents('while.txt','a:'.$res1.PHP_EOL,FILE_APPEND); 
+                                   $j++;
+                                }                                                                
+                                $i++;
+                            }
                             // @unlink(public_path('customers/' . $customer . '/img.zip'));
                         }
                     }
@@ -284,11 +296,23 @@ class UploadController extends BaseController
 							if (trim($ftp) == '1') {
 								$cus_name = strtolower(Customer::where('id', $cus_id)->pluck('name'));
 								if (trim($ftp) == '1') {
-									$ftp_pcdomain_b = "http://" . $ftp_array_b[0] . ':8081/' . $customer;
+									$ftp_pcdomain_b = "http://" . $ftp_array_b[0] . '/' . $customer;
 								}
 								ftp_put($conn_b, $customer . '/' . $imgzip, public_path('customers/' . $customer . '/' . $imgzip), FTP_BINARY);
 								ftp_put($conn_b, $customer . '/img_unzip.php', public_path('packages/img_unzip.php'), FTP_ASCII);
 								@$res2 = file_get_contents("$ftp_pcdomain_b/img_unzip.php?img=" . $imgzip);
+                                $i = 1;
+                                while($i<=3 && $res2!=1000){
+                                    $j = 1;
+                                    while($j<=3 && $res2!=1000){
+                                       $ftp_pcdomain_b = "http://" . $ftp_array_b[0] . ':808' . $j . '/' . $customer;
+                                       //@file_put_contents('while.txt','b:'.$ftp_pcdomain_b.PHP_EOL,FILE_APPEND);
+                                       @$res2 = file_get_contents("$ftp_pcdomain_b/img_unzip.php?img=" . $imgzip);
+                                       //@file_put_contents('while.txt','b:'.$res2.PHP_EOL,FILE_APPEND); 
+                                       $j++;
+                                    }                                                                
+                                    $i++;
+                                }
 								//@unlink(public_path('customers/' . $customer . '/img.zip'));
 							}
 						}
