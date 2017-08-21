@@ -187,11 +187,13 @@ class UploadController extends BaseController
         $imgzip = 'img'.str_random(4).'.zip';
         if ($files) {
             //===判断服务器是否正常===
-            if ($weburl) {
-                if ($this->MonitorCheck($weburl) == false) {
-                    return Response::json(['err' => 1001, 'msg' => '请检测服务器是否正常', 'data' => '']);
-                }
-            }
+            // if ($weburl) {
+            //     if ($this->MonitorCheck($weburl) == false) {
+            //         @$time = date('Y-m-d H:i:s',time());
+            //         @file_put_contents('moni.txt',$customer.'-'.$time.'-'.json_encode($files).'-'.$target.PHP_EOL,FILE_APPEND);
+            //         return Response::json(['err' => 1001, 'msg' => '请检测服务器是否正常', 'data' => '']);
+            //     }
+            // }
             $data = array();
             $i = 0;
             //同步到客户服务器
