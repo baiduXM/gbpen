@@ -1135,18 +1135,6 @@ class PrintController extends BaseController
             $footscript .= $formJS;
             $footscript .= '<script type="text/javascript" src="/quickbar/js/quickbar.js?' . $this->cus_id . 'pc"></script>';
             $footscript .= $add_color_css;
-            //浏览器版本过低提示
-            $footscript .= '<script>'
-                           .'$(document).ready(function() { '
-                           .'var b_name = navigator.appName; '
-                           .'var b_version = navigator.appVersion;'
-                           .'var version = b_version.split(";");'
-                           .'var trim_version = version[1].replace(/[ ]/g, "");'
-                           .'if (b_name == "Microsoft Internet Explorer") { '
-                           .'if (trim_version == "MSIE7.0" || trim_version == "MSIE6.0") {'
-                           .'$("body").append(\'<div class="banbendi" style="width:100%;height:30px;background:#FFFF99;text-align:center;line-height:30px;color:#666666;position:absolute;top:0;left:0;" onClick="hid()">您的浏览器版本过低，会影响网页浏览，请使用更高版本的浏览器</div>\');}}});'
-                           .'function hid(){$(".banbendi").css("display","none");}'
-                           .'</script>';
 //            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/admin/statis.php?cus_id=' . $this->cus_id . '&platform=pc"></script>'; //===添加统计代码PC===
             if ($customer_info->background_music) {
                 $bgm = str_replace('"', "", $customer_info->background_music);
