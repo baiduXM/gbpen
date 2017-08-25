@@ -184,13 +184,16 @@ class UploadController extends BaseController
         $destinationPath = public_path('customers/' . $customer . '/images/');
         $weburl = Customer::where('id', $cus_id)->pluck('weburl');
         $suf_url = str_replace('http://c', '', $weburl);
+        $imgzip = 'img'.str_random(4).'.zip';
         if ($files) {
             //===判断服务器是否正常===
-            if ($weburl) {
-                if ($this->MonitorCheck($weburl) == false) {
-                    return Response::json(['err' => 1001, 'msg' => '请检测服务器是否正常', 'data' => '']);
-                }
-            }
+            // if ($weburl) {
+            //     if ($this->MonitorCheck($weburl) == false) {
+            //         @$time = date('Y-m-d H:i:s',time());
+            //         @file_put_contents('moni.txt',$customer.'-'.$time.'-'.json_encode($files).'-'.$target.PHP_EOL,FILE_APPEND);
+            //         return Response::json(['err' => 1001, 'msg' => '请检测服务器是否正常', 'data' => '']);
+            //     }
+            // }
             $data = array();
             $i = 0;
             //同步到客户服务器
@@ -210,7 +213,7 @@ class UploadController extends BaseController
                 ftp_pasv($conn, 1);
 
                 $zip = new ZipArchive;
-                if ($zip->open(public_path('customers/' . $customer . '/img.zip'), ZipArchive::CREATE) === TRUE) {
+                if ($zip->open(public_path('customers/' . $customer . '/' . $imgzip), ZipArchive::CREATE) === TRUE) {
                     foreach ((array)$files as $fileName) {
                         $filepath = public_path('customers/' . $customer . '/cache_images/' . $fileName);
                         if (file_exists($filepath)) {
@@ -267,9 +270,21 @@ class UploadController extends BaseController
                             if (trim($ftp) == '1') {
                                 $ftp_pcdomain = "http://" . $ftp_array[0] . '/' . $customer;
                             }
-                            ftp_put($conn, $customer . '/img.zip', public_path('customers/' . $customer . '/img.zip'), FTP_BINARY);
+                            ftp_put($conn, $customer . '/' . $imgzip, public_path('customers/' . $customer . '/' . $imgzip), FTP_BINARY);
                             ftp_put($conn, $customer . '/img_unzip.php', public_path('packages/img_unzip.php'), FTP_ASCII);
-                            @$res1 = file_get_contents("$ftp_pcdomain/img_unzip.php");
+                            @$res1 = file_get_contents("$ftp_pcdomain/img_unzip.php?img=" . $imgzip);
+                            $i = 1;
+                            while($i<=3 && $res1!=1000){
+                                $j = 1;
+                                while($j<=3 && $res1!=1000){
+                                   $ftp_pcdomain = "http://" . $ftp_array[0] . ':808' . $j . '/' . $customer;
+                                   //@file_put_contents('while.txt','a:'.$ftp_pcdomain.PHP_EOL,FILE_APPEND);
+                                   @$res1 = file_get_contents("$ftp_pcdomain/img_unzip.php?img=" . $imgzip);
+                                   //@file_put_contents('while.txt','a:'.$res1.PHP_EOL,FILE_APPEND); 
+                                   $j++;
+                                }                                                                
+                                $i++;
+                            }
                             // @unlink(public_path('customers/' . $customer . '/img.zip'));
                         }
                     }
@@ -285,9 +300,21 @@ class UploadController extends BaseController
 								if (trim($ftp) == '1') {
 									$ftp_pcdomain_b = "http://" . $ftp_array_b[0] . '/' . $customer;
 								}
-								ftp_put($conn_b, $customer . '/img.zip', public_path('customers/' . $customer . '/img.zip'), FTP_BINARY);
+								ftp_put($conn_b, $customer . '/' . $imgzip, public_path('customers/' . $customer . '/' . $imgzip), FTP_BINARY);
 								ftp_put($conn_b, $customer . '/img_unzip.php', public_path('packages/img_unzip.php'), FTP_ASCII);
-								@$res2 = file_get_contents("$ftp_pcdomain_b/img_unzip.php");
+								@$res2 = file_get_contents("$ftp_pcdomain_b/img_unzip.php?img=" . $imgzip);
+                                $i = 1;
+                                while($i<=3 && $res2!=1000){
+                                    $j = 1;
+                                    while($j<=3 && $res2!=1000){
+                                       $ftp_pcdomain_b = "http://" . $ftp_array_b[0] . ':808' . $j . '/' . $customer;
+                                       //@file_put_contents('while.txt','b:'.$ftp_pcdomain_b.PHP_EOL,FILE_APPEND);
+                                       @$res2 = file_get_contents("$ftp_pcdomain_b/img_unzip.php?img=" . $imgzip);
+                                       //@file_put_contents('while.txt','b:'.$res2.PHP_EOL,FILE_APPEND); 
+                                       $j++;
+                                    }                                                                
+                                    $i++;
+                                }
 								//@unlink(public_path('customers/' . $customer . '/img.zip'));
 							}
 						}
@@ -310,19 +337,23 @@ class UploadController extends BaseController
                 }
 
                 if(isset($res1)&&isset($res2)){
-                    if($res1!=1000 or $res2!=1000){
-                        return Response::json(['err' => 0, 'msg' => '图片推送失败', 'data' => 1003]);
+                    if($res1!=1000 && $res2!=1000){
+                        return Response::json(['err' => 0, 'msg' => '图片推送失败', 'data' => 1003, 'img' => $imgzip]);
+                    }elseif($res1!=1000 && $res2=1000){
+                        return Response::json(['err' => 0, 'msg' => 'A服图片推送失败', 'data' => 1001, 'img' => $imgzip]);
+                    }elseif($res1=1000 && $res2!=1000){
+                        return Response::json(['err' => 0, 'msg' => 'B服图片推送失败', 'data' => 1002, 'img' => $imgzip]);
                     }
                 }elseif(isset($res1)&&!isset($res2)){
                     if($res1!=1000){                            
-                        return Response::json(['err' => 0, 'msg' => 'A服推送失败', 'data' => 1001]);
+                        return Response::json(['err' => 0, 'msg' => 'A服推送失败', 'data' => 1001, 'img' => $imgzip]);
                     }
                 }elseif(isset($res1)&&!isset($res2)){
                     if($res2!=1000){
-                        return Response::json(['err' => 0, 'msg' => 'B服推送失败', 'data' => 1002]);
+                        return Response::json(['err' => 0, 'msg' => 'B服推送失败', 'data' => 1002, 'img' => $imgzip]);
                     }
                 }
-                @unlink(public_path('customers/' . $customer . '/img.zip'));
+                @unlink(public_path('customers/' . $customer . '/' . $imgzip));
 
                 return Response::json(['err' => 0, 'msg' => '保存成功', 'data' => $data]);
             }
@@ -570,32 +601,33 @@ class UploadController extends BaseController
     //图片失败重推
     public function pushagain(){
         $push = Input::get('msg');
+        $imgzip = Input::get('img');
         $customer = Auth::user()->name;
         $cus_id = Auth::id();
         $customerinfo = Customer::find($cus_id);
-        $path = public_path('customers/' . $customer . '/img.zip');
+        $path = public_path('customers/' . $customer . '/' . $imgzip);
         if(file_exists($path)){             
             if($push == 1001){
-                $push = $this->pushimga($customer,$customerinfo);
+                $push = $this->pushimga($customer,$customerinfo,$imgzip);
                 if($push == 1000){
-                    @unlink(public_path('customers/' . $customer . '/img.zip'));
+                    @unlink(public_path('customers/' . $customer . '/' . $imgzip));
                     return Response::json(['err' => 0, 'msg' => 'A服务器重传成功', 'data' => '']);                
                 }else{
                     return Response::json(['err' => 1001, 'msg' => 'A服务器重传失败，请联系技术人员', 'data' => '']);
                 } 
             }elseif($push == 1002){
-                $push = $this->pushimgb($customer,$customerinfo);
+                $push = $this->pushimgb($customer,$customerinfo,$imgzip);
                 if($push == 1000){
-                    @unlink(public_path('customers/' . $customer . '/img.zip'));
+                    @unlink(public_path('customers/' . $customer . '/' . $imgzip));
                     return Response::json(['err' => 0, 'msg' => 'B服务器重传成功', 'data' => '']);
                 }else{
                     return Response::json(['err' => 1002, 'msg' => 'B服务器重传失败，请联系技术人员', 'data' => '']);
                 } 
             }elseif($push == 1003){
-                $pusha = $this->pushimga($customer,$customerinfo);
-                $pushb = $this->pushimgb($customer,$customerinfo);
+                $pusha = $this->pushimga($customer,$customerinfo,$imgzip);
+                $pushb = $this->pushimgb($customer,$customerinfo,$imgzip);
                 if($pusha == 1000 && $pushb == 1000){
-                    @unlink(public_path('customers/' . $customer . '/img.zip'));
+                    @unlink(public_path('customers/' . $customer . '/' . $imgzip));
                     return Response::json(['err' => 0, 'msg' => '服务器重传成功', 'data' => '']);
                 }elseif($pusha == 1000 && $pushb!= 1000){
                     return Response::json(['err' => 1001, 'msg' => 'A服务器重传失败，请联系技术人员', 'data' => '']);
@@ -610,7 +642,7 @@ class UploadController extends BaseController
         }
     }
     //A服推送图片
-    public function pushimga($customer,$customerinfo){
+    public function pushimga($customer,$customerinfo,$imgzip){
         $ftp = $customerinfo->ftp;
         $ftpdir = $customerinfo->ftp_dir;
         $port = $customerinfo->ftp_port;
@@ -623,17 +655,17 @@ class UploadController extends BaseController
         if($conn){
             ftp_login($conn, $customerinfo->ftp_user, $customerinfo->ftp_pwd);
             ftp_pasv($conn, 1);               
-            ftp_put($conn, $customer . '/img.zip', public_path('customers/' . $customer . '/img.zip'), FTP_BINARY);
+            ftp_put($conn, $customer . '/' . $imgzip, public_path('customers/' . $customer . '/' . $imgzip), FTP_BINARY);
             ftp_put($conn, $customer . '/img_unzip.php', public_path('packages/img_unzip.php'), FTP_ASCII);
             $ftp_pcdomain = "http://" . $ftp_array[0] . '/' . $customer;
-            @$res = file_get_contents("$ftp_pcdomain/img_unzip.php");
+            @$res = file_get_contents("$ftp_pcdomain/img_unzip.php?img=" . $imgzip);
             @ftp_close($conn);
 
             return $res;    
         } 
     }
     //B服推送图片
-    public function pushimgb($customer,$customerinfo){
+    public function pushimgb($customer,$customerinfo,$imgzip){
         $ftp = $customerinfo->ftp;
         $ftpdir = $customerinfo->ftp_dir;
         $port = $customerinfo->ftp_port;
@@ -647,10 +679,10 @@ class UploadController extends BaseController
         if($conn_b){
             ftp_login($conn_b, $customerinfo->ftp_user_b, $customerinfo->ftp_pwd_b);
             ftp_pasv($conn_b, 1);            
-            ftp_put($conn_b, $customer . '/img.zip', public_path('customers/' . $customer . '/img.zip'), FTP_BINARY);
+            ftp_put($conn_b, $customer . '/' . $imgzip, public_path('customers/' . $customer . '/' . $imgzip), FTP_BINARY);
             ftp_put($conn_b, $customer . '/img_unzip.php', public_path('packages/img_unzip.php'), FTP_ASCII);
             $ftp_pcdomain = "http://" . $ftp_array_b[0] . '/' . $customer;
-            @$res = file_get_contents("$ftp_pcdomain/img_unzip.php");
+            @$res = file_get_contents("$ftp_pcdomain/img_unzip.php?img=" . $imgzip);
             @ftp_close($conn_b);
             
             return $res;    
@@ -662,6 +694,7 @@ class UploadController extends BaseController
         $customer = Auth::user()->name;
         $cus_id = Auth::id();
         $customerinfo = Customer::find($cus_id);
+        $imgzip = 'img.zip';
 
         $path = public_path('customers/' . $customer . '/img.zip');
         $images = public_path('customers/' . $customer . '/images');
@@ -672,11 +705,11 @@ class UploadController extends BaseController
         }
 
         //A服
-        $res1 = $this->pushimga($customer,$customerinfo);
+        $res1 = $this->pushimga($customer,$customerinfo,$imgzip);
 
         //B服
         if($customerinfo->ftp_address_b){
-            $res2 = $this->pushimgb($customer,$customerinfo);
+            $res2 = $this->pushimgb($customer,$customerinfo,$imgzip);
         }else{
             $res2 = 1000;
         }

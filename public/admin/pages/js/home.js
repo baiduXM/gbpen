@@ -470,13 +470,16 @@ function homeController($scope, $http) {
                         $http.post('../imgupload?target=page_index',
                             {
                                 files: img_upload
-                            }).success(function () {
+                            }).success(function (push) {
                             $('.tpl_mask').hide();
                             $('.text_tishi').hide();
                             $('.home-content').append('<div class="hint_box">保存成功！</div>');
                             setTimeout(function () {
                                 $('.hint_box').remove();
                             }, 2000);
+                            if(push.data == 1001 || push.data == 1002 || push.data == 1003){
+                                location.href = '#/pushpage?msg='+push.data+'&img='+push.img;
+                            }
                             return false;
                         });
                     } else {

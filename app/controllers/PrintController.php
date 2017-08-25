@@ -1135,6 +1135,18 @@ class PrintController extends BaseController
             $footscript .= $formJS;
             $footscript .= '<script type="text/javascript" src="/quickbar/js/quickbar.js?' . $this->cus_id . 'pc"></script>';
             $footscript .= $add_color_css;
+            //浏览器版本过低提示
+            $footscript .= '<script>'
+                           .'$(document).ready(function() { '
+                           .'var b_name = navigator.appName; '
+                           .'var b_version = navigator.appVersion;'
+                           .'var version = b_version.split(";");'
+                           .'var trim_version = version[1].replace(/[ ]/g, "");'
+                           .'if (b_name == "Microsoft Internet Explorer") { '
+                           .'if (trim_version == "MSIE7.0" || trim_version == "MSIE6.0") {'
+                           .'$("body").append(\'<div class="banbendi" style="width:100%;height:30px;background:#FFFF99;text-align:center;line-height:30px;color:#666666;position:absolute;top:0;left:0;" onClick="hid()">您的浏览器版本过低，会影响网页浏览，请使用更高版本的浏览器</div>\');}}});'
+                           .'function hid(){$(".banbendi").css("display","none");}'
+                           .'</script>';
 //            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/admin/statis.php?cus_id=' . $this->cus_id . '&platform=pc"></script>'; //===添加统计代码PC===
             if ($customer_info->background_music) {
                 $bgm = str_replace('"', "", $customer_info->background_music);
@@ -1377,15 +1389,15 @@ class PrintController extends BaseController
                     if ($v['config']['filter'] == 'list') {
                         if (isset($v['config']['star_only']) && $v['config']['star_only']) {
                             if ($cids) {
-                                $articles = Articles::whereIn('c_id', $cids)->where($this->type . '_show', '1')->where('cus_id', $this->cus_id)->where('is_star', '1')->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
+                                $articles = Articles::whereIn('c_id', $cids)->where($this->type . '_show', '1')->where('cus_id', $this->cus_id)->where('is_star', '1')->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->orderBy('id','DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
                             } else {
-                                $articles = Articles::where($this->type . '_show', '1')->where('cus_id', $this->cus_id)->where('is_star', '1')->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
+                                $articles = Articles::where($this->type . '_show', '1')->where('cus_id', $this->cus_id)->where('is_star', '1')->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->orderBy('id','DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
                             }
                         } else {
                             if ($cids) {
-                                $articles = Articles::whereIn('c_id', $cids)->where($this->type . '_show', '1')->where('cus_id', $this->cus_id)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
+                                $articles = Articles::whereIn('c_id', $cids)->where($this->type . '_show', '1')->where('cus_id', $this->cus_id)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->orderBy('id','DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
                             } else {
-                                $articles = Articles::where($this->type . '_show', '1')->where('cus_id', $this->cus_id)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
+                                $articles = Articles::where($this->type . '_show', '1')->where('cus_id', $this->cus_id)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->orderBy('id','DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
                             }
                         }
 
@@ -1447,15 +1459,15 @@ class PrintController extends BaseController
                     }
                     if (isset($v['config']['star_only']) && $v['config']['star_only']) {
                         if ($cids) {
-                            $articles = Articles::whereIn('c_id', $cids)->where($this->type . '_show', '1')->where('cus_id', $this->cus_id)->where('is_star', '1')->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
+                            $articles = Articles::whereIn('c_id', $cids)->where($this->type . '_show', '1')->where('cus_id', $this->cus_id)->where('is_star', '1')->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->orderBy('id','DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
                         } else {
-                            $articles = Articles::where($this->type . '_show', '1')->where('cus_id', $this->cus_id)->where('is_star', '1')->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
+                            $articles = Articles::where($this->type . '_show', '1')->where('cus_id', $this->cus_id)->where('is_star', '1')->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->orderBy('id','DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
                         }
                     } else {
                         if ($cids) {
-                            $articles = Articles::whereIn('c_id', $cids)->where($this->type . '_show', '1')->where('cus_id', $this->cus_id)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
+                            $articles = Articles::whereIn('c_id', $cids)->where($this->type . '_show', '1')->where('cus_id', $this->cus_id)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->orderBy('id','DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
                         } else {
-                            $articles = Articles::where($this->type . '_show', '1')->where('cus_id', $this->cus_id)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
+                            $articles = Articles::where($this->type . '_show', '1')->where('cus_id', $this->cus_id)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->orderBy('id','DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
                         }
                     }
                     if ($articles->count() != 0) {
@@ -1534,9 +1546,9 @@ class PrintController extends BaseController
                             $c_c_info['selected'] = 0;
                             $c_cids = explode(',', $this->getChirldenCid($cid, 1)); //取得所有栏目id
                             if (isset($v['config']['star_only']) && $v['config']['star_only']) {
-                                $articles = Articles::whereIn('c_id', $c_cids)->where($this->type . '_show', '1')->where('cus_id', $this->cus_id)->where('is_star', '1')->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
+                                $articles = Articles::whereIn('c_id', $c_cids)->where($this->type . '_show', '1')->where('cus_id', $this->cus_id)->where('is_star', '1')->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->orderBy('id','DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
                             } else {
-                                $articles = Articles::whereIn('c_id', $c_cids)->where($this->type . '_show', '1')->where('cus_id', $this->cus_id)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
+                                $articles = Articles::whereIn('c_id', $c_cids)->where($this->type . '_show', '1')->where('cus_id', $this->cus_id)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->orderBy('id','DESC')->select('id', 'c_id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'use_url', 'url')->take($v['config']['limit'])->get();
                             }
                             if ($articles->count() != 0) {
                                 $abc = [];
@@ -1712,7 +1724,7 @@ class PrintController extends BaseController
             $links_count = CustomerInfo::where('cus_id', $this->cus_id)->pluck('mobile_page_links'); //分页链接显示个数
             $offset = ($page - 1) * $page_number;
             $total = Articles::whereIn('c_id', $cids)->where('mobile_show', '1')->select('id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color')->count();
-            $list = Articles::whereIn('c_id', $cids)->where('mobile_show', '1')->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'c_id', 'url', 'use_url')->skip($offset)->take($page_number)->get();
+            $list = Articles::whereIn('c_id', $cids)->where('mobile_show', '1')->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->orderBy('id','DESC')->select('id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'c_id', 'url', 'use_url')->skip($offset)->take($page_number)->get();
         } else {
             $page_number = CustomerInfo::where('cus_id', $this->cus_id)->pluck('pc_page_count'); //每页显示个数
             $pc_page_count_switch = CustomerInfo::where('cus_id', $this->cus_id)->pluck('pc_page_count_switch'); //页面图文列表图文显示个数是否分开控制开关
@@ -1730,7 +1742,7 @@ class PrintController extends BaseController
             $links_count = CustomerInfo::where('cus_id', $this->cus_id)->pluck('pc_page_links'); //分页链接显示个数
             $offset = ($page - 1) * $page_number;
             $total = Articles::whereIn('c_id', $cids)->where($this->type . '_show', '1')->select('id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color')->count();
-            $list = Articles::whereIn('c_id', $cids)->where($this->type . '_show', '1')->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->select('id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'c_id', 'url', 'use_url')->skip($offset)->take($page_number)->get();
+            $list = Articles::whereIn('c_id', $cids)->where($this->type . '_show', '1')->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->orderBy('id','DESC')->select('id', 'title', 'img', 'introduction', 'created_at', 'title_bold', 'title_color', 'c_id', 'url', 'use_url')->skip($offset)->take($page_number)->get();
         }
         $page_count = ceil($total / $page_number);
         $article = [];
@@ -2161,9 +2173,9 @@ class PrintController extends BaseController
                             $art_arr = array();
                             if ($nav->star_only) {
                                 //是否只显示推荐
-                                $articles = Articles::whereIn('c_id', $id_arr)->where('mobile_show', 1)->where('is_star', 1)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->take($nav->show_num)->get();
+                                $articles = Articles::whereIn('c_id', $id_arr)->where('mobile_show', 1)->where('is_star', 1)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->orderBy('id','DESC')->take($nav->show_num)->get();
                             } else {
-                                $articles = Articles::whereIn('c_id', $id_arr)->where('mobile_show', 1)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->take($nav->show_num)->get();
+                                $articles = Articles::whereIn('c_id', $id_arr)->where('mobile_show', 1)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->orderBy('id','DESC')->take($nav->show_num)->get();
                             }
                             if (count($articles) > 0) {
                                 $i = 0;
@@ -2218,9 +2230,9 @@ class PrintController extends BaseController
                             $art_arr = array();
                             if ($nav->star_only) {
                                 //是否只显示推荐
-                                $articles = Articles::whereIn('c_id', $id_arr)->where('mobile_show', 1)->where('is_star', 1)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->take($nav->show_num)->get();
+                                $articles = Articles::whereIn('c_id', $id_arr)->where('mobile_show', 1)->where('is_star', 1)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->orderBy('id','DESC')->take($nav->show_num)->get();
                             } else {
-                                $articles = Articles::whereIn('c_id', $id_arr)->where('mobile_show', 1)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->take($nav->show_num)->get();
+                                $articles = Articles::whereIn('c_id', $id_arr)->where('mobile_show', 1)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->orderBy('id','DESC')->take($nav->show_num)->get();
                             }
                             if (count($articles) > 0) {
                                 $i = 0;
@@ -2313,9 +2325,9 @@ class PrintController extends BaseController
                         $art_arr = array();
                         if ($nav->star_only) {
                             //是否只显示推荐
-                            $articles = Articles::whereIn('c_id', $id_arr)->where('mobile_show', 1)->where('is_star', 1)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->take($nav->show_num)->get();
+                            $articles = Articles::whereIn('c_id', $id_arr)->where('mobile_show', 1)->where('is_star', 1)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->orderBy('id','DESC')->take($nav->show_num)->get();
                         } else {
-                            $articles = Articles::whereIn('c_id', $id_arr)->where('mobile_show', 1)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->take($nav->show_num)->get();
+                            $articles = Articles::whereIn('c_id', $id_arr)->where('mobile_show', 1)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->orderBy('id','DESC')->take($nav->show_num)->get();
                         }
                         if (count($articles) > 0) {
                             $i = 0;
@@ -2370,9 +2382,9 @@ class PrintController extends BaseController
                         $art_arr = array();
                         if ($nav->star_only) {
                             //是否只显示推荐
-                            $articles = Articles::whereIn('c_id', $id_arr)->where('mobile_show', 1)->where('is_star', 1)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->take($nav->show_num)->get();
+                            $articles = Articles::whereIn('c_id', $id_arr)->where('mobile_show', 1)->where('is_star', 1)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->orderBy('id','DESC')->take($nav->show_num)->get();
                         } else {
-                            $articles = Articles::whereIn('c_id', $id_arr)->where('mobile_show', 1)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->take($nav->show_num)->get();
+                            $articles = Articles::whereIn('c_id', $id_arr)->where('mobile_show', 1)->orderBy('is_top', 'desc')->orderBy('sort', 'ASC')->orderBy('created_at', 'DESC')->orderBy('id','DESC')->take($nav->show_num)->get();
                         }
                         if (count($articles) > 0) {
                             $i = 0;
@@ -3243,7 +3255,7 @@ class PrintController extends BaseController
                     $i++;
                 }
             }
-            $list_id = Articles::where('c_id', $article->c_id)->where($this->type . '_show', '1')->where('use_url', '0')->orderBy('is_top', 'desc')->orderBy('sort', 'asc')->orderBy('created_at', 'desc')->select('id', 'title', 'img', 'introduction', 'created_at')->lists('id');
+            $list_id = Articles::where('c_id', $article->c_id)->where($this->type . '_show', '1')->where('use_url', '0')->orderBy('is_top', 'desc')->orderBy('sort', 'asc')->orderBy('created_at', 'desc')->orderBy('id','DESC')->select('id', 'title', 'img', 'introduction', 'created_at')->lists('id');
             foreach ((array)$list_id as $key => $val) {
                 $article_prev = NULL;
                 $article_next = NULL;
@@ -3338,7 +3350,7 @@ class PrintController extends BaseController
             //                }
             //            }
             //        }
-            $articles = Articles::where($this->type . '_show', '1')->where('c_id', $article->c_id)->where('use_url', '0')->orderBy('is_top', 'desc')->orderBy('sort', 'asc')->orderBy('created_at', 'desc')->get()->toArray();
+            $articles = Articles::where($this->type . '_show', '1')->where('c_id', $article->c_id)->where('use_url', '0')->orderBy('is_top', 'desc')->orderBy('sort', 'asc')->orderBy('created_at', 'desc')->orderBy('id','DESC')->get()->toArray();
             $related = array();
             for (; count($related) < 6 && count($related) < count($articles);) {
                 $k = rand(0, count($articles) - 1);
@@ -3482,7 +3494,7 @@ class PrintController extends BaseController
                 $result[$key] = $this->detailList($this->pagedata($key, $publicdata['pagedata']));
             }
         }
-        $articles = Articles::where($this->type . '_show', '1')->where('c_id', $c_id)->where('use_url', '0')->orderBy('is_top', 'desc')->orderBy('sort', 'asc')->orderBy('created_at', 'desc')->get()->toArray();
+        $articles = Articles::where($this->type . '_show', '1')->where('c_id', $c_id)->where('use_url', '0')->orderBy('is_top', 'desc')->orderBy('sort', 'asc')->orderBy('created_at', 'desc')->orderBy('id','DESC')->get()->toArray();
         $content = $publicdata['repleace'][$viewname . '.html'];
         $content = preg_replace($publicdata['pattern'], $publicdata['repleace'], $content);
         foreach ((array)$articles as $key => $article) {
@@ -3927,7 +3939,7 @@ class PrintController extends BaseController
         }
 
         //文章数据json保存
-        $article_data = Articles::where('cus_id', $this->cus_id)->where($this->type . '_show', '1')->orderBy('is_top', 'desc')->orderBy('created_at', 'desc')->select('id', 'title', 'img', 'introduction', 'created_at', 'use_url', 'url')->get()->toArray();
+        $article_data = Articles::where('cus_id', $this->cus_id)->where($this->type . '_show', '1')->orderBy('is_top', 'desc')->orderBy('created_at', 'desc')->orderBy('id','DESC')->select('id', 'title', 'img', 'introduction', 'created_at', 'use_url', 'url')->get()->toArray();
         $article = array();
         foreach ((array)$article_data as $article_img) {
             $article[$article_img['id']]['id'] = $article_img['id'];
@@ -4052,7 +4064,7 @@ class PrintController extends BaseController
         }
 
         //文章数据json保存
-        $article_data = Articles::where('cus_id', $this->cus_id)->where($this->type . '_show', '1')->orderBy('is_top', 'desc')->orderBy('created_at', 'desc')->select('id', 'title', 'img', 'introduction', 'created_at', 'use_url', 'url')->get()->toArray();
+        $article_data = Articles::where('cus_id', $this->cus_id)->where($this->type . '_show', '1')->orderBy('is_top', 'desc')->orderBy('created_at', 'desc')->orderBy('id','DESC')->select('id', 'title', 'img', 'introduction', 'created_at', 'use_url', 'url')->get()->toArray();
         $article = array();
         foreach ((array)$article_data as $article_img) {
             $article[$article_img['id']]['id'] = $article_img['id'];

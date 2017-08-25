@@ -329,7 +329,11 @@ function settingController($scope, $http) {
                     checkJSON(json, function (json) {
                         if (json.err == 0) {
                             if (img_upload.length) {
-                                $http.post('../imgupload?target=common', {files: img_upload});
+                                $http.post('../imgupload?target=common', {files: img_upload}).success(function(push){
+                                    if(push.data == 1001 || push.data == 1002 || push.data == 1003){
+                                        location.href = '#/pushpage?msg='+push.data+'&img='+push.img;
+                                    }
+                                });
                             }
                             var hint_box = new Hint_box();
                             hint_box(json.msg);
