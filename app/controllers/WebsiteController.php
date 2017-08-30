@@ -686,12 +686,11 @@ class WebsiteController extends BaseController {
                         //     }                            
                         // }
                         //===end===
-                        @file_put_contents('1.txt', '1');
                         if (!empty($tpl_name)) {
                             $this->_remove_Dir(public_path("templates/$tpl_name"));
                             $this->_remove_Dir(app_path("views/templates/$tpl_name"));
                         }
-                        @file_put_contents('2.txt', '2');
+
                         $result = $this->saveTemplate($truth_name, $tpl_name);
                     } else {
                         $result = ['err' => 1001, 'msg' => '模板上传失败'];
@@ -700,7 +699,6 @@ class WebsiteController extends BaseController {
             } else {
                 $result = ['err' => 1002, 'msg' => '模板上传失败，请上传正确的文件类型'];
             }
-            @file_put_contents('3.txt', json_encode($result));
             return Response::json($result);
         }
     }
@@ -762,7 +760,6 @@ class WebsiteController extends BaseController {
         } else {
             $result = ['err' => 1003, 'msg' => '解压文件失败'];
         }
-        @file_put_contents('4.txt', json_encode($result));
         return $result;
     }
 
@@ -873,11 +870,9 @@ class WebsiteController extends BaseController {
                         break;
                 }
             }
-            @file_put_contents('5.txt', json_encode($result));
             return array('tpl_dir' => $tpl_dir, 'tpl_num' => $new_num, 'config' => $data);
         } else {
             @unlink(public_path("temp_templates/$tpl_pack"));
-            @file_put_contents('6.txt', '6');
             return false;
         }
     }
