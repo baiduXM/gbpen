@@ -338,18 +338,23 @@ class UploadController extends BaseController
 
                 if(isset($res1)&&isset($res2)){
                     if($res1!=1000 && $res2!=1000){
+                        @file_put_contents(public_path('customers/' . $customer . '/zk_img.txt'), '1003:'.$imgzip.','.date('Y-m-d H:i:s',time()).PHP_EOL,FILE_APPEND);
                         return Response::json(['err' => 0, 'msg' => '图片推送失败', 'data' => 1003, 'img' => $imgzip]);
                     }elseif($res1!=1000 && $res2=1000){
+                        @file_put_contents(public_path('customers/' . $customer . '/zk_img.txt'), '1001:'.$imgzip.','.date('Y-m-d H:i:s',time()).PHP_EOL,FILE_APPEND);
                         return Response::json(['err' => 0, 'msg' => 'A服图片推送失败', 'data' => 1001, 'img' => $imgzip]);
                     }elseif($res1=1000 && $res2!=1000){
+                        @file_put_contents(public_path('customers/' . $customer . '/zk_img.txt'), '1002:'.$imgzip.','.date('Y-m-d H:i:s',time()).PHP_EOL,FILE_APPEND);
                         return Response::json(['err' => 0, 'msg' => 'B服图片推送失败', 'data' => 1002, 'img' => $imgzip]);
                     }
                 }elseif(isset($res1)&&!isset($res2)){
                     if($res1!=1000){                            
+                        @file_put_contents(public_path('customers/' . $customer . '/zk_img.txt'), '1001:'.$imgzip.','.date('Y-m-d H:i:s',time()).PHP_EOL,FILE_APPEND);
                         return Response::json(['err' => 0, 'msg' => 'A服推送失败', 'data' => 1001, 'img' => $imgzip]);
                     }
                 }elseif(isset($res1)&&!isset($res2)){
                     if($res2!=1000){
+                        @file_put_contents(public_path('customers/' . $customer . '/zk_img.txt'), '1002:'.$imgzip.','.date('Y-m-d H:i:s',time()).PHP_EOL,FILE_APPEND);
                         return Response::json(['err' => 0, 'msg' => 'B服推送失败', 'data' => 1002, 'img' => $imgzip]);
                     }
                 }

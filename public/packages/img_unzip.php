@@ -17,5 +17,7 @@ if (file_exists($imgzip)) {
     @unlink('./'.$imgzip);
     if($res1&&$res2){
         echo 1000;
+    }else{
+        @file_put_contents('jt_img.txt', $res1.','.$res2.','.$imgzip.','.date('Y-m-d H:i:s',time()).PHP_EOL,FILE_APPEND);
     }
 }
