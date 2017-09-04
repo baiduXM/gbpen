@@ -20,7 +20,12 @@ function articleController($scope, $http, $location) {
     $scope.is_star = $_GET['is_star'] == undefined ? null : parseInt($_GET['is_star']);
     $scope.ser_name = $_GET['ser_name'] == undefined ? null : $_GET['ser_name'];
     $scope.search_word = $_GET['search_word'] == undefined ? null : $_GET['search_word'];
-    var ser_name = '分类查找';
+    if($scope.ser_name!=null){
+        var ser_name = $scope.ser_name;
+    }else{
+       var ser_name = '分类查找'; 
+    }
+    
     /**
      * 文章列表Model
      * @param {type} option
@@ -129,13 +134,16 @@ function articleController($scope, $http, $location) {
                     // var now_page = getUrlParam('p') ? getUrlParam('p') : 1;
                     var search_word = getUrlParam('search_word') ? getUrlParam('search_word') : '';
                     search_word = escape(escape(search_word));
+                    if(cat_id==null){
+                        cat_id = '';
+                    }
                     $.each(article_d, function (k, v) {
                         _div += '<tr class="article-check">\n\
                                         <td style="text-align: left">\n\
                                             <dl class="fl checkclass">\n\
                                                 <input type="checkbox" name="checks" value="Bike1" style=" display:none;">\n\
                                                 <label class="label"></label>\n\
-                                                </dl><div class="tit_info"><input type="hidden" class="imgpre" value="' + v.img[0] + '"><input type="text" data-id="' + v.id + '" class="title_modify" style="display:none;" value=' + v.title + ' /><span class="sap_tit">' + v.title + (v.is_star ? '</span><img class="tit_pic" />' : '</span>') + (v.is_top ? '<i class="fa iconfont icon-zhiding mr5 pos_bule"></i>' : '') + '</div>\n\
+                                                </dl><div class="tit_info"><input type="hidden" class="imgpre" value="' + v.img[0] + '"><input type="text" data-id="' + v.id + '" class="title_modify" style="display:none;" value="' + v.title + '" /><span class="sap_tit">' + v.title + (v.is_star ? '</span><img class="tit_pic" />' : '</span>') + (v.is_top ? '<i class="fa iconfont icon-zhiding mr5 pos_bule"></i>' : '') + '</div>\n\
                                         </td>\n\
                                         <td>' + v.c_name + '</td>\n\
                                         <td>' + v.viewcount + '</td>\n\
@@ -405,6 +413,7 @@ function articleController($scope, $http, $location) {
                 } else {
                     // 查看
                     $scope.page = 1;
+                    $scope.is_star = 1;
                     $scope.getArticleList({
                         first: false,
                         ser_name: ser_name,
@@ -674,13 +683,20 @@ function articleController($scope, $http, $location) {
         //===跳转页数===
         _cpage:function() {
             $("#cpage").click(function(){
-                var tpage = $("#tpage").val();
-                var url = '#/article?p=' + tpage;
-                var search_word = getUrlParam('search_word');
-                if(search_word){
-                    url+= '&search_word=' + search_word;
-                }
-                window.location.hash = url;
+                var cat_id = $scope.cat_id;
+                var is_star = $scope.is_star;
+                var ser_name = $('.newarticle').find('span').text();
+                var tpage = $("#tpage").val();                
+                var search_word = getUrlParam('search_word')?getUrlParam('search_word'):'';
+                search_word = escape(escape(search_word));
+                $("#tpage").val(""); 
+                $scope.getArticleList({
+                    ser_name: ser_name,
+                    page: tpage,
+                    cat_id: cat_id,
+                    is_star: is_star,
+                    search_word: search_word
+                });
             });
         },
         //===搜索关键词===
@@ -694,9 +710,21 @@ function articleController($scope, $http, $location) {
                 //     page: 1,
                 //     search_word: search_word
                 // });
+                var cat_id = $scope.cat_id;
+                var ser_name = $('.newarticle').find('span').text();
+                var is_star = $scope.is_star;
                 var url = '#/article?p=1';
                 if(search_word){
                     url+= '&search_word=' + search_word;
+                }
+                if(cat_id){
+                    url+= '&id=' + cat_id;
+                }
+                if(is_star){
+                    url+= '&is_star=' + is_star;
+                }
+                if(ser_name!=null&&ser_name!='分类查找'){
+                    url+= '&ser_name=' + ser_name;
                 }
                 window.location.hash = url;
             });
