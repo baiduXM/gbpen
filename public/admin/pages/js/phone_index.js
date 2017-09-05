@@ -409,7 +409,7 @@ function phone_indexController($scope, $http, $location) {
                                                     <div class="up_pic up_phone"></div>\
                                             </div>';
                         $('#phone_index_image').attr('data-key', index);
-                        $('#phone_index_image').append('<div class="pictitle">(单图)<span class="red">' + ele.description + '</span></div>');
+                        $('#phone_index_image').append('<div class="pictitle">(单图&nbsp;' + ele.config.width + '*' + ele.config.height + ')<span class="red">' + ele.description + '</span></div>');
                         $('#phone_index_image').append(_div + addButton).data('aspectRatio', aspectRatio);
                         break;
                     default:
