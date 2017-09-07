@@ -488,7 +488,7 @@ WarningBox.prototype = {
                 $('#' + file.id).attr('data-id', data.data[0].name.split('.')[0]);
                 html = '<div  class="article" data-id="' + data.data[0].name.split('.')[0] + '" style="width:100%;">\
 											<input type="hidden" name="img' + data.data[0].name + '" class="img" value="' + data.data[0].name + '" />\
-											<input type="text" name="title' + data.data[0].filename.split('.')[0] + '" class="title" value="' + data.data[0].filename.split('.')[0] + '" style="width:100%;" />\
+											<input type="text" name="title' + data.data[0].filename.substr(0,data.data[0].filename.lastIndexOf('.')) + '" class="title" value="' + data.data[0].filename.substr(0,data.data[0].filename.lastIndexOf('.')) + '" style="width:100%;" />\
 										</div>'
                 $('#' + file.id).children('.uploadify-progress').append('<div class="batch_title">' + html + '</div>');
                 scrollmargin = $(".uploadify-queue").scrollTop() + $('#' + file.id).offset().top - $('.uploadify-queue').offset().top;
