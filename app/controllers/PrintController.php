@@ -4119,7 +4119,9 @@ class PrintController extends BaseController
                     $old_arr[$key]['config']['star_only'] = isset($new_arr[$key]['value']['star_only']) ? $new_arr[$key]['value']['star_only'] : '';
                     $old_arr[$key]['config']['id'] = isset($new_arr[$key]['value']['id']) ? $new_arr[$key]['value']['id'] : '';
                 } elseif ($old_arr[$key]['type'] == 'page') {
-                    $old_arr[$key]['config'] = $new_arr[$key]['value'];
+                    // $old_arr[$key]['config'] = $new_arr[$key]['value'];
+                    $old_arr[$key]['config']['star_only'] = isset($new_arr[$key]['value']['star_only']) ? $new_arr[$key]['value']['star_only'] : '';
+                    $old_arr[$key]['config']['id'] = isset($new_arr[$key]['value']['id']) ? $new_arr[$key]['value']['id'] : '';
                 } elseif ($old_arr[$key]['type'] == 'navs') {
                     $old_arr[$key]['config']['ids'] = $new_arr[$key]['value']['ids'];
                 } else {
