@@ -68,6 +68,7 @@ function columnController($scope, $http) {
         },
         get_column_list: function (json) {
             var err = json.err;
+            $scope.errmsg = json.err;
             if(err==1000){
                 $('.batchaddcolumn').css('display','none');
                 $('.addcolumn').css('display','none');
@@ -274,7 +275,7 @@ function columnController($scope, $http) {
         },
         classnamemodify: function () {
             //分类标题修改
-            if(err!=1000){
+            if($scope.errmsg!=1000){
                 $(".class_name").click(function () {
                     $(this).hide();
                     $(this).parent('td').find(".name_modify").show();
