@@ -22,6 +22,7 @@ class ClassifyController extends BaseController {
      * @return type
      */
     public function classifyList() {
+        $isAdmin = Session::get('isDaili');
         $customer = Auth::user()->name;
         $cus_id = Auth::id();
         $classify = Classify::where('cus_id', $cus_id)->orderBy('sort')->orderBy('id')->get()->toArray();
@@ -35,9 +36,15 @@ class ClassifyController extends BaseController {
                 }
             }
         }
-        $result['err'] = 0;
-        $result['msg'] = '';
+        if($isAdmin){
+            $result['err'] = 0;
+            $result['msg'] = '';
+        }else{
+            $result['err'] = 1000;
+            $result['msg'] = '非代理登录';            
+        }
         $result['data'] = $this->toTree($classify);
+
         return Response::json($result);
     }
 
