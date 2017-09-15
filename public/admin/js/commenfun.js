@@ -635,9 +635,6 @@ function checkJSON(json, callback, fail_callback) {
             alert('账号密码相同，请先修改密码！');
             location.hash = '#/user';
             break;
-        case 1000:
-            typeof (callback) === 'function' ? callback(json) : null;
-            break;
         default:
             alert(json.msg);
             typeof (callback) === 'function' ? fail_callback == undefined ? null : fail_callback(json) : null;

@@ -40,8 +40,7 @@ class ApiController extends BaseController
                 Auth::login($user);
                 if (Auth::check()) {
                     $this->logsAdd("customer", __FUNCTION__, __CLASS__, 100, "用户登录", 1);
-                    Session::put('isAdmin', TRUE);//统一双站切换也有该标识
-                    Session::put('isDaili', TRUE);//由代理登录
+                    Session::put('isAdmin', TRUE);
                     return Redirect::to('admin/index.html');
                 } else {
                     $result = ['err' => 1001, 'msg' => '登录失败'];

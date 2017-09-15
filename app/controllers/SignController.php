@@ -57,9 +57,6 @@ class SignController extends BaseController {
     public function logOut() {
         $this->logsAdd("customer",__FUNCTION__,__CLASS__,101,"用户退出",0);
         Auth::logout();
-        if (Session::has('isDaili')){
-            Session::forget('isDaili');
-        }
         return Redirect::to('/');
     }
 
