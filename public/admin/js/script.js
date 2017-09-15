@@ -347,7 +347,7 @@ $(window).resize(function () {
 function freeEt(customer){
     // alert(customer);
     // location.reload();
-    $http.get('http://dl2.5067.org/?module=Api&action=TyGshow&name='+customer).success(function(data){
+    $.get('http://dl2.5067.org/?module=Api&action=TyGshow&name='+customer).success(function(data){
         if(data==0){
             alert('开通成功');
             location.reload();
@@ -355,6 +355,8 @@ function freeEt(customer){
             alert('同步失败');
         }else if(data==2){
             alert('开通失败');
+        }else{
+            alert('请刷新');
         }
     });
 }
