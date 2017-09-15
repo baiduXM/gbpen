@@ -180,6 +180,8 @@ mainApp.controller('memberController', function ($scope, $http) {
             $http.get('http://dl2.5067.org/?module=Api&action=getGshowByname&name='+json.data.customer).success(function (d) {
                 if(d==1){
                     $(".daohang ul").append('<li class="nav"><a href="/cdlogin" target="_blank">E推</a><em></em></li>');
+                }else{
+                    $(".daohang ul").append('<li class="nav"><a href="javascript:void(0)" style="color:#FF3333;" onclick=freeEt("'+json.data.customer+'")>E</a><em></em></li>');
                 }
             });
             $scope.companyname = json.data.company_name;
@@ -341,6 +343,21 @@ $(window).resize(function () {
     width_resize()
 });
 
+//免费试用E推
+function freeEt(customer){
+    // alert(customer);
+    // location.reload();
+    $http.get('http://dl2.5067.org/?module=Api&action=TyGshow&name='+customer).success(function(data){
+        if(data==0){
+            alert('开通成功');
+            location.reload();
+        }else if(data==1){
+            alert('同步失败');
+        }else if(data==2){
+            alert('开通失败');
+        }
+    });
+}
 
 // 推送静态文件
 var cache_num;
