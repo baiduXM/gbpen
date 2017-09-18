@@ -347,7 +347,7 @@ $(window).resize(function () {
 function freeEt(customer){
     // alert(customer);
     // location.reload();
-    if(!confirm('确认开通吗?')){
+    if(!confirm('确认开通E推（试用版一年）吗？')){
         return false;
     }
     $.get('http://dl2.5067.org/?module=Api&action=TyGshow&name='+customer).success(function(data){

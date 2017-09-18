@@ -1018,6 +1018,9 @@ class WebsiteController extends BaseController {
         $image = @imagecreatefromjpeg($src);
         $width = imagesx($image);
         $height = imagesy($image);
+        if($height>1000){
+            $height = 1000;
+        }
         $canvas = imagecreatetruecolor($width, $height);
         $alpha = imagecolorallocatealpha($canvas, 0, 0, 0, 127);
         imagefill($canvas, 0, 0, $alpha);
