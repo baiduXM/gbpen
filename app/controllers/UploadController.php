@@ -214,15 +214,10 @@ class UploadController extends BaseController
 
                 $zip = new ZipArchive;
                 if ($zip->open(public_path('customers/' . $customer . '/' . $imgzip), ZipArchive::CREATE) === TRUE) {
-                    $Capacity = new CapacityController;//容量
                     foreach ((array)$files as $fileName) {
                         $filepath = public_path('customers/' . $customer . '/cache_images/' . $fileName);
                         if (file_exists($filepath)) {
-                            // $filesize += filesize($filepath); //===累加大小
-                            $filesize = filesize($filepath);
-                            if (!$Capacity->change_capa($filesize, 'use')) {
-                                return Response::json(['err' => 0, 'msg' => '空间容量不足', 'data' => 1005]);
-                            }
+                            $filesize += filesize($filepath); //===累加大小
                             $file = explode('.', $fileName);
                             $type = end($file);
                             $up_result = copy(public_path('customers/' . $customer . '/cache_images/' . $fileName), $destinationPath . '/l/' . $target . '/' . $fileName);
@@ -329,10 +324,10 @@ class UploadController extends BaseController
                     
                 }
                 //===扣除空间容量===
-                // $Capacity = new CapacityController;
-                // if (!$Capacity->change_capa($filesize, 'use')) {
-                //     return Response::json(['err' => 0, 'msg' => '空间容量不足', 'data' => 1005]);
-                // }
+                $Capacity = new CapacityController;
+                if (!$Capacity->change_capa($filesize, 'use')) {
+                    return Response::json(['err' => 0, 'msg' => '空间容量不足', 'data' => '']);
+                }
                 //===end===
                 @ftp_close($conn);
                 if(isset($conn_b)){

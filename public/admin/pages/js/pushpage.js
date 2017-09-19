@@ -14,9 +14,6 @@ function pushpageController($scope, $http, $location) {
     }else if(msg==1003){
         $('.refresh-name').html('服务器图片推送失败');
         $('.push_refresh').html('服务器图片重推');
-    }else if(msg==1005){
-        $('.refresh-name').html('容量不足，请扩容后再上传');
-        $('.push_refresh').css('display','none');
     }
 
     $('.push_refresh').click(function(){

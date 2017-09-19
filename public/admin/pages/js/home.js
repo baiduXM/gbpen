@@ -480,9 +480,6 @@ function homeController($scope, $http) {
                             if(push.data == 1001 || push.data == 1002 || push.data == 1003){
                                 location.href = '#/pushpage?msg='+push.data+'&img='+push.img;
                             }
-                            if(push.data == 1005){
-                                location.href = '#/pushpage?msg='+push.data;
-                            } 
                             return false;
                         });
                     } else {
