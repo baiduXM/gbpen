@@ -181,7 +181,7 @@ mainApp.controller('memberController', function ($scope, $http) {
                 if(d==1){
                     $(".daohang ul").append('<li class="nav"><a href="/cdlogin" target="_blank">E推</a><em></em></li>');
                 }else{
-                    $(".daohang ul").append('<li class="nav"><a href="javascript:void(0)" style="color:#FF3333;" onclick=freeEt("'+json.data.customer+'")>E</a><em></em></li>');
+                    $(".daohang ul").append('<li class="nav"><a href="javascript:void(0)" style="color:#FF3333;" onclick=freeEt("'+json.data.customer+'")>免费试用E推</a><em></em></li>');
                 }
             });
             $scope.companyname = json.data.company_name;
