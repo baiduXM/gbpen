@@ -220,7 +220,11 @@ class CapacityController extends BaseController {
                     $use_size += filesize($filepath);
                 }
             }
-            $this->change_capa($use_size, 'use');
+            $res = $this->change_capa($use_size, 'use');
+            if(!$res){
+                $ue_res = 1005;
+                return $ue_res;
+            }
         }
     }
 
