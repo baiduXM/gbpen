@@ -330,9 +330,6 @@ function addarticleController($scope, $http, $location) {
                                     }                                    
                                 });
                     }
-                    if(json.msg==1005){//编辑器图片容量不足
-                        location.href = '#/pushpage?msg='+json.msg;
-                    }
                     alert('修改成功！');
 //                    location.href = history.go(-1);
                     var url = '#/article?p=' + back_page;

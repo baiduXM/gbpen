@@ -76,7 +76,7 @@ class ArticleController extends BaseController {
         $article->pushed = 1;
         //===ueditor文件统计容量===
         $Capacity = new CapacityController();
-        $ue_res = $Capacity->compare_filename($article->content, $article->file_array);
+        $Capacity->compare_filename($article->content, $article->file_array);
         $article->file_array = $Capacity->reg_ueditor_content($article->content);
         $ue_img=explode(",", $article->file_array);
         //===end===
@@ -100,7 +100,7 @@ class ArticleController extends BaseController {
                     $moreimg->save();
                 }
             }
-            if(count($ue_img) && $ue_res!=1005){
+            if(count($ue_img)){
                foreach ($ue_img as $uimg) {
                     if($uimg!==""){
                         $moreuimg = new Moreimg();
@@ -116,7 +116,7 @@ class ArticleController extends BaseController {
             }
 
             $this->logsAdd("article",__FUNCTION__,__CLASS__,1,"添加文章",0,$article->id);
-            $return_msg = array('err' => 0, 'msg' => $ue_res, 'data' => array($article->id));
+            $return_msg = array('err' => 0, 'msg' => '', 'data' => array($article->id));
         } else {
             $return_msg = array('err' => 3001, 'msg' => '文章添加失败');
         }
