@@ -39,7 +39,8 @@ class Uploader
         "ERROR_UNKNOWN" => "未知错误",
         "ERROR_DEAD_LINK" => "链接不可用",
         "ERROR_HTTP_LINK" => "链接不是http链接",
-        "ERROR_HTTP_CONTENTTYPE" => "链接contentType不正确"
+        "ERROR_HTTP_CONTENTTYPE" => "链接contentType不正确",
+        "ERROR_CAPACITY" => "容量不足"
     );
 
     /**
@@ -103,6 +104,16 @@ class Uploader
         //检查是否不允许的文件格式
         if (!$this->checkType()) {
             $this->stateInfo = $this->getStateInfo("ERROR_TYPE_NOT_ALLOWED");
+            return;
+        }
+
+        //容量不足不上传
+        $cus_id = Auth::id();
+        $customerinfo = CustomerInfo::where('cus_id',$cus_id)->get(['capacity','capacity_use']);
+        $capacity = $customerinfo[0]['capacity'];
+        $capacity_use = $customerinfo[0]['capacity_use'];
+        if($capacity < $capacity_use + $this->fileSize){
+            $this->stateInfo = $this->getStateInfo("ERROR_CAPACITY");
             return;
         }
 
