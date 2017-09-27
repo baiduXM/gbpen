@@ -106,6 +106,9 @@ class ApiController extends BaseController
             $update['pc_out_domain'] = trim(Input::get('pc_out_domain'));
             $update['mobile_out_domain'] = trim(Input::get('mobile_out_domain'));
 
+            //是否允许用户自定义栏目
+            $update['column_on'] = trim(Input::get('column_on'));
+
             //===绑定账户===
             $switch_cus_name = Input::get('switch_cus_name');
             if (!empty($switch_cus_name)) {
