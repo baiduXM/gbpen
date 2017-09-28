@@ -67,6 +67,13 @@ function columnController($scope, $http) {
             });
         },
         get_column_list: function (json) {
+            var err = json.err;
+            $scope.errmsg = json.err;
+            if(err==1000){
+                $('.batchaddcolumn').css('display','none');
+                $('.addcolumn').css('display','none');
+                $('.delcolumn').css('display','none');
+            }
             //列表内容
             var d = json.data, layout,
                     _div = '<tr>\n\
@@ -119,15 +126,22 @@ function columnController($scope, $http) {
                     <td style="text-align: left; height:20px;overflow:hidden;"><dl class="fl checkclass"><input type="checkbox" name="vehicle" value="Bike1" style=" display:none;"><label class="label"></label></dl>' + label + '<input type="text" style="display:none;" data-id="' + ele.id + '" class="name_modify" value="' + ele.name + '" /><div class="tit_info class_name">' + ele.name + '</div></td>';
                     column_icon(ele.type);
                     _div += '<td><div class="tit_info">' + column_type(ele.type) + '</div>' + layout + '</td>';
-                    if(column_type(ele.type)!=='海报单页'){
-                        _div += '<td style="text-align:center;"><span><i class="fa icon-pc iconfont btn btn-show btn-desktop ' + (ele.pc_show ? 'blue' : 'grey') + '"></i></span><div class="pr size1"><i class="fa iconfont icon-snimicshouji btn btn-show btn-mobile ' + (ele.mobile_show ? 'blue' : 'grey') + '"></i><i class="fa iconfont btn icon-phonehome none ' + (ele.show == 1 ? 'blue' : 'grey') + (ele.showtypetotal == 0 ? ' not-allowed' : '') + '"></i></div></td>\n\
-                        <td><i class="fa iconfont icon-xiayi btn sort"></i><i class="fa iconfont icon-shangyi btn sort"></i><a style="margin:0 10px;" class="column-edit-box"><i class="fa iconfont icon-bianji column-edit"></i><div class="warning"><i class="iconfont' + (ele.img_err ? ' icon-gantanhao' : '') + '"></i></div></a><a class="delv" name="' + ele.id + '"><i class="fa iconfont icon-delete"></i></a></td>\n\
-                        </tr>';
+                    if(err!=1000){
+                       if(column_type(ele.type)!=='海报单页'){
+                            _div += '<td style="text-align:center;"><span><i class="fa icon-pc iconfont btn btn-show btn-desktop ' + (ele.pc_show ? 'blue' : 'grey') + '"></i></span><div class="pr size1"><i class="fa iconfont icon-snimicshouji btn btn-show btn-mobile ' + (ele.mobile_show ? 'blue' : 'grey') + '"></i><i class="fa iconfont btn icon-phonehome none ' + (ele.show == 1 ? 'blue' : 'grey') + (ele.showtypetotal == 0 ? ' not-allowed' : '') + '"></i></div></td>\n\
+                            <td><i class="fa iconfont icon-xiayi btn sort"></i><i class="fa iconfont icon-shangyi btn sort"></i><a style="margin:0 10px;" class="column-edit-box"><i class="fa iconfont icon-bianji column-edit"></i><div class="warning"><i class="iconfont' + (ele.img_err ? ' icon-gantanhao' : '') + '"></i></div></a><a class="delv" name="' + ele.id + '"><i class="fa iconfont icon-delete"></i></a></td>\n\
+                            </tr>';
+                        }else{
+                            _div += '<td style="text-align:center;"><span><i class="fa icon-pc iconfont btn btn-show btn-desktop ' + (ele.pc_show ? 'blue' : 'grey') + '"></i></span><div class="pr size1"><i class="fa iconfont icon-snimicshouji btn btn-show btn-mobile ' + (ele.mobile_show ? 'blue' : 'grey') + '"></i><i class="fa iconfont btn icon-phonehome none ' + (ele.show == 1 ? 'blue' : 'grey') + (ele.showtypetotal == 0 ? ' not-allowed' : '') + '"></i></div></td>\n\
+                            <td><i class="fa iconfont icon-xiayi btn sort"></i><i class="fa iconfont icon-shangyi btn sort"></i><a style="margin:0 10px;" class="column-edit-box"><i class="fa iconfont icon-bianji column-edit"></i><div class="warning"><i class="iconfont' + (ele.img_err ? ' icon-gantanhao' : '') + '"></i></div></a><a class="delv" name="' + ele.id + '"><i class="fa iconfont icon-delete"></i></a><a type="button" href="/category/'+ele.id+'" target="_blank">预览</a><input style="display:none" class="copy_url" readonly="readonly" id="url_' + ele.id + '" value="" /><input type="button" id="copy_' + ele.id + '" name="' + ele.id + '" class="check_url" value="查看链接" /></td>\n\
+                            </tr>';
+                        } 
                     }else{
                         _div += '<td style="text-align:center;"><span><i class="fa icon-pc iconfont btn btn-show btn-desktop ' + (ele.pc_show ? 'blue' : 'grey') + '"></i></span><div class="pr size1"><i class="fa iconfont icon-snimicshouji btn btn-show btn-mobile ' + (ele.mobile_show ? 'blue' : 'grey') + '"></i><i class="fa iconfont btn icon-phonehome none ' + (ele.show == 1 ? 'blue' : 'grey') + (ele.showtypetotal == 0 ? ' not-allowed' : '') + '"></i></div></td>\n\
-                        <td><i class="fa iconfont icon-xiayi btn sort"></i><i class="fa iconfont icon-shangyi btn sort"></i><a style="margin:0 10px;" class="column-edit-box"><i class="fa iconfont icon-bianji column-edit"></i><div class="warning"><i class="iconfont' + (ele.img_err ? ' icon-gantanhao' : '') + '"></i></div></a><a class="delv" name="' + ele.id + '"><i class="fa iconfont icon-delete"></i></a><a type="button" href="/category/'+ele.id+'" target="_blank">预览</a><input style="display:none" class="copy_url" readonly="readonly" id="url_' + ele.id + '" value="" /><input type="button" id="copy_' + ele.id + '" name="' + ele.id + '" class="check_url" value="查看链接" /></td>\n\
+                        <td><i class="fa iconfont icon-xiayi btn sort"></i><i class="fa iconfont icon-shangyi btn sort"></i>添加、修改、删除栏目，请联系客服</td>\n\
                         </tr>';
                     }
+                    
                     //原
                     // _div += '<td style="text-align:center;"><span><i class="fa icon-pc iconfont btn btn-show btn-desktop ' + (ele.pc_show ? 'blue' : 'grey') + '"></i></span><div class="pr size1"><i class="fa iconfont icon-snimicshouji btn btn-show btn-mobile ' + (ele.mobile_show ? 'blue' : 'grey') + '"></i><i class="fa iconfont btn icon-phonehome none ' + (ele.show == 1 ? 'blue' : 'grey') + (ele.showtypetotal == 0 ? ' not-allowed' : '') + '"></i></div></td>\n\
                     // <td><i class="fa iconfont icon-xiayi btn sort"></i><i class="fa iconfont icon-shangyi btn sort"></i><a style="margin:0 10px;" class="column-edit-box"><i class="fa iconfont icon-bianji column-edit"></i><div class="warning"><i class="iconfont' + (ele.img_err ? ' icon-gantanhao' : '') + '"></i></div></a><a class="delv" name="' + ele.id + '"><i class="fa iconfont icon-delete"></i></a></td>\n\
@@ -142,13 +156,20 @@ function columnController($scope, $http) {
                                     <td style="text-align: left;"><div class="fl style">├</div><dl class="fl checkclass"><input type="checkbox" name="vehicle" value="Bike1" style=" display:none;"><label class="label"></label></dl><input type="text" style="display:none;" data-id="' + v.id + '" class="name_modify" value="' + v.name + '" /><div class="tit_info class_name">' + v.name + '</div></td>';
                                 column_icon(v.type);
                                 _div += '<td><div class="tit_info">' + column_type(v.type) + '</div>' + layout + '</td>';
-                                if(column_type(v.type)!=='海报单页'){
-                                    _div += '<td style="text-align:center;"><span><i class="fa iconfont icon-pc btn btn-show btn-desktop ' + (v.pc_show ? 'blue' : 'grey') + '"></i></span><div class="pr size1"><i class="iconfont icon-snimicshouji fa btn btn-show btn-mobile ' + (v.mobile_show ? 'blue' : 'grey') + '"></i><i class="fa iconfont btn icon-phonehome none ' + (v.show ? 'blue' : 'grey') + (v.showtypetotal == 0 ? ' not-allowed' : '') + '"></i></div></td>\n\
-                                    <td><i class="fa iconfont icon-xiayi btn sort grey "></i><i class="fa iconfont icon-shangyi btn sort grey "></i><a style="margin:0 10px;" class="column-edit-box"><i class="fa iconfont icon-bianji grey column-edit"></i><div class="warning"><i class="iconfont' + (v.img_err ? ' icon-gantanhao' : '') + '"></i></div></a><a class="delv" name="' + v.id + '"><i class="fa iconfont icon-delete grey "></i></a></td></tr>';
+                                if(err!=1000){
+                                    if(column_type(v.type)!=='海报单页'){
+                                        _div += '<td style="text-align:center;"><span><i class="fa iconfont icon-pc btn btn-show btn-desktop ' + (v.pc_show ? 'blue' : 'grey') + '"></i></span><div class="pr size1"><i class="iconfont icon-snimicshouji fa btn btn-show btn-mobile ' + (v.mobile_show ? 'blue' : 'grey') + '"></i><i class="fa iconfont btn icon-phonehome none ' + (v.show ? 'blue' : 'grey') + (v.showtypetotal == 0 ? ' not-allowed' : '') + '"></i></div></td>\n\
+                                        <td><i class="fa iconfont icon-xiayi btn sort grey "></i><i class="fa iconfont icon-shangyi btn sort grey "></i><a style="margin:0 10px;" class="column-edit-box"><i class="fa iconfont icon-bianji grey column-edit"></i><div class="warning"><i class="iconfont' + (v.img_err ? ' icon-gantanhao' : '') + '"></i></div></a><a class="delv" name="' + v.id + '"><i class="fa iconfont icon-delete grey "></i></a></td></tr>';
+                                    }else{
+                                        _div += '<td style="text-align:center;"><span><i class="fa iconfont icon-pc btn btn-show btn-desktop ' + (v.pc_show ? 'blue' : 'grey') + '"></i></span><div class="pr size1"><i class="iconfont icon-snimicshouji fa btn btn-show btn-mobile ' + (v.mobile_show ? 'blue' : 'grey') + '"></i><i class="fa iconfont btn icon-phonehome none ' + (v.show ? 'blue' : 'grey') + (v.showtypetotal == 0 ? ' not-allowed' : '') + '"></i></div></td>\n\
+                                        <td><i class="fa iconfont icon-xiayi btn sort grey "></i><i class="fa iconfont icon-shangyi btn sort grey "></i><a style="margin:0 10px;" class="column-edit-box"><i class="fa iconfont icon-bianji grey column-edit"></i><div class="warning"><i class="iconfont' + (v.img_err ? ' icon-gantanhao' : '') + '"></i></div></a><a class="delv" name="' + v.id + '"><i class="fa iconfont icon-delete grey "></i></a><a href="/category/'+v.id+'" target="_blank">预览</a><input style="display:none" class="copy_url" readonly="readonly" id="url_' + v.id + '" value="" /><input type="button" id="copy_' + v.id + '" name="' + v.id + '" class="check_url" value="查看链接" /></td></tr>';
+                                    }
                                 }else{
-                                    _div += '<td style="text-align:center;"><span><i class="fa iconfont icon-pc btn btn-show btn-desktop ' + (v.pc_show ? 'blue' : 'grey') + '"></i></span><div class="pr size1"><i class="iconfont icon-snimicshouji fa btn btn-show btn-mobile ' + (v.mobile_show ? 'blue' : 'grey') + '"></i><i class="fa iconfont btn icon-phonehome none ' + (v.show ? 'blue' : 'grey') + (v.showtypetotal == 0 ? ' not-allowed' : '') + '"></i></div></td>\n\
-                                    <td><i class="fa iconfont icon-xiayi btn sort grey "></i><i class="fa iconfont icon-shangyi btn sort grey "></i><a style="margin:0 10px;" class="column-edit-box"><i class="fa iconfont icon-bianji grey column-edit"></i><div class="warning"><i class="iconfont' + (v.img_err ? ' icon-gantanhao' : '') + '"></i></div></a><a class="delv" name="' + v.id + '"><i class="fa iconfont icon-delete grey "></i></a><a href="/category/'+v.id+'" target="_blank">预览</a><input style="display:none" class="copy_url" readonly="readonly" id="url_' + v.id + '" value="" /><input type="button" id="copy_' + v.id + '" name="' + v.id + '" class="check_url" value="查看链接" /></td></tr>';
+                                    _div += '<td style="text-align:center;"><span><i class="fa icon-pc iconfont btn btn-show btn-desktop ' + (ele.pc_show ? 'blue' : 'grey') + '"></i></span><div class="pr size1"><i class="fa iconfont icon-snimicshouji btn btn-show btn-mobile ' + (v.mobile_show ? 'blue' : 'grey') + '"></i><i class="fa iconfont btn icon-phonehome none ' + (v.show == 1 ? 'blue' : 'grey') + (ele.showtypetotal == 0 ? ' not-allowed' : '') + '"></i></div></td>\n\
+                                    <td><i class="fa iconfont icon-xiayi btn sort"></i><i class="fa iconfont icon-shangyi btn sort"></i>添加、修改、删除栏目，请联系客服</td>\n\
+                                    </tr>';
                                 }
+                                
 
                                 //原
                                 // _div += '<td style="text-align:center;"><span><i class="fa iconfont icon-pc btn btn-show btn-desktop ' + (v.pc_show ? 'blue' : 'grey') + '"></i></span><div class="pr size1"><i class="iconfont icon-snimicshouji fa btn btn-show btn-mobile ' + (v.mobile_show ? 'blue' : 'grey') + '"></i><i class="fa iconfont btn icon-phonehome none ' + (v.show ? 'blue' : 'grey') + (v.showtypetotal == 0 ? ' not-allowed' : '') + '"></i></div></td>\n\
@@ -254,26 +275,29 @@ function columnController($scope, $http) {
         },
         classnamemodify: function () {
             //分类标题修改
-            $(".class_name").click(function () {
-                $(this).hide();
-                $(this).parent('td').find(".name_modify").show();
-                $(this).parent('td').find(".name_modify").focus().val($(this).parent('td').find(".name_modify").val());
-            });
-            $(".name_modify").blur(function () {
-                if ($(this).val() !== $(this).parent("td").find(".class_name").text()) {
-                    $(this).parent("td").find(".class_name").text($(this).val());
-                    var name = $(this).val();
-                    var id = $(this).data("id");
-                    $http.post('../classify-name-modify', {id: id, name: name}).success(function (json) {
-                        checkJSON(json, function (json) {
-                            var hint_box = new Hint_box();
-                            hint_box;
+            if($scope.errmsg!=1000){
+                $(".class_name").click(function () {
+                    $(this).hide();
+                    $(this).parent('td').find(".name_modify").show();
+                    $(this).parent('td').find(".name_modify").focus().val($(this).parent('td').find(".name_modify").val());
+                });
+                $(".name_modify").blur(function () {
+                    if ($(this).val() !== $(this).parent("td").find(".class_name").text()) {
+                        $(this).parent("td").find(".class_name").text($(this).val());
+                        var name = $(this).val();
+                        var id = $(this).data("id");
+                        $http.post('../classify-name-modify', {id: id, name: name}).success(function (json) {
+                            checkJSON(json, function (json) {
+                                var hint_box = new Hint_box();
+                                hint_box;
+                            });
                         });
-                    });
-                }
-                $(this).parent("td").find(".class_name").show();
-                $(this).hide();
-            });
+                    }
+                    $(this).parent("td").find(".class_name").show();
+                    $(this).hide();
+                });
+            }
+            
         },
         //type-->data.type
         column_type_info: function (data) {

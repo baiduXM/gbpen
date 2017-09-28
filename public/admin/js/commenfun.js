@@ -355,7 +355,7 @@ WarningBox.prototype = {
                     var option1 = '', pid, pname = '', id;
                     var PageId = [];
                     var G_c_id = '';
-                    if (json.err == 0) {
+                    if (json.err == 0 || json.err == 1000) {
                         var option1 = '';
 
 
@@ -625,6 +625,9 @@ function column_type(type) {
 function checkJSON(json, callback, fail_callback) {
     switch (json.err) {
         case 0:
+            typeof (callback) === 'function' ? callback(json) : null;
+            break;
+        case 1000:
             typeof (callback) === 'function' ? callback(json) : null;
             break;
         case 401:

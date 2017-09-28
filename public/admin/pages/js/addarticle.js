@@ -54,7 +54,7 @@ function addarticleController($scope, $http, $location) {
                 var d = json.data;
                 var option1 = '', pid, pname = '', id;
                 var PageId = [];
-                if (json.err == 0) {
+                if (json.err == 0 || json.err == 1000) {
                     var option1 = '';
                     $.each(d, function (idx, ele) {
                         if (ele.type < 5) {
