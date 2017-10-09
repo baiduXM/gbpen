@@ -116,6 +116,11 @@ function addformController($scope, $http, $location) {
         } else {
             $('[name="status"]:eq(1)').attr('checked', true);
         }
+        if (_data.lang == 1) {
+            $('[name="lang"]:eq(0)').attr('checked', true);
+        } else {
+            $('[name="lang"]:eq(1)').attr('checked', true);
+        }
         switch (_data.showmodel) {
             case 0:
                 $('[name="showmodel"]:eq(0)').attr('checked', true);

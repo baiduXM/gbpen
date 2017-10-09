@@ -1169,7 +1169,14 @@ class TemplatesController extends BaseController
     public function downloadTemplate($tplname = "")
     {
         if ($tplname != "") {
-            $tpl = Template::where('name', $tplname)->first();
+            //===统一转换成新命名===
+            if(preg_match('/G\d{4}(P|M)(CN|EN|TW|JP)\d{2}/', $tplname)){
+                $tpl = Template::where('name', $tplname)->first();
+            }else{
+                $tpl = Template::where('name_bak', $tplname)->first();
+                $tplname = $tpl['name'];
+            }
+            //===转换end===
             if ($tpl == null) {
                 return json_encode(array("err" => 1, "msg" => "没有该模板！"));
             }
@@ -1216,7 +1223,14 @@ class TemplatesController extends BaseController
                 return false;
             }
             $tplname = Input::get("name");
-            $tpl = Template::where('name', $tplname)->first();
+            //===统一转换新命名===
+            if(preg_match('/G\d{4}(P|M)(CN|EN|TW|JP)\d{2}/', $tplname)){
+                $tpl = Template::where('name', $tplname)->first();
+            }else{
+                $tpl = Template::where('name_bak', $tplname)->first();
+                $tplname = $tpl['name'];
+            }
+            //===转换end===
             if ($tpl == null) {
                 echo '没有该模板！';
             }

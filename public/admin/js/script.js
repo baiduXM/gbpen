@@ -101,7 +101,7 @@ mainApp.config(function ($routeProvider, $httpProvider) {
                     if (data != null) {
                         $(".cxb_list_n2>.cxb_list_m").html(data.count_today);//今日访问数量
                         $(".cxb_list_n3>.cxb_list_m").html(data.count_all);//总访客数量
-                        $(".cxb_list_n4>.cxb_list_m").html(data.mobile_count);//移动端访问量
+                        $(".cxb_list_n4>.cxb_list_m").html(data.count_mobile);//移动端访问量
                     }
                 });
             }
@@ -180,6 +180,8 @@ mainApp.controller('memberController', function ($scope, $http) {
             $http.get('http://dl2.5067.org/?module=Api&action=getGshowByname&name='+json.data.customer).success(function (d) {
                 if(d==1){
                     $(".daohang ul").append('<li class="nav"><a href="/cdlogin" target="_blank">E推</a><em></em></li>');
+                }else{
+                    $(".daohang ul").append('<li class="nav"><a href="javascript:void(0)" style="color:#FF3333;" onclick=freeEt("'+json.data.customer+'")>免费试用E推</a><em></em></li>');
                 }
             });
             $scope.companyname = json.data.company_name;
@@ -341,6 +343,26 @@ $(window).resize(function () {
     width_resize()
 });
 
+//免费试用E推
+function freeEt(customer){
+    // alert(customer);
+    // location.reload();
+    if(!confirm('确认开通E推（试用版一年）吗？')){
+        return false;
+    }
+    $.get('http://dl2.5067.org/?module=Api&action=TyGshow&name='+customer).success(function(data){
+        if(data==0){
+            alert('开通成功');
+            location.reload();
+        }else if(data==1){
+            alert('同步失败');
+        }else if(data==2){
+            alert('开通失败');
+        }else{
+            alert('请刷新');
+        }
+    });
+}
 
 // 推送静态文件
 var cache_num;

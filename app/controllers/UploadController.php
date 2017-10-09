@@ -184,13 +184,16 @@ class UploadController extends BaseController
         $destinationPath = public_path('customers/' . $customer . '/images/');
         $weburl = Customer::where('id', $cus_id)->pluck('weburl');
         $suf_url = str_replace('http://c', '', $weburl);
+        $imgzip = 'img'.str_random(4).'.zip';
         if ($files) {
             //===判断服务器是否正常===
-            if ($weburl) {
-                if ($this->MonitorCheck($weburl) == false) {
-                    return Response::json(['err' => 1001, 'msg' => '请检测服务器是否正常', 'data' => '']);
-                }
-            }
+            // if ($weburl) {
+            //     if ($this->MonitorCheck($weburl) == false) {
+            //         @$time = date('Y-m-d H:i:s',time());
+            //         @file_put_contents('moni.txt',$customer.'-'.$time.'-'.json_encode($files).'-'.$target.PHP_EOL,FILE_APPEND);
+            //         return Response::json(['err' => 1001, 'msg' => '请检测服务器是否正常', 'data' => '']);
+            //     }
+            // }
             $data = array();
             $i = 0;
             //同步到客户服务器
@@ -210,11 +213,16 @@ class UploadController extends BaseController
                 ftp_pasv($conn, 1);
 
                 $zip = new ZipArchive;
-                if ($zip->open(public_path('customers/' . $customer . '/img.zip'), ZipArchive::CREATE) === TRUE) {
+                if ($zip->open(public_path('customers/' . $customer . '/' . $imgzip), ZipArchive::CREATE) === TRUE) {
+                    $Capacity = new CapacityController;//容量
                     foreach ((array)$files as $fileName) {
                         $filepath = public_path('customers/' . $customer . '/cache_images/' . $fileName);
                         if (file_exists($filepath)) {
-                            $filesize += filesize($filepath); //===累加大小
+                            // $filesize += filesize($filepath); //===累加大小
+                            $filesize = filesize($filepath);
+                            if (!$Capacity->change_capa($filesize, 'use')) {
+                                return Response::json(['err' => 0, 'msg' => '空间容量不足', 'data' => 1005]);
+                            }
                             $file = explode('.', $fileName);
                             $type = end($file);
                             $up_result = copy(public_path('customers/' . $customer . '/cache_images/' . $fileName), $destinationPath . '/l/' . $target . '/' . $fileName);
@@ -267,9 +275,21 @@ class UploadController extends BaseController
                             if (trim($ftp) == '1') {
                                 $ftp_pcdomain = "http://" . $ftp_array[0] . '/' . $customer;
                             }
-                            ftp_put($conn, $customer . '/img.zip', public_path('customers/' . $customer . '/img.zip'), FTP_BINARY);
+                            ftp_put($conn, $customer . '/' . $imgzip, public_path('customers/' . $customer . '/' . $imgzip), FTP_BINARY);
                             ftp_put($conn, $customer . '/img_unzip.php', public_path('packages/img_unzip.php'), FTP_ASCII);
-                            @file_get_contents("$ftp_pcdomain/img_unzip.php");
+                            @$res1 = file_get_contents("$ftp_pcdomain/img_unzip.php?img=" . $imgzip);
+                            $i = 1;
+                            while($i<=3 && $res1!=1000){
+                                $j = 1;
+                                while($j<=3 && $res1!=1000){
+                                   $ftp_pcdomain = "http://" . $ftp_array[0] . ':808' . $j . '/' . $customer;
+                                   //@file_put_contents('while.txt','a:'.$ftp_pcdomain.PHP_EOL,FILE_APPEND);
+                                   @$res1 = file_get_contents("$ftp_pcdomain/img_unzip.php?img=" . $imgzip);
+                                   //@file_put_contents('while.txt','a:'.$res1.PHP_EOL,FILE_APPEND); 
+                                   $j++;
+                                }                                                                
+                                $i++;
+                            }
                             // @unlink(public_path('customers/' . $customer . '/img.zip'));
                         }
                     }
@@ -285,22 +305,66 @@ class UploadController extends BaseController
 								if (trim($ftp) == '1') {
 									$ftp_pcdomain_b = "http://" . $ftp_array_b[0] . '/' . $customer;
 								}
-								ftp_put($conn_b, $customer . '/img.zip', public_path('customers/' . $customer . '/img.zip'), FTP_BINARY);
+								ftp_put($conn_b, $customer . '/' . $imgzip, public_path('customers/' . $customer . '/' . $imgzip), FTP_BINARY);
 								ftp_put($conn_b, $customer . '/img_unzip.php', public_path('packages/img_unzip.php'), FTP_ASCII);
-								@file_get_contents("$ftp_pcdomain_b/img_unzip.php");
+								@$res2 = file_get_contents("$ftp_pcdomain_b/img_unzip.php?img=" . $imgzip);
+                                $i = 1;
+                                while($i<=3 && $res2!=1000){
+                                    $j = 1;
+                                    while($j<=3 && $res2!=1000){
+                                       $ftp_pcdomain_b = "http://" . $ftp_array_b[0] . ':808' . $j . '/' . $customer;
+                                       //@file_put_contents('while.txt','b:'.$ftp_pcdomain_b.PHP_EOL,FILE_APPEND);
+                                       @$res2 = file_get_contents("$ftp_pcdomain_b/img_unzip.php?img=" . $imgzip);
+                                       //@file_put_contents('while.txt','b:'.$res2.PHP_EOL,FILE_APPEND); 
+                                       $j++;
+                                    }                                                                
+                                    $i++;
+                                }
 								//@unlink(public_path('customers/' . $customer . '/img.zip'));
 							}
 						}
 					}
-					@unlink(public_path('customers/' . $customer . '/img.zip'));
+
+                    //删除压缩包的原位置
+                    
                 }
                 //===扣除空间容量===
-                $Capacity = new CapacityController;
-                if (!$Capacity->change_capa($filesize, 'use')) {
-                    return Response::json(['err' => 0, 'msg' => '空间容量不足', 'data' => '']);
-                }
+                // $Capacity = new CapacityController;
+                // if (!$Capacity->change_capa($filesize, 'use')) {
+                //     return Response::json(['err' => 0, 'msg' => '空间容量不足', 'data' => 1005]);
+                // }
                 //===end===
                 @ftp_close($conn);
+                if(isset($conn_b)){
+                    if($conn_b){
+                       @ftp_close($conn_b); 
+                   }                    
+                }
+
+                if(isset($res1)&&isset($res2)){
+                    if($res1!=1000 && $res2!=1000){
+                        @file_put_contents(public_path('customers/' . $customer . '/zk_img.txt'), '1003:'.$imgzip.','.date('Y-m-d H:i:s',time()).PHP_EOL,FILE_APPEND);
+                        return Response::json(['err' => 0, 'msg' => '图片推送失败', 'data' => 1003, 'img' => $imgzip]);
+                    }elseif($res1!=1000 && $res2=1000){
+                        @file_put_contents(public_path('customers/' . $customer . '/zk_img.txt'), '1001:'.$imgzip.','.date('Y-m-d H:i:s',time()).PHP_EOL,FILE_APPEND);
+                        return Response::json(['err' => 0, 'msg' => 'A服图片推送失败', 'data' => 1001, 'img' => $imgzip]);
+                    }elseif($res1=1000 && $res2!=1000){
+                        @file_put_contents(public_path('customers/' . $customer . '/zk_img.txt'), '1002:'.$imgzip.','.date('Y-m-d H:i:s',time()).PHP_EOL,FILE_APPEND);
+                        return Response::json(['err' => 0, 'msg' => 'B服图片推送失败', 'data' => 1002, 'img' => $imgzip]);
+                    }
+                }elseif(isset($res1)&&!isset($res2)){
+                    if($res1!=1000){                            
+                        @file_put_contents(public_path('customers/' . $customer . '/zk_img.txt'), '1001:'.$imgzip.','.date('Y-m-d H:i:s',time()).PHP_EOL,FILE_APPEND);
+                        return Response::json(['err' => 0, 'msg' => 'A服推送失败', 'data' => 1001, 'img' => $imgzip]);
+                    }
+                }elseif(isset($res1)&&!isset($res2)){
+                    if($res2!=1000){
+                        @file_put_contents(public_path('customers/' . $customer . '/zk_img.txt'), '1002:'.$imgzip.','.date('Y-m-d H:i:s',time()).PHP_EOL,FILE_APPEND);
+                        return Response::json(['err' => 0, 'msg' => 'B服推送失败', 'data' => 1002, 'img' => $imgzip]);
+                    }
+                }
+                @unlink(public_path('customers/' . $customer . '/' . $imgzip));
+
                 return Response::json(['err' => 0, 'msg' => '保存成功', 'data' => $data]);
             }
         } else {
@@ -542,6 +606,161 @@ class UploadController extends BaseController
                 break;
         }
         imagedestroy($canvas);
+    }
+
+    //图片失败重推
+    public function pushagain(){
+        $push = Input::get('msg');
+        $imgzip = Input::get('img');
+        $customer = Auth::user()->name;
+        $cus_id = Auth::id();
+        $customerinfo = Customer::find($cus_id);
+        $path = public_path('customers/' . $customer . '/' . $imgzip);
+        if(file_exists($path)){             
+            if($push == 1001){
+                $push = $this->pushimga($customer,$customerinfo,$imgzip);
+                if($push == 1000){
+                    @unlink(public_path('customers/' . $customer . '/' . $imgzip));
+                    return Response::json(['err' => 0, 'msg' => 'A服务器重传成功', 'data' => '']);                
+                }else{
+                    return Response::json(['err' => 1001, 'msg' => 'A服务器重传失败，请联系技术人员', 'data' => '']);
+                } 
+            }elseif($push == 1002){
+                $push = $this->pushimgb($customer,$customerinfo,$imgzip);
+                if($push == 1000){
+                    @unlink(public_path('customers/' . $customer . '/' . $imgzip));
+                    return Response::json(['err' => 0, 'msg' => 'B服务器重传成功', 'data' => '']);
+                }else{
+                    return Response::json(['err' => 1002, 'msg' => 'B服务器重传失败，请联系技术人员', 'data' => '']);
+                } 
+            }elseif($push == 1003){
+                $pusha = $this->pushimga($customer,$customerinfo,$imgzip);
+                $pushb = $this->pushimgb($customer,$customerinfo,$imgzip);
+                if($pusha == 1000 && $pushb == 1000){
+                    @unlink(public_path('customers/' . $customer . '/' . $imgzip));
+                    return Response::json(['err' => 0, 'msg' => '服务器重传成功', 'data' => '']);
+                }elseif($pusha == 1000 && $pushb!= 1000){
+                    return Response::json(['err' => 1001, 'msg' => 'A服务器重传失败，请联系技术人员', 'data' => '']);
+                }elseif($pushb == 1000 && $pusha != 1000){
+                    return Response::json(['err' => 1002, 'msg' => 'B服务器重传失败，请联系技术人员', 'data' => '']);
+                }else{
+                    return Response::json(['err' => 1003, 'msg' => '服务器重传失败，请联系技术人员', 'data' => '']);
+                } 
+            }                    
+        }else{
+            return Response::json(['err' => 1004, 'msg' => '压缩包图片已删除，请重新上传', 'data' => '']);
+        }
+    }
+    //A服推送图片
+    public function pushimga($customer,$customerinfo,$imgzip){
+        $ftp = $customerinfo->ftp;
+        $ftpdir = $customerinfo->ftp_dir;
+        $port = $customerinfo->ftp_port;
+        //A服
+        $ftp_array = explode(':', $customerinfo->ftp_address);
+        $ftp_array[1] = isset($ftp_array[1]) ? $ftp_array[1] : $port;
+        $ftp_pcdomain = "http://" . $ftp_array[0] . '/' . $customer;
+
+        $conn = ftp_connect($ftp_array[0], $ftp_array[1]);
+        if($conn){
+            ftp_login($conn, $customerinfo->ftp_user, $customerinfo->ftp_pwd);
+            ftp_pasv($conn, 1);               
+            ftp_put($conn, $customer . '/' . $imgzip, public_path('customers/' . $customer . '/' . $imgzip), FTP_BINARY);
+            ftp_put($conn, $customer . '/img_unzip.php', public_path('packages/img_unzip.php'), FTP_ASCII);
+            $ftp_pcdomain = "http://" . $ftp_array[0] . '/' . $customer;
+            @$res = file_get_contents("$ftp_pcdomain/img_unzip.php?img=" . $imgzip);
+            @ftp_close($conn);
+
+            return $res;    
+        } 
+    }
+    //B服推送图片
+    public function pushimgb($customer,$customerinfo,$imgzip){
+        $ftp = $customerinfo->ftp;
+        $ftpdir = $customerinfo->ftp_dir;
+        $port = $customerinfo->ftp_port;
+        
+        //B服
+        $ftp_array_b = explode(':', $customerinfo->ftp_address_b);
+        $ftp_array_b[1] = isset($ftp_array_b[1]) ? $ftp_array_b[1] : $port;
+        $ftp_pcdomain_b = "http://" . $ftp_array_b[0] . '/' . $customer; 
+
+        $conn_b = ftp_connect($ftp_array_b[0], $ftp_array_b[1]);
+        if($conn_b){
+            ftp_login($conn_b, $customerinfo->ftp_user_b, $customerinfo->ftp_pwd_b);
+            ftp_pasv($conn_b, 1);            
+            ftp_put($conn_b, $customer . '/' . $imgzip, public_path('customers/' . $customer . '/' . $imgzip), FTP_BINARY);
+            ftp_put($conn_b, $customer . '/img_unzip.php', public_path('packages/img_unzip.php'), FTP_ASCII);
+            $ftp_pcdomain = "http://" . $ftp_array_b[0] . '/' . $customer;
+            @$res = file_get_contents("$ftp_pcdomain/img_unzip.php?img=" . $imgzip);
+            @ftp_close($conn_b);
+            
+            return $res;    
+        } 
+    }
+
+    //整站推送图片
+    public function pushimg(){
+        $customer = Auth::user()->name;
+        $cus_id = Auth::id();
+        $customerinfo = Customer::find($cus_id);
+        $imgzip = 'img.zip';
+
+        $path = public_path('customers/' . $customer . '/img.zip');
+        $images = public_path('customers/' . $customer . '/images');
+        $zip = new ZipArchive;
+        if ($zip->open($path, ZipArchive::CREATE) === TRUE) {
+            $this->addImagesToZip($images,$zip);
+            $zip->close();
+        }
+
+        //A服
+        $res1 = $this->pushimga($customer,$customerinfo,$imgzip);
+
+        //B服
+        if($customerinfo->ftp_address_b){
+            $res2 = $this->pushimgb($customer,$customerinfo,$imgzip);
+        }else{
+            $res2 = 1000;
+        }
+
+        if($res1==1000&&$res2==1000){
+            @unlink(public_path('customers/' . $customer . '/img.zip'));
+            return Response::json(['err' => 0, 'msg' => '整站图片推送成功', 'data' => '']);            
+        }elseif($res1!=1000&&$res2==1000){
+            return Response::json(['err' => 1001, 'msg' => 'A服务器推送失败', 'data' => '']);
+        }elseif($res1==1000&&$res2!=1000){
+            return Response::json(['err' => 1002, 'msg' => 'B服务器推送失败', 'data' => '']);
+        }else{
+            return Response::json(['err' => 1003, 'msg' => '整站图片推送失败', 'data' => '']);
+        }
+
+    }
+
+    //压缩用户图片目录
+    protected function addImagesToZip($images, $zip){
+        $lastDir = explode('images/', $images);
+        if(count($lastDir)<=1){
+            $lastDir = 'images';
+        }else{
+            $lastDir = 'images/' . end($lastDir);
+        }
+        $array = $lastDir;
+        $handler = opendir($images);
+        while (($filename = readdir($handler)) !== false) {
+            if ($filename != "." && $filename != "..") {
+                if (is_dir($images . "/" . $filename)) {// 如果读取的某个对象是文件夹，则递归
+                    if (count(@scandir($images . "/" . $filename)) == 2) {
+                        $zip->addEmptyDir($array . '/' . $filename);
+                    } else {
+                        $this->addImagesToZip($images . "/" . $filename, $zip);
+                    }
+                } else { //将文件加入zip对象
+                    $zip->addFile($images . "/" . $filename, $array . '/' . $filename);
+                }
+            }
+        }
+        @closedir($images); 
     }
 
 }

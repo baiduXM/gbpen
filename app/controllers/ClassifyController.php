@@ -35,8 +35,16 @@ class ClassifyController extends BaseController {
                 }
             }
         }
-        $result['err'] = 0;
-        $result['msg'] = '';
+        $isAdmin = Session::get('isDaili');
+        $column_on = Customer::where('id', $cus_id)->pluck('column_on');
+        if(!$isAdmin && $column_on == 0){
+            $result['err'] = 1000;
+            $result['msg'] = '非代理登录';
+        } else {
+            $result['err'] = 0;
+            $result['msg'] = '';
+        }
+        
         $result['data'] = $this->toTree($classify);
         return Response::json($result);
     }

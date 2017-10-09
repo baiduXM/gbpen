@@ -7,6 +7,8 @@ function addarticleController($scope, $http, $location) {
     G_id ? G_id : '';
     G_c_id ? G_c_id : '';
     var back_page = getUrlParam('p') ? getUrlParam('p') : 1;
+    var search_word = getUrlParam('sw') ? getUrlParam('sw') : '';
+    var cat_id = getUrlParam('c_id') ? getUrlParam('c_id') : '';
     // 图片上传
     function AddarticleUpload(proportion) {
         $('.up_pic').on('click', function (event) {
@@ -52,7 +54,7 @@ function addarticleController($scope, $http, $location) {
                 var d = json.data;
                 var option1 = '', pid, pname = '', id;
                 var PageId = [];
-                if (json.err == 0) {
+                if (json.err == 0 || json.err == 1000) {
                     var option1 = '';
                     $.each(d, function (idx, ele) {
                         if (ele.type < 5) {
@@ -319,18 +321,40 @@ function addarticleController($scope, $http, $location) {
                         $http.post('../imgupload?target=articles',
                                 {
                                     files: img_upload
+                                }).success(function(push){
+                                    if(push.data == 1001 || push.data == 1002 || push.data == 1003){
+                                        location.href = '#/pushpage?msg='+push.data+'&img='+push.img;
+                                    }
+                                    if(push.data == 1005){
+                                        location.href = '#/pushpage?msg='+push.data;
+                                    }                                    
                                 });
                     }
                     alert('修改成功！');
 //                    location.href = history.go(-1);
-                    location.href = '#/article?p=' + back_page;
+                    var url = '#/article?p=' + back_page;
+                    if(search_word){
+                        url+='&search_word='+search_word;
+                    }
+                    // if(cat_id){
+                    //     url+='&id='+cat_id;
+                    // }
+                    location.href = url;
                 });
             });
         });
     }
     function AddarticleCancle() {
         $('.addcancle').click(function () {
-            location.href = '#/article?p=' + back_page;
+            // location.href = '#/article?p=' + back_page;
+            var url = '#/article?p=' + back_page;
+            if(search_word){
+                url+='&search_word='+search_word;
+            }
+            // if(cat_id){
+            //     url+='&id='+cat_id;
+            // }
+            location.href = url;
         });
     }
 

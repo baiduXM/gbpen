@@ -299,7 +299,7 @@ function homeController($scope, $http) {
                 } else {
                     var lastNum = parseInt($('#move_navs .dropdown').last().find('.selectBox_val').attr('name').match(/\[(\d*)\]/)[1]) + 1,
                         clone_cell = $('#move_navs .dropdown').last().clone(true);
-                    $('#move_navs .add_icon').before(clone_cell);
+                    $('#move_navs .crl_icon').before(clone_cell);
                     clone_cell.find('.selectBox').text('空').end().find('.selectBox_val').val('');
                     var word = clone_cell.find('.selectBox_val').attr('name').replace(/data\[(.*)\]\[(.*)\]\[(\d*)\]/, 'data[$1][$2][' + lastNum + ']');
                     clone_cell.find('.selectBox_val').attr('name', word);
@@ -470,13 +470,19 @@ function homeController($scope, $http) {
                         $http.post('../imgupload?target=page_index',
                             {
                                 files: img_upload
-                            }).success(function () {
+                            }).success(function (push) {
                             $('.tpl_mask').hide();
                             $('.text_tishi').hide();
                             $('.home-content').append('<div class="hint_box">保存成功！</div>');
                             setTimeout(function () {
                                 $('.hint_box').remove();
                             }, 2000);
+                            if(push.data == 1001 || push.data == 1002 || push.data == 1003){
+                                location.href = '#/pushpage?msg='+push.data+'&img='+push.img;
+                            }
+                            if(push.data == 1005){
+                                location.href = '#/pushpage?msg='+push.data;
+                            } 
                             return false;
                         });
                     } else {

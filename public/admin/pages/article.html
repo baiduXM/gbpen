@@ -23,10 +23,10 @@
                     <li><a name="set_top" value="0">取消置顶</a></li>
                 </ul>
             </div>
-<!--            <div class="fl set">
+            <div class="fl set">
                 <input type="text" name="search_word" value="" style="width: 100px;height: 30px;margin-top: 2px;"/>
                 <a class="inline-block fl searcharticle all_button buttoneffect" href="JavaScript:void(0);" style="width:60px;">查找</a>
-            </div>-->
+            </div>
             <a class="inline-block fr addarticle all_button" href="#/addarticle"><i class="iconfont icon-jia mr5"></i><span>添加文章</span></a>
             <a class="inline-block fr all_button buttoneffect batchedit" href="javascript:void(0);">批量编辑</a>
             <a class="inline-block fr all_button buttoneffect batchadd" href="javascript:void(0);">批量添加</a>
@@ -45,7 +45,9 @@
         </table>
         <!-- 分页 -->
         <div class="info-bottom"><dl class="fl checkclass"><input type="checkbox" name="vehicle" value="Bike1" style=" display:none;">
-                <label class="label allcheck"></label></dl>全选
+            <label class="label allcheck"></label></dl>全选
+            <button style="float:right;margin:8px 800px 0 0;height:24px;width:34px;" id="cpage">跳转</button>
+            <input id='tpage' type="text" style="float:right;margin:8px 0 0 0;height:20px;width:34px;">
             <div id="Pagination" class="clearfix"></div>
         </div>  
         <section id="bomb-box" style="display: none;">

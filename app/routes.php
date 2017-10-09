@@ -4,6 +4,11 @@ Route::get('/', function() {//登录
     return View::make('login');
 })->before('guest');
 
+Route::get('customers-num', [//客户接入数量
+    'as' => 'customers-num',
+    'uses' => 'StatisController@customersNum'
+]);
+
 Route::get('get-remind', [//忘记密码
     'as' => 'get-remind',
     'uses' => 'RemindersController@getRemind'
@@ -570,6 +575,16 @@ Route::post('imgupload', [//图片同步
 Route::post('batchAdd', [//批量上传
     'as' => 'batchAdd',
     'uses' => 'UploadController@batchAdd'
+]);
+
+Route::get('push-again', [//图片压缩包再推送
+    'as' => 'push-again',
+    'uses' => 'UploadController@pushagain'
+]);
+
+Route::get('push-images', [//图片压缩包再推送
+    'as' => 'push-images',
+    'uses' => 'UploadController@pushimg'
 ]);
 
 Route::post('upload_template', [//模板上传

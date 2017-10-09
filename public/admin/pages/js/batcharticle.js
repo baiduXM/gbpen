@@ -43,7 +43,7 @@ function batcharticleController($scope, $http, $location) {
                     var d = json.data;
                     var option1 = '', pid, pname = '', id;
                     var PageId = [];
-                    if (json.err == 0) {
+                    if (json.err == 0 || json.err == 1000) {
                         var option1 = '<li><a data-id="0">顶级栏目</a></li>';
                         $.each(d, function (idx, ele) {
                             if (ele.type < 5) {
