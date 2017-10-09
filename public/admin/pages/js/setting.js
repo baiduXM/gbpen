@@ -120,11 +120,11 @@ function settingController($scope, $http) {
                 $('#talent_support option[value=' + set.talent_support + ']').attr('selected', true);
                 $('#def_domain_m').MoveBox({
                     Trigger: 'mouseenter',
-                    context: '<img src="http://s.jiathis.com/qrcode.php?url=http://' + set.def_domain_m + '" />'
+                    context: '<img src="/qrimg.php?url=http://' + set.def_domain_m + '" />'
                 });
                 $('#domain_m').MoveBox({
                     Trigger: 'mouseenter',
-                    context: '<img src="http://s.jiathis.com/qrcode.php?url=http://' + set.domain_m + '" />'
+                    context: '<img src="/qrimg.php?url=http://' + set.domain_m + '" />'
                 });
                 if ($.isArray(set.floatadv)) {
                     $.each(set.floatadv, function (k, v) {
