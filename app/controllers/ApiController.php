@@ -109,6 +109,8 @@ class ApiController extends BaseController
 
             //是否允许用户自定义栏目
             $update['column_on'] = trim(Input::get('column_on'));
+            //其他域名
+            $mobile_other = trim(Input::get('mobile_other'))?trim(Input::get('mobile_other')):'';
 
             //===绑定账户===
             $switch_cus_name = Input::get('switch_cus_name');
@@ -155,11 +157,31 @@ class ApiController extends BaseController
                 //===更新CustomerInfo时，更新capacity字段===
                 CustomerInfo::where('cus_id', $cus_id)->update(['pc_domain' => $update['pc_domain'], 'mobile_domain' => $update['mobile_domain'], 'capacity' => $capacity]);
                 if ($update['stage'] != $coustomer_old['stage'] or $update['pc_domain'] != $coustomer_old['pc_domain'] or $update['mobile_domain'] != $coustomer_old['mobile_domain']) {
-                    //获取绑定ip地址
-                    $ftp_array = explode(':', $update['ftp_address']);
-                    $common = new CommonController();
-                    @$common->postsend(trim($ftp_array[0], '/') . "/urlbind.php", array('cus_name' => $update['name'], 'stage' => $update['stage'], 'pc_domain' => $update['pc_domain'], 'mobile_domain' => $update['mobile_domain'], 'stage_old' => $coustomer_old['stage'], 'pc_domain_old' => $coustomer_old['pc_domain'], 'mobile_domain_old' => $coustomer_old['mobile_domain']));
-                    //如果有ftp_b
+                    //域名绑定
+                    if($update['ftp'] == 2){//35开户的PC绑定由35处理
+                        //生成手机站绑定文件
+                        if($mobile_other){
+                            $str = $this->webConfig($mobile_other);
+                            @file_put_contents(public_path('customers/' . $update['name']) . '/web.config', $str);
+                            //上传绑定文件到35空间
+                            $ftp_array = explode(':', $update['ftp_address']);
+                            $port = $update['ftp_port'];
+                            $ftp_array[1] = isset($ftp_array[1]) ? $ftp_array[1] : $port;
+                            $conn = ftp_connect($ftp_array[0], $ftp_array[1]);
+                            ftp_login($conn, $update['ftp_user'], $update['ftp_pwd']);
+                            ftp_pasv($conn, 1);
+                            @ftp_put($conn,$update['ftp_dir'] . '/web.config',public_path('customers/' . $update['name']) . '/web.config', FTP_ASCII);
+                            ftp_close($conn);
+                        }
+                        
+                    }else{
+                        //获取绑定ip地址
+                        $ftp_array = explode(':', $update['ftp_address']);
+                        $common = new CommonController();
+                        @$common->postsend(trim($ftp_array[0], '/') . "/urlbind.php", array('cus_name' => $update['name'], 'stage' => $update['stage'], 'pc_domain' => $update['pc_domain'], 'mobile_domain' => $update['mobile_domain'], 'stage_old' => $coustomer_old['stage'], 'pc_domain_old' => $coustomer_old['pc_domain'], 'mobile_domain_old' => $coustomer_old['mobile_domain']));
+                    }
+                    
+                    //如果有ftp_b(非公司ftp不考虑)
                     if($update['ftp_address_b']){
                         $ftp_array_b = explode(':', $update['ftp_address_b']);
                         @$common->postsend(trim($ftp_array_b[0], '/') . "/urlbind.php", array('cus_name' => $update['name'], 'stage' => $update['stage'], 'pc_domain' => $update['pc_domain'], 'mobile_domain' => $update['mobile_domain'], 'stage_old' => $coustomer_old['stage'], 'pc_domain_old' => $coustomer_old['pc_domain'], 'mobile_domain_old' => $coustomer_old['mobile_domain']));
@@ -309,10 +331,22 @@ class ApiController extends BaseController
                             ftp_mkdir($conn, $update['ftp_dir'] . '/mobile/images/s/articles');
                             ftp_mkdir($conn, $update['ftp_dir'] . '/mobile/images/s/common');
                             ftp_mkdir($conn, $update['ftp_dir'] . '/mobile/images/s/page_index');
+                            //35开户手机站绑定方式(PC站绑定由35处理)
+                            if($update['ftp'] == 2){
+                                //生成手机站绑定文件
+                                $str = $this->webConfig($mobile_other);
+                                @file_put_contents(public_path('customers/' . $update['name']) . '/web.config', $str);
+                                //上传绑定文件到35空间
+                                ftp_pasv($conn, 1);
+                                @ftp_put($conn,$update['ftp_dir'] . '/web.config',public_path('customers/' . $update['name']) . '/web.config', FTP_ASCII);
+                            }
                             ftp_close($conn);
                         }
-                        $common = new CommonController();
-                        @$common->postsend(trim($ftp_array[0], '/') . "/urlbind.php", array('cus_name' => $update['name'], 'stage' => $update['stage'], 'pc_domain' => $update['pc_domain'], 'mobile_domain' => $update['mobile_domain']));
+                        //使用公司空间的绑定方式
+                        if($update['ftp'] != 2){
+                            $common = new CommonController();
+                            @$common->postsend(trim($ftp_array[0], '/') . "/urlbind.php", array('cus_name' => $update['name'], 'stage' => $update['stage'], 'pc_domain' => $update['pc_domain'], 'mobile_domain' => $update['mobile_domain']));
+                        }                                                    
                         $this->logsAdd("customer", __FUNCTION__, __CLASS__, 1, "创建用户", 1);
                         $result = ['err' => 1000, 'msg' => '创建用户成功'];
                     } else {
@@ -972,5 +1006,37 @@ class ApiController extends BaseController
         } else {
             return json_encode(array("err" => 1));
         }
+    }
+
+    /**
+     * 35开户手机站绑定文件
+     */
+    public function webConfig($mobile_other){
+        $arr = explode(',', $mobile_other);
+        $str = '<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <system.webServer>
+        <rewrite>
+            <rules>';
+        foreach ($arr as $k => $v) {
+            $rule = str_replace('.', '_', $v);
+            $add = str_replace('.', '\\.', $v);
+
+            $str .= '
+                <rule name="mobile_'. $rule. '" stopProcessing="true">
+                    <match url="(.*)" />
+                    <conditions>
+                        <add input="{HTTP_HOST}" pattern="^'. $add. '$" />
+                    </conditions>
+                    <action type="Rewrite" url="mobile/{R:0}" logRewrittenUrl="false" />
+                </rule>';
+        }
+        $str .= '
+            </rules>
+        </rewrite>
+    </system.webServer>
+</configuration>';
+
+        return $str;
     }
 }

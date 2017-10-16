@@ -82,8 +82,14 @@ if ($up_result['state'] == 'SUCCESS') {
 //        var_dump($reg);
 //        exit;
         //===扣除空间end===
-        @ftp_put($conn, $cus_name . '/' . 'images/ueditor/' . $up_result['title'], public_path('customers/' . $cus_name . '/images/ueditor/' . $up_result['title']), FTP_BINARY);
-        @ftp_put($conn, $cus_name . '/' . 'mobile/images/ueditor/' . $up_result['title'], public_path('customers/' . $cus_name . '/images/ueditor/' . $up_result['title']), FTP_BINARY);
+        if($customerinfo->ftp != 2){
+            @ftp_put($conn, $cus_name . '/' . 'images/ueditor/' . $up_result['title'], public_path('customers/' . $cus_name . '/images/ueditor/' . $up_result['title']), FTP_BINARY);
+            @ftp_put($conn, $cus_name . '/' . 'mobile/images/ueditor/' . $up_result['title'], public_path('customers/' . $cus_name . '/images/ueditor/' . $up_result['title']), FTP_BINARY);
+        }else{
+            @ftp_put($conn, $customerinfo->ftp_dir . '/' . 'images/ueditor/' . $up_result['title'], public_path('customers/' . $cus_name . '/images/ueditor/' . $up_result['title']), FTP_BINARY);
+            @ftp_put($conn, $customerinfo->ftp_dir . '/' . 'mobile/images/ueditor/' . $up_result['title'], public_path('customers/' . $cus_name . '/images/ueditor/' . $up_result['title']), FTP_BINARY);
+        }
+        
         ftp_close($conn);
     }
     //如果有ftp_b，则再上传一份

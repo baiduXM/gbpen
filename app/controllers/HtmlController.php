@@ -613,7 +613,7 @@ class HtmlController extends BaseController
                     @file_get_contents("$ftp_mdomain_b/mobile/m_unzip.php");                    
                 }
             } else {
-                $ftp_mdomain = $customerinfo->mobile_domain;
+                $ftp_mdomain = $customerinfo->pc_domain;//如果使用手机域名，下面不必加mobile目录
             }
             @file_get_contents("$ftp_mdomain/mobile/m_unzip.php");
         } else {
