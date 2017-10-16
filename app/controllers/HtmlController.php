@@ -1188,7 +1188,11 @@ class HtmlController extends BaseController
 //                }
 //                ftp_put($conn, $path . "/" . $this->customer . "/formdata.json", $json_path, FTP_BINARY);
                 //===added:end====
-
+                //上传嵌入表单json文件到推送服
+                $json_path = public_path("customers/" . $this->customer . '/formdata.json');
+                if(file_exists($json_path)){
+                    @ftp_put($conn, $path . "/" . $this->customer . "/formdata.json", $json_path, FTP_ASCII);
+                }
                 ftp_close($conn);
             }
             $remember_token = Auth::user()->remember_token;
@@ -1454,6 +1458,8 @@ class HtmlController extends BaseController
                 $ftp_array[1] = isset($ftp_array[1]) ? $ftp_array[1] : $port;
                 $conn = ftp_connect($ftp_array[0], $ftp_array[1]);
                 $del_imgs = ImgDel::where('cus_id', $this->cus_id)->get()->toArray();
+                //嵌入式表单json文件
+                $json_path = public_path("customers/" . $this->customer . '/formdata.json');
                 if (trim($ftp) == '1') {
                     if ($conn) {
                         ftp_login($conn, $customerinfo->ftp_user, $customerinfo->ftp_pwd);
@@ -1474,18 +1480,26 @@ class HtmlController extends BaseController
                             //@ftp_put($conn,"/".$this->customer."/quickbar.json",public_path('customers/'.$this->customer.'/quickbar.json'),FTP_ASCII);
                             @ftp_put($conn, "/" . $this->customer . "/index.php", public_path("packages/count0711/index.php"), FTP_ASCII);
                             @ftp_put($conn, "/" . $this->customer . "/read.php", public_path("packages/count0711/read.php"), FTP_ASCII);
+                            //从推送服上传嵌入表单json文件到静态服PC目录
+                            if(file_exists($json_path)){
+                                @ftp_put($conn, "/" . $this->customer . "/formdata.json", $json_path, FTP_ASCII);
+                            }
                         }
                         if (file_exists($path)) {
                             ftp_put($conn, "/" . $this->customer . "/site.zip", $path, FTP_BINARY);
                         }
                         ftp_put($conn, "/" . $this->customer . "/unzip.php", public_path("packages/unzip.php"), FTP_ASCII);
                         if ($this->mobilepush) {
-                            ftp_put($conn, "/" . $this->customer . "/mobile/search.php", public_path("packages/search.php"), FTP_ASCII);
                             if (@ftp_chdir($conn, "/" . $this->customer . "/mobile") == FALSE) {
                                 ftp_mkdir($conn, "/" . $this->customer . "/mobile");
                             }
+                            ftp_put($conn, "/" . $this->customer . "/mobile/search.php", public_path("packages/search.php"), FTP_ASCII);                            
                             //ftp_put($conn,"/".$this->customer."/mobile/quickbar.json",public_path('customers/'.$this->customer.'/mobile/quickbar.json'),FTP_ASCII);
                             @ftp_put($conn, "/" . $this->customer . "/mobile/index.php", public_path("packages/count0711/mobile/index.php"), FTP_ASCII);
+                            //从推送服上传嵌入表单json文件到静态服手机目录
+                            if(file_exists($json_path)){
+                                @ftp_put($conn, "/" . $this->customer . "/mobile/formdata.json", $json_path, FTP_ASCII);
+                            }
                         }
                         ftp_close($conn);
                     }
@@ -1513,16 +1527,24 @@ class HtmlController extends BaseController
                                 @ftp_put($conn_b, "/" . $this->customer . "/search.php", public_path("packages/search.php"), FTP_ASCII);
                                 @ftp_put($conn_b, "/" . $this->customer . "/index.php", public_path("packages/count0711/index.php"), FTP_ASCII);
                                 @ftp_put($conn_b, "/" . $this->customer . "/read.php", public_path("packages/count0711/read.php"), FTP_ASCII);
+                                //从推送服上传嵌入表单json文件到静态服PC目录
+                                if(file_exists($json_path)){
+                                    @ftp_put($conn_b, "/" . $this->customer . "/formdata.json", $json_path, FTP_ASCII);
+                                }
                             }
                             if (file_exists($path)) {
                                 ftp_put($conn_b, "/" . $this->customer . "/site.zip", $path, FTP_BINARY);
                             }
                             ftp_put($conn_b, "/" . $this->customer . "/unzip.php", public_path("packages/unzip.php"), FTP_ASCII);
                             if ($this->mobilepush) {
-                                ftp_put($conn_b, "/" . $this->customer . "/mobile/search.php", public_path("packages/search.php"), FTP_ASCII);
-                                @ftp_put($conn_b, "/" . $this->customer . "/mobile/index.php", public_path("packages/count0711/mobile/index.php"), FTP_ASCII);
                                 if (@ftp_chdir($conn_b, "/" . $this->customer . "/mobile") == FALSE) {
                                     ftp_mkdir($conn_b, "/" . $this->customer . "/mobile");
+                                }
+                                ftp_put($conn_b, "/" . $this->customer . "/mobile/search.php", public_path("packages/search.php"), FTP_ASCII);
+                                @ftp_put($conn_b, "/" . $this->customer . "/mobile/index.php", public_path("packages/count0711/mobile/index.php"), FTP_ASCII);
+                                //从推送服上传嵌入表单json文件到静态服手机目录
+                                if(file_exists($json_path)){
+                                    @ftp_put($conn_b, "/" . $this->customer . "/mobile/formdata.json", $json_path, FTP_ASCII);
                                 }
                             }
                             ftp_close($conn_b);
