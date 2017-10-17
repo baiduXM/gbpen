@@ -334,11 +334,13 @@ class ApiController extends BaseController
                             //35开户手机站绑定方式(PC站绑定由35处理)
                             if($update['ftp'] == 2){
                                 //生成手机站绑定文件
-                                $str = $this->webConfig($mobile_other);
-                                @file_put_contents(public_path('customers/' . $update['name']) . '/web.config', $str);
-                                //上传绑定文件到35空间
-                                ftp_pasv($conn, 1);
-                                @ftp_put($conn,$update['ftp_dir'] . '/web.config',public_path('customers/' . $update['name']) . '/web.config', FTP_ASCII);
+                                if($mobile_other){
+                                    $str = $this->webConfig($mobile_other);
+                                    @file_put_contents(public_path('customers/' . $update['name']) . '/web.config', $str);
+                                    //上传绑定文件到35空间
+                                    ftp_pasv($conn, 1);
+                                    @ftp_put($conn,$update['ftp_dir'] . '/web.config',public_path('customers/' . $update['name']) . '/web.config', FTP_ASCII);
+                                }                                
                             }
                             ftp_close($conn);
                         }
