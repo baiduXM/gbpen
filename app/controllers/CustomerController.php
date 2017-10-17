@@ -25,8 +25,15 @@ class CustomerController extends BaseController {
         $data['domain_pc'] = str_replace('http://', '', $domain_pc);
         $domain_m = $customer_info->mobile_domain;
         $data['domain_m'] = str_replace('http://', '', $domain_m);
-        $data['def_domain_pc'] = $customer . $suf_url;
-        $data['def_domain_m'] = "m." . $customer . $suf_url;
+        $ftp = Customer::where('id', $cus_id)->pluck('ftp');
+        if($ftp == 2){
+            $data['def_domain_pc'] = $weburl;
+            $data['def_domain_m'] = '';
+        }else{
+            $data['def_domain_pc'] = $customer . $suf_url;
+            $data['def_domain_m'] = "m." . $customer . $suf_url;
+        }
+        
         $data['customer'] = $customer;
         if ($customer_info->favicon != '') {
             $data['favicon'] = asset('customers/' . $customer . '/images/l/common/' . $customer_info->favicon);
