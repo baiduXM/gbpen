@@ -87,6 +87,12 @@ class StatisController extends BaseController {
      * 公告获取
      */
     public function getNotice(){
+        $gapply = GApply::where('cus_id',Auth::id())->first();
+        if($gapply){
+            $result = ['err' => 1002, 'msg' => '已申请过'];
+            return Response::json($result);
+        }
+
         $notice = Notice::where('type',0)->where('is_on',1)->first();
         if($notice){
             $result = ['err' => 1000, 'msg' => $notice];
