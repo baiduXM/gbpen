@@ -1041,4 +1041,32 @@ class ApiController extends BaseController
 
         return $str;
     }
+
+    /**
+     * 公告发布
+     */
+    public function modifyNotice(){
+        if ($this->authData()) {
+            $update['uid'] = trim(Input::get('uid'));
+            $update['title'] = trim(Input::get('title'));
+            $update['content'] = trim(Input::get('content'));
+            $update['updatetime'] = trim(Input::get('updatetime'));
+            $update['is_on'] = trim(Input::get('is_on'));
+            $update['type'] = trim(Input::get('type'));
+
+            $id = Notice::where('uid',$update['uid'])->pluck('id');
+            if($id){
+                $res = Notice::where('id',$id)->update($update);
+            } else {
+                $res = Notice::insert($update);
+            }
+
+            if($res){
+                return Response::json(array(['err' => 1000, 'msg' => '发布成功']));
+            }else{
+                return Response::json(array(['err' => 1001, 'msg' => '发布失败']));
+            }
+        }
+    }
+
 }

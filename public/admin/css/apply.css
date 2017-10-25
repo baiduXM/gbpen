@@ -1,0 +1,91 @@
+/*公告弹出框*/
+.model{position: absolute;top:0;left:0;width:100%;height:100%;z-index:10;visibility:hidden;}
+.model-bg{width:100%;height:100%;background: rgba(000,000,000,.8);}
+.model-content{position: absolute;top:0;left:0;bottom:0;right:0;width:808px;height:618px;margin:auto}
+.model-had{height:54px;line-height:54px;background: #544339;border-radius:10px 10px 0 0;padding:0 15px;}
+.model-had span{color:#fff;padding:0 0 0 25px;font-size:24px;}
+.model-had .close{color:#fff;font-size:38px;height:54px;line-height:54px;display: inline-block;float:right;font-style: normal;cursor: pointer;}
+.model-body{padding:10px;background: #fff;border-radius: 0  0 10px 10px}
+.model-body-cont{box-shadow: 0 0 5px 0 rgba(128,128,128,.8);padding:17px 15px;}
+
+.body-title{height:60px;line-height:60px;margin:0;}
+.body-title span{display: inline-block;width:713px;background: #f1e6e0;color:#333;font-size:20px;vertical-align: top;margin:0 3px;text-align: center;}
+.body-title b{display: inline-block;height:60px;width:4px;background: #f1e6e0;}
+.body-txt{padding:10px 0 0 17px;}
+.body-txt p{font-size:14px;line-height:32px;color:#544339;}
+
+.body-contBox{width:730px;}
+#demo1{height:510px;}
+._scroll_box{right:5px!important;}
+
+/*G名片申请*/
+.tl{text-align:left;}
+#banner_ny{position: relative;width: 100%;height: auto;}
+#banner_ny .zhez{display: none;width: 100%;height:100%;position: fixed;left: 0;top: 0;z-index:1001;
+background-color:rgba(0,0,0,.85);filter:progid:DXImageTransform.Microsoft.gradient(startcolorstr=#2f000000,endcolorstr=#2f000000);}
+#banner_ny .gsqbox{display: none;background: #fff;width: 833px;height: 598px;overflow: hidden;border-radius: 10px;position: fixed;top: 20%;left: 50%;z-index: 9999;margin-left: -416px;}
+#banner_ny span{width:50%; display: inline-block;}
+#banner_ny .gsqbox{display: none;background: #fff;width: 833px;height: 598px;overflow: hidden;border-radius: 10px;position: fixed;top: 20%;left: 50%;z-index: 9999;margin-left: -416px;}
+#banner_ny .gsqbox .aqbox_top{position: relative;width: 100%;height: 58px;background: #544339;font-size: 20px;color: #fff;text-align: center;line-height: 58px;}
+#banner_ny .gsqbox .aqbox_top .cha{cursor: pointer; text-indent: 0; width: 44px;height: 44px;display: block;float: right;right: 10px;position: absolute;top:16px;}
+.gsqbox .aqbox_but{width:773px;height: auto;padding:30px; position: relative;}
+.gsqbox .aqbox_but .sqbd{color: #808080;float: left;margin-bottom: 11px;}
+.gsqbox .aqbox_but .sqbd.tl{text-align: left;}
+.gsqbox .aqbox_but .sqbd .sqnane,.gsqbox .aqbox_but .sqbd select{outline: none;padding: 0 10px;border:1px solid #c0c0c0;border-radius: 4px;width: 276px;height: 34px;line-height: 34px;margin-left: 5px;color: #a1a1a1;}
+.gsqbox .aqbox_but .sqbd_photo{width: 100%;height: 133px;margin-bottom: 11px;color: #808080;display: inline-block;margin-left: 8px;}
+.gsqbox .aqbox_but .sqbd_photo .photo{width: 130px;height: 130px;border: 1px dashed #dbdbdb;margin: 0 3px;display: inline-block;cursor: pointer;position: relative;}
+.gsqbox .aqbox_but .sqbd_photo .photo:before{content: "";width: 128px;height: 128px;background: url(../images/put.jpg) center no-repeat;position: absolute;top: 0;left: 0;overflow: hidden;}
+.gsqbox .aqbox_but .sqbd_photo i{font-size: 12px;line-height: 30px;display: block;position: absolute;left: 270px; top: 200px;}
+.gsqbox .aqbox_but .sqbd.yzm{padding-left: 12px; position: relative;}
+.gsqbox .aqbox_but .sqbd.yzm i{display: block;width: 24%;border-radius: 4px;height: 34px;position: absolute; right: 59px; top: 0;}
+.gsqbox .aqbox_but p{width: 100%;line-height:36px;text-align: center;font-size: 14px;color: #f3092f; clear: both;}
+.gsqbox .aqbox_but .subb{outline: none;margin-top: 34px; width: 90px;height: 30px;border-radius: 4px;background: #fdb900;text-align: center;line-height: 30px;border: none;color: #fff;box-shadow: 0px 3px 6px #e6e6e6;}
+.gsqbox .aqbox_but .subb:hover{background: #fd9b00;}
+.gsqbox .aqbox_but .tj{margin: 27px 13px 0 250px;}
+.code {background:url(code_bg.jpg);font-family:Arial;font-style:italic;color:blue;font-size:30px;border:0;padding:2px 3px;letter-spacing:3px;font-weight:bolder;float:left;cursor:pointer;width:100%;height:30px;line-height:30px;text-align:center;vertical-align:middle;}
+.yzm a {text-decoration:none;font-size:12px;color:#288bc4;}
+.yzm a:hover {text-decoration:underline;}
+#preview{position:absolute;left:113px;top:173px;}
+@media (max-width: 991px){
+    
+    #banner_ny .gsqbox{width: 90%;height: auto;overflow: hidden;position: absolute;top: 20%;left: 5%;margin-left:0;z-index: 99999;}
+    .gsqbox .aqbox_but{padding:4% 3%;}
+    .gsqbox .aqbox_but .sqbd .sqnane, .gsqbox .aqbox_but .sqbd select{width: 77%;}
+    .gsqbox .aqbox_but .sqbd_photo i{margin-right: 28%}
+    .gsqbox .aqbox_but .yzm .sqnane{width: 36%}
+    .gsqbox .aqbox_but .tj{margin-left: 34%}
+
+}
+
+@media (max-width: 767px){
+    #banner_ny{height:180px;text-align: center;}
+    #banner_ny img.datu{width:auto;height:120px;margin-left:-326px;max-width: none;position: absolute;left: 50%;}
+    #banner_ny .sq{right: 30%;top: 62%;width:4rem;height: 1.2rem;line-height: 1.2rem;font-size: 0.6rem;}
+    
+    .g_muban{margin-top: 20px;padding: 0 6px;}
+    .g_muban .muban{padding: 9px;}
+    .gsqbox .aqbox_but .sqbd{width: 100%;}
+    .gsqbox .aqbox_but .sqbd.tl{text-align: right;padding-left: 0;}
+    .gsqbox .aqbox_but .sqbd_photo i{margin-right: 0;width: 109px;margin-top: 6px;margin-left:0;line-height: 20px;text-align: left;}
+    .gsqbox .aqbox_but .sqbd.yzm i{margin:0 0% 0 3%;width: 39%;}
+    .gsqbox .aqbox_but p{font-size: 12px;height: auto;overflow: hidden;line-height: 24px;}
+    .gsqbox .aqbox_but .subb{margin-top: 20px;}
+    .gsqbox .aqbox_but .tj{margin-left: 0;}
+    
+}
+
+@media (max-width: 412px){
+    #banner_ny img.datu{height: 106px;margin-left: -289px;}
+    #banner_ny .sq {right: 25%;top: 46%;}
+    #banner_ny .gsqbox .aqbox_top,.muban_yl .muban_top{height: 46px;line-height: 46px;font-size: 18px;}
+    #banner_ny .gsqbox .aqbox_top .cha,.muban_yl .muban_top .cha{width: 36px;height: 36px;}
+    .gsqbox .aqbox_but .sqbd .sqnane{width: 73%;}
+    .gsqbox .aqbox_but .sqbd select{width: 72% !important;}
+    .gsqbox .aqbox_but .sqbd_photo .photo{width: 88px;height: 88px;overflow: hidden;}
+    .gsqbox .aqbox_but .sqbd_photo .photo:before{top: -8px;left: -8px;width: 100px;height: 100px;}
+    .gsqbox .aqbox_but .sqbd_photo i{margin-top: 0;width: 94px;}
+    .gsqbox .aqbox_but .sqbd.yzm{margin-bottom: 30px;}
+    .gsqbox .aqbox_but .yzm .sqnane{width: 32%;}
+    .code{font-size: 22px !important;}
+
+}

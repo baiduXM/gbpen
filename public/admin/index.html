@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="css/iconfont.css" type="text/css"/>
     <link rel="stylesheet" type="text/css" href="css/cropper.min.css">
     <link rel="stylesheet" type="text/css" href="css/uploadify.css">
+    <link rel="stylesheet" type="text/css" href="css/apply.css"><!-- 公告、申请弹框样式表 -->
     <script type="text/javascript" src="js/jquery.min.js"></script>
     <!--[if lt IE 9]>
     <script type="text/javascript" src="js/html5.js"></script>
@@ -281,6 +282,84 @@
     copyright 厦门易尔通网络科技有限公司 版权所有
 </footer>
 <div class="background"><img src="images/bg_light.png"/><img class="bg_thumb" src="images/bg_thumb.jpg"/></div>
+<!-- 公告弹框 -->
+<div class="model">
+    <div class="model-bg"></div>
+    <div class="model-content">
+        <div class="model-had">
+            <span>公告</span>
+            <i class="close">×</i>
+        </div>
+        <div class="model-body">
+            <div class="model-body-cont">
+                <div class="panel1" id="demo1">
+                    <div class="_panel-box" >
+                        <div class="body-contBox">
+                            <h1 class="body-title"><b></b><span></span><b></b></h1>
+                            <div class="body-txt">
+                                <p>
+                                    
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 免费申领G名片 -->
+<div id='banner_ny'>
+    <div class="gsqbox">
+        <div class="aqbox_top">免费申领
+           <i class="cha"><img src="images/closesq.png"></i>
+        </div>
+        <div class="aqbox_but">
+             <form action="" method="post" id="feedback_form" enctype="multipart/form-data">
+                <span class="sqbd tl">
+                   公司：<input placeholder="请填写公司名称" name="txtCompanyName" id="txtCompanyName" class="sqnane" type=""/><b style="color:red">*</b>
+                </span>
+                <span class="sqbd">
+                   姓名：<input placeholder="请填写您的真实姓名" name="txtName" id="txtName" class="sqnane" type=""/><b style="color:red">*</b>
+                </span>
+                <span class="sqbd tl">
+                   电话：<input placeholder="请填写手机号码" name="txtContact" id="txtContact" class="sqnane" type=""><b style="color:red">*</b>
+                </span>
+                <span class="sqbd">
+                   城市：<input placeholder="请填写您所在的城市" name="txtCity" id="txtCity" class="sqnane" type=""/>
+                </span>
+                <span class="sqbd tl">
+                   邮箱：<input placeholder="请输入您的常用邮箱" name="txtContent" id="txtContent" class="sqnane" type=""/><b style="color:red">*</b>
+                </span>
+                <span class="sqbd">公司规模 :
+                    <select name="select3">  
+                      <option>请选择公司规模</option>  
+                      <option value="1-49人">1-49人</option>  
+                      <option value="50-99人">50-99人</option>  
+                      <option value="100-149人">100-149人</option>  
+                      <option value="150人以上">150人以上</option> 
+                    </select>  
+                </span>
+                <span class="sqbd_photo">
+                   营业执照：<input type="file" id="fileId" class="photo" name="image" value="请上传图片" onchange="readFile(this)"/><b style="color:red">*</b>
+                    <div id="preview"></div>  
+                   <i>建议上传1000x1000像素的图片，</br>格式为jpg,png,gif,文件大小不超过3MB</i>
+                </span>
+                <span class="sqbd tl yzm">验证码:<input value="" class="sqnane" name="inputCode" id="inputCode" type="" style="width: 36%;"><b style="color:red">*</b>
+                <i><div class="code" id="checkCode" onclick="createCode()">I4zeII</div><a href="#" onclick="createCode()">看不清换一张</a></i></span>
+
+                <p>注：我们会在1-2工作日内与您取得联系。服务热线：0592-3503966</p>
+                <input class="subb tj" type="submit" value="提交">
+                <input class="subb qx" type="reset" value="重置" onclick="cimg()">
+                <div class='wait' style='margin-left:240px;width:100px;height:55px;display: none;'>
+                    <!-- <div class='subb' style='width:100%;height: 55%;background: grey;'>提交中...</div> -->
+                    <div style='width:100%;height:100%;background: url("./images/waiting.gif");background-repeat: no-repeat;background-position:center;'></div>
+                </div>
+             </form>
+        </div>
+    </div>
+    <div class="zhez"></div>
+</div>
 
 </body>
 <!--[if lt IE 8]>
@@ -302,7 +381,17 @@
 <script type="text/javascript" src="js/laydate.js"></script>                     <!-- 时间选择控件 -->
 <script type="text/javascript" src="js/jquery.uploadify.min.js"></script>       <!-- 图片上传控件 -->
 <script type="text/javascript" src="js/script.js"></script>                        <!-- 公共脚本文件 -->
-
+<script type="text/javascript" src="js/xb_scroll.js"></script>                  <!-- 公告弹框 -->
+<script type="text/javascript" src="js/apply.js"></script>                  <!-- 申请弹框 -->
+<script type="text/javascript">
+    $("#demo1").xb_scroll();
+    $(".close").click(function () {
+        $(this).parents(".model").hide();
+    });
+    $(".model-bg").click(function () {
+        $(this).parents(".model").hide();
+    });
+</script>                                                                       <!-- 公告弹框 -->
 <!--[if lte IE 7]>
 <script type="text/javascript">
     mainApp.config(function ($sceProvider) {

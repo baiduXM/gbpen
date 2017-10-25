@@ -103,6 +103,14 @@ Route::group(array('before' => 'auth'), function() {
         'uses' => 'StatisController@getCount'
     ]);
     //===获取用户统计数据-end===
+
+    //===G名片申请-start===
+    Route::post('weicard-apply', [//提交申请数据
+        'as' => 'weicard-apply',
+        'uses' => 'SendController@weicardApply'
+    ]);
+    //===G名片申请-end===
+
 //    Route::get('log-out', [//用户登出
 //        'as' => 'log-out',
 //        'uses' => 'SignController@logOut'
@@ -234,6 +242,11 @@ Route::group(array('before' => 'auth'), function() {
 
     //-----------------------------------------------
     //--------------------首页内容--------------------
+    Route::get('get-notice', [//获取公告内容
+        'as' => 'get-notice',
+        'uses' => 'StatisController@getNotice'
+    ]);
+
     Route::get('templates/GP{num}', [//PC预览 首页跳转
         'uses' => 'TemplatesController@homepagePreview'
     ])->where('num', '[0-9_]+');
@@ -615,6 +628,11 @@ Route::post('cdshakehands', [
 Route::post('api/loginuser', [//用户登录
     'as' => 'template-fileedit',
     'uses' => 'ApiController@login'
+]);
+
+Route::post('api/modifynotice', [//发布公告
+    'as' => 'modify-notice',
+    'uses' => 'ApiController@modifyNotice'
 ]);
 
 Route::post('api/createuser', [//创建用户

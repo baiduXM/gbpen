@@ -194,9 +194,17 @@ mainApp.controller('memberController', function ($scope, $http) {
     });
 });
 // 引导页
-mainApp.controller('indexController', function ($scope) {
+mainApp.controller('indexController', function ($scope,$http) {
     $scope.$parent.showbox = "home";
-    $scope.$parent.menu = [];
+    $scope.$parent.menu = [];    
+    $http.get('../get-notice').success(function (json) {
+        if(json.err == 1000){
+            data = json.msg;
+            $('.model').css('visibility','visible');
+            $('.body-title').find('span').html(data.title);
+            $('.body-txt').find('p').html(data.content);
+        }        
+    });    
 });
 
 $(document).ready(function ($scope) {
