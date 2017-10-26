@@ -93,7 +93,7 @@ class StatisController extends BaseController {
             return Response::json($result);
         }
 
-        $notice = Notice::where('type',0)->where('is_on',1)->first();
+        $notice = Notice::where('type',0)->where('is_on',1)->get()->toArray();
         if($notice){
             $result = ['err' => 1000, 'msg' => $notice];
         } else {

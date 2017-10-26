@@ -201,8 +201,12 @@ mainApp.controller('indexController', function ($scope,$http) {
         if(json.err == 1000){
             data = json.msg;
             $('.model').css('visibility','visible');
-            $('.body-title').find('span').html(data.title);
-            $('.body-txt').find('p').html(data.content);
+            $.each(data, function (k, v) {
+                $('.body-contBox').append('<h1 class="body-title"><b></b><span>'+v.title+'</span><b></b></h1>');
+                $('.body-contBox').append('<div class="body-txt"><p>'+v.content+'</p></div>');
+            });            
+            // $('.body-title').find('span').html(data.title);
+            // $('.body-txt').find('p').html(data.content);
         }        
     });    
 });
