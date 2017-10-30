@@ -635,6 +635,11 @@ Route::post('api/modifynotice', [//发布公告
     'uses' => 'ApiController@modifyNotice'
 ]);
 
+Route::post('api/delnotice', [//删除公告
+    'as' => 'del-notice',
+    'uses' => 'ApiController@delNotice'
+]);
+
 Route::post('api/createuser', [//创建用户
     'as' => 'template-fileedit',
     'uses' => 'ApiController@createCustomer'

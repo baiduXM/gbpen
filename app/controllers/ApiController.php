@@ -1069,4 +1069,21 @@ class ApiController extends BaseController
         }
     }
 
+    /**
+     * 公告删除
+     */
+    public function delNotice(){
+        if ($this->authData()) {
+            $uid = trim(Input::get('uid'));
+
+            $res = Notice::where('uid',$uid)->delete();
+
+            if($res){
+                return Response::json(array(['err' => 1000, 'msg' => '删除成功']));
+            }else{
+                return Response::json(array(['err' => 1001, 'msg' => '删除失败']));
+            }
+        }
+    }
+
 }
