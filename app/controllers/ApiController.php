@@ -835,8 +835,6 @@ class ApiController extends BaseController
             $ftpPwd_B = Input::get('ftp_pwd_b');
             $ftpUrl_B = Input::get('ftp_url_b'); 
 
-            $m_url =  Input::get('m_url');
-
 //            $ftpAddr = "182.61.7.87";
 //            $ftpPort = '21';
 //            $ftpUser = 'tongYi';
@@ -858,7 +856,7 @@ class ApiController extends BaseController
             }
             ftp_pasv($conn_new, TRUE);
             $ftpDir = preg_replace("/^(\.)?\//", "", $ftpDir);
-            if ($ftpFlag == 1) {
+            if ($ftpFlag) {
                 $ftpDir = $ftpDir . "/" . $username;
             }
             //创建mobile文件夹
@@ -869,23 +867,8 @@ class ApiController extends BaseController
             if (!$ftp_put) {
                 return Response::json(array(['err' => 1003, 'msg' => '文件传输失败']));
             }
-            //35绑定文件
-            if($ftpFlag == 2){
-                if($m_url){
-                    $str = $this->webConfig($m_url);
-                    @file_put_contents(public_path('customers/' . $username) . '/web.config', $str);
-                    //上传绑定文件到35空间
-                    $ftp_put = ftp_put($conn,$update['ftp_dir'] . '/web.config',public_path('customers/' . $update['name']) . '/web.config', FTP_ASCII);
-                    if (!$ftp_put) {
-                        return Response::json(array(['err' => 1003, 'msg' => '文件传输失败']));
-                    } 
-               }                
-            }
             //解压文件
-            $fget = file_get_contents($ftpUrl . "/img_unzip.php");
-            if(!$fget){
-                return Response::json(array(['err' => 1005, 'msg' => 'A解压失败']));
-            }
+            file_get_contents($ftpUrl . "/img_unzip.php");
             //删除压缩文件
             @ftp_delete($conn_new, $ftpDir . "/img_unzip.php");
             ftp_close($conn_new);
@@ -937,7 +920,7 @@ class ApiController extends BaseController
             ftp_pasv($conn_old, TRUE);
             //删除文件夹
             $cus_ftp['dir'] = preg_replace("/^(\.)?\//", "", $cus_ftp['dir']);
-            if ($cus_ftp['ftp'] == 1) {
+            if ($cus_ftp['ftp']) {
                 $cus_ftp['dir'] = $cus_ftp['dir'] . "/" . $CustomerInfo->name;
             }
             if (ftp_nlist($conn_old, $cus_ftp['dir'] . "/mobile") !== false) {
