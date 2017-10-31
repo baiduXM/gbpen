@@ -4134,11 +4134,11 @@ class PrintController extends BaseController
                 } elseif ($old_arr[$key]['type'] == 'page' || $old_arr[$key]['type'] == 'navs') {
                     $old_arr[$key]['config'] = array();
                 } else {
-                    if (is_array($old_arr[$key]['value']) && count($old_arr[$key]['value']) > 0) {
-                        foreach ($old_arr[$key]['value'] as &$v) {
-                            $v = '';
-                        }
-                    }
+                    // if (is_array($old_arr[$key]['value']) && count($old_arr[$key]['value']) > 0) {
+                    //     foreach ($old_arr[$key]['value'] as &$v) {
+                    //         $v = '';
+                    //     }
+                    // }
                 }
             }
         }
