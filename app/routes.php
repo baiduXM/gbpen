@@ -247,6 +247,11 @@ Route::group(array('before' => 'auth'), function() {
         'uses' => 'StatisController@getNotice'
     ]);
 
+    Route::get('syslogs-get', [//获取公告内容
+        'as' => 'syslogs-get',
+        'uses' => 'StatisController@getSyslogs'
+    ]);
+
     Route::get('templates/GP{num}', [//PC预览 首页跳转
         'uses' => 'TemplatesController@homepagePreview'
     ])->where('num', '[0-9_]+');

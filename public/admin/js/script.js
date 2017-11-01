@@ -199,7 +199,7 @@ mainApp.controller('indexController', function ($scope,$http) {
     $scope.$parent.menu = [];    
     $http.get('../get-notice').success(function (json) {
         if(json.err == 1000){
-            data = json.msg;
+            var data = json.msg;
             $('.model').css('visibility','visible');
             $.each(data, function (k, v) {
                 $('.body-contBox').append('<h1 class="body-title"><b></b><span>'+v.title+'</span><b></b></h1>');

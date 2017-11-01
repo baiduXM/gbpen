@@ -178,5 +178,11 @@
         "templateUrl": "pages/pushpage.html",
         "scriptUrl": "pages/js/pushpage.js",
         "controller": "pushpageController"
+    },
+    {
+        "router": "/tylogs",
+        "templateUrl": "pages/tylogs.html",
+        "scriptUrl": "pages/js/tylogs.js",
+        "controller": "tylogsController"
     }
 ]

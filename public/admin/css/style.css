@@ -614,6 +614,9 @@ ul.home-edite li .homeed-right img{ vertical-align:top}
 .cxb_list_n7{ right:13%; top:315px; transform-origin: right top; -webkit-transform-origin: right top; -moz-transform-origin: right top; -ms-transform-origin: right top; -o-transform-origin: right top;transform:rotate(-8deg);-moz-transform:rotate(-8deg);-ms-transform:rotate(-8deg);-o-transform:rotate(-8deg);-webkit-transform:rotate(-8deg)}
 .cxb_list_n7 .cxb_list_title{ background:#3868e1;}
 .cxb_list_n7:hover{ animation:Swing1 0.5s linear 3;-webkit-animation:Swing1 0.5s linear 3;-moz-animation:Swing1 0.5s linear 3;-ms-animation:Swing1 0.5s linear 3;-o-animation:Swing1 0.5s linear 3; }
+.cxb_list_n8{ left:15%; top:20px; transform-origin: right top; -webkit-transform-origin: right top; -moz-transform-origin: right top; -ms-transform-origin: right top; -o-transform-origin: right top;transform:rotate(-8deg);-moz-transform:rotate(-8deg);-ms-transform:rotate(-8deg);-o-transform:rotate(-8deg);-webkit-transform:rotate(-8deg)}
+.cxb_list_n8 .cxb_list_title{ background:#669999;}
+.cxb_list_n8:hover{ animation:Swing1 0.5s linear 3;-webkit-animation:Swing1 0.5s linear 3;-moz-animation:Swing1 0.5s linear 3;-ms-animation:Swing1 0.5s linear 3;-o-animation:Swing1 0.5s linear 3; }
 
 .cxb_gangbi{ position:absolute; right:10px; top:100px; transition:all 0.3s linear 1s;-webkit-transition:all 0.3s linear 1s;-moz-transition:all 0.3s linear;-ms-transition:all 0.3s linear;-o-transition:all 0.3s linear;}
 .cxb_gangbi_an{ transform:rotate(-13deg);-webkit-transform:rotate(-13deg);-moz-transform:rotate(-13deg);-ms-transform:rotate(-13deg);-o-transform:rotate(-13deg);}
@@ -621,6 +624,7 @@ ul.home-edite li .homeed-right img{ vertical-align:top}
 .cxb_menulist{width:80%; float:right; display:inline; margin-top:20px; height:auto; overflow:hidden;}
 .cxb_menulist dl{ width:104px; height:114px; overflow:hidden; background:#fff; box-shadow:0px 0px 10px rgba(13,4,9,0.75); float:left; display:inline; margin:10px; border-radius:5px; text-align:center}
 .cxb_menulist dl .cxbicon{ height:80px; overflow:hidden; line-height:80px; font-size:51px;}
+
 .cxb_menulist dl .cxbtitle{ height:34px; line-height:28px;}
 .cxb_menulist dl.addlist{ width:102px; height:112px; border:1px dashed #968279; background:none; box-shadow:none; cursor:pointer;}
 .cxb_menulist dl.addlist .cxbicon{ height:112px; line-height:112px; }

@@ -93,11 +93,31 @@ class StatisController extends BaseController {
             return Response::json($result);
         }
 
-        $notice = Notice::where('type',0)->where('is_on',1)->get()->toArray();
+        $notice = Notice::where('type',0)->where('is_on',1)->orderBy('id','desc')->get()->toArray();
         if($notice){
             $result = ['err' => 1000, 'msg' => $notice];
         } else {
             $result = ['err' => 1001, 'msg' => '无公告'];
+        }
+        return Response::json($result);
+    }
+
+    /**
+     * 系统日志获取
+     */
+    public function getSyslogs(){
+
+        $id = Input::get('id');
+        if($id) {
+            $syslogs = Notice::where('type',1)->where('id',$id)->first();
+        } else {
+            $syslogs = Notice::where('type',1)->orderBy('id','desc')->get()->toArray();
+        }
+        
+        if($syslogs){
+            $result = ['err' => 1000, 'msg' => $syslogs];
+        } else {
+            $result = ['err' => 1001, 'msg' => '暂无日志'];
         }
         return Response::json($result);
     }

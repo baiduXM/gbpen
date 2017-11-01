@@ -92,6 +92,10 @@
                     <dd class="cxb_list_m">0</dd>
                     <dt class="cxb_list_title">移动端访问量</dt>
                 </dl>
+                <!-- <dl class="cxb_Label_list cxb_list_n8">
+                    <dd class="cxb_list_m">系统日志</dd>
+                    <dt class="cxb_list_title">点击查看</dt>
+                </dl> -->
                 <!--<dl class="cxb_Label_list cxb_list_n6"><dd class="cxb_list_m">12322</dd><dt class="cxb_list_title">总访问次数</dt></dl>-->
                 <!--<dl class="cxb_Label_list cxb_list_n7"><dd class="cxb_list_m">12322</dd><dt class="cxb_list_title">微信请求数</dt></dl>-->
                 <dl class="cxb_gangbi"><img src="images/gangbi.png"></dl>
@@ -380,6 +384,7 @@
 <script type="text/javascript" src="js/xb_scroll.js"></script>                  <!-- 公告弹框 -->
 <script type="text/javascript" src="js/apply.js"></script>                  <!-- 申请弹框 -->
 <script type="text/javascript">
+    <!-- 公告弹框 -->
     $("#demo1").xb_scroll();
     $(".close").click(function () {
         $(this).parents(".model").hide();
@@ -387,7 +392,11 @@
     $(".model-bg").click(function () {
         $(this).parents(".model").hide();
     });
-</script>                                                                       <!-- 公告弹框 -->
+    <!-- 系统日志跳转 -->
+    $(".cxb_list_n8").click(function(){
+        window.location.href="#/tylogs";
+    });
+</script>                                                                       
 <!--[if lte IE 7]>
 <script type="text/javascript">
     mainApp.config(function ($sceProvider) {

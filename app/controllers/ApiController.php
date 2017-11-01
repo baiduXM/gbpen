@@ -1052,6 +1052,7 @@ class ApiController extends BaseController
             $update['content'] = trim(Input::get('content'));
             $update['updatetime'] = trim(Input::get('updatetime'));
             $update['is_on'] = trim(Input::get('is_on'));
+            $update['synopsis'] = trim(Input::get('synopsis'));
             $update['type'] = trim(Input::get('type'));
 
             $id = Notice::where('uid',$update['uid'])->pluck('id');
