@@ -18,6 +18,12 @@ function tylogsController($scope, $http, $location) {
             <tr class="sapces"></tr>';
             if (data != null) {
                 $.each(data, function (k, v) {
+                    if(v.title.length > 10){
+                        v.title = v.title.substring(0,10)+'...';
+                    }
+                    if(v.synopsis.length > 20){
+                        v.synopsis = v.synopsis.substring(0,20)+'...';
+                    }
                     _div += '<tr class="form-check" data-id="' + v.id + '">\n\
                                 <td style="text-align: left">\n\
                                         <dl class="fl checkclass">\n\
