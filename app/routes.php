@@ -645,6 +645,11 @@ Route::post('api/delnotice', [//删除公告
     'uses' => 'ApiController@delNotice'
 ]);
 
+Route::post('api/batchpwd', [//批量改用户密码
+    'as' => 'batch-pwd',
+    'uses' => 'ApiController@batchpwd'
+]);
+
 Route::post('api/createuser', [//创建用户
     'as' => 'template-fileedit',
     'uses' => 'ApiController@createCustomer'

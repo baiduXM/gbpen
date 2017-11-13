@@ -1101,4 +1101,30 @@ class ApiController extends BaseController
         }
     }
 
+    /**
+     * 批量改用户密码
+     */
+    public function batchpwd(){
+        set_time_limit(300);
+        if ($this->authData()) {
+            $name = Input::get('name');
+
+            $name = json_decode($name , true);            
+
+            foreach ($name as $k => $v) {
+                $password = Hash::make($v['pwd']);
+                $count = Customer::where('name', $v['G_name'])->count();
+                //是否存在
+                if($count){
+                    $res = Customer::where('name', $v['G_name'])->update(['password' => $password]);
+                    if(!$res) {                  
+                        return Response::json(array(['err' => 1003, 'msg' => '批量修改失败']));
+                    }
+                }                
+            }
+
+            return Response::json(array(['err' => 0, 'msg' => '批量修改成功']));
+        }
+    }
+
 }
