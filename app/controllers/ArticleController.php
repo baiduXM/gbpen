@@ -138,6 +138,13 @@ class ArticleController extends BaseController {
                 if (!$result) {
                     $failed++;
                 } else {
+                    //将需要删除静态页面的文章id存进数据库
+                    $delete = new Delete();
+                    $delete->cus_id = $cus_id;
+                    $delete->delete_id = $id;
+                    $delete->type_id = '1';
+                    $result = $delete->save();
+                    //end
                     foreach ((array) $data as $v) {
                         $del_imgs[] = $v["img"];
                     }
@@ -162,6 +169,13 @@ class ArticleController extends BaseController {
             $data = MoreImg::where('a_id', $ids[0])->get()->toArray();
             $result = Articles::where('id', '=', $ids[0])->delete();
             if ($result) {
+                //将需要删除静态页面的文章id存进数据库
+                $delete = new Delete();
+                $delete->cus_id = $cus_id;
+                $delete->delete_id = $ids[0];
+                $delete->type_id = '1';
+                $result = $delete->save();
+                //end
                 foreach ((array) $data as $v) {
                     $del_imgs[] = $v["img"];
                 }

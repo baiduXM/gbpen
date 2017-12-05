@@ -614,16 +614,27 @@ class TemplatesController extends BaseController
             $mobile = new PrintController('preview', 'mobile');
             $config_arr = $mobile->mobilePageList('global', true);
             if (isset($data[$input_keys[0]])) {
-                foreach ($data[$input_keys[0]] as $key => $v) {
-                    $data[$input_keys[0]][$key]['title'] = $data[$input_keys[0]][$key]['PC_name'];
-                    $data[$input_keys[0]][$key]['image'] = basename($data[$input_keys[0]][$key]['phone_info_pic']);
-                    $data[$input_keys[0]][$key]['link'] = $data[$input_keys[0]][$key]['PC_link'];
-                    $data[$input_keys[0]][$key]['sort'] = $data[$input_keys[0]][$key]['PC_sort'];
-                    unset($data[$input_keys[0]][$key]['PC_name']);
-                    unset($data[$input_keys[0]][$key]['phone_info_pic']);
-                    unset($data[$input_keys[0]][$key]['PC_link']);
-                    unset($data[$input_keys[0]][$key]['PC_sort']);
+                if ($config_arr[$input_keys[0]]['type'] != 'image') {
+                    foreach ($data[$input_keys[0]] as $key => $v) {
+                        $data[$input_keys[0]][$key]['title'] = $data[$input_keys[0]][$key]['PC_name'];
+                        $data[$input_keys[0]][$key]['image'] = basename($data[$input_keys[0]][$key]['phone_info_pic']);
+                        $data[$input_keys[0]][$key]['link'] = $data[$input_keys[0]][$key]['PC_link'];
+                        $data[$input_keys[0]][$key]['sort'] = $data[$input_keys[0]][$key]['PC_sort'];
+                        unset($data[$input_keys[0]][$key]['PC_name']);
+                        unset($data[$input_keys[0]][$key]['phone_info_pic']);
+                        unset($data[$input_keys[0]][$key]['PC_link']);
+                        unset($data[$input_keys[0]][$key]['PC_sort']);
+                    }
+                } else {
+                    foreach ($data[$input_keys[0]] as $key => $val) {
+                        $data[$input_keys[0]]['title'] = $data[$input_keys[0]][$key]['PC_name'];
+                        $data[$input_keys[0]]['image'] = basename($data[$input_keys[0]][$key]['phone_info_pic']);
+                        $data[$input_keys[0]]['link'] = $data[$input_keys[0]][$key]['PC_link'];
+                        $data[$input_keys[0]]['sort'] = $data[$input_keys[0]][$key]['PC_sort'];
+                        unset($data[$input_keys[0]][$key]);
+                    }
                 }
+                
             }
             $config_arr[$input_keys[0]]['value'] = $data[$input_keys[0]];
         }

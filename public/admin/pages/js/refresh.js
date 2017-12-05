@@ -36,6 +36,26 @@ function refreshController($scope, $http) {
                 $('.refresh-content .refresh:not(.ed)').hide();
                 $('.refresh_button').hide();
             }
+            if(json.data.ftp != 1){
+                $('.progress_title1').css({'display': 'block'})
+            }else{
+                if (json.data.ftp_a != 10000||json.data.ftp_b != 10000) {
+                    $('.progress_bar .expand').css('width', '450px');
+                    if(json.data.ftp_a == 10000||json.data.ftp_b != 10000){
+                        $('.progress_title').text('分布服务器B出现未知问题，请联系管理员，谢谢！')
+                    }
+                    if(json.data.ftp_a != 10000||json.data.ftp_b == 10000){
+                        $('.progress_title').text('分布服务器A出现未知问题，请联系管理员，谢谢！')
+                    }
+                    if(json.data.ftp_a != 10000&&json.data.ftp_b != 10000){
+                        $('.progress_title').text('分布服务器A,B出现未知问题，请联系管理员，谢谢！')
+                    }
+                    $('.btn-top').css({'display': 'none'})
+                    $('.refresh-content .ed').css({'display': 'block'})
+                    $('.refresh-content .refresh:not(.ed)').hide();
+                    $('.refresh_button').hide();
+                }
+            }
         });
     });
     // 更新按钮效果

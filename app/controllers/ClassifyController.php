@@ -68,6 +68,8 @@ class ClassifyController extends BaseController {
                 $classify = Classify::find($v);
                 $c_del_img = $classify->img;
                 $ids = Articles::where('c_id', $v)->lists('id');
+                //将需要删除的栏目下文章id存进数据库
+                $this->artDelete($ids);
                 $a_del_imgs = Articles::where('c_id', $v)->lists('img');
                 if (count($ids)) {
                     $m_del_imgs = MoreImg::whereIn('a_id', (array) $ids)->lists('img');
@@ -79,6 +81,13 @@ class ClassifyController extends BaseController {
                 Articles::where('c_id', $v)->where('cus_id', $cus_id)->delete();
                 $this->delMobileHomepage($v); //删除手机首页配置
                 if ($d_c_result) {
+                    //将需要删除栏目id存进数据库
+                    $delete = new Delete();
+                    $delete->cus_id = $cus_id;
+                    $delete->delete_id = $v;
+                    $delete->type_id = '0';
+                    $result = $delete->save();
+                    //end
                     foreach ((array) $del_imgs as $val) {
                         $imgdel = new ImgDel();
                         $imgdel->mysave($val);
@@ -95,6 +104,8 @@ class ClassifyController extends BaseController {
             $classify = Classify::find($id);
             $c_del_img = $classify->img;
             $ids = Articles::where('c_id', $id)->lists('id');
+            //将需要删除的栏目id存进数据库
+            $this->artDelete($ids);
             $a_del_imgs = Articles::where('c_id', $id)->lists('img');
             if (count($ids)) {
                 $m_del_imgs = MoreImg::whereIn('a_id', (array) $ids)->lists('img');
@@ -107,6 +118,13 @@ class ClassifyController extends BaseController {
             $this->delMobileHomepage($id);
             $this->delChildClassify($id);
             if ($d_c_result) {
+                //将需要删除的栏目及栏目下文章id存进数据库
+                $delete = new Delete();
+                $delete->cus_id = $cus_id;
+                $delete->delete_id = $id;
+                $delete->type_id = '0';
+                $result = $delete->save();
+                //end
                 foreach ((array) $del_imgs as $val) {
                     $imgdel = new ImgDel();
                     $imgdel->mysave($val);
@@ -582,7 +600,45 @@ class ClassifyController extends BaseController {
         @MobileHomepage::where('cus_id', $cus_id)->where('c_id', $c_id)->delete();
     }
 
-    //删除分类及其子类
+    //删除分类文章
+    public function artDelete($ids) {
+        $del_imgs = array();
+        $cus_id = Auth::id();
+            $failed = 0;
+            foreach ($ids as $id) {
+                $article = Articles::find($id);
+                $data = MoreImg::where('a_id', $id)->get()->toArray();
+                $result = Articles::where('id', '=', $id)->delete();
+                if (!$result) {
+                    $failed++;
+                } else {
+                    //将需要删除静态页面的文章id存进数据库
+                    $delete = new Delete();
+                    $delete->cus_id = $cus_id;
+                    $delete->delete_id = $id;
+                    $delete->type_id = '1';
+                    $result = $delete->save();
+                    //end
+                    foreach ((array) $data as $v) {
+                        $del_imgs[] = $v["img"];
+                    }
+                    $del_imgs[] = $article->img;
+                }
+            }
+            foreach ((array) $del_imgs as $v) {
+                $imgdel = new ImgDel();
+                $imgdel->mysave($v, 'articles');
+            }
+            if ($failed) {
+                $this->logsAdd("article",__FUNCTION__,__CLASS__,5,"批量删除文章，".$failed."条删除失败",0,$ids);
+                $return_msg = array('err' => 3001, 'msg' => $failed . '条记录删除失败');
+            } else {
+                $this->logsAdd("article",__FUNCTION__,__CLASS__,5,"批量删除文章",0,$ids);
+                $return_msg = array('err' => 0, 'msg' => '');
+            }
+//        return Response::json($return_msg);
+    }
+    ////删除分类及其子类
     private function delChildClassify($c_id) {
         $cus_id = Auth::id();
         $del_imgs = array();
@@ -592,6 +648,8 @@ class ClassifyController extends BaseController {
                 $classify = Classify::find($id);
                 $c_del_img = $classify->img;
                 $ids = Articles::where('c_id', $id)->lists('id');
+                //将需要删除的栏目下文章id存进数据库
+                $this->artDelete($ids);
                 $a_del_imgs = Articles::where('c_id', $id)->lists('img');
                 if (count($ids)) {
                     $m_del_imgs = MoreImg::whereIn('a_id', (array) $ids)->lists('img');
@@ -600,6 +658,13 @@ class ClassifyController extends BaseController {
                 }
                 $del_imgs = array_merge((array) $a_del_imgs, (array) $m_del_imgs);
                 Classify::where('id', $id)->where('cus_id', $cus_id)->delete();
+                //将需要删除静态栏目页面的文章id存进数据库
+                $delete = new Delete();
+                $delete->cus_id = $cus_id;
+                $delete->delete_id = $id;
+                $delete->type_id = '0';
+                $result = $delete->save();
+                //end
                 Articles::where('c_id', $id)->where('cus_id', $cus_id)->delete();
                 foreach ((array) $del_imgs as $val) {
                     $imgdel = new ImgDel();

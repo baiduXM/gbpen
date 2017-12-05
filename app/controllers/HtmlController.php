@@ -508,6 +508,7 @@ class HtmlController extends BaseController
             $ftp_array[1] = isset($ftp_array[1]) ? $ftp_array[1] : $port;
             $conn = ftp_connect($ftp_array[0], $ftp_array[1]);
             $del_imgs = ImgDel::where('cus_id', $this->cus_id)->get()->toArray();
+            $delete = Delete::where('cus_id', $this->cus_id)->get()->toArray();
             if (trim($ftp) == '1') {
                 if ($conn) {
                     ftp_login($conn, $customerinfo->ftp_user, $customerinfo->ftp_pwd);
@@ -523,6 +524,16 @@ class HtmlController extends BaseController
                         @ftp_delete($conn, "/" . $this->customer . '/mobile/images/s/' . $v['target'] . '/' . $v['img']);
                     }
                     ImgDel::where('cus_id', $this->cus_id)->delete();
+                    //将需要需要清理的html页面清理
+                    foreach ((array)$delete as $v){
+                        if($v['type_id']=='0'){
+                            @ftp_delete($conn, "/" . $this->customer . '/category/' . $v['delete_id'] . '.html');
+                            @ftp_delete($conn, "/" . $this->customer . '/mobile/category/' . $v['delete_id'] . '.html');
+                        }else{
+                            @ftp_delete($conn, "/" . $this->customer . '/detail/' . $v['delete_id'] . '.html');
+                            @ftp_delete($conn, "/" . $this->customer . '/mobile/detail/' . $v['delete_id'] . '.html');
+                        }
+                    }
                     ftp_put($conn, "/" . $this->customer . "/mobile/m_unzip.php", public_path("packages/m_unzip.php"), FTP_ASCII);
                     if (file_exists($path)) {
                         ftp_put($conn, "/" . $this->customer . "/mobile/site.zip", $path, FTP_BINARY);
@@ -554,6 +565,16 @@ class HtmlController extends BaseController
                             @ftp_delete($conn_b, "/" . $this->customer . '/mobile/images/s/' . $v['target'] . '/' . $v['img']);
                         }
                         ImgDel::where('cus_id', $this->cus_id)->delete();
+                        //将需要需要清理的html页面清理
+                        foreach ((array)$delete as $v){
+                            if($v['type_id']=='0'){
+                                @ftp_delete($conn_b, "/" . $this->customer . '/category/' . $v['delete_id'] . '.html');
+                                @ftp_delete($conn_b, "/" . $this->customer . '/mobile/category/' . $v['delete_id'] . '.html');
+                            }else{
+                                @ftp_delete($conn_b, "/" . $this->customer . '/detail/' . $v['delete_id'] . '.html');
+                                @ftp_delete($conn_b, "/" . $this->customer . '/mobile/detail/' . $v['delete_id'] . '.html');
+                            }
+                        }
                         ftp_put($conn_b, "/" . $this->customer . "/mobile/m_unzip.php", public_path("packages/m_unzip.php"), FTP_ASCII);
                         if (file_exists($path)) {
                             ftp_put($conn_b, "/" . $this->customer . "/mobile/site.zip", $path, FTP_BINARY);
@@ -577,6 +598,16 @@ class HtmlController extends BaseController
                         @ftp_delete($conn, $ftpdir . '/mobile/images/s/' . $v['target'] . '/' . $v['img']);
                     }
                     ImgDel::where('cus_id', $this->cus_id)->delete();
+                    //将需要需要清理的html页面清理
+                    foreach ((array)$delete as $v){
+                        if($v['type_id']=='0'){
+                            @ftp_delete($conn, $ftpdir . '/category/' . $v['delete_id'] . '.html');
+                            @ftp_delete($conn, $ftpdir . '/mobile/category/' . $v['delete_id'] . '.html');
+                        }else{
+                            @ftp_delete($conn, $ftpdir . '/detail/' . $v['delete_id'] . '.html');
+                            @ftp_delete($conn, $ftpdir . '/mobile/detail/' . $v['delete_id'] . '.html');
+                        }
+                    }
                     ftp_put($conn, $ftpdir . "/mobile/m_unzip.php", public_path("packages/m_unzip.php"), FTP_ASCII);
                     if (file_exists($path)) {
                         ftp_put($conn, $ftpdir . "/mobile/site.zip", $path, FTP_BINARY);
@@ -586,7 +617,8 @@ class HtmlController extends BaseController
                     ftp_close($conn);
                 }
             }
-
+            //html页面清理完后，删除delete是数据
+            Delete::where('cus_id', $this->cus_id)->delete();
             $this->folderClear();
             echo '<div class="prompt">' . '100%</div><script type="text/javascript">refresh(100);</script>';
             $this->logsAdd('null', __FUNCTION__, __CLASS__, 999, "手机推送成功", 0, Auth::id());
@@ -1458,6 +1490,7 @@ class HtmlController extends BaseController
                 $ftp_array[1] = isset($ftp_array[1]) ? $ftp_array[1] : $port;
                 $conn = ftp_connect($ftp_array[0], $ftp_array[1]);
                 $del_imgs = ImgDel::where('cus_id', $this->cus_id)->get()->toArray();
+                $delete = Delete::where('cus_id', $this->cus_id)->get()->toArray();
                 //嵌入式表单json文件
                 $json_path = public_path("customers/" . $this->customer . '/formdata.json');
                 if (trim($ftp) == '1') {
@@ -1475,6 +1508,16 @@ class HtmlController extends BaseController
                             @ftp_delete($conn, "/" . $this->customer . '/mobile/images/s/' . $v['target'] . '/' . $v['img']);
                         }
                         ImgDel::where('cus_id', $this->cus_id)->delete();
+                        //将需要需要清理的html页面清理
+                        foreach ((array)$delete as $v){
+                            if($v['type_id']=='0'){
+                                @ftp_delete($conn, "/" . $this->customer . '/category/' . $v['delete_id'] . '.html');
+                                @ftp_delete($conn, "/" . $this->customer . '/mobile/category/' . $v['delete_id'] . '.html');
+                            }else{
+                                @ftp_delete($conn, "/" . $this->customer . '/detail/' . $v['delete_id'] . '.html');
+                                @ftp_delete($conn, "/" . $this->customer . '/mobile/detail/' . $v['delete_id'] . '.html');
+                            }
+                        }
                         if ($this->pcpush) {
                             @ftp_put($conn, "/" . $this->customer . "/search.php", public_path("packages/search.php"), FTP_ASCII);
                             //@ftp_put($conn,"/".$this->customer."/quickbar.json",public_path('customers/'.$this->customer.'/quickbar.json'),FTP_ASCII);
@@ -1523,6 +1566,16 @@ class HtmlController extends BaseController
                                 @ftp_delete($conn_b, "/" . $this->customer . '/mobile/images/s/' . $v['target'] . '/' . $v['img']);
                             }
                             ImgDel::where('cus_id', $this->cus_id)->delete();
+                            //将需要需要清理的html页面清理
+                            foreach ((array)$delete as $v){
+                                if($v['type_id']=='0'){
+                                    @ftp_delete($conn_b, "/" . $this->customer . '/category/' . $v['delete_id'] . '.html');
+                                    @ftp_delete($conn_b, "/" . $this->customer . '/mobile/category/' . $v['delete_id'] . '.html');
+                                }else{
+                                    @ftp_delete($conn_b, "/" . $this->customer . '/detail/' . $v['delete_id'] . '.html');
+                                    @ftp_delete($conn_b, "/" . $this->customer . '/mobile/detail/' . $v['delete_id'] . '.html');
+                                }
+                            }
                             if ($this->pcpush) {
                                 @ftp_put($conn_b, "/" . $this->customer . "/search.php", public_path("packages/search.php"), FTP_ASCII);
                                 @ftp_put($conn_b, "/" . $this->customer . "/index.php", public_path("packages/count0711/index.php"), FTP_ASCII);
@@ -1562,6 +1615,18 @@ class HtmlController extends BaseController
                             @ftp_delete($conn, $ftpdir . '/mobile/images/s/' . $v['target'] . '/' . $v['img']);
                         }
                         ImgDel::where('cus_id', $this->cus_id)->delete();
+                        //将需要需要清理的html页面清理
+                        foreach ((array)$delete as $v){
+                            if($v['type_id']=='0'){
+                                @ftp_delete($conn, $ftpdir . '/category/' . $v['delete_id'] . '.html');
+                                @ftp_delete($conn, $ftpdir . '/mobile/category/' . $v['delete_id'] . '.html');
+                            }else{
+                                @ftp_delete($conn, $ftpdir . '/detail/' . $v['delete_id'] . '.html');
+                                @ftp_delete($conn, $ftpdir . '/mobile/detail/' . $v['delete_id'] . '.html');
+                            }
+                        }
+                        //html页面清理完后，删除delete是数据
+                        Delete::where('cus_id', $this->cus_id)->delete();
                         if ($this->pcpush) {
                             ftp_put($conn, $ftpdir . "/search.php", public_path("packages/search.php"), FTP_ASCII);
                             @ftp_put($conn, $ftpdir . "/index.php", public_path("packages/count0711/index.php"), FTP_ASCII);
@@ -1580,7 +1645,8 @@ class HtmlController extends BaseController
                         ftp_close($conn);
                     }
                 }
-
+                //html页面清理完后，删除delete是数据
+                Delete::where('cus_id', $this->cus_id)->delete();
                 $this->folderClear();
                 echo '<div class="prompt">' . '100%</div><script type="text/javascript">refresh(100);</script>';
                 $this->logsAdd('null', __FUNCTION__, __CLASS__, 999, "推送成功", 0, Auth::id());
@@ -1670,7 +1736,40 @@ class HtmlController extends BaseController
         $count += WebsiteInfo::where('cus_id', $this->cus_id)->where('pushed', '>', 0)->count();
         $count += MobileHomepage::where('cus_id', $this->cus_id)->where('pushed', '>', 0)->count();
         $count += CustomerInfo::where('cus_id', $this->cus_id)->where('pushed', '>', 0)->count();
-        $data_final = ['err' => 0, 'msg' => '', 'data' => ['cache_num' => $count]];
+        //推送前检测服务器是否正常
+        $customerinfo = Customer::find($this->cus_id);
+        $ftp_address = $customerinfo->ftp_address;
+        $ftp = $customerinfo->ftp;
+        //如果是系统服务器才进行检测
+        if(trim($ftp)==1){
+            //检测A服务器
+            @$res1 = file_get_contents("http://$ftp_address/online.php");
+            //检测B服务器
+            if($customerinfo->ftp_address_b){
+                $ftp_addressb = $customerinfo->ftp_address_b;
+                @$res2 = file_get_contents("http://$ftp_addressb/online.php");
+            }
+            if(@$res1==10000){
+                $ftp_a=$res1;
+            }else{
+                $ftp_a='';
+            }
+            if(@$res2==10000){
+                $ftp_b=$res2;
+            }else{
+                //检测是否为海外分布服务器（无a/b负载），如果是$ftp_b为10000（正常）
+                if($ftp_address=='182.61.100.142'){
+                    $ftp_b=$res1;
+                }else{
+                    $ftp_b='';
+                }
+            }
+        }else{
+            $ftp_a='';
+            $ftp_b='';
+        }
+        //end
+        $data_final = ['err' => 0, 'msg' => '', 'data' => ['cache_num' => $count,'ftp_a' => $ftp_a,'ftp_b' => $ftp_b,'ftp' => $ftp]];
         return Response::json($data_final);
     }
 

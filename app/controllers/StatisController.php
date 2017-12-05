@@ -39,18 +39,28 @@ class StatisController extends BaseController {
         }else{
             $data_b =array();
         }
+
+        //在线人数
+        $timeout = 300;//超时时间
+        $time = time();
+        $is_out = $time - 300;
+        $online = DB::table('sessions')->where('last_activity', '>', $is_out)->count();
         
         if($data != NULL && $data_b != NULL){
             $end['count_all'] = $data[0]['count_all'] + $data_b[0]['count_all'];
             $end['count_mobile'] = $data[0]['count_mobile'] + $data_b[0]['count_mobile'];
             $end['count_today'] = $data[0]['count_today'] + $data_b[0]['count_today'];
+            $end['online'] = $online;
             $res = Response::json(['err' => 0, 'msg' => '获取统计数据成功', 'data' => $end]);
         } elseif ($data != NULL) {
+            $data[0]['online'] = $online;
             $res = Response::json(['err' => 0, 'msg' => '获取统计数据成功', 'data' => $data[0]]);
         } elseif($data_b != NULL){
+            $data_b[0]['online'] = $online;
             $res = Response::json(['err' => 0, 'msg' => '获取统计数据成功', 'data' => $data_b[0]]);
         } else {
-            $res = Response::json(['err' => 1, 'msg' => '获取统计数据失败', 'data' => null]);
+            $data['online'] = $online;
+            $res = Response::json(['err' => 1, 'msg' => '获取统计数据失败', 'data' => $data]);
         }
         return $res;
     }
