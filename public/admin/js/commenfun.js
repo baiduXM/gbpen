@@ -503,6 +503,7 @@ WarningBox.prototype = {
     _save: function ($image, ajaxurl, oncallback) {
         var _this = this;
         $('.warning_box .save').click(function () {
+            var data = $image.cropper('getCroppedCanvas').toDataURL(_this.fileType,0.94);
             $.ajax({
                 url: ajaxurl,
                 type: 'POST',
