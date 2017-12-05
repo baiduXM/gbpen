@@ -1,6 +1,6 @@
 <?php
 /**
- * 配置文件
+ * 配置文件 123
  */
 define('TONGYI_DOMAIN','ht.5067.org');//统一平台域名
 define('DAILI_DOMAIN','dl2.5067.org');//代理平台域名
