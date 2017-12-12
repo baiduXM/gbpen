@@ -110,7 +110,7 @@ class SendController extends BaseController
     //提交数据到G宝盆官网
     protected function sendtoGbpen($data){
         //目标路径
-        $destinationPath = './webroot/uploads/G_leaveword/'. $data['image'];
+        $destinationPath = './uploads/G_leaveword/'. $data['image'];
         //判断文件是否存在
         $localFile = public_path('customers/'. $this->customer. '/images/other/'. $data['image']);
         if(file_exists($localFile)){
