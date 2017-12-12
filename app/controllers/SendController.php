@@ -115,6 +115,7 @@ class SendController extends BaseController
         $localFile = public_path('customers/'. $this->customer. '/images/other/'. $data['image']);
         if(file_exists($localFile)){
             //上传图片到G宝盆官网
+            //A服
             $conn = ftp_connect(GBPEN_FTP , GBPEN_FTP_PORT);
             if($conn){
                 ftp_login($conn, GBPEN_FTP_USER, GBPEN_FTP_PASSWORD);
@@ -122,6 +123,14 @@ class SendController extends BaseController
                 ftp_put($conn, $destinationPath, $localFile, FTP_BINARY);
                 ftp_close($conn);
             }
+            //B服
+            // $conn_b = ftp_connect(GBPEN_FTP_B , GBPEN_FTP_PORT);
+            // if($conn_b){
+            //     ftp_login($conn_b, GBPEN_FTP_USER, GBPEN_FTP_PASSWORD);
+            //     ftp_pasv($conn_b, 1);
+            //     ftp_put($conn_b, $destinationPath, $localFile, FTP_BINARY);
+            //     ftp_close($conn_b);
+            // }
         } else {
             $result = ['err' => 1006, 'msg' => '文件不存在'];
             return $result;

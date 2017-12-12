@@ -14,7 +14,9 @@ define('TONGYI_TUISONG_FTP_PORT',"21");//统一平台推送FTP端口
 define('TONGYI_TUISONG_FTP_USER','12t');//统一平台推送FTP用户
 define('TONGYI_TUISONG_FTP_PASSWORD','Db#907$LKF');//统一平台推送FTP用户
 define('GBPEN_DOMAIN','www.gbpen.com');//G宝盆官网
-define('GBPEN_FTP',"gbpen.ftp-gz01.bcehost.com");//G名片FTP
-define('GBPEN_FTP_PORT',"8010");//G名片FTP端口
-define('GBPEN_FTP_USER','gbpen');//G名片FTP用户
-define('GBPEN_FTP_PASSWORD','739jttts');//G名片FTP用户
+define('GBPEN_FTP',"182.61.44.251");//G名片FTP
+define('GBPEN_FTP_A',"172.16.0.35");//G名片FTP_A
+define('GBPEN_FTP_B',"172.16.0.36");//G名片FTP_B
+define('GBPEN_FTP_PORT',"21");//G名片FTP端口
+define('GBPEN_FTP_USER','tongyig');//G名片FTP用户
+define('GBPEN_FTP_PASSWORD','59%43rD3L');//G名片FTP密码
