@@ -155,7 +155,7 @@ class ApiController extends BaseController
                 }
                 //WebsiteInfo::where('cus_id',$cus_id)->update(['pc_tpl_id'=>$pc_id,'mobile_tpl_id'=>$mobile_id]);
                 //===更新CustomerInfo时，更新capacity字段===
-                CustomerInfo::where('cus_id', $cus_id)->update(['pc_domain' => $update['pc_domain'], 'mobile_domain' => $update['mobile_domain'], 'capacity' => $capacity]);
+                CustomerInfo::where('cus_id', $cus_id)->update(['pc_domain' => $update['pc_domain'], 'mobile_domain' => $update['mobile_domain'],'pc_out_domain' => $update['pc_out_domain'],'mobile_out_domain' => $update['mobile_out_domain'], 'capacity' => $capacity]);
                 if ($update['stage'] != $coustomer_old['stage'] or $update['pc_domain'] != $coustomer_old['pc_domain'] or $update['mobile_domain'] != $coustomer_old['mobile_domain']) {
                     //域名绑定
                     if($update['ftp'] == 2){//35开户的PC绑定由35处理
@@ -225,7 +225,7 @@ class ApiController extends BaseController
                     // $pc_id = Template::where('tpl_num', $update['pc_tpl_num'])->where('type', 1)->pluck('id');
                     // $mobile_id = Template::where('tpl_num', $update['mobile_tpl_num'])->where('type', 2)->pluck('id');
                     WebsiteInfo::insert(['cus_id' => $insert_id, 'pc_tpl_id' => $pc_id, 'mobile_tpl_id' => $mobile_id]);
-                    CustomerInfo::insert(['cus_id' => $insert_id, 'pc_domain' => $update['pc_domain'], 'mobile_domain' => $update['mobile_domain'], 'capacity' => $capacity, 'capacity_use' => 0]);
+                    CustomerInfo::insert(['cus_id' => $insert_id, 'pc_domain' => $update['pc_domain'], 'mobile_domain' => $update['mobile_domain'],'pc_out_domain' => $update['pc_out_domain'],'mobile_out_domain' => $update['mobile_out_domain'], 'capacity' => $capacity, 'capacity_use' => 0]);
 
                     //创建客户目录
                     mkdir(public_path('customers/' . $update['name']));
