@@ -1157,7 +1157,7 @@ class PrintController extends BaseController
                            .'$("body").append(\'<div class="banbendi" style="width:100%;height:30px;background:#FFFF99;text-align:center;line-height:30px;color:#666666;position:absolute;top:0;left:0;" onClick="hid()">您的浏览器版本过低，会影响网页浏览，请使用更高版本的浏览器</div>\');}}}});'
                            .'function hid(){$(".banbendi").css("display","none");}'
                            .'</script>';
-            $site_another_url = $this->showtype == 'preview' ? '' : ($customer_info->mobile_domain ? $customer_info->mobile_domain : $customer_info->mobile_out_domain);
+            $site_another_url = $this->showtype == 'preview' ? '' : $customer_info->mobile_domain ? $customer_info->mobile_domain : $customer_info->mobile_out_domain;
         } else {
             $logo = $this->showtype == 'preview' ? ('/customers/' . $this->customer . '/images/l/common/' . $customer_info->logo_small) : $this->domain . '/images/l/common/' . $customer_info->logo_small; //'preview' ? asset('customers/' . $this->customer . '/images/l/common/' . $customer_info->logo_small) : $this->domain . '/images/l/common/' . $customer_info->logo_small;
             $stylecolor = websiteInfo::leftJoin('color', 'color.id', '=', 'website_info.mobile_color_id')->where('cus_id', $this->cus_id)->pluck('color_en');
@@ -1176,7 +1176,7 @@ class PrintController extends BaseController
 //            $footscript .= '<script type="text/javascript" src="http://swap.5067.org/admin/statis.php?cus_id=' . $this->cus_id . '&platform=mobile"></script>'; //===添加统计代码MOBILE===
 //            $footscript .= $tempscript;
 //            $footscript .= $language_css;
-            $site_another_url = $this->showtype == 'preview' ? '' : ($customer_info->pc_domain ? $customer_info->pc_domain : $customer_info->pc_out_domain);
+            $site_another_url = $this->showtype == 'preview' ? '' : $customer_info->pc_domain ? $customer_info->pc_domain : $customer_info->pc_out_domain;
             $config_arr = parse_ini_file(public_path('/templates/' . $this->themename) . '/config.ini', true);
             if (!is_array($config_arr)) {
                 dd('【config.ini】文件不存在！文件格式说明详见：http://pme.eexx.me/doku.php?id=ued:template:config');
