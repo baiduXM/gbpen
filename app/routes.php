@@ -681,6 +681,9 @@ Route::post('api/webremove', [//网站迁移
 Route::get('test/{cid}', [
     'uses' => 'PrintController@getChirldenCid'
 ]);
+Route::any('package', [//下载客户代码包
+    'uses' => 'CommonController@Package'
+]);
 Route::post('getTplDevUser', [
     'uses' => 'ApiController@getTplDevUser'
 ]);

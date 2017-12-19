@@ -243,6 +243,22 @@ class CommonController extends BaseController {
         //===将不符合类型的颜色设置释放===
         return $colors;
     }
+    //===代码包下载===
+    public function Package(){
+
+        $customer = Auth::user();
+        $name = $customer->name;
+        $weburl = $customer->weburl;
+//        $name ='avatar';
+//        $ftp_address = $customer->ftp_address;
+//        $ftp ='182.61.100.142';
+        Header("HTTP/1.1 303 See Other");
+        Header("Location: ".$weburl."/package.php?cus=".$name);
+        exit;
+
+    }
+
+
 
 }
 
