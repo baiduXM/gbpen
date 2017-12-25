@@ -1127,4 +1127,311 @@ class ApiController extends BaseController
         }
     }
 
+    //自动处理过期用户
+    public function deleteAuto() {
+        set_time_limit(0);
+        if ($this->authData()) {
+            $site['name'] = Input::get('name');//删除站点名称
+            $site['type'] = Input::get('type');//删除站点类型
+
+            $date = date('Y-m-d' , time());
+            $path = public_path('logs/delete_log');//日志目录
+
+            if($site['type'] != 0) {
+                $res = $this->delPart($site);//删除单站
+            } else {
+                $res = $this->delWhole($site['name']);//删除双站                
+            }
+
+            //记录文件日志
+            if(!is_dir($path)) {
+                @mkdir($path);
+            }
+            @file_put_contents($path . '/' .$date . '.txt', $site['name'] . ',' . $res['msg'] . ',' . date('H:i:s' , time()) . ';' . PHP_EOL, FILE_APPEND);
+
+            return Response::json(array('err' => $res['err'], 'msg' => $res['msg']));
+        }
+    }
+
+    //删除整站
+    public function delWhole($name) {
+        //防止用户为空造成误删
+        if(!$name) {
+            $res['err'] = 1004;
+            $res['msg'] = '用户错误';
+            return $res;
+        }
+
+        //用户图片目录
+        $pc = public_path("customers/" . $name . "/images");
+        $mobile = public_path("customers/" . $name . "/mobile/images");        
+
+        //用户信息
+        $Customer = Customer::where('name', $name)->get();
+        $cus_id = $Customer[0]['id'];
+        $cus = $Customer[0];
+
+        //检测用户及目录是否存在
+        if (!$cus_id) {
+            $res['err'] = 1001;
+            $res['msg'] = '用户不存在';
+            return $res;
+        }        
+        if(!is_dir($pc)) {
+            $res['err'] = 1002;
+            $res['msg'] = '用户images文件夹不存在';
+            return $res;
+        }
+        if(!is_dir($mobile)) {
+            $res['err'] = 1003;
+            $res['msg'] = '用户mobile/images文件夹不存在';
+            return $res;
+        }
+
+        //压缩主控资料
+        $zip = new ZipArchive();
+        if ($zip->open(public_path("customers_backups/" . $name . '.zip'), ZipArchive::OVERWRITE) === TRUE) {
+            //压缩指定目录
+            $this->addFileToZip(public_path("customers/" . $name . "/images"), $zip);
+            $zip->addEmptyDir("mobile");
+            $this->addFileToZip(public_path("customers/" . $name . "/mobile/images"), $zip, "mobile");
+            $zip->close();
+
+            //删除主控客户目录
+            $dir = "./customers/" . $name;
+            //防止误删
+            if($dir == './customers/') {
+                $res['err'] = 1009;
+                $res['msg'] = '非法操作删除';
+                return $res;
+            }
+            // if ($this->delUserFile($dir)) {
+                //ftp目录
+                if($cus['ftp'] == 1) {//公司的ftp
+                    $ftp_dir = './' . $name;
+                } else {//非公司ftp
+                    //去掉最后一条斜杠
+                    $arr_ftp = explode('/', $cus['ftp_dir']);
+                    $arr_end = end($arr_ftp);
+                    if(!$arr_end) {
+                        array_pop($arr_ftp);
+                    }
+                    $ftp_dir = implode('/', $arr_ftp);
+                }
+                //A服连接
+                // $conn = @ftp_connect($cus['ftp_address'], $cus['ftp_port']);
+                // if (!$conn) {
+                //     $res['err'] = 1005;
+                //     $res['msg'] = 'A服连接失败';
+                //     return $res;
+                // }
+                // if (!@ftp_login($conn, $cus['ftp_user'], $cus['ftp_pwd'])) {
+                //     $res['err'] = 1006;
+                //     $res['msg'] = 'A服登录失败';
+                //     return $res;
+                // }
+                // @ftp_pasv($conn, 1);
+                // $this->delStatic($conn, $ftp_dir, $name);
+                // @ftp_rename($conn, $name, "beifen_" . $name);
+                // @ftp_close($conn);
+                //B服连接
+                if($cus['ftp_address_b']) {
+                    $conn_b = @ftp_connect($cus['ftp_address_b'], $cus['ftp_port']);
+                    if (!$conn_b) {
+                        $res['err'] = 1005;
+                        $res['msg'] = 'B服连接失败';
+                        return $res;
+                    }
+                    if (!@ftp_login($conn_b, $cus['ftp_user_b'], $cus['ftp_pwd_b'])) {
+                        $res['err'] = 1006;
+                        $res['msg'] = 'B服登录失败';
+                        return $res;
+                    }
+                    @ftp_pasv($conn_b, 1);
+                    $this->delStatic($conn_b, $ftp_dir, $type);
+                    @ftp_close($conn_b);
+                }
+            // } else {
+            //     $res['err'] = 1007;
+            //     $res['msg'] = '主控目录删除失败';
+            //     return $res;
+            // }
+        } else {
+            $res['err'] = 1007;
+            $res['msg'] = '主控目录压缩失败';
+            return $res;
+        }
+
+        //修改用户状态
+        // $update['is_del'] = 0;
+        // $res1 = Customer::where('id', $cus_id)->update($update);
+        // $res2 = WebsiteInfo::where('cus_id', $cus_id)->update($update);
+        // $res3 = CustomerInfo::where('cus_id', $cus_id)->update($update);
+
+        // if($res1 && $res2 && $res3) {
+        //     $result['err'] = 1000;
+        //     $result['msg'] = '过期双站删除成功';
+        // } else {
+        //     $result['err'] = 1008;
+        //     $result['msg'] = '统一平台过期双站删除失败';
+        // }
+
+        // return $result;
+    }
+
+    //删除单站
+    public function delPart($data) {
+        $type = $data['type'];//过期的站点类型，1-PC，2-手机
+        $name = $data['name'];
+
+        if(!$name) {
+            $res['err'] = 1003;
+            $res['msg'] = '用户错误';
+            return $res;
+        }
+
+        //用户信息
+        $Customer = Customer::where('name', $name)->get();
+        $cus_id = $Customer[0]['id'];
+        $cus = $Customer[0];
+
+        //检测用户是否存在
+        if (!$cus_id) {
+            $res['err'] = 1001;
+            $res['msg'] = '用户不存在';
+            return $res;
+        }
+
+        //修改数据库信息
+        if($type == 1) {
+            $update['pc_out_domain'] = $cus['pc_domain'];
+            $update['pc_domain'] = '';
+            $update['stage'] = 2;
+        } elseif ($type == 2) {
+            $update['mobile_out_domain'] = $cus['mobile_domain'];
+            $update['mobile_domain'] = '';
+            $update['stage'] = 1;
+        }
+        // $res1 = Customer::where('id', $cus_id)->update($update);
+        // unset($update['stage']);//customerinfo表无该字段
+        // $res2 = CustomerInfo::where('cus_id', $cus_id)->update($update);
+
+        // if($res1&&$res2) {
+        //     $result['err'] = 1000;
+        //     $result['msg'] = '过期单站删除成功';
+        // } else {
+        //     $result['err'] = 1002;
+        //     $result['msg'] = '统一平台过期单站删除失败';
+        // }
+
+        //ftp目录
+        if($cus['ftp'] == 1) {//公司的ftp
+            $ftp_dir = './' . $name;
+            if($type == 2) {
+                $ftp_dir = './' . $name . '/mobile';
+            }
+        } else {//非公司ftp
+            //去掉最后一条斜杠
+            $arr_ftp = explode('/', $cus['ftp_dir']);
+            $arr_end = end($arr_ftp);
+            if(!$arr_end) {
+                array_pop($arr_ftp);
+            }
+            $ftp_dir = implode('/', $arr_ftp);
+            if($type == 2) {
+                $ftp_dir = $ftp_dir . '/mobile';
+            }
+        }
+        //A服连接
+        // $conn = @ftp_connect($cus['ftp_address'], $cus['ftp_port']);
+        // if (!$conn) {
+        //     $res['err'] = 1005;
+        //     $res['msg'] = 'A服连接失败';
+        //     return $res;
+        // }
+        // if (!@ftp_login($conn, $cus['ftp_user'], $cus['ftp_pwd'])) {
+        //     $res['err'] = 1006;
+        //     $res['msg'] = 'A服登录失败';
+        //     return $res;
+        // }
+        // @ftp_pasv($conn, 1);
+        // $this->delStatic($conn, $ftp_dir, $type);
+        // @ftp_close($conn);
+
+        //B服连接
+        if($cus['ftp_address_b']) {
+            $conn_b = @ftp_connect($cus['ftp_address_b'], $cus['ftp_port']);
+            if (!$conn_b) {
+                $res['err'] = 1005;
+                $res['msg'] = 'B服连接失败';
+                return $res;
+            }
+            if (!@ftp_login($conn_b, $cus['ftp_user_b'], $cus['ftp_pwd_b'])) {
+                $res['err'] = 1006;
+                $res['msg'] = 'B服登录失败';
+                return $res;
+            }
+            @ftp_pasv($conn_b, 1);
+            $this->delStatic($conn_b, $ftp_dir, $type);
+            @ftp_close($conn_b);
+        }
+
+        // return $result;
+    }
+
+    //删除静态服务器上对应站除图片外的文件删除
+    public function delStatic($conn, $dir, $type) {
+        switch ($type) {
+            case 1:
+                //删除PC站时，PC站图片目录和手机目录保留
+                if(!stripos($dir, '/images') && !stripos($dir, '/mobile')) {
+                    $exc = true;
+                } else {
+                    $exc = false;
+                }
+                break;
+            case 2:
+                //删除手机站时，手机站图片目录和手机站之外的目录保留
+                if(!stripos($dir, 'mobile/images') && stripos($dir, '/mobile')) {
+                    $exc = true;
+                } else {
+                    $exc = false;
+                }
+                break;
+            case 0:
+                //删除双站时，保留双站图片目录
+                if(!stripos($dir, '/images')) {
+                    $exc = true;
+                } else {
+                    $exc = false;
+                }
+                break;
+            default:
+                $exc = false;
+                break;
+        }
+
+        if ($exc) {//是否继续执行
+            // $filelist = ftp_nlist($conn, $dir);//PHP5.3不支持？
+            $filelist = ftp_rawlist($conn, $dir);
+            foreach ($filelist as $file) {
+                // $file_arr = explode('/', $file);
+                // $filename = end($file_arr);//nlist处理方式
+                $filename = preg_replace("/.+[:]*\\d+\\s/", "", $file);
+                if ($filename !== '.' && $filename !== '..') {
+                    if (stripos($filename, '.')) {
+                        // ftp_delete($conn, $dir . '/' . $filename);
+                        file_put_contents('filename7.txt', $dir . '/' . $filename.PHP_EOL,FILE_APPEND);
+                    } else {
+                        file_put_contents('filename8.txt', $dir . '/' . $filename.PHP_EOL,FILE_APPEND);
+                        $this->delStatic($conn, $dir . '/' . $filename, $type);
+                        // @ftp_rmdir($conn, $dir . '/' . $filename);                        
+                    }
+                }
+            }
+        } else {
+            return true;
+        }
+    }
+
 }

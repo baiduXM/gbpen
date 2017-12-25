@@ -665,6 +665,11 @@ Route::post('api/deleteuser', [//删除用户
     'uses' => 'ApiController@deleteCustomer'
 ]);
 
+Route::post('api/deleteAuto', [//自动删除
+    'as' => 'delete-auto',
+    'uses' => 'ApiController@deleteAuto'
+]);
+
 Route::post('api/downloadtemplate', [//代理平台下载模板接口
     'as' => 'template-fileedit',
     'uses' => 'ApiController@DownloadTemplate'
