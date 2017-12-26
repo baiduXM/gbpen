@@ -1147,7 +1147,7 @@ class ApiController extends BaseController
             if(!is_dir($path)) {
                 @mkdir($path);
             }
-            @file_put_contents($path . '/' .$date . '.txt', $site['name'] . ',' . $res['msg'] . ',' . date('H:i:s' , time()) . ';' . PHP_EOL, FILE_APPEND);
+            @file_put_contents($path . '/' .$date . '.txt', $site['name'] . ',' . $site['type'] . ',' . $res['msg'] . ',' . date('H:i:s' , time()) . ';' . PHP_EOL, FILE_APPEND);
 
             return Response::json(array('err' => $res['err'], 'msg' => $res['msg']));
         }
@@ -1205,7 +1205,7 @@ class ApiController extends BaseController
                 $res['msg'] = '非法操作删除';
                 return $res;
             }
-            // if ($this->delUserFile($dir)) {
+            if ($this->delUserFile($dir)) {
                 //ftp目录
                 if($cus['ftp'] == 1) {//公司的ftp
                     $ftp_dir = './' . $name;
@@ -1219,21 +1219,21 @@ class ApiController extends BaseController
                     $ftp_dir = implode('/', $arr_ftp);
                 }
                 //A服连接
-                // $conn = @ftp_connect($cus['ftp_address'], $cus['ftp_port']);
-                // if (!$conn) {
-                //     $res['err'] = 1005;
-                //     $res['msg'] = 'A服连接失败';
-                //     return $res;
-                // }
-                // if (!@ftp_login($conn, $cus['ftp_user'], $cus['ftp_pwd'])) {
-                //     $res['err'] = 1006;
-                //     $res['msg'] = 'A服登录失败';
-                //     return $res;
-                // }
-                // @ftp_pasv($conn, 1);
-                // $this->delStatic($conn, $ftp_dir, $name);
-                // @ftp_rename($conn, $name, "beifen_" . $name);
-                // @ftp_close($conn);
+                $conn = @ftp_connect($cus['ftp_address'], $cus['ftp_port']);
+                if (!$conn) {
+                    $res['err'] = 1005;
+                    $res['msg'] = 'A服连接失败';
+                    return $res;
+                }
+                if (!@ftp_login($conn, $cus['ftp_user'], $cus['ftp_pwd'])) {
+                    $res['err'] = 1006;
+                    $res['msg'] = 'A服登录失败';
+                    return $res;
+                }
+                @ftp_pasv($conn, 1);
+                $this->delStatic($conn, $ftp_dir, 0);
+                @ftp_rename($conn, $name, "beifen_" . $name);
+                @ftp_close($conn);
                 //B服连接
                 if($cus['ftp_address_b']) {
                     $conn_b = @ftp_connect($cus['ftp_address_b'], $cus['ftp_port']);
@@ -1248,14 +1248,15 @@ class ApiController extends BaseController
                         return $res;
                     }
                     @ftp_pasv($conn_b, 1);
-                    $this->delStatic($conn_b, $ftp_dir, $type);
+                    $this->delStatic($conn_b, $ftp_dir, 0);
+                    @ftp_rename($conn_b, $name, "beifen_" . $name);
                     @ftp_close($conn_b);
                 }
-            // } else {
-            //     $res['err'] = 1007;
-            //     $res['msg'] = '主控目录删除失败';
-            //     return $res;
-            // }
+            } else {
+                $res['err'] = 1007;
+                $res['msg'] = '主控目录删除失败';
+                return $res;
+            }
         } else {
             $res['err'] = 1007;
             $res['msg'] = '主控目录压缩失败';
@@ -1263,20 +1264,20 @@ class ApiController extends BaseController
         }
 
         //修改用户状态
-        // $update['is_del'] = 0;
-        // $res1 = Customer::where('id', $cus_id)->update($update);
-        // $res2 = WebsiteInfo::where('cus_id', $cus_id)->update($update);
-        // $res3 = CustomerInfo::where('cus_id', $cus_id)->update($update);
+        $update['is_del'] = 0;
+        $res1 = Customer::where('id', $cus_id)->update($update);
+        $res2 = WebsiteInfo::where('cus_id', $cus_id)->update($update);
+        $res3 = CustomerInfo::where('cus_id', $cus_id)->update($update);
 
-        // if($res1 && $res2 && $res3) {
-        //     $result['err'] = 1000;
-        //     $result['msg'] = '过期双站删除成功';
-        // } else {
-        //     $result['err'] = 1008;
-        //     $result['msg'] = '统一平台过期双站删除失败';
-        // }
+        if($res1 && $res2 && $res3) {
+            $result['err'] = 1000;
+            $result['msg'] = '过期双站删除成功';
+        } else {
+            $result['err'] = 1008;
+            $result['msg'] = '统一平台过期双站删除失败';
+        }
 
-        // return $result;
+        return $result;
     }
 
     //删除单站
@@ -1312,17 +1313,17 @@ class ApiController extends BaseController
             $update['mobile_domain'] = '';
             $update['stage'] = 1;
         }
-        // $res1 = Customer::where('id', $cus_id)->update($update);
-        // unset($update['stage']);//customerinfo表无该字段
-        // $res2 = CustomerInfo::where('cus_id', $cus_id)->update($update);
+        $res1 = Customer::where('id', $cus_id)->update($update);
+        unset($update['stage']);//customerinfo表无该字段
+        $res2 = CustomerInfo::where('cus_id', $cus_id)->update($update);
 
-        // if($res1&&$res2) {
-        //     $result['err'] = 1000;
-        //     $result['msg'] = '过期单站删除成功';
-        // } else {
-        //     $result['err'] = 1002;
-        //     $result['msg'] = '统一平台过期单站删除失败';
-        // }
+        if($res1&&$res2) {
+            $result['err'] = 1000;
+            $result['msg'] = '过期单站删除成功';
+        } else {
+            $result['err'] = 1002;
+            $result['msg'] = '统一平台过期单站删除失败';
+        }
 
         //ftp目录
         if($cus['ftp'] == 1) {//公司的ftp
@@ -1343,20 +1344,20 @@ class ApiController extends BaseController
             }
         }
         //A服连接
-        // $conn = @ftp_connect($cus['ftp_address'], $cus['ftp_port']);
-        // if (!$conn) {
-        //     $res['err'] = 1005;
-        //     $res['msg'] = 'A服连接失败';
-        //     return $res;
-        // }
-        // if (!@ftp_login($conn, $cus['ftp_user'], $cus['ftp_pwd'])) {
-        //     $res['err'] = 1006;
-        //     $res['msg'] = 'A服登录失败';
-        //     return $res;
-        // }
-        // @ftp_pasv($conn, 1);
-        // $this->delStatic($conn, $ftp_dir, $type);
-        // @ftp_close($conn);
+        $conn = @ftp_connect($cus['ftp_address'], $cus['ftp_port']);
+        if (!$conn) {
+            $res['err'] = 1005;
+            $res['msg'] = 'A服连接失败';
+            return $res;
+        }
+        if (!@ftp_login($conn, $cus['ftp_user'], $cus['ftp_pwd'])) {
+            $res['err'] = 1006;
+            $res['msg'] = 'A服登录失败';
+            return $res;
+        }
+        @ftp_pasv($conn, 1);
+        $this->delStatic($conn, $ftp_dir, $type);
+        @ftp_close($conn);
 
         //B服连接
         if($cus['ftp_address_b']) {
@@ -1411,6 +1412,11 @@ class ApiController extends BaseController
                 break;
         }
 
+        //防止误删
+        if($dir == './') {
+            $exc = false;
+        }
+
         if ($exc) {//是否继续执行
             // $filelist = ftp_nlist($conn, $dir);//PHP5.3不支持？
             $filelist = ftp_rawlist($conn, $dir);
@@ -1420,12 +1426,10 @@ class ApiController extends BaseController
                 $filename = preg_replace("/.+[:]*\\d+\\s/", "", $file);
                 if ($filename !== '.' && $filename !== '..') {
                     if (stripos($filename, '.')) {
-                        // ftp_delete($conn, $dir . '/' . $filename);
-                        file_put_contents('filename7.txt', $dir . '/' . $filename.PHP_EOL,FILE_APPEND);
+                        ftp_delete($conn, $dir . '/' . $filename);
                     } else {
-                        file_put_contents('filename8.txt', $dir . '/' . $filename.PHP_EOL,FILE_APPEND);
                         $this->delStatic($conn, $dir . '/' . $filename, $type);
-                        // @ftp_rmdir($conn, $dir . '/' . $filename);                        
+                        @ftp_rmdir($conn, $dir . '/' . $filename);                        
                     }
                 }
             }
