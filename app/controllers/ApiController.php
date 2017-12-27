@@ -1377,7 +1377,7 @@ class ApiController extends BaseController
             @ftp_close($conn_b);
         }
 
-        // return $result;
+        return $result;
     }
 
     //删除静态服务器上对应站除图片外的文件删除
