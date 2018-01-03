@@ -660,6 +660,11 @@ Route::post('api/modifyuser', [//修改用户
     'uses' => 'ApiController@modifyCustomer'
 ]);
 
+Route::post('api/modifyemail', [//修改用户邮箱
+    'as' => 'modify-email',
+    'uses' => 'ApiController@modifyEmail'
+]);
+
 Route::post('api/deleteuser', [//删除用户
     'as' => 'template-fileedit',
     'uses' => 'ApiController@deleteCustomer'

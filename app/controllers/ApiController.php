@@ -1443,4 +1443,22 @@ class ApiController extends BaseController
         }
     }
 
+    //修改用户邮箱
+    public function modifyEmail() {
+        if ($this->authData()) {
+            $name = trim(Input::get('name'));
+            $email = trim(Input::get('email'));
+            $cus_id = Customer::where('name', $name)->pluck('id');
+            if ($cus_id) {
+                Customer::where('name', $name)->update(['email' => $email]);
+                $result = ['err' => 1000, 'msg' => '邮箱修改成功']; 
+            } else {
+                $result = ['err' => 1001, 'msg' => '用户不存在'];        
+            }            
+        } else {
+            $result = ['err' => 1002, 'msg' => '验证信息不正确']; 
+        }
+        return Response::json($result);
+    }
+
 }
