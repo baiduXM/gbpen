@@ -1006,15 +1006,8 @@ class ApiController extends BaseController
             $data["remember"] = Auth::user()->remember_token;
             $data["username"] = Auth::user()->email;
             if(!$data["username"]) {
-                //customers表没邮箱，则到customerInfo表去获取
-                $cus_id = AUth::id();
-                $email = Customer::where("email", $username)->pluck('email');
-                if(!$email) {
-                    echo "请在通用设置填写登录邮箱";
-                    exit();
-                } else {
-                    $data["username"] = $email;
-                }                
+                echo "请填写登录邮箱";
+                exit();
             }
             header('Location:' . $url . '&remember=' . $data["remember"] . '&username=' . $data["username"]);
             exit();
