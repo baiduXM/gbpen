@@ -371,6 +371,8 @@ function freeEt(customer){
             alert('同步失败');
         }else if(data==2){
             alert('开通失败');
+        }else if(data==3){
+            alert('请在代理填写邮箱后开通');
         }else{
             alert('请刷新');
         }
