@@ -999,11 +999,16 @@ class ApiController extends BaseController
      */
     public function cdLogin()
     {
+        header("Content-Type: text/html;charset=utf-8");
         if (Auth::check()) {
             $url = "http://" . GSHOW_DOMAIN . "/index.php?c=user&a=autologin";
             $data = array();
             $data["remember"] = Auth::user()->remember_token;
             $data["username"] = Auth::user()->email;
+            if(!$data["username"]) {
+                echo "请填写登录邮箱";
+                exit();
+            }
             header('Location:' . $url . '&remember=' . $data["remember"] . '&username=' . $data["username"]);
             exit();
         }
