@@ -1016,6 +1016,10 @@ class WebsiteController extends BaseController {
     //官网缩略图生成
     public function resizeImgs($src, $path){
         $image = @imagecreatefromjpeg($src);
+        //如果不是jpg格式的话
+        if(!$image) {
+            $image = imagecreatefrompng($src);
+        }
         $width = imagesx($image);
         $height = imagesy($image);
         if($height>1000){

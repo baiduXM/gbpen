@@ -7,8 +7,10 @@ function addarticleController($scope, $http, $location) {
     G_id ? G_id : '';
     G_c_id ? G_c_id : '';
     var back_page = getUrlParam('p') ? getUrlParam('p') : 1;
-    var search_word = getUrlParam('sw') ? getUrlParam('sw') : '';
-    var cat_id = getUrlParam('c_id') ? getUrlParam('c_id') : '';
+    var search_word = getUrlParam('sw') ? getUrlParam('sw') : '';//关键词搜索
+    var cat_id = getUrlParam('c_id') ? getUrlParam('c_id') : '';//下拉框中选中的栏目
+    var ser_id = getUrlParam('ser_id') ? getUrlParam('ser_id') : '';//分类返回保持
+    var ser_name = getUrlParam('ser_name') ? getUrlParam('ser_name') : '';//分类名返回保持
     // 图片上传
     function AddarticleUpload(proportion) {
         $('.up_pic').on('click', function (event) {
@@ -202,6 +204,8 @@ function addarticleController($scope, $http, $location) {
                     editor.addListener("ready", function () {
                         editor.setContent(d.content);
                     });
+                } , function(json) {//获取错误时
+                    location.href = '#/article';
                 });// checkJSON结束
             });// 文章保存结束
         }// 判断是否是编辑操作
@@ -336,9 +340,14 @@ function addarticleController($scope, $http, $location) {
                     if(search_word){
                         url+='&search_word='+search_word;
                     }
-                    // if(cat_id){
-                    //     url+='&id='+cat_id;
-                    // }
+                    if(ser_id){
+                        url+='&id='+ser_id;
+                    }
+                    if(ser_name){
+                        ser_name = unescape(ser_name);
+                        ser_name = decodeURI(ser_name);
+                        url+='&ser_name='+ser_name;
+                    }
                     location.href = url;
                 });
             });
@@ -351,9 +360,14 @@ function addarticleController($scope, $http, $location) {
             if(search_word){
                 url+='&search_word='+search_word;
             }
-            // if(cat_id){
-            //     url+='&id='+cat_id;
-            // }
+            if(ser_id){
+                url+='&id='+ser_id;
+            }
+            if(ser_name){
+                ser_name = unescape(ser_name);
+                ser_name = decodeURI(ser_name);
+                url+='&ser_name='+ser_name;
+            }
             location.href = url;
         });
     }

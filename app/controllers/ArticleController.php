@@ -23,6 +23,7 @@ class ArticleController extends BaseController {
         $org_imgs = array();
         $del_imgs = array();
         $id = Input::get('id');
+        $cus_id = Auth::id();
         if ($id) {
             //修改操作
             $article = Articles::find($id);
@@ -31,11 +32,14 @@ class ArticleController extends BaseController {
                 $org_imgs[] = $v["img"];
             }
             $org_imgs[] = $article->img;
+            //避免非所属客户操作
+            if($article->cus_id != $cus_id) {
+                return Response::json(array('err' => 3001, 'msg' => '非法保存'));
+            }
         } else {
             //新增操作
             $article = new Articles();
-        }
-        $cus_id = Auth::id();
+        }        
         $article->title = trim(Input::get('title'));
         $article->c_id = Input::get('c_id');
         $article->viewcount = Input::get('viewcount') ? Input::get('viewcount') : 0;
@@ -314,6 +318,11 @@ class ArticleController extends BaseController {
         $id = Input::get('id');
         $article = Articles::find($id);
         $customer = Auth::user()->name;
+        $cus_id = Auth::id();
+        if($article->cus_id != $cus_id) {
+            $return_msg = array('err' => 3002, 'msg' => '非法查看');
+            return Response::json($return_msg);
+        }
         if ($article) {
             if ($article->img != '') {
                 $img = array();

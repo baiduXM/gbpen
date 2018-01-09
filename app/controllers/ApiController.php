@@ -108,7 +108,7 @@ class ApiController extends BaseController
             $update['mobile_out_domain'] = trim(Input::get('mobile_out_domain'));
 
             //是否允许用户自定义栏目
-            $update['column_on'] = trim(Input::get('column_on'));
+            $update['column_on'] = trim(Input::get('column_on')) === '' ? 1 : trim(Input::get('column_on'));
             //其他域名
             $mobile_other = trim(Input::get('mobile_other'))?trim(Input::get('mobile_other')):'';
 

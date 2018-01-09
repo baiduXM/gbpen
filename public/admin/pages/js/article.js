@@ -153,7 +153,7 @@ function articleController($scope, $http, $location) {
                                         </td>\n\
                                         <td>' + v.created_at + '</td>\n\\n\
                                         <td><input class="sort" type="text" data-id="' + v.id + '"  value="' + ((v.sort == 1000000) ? '' : v.sort) + '" /></td>\n\
-                                        <td><a style="margin:0 10px;" class="column-edit pr" href="#/addarticle?id=' + v.id + '&c_id=' + v.c_id + '&p=' + page + '&sw='+search_word+'"><i class="fa iconfont icon-bianji"></i><div class="warning"><i class="iconfont' + (v.img_err ? ' icon-gantanhao' : '') + '"></i></div></a><a class="delv" name="' + v.id + '"><i class="fa iconfont icon-delete mr5"></i></a></td>\n\
+                                        <td><a style="margin:0 10px;" class="column-edit pr" href="#/addarticle?id=' + v.id + '&c_id=' + v.c_id + '&p=' + page + '&sw='+search_word+'&ser_id='+(cat_id ? cat_id : '')+'&ser_name='+(cat_id ? escape(escape(ser_name)) : '')+'"><i class="fa iconfont icon-bianji"></i><div class="warning"><i class="iconfont' + (v.img_err ? ' icon-gantanhao' : '') + '"></i></div></a><a class="delv" name="' + v.id + '"><i class="fa iconfont icon-delete mr5"></i></a></td>\n\
                                     </tr>';
                     });
                     $('.a-table').html(_div);
