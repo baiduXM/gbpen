@@ -196,7 +196,6 @@ class LogsController extends BaseController {
             //如果不是当天，则从日志目录读取文本文件
             $filename = public_path('logs/' . $date . '.txt') ;     //日志文件路径
             $file_bak = 'http://182.61.23.43/logs/' . $date . '.txt';  //日志可能存在推送服务器
-            file_put_contents('filename.txt', $file_bak);
             if(!file_exists($filename)) {
                 $headers = get_headers('http://182.61.23.43/logs/' . $date . '.txt',true);
                 if(strpos($headers['0'],'404')) {                    
