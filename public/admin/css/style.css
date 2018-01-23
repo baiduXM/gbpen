@@ -609,13 +609,13 @@ ul.home-edite li .homeed-right img{ vertical-align:top}
 .cxb_list_n5 .cxb_list_title{ background:#d332c2;}
 .cxb_list_n5:hover{ animation:Swing2 0.5s linear 3;-webkit-animation:Swing2 0.5s linear 3;-moz-animation:Swing2 0.5s linear 3;-ms-animation:Swing2 0.5s linear 3;-o-animation:Swing2 0.5s linear 3; }
 .cxb_list_n6{ left:55%; top:225px; transform:rotate(8deg);-moz-transform:rotate(8deg);-ms-transform:rotate(8deg);-o-transform:rotate(8deg);-webkit-transform:rotate(8deg)}
-.cxb_list_n6 .cxb_list_title{ background:#dc2d2d;}
+.cxb_list_n6 .cxb_list_title{ background:#FF9933;}
 .cxb_list_n6:hover{ animation:Swing 0.5s linear 3;-webkit-animation:Swing 0.5s linear 3;-moz-animation:Swing 0.5s linear 3;-ms-animation:Swing 0.5s linear 3;-o-animation:Swing 0.5s linear 3; }
 .cxb_list_n7{ right:13%; top:315px; transform-origin: right top; -webkit-transform-origin: right top; -moz-transform-origin: right top; -ms-transform-origin: right top; -o-transform-origin: right top;transform:rotate(-8deg);-moz-transform:rotate(-8deg);-ms-transform:rotate(-8deg);-o-transform:rotate(-8deg);-webkit-transform:rotate(-8deg)}
 .cxb_list_n7 .cxb_list_title{ background:#3868e1;}
 .cxb_list_n7:hover{ animation:Swing1 0.5s linear 3;-webkit-animation:Swing1 0.5s linear 3;-moz-animation:Swing1 0.5s linear 3;-ms-animation:Swing1 0.5s linear 3;-o-animation:Swing1 0.5s linear 3; }
 .cxb_list_n8{ left:15%; top:20px; transform-origin: right top; -webkit-transform-origin: right top; -moz-transform-origin: right top; -ms-transform-origin: right top; -o-transform-origin: right top;transform:rotate(-8deg);-moz-transform:rotate(-8deg);-ms-transform:rotate(-8deg);-o-transform:rotate(-8deg);-webkit-transform:rotate(-8deg)}
-.cxb_list_n8 .cxb_list_title{ background:#669999;}
+.cxb_list_n8 .cxb_list_title{ background:#FF6666;}
 .cxb_list_n8:hover{ animation:Swing1 0.5s linear 3;-webkit-animation:Swing1 0.5s linear 3;-moz-animation:Swing1 0.5s linear 3;-ms-animation:Swing1 0.5s linear 3;-o-animation:Swing1 0.5s linear 3; }
 
 .cxb_gangbi{ position:absolute; right:10px; top:100px; transition:all 0.3s linear 1s;-webkit-transition:all 0.3s linear 1s;-moz-transition:all 0.3s linear;-ms-transition:all 0.3s linear;-o-transition:all 0.3s linear;}

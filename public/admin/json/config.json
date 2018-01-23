@@ -184,5 +184,11 @@
         "templateUrl": "pages/tylogs.html",
         "scriptUrl": "pages/js/tylogs.js",
         "controller": "tylogsController"
+    },
+    {
+        "router": "/usrlogs",
+        "templateUrl": "pages/usrlogs.html",
+        "scriptUrl": "pages/js/usrlogs.js",
+        "controller": "usrlogsController"
     }
 ]

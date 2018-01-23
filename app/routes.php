@@ -626,7 +626,10 @@ Route::post('cdshakehands', [
 //        'as' => 'logsadd',
 //        'uses' => 'LogsController@logsAdda'
 //    ]);
-
+    Route::get('usr-list', [//当前用户日志列表
+        'as' => 'usr-list',
+        'uses' => 'LogsController@usrList'
+    ]);
 //-----------------------------------------------
 //--------------------代理平台接口--------------------
 

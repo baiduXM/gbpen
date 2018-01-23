@@ -1,0 +1,89 @@
+   
+<!-- 日期插件样式 -->
+<link rel="stylesheet" href="css/laydate.css">
+
+<div class="jumbotron text-center">
+    <div class="article-tb whole">
+<span class="fl mr5">&nbsp;&nbsp;&nbsp;操作类型：</span>
+<div class="dropdown fl">
+    <div class="selectBox" type="text">无</div>
+    <span class="arrow" style="border-color: rgb(180, 180, 180) transparent transparent; top: 7px;"></span>                            
+    <input class="selectBox_val" name="column_name" value="0" type="hidden">                            
+    <ul style="display: none;">
+        <li><a class="parents" data-id="0">无</a></li>
+        <li><a class="parents" data-id="1">增加</a></li>
+        <li><a class="parents" data-id="2">删除</a></li>
+        <li><a class="parents" data-id="3">修改</a></li>
+        <li><a class="parents" data-id="4">批量增加</a></li>
+        <li><a class="parents" data-id="5">批量删除</a></li>
+        <li><a class="parents" data-id="6">批量修改</a></li>
+        <li><a class="parents" data-id="100">登录</a></li>
+        <li><a class="parents" data-id="101">退出</a></li>        
+        <li><a class="parents" data-id="999">其他</a></li>
+    </ul>
+</div>
+<span class="fl mr5">&nbsp;&nbsp;&nbsp;操作日期：</span>
+<div class="dropdown fl">                            
+    <input type="text" class="laydate-icon creat_time" onClick="laydate({istime: true, format: 'YYYY-MM-DD'})" readonly="readonly" />
+</div>
+<a class="inline-block fr addarticle searchlogs all_button" ><i class="iconfont icon-sousuo mr5"></i><span>点击搜索</span></a>
+          
+        </div>
+        <table height="410px" class="a-table">
+            <!-- 内容 -->
+        </table>
+        
+    </div>
+</div>
+
+<script type="text/javascript">
+!function(){
+    laydate.skin('molv');//切换皮肤，请查看skins下面皮肤库
+    laydate({elem: '#demo'});//绑定元素
+}();
+
+//日期范围限制
+var start = {
+    elem: '#start',
+    format: 'YYYY-MM-DD',
+    min: laydate.now(), //设定最小日期为当前日期
+    max: '2099-06-16', //最大日期
+    istime: true,
+    istoday: false,
+    choose: function(datas){
+         end.min = datas; //开始日选好后，重置结束日的最小日期
+         end.start = datas //将结束日的初始值设定为开始日
+    }
+};
+
+var end = {
+    elem: '#end',
+    format: 'YYYY-MM-DD',
+    min: laydate.now(),
+    max: '2099-06-16',
+    istime: true,
+    istoday: false,
+    choose: function(datas){
+        start.max = datas; //结束日选好后，充值开始日的最大日期
+    }
+};
+laydate(start);
+laydate(end);
+
+//自定义日期格式
+laydate({
+    elem: '#test1',
+    format: 'YYYY年MM月DD日',
+    festival: true, //显示节日
+    choose: function(datas){ //选择日期完毕的回调
+        alert('得到：'+datas);
+    }
+});
+
+//日期范围限定在昨天到明天
+laydate({
+    elem: '#hello3',
+    min: laydate.now(-1), //-1代表昨天，-2代表前天，以此类推
+    max: laydate.now(+1) //+1代表明天，+2代表后天，以此类推
+});
+</script>

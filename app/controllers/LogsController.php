@@ -164,4 +164,97 @@ class LogsController extends BaseController {
             }
         }
     }
+
+    //当前用户的日志
+    public function usrList() {
+        $type = Input::has('type') ? Input::get('type') : '';
+        $date = Input::has('date') ? Input::get('date') : date('Y-m-d',time());
+        $id = Auth::id();
+        $now = date('Y-m-d',time());
+
+        if($date == $now) {
+            //如果是当天前时间，从数据库读取
+            if($type) {
+                $data = Logs::where('cus_id',$id)->where("operation_type",$type)->orderBy('operation_time', 'DESC')->get()->toArray();
+            } else {
+                $data = Logs::where('cus_id',$id)->orderBy('operation_time', 'DESC')->get()->toArray();
+            }
+
+            if($data) {
+                foreach ($data as &$v) {
+                    $v['operation_time'] = date("Y-m-d H:i:s",$v['operation_time']);
+                    $v['operation_type'] = $this->getType($v['operation_type']);
+                }
+                $err = 1000;
+                $msg = '获取成功';
+            } else {
+                $err = 1001;
+                $msg = '无此操作';
+                $data = '';
+            }
+        } else {
+            //如果不是当天，则从日志目录读取文本文件
+            $filename = public_path('logs/' . $date . '.txt') ;     //日志文件路径
+            $file_bak = 'http://182.61.23.43/logs/' . $date . '.txt';  //日志可能存在推送服务器
+            file_put_contents('filename.txt', $file_bak);
+            if(!file_exists($filename)) {
+                $headers = get_headers('http://182.61.23.43/logs/' . $date . '.txt',true);
+                if(strpos($headers['0'],'404')) {                    
+                    return Response::json(['err' => 1001, 'msg' => '无日志', 'data' => '']);
+                }
+                $filename = $file_bak;   //如果主控不存在，而推送服存在                
+            }
+            $files = file($filename);                               //逐行读出为数组            
+            $str = "'操作用户id' => " . $id;                        //查找的字符串
+            $i = 0;                                                 //返回的数组的索引
+            $replace = array("=>" , "'" , ",");                     //需要替换的字符
+            $data = array();
+            if($type) {
+                $sort = $this->getType($type);                      //操作类型转中文
+            }
+
+            foreach ($files as $k => $v) {
+                if(strpos($v, $str)) {
+                    //操作类型
+                    $kind = strstr($files[$k-3], '=>');
+                    $kind = str_replace($replace, '', $kind);
+                    if($type) {
+                        //如果有选择类型，则和当前记录比较，不一样则跳出本次循环
+                        if($type != trim($kind)) {
+                            continue;
+                        }
+                        $data[$i]['operation_type'] = $sort;
+                    } else {
+                        $data[$i]['operation_type'] = $this->getType($kind);
+                    }
+                    
+                    //操作描述
+                    $describe = strstr($files[$k-2], '=>');
+                    $describe = str_replace($replace, '', $describe);
+                    $data[$i]['operation_describe'] = $describe;                    
+                    //IP
+                    $ip = strstr($files[$k-8], '=>');
+                    $ip = str_replace($replace, '', $ip);
+                    $data[$i]['ip'] = $ip;
+                    //时间
+                    $time = strstr($files[$k-7], '=>');
+                    $time = str_replace($replace, '', $time);
+                    $data[$i]['operation_time'] = $time;
+
+                    $i++;
+                }
+            }
+
+            if($data) {
+                $err = 1000;
+                $msg = '获取成功';
+            } else {
+                $err = 1001;
+                $msg = '无操作';
+                $data = '';
+            }
+        }
+                
+        return Response::json(['err' => $err, 'msg' => $msg, 'data' => $data]);
+    }
 }
