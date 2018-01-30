@@ -1,5 +1,10 @@
 <?php
-
+header("content-type:text/html;charset=utf-8");
+//判断文件是否存在
+if(!file_exists('index.html')) {
+	echo '页面不存在';
+	exit();
+}
 //内容
 $contents = file_get_contents('index.html');
 echo $contents;
