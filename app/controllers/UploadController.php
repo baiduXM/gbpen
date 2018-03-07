@@ -185,6 +185,7 @@ class UploadController extends BaseController
         $weburl = Customer::where('id', $cus_id)->pluck('weburl');
         $suf_url = str_replace('http://c', '', $weburl);
         $imgzip = 'img'.str_random(4).'.zip';
+		file_put_contents(public_path('logs/zip_log/'.date('Y-m-d',time()).'.txt'), $imgzip.':'.Input::get('files').PHP_EOL,FILE_APPEND);
         if ($files) {
             //===判断服务器是否正常===
             // if ($weburl) {
@@ -352,6 +353,7 @@ class UploadController extends BaseController
                         @file_put_contents(public_path('customers/' . $customer . '/zk_img.txt'), '1002:'.$imgzip.','.date('Y-m-d H:i:s',time()).PHP_EOL,FILE_APPEND);
                         return Response::json(['err' => 0, 'msg' => 'B服图片推送失败', 'data' => 1002, 'img' => $imgzip]);
                     }
+					file_put_contents(public_path('logs/img_log/'.date('Y-m-d',time()).'.txt'), $customer.','.$res1.','.$res2.','.$imgzip.','.date('Y-m-d H:i:s',time()).';'.PHP_EOL,FILE_APPEND);
                 }elseif(isset($res1)&&!isset($res2)){
                     if($res1 != 1000){                            
                         @file_put_contents(public_path('customers/' . $customer . '/zk_img.txt'), '1001:'.$imgzip.','.date('Y-m-d H:i:s',time()).PHP_EOL,FILE_APPEND);
