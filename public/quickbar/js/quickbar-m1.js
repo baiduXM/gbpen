@@ -133,7 +133,7 @@ function jqueryfunc(){
 					!function(childmenu, deep) {
 						deep++;
 						for (var i = 0; i < childmenu.length; i++) {
-							li_nav += '<dl style="padding-left:'+(deep*10)+'px"><a href="'+childmenu[i].url+'">>'+childmenu[i].name+'</a></dl>';
+							li_nav += '<dl style="padding-left:'+(deep*10)+'px"><a href="'+childmenu[i].url+'">>'+(fixedLang=='cn'?childmenu[i].name:childmenu[i].en_name)+'</a></dl>';
 							if (childmenu[i].childmenu) {
 								arguments.callee(childmenu[i].childmenu, deep);
 							}
