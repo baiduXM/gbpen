@@ -590,6 +590,7 @@ class FormController extends BaseController
                 . "<input type='reset' value='重置' class='button form-btn' /></div>"
                 . "<input type='hidden' name='form_id' value='$form_id' />"
                 . "<input type='hidden' name='action_type' value='$form_data->action_type' />"
+                . "<input type='hidden' name='lang' value='1' />"
                 . "<input type='hidden' name='action_text' value=" . $tempform['action_text'] . " />";
             }else{
                 $_div .= "</ul><div style='text-align:center;'>"
@@ -597,6 +598,7 @@ class FormController extends BaseController
                 . "<input type='reset' value='reset' class='button form-btn' /></div>"
                 . "<input type='hidden' name='form_id' value='$form_id' />"
                 . "<input type='hidden' name='action_type' value='$form_data->action_type' />"
+                . "<input type='hidden' name='lang' value='2' />"
                 . "<input type='hidden' name='action_text' value=" . $tempform['action_text'] . " />";
             }
             
