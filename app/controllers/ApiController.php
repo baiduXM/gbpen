@@ -109,8 +109,14 @@ class ApiController extends BaseController
 
             //是否允许用户自定义栏目
             $update['column_on'] = trim(Input::get('column_on')) === '' ? 1 : trim(Input::get('column_on'));
+            //是否是模板demo站
+            $update['is_demo'] = trim(Input::get('is_demo')) ? trim(Input::get('is_demo')) : 0;
             //其他域名
             $mobile_other = trim(Input::get('mobile_other'))?trim(Input::get('mobile_other')):'';
+            //换色PC模板选色
+            $pc_color = trim(Input::get('pc_color'))?trim(Input::get('pc_color')):'';
+            //换色手机模板选色
+            $mobile_color = trim(Input::get('mobile_color'))?trim(Input::get('mobile_color')):'';
 
             //===绑定账户===
             $switch_cus_name = Input::get('switch_cus_name');
@@ -141,17 +147,18 @@ class ApiController extends BaseController
                 //===新旧===
                 // $pc_id = Template::where('tpl_num', $update['pc_tpl_num'])->where('type', 1)->pluck('id');
                 // $mobile_id = Template::where('tpl_num', $update['mobile_tpl_num'])->where('type', 2)->pluck('id');
+                //是否是高级定制
                 $pc_templateid = Template::where('cus_id', $cus_id)->where('type', 1)->pluck('id');
                 $mobile_templateid = Template::where('cus_id', $cus_id)->where('type', 2)->pluck('id');
                 if ($pc_templateid != NULL) {
                     WebsiteInfo::where('cus_id', $cus_id)->update(['pc_tpl_id' => $pc_templateid]);
                 } else {
-                    WebsiteInfo::where('cus_id', $cus_id)->update(['pc_tpl_id' => $pc_id]);
+                    WebsiteInfo::where('cus_id', $cus_id)->update(['pc_tpl_id' => $pc_id , 'pc_color' => $pc_color]);
                 }
                 if ($mobile_templateid != NULL) {
                     WebsiteInfo::where('cus_id', $cus_id)->update(['mobile_tpl_id' => $mobile_templateid]);
                 } else {
-                    WebsiteInfo::where('cus_id', $cus_id)->update(['mobile_tpl_id' => $mobile_id]);
+                    WebsiteInfo::where('cus_id', $cus_id)->update(['mobile_tpl_id' => $mobile_id , 'mobile_color' => $mobile_color]);
                 }
                 //WebsiteInfo::where('cus_id',$cus_id)->update(['pc_tpl_id'=>$pc_id,'mobile_tpl_id'=>$mobile_id]);
                 //===更新CustomerInfo时，更新capacity字段===
@@ -224,7 +231,7 @@ class ApiController extends BaseController
                     //===新旧===
                     // $pc_id = Template::where('tpl_num', $update['pc_tpl_num'])->where('type', 1)->pluck('id');
                     // $mobile_id = Template::where('tpl_num', $update['mobile_tpl_num'])->where('type', 2)->pluck('id');
-                    WebsiteInfo::insert(['cus_id' => $insert_id, 'pc_tpl_id' => $pc_id, 'mobile_tpl_id' => $mobile_id]);
+                    WebsiteInfo::insert(['cus_id' => $insert_id, 'pc_tpl_id' => $pc_id, 'mobile_tpl_id' => $mobile_id, 'pc_color' => $pc_color, 'mobile_color' => $mobile_color]);
                     CustomerInfo::insert(['cus_id' => $insert_id, 'pc_domain' => $update['pc_domain'], 'mobile_domain' => $update['mobile_domain'],'pc_out_domain' => $update['pc_out_domain'],'mobile_out_domain' => $update['mobile_out_domain'], 'capacity' => $capacity, 'capacity_use' => 0]);
 
                     //创建客户目录

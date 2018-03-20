@@ -81,6 +81,34 @@ class PrintController extends BaseController
     public $source_dir;
 
     /**
+     * 是否是换色模板
+     *
+     * @var string
+     */
+    public $isColorful;
+
+    /**
+     * 换色模板样式路径
+     *
+     * @var string
+     */
+    public $site_color;
+
+    /**
+     * 换色模板选中的颜色
+     *
+     * @var string
+     */
+    public $color_dir;
+
+    /**
+     * 是否是模板站
+     *
+     * @var string
+     */
+    public $is_demo;
+
+    /**
      * 定义用户id、用户名、
      * @param string $showtpye
      * @param string $type
@@ -91,40 +119,84 @@ class PrintController extends BaseController
         $this->type = $type;
         $this->cus_id = Auth::id();
         $this->customer = Auth::user()->name;
+        $this->is_demo = Customer::where('id', $this->cus_id)->pluck('is_demo');
         if ($this->showtype == 'preview') {
             $this->source_dir = '/customers/' . $this->customer . '/images/'; //asset('customers/' . $this->customer . '/images/') . '/';
             if ($this->type == 'mobile') {
                 $this->domain = '/mobile'; //url() . '/mobile';
-                $this->tpl_id = WebsiteInfo::where('cus_id', $this->cus_id)->pluck('mobile_tpl_id');
-                $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.mobile_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
-                //===预览手机模板调用===
+                // $this->tpl_id = WebsiteInfo::where('cus_id', $this->cus_id)->pluck('mobile_tpl_id');
+                $tpl_info = WebsiteInfo::where('cus_id', $this->cus_id)->select('mobile_tpl_id' , 'mobile_color')->first()->toArray();
+                $this->tpl_id = $tpl_info['mobile_tpl_id'];
+                $this->color_dir = $tpl_info['mobile_color'];
+                // $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.mobile_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
+                $theme_info = Template::leftJoin('website_info', 'website_info.mobile_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->select('template.name', 'template.name_bak', 'template.isColorful', 'template.color_style')->first()->toArray();
+                $this->themename = $theme_info['name'];
+                $this->isColorful =  $theme_info['isColorful'];              
+                //===预览手机模板旧编号调用===
                 if(empty($this->themename) or !is_dir(public_path('/templates/'.$this->themename)) or !is_dir(app_path('/views/templates/'.$this->themename))){
-                    $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.mobile_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name_bak');
+                    $this->themename = $theme_info['name_bak'];
                 }
-                //===预览手机模板调用===
+                //===预览手机换色模板处理===
+                if ($theme_info['isColorful'] == 1) {
+                    //如果换色模板没有选择颜色，或者所选颜色并不是当前模板中所具有的，则使用模板的第一种颜色
+                    if (!$this->color_dir || !strpos($theme_info['color_style'], $this->color_dir)) {
+                        $color_str = str_replace('#', '', $theme_info['color_style']);
+                        $color_arr = explode(',', $color_str);
+                        $this->color_dir = $color_arr['0'];
+                    }
+                }
                 $this->source_dir = '/customers/' . $this->customer . '/mobile/images/'; //asset('customers/' . $this->customer . '/mobile/images/') . '/';
                 self::$cus_domain = ''; //CustomerInfo::where('cus_id', $this->cus_id)->pluck('mobile_domain');
             } else {
                 $this->domain = ''; //url();
-                $this->tpl_id = WebsiteInfo::where('cus_id', $this->cus_id)->pluck('pc_tpl_id');
-                $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.pc_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
-                //===预览PC模板调用===
+                // $this->tpl_id = WebsiteInfo::where('cus_id', $this->cus_id)->pluck('pc_tpl_id');
+                $tpl_info = WebsiteInfo::where('cus_id', $this->cus_id)->select('pc_tpl_id' , 'pc_color')->first()->toArray();
+                $this->tpl_id = $tpl_info['pc_tpl_id'];
+                $this->color_dir = $tpl_info['pc_color'];
+                // $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.pc_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
+                $theme_info = Template::leftJoin('website_info', 'website_info.pc_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->select('template.name', 'template.name_bak', 'template.isColorful', 'template.color_style')->first()->toArray();
+                $this->themename = $theme_info['name']; 
+                $this->isColorful =  $theme_info['isColorful'];                
+                //===预览PC模板旧编号调用===
                 if(empty($this->themename) or !is_dir(public_path('/templates/'.$this->themename)) or !is_dir(app_path('/views/templates/'.$this->themename))){
-                    $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.pc_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name_bak');
+                    $this->themename = $theme_info['name_bak'];
                 }
-                //===预览PC模板调用===
+                //===预览PC换色模板处理===
+                if ($theme_info['isColorful'] == 1) {
+                    //如果换色模板没有选择颜色，或者所选颜色并不是当前模板中所具有的，则使用模板的第一种颜色
+                    if (!$this->color_dir || !strpos($theme_info['color_style'], $this->color_dir)) {
+                        $color_str = str_replace('#', '', $theme_info['color_style']);
+                        $color_arr = explode(',', $color_str);
+                        $this->color_dir = $color_arr['0'];
+                    }
+                }
                 self::$cus_domain = ''; //CustomerInfo::where('cus_id', $this->cus_id)->pluck('pc_domain');
             }
             $this->site_url = '/templates/' . $this->themename . '/';
+            $this->site_color = 'themes/' . $this->color_dir .'/';
         } else {
             if ($this->type == 'mobile') {
-                $this->tpl_id = WebsiteInfo::where('cus_id', $this->cus_id)->pluck('mobile_tpl_id');
-                $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.mobile_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
-                //===推送手机模板调用===
+                // $this->tpl_id = WebsiteInfo::where('cus_id', $this->cus_id)->pluck('mobile_tpl_id');
+                $tpl_info = WebsiteInfo::where('cus_id', $this->cus_id)->select('mobile_tpl_id' , 'mobile_color')->first()->toArray();
+                $this->tpl_id = $tpl_info['mobile_tpl_id'];
+                $this->color_dir = $tpl_info['mobile_color'];
+                // $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.mobile_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
+                $theme_info = Template::leftJoin('website_info', 'website_info.mobile_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->select('template.name', 'template.name_bak', 'template.isColorful', 'template.color_style')->first()->toArray();
+                $this->themename = $theme_info['name']; 
+                $this->isColorful =  $theme_info['isColorful'];                
+                //===推送手机模板旧编号调用===
                 if(empty($this->themename) or !is_dir(public_path('/templates/'.$this->themename)) or !is_dir(app_path('/views/templates/'.$this->themename))){
-                    $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.mobile_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name_bak');
+                    $this->themename = $theme_info['name_bak'];
                 }
-                //===推送手机模板调用===
+                //===推送手机换色模板处理===
+                if ($theme_info['isColorful'] == 1) {
+                    //如果换色模板没有选择颜色，或者所选颜色并不是当前模板中所具有的，则使用模板的第一种颜色
+                    if (!$this->color_dir || !strpos($theme_info['color_style'], $this->color_dir)) {
+                        $color_str = str_replace('#', '', $theme_info['color_style']);
+                        $color_arr = explode(',', $color_str);
+                        $this->color_dir = $color_arr['0'];
+                    }
+                }
                 $mobile_domain = CustomerInfo::where('cus_id', $this->cus_id)->pluck('mobile_domain');
                 $mobile_domain = str_replace('http://', '', $mobile_domain);
                 if (strpos($mobile_domain, '/mobile')) {
@@ -132,18 +204,37 @@ class PrintController extends BaseController
                 }
                 //$this->domain = '';//CustomerInfo::where('cus_id', $this->cus_id)->pluck('mobile_domain');
             } else {
-                $this->tpl_id = WebsiteInfo::where('cus_id', $this->cus_id)->pluck('pc_tpl_id');
-                $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.pc_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name');
+                // $this->tpl_id = WebsiteInfo::where('cus_id', $this->cus_id)->pluck('pc_tpl_id');
+                $tpl_info = WebsiteInfo::where('cus_id', $this->cus_id)->select('pc_tpl_id' , 'pc_color')->first()->toArray();
+                $this->tpl_id = $tpl_info['pc_tpl_id'];
+                $this->color_dir = $tpl_info['pc_color'];
+                $theme_info = Template::leftJoin('website_info', 'website_info.pc_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->select('template.name', 'template.name_bak', 'template.isColorful', 'template.color_style')->first()->toArray();
+                $this->themename = $theme_info['name']; 
+                $this->isColorful =  $theme_info['isColorful']; 
                 //===推送PC模板调用===
                 if(empty($this->themename) or !is_dir(public_path('/templates/'.$this->themename)) or !is_dir(app_path('/views/templates/'.$this->themename))){
-                    $this->themename = DB::table('template')->leftJoin('website_info', 'website_info.pc_tpl_id', '=', 'template.id')->where('website_info.cus_id', '=', $this->cus_id)->pluck('template.name_bak');
+                    $this->themename = $this->themename = $theme_info['name_bak']; ;
+                }
+                //===推送PC换色模板处理===
+                if ($theme_info['isColorful'] == 1) {
+                    //如果换色模板没有选择颜色，或者所选颜色并不是当前模板中所具有的，则使用模板的第一种颜色
+                    if (!$this->color_dir || !strpos($theme_info['color_style'], $this->color_dir)) {
+                        $color_str = str_replace('#', '', $theme_info['color_style']);
+                        $color_arr = explode(',', $color_str);
+                        $this->color_dir = $color_arr['0'];
+                    }
                 }
                 //===推送PC模板调用===
                 $this->domain = ''; //CustomerInfo::where('cus_id', $this->cus_id)->pluck('pc_domain');
             }
             self::$cus_domain = ''; // $this->domain;
             $this->site_url = $this->domain . '/';
-            $this->source_dir = '/images/'; //$this->domain . '/images/';
+            $this->source_dir = '/images/'; //$this->domain . '/images/';            
+            if($this->is_demo == 1) {
+                $this->site_color = 'themes/' . $this->color_dir .'/';
+            } else {
+                $this->site_color = '';
+            }
         }
     }
 
@@ -572,6 +663,9 @@ class PrintController extends BaseController
                     } else {
                         if (file_exists(public_path("templates/" . $this->themename . '/images/') . preg_replace('/^images\/(.*?)$/', '$1', $v))) {
                             $result[$k] = $this->site_url . 'images/' . preg_replace('/^images\/(.*?)$/', '$1', $v);
+                        } elseif (file_exists(public_path("templates/" . $this->themename . '/themes/'. $this->color_dir .'/images/') . preg_replace('/^images\/(.*?)$/', '$1', $v))) {
+                            //换色模板的路径
+                            $result[$k] = $this->site_url . $this->site_color . 'images/' . preg_replace('/^images\/(.*?)$/', '$1', $v);
                         } else {
                             $result[$k] = $this->source_dir . "l/page_index/" . $v;
                         }
@@ -602,11 +696,16 @@ class PrintController extends BaseController
                 break;
             }
         }
-        $config_str = file_get_contents(public_path('/templates/' . $this->themename) . '/config.ini');
-        $search = "/QuickBar=(.*)/i";
+        $config_str = file_get_contents(public_path('/templates/' . $this->themename) . '/config.ini');        
+        if($this->isColorful == 1) {
+            //换色模板匹配快捷导航配置
+            $search = "/QuickBar_" . $this->color_dir . "=(.*)/i";
+        } else {
+            $search = "/QuickBar=(.*)/i";
+        }        
         $searchtype = "/Type=(.*)/i";
         $result = preg_match($search, $config_str, $config_arr);
-        if (!$result) {
+        if (!$result or !trim($config_arr[1])) {
             $result = 1;
             $config_arr = array();
             $config_arr[1] = '#AAA,#BBB,#FFF|totop';
@@ -687,6 +786,26 @@ class PrintController extends BaseController
                         $config['style']['iconColor'] = $config['style']['textColor'] ? $config['style']['textColor'] : '';
                     }
                 }
+                //换色模板站
+                if(!isset($colors['mobile_demo']) or $this->type != 'mobile') {
+                    $config['mdemo']['demo'] = 0;
+                } else {
+                    $config['mdemo']['demo'] = 1;
+                    foreach ($colors['mobile_demo'] as $k => $v) {
+                        $num = hexdec($k);
+                        if(count($v)) {
+                            unset($keys);
+                            $keys = array('mainColor', 'secondColor', 'textColor', 'iconColor');
+                            foreach ($v as $key => $val) {
+                                $arr_color = explode('|', $val);
+                                $config['mdemo']['style'][$num][$keys[$key]] = $arr_color[0];
+                            }
+                            if (!key_exists('iconColor', $config['mdemo']['style'][$num])) {
+                                $config['mdemo']['style'][$num]['iconColor'] = $config['mdemo']['style'][$num]['textColor'] ? $config['mdemo']['style'][$num]['textColor'] : '';
+                            }
+                        }
+                    }
+                }
                 $config['module'] = array();
                 if (count($quickbar_arr) > 1) {
                     $tmpModulesConfigQuickbar = explode(',', trim($quickbar_arr[1]));
@@ -762,6 +881,7 @@ class PrintController extends BaseController
 //                                if ($nav['view_name']) {
 //                                    $nav['url'] = $this->domain . "/category/v/" . $nav['view_name'];
 //                                } else {
+                                //category链接位置(手机快捷导航(非自定义底部导航))
                                 $nav['url'] = $this->domain . "/category/" . $nav['id'];
 //                                }
                             }
@@ -814,6 +934,25 @@ class PrintController extends BaseController
                     }
                     if (!key_exists('iconColor', $config['style'])) {
                         $config['style']['iconColor'] = $config['style']['textColor'] ? $config['style']['textColor'] : '';
+                    }
+                }
+                //换色模板站
+                if(!isset($colors['mobile_demo'])) {
+                    $config['mdemo']['demo'] = 0;
+                } else {
+                    $config['mdemo']['demo'] = 1;
+                    foreach ($colors['mobile_demo'] as $k => $v) {
+                        if(count($v)) {
+                            unset($keys);
+                            $keys = array('mainColor', 'secondColor', 'textColor', 'iconColor');
+                            foreach ($v as $key => $val) {
+                                $arr_color = explode('|', $val);
+                                $config['mdemo']['style'][$k][$keys[$key]] = $arr_color[0];                                
+                            }                            
+                            if (!key_exists('iconColor', $config['mdemo']['style'][$k])) {
+                                $config['mdemo']['style'][$k]['iconColor'] = $config['mdemo']['style'][$k]['textColor'] ? $config['mdemo']['style'][$k]['textColor'] : '';
+                            }
+                        }
                     }
                 }
                 foreach ($quickbar as $key => $val) {
@@ -879,6 +1018,7 @@ class PrintController extends BaseController
 //                                if ($nav['view_name']) {
 //                                    $nav['url'] = $this->domain . "/category/v/" . $nav['view_name'];
 //                                } else {
+                                //category链接位置(手机快捷导航(自定义底部导航))
                                 $nav['url'] = $this->domain . "/category/" . $nav['id'];
 //                                }
                             }
@@ -1112,7 +1252,16 @@ class PrintController extends BaseController
                 $footprint = $customer_info->footer . '<p>' . $_copyright . $talent_support . '</p>';
             }
             //===版权选择_end===
-            $footscript = $customer_info->pc_footer_script;
+
+            //是换色demo站PC插入换色用的js
+            if($this->is_demo == 1) {
+                $footscript = '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/colorful.js"></script>';
+                $colorscript = '<div id="over" style="display: hidden;position: fixed;top: 0;left: 0;width: 100%;height: 100%;background-color: #f5f5f5;opacity:1.0;z-index: 1000;"></div><div id="layout" style="display: hidden;position: absolute;top: 40%;left: 40%;width: 20%;height: 20%;z-index: 1001;text-align:center;"><img src="http://chanpin.xm12t.com.cn/images/2013112931.gif" alt="" /></div><script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/loading.js"></script>';
+            } else {
+                $footscript = '';
+                $colorscript = '';
+            }
+            $footscript .= $customer_info->pc_footer_script;
             //判断是否有重定向，有则插入重定向js
             if($customer_info->is_redirect){
                 $footscript .= '<script>'
@@ -1179,7 +1328,15 @@ class PrintController extends BaseController
             }
             $headscript = $customer_info->mobile_header_script;
             $footprint = $customer_info->mobile_footer;
-            $footscript = $customer_info->mobile_footer_script;
+            //是换色demo站手机插入换色用的js
+            if($this->is_demo == 1) {
+                $footscript = '<script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/colorful.js"></script>';
+                $colorscript = '<div id="over" style="display: hidden;position: fixed;top: 0;left: 0;width: 100%;height: 100%;background-color: #f5f5f5;opacity:1.0;z-index: 1000;"></div><div id="layout" style="display: hidden;position: absolute;top: 40%;left: 40%;width: 20%;height: 20%;z-index: 1001;text-align:center;"><img src="http://chanpin.xm12t.com.cn/images/2013112931.gif" alt="" /></div><script type="text/javascript" src="http://chanpin.xm12t.com.cn/js/loading.js"></script>';
+            } else {
+                $footscript = '';
+                $colorscript = '';
+            }
+            $footscript .= $customer_info->mobile_footer_script;
 //            $footscript .= $formJS;
             $footscript .= '<script type="text/javascript" src="/quickbar/js/quickbar.js?' . $this->cus_id . 'mobile"></script>';
             $footscript .= $add_color_css;
@@ -1331,6 +1488,8 @@ class PrintController extends BaseController
             'footscript' => $footscript,
             'global' => $global_data,
             'site_url' => $this->site_url,
+            'site_color' => $this->site_color,
+            'colorscript' => $colorscript,
             'site_another_url' => (str_replace('http://', '', $site_another_url) ? $site_another_url : ''),
             'contact' => $contact,
             'search_action' => $pc_domain //'http://swap.gbpen.com'
@@ -1438,6 +1597,7 @@ class PrintController extends BaseController
 //                                    if ($cate[$d->c_id]) {//===判断栏目是否有别名===
 //                                        $abc['data'][$key]['category']['link'] = $this->domain . '/category/' . $cate[$d->c_id];
 //                                    } else {
+                                    //category链接位置(首页内容content子栏目)
                                     $abc['data'][$key]['category']['link'] = $this->domain . '/category/' . $d->c_id;
 //                                    }
                                     $abc['data'][$key]['link'] = $this->domain . '/detail/' . $d->id;
@@ -1507,6 +1667,7 @@ class PrintController extends BaseController
 //                                if ($cate[$d->c_id]) {//===判断栏目是否有别名===
 //                                    $abc['data'][$key]['category']['link'] = $this->domain . '/category/' . $cate[$d->c_id];
 //                                } else {
+                                //category链接位置(首页内容content子栏目)
                                 $abc['data'][$key]['category']['link'] = $this->domain . '/category/' . $d->c_id;
 //                                }
                                 $abc['data'][$key]['link'] = $this->domain . '/detail/' . $d->id;
@@ -1542,6 +1703,7 @@ class PrintController extends BaseController
                 $v['value']['link'] = '';
                 if ($this->showtype == 'preview') {
                     $v['value']['image'] = ($c_info ? $this->source_dir . 'l/category/' . $c_info->img : '');
+                    //category链接位置(pc首页内容content)
                     $v['value']['link'] = ($c_info ? ($c_info->type == 6) ? $c_info->url ? $c_info->url : '' : $this->domain . '/category/' . $c_info->id : '');
                 } else {
                     $v['value']['image'] = ($c_info ? $this->domain . '/images/l/category/' . $c_info->img : '');
@@ -1557,6 +1719,7 @@ class PrintController extends BaseController
                             $c_c_info = $c_c_info->toArray();
                             if ($this->showtype == 'preview') {
                                 $c_c_info['image'] = ($c_c_info ? $this->source_dir . 'l/category/' . $c_c_info['image'] : '');
+                                //category链接位置(列表页左侧导航)
                                 $c_c_info['link'] = ($c_c_info ? $this->domain . '/category/' . $c_c_info['id'] : '');
                             } else {
                                 $c_c_info['image'] = ($c_c_info ? $this->domain . '/images/l/category/' . $c_c_info['image'] : '');
@@ -1882,7 +2045,9 @@ class PrintController extends BaseController
             $links['first'] = "";
             $links['prev'] = "";
         } else {
+            //category链接位置(列表页底部分页-首页)
             $links['first'] = $this->showtype == 'preview' ? $this->domain . '/category/' . $id : $this->domain . '/category/' . $id . '.html';
+            //category链接位置(列表页底部分页-上一页)
             $links['prev'] = $this->showtype == 'preview' ? $this->domain . '/category/' . $id . '_' . ($page - 1) : $this->domain . '/category/' . $id . '_' . ($page - 1) . '.html';
         }
 
@@ -1916,6 +2081,7 @@ class PrintController extends BaseController
             if ($i == $page) {
                 $links[$i] = $i;
             } else {
+                //category链接位置(列表页底部分页数字)
                 $links[$i] = $this->showtype == 'preview' ? $this->domain . '/category/' . $id . '_' . $i : $this->domain . '/category/' . $id . '_' . $i . '.html';
             }
         }
@@ -1925,7 +2091,9 @@ class PrintController extends BaseController
             $links['next'] = '';
             $links['last'] = '';
         } else {
+            //category链接位置(列表页底部分页-下一页)
             $links['next'] = $this->showtype == 'preview' ? $this->domain . '/category/' . $id . '_' . ($page + 1) : $this->domain . '/category/' . $id . '_' . ($page + 1) . '.html';
+            //category链接位置(列表页底部分页-最后一页)
             $links['last'] = $this->showtype == 'preview' ? $this->domain . '/category/' . $id . '_' . $pageCount : $this->domain . '/category/' . $id . '_' . $pageCount . '.html';
         }
 
@@ -2184,6 +2352,7 @@ class PrintController extends BaseController
                         if ($nav->url) {
                             $mIndexCat['link'] = $nav->url;
                         } else {
+                            //category链接位置(手机首页内容content)
                             $mIndexCat['link'] = $this->domain . "/category/" . $nav->id;
                         }
                         $mIndexCat['type'] = $nav->type;
@@ -3740,6 +3909,7 @@ class PrintController extends BaseController
             $data = [];
             if ($v['type'] != 6) {
 //                if (empty($v['view_name'])) {
+                //category链接位置(pc/手机导航条)
                 $tree[$k]['link'] = $this->showtype == 'preview' ? $this->domain . '/category/' . $v['id'] : $this->domain . '/category/' . $v['id'] . '.html';
 //                } else {
 //                    $tree[$k]['link'] = $this->showtype == 'preview' ? $this->domain . '/category/v/' . $v['view_name'] : $this->domain . '/category/v/' . $v['view_name'] . '.html';
@@ -4226,6 +4396,7 @@ class PrintController extends BaseController
             }
         } else {
             if ($this->showtype == 'preview') {
+                //category链接位置(pc列表页面包屑)
                 $arr['link'] = $this->domain . '/category/' . $c_id;
             } else {
                 $arr['link'] = $this->domain . '/category/' . $c_id . '.html';

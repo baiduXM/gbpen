@@ -15,6 +15,18 @@ function jqueryfunc(){
 		
 		$(function(){
 			// 底部导航样式
+			if(dataQuickbar.config.colormain) {
+				dataQuickbar.config.style.mainColor = dataQuickbar.config.colormain;
+			}
+			if(dataQuickbar.config.colorsec) {
+				dataQuickbar.config.style.secondColor = dataQuickbar.config.colorsec;
+			}
+			if(dataQuickbar.config.colortext) {
+				dataQuickbar.config.style.textColor = dataQuickbar.config.colortext;
+			}
+			if(dataQuickbar.config.coloricon) {
+				dataQuickbar.config.style.iconColor = dataQuickbar.config.coloricon;
+			}
 			var share_style = '<style>'
 				+'body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td,hr,button,article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section {margin:0;padding:0;}'
 				+'body{display: -webkit-box;-webkit-box-orient: vertical;-webkit-box-align: stretch; min-width:320px; max-width:640px; margin:0px auto;overflow-x: hidden; font-size:14px; font-family:"Microsoft Yahei";}'
@@ -122,18 +134,23 @@ function jqueryfunc(){
 				li_btn += '<li><a href="'+(typeof v.link !== 'undefined' ? v.link : 'javascript:void(0)')+'" '+idAttr+'><p class="fix_icon">'+(v.icon == null ? '<img src="'+v.image+'" width="33" width="33">' : '<i class="iconfont">'+v.icon+'</i>' )+'</p><p class="title">'+(fixedLang=='cn'?v.name:v.en_name)+'</p></a></li>';
 			});
 			// 获取侧边导航数据
+			if(dataQuickbar.config.color) {
+				urlcolor = '?color='+ dataQuickbar.config.color;
+			} else {
+				urlcolor = '';
+			}
 			$.each(dataQuickbar.catlist, function(k,v) {
 				if(v.childmenu == null){
-					li_nav += '<li><a href="'+v.url+'" style="color:'+(dataQuickbar.config.style.textColor?dataQuickbar.config.style.textColor:"#fff")+'">'+(fixedLang=='cn'?v.name:v.en_name)+'</a></li>';
+					li_nav += '<li><a href="'+v.url+urlcolor+'" style="color:'+(dataQuickbar.config.style.textColor?dataQuickbar.config.style.textColor:"#fff")+'">'+(fixedLang=='cn'?v.name:v.en_name)+'</a></li>';
 				}else{
 					li_nav += '<li class="menu_head">\n\
 					<dl class="qbnav-icon"><span class="qbnav-icon1" style="color:'+(dataQuickbar.config.style.textColor?dataQuickbar.config.style.textColor:"#fff")+'">-</span><span class="icon2" style="color:'+(dataQuickbar.config.style.textColor?dataQuickbar.config.style.textColor:"#fff")+'">+</span></dl>\n\
-					<a href="'+v.url+'" style="color:'+(dataQuickbar.config.style.textColor?dataQuickbar.config.style.textColor:"#fff")+'">'+(fixedLang=='cn'?v.name:v.en_name)+'</a></li>\n\
+					<a href="'+v.url+urlcolor+'" style="color:'+(dataQuickbar.config.style.textColor?dataQuickbar.config.style.textColor:"#fff")+'">'+(fixedLang=='cn'?v.name:v.en_name)+'</a></li>\n\
 					<li class="menu_body">';
 					!function(childmenu, deep) {
 						deep++;
 						for (var i = 0; i < childmenu.length; i++) {
-							li_nav += '<dl style="padding-left:'+(deep*10)+'px"><a href="'+childmenu[i].url+'">>'+(fixedLang=='cn'?childmenu[i].name:childmenu[i].en_name)+'</a></dl>';
+							li_nav += '<dl style="padding-left:'+(deep*10)+'px"><a href="'+childmenu[i].url+'">>'+childmenu[i].name+'</a></dl>';
 							if (childmenu[i].childmenu) {
 								arguments.callee(childmenu[i].childmenu, deep);
 							}

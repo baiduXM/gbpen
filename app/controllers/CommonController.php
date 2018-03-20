@@ -196,13 +196,15 @@ class CommonController extends BaseController {
 
     private function quickBarDefaultColor() {
         $id = Auth::id();
+        $is_demo = Customer::where('id', $id)->pluck('is_demo');
         $search = "/QuickBar=(.*)/i";
         $template = WebsiteInfo::where('cus_id', $id)->first();
         //===获取PC端颜色===
-        $pc_name = Template::where('id', $template->pc_tpl_id)->pluck('name');
+        $pc_info = Template::where('id', $template->pc_tpl_id)->select('name', 'name_bak', 'isColorful', 'color_style')->first();
+        $pc_name = $pc_info->name;
         //===PC模板调用===
         if(empty($pc_name) or !is_dir(public_path('/templates/'.$pc_name))){
-            $pc_name = Template::where('id', $template->pc_tpl_id)->pluck('name_bak');
+            $pc_name = $pc_info->name_bak;
         }
         //===PC模板调用===
         $config_str = file_get_contents(public_path('/templates/' . $pc_name) . '/config.ini');
@@ -214,15 +216,16 @@ class CommonController extends BaseController {
         $color_str = preg_replace("/\|(.*)/i", '', $config_arr[1]);
         $colors['pc'] = explode(',', ltrim($color_str, ','));
         //===获取手机端颜色===
-        $mobile_name = Template::where('id', $template->mobile_tpl_id)->pluck('name');
+        $mobile_info = Template::where('id', $template->mobile_tpl_id)->select('name', 'name_bak', 'isColorful', 'color_style')->first();
+        $mobile_name = $mobile_info->name;
         //===手机模板调用===
         if(empty($mobile_name) or !is_dir(public_path('/templates/'.$mobile_name))){
-            $mobile_name = Template::where('id', $template->mobile_tpl_id)->pluck('name_bak'); 
+            $mobile_name = $mobile_info->name_bak; 
         }
         //===手机模板调用===
         $config_str = file_get_contents(public_path('/templates/' . $mobile_name) . '/config.ini');
         $result = preg_match($search, $config_str, $config_arr);
-        if ($result) {
+        if ($result && trim($config_arr[1])) {
             if (trim($config_arr[1]) != 'custom') {
                 $color_str = preg_replace("/\|(.*)/i", '', $config_arr[1]);
                 $colors['mobile'] = explode(',', ltrim($color_str, ','));
@@ -232,11 +235,54 @@ class CommonController extends BaseController {
                 $color_str = preg_replace("/\|(.*)/i", '', $config_arr[1]);
                 $colors['mobile'] = explode(',', ltrim($color_str, ','));
             }
+        } else {
+            //手机模板没定义快捷导航，则匹配多色模板快捷导航的定义
+            if ($mobile_info->isColorful == 1) {
+                $mobile_color = $template->mobile_color;
+                $search_color = "/QuickBar_" . $mobile_color . "=(.*)/i";
+                $result_color = preg_match($search_color, $config_str, $config_arr);
+                if($result_color) {
+                    //所选色导航有定义，取出后按普通模板方式处理
+                    if(trim($config_arr[1]) != 'custom' && trim($config_arr[1])) {
+
+                    } else {
+                        $config_arr = array();
+                        $config_arr[1] = '#AAA,#BBB,#FFF|totop';
+                    }
+                    $color_str = preg_replace("/\|(.*)/i", '', $config_arr[1]);
+                    $colors['mobile'] = explode(',', ltrim($color_str, ','));
+                } else {
+                    //所选色的快捷导航未定义，直接取所选色
+                    $color_string = '#' . $template->mobile_color;
+                    $colors['mobile'] = array($color_string, $color_string, '#FFFFFF');
+                }
+                //如果是模板站，因根据参数变色需求，要传所有颜色的快捷导航定义到json中
+                if($is_demo == 1 && $mobile_info->color_style) {
+                    $scolor = str_replace('#', '', $mobile_info->color_style);
+                    $color_arr = explode(',', $scolor);
+                    foreach ($color_arr as $k => $v) {
+                        $color_search = "/QuickBar_" . $v . "=(.*)/i";
+                        $preg = preg_match($color_search, $config_str, $match);                        
+                        if(!$preg or !trim($match[1])) {
+                            $match = array();
+                            //某色的快捷导航未定义，直接取所选色
+                            $qcolor = '#' . $v;
+                            $match[1] = $qcolor . ',' . $qcolor . ',' . '#FFFFFF|totop';
+                        }
+                        if(trim($match[1]) == 'custom') {
+                            $match[1] = '#AAA,#BBB,#FFF|totop';
+                        }
+                        $match_str = preg_replace("/\|(.*)/i", '', $match[1]);
+                        $colors['mobile_demo'][$v] = explode(',', ltrim($match_str, ','));
+                    }
+                }
+            }
         }
         //===获取网站类型===
         $stage = Customer::where('id',$id)->pluck('stage');
         if($stage==1){
             unset($colors['mobile']);
+            unset($colors['mobile_demo']);
         }elseif($stage==2){
             unset($colors['pc']);
         }

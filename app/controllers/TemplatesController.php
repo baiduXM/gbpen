@@ -438,7 +438,6 @@ class TemplatesController extends BaseController
                     $imgdel->mysave($v, 'page_index');
                 }
             }
-
             return Response::json(['err' => 0, 'msg' => 'success', 'data' => null]);
         } else {
             return Response::json(['err' => 1001, 'msg' => '数据保存失败', 'data' => null]);
@@ -1128,7 +1127,7 @@ class TemplatesController extends BaseController
      */
     public function quickBarJson()
     {
-        if (array_key_exists('HTTP_REFERER', $_SERVER) && (strpos(strtolower($_SERVER['HTTP_REFERER']), 'mobile') || strpos(strtolower($_SERVER['HTTP_REFERER']), 'templates/gm'))) {
+        if (array_key_exists('HTTP_REFERER', $_SERVER) && (strpos(strtolower($_SERVER['HTTP_REFERER']), 'mobile') || strpos(strtolower($_SERVER['HTTP_REFERER']), 'templates/gm') || preg_match('/templates\/g[0-9]{4}m/', strtolower($_SERVER['HTTP_REFERER'])))) {
             $template = new PrintController('preview', 'mobile');
         } else {
             $template = new PrintController('preview', 'pc');

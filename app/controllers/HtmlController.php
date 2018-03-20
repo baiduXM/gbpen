@@ -488,14 +488,29 @@ class HtmlController extends BaseController
         }
         if ($zip->open($path, ZipArchive::CREATE) === TRUE) {
             if (!isset($end) || $end == 1) {
-                $mobile_dir = Template::where('website_info.cus_id', $this->cus_id)->Leftjoin('website_info', 'template.id', '=', 'website_info.mobile_tpl_id')->pluck('name');
-                //===手机模板调用===
+                $mobile_info = Template::where('website_info.cus_id', $this->cus_id)->Leftjoin('website_info', 'template.id', '=', 'website_info.mobile_tpl_id')->select('name', 'name_bak', 'isColorful', 'mobile_color', 'color_style')->first()->toArray();
+                $mobile_dir = $mobile_info['name'];
+                //===手机旧编号调用===
                 if(empty($mobile_dir) or !is_dir(public_path("templates/$mobile_dir/"))){
-                    $mobile_dir = Template::where('website_info.cus_id', $this->cus_id)->Leftjoin('website_info', 'template.id', '=', 'website_info.mobile_tpl_id')->pluck('name_bak');
+                    $mobile_dir = $mobile_info['name_bak'];
                 }
-                //===手机模板调用===
-                $maim_dir = public_path("templates/$mobile_dir/");
-                $this->addDir($maim_dir, $zip, 'mobile/');
+                //===手机旧编号调用===
+                if(empty($mobile_dir) or !is_dir(public_path("templates/$mobile_dir/"))){
+                    
+                } else {
+                    $is_demo = Customer::where('id', $this->cus_id)->pluck('is_demo');//是否是demo站
+                    $maim_dir = public_path("templates/$mobile_dir/");
+                    if ($mobile_info['isColorful'] == 1 && $is_demo != 1) {
+                        $color_dir = $mobile_info['mobile_color'];
+                        if(!$color_dir || !strpos($mobile_info['color_style'], $color_dir)) {
+                            $color_str = str_replace('#', '', $mobile_info['color_style']);
+                            $color_arr = explode(',', $color_str);
+                            $color_dir = $color_arr['0'];
+                        }
+                        $maim_dir = $maim_dir . 'themes/' . $color_dir . '/';
+                    }
+                    $this->addDir($maim_dir, $zip, 'mobile/');                  
+                }                
             }
             $zip->close();
             //$images_dir=public_path("customers/".$this->customer."/images/");
@@ -1461,25 +1476,55 @@ class HtmlController extends BaseController
                 PushQueue::where('id', $nextpush->id)->update(['push' => 1]);
             }
             if ($zip->open($path, ZipArchive::CREATE) === TRUE) {
-                if ((!isset($end) || $end == 1) && $this->pcpush) {
-                    $pc_dir = Template::where('website_info.cus_id', $this->cus_id)->Leftjoin('website_info', 'website_info.pc_tpl_id', '=', 'template.id')->pluck('name');
-                    //===PC模板调用===
+                if ((!isset($end) || $end == 1) && $this->pcpush) {//压缩模板public目录下的js和css
+                    $pc_info = Template::where('website_info.cus_id', $this->cus_id)->Leftjoin('website_info', 'website_info.pc_tpl_id', '=', 'template.id')->select('name', 'name_bak', 'isColorful', 'pc_color', 'color_style')->first()->toArray();
+                    $pc_dir = $pc_info['name'];
+                    //===PC旧编号调用===
                     if(empty($pc_dir) or !is_dir(public_path("templates/$pc_dir/"))){
-                        $pc_dir = Template::where('website_info.cus_id', $this->cus_id)->Leftjoin('website_info', 'website_info.pc_tpl_id', '=', 'template.id')->pluck('name_bak');
+                        $pc_dir = $pc_info['name_bak'];
                     }
-                    //===PC模板调用===
-                    $aim_dir = public_path("templates/$pc_dir/");
-                    $this->addDir($aim_dir, $zip);
+                    //===PC旧编号调用===
+                    if(empty($pc_dir) or !is_dir(public_path("templates/$pc_dir/"))) {
+                        //$pc_dir为空时会造成对所有模板进行压缩推送
+                    } else {
+                        $is_demo = Customer::where('id', $this->cus_id)->pluck('is_demo');//是否是demo站
+                        $aim_dir = public_path("templates/$pc_dir/");
+                        if ($pc_info['isColorful'] == 1 && $is_demo != 1) {//换色模板具有多套js和css，只需压缩所选的一套即可(demo站全传)
+                            $color_dir = $pc_info['pc_color'];
+                            if(!$color_dir || !strpos($pc_info['color_style'], $color_dir)) {
+                                $color_str = str_replace('#', '', $pc_info['color_style']);
+                                $color_arr = explode(',', $color_str);
+                                $color_dir = $color_arr['0'];
+                            }
+                            $aim_dir = $aim_dir . 'themes/' . $color_dir . '/';
+                        }
+                        $this->addDir($aim_dir, $zip);                        
+                    }                    
                 }
                 if ((!isset($end) || $end == 1) && $this->mobilepush) {
-                    $mobile_dir = Template::where('website_info.cus_id', $this->cus_id)->Leftjoin('website_info', 'template.id', '=', 'website_info.mobile_tpl_id')->pluck('name');
-                    //===手机模板调用===
+                    $mobile_info = Template::where('website_info.cus_id', $this->cus_id)->Leftjoin('website_info', 'template.id', '=', 'website_info.mobile_tpl_id')->select('name', 'name_bak', 'isColorful', 'mobile_color', 'color_style')->first()->toArray();
+                    $mobile_dir = $mobile_info['name'];
+                    //===手机旧编号调用===
                     if(empty($mobile_dir) or !is_dir(public_path("templates/$mobile_dir/"))){
-                        $mobile_dir = Template::where('website_info.cus_id', $this->cus_id)->Leftjoin('website_info', 'template.id', '=', 'website_info.mobile_tpl_id')->pluck('name_bak');
+                        $mobile_dir = $mobile_info['name_bak'];
                     }
-                    //===手机模板调用===
-                    $maim_dir = public_path("templates/$mobile_dir/");
-                    $this->addDir($maim_dir, $zip, 'mobile/');
+                    //===手机旧编号调用===
+                    if(empty($mobile_dir) or !is_dir(public_path("templates/$mobile_dir/"))) {
+
+                    } else {
+                        $is_demo = Customer::where('id', $this->cus_id)->pluck('is_demo');//是否是demo站
+                        $maim_dir = public_path("templates/$mobile_dir/");
+                        if ($mobile_info['isColorful'] == 1 && $is_demo != 1) {
+                            $color_dir = $mobile_info['mobile_color'];
+                            if(!$color_dir || !strpos($mobile_info['color_style'], $color_dir)) {
+                                $color_str = str_replace('#', '', $mobile_info['color_style']);
+                                $color_arr = explode(',', $color_str);
+                                $color_dir = $color_arr['0'];
+                            }
+                            $maim_dir = $maim_dir . 'themes/' . $color_dir . '/';
+                        }
+                        $this->addDir($maim_dir, $zip, 'mobile/');                       
+                    }                    
                 }
                 $zip->close();
                 $customerinfo = Customer::find($this->cus_id);

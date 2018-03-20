@@ -81,6 +81,37 @@ window.quickbarCallback = function (dataQuickbar) {
             return false;
         }
     }
+    var color = null;
+    var colormain = null;
+    var colorsec = null;
+    var colortext = null;
+    var coloricon = null;
+    var colorurl = window.location.href;
+    if(colorurl.indexOf('?')>0) {
+        var parm = colorurl.substr(colorurl.indexOf('?')+1);
+        var arr = parm.split('&');//参数数组
+        for (var i=0;i<arr.length; i++) {
+            var n = arr[i].indexOf('=');
+            if(n > 0) {
+                var name = arr[i].substring(0, n);
+                var value = arr[i].substr(n+1);
+                if(name == 'color')
+                {
+                    color = value.replace('#', '');
+                    if(typeof(dataQuickbar.config.mdemo.demo) != 'undefine') {
+                        if(dataQuickbar.config.mdemo.demo == 1) {
+                            var num = parseInt(color, 16);
+                            var demo_style = "dataQuickbar.config.mdemo.style[" + num + "]";                           
+                            colormain = eval(demo_style).mainColor;
+                            colorsec = eval(demo_style).secondColor;
+                            colortext = eval(demo_style).textColor;
+                            coloricon = eval(demo_style).iconColor;
+                        }
+                    }
+                }
+            }
+        }
+    }
     if (previewJSQuickbar.enable === false || !dataQuickbar.config.enable)
         return false;
     dataQuickbar.config.style.mainColor = previewJSQuickbar.style.mainColor || dataQuickbar.config.style.mainColor || '#AAA';
@@ -89,6 +120,11 @@ window.quickbarCallback = function (dataQuickbar) {
     dataQuickbar.config.style.iconColor = previewJSQuickbar.style.iconColor || dataQuickbar.config.style.iconColor || '';
     dataQuickbar.config.module = previewJSQuickbar.module || dataQuickbar.config.module || {};
     dataQuickbar.config.type = previewJSQuickbar.type || dataQuickbar.config.type;
+    dataQuickbar.config.color = color || '';
+    dataQuickbar.config.colormain = colormain || '';
+    dataQuickbar.config.colorsec = colorsec || '';
+    dataQuickbar.config.colortext = colortext || '';
+    dataQuickbar.config.coloricon = coloricon || '';
     window.dataQuickbar = dataQuickbar;
     // 根据不同type载入不同quickbar
     var quickbarMain = document.createElement('script');

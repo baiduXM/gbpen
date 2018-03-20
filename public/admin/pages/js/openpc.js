@@ -106,9 +106,9 @@ function openpcController($scope, $http, $location) {
 	                        </dl>\n\
                                 <dl class="colorchoose hidden">';
             $.each(d_temp.data[i].colors, function (k, j) {
-                _div2 += '<a href="javascript:void(0)" data-imgid="' + j.id + '" style="background:' + j.value + '" ' + (d_temp.data[i].selected_style == j.description ? 'data-color="chose"' : '') + ' >\n\
+                _div2 += '<a href="javascript:void(0)" data-imgid="' + j + '" style="background:#' + j + '" ' + (d_temp.data[i].selected_style == j ? 'data-color="chose"' : '') + ' >\n\
                         <span class="chose_icon hidden"></span>\n\
-                        <span class="chose_icon1 ' + (d_temp.data[i].selected_style == j.description ? '' : 'hidden') + '"><i class="iconfont icon-zhengque "></i></span>\n\
+                        <span class="chose_icon1 ' + (d_temp.data[i].selected_style == j ? '' : 'hidden') + '"><i class="iconfont icon-zhengque "></i></span>\n\
                         </a>';
             });
             _div2 += '</dl></div>\n\
@@ -137,10 +137,10 @@ function openpcController($scope, $http, $location) {
 	                        </dl>\n\
 	                        <dl class="colorchoose hidden">';
 
-            $.each(d_temp.data[i].colors, function (j) {
-                _div2 += '<a href="javascript:void(0)" data-imgid="' + d_temp.data[i].colors[j].id + '" style="background:' + d_temp.data[i].colors[j].value + '" ' + (d_temp.data[i].selected_style == d_temp.data[i].colors[j].description ? 'data-color="chose"' : '') + ' >\n\
+            $.each(d_temp.data[i].colors, function (k, j) {
+                _div2 += '<a href="javascript:void(0)" data-imgid="' + j + '" style="background:#' + j + '" ' + (d_temp.data[i].selected_style == j ? 'data-color="chose"' : '') + ' >\n\
 			                            	<span class="chose_icon hidden"></span>\n\
-			                            	<span class="chose_icon1 ' + (d_temp.data[i].selected_style == d_temp.data[i].colors[j].description ? '' : 'hidden') + '"><i class="iconfont icon-zhengque "></i></span>\n\
+			                            	<span class="chose_icon1 ' + (d_temp.data[i].selected_style == j ? '' : 'hidden') + '"><i class="iconfont icon-zhengque "></i></span>\n\
 			                        	</a>';
             });
             _div2 += '</dl></div>\n\
@@ -176,7 +176,7 @@ function openpcController($scope, $http, $location) {
                         _serv += '<h1 class="System_tpl_top shaixuan_list_top">您输入<span>"' + key + '"</span>搜索的结果</h1>\n\
                                 <ul class="System_tpl_list">';
                         $.each(d_temp.data.data, function (i, j) {
-                            if (key == j.serial) {
+                            if (key == j.serial || key == j.serial_bak) {
                                 _serv += '<li ' + (j.is_selected == 0 ? '' : 'data-li="chose"') + ' name="' + j.id + '">\n\
                                         <dl class="title">(' + j.classify + ')' + j.name + '</dl>\n\
                                         <div class="showbox">\n\
@@ -189,9 +189,9 @@ function openpcController($scope, $http, $location) {
                                              </dl>\n\
                                              <dl class="colorchoose hidden">';
                                 $.each(j.colors, function (k, v) {
-                                    _serv += '<a href="javascript:void(0)" data-imgid="' + v.id + '" style="background:' + v.value + '" ' + (j.selected_style == v.description ? 'data-color="chose"' : '') + ' >\n\
+                                    _serv += '<a href="javascript:void(0)" data-imgid="' + v + '" style="background:#' + v + '" ' + (j.selected_style == v ? 'data-color="chose"' : '') + ' >\n\
                                                             <span class="chose_icon hidden"></span>\n\
-                                                            <span class="chose_icon1 ' + (j.selected_style == v.description ? '' : 'hidden') + '"><i class="iconfont icon-zhengque "></i></span>\n\
+                                                            <span class="chose_icon1 ' + (j.selected_style == v ? '' : 'hidden') + '"><i class="iconfont icon-zhengque "></i></span>\n\
                                                         </a>';
                                 });
                                 _serv += '</dl></div>\n\
@@ -220,9 +220,9 @@ function openpcController($scope, $http, $location) {
                                              </dl>\n\
                                              <dl class="colorchoose hidden">';
                                 $.each(j.colors, function (k, v) {
-                                    _serv += '<a href="javascript:void(0)" data-imgid="' + v.id + '" style="background:' + v.value + '" ' + (j.selected_style == v.description ? 'data-color="chose"' : '') + ' >\n\
+                                    _serv += '<a href="javascript:void(0)" data-imgid="' + v + '" style="background:#' + v + '" ' + (j.selected_style == v ? 'data-color="chose"' : '') + ' >\n\
                                                 <span class="chose_icon hidden"></span>\n\
-                                                <span class="chose_icon1 ' + (j.selected_style == v.description ? '' : 'hidden') + '"><i class="iconfont icon-zhengque "></i></span>\n\
+                                                <span class="chose_icon1 ' + (j.selected_style == v ? '' : 'hidden') + '"><i class="iconfont icon-zhengque "></i></span>\n\
                                             </a>';
                                 });
                                 _serv += '</dl></div>\n\

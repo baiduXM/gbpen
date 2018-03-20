@@ -38,48 +38,55 @@ class WebsiteController extends BaseController {
             $where .= " AND id NOT IN($notin)";
         }
         if ($search) {
-            $where .= " AND name like '%$search%'";
+            $where .= " AND (name like '%$search%' OR name_bak like '%$search%') ";
         }
         if ($classify) {
             $where .= " AND classify='$classify'";
         }
         $join = '';
         $prefix = Config::get('database.connections.mysql.prefix');
-        if ($color) {
-            $join = ' LEFT JOIN ' . $prefix . 'template_to_color t_r ON t.id=t_r.template_id LEFT JOIN ' . $prefix . 'color c ON t_r.color_id=c.id';
-            if (is_array($color)) {
-                $in = implode("','", $color);
-                $where .= " AND color IN('$in')";
-            } else {
-                $where .= " AND color='$color'";
-            }
-        }
+        //搜索对应颜色的模板？
+        // if ($color) {
+        //     $join = ' LEFT JOIN ' . $prefix . 'template_to_color t_r ON t.id=t_r.template_id LEFT JOIN ' . $prefix . 'color c ON t_r.color_id=c.id';
+        //     if (is_array($color)) {
+        //         $in = implode("','", $color);
+        //         $where .= " AND color IN('$in')";
+        //     } else {
+        //         $where .= " AND color='$color'";
+        //     }
+        // }
         $website_info = WebsiteInfo::where('cus_id', $cus_id)->first();
         $total = DB::select('SELECT count(*) FROM ' . $prefix . 'template t' . $join . $where . ' GROUP BY name');
         $result['total'] = count($total);
-        $data = DB::select('SELECT t.id as tid,name,name_bak,tpl_name,classify,created_at,updated_at  FROM ' . $prefix . 'template t' . $join . $where . ' GROUP BY name ORDER BY tid limit ' . $form . ',' . $per_page);
+        $data = DB::select('SELECT t.id as tid,name,name_bak,tpl_name,classify,isColorful,color_style,created_at,updated_at  FROM ' . $prefix . 'template t' . $join . $where . ' GROUP BY name ORDER BY tid limit ' . $form . ',' . $per_page);
         $result['per_page'] = count($data);
         $result['current_page'] = $form + 1;
         $result['last_page'] = ceil($result['total'] / $per_page);
         $result['from'] = $form ? $form : 1;
         $result['to'] = $form + $result['per_page'];
-        $TemplateToColor = new TemplateToColor;
+        // $TemplateToColor = new TemplateToColor;//原换色模板？
         foreach ($data as $k => $v) {
             $std['id'] = $v->tid;
             $std['serial'] = $v->name;
+            $std['serial_bak'] = $v->name_bak;
             $std['name'] = $v->tpl_name;
             $std['classify'] = $v->classify;
+            $std['isColorful'] = $v->isColorful;
             if(!is_dir(public_path('templates/' . $v->name))){
                 $std['img'] = asset('templates/' . $v->name_bak . '/screenshot.jpg');
             }else{
                 $std['img'] = asset('templates/' . $v->name . '/screenshot.jpg');
             }
             // $std['img'] = asset('templates/' . $v->name . '/screenshot.jpg');
-            $std['colors'] = $TemplateToColor->getColorByTemplateId($v->tid);
+            // $std['colors'] = $TemplateToColor->getColorByTemplateId($v->tid);//原换色模板？
+            $color_str = str_replace('#', '', $v->color_style);
+            $std['colors'] = explode(',', $color_str);
+
             if ($type == 1) {
                 if ($v->tid == $website_info->pc_tpl_id) {
                     $std['is_selected'] = 1;
-                    $std['selected_style'] = Color::where('id', $website_info->pc_color_id)->pluck('color');
+                    // $std['selected_style'] = Color::where('id', $website_info->pc_color_id)->pluck('color');//原换色模板？
+                    $std['selected_style'] = $website_info->pc_color;
                 } else {
                     $std['is_selected'] = 0;
                     $std['selected_style'] = NULL;
@@ -88,7 +95,8 @@ class WebsiteController extends BaseController {
             if ($type == 2) {
                 if ($v->tid == $website_info->mobile_tpl_id) {
                     $std['is_selected'] = 1;
-                    $std['selected_style'] = Color::where('id', $website_info->mobile_color_id)->pluck('color');
+                    // $std['selected_style'] = Color::where('id', $website_info->mobile_color_id)->pluck('color');//原换色模板？
+                    $std['selected_style'] = $website_info->mobile_color;
                 } else {
                     $std['is_selected'] = 0;
                     $std['selected_style'] = NULL;
@@ -128,7 +136,7 @@ class WebsiteController extends BaseController {
         $form = Input::has('current_page') ? (Input::get('current_page') - 1) * $per_page : 0;
         $data = Template::where('cus_id', $cus_id)->where('type', $type)
                         ->LeftJoin('template_to_color', 'template.id', '=', 'template_to_color.template_id')
-                        ->LeftJoin('color', 'template_to_color.color_id', '=', 'color_id')->select('template.id as tid', 'name', 'tpl_name', 'created_at', 'updated_at')->groupBy('name')->get()->toArray();
+                        ->LeftJoin('color', 'template_to_color.color_id', '=', 'color_id')->select('template.id as tid', 'name', 'tpl_name', 'created_at', 'updated_at', 'classify')->groupBy('name')->get()->toArray();
         $i = 1;
         $website_info = WebsiteInfo::where('cus_id', $cus_id)->first();
         $mytemplelist = array();
@@ -154,6 +162,7 @@ class WebsiteController extends BaseController {
             }
             $mytemplelist[$i]['created_at'] = $d['created_at'];
             $mytemplelist[$i]['updated_at'] = $d['updated_at'];
+            $mytemplelist[$i]['classify'] = $d['classify'];
             $i++;
         }
         $result = $this->templatesList($type, $per_page, $form);
@@ -171,12 +180,33 @@ class WebsiteController extends BaseController {
         $type = Input::get('type'); //===模板类型：1-PC，2-手机===
         $id = Input::get('id'); //===所选模板id===
         $color = Input::get('color'); //===颜色名===
-        if (!empty($color) || $color != "undefined") {
-            $color_id = Color::where('color_en', $color)->pluck('id'); //===获取颜色id
-        } else {
-            $color_id = 0;
-        }
+        //原换色模板？
+        // if (!empty($color) || $color != "undefined") {
+        //     $color_id = Color::where('color_en', $color)->pluck('id'); //===获取颜色id
+        // } else {
+        //     $color_id = 0;
+        // }
         $template = Template::find($id); //查询模板
+        $webinfo = websiteInfo::where('cus_id', $cus_id)->select('pushed', 'pc_color', 'mobile_color')->first()->toArray();
+        if($type == 1) {
+            $color_before = $webinfo['pc_color'];
+        } else {
+            $color_before = $webinfo['mobile_color'];
+        }
+        if($template->isColorful == 1) {
+            if(!$color or $color == 'undefined') {
+                if(!$color_before or !strpos($template->color_style, $color_before)) {
+                    //之前的选色不存在或不属于所选模板时
+                    $color_str = str_replace('#', '', $template->color_style);
+                    $color_arr = explode(',', $color_str);
+                    $color = $color_arr['0'];
+                } else {
+                    $color = $color_before;
+                }                
+            }
+        } else {
+            $color = $color_before;
+        }
         $websiteconfig = WebsiteConfig::where('cus_id', $cus_id)->where('type', 2)->where('template_id', '0')->where('key', 'quickbar')->pluck('value'); //读取网站手机quickbar配置
         $websiteconfig = unserialize($websiteconfig);
         foreach ((array) $websiteconfig as $key => $val) {
@@ -186,7 +216,8 @@ class WebsiteController extends BaseController {
             }
         }
         $websiteconfig = serialize($websiteconfig);
-        $pushed = websiteInfo::where('cus_id', $cus_id)->pluck('pushed'); //===获取是否推送===
+        // $pushed = websiteInfo::where('cus_id', $cus_id)->pluck('pushed'); //===获取是否推送===
+        $pushed = $webinfo['pushed']; //===获取是否推送===
         if ($template->type == $type) {//===判断模板类型，1=PC，2=MOBILE===
             if ($type == 1) {
                 if ($pushed == 1 || $pushed == '3') {//pushed：0-不需推送，1-pc+手机，2-pc，3-手机;
@@ -194,22 +225,23 @@ class WebsiteController extends BaseController {
                 } else {
                     $pushed = 2;
                 }
-                $update = ['pc_tpl_id' => $id, 'pc_color_id' => $color_id, 'pushed' => $pushed];
+                // $update = ['pc_tpl_id' => $id, 'pc_color_id' => $color_id, 'pushed' => $pushed];
+                $update = ['pc_tpl_id' => $id, 'pc_color' => $color, 'pushed' => $pushed];
             } else {
                 if ($pushed == 1 || $pushed == '2') {
                     $pushed = 1;
                 } else {
                     $pushed = 3;
                 }
-                $update = ['mobile_tpl_id' => $id, 'mobile_color_id' => $color_id, 'pushed' => $pushed];
+                $update = ['mobile_tpl_id' => $id, 'mobile_color' => $color, 'pushed' => $pushed];
             }
             $update_result = WebsiteInfo::where('cus_id', $cus_id)->update($update);
             if ($update_result) {
                 WebsiteConfig::where('cus_id', $cus_id)->where('key', 'quickbar')->update(['value' => $websiteconfig, 'pushed' => 1]);
                 if ($type == 1) {
-                    $this->logsAdd('websiteinfo', __FUNCTION__, __CLASS__, 999, "切换PC模板，id：" . $id . "，颜色id：" . $color_id . "，cus_id", 0, $cus_id);
+                    $this->logsAdd('websiteinfo', __FUNCTION__, __CLASS__, 999, "切换PC模板，id：" . $id . "，颜色id：" . $color . "，cus_id", 0, $cus_id);
                 } else {
-                    $this->logsAdd('websiteinfo', __FUNCTION__, __CLASS__, 999, "切换手机模板，id：" . $id . "，颜色id：" . $color_id . "，cus_id", 0, $cus_id);
+                    $this->logsAdd('websiteinfo', __FUNCTION__, __CLASS__, 999, "切换手机模板，id：" . $id . "，颜色id：" . $color . "，cus_id", 0, $cus_id);
                 }
                 $result = ['err' => 0, 'msg' => 'success'];
             } else {
@@ -311,6 +343,8 @@ class WebsiteController extends BaseController {
                 $template->list2showtypetotal = $tpl_info->list2showtypetotal;
                 $template->list3showtypetotal = $tpl_info->list3showtypetotal;
                 $template->list4showtypetotal = $tpl_info->list4showtypetotal;
+                $template->isColorful = $tpl_info->isColorful;
+                $template->color_style = $tpl_info->color_style;
                 $template->save();
                 $insertedId = $template->id;
                 $src = app_path('views/templates/' . $name);
@@ -374,16 +408,30 @@ class WebsiteController extends BaseController {
         $customization = Customer::where('id', $id)->pluck('customization');
         if ($customization <= 0 or ( $customization != 3 && $customization != $type))
             return Response::json(['err' => 1001, 'msg' => '您未开启相应的高级定制，高级定制需要付费，如需要，请联系客服', 'data' => '您未开启高级定制，高级定制需要付费，如需要，请联系客服']);
-        if ($type == 1)
-            $name = WebsiteInfo::leftJoin('template', 'pc_tpl_id', '=', 'template.id')->where('website_info.cus_id', $id)->pluck('name');
-        else
-            $name = WebsiteInfo::leftJoin('template', 'mobile_tpl_id', '=', 'template.id')->where('website_info.cus_id', $id)->pluck('name');
+        if ($type == 1) {
+            $web_tpl = WebsiteInfo::leftJoin('template', 'pc_tpl_id', '=', 'template.id')->where('website_info.cus_id', $id)->select('name' , 'isColorful' , 'pc_color')->first()->toArray();
+            $name = $web_tpl['name'];
+            $isColorful = $web_tpl['isColorful'];
+            $color_dir = $web_tpl['pc_color'];
+        } else {
+            $web_tpl = WebsiteInfo::leftJoin('template', 'mobile_tpl_id', '=', 'template.id')->where('website_info.cus_id', $id)->select('name' , 'isColorful' , 'mobile_color')->first()->toArray();
+            $name = $web_tpl['name'];
+            $isColorful = $web_tpl['isColorful'];
+            $color_dir = $web_tpl['mobile_color'];
+        }            
         if (!strstr($name, "_"))
             return Response::json(['err' => 1002, 'msg' => '您已开启相应的高级定制，但未点亮相应的高级定制，请到页面编辑点亮', 'data' => '您已开启相应的高级定制，但未点亮相应的高级定制，请到页面编辑点亮']);
         $dst = app_path('views/templates/' . $name);
-        $dst_css = public_path('templates/' . $name . '/css');
-        $dst_js = public_path('templates/' . $name . '/js');
+        // $dst_css = public_path('templates/' . $name . '/css');
+        // $dst_js = public_path('templates/' . $name . '/js');
         $dst_json = public_path('templates/' . $name . '/json');
+        if($isColorful == 1) {
+            $dst_css = public_path('templates/' . $name . '/themes/' . $color_dir . '/css');
+            $dst_js = public_path('templates/' . $name . '/themes/' . $color_dir . '/js');
+        } else {
+            $dst_css = public_path('templates/' . $name . '/css');
+            $dst_js = public_path('templates/' . $name . '/js');
+        }
         //css处理
         $css = $this->getFile($dst_css);
         $css_0['title'] = '颜色样式';
@@ -478,14 +526,29 @@ class WebsiteController extends BaseController {
         $filename = Input::get('filename');
         $file_type = explode('.', $filename);
         $file_type = end($file_type);
-        if ($type == 1)
-            $name = WebsiteInfo::leftJoin('template', 'pc_tpl_id', '=', 'template.id')->where('website_info.cus_id', $id)->pluck('name');
-        else
-            $name = WebsiteInfo::leftJoin('template', 'mobile_tpl_id', '=', 'template.id')->where('website_info.cus_id', $id)->pluck('name');
+        if ($type == 1) {
+            $web_tpl = WebsiteInfo::leftJoin('template', 'pc_tpl_id', '=', 'template.id')->where('website_info.cus_id', $id)->select('name' , 'isColorful' , 'pc_color')->first()->toArray();
+            $name = $web_tpl['name'];
+            $isColorful = $web_tpl['isColorful'];
+            $color_dir = $web_tpl['pc_color'];
+        } else {
+            $web_tpl = WebsiteInfo::leftJoin('template', 'mobile_tpl_id', '=', 'template.id')->where('website_info.cus_id', $id)->select('name' , 'isColorful' , 'mobile_color')->first()->toArray();
+            $name = $web_tpl['name'];
+            $isColorful = $web_tpl['isColorful'];
+            $color_dir = $web_tpl['mobile_color'];
+        }
         if ($file_type == 'css') {
-            $dst = public_path('templates/' . $name . '/css/' . $filename);
+            if($isColorful == 1) {
+                $dst = public_path('templates/' . $name . '/themes/' . $color_dir . '/css/' . $filename);
+            } else {
+                $dst = public_path('templates/' . $name . '/css/' . $filename);
+            }            
         } elseif ($file_type == 'js') {
-            $dst = public_path('templates/' . $name . '/js/' . $filename);
+            if($isColorful == 1) {
+                $dst = public_path('templates/' . $name . '/themes/' . $color_dir . '/js/' . $filename);
+            } else {
+                $dst = public_path('templates/' . $name . '/js/' . $filename);
+            }            
         } elseif ($file_type == 'json') {
             $dst = public_path('templates/' . $name . '/json/' . $filename);
         } elseif ($file_type == 'html') {
@@ -504,10 +567,17 @@ class WebsiteController extends BaseController {
         $img_array = Input::get('fileimg');
         if ($img_array)
             $img_array = explode(',', $img_array);
-        if ($type == 1)
-            $template = WebsiteInfo::join('template', 'pc_tpl_id', '=', 'template.id')->where('website_info.cus_id', $cus_id)->pluck('name');
-        else
-            $template = WebsiteInfo::join('template', 'mobile_tpl_id', '=', 'template.id')->where('website_info.cus_id', $cus_id)->pluck('name');
+        if ($type == 1) {
+            $web_tpl = WebsiteInfo::join('template', 'pc_tpl_id', '=', 'template.id')->where('website_info.cus_id', $cus_id)->select('name' , 'isColorful' , 'pc_color')->first()->toArray();
+            $template = $web_tpl['name'];
+            $isColorful = $web_tpl['isColorful'];
+            $color_dir = $web_tpl['pc_color'];
+        } else {
+            $web_tpl = WebsiteInfo::join('template', 'mobile_tpl_id', '=', 'template.id')->where('website_info.cus_id', $cus_id)->select('name' , 'isColorful' , 'mobile_color')->first()->toArray();
+            $template = $web_tpl['name'];
+            $isColorful = $web_tpl['isColorful'];
+            $color_dir = $web_tpl['mobile_color'];
+        }
         $fail = [];
         if ($filename === NULL || $content === NULL) {
             $result = ['err' => 1001, 'msg' => '提交数据错误'];
@@ -526,9 +596,17 @@ class WebsiteController extends BaseController {
             $file_type = explode('.', $filename);
             $file_type = end($file_type);
             if ($file_type == 'css') {
-                $dst = public_path('templates/' . $template . '/css/' . $filename);
+                if($isColorful == 1) {
+                    $dst = public_path('templates/' . $template . '/themes/' . $color_dir . '/css/' . $filename);
+                } else {
+                    $dst = public_path('templates/' . $template . '/css/' . $filename);
+                }                
             } elseif ($file_type == 'js') {
-                $dst = public_path('templates/' . $template . '/js/' . $filename);
+                if($isColorful == 1) {
+                    $dst = public_path('templates/' . $template . '/themes/' . $color_dir . '/js/' . $filename);
+                } else {
+                    $dst = public_path('templates/' . $template . '/js/' . $filename);
+                }                
             } elseif ($file_type == 'json') {
                 $dst = public_path('templates/' . $template . '/json/' . $filename);
             } else {
@@ -738,23 +816,25 @@ class WebsiteController extends BaseController {
             $template->list3showtypetotal = $tpl_info['template']['list3showtypetotal'];
             $template->list4showtypetotal = $tpl_info['template']['list4showtypetotal'];
             $template->updated_at = date("Y-m-d H:i:s", time());
+            $template->isColorful = $tpl_info['template']['isColorful'];
+            $template->color_style = $tpl_info['template']['colorOption'];
             $insert_rst = $template->save();
-            if ($insert_rst) {
-                $insert_id = $template->id;
-                $color_arr = $tpl_info['tpl_color'];
-                $tpl_color = array();
-                $i = 0;
-                TemplateToColor::where('template_id', $insert_id)->delete();
-                if (count($color_arr) > 0) {
-                    foreach ($color_arr as $color) {
-                        $tpl_color[$i]['template_id'] = $insert_id;
-                        $tpl_color[$i]['color_code'] = Config::get('color.' . $color);
-                        $tpl_color[$i]['color_id'] = Color::where('color_en', $color)->pluck('id');
-                        $i++;
-                    }
-//                    TemplateToColor::insert($tpl_color); // bug插入数据库错误
-                }
-            }
+//             if ($insert_rst) {
+//                 $insert_id = $template->id;
+//                 $color_arr = $tpl_info['tpl_color'];
+//                 $tpl_color = array();
+//                 $i = 0;
+//                 TemplateToColor::where('template_id', $insert_id)->delete();
+//                 if (count($color_arr) > 0) {
+//                     foreach ($color_arr as $color) {
+//                         $tpl_color[$i]['template_id'] = $insert_id;
+//                         $tpl_color[$i]['color_code'] = Config::get('color.' . $color);
+//                         $tpl_color[$i]['color_id'] = Color::where('color_en', $color)->pluck('id');
+//                         $i++;
+//                     }
+// //                    TemplateToColor::insert($tpl_color); // bug插入数据库错误
+//                 }
+//             }
             $result = ['err' => 1000, 'msg' => '上传模板成功'];
             $this->logsAdd('n', __FUNCTION__, __CLASS__, 999, "模板上传", 0, $truth_name);
         } else {
@@ -837,6 +917,8 @@ class WebsiteController extends BaseController {
                 'list2showtypetotal' => ($type == 1) ? 0 : $config_arr['Config']['List2ShowtypeTotal'],
                 'list3showtypetotal' => ($type == 1) ? 0 : $config_arr['Config']['List3ShowtypeTotal'],
                 'list4showtypetotal' => ($type == 1) ? 0 : $config_arr['Config']['List4ShowtypeTotal'],
+                'isColorful' => isset($config_arr['Config']['ColorOption']) ? ($config_arr['Config']['ColorOption'] ? 1 : 0) : 0,
+                'colorOption' => isset($config_arr['Config']['ColorOption']) ? $config_arr['Config']['ColorOption'] : '',
             );
             if (trim($config_arr['Config']['StyleColors']) != "") {
                 $color_arr = explode(',', $config_arr['Config']['StyleColors']);
@@ -850,7 +932,12 @@ class WebsiteController extends BaseController {
                 mkdir(app_path("views/templates/$tpl_dir"));
             }
             $this->rcopy($dir_site, public_path("templates/$tpl_dir"));
-            @$this->imgUrl($tpl_name);
+            if (isset($config_arr['Config']['ColorOption'])) {
+                $this->imgUrls($tpl_name);
+                // $this->imgUrl($tpl_name);
+            } else {
+                $this->imgUrl($tpl_name);
+            }            
             @$this->_remove_Dir(public_path('temp_templates/' . $file_info['filename']));
             $file_list = $this->getFile(public_path("templates/$tpl_dir"));
             if (!file_exists(public_path("templates/$tpl_dir/json"))) {
@@ -864,7 +951,7 @@ class WebsiteController extends BaseController {
                         rename(public_path("templates/$tpl_dir/$file_name"), public_path("templates/$tpl_dir/json/$file_name"));
                         break;
                     case "html" :
-                        $pattern = array("/\<script(.*)preview\.js(.*)\<\/script\>/i", "/\<!--(.*)\{(.*)\}(.*)--\>/i");
+                        $pattern = array("/\<script(.*)preview\.js(.*)\<\/script\>/i","/\<script(.*)preview-url\.js(.*)\<\/script\>/i", "/\<!--(.*)\{(.*)\}(.*)--\>/i");
                         file_put_contents(public_path("templates/$tpl_dir/$file_name"), preg_replace($pattern, '', file_get_contents(public_path("templates/$tpl_dir/$file_name"))));
                         rename(public_path("templates/$tpl_dir/$file_name"), app_path("views/templates/$tpl_dir/$file_name"));
                         break;
@@ -983,15 +1070,20 @@ class WebsiteController extends BaseController {
     //模板官网图片上传
     public function imgUrl($tpl_name){
         $template = public_path("templates/".$tpl_name);
+        $i_path = public_path('customers/gbpen/img_url');
         $destinationPath = 'gbpen/img_url/' . $tpl_name . '_screenshot.jpg';//大图在静态的路径
         $s_path = public_path('customers/gbpen/img_urls');
         $s_target = 'gbpen/img_urls/' . $tpl_name . '_screenshot.jpg';//缩略图在静态的路径
+        if(!is_dir($i_path)){
+            @mkdir($i_path);
+        }
         if(!is_dir($s_path)){
             @mkdir($s_path);
         }
         if(is_dir($template)){
-            $img = $template.'/screenshot.jpg';//大图在主控的路径
+            $img = $template.'/screenshot.jpg';//大图源路径
             if(file_exists($img)){
+                copy($img, $i_path . '/' . $tpl_name . '_screenshot.jpg');//大图在主控的路径
                 $s_img = $s_path . '/' . $tpl_name . '_screenshot.jpg';//缩略图在主控的路径
                 $this->resizeImgs($img,$s_img);//生成缩略图
                 $conn = ftp_connect('172.16.0.4', 21);
@@ -1033,5 +1125,52 @@ class WebsiteController extends BaseController {
         imagejpeg($canvas, $path, 10);
         imagedestroy($canvas);
     }
-
+    //换色模板上传
+    public function imgUrls($tpl_name) {
+        $template = public_path("templates/".$tpl_name);
+        $zip = new ZipArchive;
+        $zname = 'model_' . str_random(4) . '.zip';
+        $path = public_path('customers/gbpen/' . $zname);//压缩包名
+        $destinationPath = '/gbpen/' . $zname;//压缩包上传至服务器路径
+        if ($zip->open($path, ZipArchive::CREATE) === TRUE) {
+            $handle = opendir($template);
+            while (($filename = readdir($handle)) !== FALSE) {
+                if ($filename == '.' || $filename == '..' || !strpos($filename, '_screenshot.jpg')) {
+                    continue;
+                } else {
+                    $img = $template . '/' . $filename;//大图源路径
+                    $name = $tpl_name . '_' . $filename;//图片文件名
+                    $i_path = public_path('customers/gbpen/img_url') . '/' . $name;
+                    copy($img, $i_path);
+                    $s_path = public_path('customers/gbpen/img_urls') . '/' . $name;//缩略图在主控的路径
+                    $this->resizeImgs($i_path,$s_path);//生成缩略图
+                    $zip->addFile($i_path, 'img_url/' . $name);
+                    $zip->addFile($s_path, 'img_urls/' . $name);
+                }
+            }
+            closedir($handle);
+            $zip->close();
+            //上传到服务器
+            if(file_exists($path)) {
+                $conn = ftp_connect('172.16.0.4', 21);
+                if($conn){
+                    ftp_login($conn, 'tongYi', 'B164RLFh');
+                    ftp_pasv($conn, 1);
+                    ftp_put($conn, $destinationPath , $path, FTP_BINARY);
+                    ftp_put($conn, "/gbpen/model_unzip.php", public_path("packages/model_unzip.php"), FTP_ASCII);
+                    ftp_close($conn);
+                }
+                $conn_b = ftp_connect('172.16.0.20', 21);
+                if($conn_b){
+                    ftp_login($conn_b, 'tongyi', 'B164RLFh');
+                    ftp_pasv($conn_b, 1);
+                    ftp_put($conn_b, $destinationPath , $path, FTP_BINARY);
+                    ftp_put($conn_b, "/gbpen/model_unzip.php", public_path("packages/model_unzip.php"), FTP_ASCII);
+                    ftp_close($conn_b);
+                }
+                file_get_contents("http://172.16.0.4/gbpen/model_unzip.php?model=" . $zname);
+                file_get_contents("http://172.16.0.20/gbpen/model_unzip.php?model=" . $zname);
+            }            
+        }        
+    }
 }
