@@ -1654,7 +1654,7 @@ class HtmlController extends BaseController
                 $wcategoryhtml = $mcategorypage['wx_paths'];
                 $warticlehtml = $marticlepage['wx_paths'];
             }
-            if($this->is_applets == 1) {//如果小程序开启，算压缩进度时需要加上小程序的页面
+            if($this->is_applets == 1 && $this->mobilepush) {//如果小程序开启，算压缩进度时需要加上小程序的页面
                 $this->percent = 20 / ($count + $this->mobile_count);
             } else {
                 $this->percent = 20 / $count;
