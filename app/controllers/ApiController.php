@@ -117,6 +117,40 @@ class ApiController extends BaseController
             $pc_color = trim(Input::get('pc_color'))?trim(Input::get('pc_color')):'';
             //换色手机模板选色
             $mobile_color = trim(Input::get('mobile_color'))?trim(Input::get('mobile_color')):'';
+            //小程序
+            $update['is_applets'] = trim(Input::get('is_applets'))?trim(Input::get('is_applets')):'';//是否开通
+            //小程序ID
+            $update['AppId'] = trim(Input::get('AppId'))?trim(Input::get('AppId')):'';
+            //小程序秘钥
+            $update['AppSecret'] = trim(Input::get('AppSecret'))?trim(Input::get('AppSecret')):'';
+            //开启小程序时，若无传值，用默认值 
+            if($update['is_applets']) {               
+                //小程序A服地址
+                $update['xcx_a'] = trim(Input::get('xcx_a'))?trim(Input::get('xcx_a')):'172.16.0.45';
+                //小程序B服地址
+                $update['xcx_b'] = trim(Input::get('xcx_b'))?trim(Input::get('xcx_b')):'172.16.0.46';
+                //小程序A服用户名
+                $update['xusr_a'] = trim(Input::get('xusr_a'))?trim(Input::get('xusr_a')):'xcx5067';
+                //小程序B服用户名
+                $update['xusr_b'] = trim(Input::get('xusr_b'))?trim(Input::get('xusr_b')):'xcx5067';
+                //小程序A服密码
+                $update['xpwd_a'] = trim(Input::get('xpwd_a'))?trim(Input::get('xpwd_a')):'hj5%79M#x5k';
+                //小程序B服密码
+                $update['xpwd_b'] = trim(Input::get('xpwd_b'))?trim(Input::get('xpwd_b')):'hj5%79M#x5k';
+            } else {
+                //小程序A服地址
+                $update['xcx_a'] = '';
+                //小程序B服地址
+                $update['xcx_b'] = '';
+                //小程序A服用户名
+                $update['xusr_a'] = '';
+                //小程序B服用户名
+                $update['xusr_b'] = '';
+                //小程序A服密码
+                $update['xpwd_a'] = '';
+                //小程序B服密码
+                $update['xpwd_b'] = '';
+            }            
 
             //===绑定账户===
             $switch_cus_name = Input::get('switch_cus_name');
@@ -194,14 +228,31 @@ class ApiController extends BaseController
                         @$common->postsend(trim($ftp_array_b[0], '/') . "/urlbind.php", array('cus_name' => $update['name'], 'stage' => $update['stage'], 'pc_domain' => $update['pc_domain'], 'mobile_domain' => $update['mobile_domain'], 'stage_old' => $coustomer_old['stage'], 'pc_domain_old' => $coustomer_old['pc_domain'], 'mobile_domain_old' => $coustomer_old['mobile_domain']));
                     }
                 }
-                //如果有ftp_b
-                // if($update['ftp_address_b']){
-                //         $ftp_array_b = explode(':', $update['ftp_address_b']);
-                //         if ($update['stage'] != $coustomer_old['stage'] or $update['pc_domain'] != $coustomer_old['pc_domain'] or $update['mobile_domain'] != $coustomer_old['mobile_domain']) {
-                //         $common = new CommonController();
-                //         @$common->postsend(trim($ftp_array_b[0], '/') . "/urlbind.php", array('cus_name' => $update['name'], 'stage' => $update['stage'], 'pc_domain' => $update['pc_domain'], 'mobile_domain' => $update['mobile_domain'], 'stage_old' => $coustomer_old['stage'], 'pc_domain_old' => $coustomer_old['pc_domain'], 'mobile_domain_old' => $coustomer_old['mobile_domain']));
-                //     }
-                // }
+
+                //如果是新开小程序
+                if(!$coustomer_old['is_applets'] and $update['is_applets']) {
+                    //压缩图片
+                    $path = public_path('customers/' . $update['name'] . '/img.zip');//压缩包路径
+                    $images = public_path('customers/' . $update['name'] . '/images');//图片路径
+                    $zip = new ZipArchive;
+                    if ($zip->open($path, ZipArchive::CREATE) === TRUE) {
+                        $upimg = new UploadController();
+                        $upimg->addImagesToZip($images,$zip);
+                        $zip->close();
+                        //建立远程目录，上传压缩包 
+                        //A服
+                        if($update['xcx_a']) {
+                            $this->checkWx($update['xcx_a'], $update['xusr_a'], $update['xpwd_a'], $update['name'], 0, $path);
+                        }
+                        //B服
+                        if($update['xcx_b']) {
+                            $this->checkWx($update['xcx_b'], $update['xusr_b'], $update['xpwd_b'], $update['name'], 0, $path);
+                        }
+                        //删除压缩包
+                        @unlink($path); 
+                    }                                       
+                }
+                
                 if ($save) {
                     $result = ['err' => 1000, 'msg' => '更新用户成功'];
                 } else {
@@ -407,6 +458,18 @@ class ApiController extends BaseController
                             @$common->postsend(trim($ftp_array_b[0], '/') . "/urlbind.php", array('cus_name' => $update['name'], 'stage' => $update['stage'], 'pc_domain' => $update['pc_domain'], 'mobile_domain' => $update['mobile_domain']));
                             $this->logsAdd("customer", __FUNCTION__, __CLASS__, 1, "备用ftp上创建用户", 1);
                             $result = ['err' => 1000, 'msg' => '备用ftp上创建用户成功'];
+                        }
+                    }
+
+                    //是否开启小程序,建立远程目录
+                    if($update['is_applets']) {
+                        //A服
+                        if($update['xcx_a']) {
+                            $this->checkWx($update['xcx_a'], $update['xusr_a'], $update['xpwd_a'], $update['name']);
+                        }
+                        //B服
+                        if($update['xcx_b']) {
+                            $this->checkWx($update['xcx_b'], $update['xusr_b'], $update['xpwd_b'], $update['name']);
                         }
                     }
                 } else {
@@ -1466,6 +1529,39 @@ class ApiController extends BaseController
             $result = ['err' => 1002, 'msg' => '验证信息不正确']; 
         }
         return Response::json($result);
+    }
+
+    //建立小程序服务器上的客户目录
+    private function checkWx($ftp, $usr, $pwd, $name, $is_new = 1, $path = '') {
+        $xftp_array = explode(':', $ftp);
+        $xftp_array[1] = isset($xftp_array[1]) ? $xftp_array[1] : 21;
+        $xconn = ftp_connect($xftp_array[0], $xftp_array[1]);
+        ftp_login($xconn, $usr, $pwd);        
+        //客户目录和图片目录
+        if(@ftp_mkdir($xconn, $name)) {//创建失败，则目录已存在
+            // ftp_mkdir($xconn, $name);
+            ftp_mkdir($xconn, $name . '/images');
+            ftp_mkdir($xconn, $name . '/images/ueditor');
+            ftp_mkdir($xconn, $name . '/images/l');
+            ftp_mkdir($xconn, $name . '/images/l/category');
+            ftp_mkdir($xconn, $name . '/images/l/articles');
+            ftp_mkdir($xconn, $name . '/images/l/common');
+            ftp_mkdir($xconn, $name . '/images/l/page_index');
+            ftp_mkdir($xconn, $name . '/images/s');
+            ftp_mkdir($xconn, $name . '/images/s/category');
+            ftp_mkdir($xconn, $name . '/images/s/articles');
+            ftp_mkdir($xconn, $name . '/images/s/common');
+            ftp_mkdir($xconn, $name . '/images/s/page_index');
+        }
+        //如果不是新建账号，进行图片推送
+        ftp_pasv($xconn, 1);
+        if(!$is_new && file_exists($path)) {
+            ftp_put($xconn, $name . '/img.zip', $path, FTP_BINARY);
+            ftp_put($xconn, $name . '/img_unzip.php', public_path('packages/iwx_unzip.php'), FTP_ASCII);
+            $ftp_pcdomain = "http://" . $xftp_array[0] . '/' . $name;
+            file_get_contents("$ftp_pcdomain/img_unzip.php");
+        }        
+        ftp_close($xconn);
     }
 
 }

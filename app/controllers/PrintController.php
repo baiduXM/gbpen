@@ -109,6 +109,13 @@ class PrintController extends BaseController
     public $is_demo;
 
     /**
+     * 是否开启小程序
+     *
+     * @var string
+     */
+    public $is_applets;
+
+    /**
      * 定义用户id、用户名、
      * @param string $showtpye
      * @param string $type
@@ -119,7 +126,9 @@ class PrintController extends BaseController
         $this->type = $type;
         $this->cus_id = Auth::id();
         $this->customer = Auth::user()->name;
-        $this->is_demo = Customer::where('id', $this->cus_id)->pluck('is_demo');
+        $cus_conf = Customer::where('id', $this->cus_id)->select('is_demo', 'is_applets')->first()->toArray();
+        $this->is_demo = $cus_conf['is_demo'];
+        $this->is_applets = $cus_conf['is_applets'];
         if ($this->showtype == 'preview') {
             $this->source_dir = '/customers/' . $this->customer . '/images/'; //asset('customers/' . $this->customer . '/images/') . '/';
             if ($this->type == 'mobile') {
@@ -213,7 +222,7 @@ class PrintController extends BaseController
                 $this->isColorful =  $theme_info['isColorful']; 
                 //===推送PC模板调用===
                 if(empty($this->themename) or !is_dir(public_path('/templates/'.$this->themename)) or !is_dir(app_path('/views/templates/'.$this->themename))){
-                    $this->themename = $this->themename = $theme_info['name_bak']; ;
+                    $this->themename = $theme_info['name_bak'];
                 }
                 //===推送PC换色模板处理===
                 if ($theme_info['isColorful'] == 1) {
@@ -1055,7 +1064,22 @@ class PrintController extends BaseController
                     } else {
                         file_put_contents(public_path("customers/" . $this->customer . '/mobile' . '/quickbar.json'), "quickbarCallback(" . json_encode($quickbarCallback) . ")");
                     }
+                }                
+            }
+            //如果有小程序
+            if($this->is_applets and $this->type == 'mobile') {
+                //匹配json数据的正则(json类型，搜索页面，栏目链接)
+                $wx_pattern = ["/(\"type\"\:\")m1(\")/", "/(\"data\"\:\")\\\\\/(search\.php\")/", "/(\"url\"\:\")\\\\\/(category)?/"];
+                //替换为
+                $wx_replace = ['${1}w1${2}','${1}\/' . $this->customer . '\/${2}', '${1}\/' . $this->customer . '\/${2}'];
+                //匹配替换
+                $wx_out = preg_replace($wx_pattern, $wx_replace, json_encode($quickbarCallback));
+                //检测目录
+                if(!is_dir(public_path("customers/" . $this->customer . '/wx'))) {
+                    mkdir(public_path('customers/' . $this->customer . '/wx'));
                 }
+                //放入文件
+                file_put_contents(public_path("customers/" . $this->customer . '/wx/quickbar.json'), "quickbarCallback(" . $wx_out . ")");
             }
         }
     }
@@ -3310,6 +3334,29 @@ class PrintController extends BaseController
             }
             file_put_contents($path, $output);
             $paths[] = $path;
+            //是否开通小程序
+            if($this->is_applets == 1 && $this->type == 'mobile') {
+                //小程序替换正则(链接，quickbar引入)
+                $wx_pattern = ["/(src|href)(=[\"'])(\/)(images|js|css|category|detail|quickbar|themes)/", "/quickbar(\.js\?\d+mobile)/"];
+                //替换为
+                $wx_replace = ['${1}${2}../${4}', 'quickbar-wpage${1}'];
+                //检测和创建目录
+                if(!is_dir(public_path('customers/' . $this->customer . '/wx'))) {
+                    mkdir(public_path('customers/' . $this->customer . '/wx'));
+                    mkdir(public_path('customers/' . $this->customer . '/wx/category'));
+                } else {
+                    if(!is_dir(public_path('customers/' . $this->customer . '/wx/category'))) {
+                        mkdir(public_path('customers/' . $this->customer . '/wx/category'));
+                    }
+                }
+                //页面路径
+                $wx_path = public_path('customers/' . $this->customer . '/wx/category/' . $id . '.html');
+                //匹配替换
+                $wx_out = preg_replace($wx_pattern, $wx_replace, $output);
+                //栏目页面
+                file_put_contents($wx_path, $wx_out);
+                $wx_paths[] = $wx_path;
+            }
             $nowpercent = $last_html_precent + $html_precent;
             if (floor($nowpercent) !== floor($last_html_precent)) {
                 echo '<div class="prompt">' . floor($nowpercent) . '%</div><script type="text/javascript">refresh(' . floor($nowpercent) . ');</script>';
@@ -3342,6 +3389,29 @@ class PrintController extends BaseController
                     }
                     file_put_contents($path, $output);
                     $paths[] = $path;
+                    //是否开通小程序                
+                    if($this->is_applets == 1 && $this->type == 'mobile') {
+                        //检测和创建目录
+                        if(!is_dir(public_path('customers/' . $this->customer . '/wx'))) {
+                            mkdir(public_path('customers/' . $this->customer . '/wx'));
+                            mkdir(public_path('customers/' . $this->customer . '/wx/category'));
+                        } else {
+                            if(!is_dir(public_path('customers/' . $this->customer . '/wx/category'))) {
+                                mkdir(public_path('customers/' . $this->customer . '/wx/category'));
+                            }
+                        }
+                        //页面路径
+                        $wx_path = public_path('customers/' . $this->customer . '/wx/category/' . $id . '_' . $i . '.html');
+                        //小程序替换正则(链接，quickbar引入)
+                        $wx_pattern = ["/(src|href)(=[\"'])(\/)(images|js|css|category|detail|quickbar|themes)/", "/quickbar(\.js\?\d+mobile)/"];
+                        //替换为
+                        $wx_replace = ['${1}${2}../${4}', 'quickbar-wpage${1}'];
+                        //匹配替换                        
+                        $wx_out = preg_replace($wx_pattern, $wx_replace, $output);
+                        //栏目页面
+                        file_put_contents($wx_path, $wx_out);
+                        $wx_paths[] = $wx_path;
+                    }
                     $nowpercent = $last_html_precent + $html_precent;
                     if (floor($nowpercent) !== floor($last_html_precent)) {
                         echo '<div class="prompt">' . floor($nowpercent) . '%</div><script type="text/javascript">refresh(' . floor($nowpercent) . ');</script>';
@@ -3353,7 +3423,9 @@ class PrintController extends BaseController
                     $last_html_precent += $html_precent;
                 }
             }
-            return $paths;
+            $res['paths'] = $paths;
+            $res['wx_paths'] = isset($wx_paths) ? $wx_paths : null;
+            return $res;
             //return View::make('templates.'.$this->themename.'.'.$viewname,$result);
         }
     }
@@ -3801,6 +3873,29 @@ class PrintController extends BaseController
             $path = $this->type == 'pc' ? public_path('customers/' . $this->customer . '/detail/' . $article['id'] . '.html') : public_path('customers/' . $this->customer . '/mobile/detail/' . $article['id'] . '.html');
             file_put_contents($path, $output);
             $paths[] = $path;
+            //是否开通小程序                  
+            if($this->is_applets == 1 && $this->type == 'mobile') {
+                //检测和创建目录
+                if(!is_dir(public_path('customers/' . $this->customer . '/wx'))) {
+                    mkdir(public_path('customers/' . $this->customer . '/wx'));
+                    mkdir(public_path('customers/' . $this->customer . '/wx/detail'));
+                } else {
+                    if(!is_dir(public_path('customers/' . $this->customer . '/wx/detail'))) {
+                        mkdir(public_path('customers/' . $this->customer . '/wx/detail'));
+                    }
+                }
+                //页面路径
+                $wx_path = public_path('customers/' . $this->customer . '/wx/detail/' . $article['id'] . '.html');
+                //小程序替换正则(链接，quickbar引入)
+                $wx_pattern = ["/(src|href)(=[\"'])(\/)(images|js|css|category|detail|quickbar|themes)/", "/quickbar(\.js\?\d+mobile)/"];
+                //替换为
+                $wx_replace = ['${1}${2}../${4}', 'quickbar-wpage${1}'];
+                //匹配替换                        
+                $wx_out = preg_replace($wx_pattern, $wx_replace, $output);
+                //栏目页面
+                file_put_contents($wx_path, $wx_out);
+                $wx_paths[] = $wx_path;                
+            }
             $nowpercent = $last_html_precent + $html_precent;
             if (floor($nowpercent) !== floor($last_html_precent)) {
                 echo '<div class="prompt">' . floor($nowpercent) . '%</div><script type="text/javascript">refresh(' . floor($nowpercent) . ');</script>';
@@ -3811,7 +3906,9 @@ class PrintController extends BaseController
             }
             $last_html_precent += $html_precent;
         }
-        return $paths;
+        $res['paths'] = $paths;
+        $res['wx_paths'] = isset($wx_paths) ? $wx_paths : null;
+        return $res;
     }
 
     /**
@@ -4275,6 +4372,19 @@ class PrintController extends BaseController
             file_put_contents(public_path('customers/' . $this->customer . '/article_data.json'), $article_json);
         } else {
             file_put_contents(public_path('customers/' . $this->customer . '/mobile/article_data.json'), $article_json);
+            //如果开启小程序
+            if($this->is_applets) {
+                //json的替换正则
+                $wx_pattern = "/\\\\\/(images|js|css|category|detail|themes)\\\/";
+                //替换json中的链接
+                $wx_json = preg_replace($wx_pattern, '.\/${1}\\', $article_json);
+                //检测小程序目录是否存在
+                if(!is_dir(public_path('customers/' . $this->customer . '/wx'))) {
+                    mkdir(public_path('customers/' . $this->customer . '/wx'));
+                }
+                //生成微信搜索的json文件
+                file_put_contents(public_path('customers/' . $this->customer . '/wx/article_data.json'), $wx_json);
+            }
         }
 
         $content = $publicdata['repleace']['searchresult_do.html'];

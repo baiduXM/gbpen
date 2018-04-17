@@ -14,7 +14,7 @@ class HtmlController extends BaseController
 {
 
     /**
-     * html生成进度
+     * 每个html生成所占进度
      *
      * @var int
      */
@@ -28,7 +28,7 @@ class HtmlController extends BaseController
     private $last_html_precent;
 
     /**
-     * 推送进度
+     * 每个文件压缩所占进度
      *
      * @var int
      */
@@ -86,6 +86,20 @@ class HtmlController extends BaseController
      */
     private $allow_push_count = 2;
 
+    /**
+     * 是否开启小程序
+     *
+     * @var string
+     */
+    private $is_applets;
+
+    /**
+     * 手机页面数量
+     *
+     * @var string
+     */
+    private $mobile_count = 0;
+
     function __construct()
     {
         if (Auth::check()) {
@@ -119,7 +133,28 @@ class HtmlController extends BaseController
         file_put_contents($path, $ouput = ob_get_contents());
         ob_end_clean();
         // $quickbar_json=$template->quickBarJson();
-        return $path;
+        //是否开启小程序
+        if($this->is_applets == 1 && $type == 'mobile') {
+            if(!is_dir(public_path('customers/' . $this->customer . '/wx'))) {
+                mkdir(public_path('customers/' . $this->customer . '/wx'));                
+            }
+            //页面路径
+            $wx_path = public_path('customers/' . $this->customer . '/wx/index.html');
+            //检测小程序目录是否存在
+            if(!is_dir(public_path('customers/' . $this->customer . '/wx'))) {
+                mkdir(public_path('customers/' . $this->customer . '/wx'));
+            }
+            //小程序替换正则(链接，quickbar引入)
+            $wx_pattern = ["/(src|href)(=[\"'])(\/)(images|js|css|category|detail|quickbar|themes)/", "/quickbar(\.js\?\d+mobile)/"];
+            //替换为
+            $wx_replace = ['${1}${2}./${4}', 'quickbar-windex${1}'];
+            //匹配替换                       
+            $wx_out = preg_replace($wx_pattern, $wx_replace, $ouput);
+            file_put_contents($wx_path, $wx_out);
+        }
+        $res['path'] = $path;
+        $res['wx_path'] = isset($wx_path) ? $wx_path : null;
+        return $res;
     }
 
     /**
@@ -163,8 +198,9 @@ class HtmlController extends BaseController
                 $page_count = ceil($total / $per_page);
             }
             $paths = $template->categoryPush($id, $page_count, $publicdata, $this->last_html_precent, $this->html_precent);
-            $this->last_html_precent += ($this->html_precent * count($paths));
-            $result = array_merge((array)$result, (array)$paths);
+            $this->last_html_precent += ($this->html_precent * count($paths['paths']));
+            $result['paths'] = array_merge((array)$result['paths'], (array)$paths['paths']);
+            $result['wx_paths'] = array_merge((array)$result['wx_paths'], (array)$paths['wx_paths']);
         }
         return $result;
     }
@@ -192,8 +228,9 @@ class HtmlController extends BaseController
             $paths = array();
             if (count($articles)) {
                 $paths = @$template->articlepush($id, $publicdata, $this->last_html_precent, $this->html_precent);
-                $this->last_html_precent += ($this->html_precent * count($paths));
-                $result = array_merge((array)$result, (array)$paths);
+                $this->last_html_precent += ($this->html_precent * count($paths['paths']));
+                $result['paths'] = array_merge((array)$result['paths'], (array)$paths['paths']);
+                $result['wx_paths'] = array_merge((array)$result['wx_paths'], (array)$paths['wx_paths']);
             }
         }
         return $result;
@@ -233,7 +270,7 @@ class HtmlController extends BaseController
         $page_count = 2;
         $pc_per_page = CustomerInfo::where('cus_id', $this->cus_id)->pluck('pc_page_count');
         foreach ((array)$pc_classify_ids as $id) {
-            $c_ids = explode(',', ltrim($template->getChirldenCid($id, 1)));
+            $c_ids = explode(',', ltrim($template->getChirldenCid($id, 1)));//获取该栏目之下的所有下级栏目
             $a_c_type = Classify::where('id', $id)->pluck('type'); //取得栏目的type
             $pc_page_count_switch = CustomerInfo::where('cus_id', $this->cus_id)->pluck('pc_page_count_switch'); //页面图文列表图文显示个数是否分开控制开关
             if (isset($pc_page_count_switch) && $pc_page_count_switch == 1 && $a_c_type <= 3) {
@@ -279,14 +316,16 @@ class HtmlController extends BaseController
                 $c_ids = explode(',', $template->getChirldenCid($id, 1));
                 $total = Articles::whereIn('c_id', $c_ids)->where('cus_id', $this->cus_id)->where('mobile_show', '1')->count();
                 if ($total) {
-                    $page_count += ceil($total / $mobileper_page);
+                    $this->mobile_count += ceil($total / $mobileper_page);
                 } else {
-                    $page_count++;
+                    $this->mobile_count ++;
                 }
             }
         }
         $page_count += count($pc_article_ids);
-        $page_count += count($mobile_article_ids);
+        $this->mobile_count += count($mobile_article_ids);
+        $page_count += $this->mobile_count;
+
         return $page_count;
     }
 
@@ -362,7 +401,9 @@ class HtmlController extends BaseController
      */
     private function mobilehomepage_push()
     {
-        $mindexhtml = $this->homgepagehtml('mobile');
+        $mindexpage = $this->homgepagehtml('mobile');
+        $mindexhtml = $mindexpage['path'];//手机站首页
+        $windexhtml = $mindexpage['wx_path'];//小程序首
         $customerinfo = Customer::find($this->cus_id);
         $ftp_array = explode(':', $customerinfo->ftp_address);
         $port = $customerinfo->ftp_port;
@@ -403,6 +444,37 @@ class HtmlController extends BaseController
                 ftp_close($conn);
             }
         }
+        //小程序上传
+        if($this->is_applets) {
+            //A服上传
+            $xftp_array_a = explode(':', $customerinfo->xcx_a);
+            $xftp_array_a[1] = isset($xftp_array_a[1]) ? $xftp_array_a[1] : 21;
+            $connx_a = ftp_connect($xftp_array_a[0], $xftp_array_a[1]); 
+            if($connx_a) {
+                ftp_login($connx_a, $customerinfo->xusr_a, $customerinfo->xpwd_a);
+                ftp_pasv($connx_a, 1);
+                if (ftp_chdir($connx_a, $this->customer) == FALSE) {
+                    ftp_mkdir($connx_a, $this->customer);
+                }
+                ftp_put($connx_a, "/" . $this->customer . "/index.html", public_path('customers/' . $this->customer . '/wx/index.html'), FTP_ASCII);
+                ftp_close($connx_a);
+            }
+            //检测B服上传
+            if($customerinfo->xcx_b) {
+                $xftp_array_b = explode(':', $customerinfo->xcx_b);
+                $xftp_array_b[1] = isset($xftp_array_b[1]) ? $xftp_array_b[1] : 21;
+                $connx_b = ftp_connect($xftp_array_b[0], $xftp_array_b[1]); 
+                if($connx_b) {
+                    ftp_login($connx_b, $customerinfo->xusr_b, $customerinfo->xpwd_b);
+                    ftp_pasv($connx_b, 1);
+                    if (ftp_chdir($connx_b, $this->customer) == FALSE) {
+                        ftp_mkdir($connx_b, $this->customer);
+                    }
+                    ftp_put($connx_b, "/" . $this->customer . "/index.html", public_path('customers/' . $this->customer . '/wx/index.html'), FTP_ASCII);
+                    ftp_close($connx_b);
+                }
+            }
+        }
     }
 
     /**
@@ -430,8 +502,15 @@ class HtmlController extends BaseController
         $mobile_article_ids = array();
         if (isset($pushcid)) {
             if (!isset($end) || $end == 1) {
-                $mindexhtml = $this->homgepagehtml('mobile');
-                $msearchhtml = $this->sendData('mobile');
+                //返回静态页面的路径
+                $mindexpage = $this->homgepagehtml('mobile');                
+                $msearchpage = $this->sendData('mobile');
+                //手机站页面路径
+                $mindexhtml = $mindexpage['path'];
+                $msearchhtml = $msearchpage['path'];
+                //小程序页面路径
+                $windexhtml = $mindexpage['wx_path'];
+                $wsearchhtml = $msearchpage['wx_path'];
             }
             $mobile_classify_ids = array();
             $mobile_article_ids = array();
@@ -441,16 +520,34 @@ class HtmlController extends BaseController
                 $mobile_article_ids = Articles::where('cus_id', $this->cus_id)->where('mobile_show', 1)->where("c_id", $pushcid)->lists('id');
             }
         } else {
-            $mindexhtml = $this->homgepagehtml('mobile');
-            $msearchhtml = $this->sendData('mobile');
+            //返回生成的静态页面的路径
+            $mindexpage = $this->homgepagehtml('mobile');                
+            $msearchpage = $this->sendData('mobile');
+            //手机站页面路径
+            $mindexhtml = $mindexpage['path'];
+            $msearchhtml = $msearchpage['path'];
+            //小程序页面路径
+            $windexhtml = $mindexpage['wx_path'];
+            $wsearchhtml = $msearchpage['wx_path'];
             $mobile_classify_ids = Classify::where('cus_id', $this->cus_id)->where('mobile_show', 1)->lists('id');
             $mobile_article_ids = Articles::where('cus_id', $this->cus_id)->where('mobile_show', 1)->lists('id');
         }
         $count = $this->htmlPagecount($pc_classify_ids, $mobile_classify_ids, $pc_article_ids, $mobile_article_ids);
         $this->html_precent = 70 / $count;
-        $mcategoryhtml = $this->categoryhtml($mobile_classify_ids, 'mobile');
-        $marticlehtml = $this->articlehtml($mobile_classify_ids, 'mobile');
-        $this->percent = 20 / $count;
+        //返回生成的栏目和文章的页面路径
+        $mcategorypage = $this->categoryhtml($mobile_classify_ids, 'mobile');
+        $marticlehpage = $this->articlehtml($mobile_classify_ids, 'mobile');
+        //手机站的栏目文章
+        $mcategoryhtml = $mcategorypage['paths'];
+        $marticlehtml = $marticlehpage['paths'];
+        //小程序的栏目文章
+        $wcategoryhtml = $mcategorypage['wx_paths'];
+        $warticlehtml = $marticlehpage['wx_paths'];
+        if($this->is_applets == 1) {//如果小程序开启，算压缩进度时需要加上小程序的页面
+            $this->percent = 20 / ($count + $this->mobile_count);
+        } else {
+            $this->percent = 20 / $count;
+        }        
         $path = public_path('customers/' . $this->customer . '/' . $this->customer . '.zip');
         if (file_exists($path)) {
             @unlink($path);
@@ -524,6 +621,96 @@ class HtmlController extends BaseController
             $conn = ftp_connect($ftp_array[0], $ftp_array[1]);
             $del_imgs = ImgDel::where('cus_id', $this->cus_id)->get()->toArray();
             $delete = Delete::where('cus_id', $this->cus_id)->get()->toArray();
+            //若开启小程序
+            //小程序压缩包路径
+            $wx_path = public_path('customers/' . $this->customer . '/' . $this->customer . '_wx.zip');
+            if($this->is_applets and $zip->open($wx_path, ZipArchive::CREATE) === TRUE) {                
+                //嵌入式表单json文件
+                $json_path = public_path("customers/" . $this->customer . '/formdata.json');
+                //压缩快捷导航、首页、搜索用的PHP文件
+                $this->addFileToZip(public_path("quickbar/"), $zip, "quickbar");
+                $zip->addFile($windexhtml, 'index.html');
+                $zip->addFile($wsearchhtml, 'search.html');
+                $zip->addFile(public_path('customers/' . $this->customer . '/wx/article_data.json'), 'article_data.json');
+                //压缩模板js，css
+                if(!$mobile_info) {
+                    $mobile_info = Template::where('website_info.cus_id', $this->cus_id)->Leftjoin('website_info', 'template.id', '=', 'website_info.mobile_tpl_id')->select('name', 'name_bak', 'isColorful', 'mobile_color', 'color_style')->first()->toArray();
+                    $mobile_dir = $mobile_info['name'];
+                    if(empty($mobile_dir) or !is_dir(public_path("templates/$mobile_dir/"))){
+                        $mobile_dir = $mobile_info['name_bak'];
+                    }
+                }
+                if(!empty($mobile_dir) and is_dir(public_path("templates/$mobile_dir/"))){
+                    $is_demo = Customer::where('id', $this->cus_id)->pluck('is_demo');//是否是demo站
+                    $maim_dir = public_path("templates/$mobile_dir/");
+                    if ($mobile_info['isColorful'] == 1 && $is_demo != 1) {
+                        $color_dir = $mobile_info['mobile_color'];
+                        if(!$color_dir || !strpos($mobile_info['color_style'], $color_dir)) {
+                            $color_str = str_replace('#', '', $mobile_info['color_style']);
+                            $color_arr = explode(',', $color_str);
+                            $color_dir = $color_arr['0'];
+                        }
+                        $maim_dir = $maim_dir . 'themes/' . $color_dir . '/';
+                    }
+                    $this->addDir($maim_dir, $zip);                  
+                }
+                $zip->close();
+                //压缩页面文件
+                $this->compareZip($wcategoryhtml, 'category', $wx_path);
+                $this->compareZip($warticlehtml, 'detail', $wx_path);
+                //上传压缩包
+                //A服
+                if($customerinfo->xcx_a) {
+                    $xftp_array_a = explode(':', $customerinfo->xcx_a);
+                    $xftp_array_a[1] = isset($xftp_array_a[1]) ? $xftp_array_a[1] : 21;
+                    $xconn_a = ftp_connect($xftp_array_a[0], $xftp_array_a[1]);
+                    ftp_login($xconn_a, $customerinfo->xusr_a, $customerinfo->xpwd_a);
+                    ftp_pasv($xconn_a, 1);
+                    if (@ftp_chdir($xconn_a, $this->customer) == FALSE) {
+                        ftp_mkdir($xconn_a, $this->customer);
+                    }
+                    //上传搜索用的php和嵌入式表单用的json文件
+                    ftp_put($xconn_a, "/" . $this->customer . "/search.php", public_path("packages/search.php"), FTP_ASCII);
+                    if(!file_exists($json_path)){
+                        //不存在则创建一个空文件 
+                        file_put_contents($json_path, '');                       
+                    }
+                    //上传网站压缩包和解压文件
+                    ftp_put($xconn_a, "/" . $this->customer . "/formdata.json", $json_path, FTP_ASCII);
+                    if (file_exists($path)) {
+                        ftp_put($xconn_a, "/" . $this->customer . "/site.zip", $wx_path, FTP_BINARY);
+                    }
+                    ftp_put($xconn_a, "/" . $this->customer . "/unzip.php", public_path("packages/unzip.php"), FTP_ASCII);
+                    //执行解压
+                    file_get_contents('http://' . $xftp_array_a[0] . '/' . $this->customer . '/unzip.php');
+                }
+                //B服
+                if($customerinfo->xcx_b) {
+                    $xftp_array_b = explode(':', $customerinfo->xcx_b);
+                    $xftp_array_b[1] = isset($xftp_array_b[1]) ? $xftp_array_b[1] : 21;
+                    $xconn_b = ftp_connect($xftp_array_b[0], $xftp_array_b[1]);
+                    ftp_login($xconn_b, $customerinfo->xusr_b, $customerinfo->xpwd_b);
+                    ftp_pasv($xconn_b, 1);
+                    if (@ftp_chdir($xconn_b, $this->customer) == FALSE) {
+                        ftp_mkdir($xconn_b, $this->customer);
+                    }
+                    //上传搜索用的php和嵌入式表单用的json文件
+                    ftp_put($xconn_b, "/" . $this->customer . "/search.php", public_path("packages/search.php"), FTP_ASCII);
+                    if(!file_exists($json_path)){
+                        //不存在则创建一个空文件 
+                        file_put_contents($json_path, '');                       
+                    }
+                    //上传网站压缩包和解压文件
+                    ftp_put($xconn_b, "/" . $this->customer . "/formdata.json", $json_path, FTP_ASCII);
+                    if (file_exists($path)) {
+                        ftp_put($xconn_b, "/" . $this->customer . "/site.zip", $wx_path, FTP_BINARY);
+                    }
+                    ftp_put($xconn_b, "/" . $this->customer . "/unzip.php", public_path("packages/unzip.php"), FTP_ASCII);
+                    //执行解压
+                    file_get_contents('http://' . $xftp_array_b[0] . '/' . $this->customer . '/unzip.php');
+                }
+            }
+            //统一平台的删除和网站包上传
             if (trim($ftp) == '1') {
                 if ($conn) {
                     ftp_login($conn, $customerinfo->ftp_user, $customerinfo->ftp_pwd);
@@ -725,6 +912,29 @@ class HtmlController extends BaseController
                 ftp_put($conn, $ftpdir . "/mobile/quickbar.json", public_path('customers/' . $this->customer . '/mobile/quickbar.json'), FTP_ASCII);
                 ftp_close($conn);
                 $this->logsAdd('null', __FUNCTION__, __CLASS__, 999, "快捷导航推送", 0, '');
+            }
+        }
+        //小程序快捷导航推送
+        if($this->is_applets) {
+            //A服
+            if($customerinfo->xcx_a) {
+                $xcx_array_a = explode(':', $customerinfo->xcx_a);
+                $xcx_array_a[1] = isset($xcx_array_a[1]) ? $xcx_array_a[1] : 21;
+                $qconn_a = ftp_connect($xcx_array_a[0], $xcx_array_a[1]); 
+                ftp_login($qconn_a, $customerinfo->xusr_a, $customerinfo->xpwd_a);
+                ftp_pasv($qconn_a, 1);
+                ftp_put($qconn_a, "/" . $this->customer . "/quickbar.json", public_path('customers/' . $this->customer . '/wx/quickbar.json'), FTP_ASCII);
+                ftp_close($qconn_a);
+            }
+            //B服
+            if($customerinfo->xcx_b) {
+                $xcx_array_b = explode(':', $customerinfo->xcx_b);
+                $xcx_array_b[1] = isset($xcx_array_b[1]) ? $xcx_array_b[1] : 21;
+                $qconn_b = ftp_connect($xcx_array_b[0], $xcx_array_b[1]); 
+                ftp_login($qconn_b, $customerinfo->xusr_b, $customerinfo->xpwd_b);
+                ftp_pasv($qconn_b, 1);
+                ftp_put($qconn_b, "/" . $this->customer . "/quickbar.json", public_path('customers/' . $this->customer . '/wx/quickbar.json'), FTP_ASCII);
+                ftp_close($qconn_b);
             }
         }
     }
@@ -1287,13 +1497,15 @@ class HtmlController extends BaseController
     public function pushPrecent()
     {
         set_time_limit(0);
-        if (Input::has("pushgrad") == 1) {
+        //是否开启小程序
+        $this->is_applets = Customer::where('id', $this->cus_id)->pluck('is_applets');
+        if (Input::has("pushgrad") == 1) {//分栏推送
             echo '<script type="text/javascript">function refresh(str){parent.refresh(str);};</script>';
             if (Input::has("push_c_id")) {
-                $pushcid = Input::get("push_c_id");
+                $pushcid = Input::get("push_c_id");//分栏推送当前推送栏目
             }
             if (Input::has("end")) {
-                $end = Input::get("end");
+                $end = Input::get("end");//是否结束
             }
         } else {
             if (!Input::has("name")) {
@@ -1339,7 +1551,7 @@ class HtmlController extends BaseController
         ob_flush();
         flush();
         $this->pushinit();
-        if (!isset($end) || $end == 1) {
+        if (!isset($end) || $end == 1) {//非分栏推送或分栏推送结束时执行
             if ($this->quickbarpush) {
                 $this->pushQuickbar();
             }
@@ -1362,10 +1574,17 @@ class HtmlController extends BaseController
             $pc_article_ids = array();
             $mobile_article_ids = array();
             if ($this->mobilepush) {
-                if (isset($pushcid)) {
+                if (isset($pushcid)) {//分栏推送
                     if (!isset($end) || $end == 1) {
-                        $mindexhtml = $this->homgepagehtml('mobile');
-                        $msearchhtml = $this->sendData('mobile');
+                        //返回生成的静态页面的路径
+                        $mindexpage = $this->homgepagehtml('mobile');                
+                        $msearchpage = $this->sendData('mobile');
+                        //手机站页面路径
+                        $mindexhtml = $mindexpage['path'];
+                        $msearchhtml = $msearchpage['path'];
+                        //小程序页面路径
+                        $windexhtml = $mindexpage['wx_path'];
+                        $wsearchhtml = $msearchpage['wx_path'];
                     }
                     $mobile_classify_ids = array();
                     $mobile_article_ids = array();
@@ -1375,8 +1594,15 @@ class HtmlController extends BaseController
                         $mobile_article_ids = Articles::where('cus_id', $this->cus_id)->where('mobile_show', 1)->where("c_id", $pushcid)->lists('id');
                     }
                 } else {
-                    $mindexhtml = $this->homgepagehtml('mobile');
-                    $msearchhtml = $this->sendData('mobile');
+                    //返回生成的静态页面的路径
+                    $mindexpage = $this->homgepagehtml('mobile');                
+                    $msearchpage = $this->sendData('mobile');
+                    //手机站页面路径
+                    $mindexhtml = $mindexpage['path'];
+                    $msearchhtml = $msearchpage['path'];
+                    //小程序页面路径
+                    $windexhtml = $mindexpage['wx_path'];
+                    $wsearchhtml = $msearchpage['wx_path'];
                     // $mobile_classify_ids = Classify::where('cus_id', $this->cus_id)->where('mobile_show', 1)->lists('id');
                     //使海报能够推送
                     $mobile_classify_ids = Classify::where('cus_id', $this->cus_id)->where('mobile_show', 1)->orWhere('type',10)->lists('id');
@@ -1384,10 +1610,12 @@ class HtmlController extends BaseController
                 }
             }
             if ($this->pcpush) {
-                if (isset($pushcid)) {
+                if (isset($pushcid)) {//分栏推送
                     if (!isset($end) || $end == 1) {
-                        $indexhtml = $this->homgepagehtml('pc');
-                        $searchhtml = $this->sendData('pc');
+                        $indexpage = $this->homgepagehtml('pc');
+                        $searchpage = $this->sendData('pc');
+                        $indexhtml = $indexpage['path'];
+                        $searchhtml = $searchpage['path'];
                     }
                     $pc_classify_ids = array();
                     $pc_article_ids = array();
@@ -1397,8 +1625,10 @@ class HtmlController extends BaseController
                         $pc_article_ids = Articles::where('cus_id', $this->cus_id)->where('pc_show', 1)->where("c_id", $pushcid)->lists('id');
                     }
                 } else {
-                    $indexhtml = $this->homgepagehtml('pc');
-                    $searchhtml = $this->sendData('pc');
+                    $indexpage = $this->homgepagehtml('pc');
+                    $searchpage = $this->sendData('pc');
+                    $indexhtml = $indexpage['path'];
+                    $searchhtml = $searchpage['path'];
                     // $pc_classify_ids = Classify::where('cus_id', $this->cus_id)->where('pc_show', 1)->lists('id');
                     //使海报能够推送
                     $pc_classify_ids = Classify::where('cus_id', $this->cus_id)->where('pc_show', 1)->orWhere('type',10)->lists('id');
@@ -1408,14 +1638,27 @@ class HtmlController extends BaseController
             $count = $this->htmlPagecount($pc_classify_ids, $mobile_classify_ids, $pc_article_ids, $mobile_article_ids);
             $this->html_precent = 70 / $count;
             if ($this->pcpush) {
-                $categoryhtml = $this->categoryhtml($pc_classify_ids, 'pc');
-                $articlehtml = $this->articlehtml($pc_classify_ids, 'pc');
+                $categorypage = $this->categoryhtml($pc_classify_ids, 'pc');                
+                $articlepage = $this->articlehtml($pc_classify_ids, 'pc');
+                $categoryhtml = $categorypage['paths'];
+                $articlehtml = $articlepage['paths'];
             }
             if ($this->mobilepush) {
-                $mcategoryhtml = $this->categoryhtml($mobile_classify_ids, 'mobile');
-                $marticlehtml = $this->articlehtml($mobile_classify_ids, 'mobile');
+                //返回生成的栏目文章的页面路径
+                $mcategorypage = $this->categoryhtml($mobile_classify_ids, 'mobile');                
+                $marticlepage = $this->articlehtml($mobile_classify_ids, 'mobile');
+                //手机站的栏目文章
+                $mcategoryhtml = $mcategorypage['paths'];
+                $marticlehtml = $marticlepage['paths'];
+                //小程序的栏目文章
+                $wcategoryhtml = $mcategorypage['wx_paths'];
+                $warticlehtml = $marticlepage['wx_paths'];
             }
-            $this->percent = 20 / $count;
+            if($this->is_applets == 1) {//如果小程序开启，算压缩进度时需要加上小程序的页面
+                $this->percent = 20 / ($count + $this->mobile_count);
+            } else {
+                $this->percent = 20 / $count;
+            } 
             $path = public_path('customers/' . $this->customer . '/' . $this->customer . '.zip');
             if (file_exists($path)) {
                 @unlink($path);
@@ -1454,10 +1697,25 @@ class HtmlController extends BaseController
             } else {
                 $this->lastpercent += 70 + $this->percent;
             }
+            //如果开启了小程序并且手机站有推送，压缩小程序页面
+            if($this->is_applets && $this->mobilepush) {
+                $wx_path = public_path('customers/' . $this->customer . '/' . $this->customer . '_wx.zip');
+                if ((!isset($end) || $end == 1) && ($zip->open($wx_path, ZipArchive::CREATE) === TRUE)) {
+                    $this->addFileToZip(public_path("quickbar/"), $zip, "quickbar");
+                    $zip->addFile($windexhtml, 'index.html');
+                    $zip->addFile($wsearchhtml, 'search.html');
+                    $zip->addFile(public_path('customers/' . $this->customer . '/wx/article_data.json'), 'article_data.json');
+                    $zip->close();
+                }
+                $this->compareZip($wcategoryhtml, 'category', $wx_path);
+                $this->compareZip($warticlehtml, 'detail', $wx_path);
+            }
+            //压缩PC页面
             if ($this->pcpush) {
                 $this->compareZip($categoryhtml, 'category', $path);
                 $this->compareZip($articlehtml, 'detail', $path);
             }
+            //压缩手机页面
             if ($this->mobilepush) {
                 $this->compareZip($mcategoryhtml, 'mobile/category', $path);
                 $this->compareZip($marticlehtml, 'mobile/detail', $path);
@@ -1527,6 +1785,34 @@ class HtmlController extends BaseController
                     }                    
                 }
                 $zip->close();
+                //压缩小程序模板包
+                if ((!isset($end) || $end == 1) && $this->mobilepush && $this->is_applets) {
+                    if ($zip->open($wx_path, ZipArchive::CREATE) === TRUE) {
+                        //如果没有手机站模板信息，再做查询
+                        if(!$mobile_info) {
+                            $mobile_info = Template::where('website_info.cus_id', $this->cus_id)->Leftjoin('website_info', 'template.id', '=', 'website_info.mobile_tpl_id')->select('name', 'name_bak', 'isColorful', 'mobile_color', 'color_style')->first()->toArray();
+                            $mobile_dir = $mobile_info['name'];
+                            //===手机旧编号调用===
+                            if(empty($mobile_dir) or !is_dir(public_path("templates/$mobile_dir/"))){
+                                $mobile_dir = $mobile_info['name_bak'];
+                            }
+                        }
+                        if(!empty($mobile_dir) and is_dir(public_path("templates/$mobile_dir/"))) {
+                            $maim_dir = public_path("templates/$mobile_dir/");
+                            if ($mobile_info['isColorful'] == 1 && $is_demo != 1) {
+                                $color_dir = $mobile_info['mobile_color'];
+                                if(!$color_dir || !strpos($mobile_info['color_style'], $color_dir)) {
+                                    $color_str = str_replace('#', '', $mobile_info['color_style']);
+                                    $color_arr = explode(',', $color_str);
+                                    $color_dir = $color_arr['0'];
+                                }
+                                $maim_dir = $maim_dir . 'themes/' . $color_dir . '/';
+                            }
+                            $this->addDir($maim_dir, $zip);                       
+                        }
+                        $zip->close();
+                    }
+                } 
                 $customerinfo = Customer::find($this->cus_id);
                 $ftp_array = explode(':', $customerinfo->ftp_address);
                 $port = $customerinfo->ftp_port;
@@ -1538,6 +1824,59 @@ class HtmlController extends BaseController
                 $delete = Delete::where('cus_id', $this->cus_id)->get()->toArray();
                 //嵌入式表单json文件
                 $json_path = public_path("customers/" . $this->customer . '/formdata.json');
+                //上传小程序包
+                if($this->is_applets && file_exists($wx_path)) {
+                    //A服
+                    if($customerinfo->xcx_a) {
+                        $xftp_array_a = explode(':', $customerinfo->xcx_a);
+                        $xftp_array_a[1] = isset($xftp_array_a[1]) ? $xftp_array_a[1] : 21;
+                        $xconn_a = ftp_connect($xftp_array_a[0], $xftp_array_a[1]);
+                        ftp_login($xconn_a, $customerinfo->xusr_a, $customerinfo->xpwd_a);
+                        ftp_pasv($xconn_a, 1);
+                        if (@ftp_chdir($xconn_a, $this->customer) == FALSE) {
+                            ftp_mkdir($xconn_a, $this->customer);
+                        }
+                        //上传搜索用的php和嵌入式表单用的json文件
+                        ftp_put($xconn_a, "/" . $this->customer . "/search.php", public_path("packages/search.php"), FTP_ASCII);
+                        if(!file_exists($json_path)){
+                            //不存在则创建一个空文件 
+                            file_put_contents($json_path, '');                       
+                        }
+                        //上传网站压缩包和解压文件
+                        ftp_put($xconn_a, "/" . $this->customer . "/formdata.json", $json_path, FTP_ASCII);
+                        if (file_exists($path)) {
+                            ftp_put($xconn_a, "/" . $this->customer . "/site.zip", $wx_path, FTP_BINARY);
+                        }
+                        ftp_put($xconn_a, "/" . $this->customer . "/unzip.php", public_path("packages/unzip.php"), FTP_ASCII);
+                        //执行解压
+                        file_get_contents('http://' . $xftp_array_a[0] . '/' . $this->customer . '/unzip.php');
+                    }
+                    //B服
+                    if($customerinfo->xcx_b) {
+                        $xftp_array_b = explode(':', $customerinfo->xcx_b);
+                        $xftp_array_b[1] = isset($xftp_array_b[1]) ? $xftp_array_b[1] : 21;
+                        $xconn_b = ftp_connect($xftp_array_b[0], $xftp_array_b[1]);
+                        ftp_login($xconn_b, $customerinfo->xusr_b, $customerinfo->xpwd_b);
+                        ftp_pasv($xconn_b, 1);
+                        if (@ftp_chdir($xconn_b, $this->customer) == FALSE) {
+                            ftp_mkdir($xconn_b, $this->customer);
+                        }
+                        //上传搜索用的php和嵌入式表单用的json文件
+                        ftp_put($xconn_b, "/" . $this->customer . "/search.php", public_path("packages/search.php"), FTP_ASCII);
+                        if(!file_exists($json_path)){
+                            //不存在则创建一个空文件 
+                            file_put_contents($json_path, '');                       
+                        }
+                        //上传网站压缩包和解压文件
+                        ftp_put($xconn_b, "/" . $this->customer . "/formdata.json", $json_path, FTP_ASCII);
+                        if (file_exists($path)) {
+                            ftp_put($xconn_b, "/" . $this->customer . "/site.zip", $wx_path, FTP_BINARY);
+                        }
+                        ftp_put($xconn_b, "/" . $this->customer . "/unzip.php", public_path("packages/unzip.php"), FTP_ASCII);
+                        //执行解压
+                        file_get_contents('http://' . $xftp_array_b[0] . '/' . $this->customer . '/unzip.php');
+                    }
+                } 
                 if (trim($ftp) == '1') {
                     if ($conn) {
                         ftp_login($conn, $customerinfo->ftp_user, $customerinfo->ftp_pwd);
@@ -1771,6 +2110,28 @@ class HtmlController extends BaseController
     }
 
     /**
+     * 小程序页面压缩(停用)
+     *
+     * @param array $filearray 文件数组
+     * @param string $fpath 文件路径
+     * @param string $path 加入压缩的路径
+     * @return array
+     */
+    private function compareWxZip($filearray = [], $fpath = '', $path = '')
+    {
+        $zip = new ZipArchive;
+        if ($zip->open($path, ZipArchive::CREATE) === TRUE) {
+            foreach ((array)$filearray as $file) {
+                $cat_arr = explode('/', $file);
+                $filename = array_pop($cat_arr);
+                $zip->addFile($file, $fpath . '/' . $filename);
+            }
+            $zip->close();
+        }
+        return $data;
+    }
+
+    /**
      * 判断一个用户是否需要推送并返回修改的次数
      */
     public function isNeedPush()
@@ -1832,9 +2193,26 @@ class HtmlController extends BaseController
         ob_start();
         $path = $type == 'pc' ? public_path('customers/' . $this->customer . '/search.html') : public_path('customers/' . $this->customer . '/mobile/search.html');
         echo $template->searchPush($publicdata);
-        file_put_contents($path, ob_get_contents());
+        file_put_contents($path, $output = ob_get_contents());
         ob_end_clean();
-        return $path;
+        if($this->is_applets == 1 && $type == 'mobile') {
+            //检测目录
+            if(!is_dir(public_path('customers/' . $this->customer . '/wx'))) {
+                mkdir(public_path('customers/' . $this->customer . '/wx'));                
+            }
+            //页面路径
+            $wx_path = public_path('customers/' . $this->customer . '/wx/search.html');
+            //小程序替换正则(链接，quickbar引入)
+            $wx_pattern = ["/(src|href)(=[\"'])(\/)(images|js|css|category|detail|quickbar|themes)/", "/quickbar(\.js\?\d+mobile)/"];
+            //替换为
+            $wx_replace = ['${1}${2}./${4}', 'quickbar-windex${1}'];
+            //匹配替换                       
+            $wx_out = preg_replace($wx_pattern, $wx_replace, $output);
+            file_put_contents($wx_path, $wx_out);
+        }
+        $res['path'] = $path;
+        $res['wx_path'] = isset($wx_path) ? $wx_path : null;
+        return $res;
     }
 
     /**

@@ -105,6 +105,33 @@ if ($up_result['state'] == 'SUCCESS') {
             ftp_close($conn_b);
         }
     }
+    //小程序上传图片
+    if($customerinfo->is_applets) {
+        //A服
+        if($customerinfo->xcx_a) {
+            $xcx_array_a = explode(':', $customerinfo->xcx_a);
+            $xcx_array_a[1] = isset($xcx_array_a[1]) ? $xcx_array_a[1] : 21;
+            $xconn_a = ftp_connect($xcx_array_a[0], $xcx_array_a[1]);
+            if($xconn_a) {
+                $xcx_pcdomain_a = "http://" . $xcx_array_a[0] . '/' . $cus_name;
+                ftp_login($xconn_a, $customerinfo->xusr_a, $customerinfo->xpwd_a);
+                ftp_pasv($xconn_a, 1);
+                @ftp_put($xconn_a, $cus_name . '/' . 'images/ueditor/' . $up_result['title'], public_path('customers/' . $cus_name . '/images/ueditor/' . $up_result['title']), FTP_BINARY);
+            }
+        }
+        //B服
+        if($customerinfo->xcx_b) {
+            $xcx_array_b = explode(':', $customerinfo->xcx_b);
+            $xcx_array_b[1] = isset($xcx_array_b[1]) ? $xcx_array_b[1] : 21;
+            $xconn_b = ftp_connect($xcx_array_b[0], $xcx_array_b[1]);
+            if($xconn_b) {
+                $xcx_pcdomain_b = "http://" . $xcx_array_b[0] . '/' . $cus_name;
+                ftp_login($xconn_b, $customerinfo->xusr_b, $customerinfo->xpwd_b);
+                ftp_pasv($xconn_b, 1);
+                @ftp_put($xconn_b, $cus_name . '/' . 'images/ueditor/' . $up_result['title'], public_path('customers/' . $cus_name . '/images/ueditor/' . $up_result['title']), FTP_BINARY);
+            }
+        }                  
+    }
 }
 /**
  * 得到上传文件所对应的各个参数,数组结构

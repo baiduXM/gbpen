@@ -170,6 +170,7 @@ class UploadController extends BaseController
 
     /**
      * ===点击保存按钮后动作===
+     * 容量不足：退出循环，将已有压缩包上传，返回容量不足提示
      * @return type
      */
     public function img_upload()
@@ -185,7 +186,8 @@ class UploadController extends BaseController
         $weburl = Customer::where('id', $cus_id)->pluck('weburl');
         $suf_url = str_replace('http://c', '', $weburl);
         $imgzip = 'img'.str_random(4).'.zip';
-		file_put_contents(public_path('logs/zip_log/'.date('Y-m-d',time()).'.txt'), $imgzip.':'.Input::get('files').PHP_EOL,FILE_APPEND);
+        $enough = 1;//容量是否足够 1-是；0-否
+        file_put_contents(public_path('logs/zip_log/'.date('Y-m-d',time()).'.txt'), $imgzip.':'.Input::get('files').PHP_EOL,FILE_APPEND);
         if ($files) {
             //===判断服务器是否正常===
             // if ($weburl) {
@@ -223,11 +225,15 @@ class UploadController extends BaseController
                             $filesize = filesize($filepath);
                             if (!$Capacity->change_capa($filesize, 'use')) {
                                 return Response::json(['err' => 0, 'msg' => '空间容量不足', 'data' => 1005]);
+                                //$enough = 0;//容量不足的标记
+                                //break;//容量不足，退出循环，执行上传
                             }
                             $file = explode('.', $fileName);
                             $type = end($file);
+                            //将图片由缓存目录移动到站点图片目录
                             $up_result = copy(public_path('customers/' . $customer . '/cache_images/' . $fileName), $destinationPath . '/l/' . $target . '/' . $fileName);
                             if ($up_result) {
+                                //PC站图片缩略图目录
                                 $s_path = $destinationPath . '/s/' . $target . '/' . $fileName;
                                 $img_info = getimagesize($destinationPath . '/l/' . $target . '/' . $fileName);
                                 switch ($img_info[2]) {
@@ -241,11 +247,15 @@ class UploadController extends BaseController
                                         $type = 'png';
                                         break;
                                 }
+                                //生成PC站图片缩略图
                                 $this->resizeImage($destinationPath . '/l/' . $target . '/' . $fileName, $type, $s_path, $img_size, $img_size);
+                                //复制图片到手机站目录
                                 copy($destinationPath . '/l/' . $target . '/' . $fileName, public_path('customers/' . $customer . '/mobile/images/l/' . $target . '/' . $fileName));
+                                //手机站图片缩略图目录
                                 $mobile_s_path = public_path('customers/' . $customer . '/mobile/images/s/') . $target . '/' . $fileName;
+                                //生成手机站图片缩略图
                                 $this->resizeImage(public_path('customers/' . $customer . '/mobile/images/l/') . $target . '/' . $fileName, $type, $mobile_s_path, $img_size, $img_size);
-                                if (trim($ftp) == '1') {
+                                if (trim($ftp) == '1') {//使用公司空间：压缩后上传
                                     $zip->addFile($destinationPath . '/l/' . $target . '/' . $fileName, 'images/l/' . $target . '/' . $fileName);
                                     $zip->addFile($destinationPath . '/s/' . $target . '/' . $fileName, 'images/s/' . $target . '/' . $fileName);
 //                                    $zip->addFile(public_path('customers/' . $customer . '/mobile/images/s/') . $target . '/' . $fileName,'mobile/images/l/' . $target . '/' . $fileName);
@@ -254,7 +264,7 @@ class UploadController extends BaseController
 //                                    ftp_put($conn, $customer . '/images/s/' . $target . '/' . $fileName, $destinationPath . '/s/' . $target . '/' . $fileName, FTP_BINARY);
 //                                    ftp_put($conn, $customer . '/mobile/images/l/' . $target . '/' . $fileName, public_path('customers/' . $customer . '/mobile/images/l/') . $target . '/' . $fileName, FTP_BINARY);
 //                                    ftp_put($conn, $customer . '/mobile/images/s/' . $target . '/' . $fileName, public_path('customers/' . $customer . '/mobile/images/s/') . $target . '/' . $fileName, FTP_BINARY);
-                                } else {
+                                } else {//使用客户自己的空间：不压缩，一张张上传
                                     ftp_put($conn, $ftpdir . '/' . 'images/l/' . $target . '/' . $fileName, $destinationPath . '/l/' . $target . '/' . $fileName, FTP_BINARY);
                                     ftp_put($conn, $ftpdir . '/' . 'images/s/' . $target . '/' . $fileName, $destinationPath . '/s/' . $target . '/' . $fileName, FTP_BINARY);
                                     ftp_put($conn, $ftpdir . '/' . 'mobile/images/l/' . $target . '/' . $fileName, public_path('customers/' . $customer . '/mobile/images/l/') . $target . '/' . $fileName, FTP_BINARY);
@@ -272,10 +282,8 @@ class UploadController extends BaseController
                         if (trim($ftp) == '1') {
                             $weburl = Customer::where('id', $cus_id)->pluck('weburl');
                             $suf_url = str_replace('http://c', '', $weburl);
-                            $cus_name = strtolower(Customer::where('id', $cus_id)->pluck('name'));
-                            if (trim($ftp) == '1') {
-                                $ftp_pcdomain = "http://" . $ftp_array[0] . '/' . $customer;
-                            }
+                            // $cus_name = strtolower(Customer::where('id', $cus_id)->pluck('name'));
+                            $ftp_pcdomain = "http://" . $ftp_array[0] . '/' . $customer;
                             ftp_put($conn, $customer . '/' . $imgzip, public_path('customers/' . $customer . '/' . $imgzip), FTP_BINARY);
                             ftp_put($conn, $customer . '/img_unzip.php', public_path('packages/img_unzip.php'), FTP_ASCII);
                             @$res1 = file_get_contents("$ftp_pcdomain/img_unzip.php?img=" . $imgzip);
@@ -284,9 +292,7 @@ class UploadController extends BaseController
                                 $j = 1;
                                 while($j<=3 && $res1!=1000){
                                    $ftp_pcdomain = "http://" . $ftp_array[0] . ':808' . $j . '/' . $customer;
-                                   //@file_put_contents('while.txt','a:'.$ftp_pcdomain.PHP_EOL,FILE_APPEND);
                                    @$res1 = file_get_contents("$ftp_pcdomain/img_unzip.php?img=" . $imgzip);
-                                   //@file_put_contents('while.txt','a:'.$res1.PHP_EOL,FILE_APPEND); 
                                    $j++;
                                 }                                                                
                                 $i++;
@@ -301,11 +307,8 @@ class UploadController extends BaseController
 						if($conn_b){
 							ftp_login($conn_b, $customerinfo->ftp_user_b, $customerinfo->ftp_pwd_b);
 							ftp_pasv($conn_b, 1);
-							if (trim($ftp) == '1') {
-								$cus_name = strtolower(Customer::where('id', $cus_id)->pluck('name'));
-								if (trim($ftp) == '1') {
-									$ftp_pcdomain_b = "http://" . $ftp_array_b[0] . '/' . $customer;
-								}
+							if (trim($ftp) == '1') {							
+								$ftp_pcdomain_b = "http://" . $ftp_array_b[0] . '/' . $customer;
 								ftp_put($conn_b, $customer . '/' . $imgzip, public_path('customers/' . $customer . '/' . $imgzip), FTP_BINARY);
 								ftp_put($conn_b, $customer . '/img_unzip.php', public_path('packages/img_unzip.php'), FTP_ASCII);
 								@$res2 = file_get_contents("$ftp_pcdomain_b/img_unzip.php?img=" . $imgzip);
@@ -314,9 +317,7 @@ class UploadController extends BaseController
                                     $j = 1;
                                     while($j<=3 && $res2!=1000){
                                        $ftp_pcdomain_b = "http://" . $ftp_array_b[0] . ':808' . $j . '/' . $customer;
-                                       //@file_put_contents('while.txt','b:'.$ftp_pcdomain_b.PHP_EOL,FILE_APPEND);
                                        @$res2 = file_get_contents("$ftp_pcdomain_b/img_unzip.php?img=" . $imgzip);
-                                       //@file_put_contents('while.txt','b:'.$res2.PHP_EOL,FILE_APPEND); 
                                        $j++;
                                     }                                                                
                                     $i++;
@@ -342,6 +343,49 @@ class UploadController extends BaseController
                    }                    
                 }
 
+                //小程序上传图片
+                if($customerinfo->is_applets) {
+                    //图片压缩包是否存在
+                    if(file_exists(public_path('customers/' . $customer . '/' . $imgzip))) {
+                        //A服
+                        if($customerinfo->xcx_a) {
+                            $xcx_array_a = explode(':', $customerinfo->xcx_a);
+                            $xcx_array_a[1] = isset($xcx_array_a[1]) ? $xcx_array_a[1] : 21;
+                            $xconn_a = ftp_connect($xcx_array_a[0], $xcx_array_a[1]);
+                            if($xconn_a) {
+                                $xcx_pcdomain_a = "http://" . $xcx_array_a[0] . '/' . $customer;
+                                ftp_login($xconn_a, $customerinfo->xusr_a, $customerinfo->xpwd_a);
+                                ftp_pasv($xconn_a, 1);
+                                ftp_put($xconn_a, $customer . '/' . $imgzip, public_path('customers/' . $customer . '/' . $imgzip), FTP_BINARY);
+                                ftp_put($xconn_a, $customer . '/img_unzip.php', public_path('packages/iwx_unzip.php'), FTP_ASCII);
+                                ftp_close($xconn_a);
+                                //解压
+                                $res3 = file_get_contents("$xcx_pcdomain_a/img_unzip.php?img=" . $imgzip);
+                            }
+                        }
+                        //B服
+                        if($customerinfo->xcx_b) {
+                            $xcx_array_b = explode(':', $customerinfo->xcx_b);
+                            $xcx_array_b[1] = isset($xcx_array_b[1]) ? $xcx_array_b[1] : 21;
+                            $xconn_b = ftp_connect($xcx_array_b[0], $xcx_array_b[1]);
+                            if($xconn_b) {
+                                $xcx_pcdomain_b = "http://" . $xcx_array_b[0] . '/' . $customer;
+                                ftp_login($xconn_b, $customerinfo->xusr_b, $customerinfo->xpwd_b);
+                                ftp_pasv($xconn_b, 1);
+                                ftp_put($xconn_b, $customer . '/' . $imgzip, public_path('customers/' . $customer . '/' . $imgzip), FTP_BINARY);
+                                ftp_put($xconn_b, $customer . '/img_unzip.php', public_path('packages/iwx_unzip.php'), FTP_ASCII);
+                                ftp_close($xconn_b);
+                                $res4 = file_get_contents("$xcx_pcdomain_b/img_unzip.php?img=" . $imgzip);
+                            }
+                        }
+                    }                    
+                }
+
+                //如果容量不足，返回错误码以跳转页面
+                // if(!$enough) {
+                //     return Response::json(['err' => 0, 'msg' => '空间容量不足', 'data' => 1005]);
+                // }
+
                 if(isset($res1)&&isset($res2)){
                     if($res1 != 1000 && $res2 != 1000){
                         @file_put_contents(public_path('customers/' . $customer . '/zk_img.txt'), '1003:'.$imgzip.','.date('Y-m-d H:i:s',time()).PHP_EOL,FILE_APPEND);
@@ -353,7 +397,7 @@ class UploadController extends BaseController
                         @file_put_contents(public_path('customers/' . $customer . '/zk_img.txt'), '1002:'.$imgzip.','.date('Y-m-d H:i:s',time()).PHP_EOL,FILE_APPEND);
                         return Response::json(['err' => 0, 'msg' => 'B服图片推送失败', 'data' => 1002, 'img' => $imgzip]);
                     }
-					file_put_contents(public_path('logs/img_log/'.date('Y-m-d',time()).'.txt'), $customer.','.$res1.','.$res2.','.$imgzip.','.date('Y-m-d H:i:s',time()).';'.PHP_EOL,FILE_APPEND);
+                    file_put_contents(public_path('logs/img_log/'.date('Y-m-d',time()).'.txt'), $customer.','.$res1.','.$res2.','.$imgzip.','.date('Y-m-d H:i:s',time()).';'.PHP_EOL,FILE_APPEND);
                 }elseif(isset($res1)&&!isset($res2)){
                     if($res1 != 1000){                            
                         @file_put_contents(public_path('customers/' . $customer . '/zk_img.txt'), '1001:'.$imgzip.','.date('Y-m-d H:i:s',time()).PHP_EOL,FILE_APPEND);
@@ -714,6 +758,18 @@ class UploadController extends BaseController
         if ($zip->open($path, ZipArchive::CREATE) === TRUE) {
             $this->addImagesToZip($images,$zip);
             $zip->close();
+
+            //小程序整站重推
+            if($customerinfo->is_applets) {
+                //A服
+                if($customerinfo->xcx_a) {
+                    $this->wxImages($customerinfo->xcx_a, $customerinfo->xusr_a, $customerinfo->xpwd_a, $customer, $path);
+                }
+                //B服
+                if($customerinfo->xcx_b) {
+                    $this->wxImages($customerinfo->xcx_b, $customerinfo->xusr_b, $customerinfo->xpwd_b, $customer, $path);
+                }
+            }
         }
 
         //A服
@@ -740,7 +796,7 @@ class UploadController extends BaseController
     }
 
     //压缩用户图片目录
-    protected function addImagesToZip($images, $zip){
+    public function addImagesToZip($images, $zip){
         $lastDir = explode('images/', $images);
         if(count($lastDir)<=1){
             $lastDir = 'images';
@@ -763,6 +819,20 @@ class UploadController extends BaseController
             }
         }
         @closedir($images); 
+    }
+
+    //推送小程序图片压缩包
+    public function wxImages($ftp, $usr, $pwd, $customer, $path) {
+        $xftp_array = explode(':', $ftp);
+        $xftp_array[1] = isset($xftp_array[1]) ? $xftp_array[1] : 21;
+        $xconn = ftp_connect($xftp_array[0], $xftp_array[1]);
+        ftp_login($xconn, $usr, $pwd);
+        ftp_pasv($xconn, 1);
+        ftp_put($xconn, $customer . '/img.zip', $path, FTP_BINARY);
+        ftp_put($xconn, $customer . '/img_unzip.php', public_path('packages/iwx_unzip.php'), FTP_ASCII);
+        $ftp_pcdomain = "http://" . $xftp_array[0] . '/' . $customer;
+        file_get_contents("$ftp_pcdomain/img_unzip.php");
+        ftp_close($xconn);
     }
 
 }
